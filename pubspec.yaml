@@ -1,0 +1,74 @@
+name: moonblink
+description: MoonBlink Universe's app
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  flutter_webrtc: ^0.2.8 #require to add code at android and ios
+  cupertino_icons: ^0.1.2
+  # State Management
+  provider: ^4.0.4
+  path_provider: ^1.6.11
+  #Base Component
+  device_info: ^0.4.2+4
+  package_info: ^0.4.1
+  #Base UI
+  shimmer: ^1.1.1
+  datetime_picker_formfield: ^1.0.0
+  like_button: ^1.0.1
+  oktoast: ^2.3.2
+  pull_to_refresh: ^1.6.0
+  flutter_spinkit: ^4.1.2+1 
+  flutter_local_notifications: ^1.4.4+1 # Android API 16+ (4.1+, the minimum version supported by Flutter). Uses the NotificationCompat APIs so it can be run older Android devices # iOS 8.0+ (the minimum version supported by Flutter). Supports the old and new iOS notification APIs (the User Notifications Framework introduced in iOS 10 but will use the UILocalNotification APIs for devices predating iOS 10)
+  # fancy_bottom_navigation: ^0.3.2
+  fancy_bottom_navigation:
+    git:
+      url: https://github.com/skquark/fancy_bottom_navigation.git
+  # Data
+  dio: ^3.0.9
+  shared_preferences: ^0.5.6+3
+  socket_io_client: ^0.9.4
+  scoped_model: ^1.0.1
+  # local storage
+  image_picker: ^0.6.7 #need to edit at android and ios
+  localstorage: ^3.0.2+5
+  story_view: ^0.12.3
+  flutter_slidable: ^0.5.4
+  vibration: ^1.4.0
+  # azlistview: ^0.1.2
+  lpinyin: ^1.0.9
+  # signIn helper
+  # google_sign_in: ^4.5.1 #need to add things for ios
+
+
+  common_utils: ^1.2.1
+
+  font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # json_serializable: ^3.3.0
+  # build_runner: ^1.9.0
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/logos/
+  fonts:
+    - family: iconfont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
+
+flutter_intl:
+  enabled: true
