@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.moonuniverse.moonblink">
+  <uses-permission android:name="android.permission.INTERNET" />
   <!-- xmlns:tools="http://schemas.android.com/tools" here is for background fetch-->
   <!-- here is for flutter webrtc -->
   <uses-feature android:name="android.hardware.camera" />

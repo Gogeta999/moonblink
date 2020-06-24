@@ -90,10 +90,9 @@ with AutomaticKeepAliveClientMixin{
               SliverAppBar(
                 // centerTitle: true,
                 ///[Appbar]
-                title: AppbarLogo(),
-                // GestureDetector(
-                //   onDoubleTap: tapToTopModel.scrollToTop,
-                //   child: Text(S.of(context).appName)),
+                title: GestureDetector(
+                  onDoubleTap: tapToTopModel.scrollToTop,
+                  child: AppbarLogo()),
                 pinned: true,
                 expandedHeight: kToolbarHeight,
                 brightness: Theme.of(context).brightness ==
