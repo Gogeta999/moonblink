@@ -4,7 +4,6 @@ import 'package:like_button/like_button.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 
@@ -64,11 +63,9 @@ class PostItemWidget extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          /// [like animation]
+                        if(posts.isReacted == 0)
+                        /// [like animation while user unreacted] 
                         LikeButton(
-                          // size: 28,
-
-                          // onTap: likePostRequest(),
                           circleColor: CircleColor(
                             start: Colors.pink, end: Colors.pinkAccent),
                           bubblesColor: BubblesColor(
@@ -85,6 +82,39 @@ class PostItemWidget extends StatelessWidget {
                           likeCount: posts.reactionCount,
                           countBuilder: (int count, bool isLiked, String text) {
                           var color = isLiked ? Colors.pinkAccent : Colors.grey;
+                          Widget result;
+                          if (count == 0) {
+                          result = Text(''
+                            // "love",
+                            // style: TextStyle(color: color),
+                          );
+                          } else
+                          result = Text(
+                            text,
+                            style: TextStyle(color: color),
+                          );
+                        return result;},
+                        ),
+
+                        if(posts.isReacted == 1)
+                        /// [like animation while user was reacted] 
+                        LikeButton(
+                          circleColor: CircleColor(
+                            start: Colors.pink, end: Colors.pinkAccent),
+                          bubblesColor: BubblesColor(
+                            dotPrimaryColor: Colors.pink,
+                            dotSecondaryColor: Colors.pinkAccent,
+                          ),
+                          likeBuilder: (bool isLiked){
+                            return Icon(
+                              FontAwesomeIcons.heart,
+                              color: isLiked ? Colors.black : Colors.pinkAccent,
+                              // size: 28, 
+                            );
+                          },
+                          likeCount: posts.reactionCount,
+                          countBuilder: (int count, bool isLiked, String text) {
+                          var color = isLiked ? Colors.grey : Colors.pinkAccent;
                           Widget result;
                           if (count == 0) {
                           result = Text(''

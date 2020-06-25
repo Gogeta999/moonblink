@@ -310,7 +310,7 @@ class SetProfileButton extends StatelessWidget {
         var response = await DioUtils().postwithData(Api.SetProfile + '$userid/profile', data: formData);
         print(response);
         model.logout();
-        Navigator.of(context).pushNamed(RouteName.main);
+        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
         return User.fromJsonMap(response.data);
        },
     );

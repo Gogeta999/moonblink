@@ -51,6 +51,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                       icon: Icon(FontAwesomeIcons.signOutAlt),
                       onPressed: () {
                         model.logout();
+                        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
                       },
                     );
                   }
@@ -159,7 +160,7 @@ class UserListWidget extends StatelessWidget {
       child: SliverList(
         delegate: SliverChildListDelegate([
           /// for normal user to signup as partner
-          if(usertype == 0)
+          if(usertype != 1)
           ListTile(
             title: Text('Register as our partner'),
             onTap: () async {
@@ -342,3 +343,4 @@ class SettingThemeWidget extends StatelessWidget {
     );
   }
 }
+

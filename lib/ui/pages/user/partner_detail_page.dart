@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
@@ -23,7 +22,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage>{
 
   bool followButtonClicked = false;
   // Following state controll
-  bool isFollowIn1 = false;
+  // bool isFollowIn1 = false;
   PartnerUser partnerData;
   // int detailPageId;
   final RefreshController _refreshController = RefreshController();

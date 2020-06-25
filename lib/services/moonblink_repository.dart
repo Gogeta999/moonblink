@@ -117,6 +117,17 @@ class MoonBlinkRepository {
       // print(response);
       return response.data;
     }
+  
+  //Register as Partner
+  static Future registAsPartner() async {
+    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+    var usertoken = StorageManager.sharedPreferences.getString(token);  
+    var response = await DioUtils().post(Api.RegisterAsPartner + '$userid/register', queryParameters: {
+                'Authorization': 'Bearer' + usertoken.toString()
+    });
+    return response.data;
+  }
+
   // Story
   static Future postStory(
     File story

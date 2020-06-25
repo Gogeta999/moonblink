@@ -14,4 +14,16 @@ class RegisterModel extends ViewStateModel {
       return false;
     }
   }
+
+  Future<bool> registerAsPartner() async {
+    setBusy();
+    try{
+      await MoonBlinkRepository.registAsPartner();
+      setIdle();
+      return true;
+    } catch(e,s){
+      setError(e, s);
+      return false;
+    }
+  }
 }

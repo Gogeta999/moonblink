@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
+import 'package:moonblink/ui/pages/main/stories/camera_page.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
+import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
@@ -18,10 +20,12 @@ import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 class RouteName{
   static const String splash = 'splash';
   static const String main = '/';
+  static const String userStatus = '/userStatus';
   static const String comment = 'comment';
   static const String network = 'network';
   // static const String error = 'error';
   static const String imagepick = 'imagepick';
+  static const String camerPage = 'cameraPage';
   static const String takepicture = 'takepicture';
   static const String story = 'story';
   static const String setprofile = 'setprofile';
@@ -46,6 +50,8 @@ class Router {
         return NoAnimRouteBuilder(SplashPage());
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage());
+      case RouteName.userStatus:
+        return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
       case RouteName.comment:
@@ -54,6 +60,8 @@ class Router {
       //   return CupertinoPageRoute(builder: (_) => SearchPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
+      case RouteName.camerPage:
+        return CupertinoPageRoute(builder: (_) => CameraPage());
       // case RouteName.story:
       //   return CupertinoPageRoute(builder: (_) => StoriesPage());
       case RouteName.login:

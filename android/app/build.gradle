@@ -50,7 +50,7 @@ android {
         // change minSdkVersion to from 16 to 18 to support webrtc and 21 for background fetch
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.moonuniverse.moonblink"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

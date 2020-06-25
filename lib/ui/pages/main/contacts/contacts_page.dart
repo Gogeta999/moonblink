@@ -3,6 +3,7 @@ import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/azlist.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/contact_model.dart';
 
@@ -65,20 +66,24 @@ class _ContactsPageState extends State<ContactsPage> {
       body: ProviderWidget<ContactModel> (
         model: ContactModel(),
         onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          
-          print(model.list.length);
+        builder: (context, contactModel, child) {
+          if(contactModel.isError && contactModel.list.isEmpty){
+            return ViewStateErrorWidget(
+              error: contactModel.viewStateError, 
+              onPressed: contactModel.initData);
+          }
+          print(contactModel.list.length);
           // print(model.list);
-          for (var i = 0; i < model.list.length; i++) {
-            contact = model.list[i];
+          for (var i = 0; i < contactModel.list.length; i++) {
+            contact = contactModel.list[i];
             contacts.add(contact);
           }
-          print(contacts);
+          // print(contacts);
           contacts
             .sort((a, b) => a.contactUser.contactUserName.toLowerCase().compareTo(b.contactUser.contactUserName.toLowerCase()));
             filterList();
    
-          print(strList.length);
+          // print(strList.length);
             return AlphabetListScrollView(
               strList: strList,
               highlightTextStyle: TextStyle(

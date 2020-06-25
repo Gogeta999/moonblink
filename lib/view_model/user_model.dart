@@ -17,13 +17,6 @@ class UserModel extends ChangeNotifier {
 
   bool get hasUser => user != null;
   
-  // UserModel(){
-  //   var userMap = StorageManager.localStorage.getItem(mUser);
-  //   _user = userMap != null ? User.fromJsonMap(userMap) : null; 
-  // }
-
-  //TODO: Below one is the way i think should work
-
   UserModel({@required this.globalFavouriteStateModel}) {
     var userMap = StorageManager.localStorage.getItem(mUser);
     _user = userMap != null ? User.fromJsonMap(userMap) : null;

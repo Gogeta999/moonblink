@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/indicator/activity_indicator.dart';
 import 'package:moonblink/base_widget/notifications.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
@@ -61,7 +63,7 @@ class PageState extends State<NetWorkPage> {
                   Radius.circular(15)
                 )
               ),
-              child: isOpen ? Text('True Show This') : Text('False show this'),
+              child: isOpen ? spinkit : Text('False show this'),
             ),
             onTap: isOpen ? (){
               print('True to False');
@@ -121,6 +123,10 @@ class PageState extends State<NetWorkPage> {
     );
   }
 
+  static const spinkit = SpinKitRotatingCircle(
+  color: Colors.white,
+  size: 50.0,
+  );
   doRequest() async {
     var pageNum = 1;
     var response =

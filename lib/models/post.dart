@@ -4,6 +4,7 @@ class Post {
   String creatdAt;
   int reactionCount;
   String profileImage;
+  int isReacted;
 
   static Post fromMap(Map<String, dynamic> map){
     if (map == null) return null;
@@ -13,6 +14,7 @@ class Post {
     postBean.creatdAt = map['created_at'];
     postBean.reactionCount = map['reaction_count'];
     postBean.profileImage = map['profile_image'];
+    postBean.isReacted = map['is_reacted'];
     return postBean;
   }
 
@@ -21,6 +23,7 @@ class Post {
     'name': userName,
     'created_at': creatdAt,
     'reaction_count': reactionCount,
-    'profile_image': profileImage
+    'profile_image': profileImage,
+    'is_reacted': isReacted
   };
 }

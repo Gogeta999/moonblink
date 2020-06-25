@@ -7,7 +7,7 @@ class SkeletonList extends StatelessWidget {
   final IndexedWidgetBuilder builder;
 
   SkeletonList(
-      {this.length: 6, //一般屏幕长度够用
+      {this.length: 6, //enough for most screen
       this.padding = const EdgeInsets.all(7),
       @required this.builder});
 
@@ -36,7 +36,7 @@ class SkeletonList extends StatelessWidget {
   }
 }
 
-/// 骨架屏 元素背景 ->形状及颜色
+/// Skeleton Screen Background ->style and color
 class SkeletonDecoration extends BoxDecoration {
   SkeletonDecoration({
     isCircle: false,
