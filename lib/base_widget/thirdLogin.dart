@@ -14,13 +14,18 @@ class _ThirdLoginState extends State<ThirdLogin> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
   final FacebookLogin _facebookLogin = FacebookLogin();
 
+  GoogleSignInAccount _currentUser;
+  bool _isLoggedInFb;
+
   Future<void> _signInWithGoogle() async {
     GoogleSignInAccount googleUser;
     GoogleSignInAuthentication googleAuth;
     try {
       googleUser = await _googleSignIn.signIn();
       googleAuth = await googleUser.authentication;
-
+      setState(() {
+        _currentUser = googleUser;
+      });
       print('accessToken: ${googleAuth.accessToken}');
       print('idToken: ${googleAuth.idToken}');
       print('displayName: ${googleUser.displayName}');
@@ -34,6 +39,9 @@ class _ThirdLoginState extends State<ThirdLogin> {
 
   Future<void> _signOutGoogle() async {
     await _googleSignIn.signOut();
+    setState(() {
+      _currentUser = null;
+    });
     print("Sign Out");
   }
 
@@ -43,6 +51,9 @@ class _ThirdLoginState extends State<ThirdLogin> {
       case FacebookLoginStatus.loggedIn:
         print('case loggedIn');
         final FacebookAccessToken accessToken = result.accessToken;
+        setState(() {
+          _isLoggedInFb = true;
+        });
         print('token: ${accessToken.token}');
         print('declinedPermission: ${accessToken.declinedPermissions}');
         print('expires: ${accessToken.expires}');
@@ -65,17 +76,20 @@ class _ThirdLoginState extends State<ThirdLogin> {
 
   Future<void> _signOutFacebook() async {
     await _facebookLogin.logOut();
+    setState(() {
+      _isLoggedInFb = false;
+    });
     print('log out');
   }
 
   @override
   void initState() {
     super.initState();
-    /*_googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
       });
-    });*/
+    });
     try {
       _googleSignIn.signInSilently();
     } catch (error) {
@@ -145,7 +159,7 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 future: _googleSignIn.isSignedIn(),
                 builder: (context, snapshot) {
                   return RaisedButton(
-                    onPressed: snapshot.data ? _signOutGoogle : null,
+                    onPressed: snapshot.data && _currentUser != null ? _signOutGoogle : null,
                     child: Text('Log Out Google'),
                     disabledColor: Colors.grey[600],
                   );
@@ -155,7 +169,7 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 future: _facebookLogin.isLoggedIn,
                 builder: (context, snapshot) {
                   return RaisedButton(
-                    onPressed: snapshot.data ? _signOutFacebook : null,
+                    onPressed: snapshot.data && _isLoggedInFb ? _signOutFacebook : null,
                     child: Text('Log Out Facebook'),
                     disabledColor: Colors.grey[600],
                   );
