@@ -86,6 +86,7 @@ class _ThirdLoginState extends State<ThirdLogin> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+
     ///no provider widget is wrapped
     //var model = Provider.of<LoginModel>(context);
     return Column(
@@ -140,27 +141,25 @@ class _ThirdLoginState extends State<ThirdLogin> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             FutureBuilder<bool>(
-              initialData: false,
-              future: _googleSignIn.isSignedIn(),
-              builder: (context, snapshot) {
-                return RaisedButton(
-                  onPressed: snapshot.data ? _signOutGoogle : null,
-                  child: Text('Log Out Google'),
-                  disabledColor: Colors.grey[600],
-                );
-              }
-            ),
+                initialData: false,
+                future: _googleSignIn.isSignedIn(),
+                builder: (context, snapshot) {
+                  return RaisedButton(
+                    onPressed: snapshot.data ? _signOutGoogle : null,
+                    child: Text('Log Out Google'),
+                    disabledColor: Colors.grey[600],
+                  );
+                }),
             FutureBuilder<bool>(
-              initialData: false,
-              future: _facebookLogin.isLoggedIn,
-              builder: (context, snapshot) {
-                return RaisedButton(
-                  onPressed: snapshot.data ? _signOutFacebook : null,
-                  child: Text('Log Out Facebook'),
-                  disabledColor: Colors.grey[600],
-                );
-              }
-            ),
+                initialData: false,
+                future: _facebookLogin.isLoggedIn,
+                builder: (context, snapshot) {
+                  return RaisedButton(
+                    onPressed: snapshot.data ? _signOutFacebook : null,
+                    child: Text('Log Out Facebook'),
+                    disabledColor: Colors.grey[600],
+                  );
+                }),
           ],
         )
       ],
