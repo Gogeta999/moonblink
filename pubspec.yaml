@@ -23,7 +23,6 @@ dependencies:
   #Base UI
   shimmer: ^1.1.1
   datetime_picker_formfield: ^1.0.0
-  like_button: ^1.0.1
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.0
   flutter_spinkit: ^4.1.2+1 
