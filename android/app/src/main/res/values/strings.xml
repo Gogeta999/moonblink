@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Moon blink</string>
+    <string name="facebook_app_id">3314918385186932</string>
+    <string name="fb_login_protocol_scheme">fb3314918385186932</string>
+</resources>
