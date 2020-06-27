@@ -61,13 +61,13 @@ class DioUtils {
         if (usertoken == null){
         var appVersion = await PlatformUtils.getAppVersion();
         requestions.headers['app-version'] = appVersion;
-        debugPrint('Base Requestions--->' + requestions.headers.toString());
+        // debugPrint('Base Requestions--->' + requestions.headers.toString());
         return requestions;
         } else {
         var appVersion = await PlatformUtils.getAppVersion();
         requestions.headers['app-version'] = appVersion;
         requestions.headers['Authorization'] = 'Bearer' + usertoken;
-        debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
+        // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
         return requestions;
         }
       }, onResponse: (Response response) {
@@ -84,17 +84,18 @@ class DioUtils {
    * get request
    */
   get(url, {queryParameters, options}) async {
-    var appVersion = await PlatformUtils.getAppVersion();
-    var appPlatorm = Platform.operatingSystem;
-    print('get---request---path---API--->$url\n requestParameter---is--->$queryParameters');
-    print('Test ah--platform is- {$appVersion}-verions-in-$appPlatorm----');
+    // var appVersion = await PlatformUtils.getAppVersion();
+    // var appPlatorm = Platform.operatingSystem;
+    print('get---request---from--->$url');
+    // print('requestParameter---is--->$queryParameters');
+    // print('Test ah--platform is- {$appVersion}-verions-in-$appPlatorm----');
     Response response;    
     response = await _dio.get(url, queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     // debugPrint('debug code error--- ${respData.data}');
     if (respData.success ){
       response.data = respData.data;
-      debugPrint('get---request--from---API---->\nresult----->${response.data} \n ResponseMessgae--from-API->${respData.getMessage}');
+      debugPrint('result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
       return response;
     } else {
       // or if(usertoken = null)
@@ -106,7 +107,7 @@ class DioUtils {
       else if(respData.errorCode == 123){
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));  
-        debugPrint('api-post-->result---<${response.data}');
+        debugPrint('result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         // debugPrint('assetJson-->result---<$emptyData');
         // return emptyData;
         return response;

@@ -45,6 +45,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
   //File formatting
+  
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
@@ -143,9 +144,9 @@ void initState() {
   //Conversation List
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {  
+      builder: (context, child, model) {
       List<Message> messages = model.getMessagesForChatID(id);
-      print(messages);
+      // model.message(id);
       //List<Files> files = model.getAttachForChatID(id);
         return Container(
           height: MediaQuery.of(context).size.height * 0.75,

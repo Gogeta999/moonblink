@@ -37,11 +37,7 @@ with AutomaticKeepAliveClientMixin{
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  void initState() { 
-    super.initState();
-    ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
-  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);

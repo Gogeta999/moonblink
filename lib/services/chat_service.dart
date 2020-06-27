@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 
 import 'package:flutter_webrtc/webrtc.dart';
+import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/generated/intl/messages_en.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/callmodel.dart';
+import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -21,6 +26,7 @@ class ChatModel extends Model{
   // List<User> friendList = List<User>();
   List<Message> messages = List<Message>();
   List<Files> files = List<Files>();
+  List<Chatlist> chatlist = List<Chatlist>();
   
   final Map<String, dynamic> _constraints = {
     'mandatory': {
@@ -40,11 +46,9 @@ class ChatModel extends Model{
 
   //connect
   void init() {
-    // print (Callmade);      
     socket.emit('connect-user', usertoken);
     socket.connect();
     print("Connected Socket");
-    print(socket.id);
     //callmade
     socket.on('call-made', (jsondata) {
       //print(jsondata);
@@ -66,26 +70,44 @@ class ChatModel extends Model{
     }
     );
     //receiver peer
-    socket.on("receiver-peer", (data) =>
+    socket.on("receiver-peer", (data) {
+      print(data);
       messages.add(Message(
          data[0],  data[1], data[2], data[3]
-      ))
+      ));
+    }
     );
 
     //receiver-attach
-    socket.on("receiver-attach", (data) => 
+    socket.on("receiver-attach", (data){ 
       files.add(Files(
         data[0],data[1],data[2],data[3]
-      ))
+      ));
+    }
     );
+    // ///[Conversation List]
+    // socket.on("conversation", (data){
+    //   print(data);
+    //   var response = ResponseData.fromJson(data);
+    //   print(response.data.runtimeType);
+    //   for (var i = 0; i < response.data.length; i++) {
+    //     var res = Map<String, dynamic>.from(response.data["$i"]);
+    //     Chatlist chat = Chatlist.fromMap(res);
+    //     chatlist.add(chat);
+    //   }
+    //   return chatlist;
+    // });
     //connect user list
     socket.on('connected-users', (jsonData) {
       print(jsonData);
-      print(jsonData.length);
       var connetion_id = jsonData.map((m) => m['connection_id']);
       var user_id = jsonData.map((m) => m['user_id']);
+      print(connetion_id);
+      print(user_id);
     });
   }
+
+  ///[Chating Text]
   //send messages
   void sendMessage(String text, int receiverChatID) {
     messages.add(Message( text, userid, receiverChatID, now));
@@ -94,13 +116,17 @@ class ChatModel extends Model{
     print("Message : $text");
     print("Time : $now");
     socket.emit(
-      'chat-message',    
-        [
-         text,
-         userid,
-         receiverChatID,
-         now
-        ]
+      'chat-message',
+      [{
+        "message": text,
+        "sender_id": userid,
+        "receiver_id": receiverChatID
+      }]    
+        // jsonEncode({
+        //   'sender_id': userid,
+        //   'receiver_id': receiverChatID,
+        //   'message' : text
+        // })
     );
     notifyListeners();
   }
@@ -113,26 +139,33 @@ class ChatModel extends Model{
     print("File : ${file.toString()}");
     socket.emit(
       'upload-attach',
-      [
-        name,
-        file,
-        userid,
-        receiverChatID
-      ]
+      [{
+        "name": name,
+        "data": file,
+        "sender_id": userid,
+        "receiver_id": receiverChatID
+      }]
     );
     notifyListeners();
   }
-  //call make 
-  // void callmade() {
-  //   socket.on('call-made', (jsondata) {
-  //     // Map<String, dynamic> data = json.decode(jsondata);
-  //     int callerid = jsondata.map((m) => m['from']);
-  //     String offer = jsondata.map((m) => m['offer']);
-  //     String media = jsondata.map((m)=> m['media']);
-  //     Callmade(offer, callerid, media);
-  //   }
-  //   );
-  // }
+  ///[For Conversation List]
+  List<Chatlist> conversationlist() {
+    print("Getting Chat List");
+    socket.on("conversation", (data){
+      print(data);
+      chatlist.clear();
+      var response = ResponseData.fromJson(data);
+      for (var i = 0; i < response.data.length; i++) {
+        var res = Map<String, dynamic>.from(response.data["$i"]);
+        Chatlist chat = Chatlist.fromMap(res);
+        chatlist.add(chat);
+      }
+      notifyListeners(); 
+      }
+    ); 
+    return chatlist;  
+  }
+
   //Answermade
   // void answermade() {
   //   socket.on('answer-made', (jsondata) {
@@ -143,6 +176,8 @@ class ChatModel extends Model{
   //   }
   //   );
   // }
+
+  ///[For Voice Call]
   //Create Answer
   void createOffer(int receiverChatID, RTCPeerConnection pc, String media) async {
     try {
@@ -178,12 +213,12 @@ class ChatModel extends Model{
   //end call
   void bye() {
     socket.emit("bye", [
-
     ]);
   }
-
+  ///[get Messages]
   List<Message> getMessagesForChatID(int id) {
     print("Get Messages");
+    // message(id);
     return messages
       .where((msg) => msg.senderID == id || msg.receiverID == id)
       .toList();     
@@ -194,4 +229,18 @@ class ChatModel extends Model{
     .where((file) => file.senderID == id || file.receiverID == id)
     .toList();
   }
+  
+  // Future message(int id) async{
+  //   Lastmsg msgs;
+  //   var usertoken = StorageManager.sharedPreferences.getString(token);
+  //   var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
+  //     'Authorization': 'Bearer' + usertoken.toString()
+  //   });
+  //   List<Lastmsg> data = response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
+  //   for (var i = 0; i < data.length; i++) {
+  //     msgs = data[i];
+  //     messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
+  //   }
+  //   return messages;   
+  // }
 }

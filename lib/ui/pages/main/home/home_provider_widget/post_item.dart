@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:like_button/like_button.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 
-class PostItemWidget extends StatelessWidget {
+class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index})
     : super(key: ValueKey(posts.userID));
   
   final int index;
   final Post posts;
+
+  @override
+  _PostItemWidgetState createState() => _PostItemWidgetState();
+}
+
+class _PostItemWidgetState extends State<PostItemWidget> {
+  bool isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,7 +33,7 @@ class PostItemWidget extends StatelessWidget {
                 Material(
                   child: InkWell(
                     onTap: (){
-                      int detailPageId = posts.userID;
+                      int detailPageId = widget.posts.userID;
                       Navigator.push(
                         context, MaterialPageRoute(builder: (context) => PartnerDetailPage(detailPageId)));
                     },
@@ -38,7 +45,7 @@ class PostItemWidget extends StatelessWidget {
                           height: 40.0, 
                           ),
                           Padding(padding: EdgeInsets.only(left:10.0),
-                          child: Text(posts.userName + ' id'+posts.userID.toString()),
+                          child: Text(widget.posts.userName + ' id'+widget.posts.userID.toString()),
                           ),
                         ],
                       ),
@@ -47,7 +54,7 @@ class PostItemWidget extends StatelessWidget {
                 ),
                 /// [User_Image]
                 Container(
-                  child: Image.network(posts.profileImage, fit: BoxFit.contain,height: 200,),
+                  child: Image.network(widget.posts.profileImage, fit: BoxFit.contain,height: 200,),
                   // child: Text(posts.profileImage.toString()),
                   // child: Image.asset(ImageHelper.wrapAssetsImage('images.jpg'), fit: BoxFit.cover,
                   // ),
@@ -63,70 +70,58 @@ class PostItemWidget extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                        if(posts.isReacted == 0)
+                        if(widget.posts.isReacted == 0)
                         /// [like animation while user unreacted] 
-                        LikeButton(
-                          circleColor: CircleColor(
-                            start: Colors.pink, end: Colors.pinkAccent),
-                          bubblesColor: BubblesColor(
-                            dotPrimaryColor: Colors.pink,
-                            dotSecondaryColor: Colors.pinkAccent,
-                          ),
-                          likeBuilder: (bool isLiked){
-                            return Icon(
-                              FontAwesomeIcons.heart,
-                              color: isLiked ? Colors.pinkAccent : Colors.black,
-                              // size: 28, 
-                            );
-                          },
-                          likeCount: posts.reactionCount,
-                          countBuilder: (int count, bool isLiked, String text) {
-                          var color = isLiked ? Colors.pinkAccent : Colors.grey;
-                          Widget result;
-                          if (count == 0) {
-                          result = Text(''
-                            // "love",
-                            // style: TextStyle(color: color),
-                          );
-                          } else
-                          result = Text(
-                            text,
-                            style: TextStyle(color: color),
-                          );
-                        return result;},
+                        InkWell(
+                          child: 
+                            Icon( isLiked? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart, 
+                            color: isLiked ?  Colors.red[400] : Theme.of(context).iconTheme.color),
+                          onTap: isLiked? () async {
+                            print('React to React so bool is' + isLiked.toString() + 'to 0');
+                            var response = await DioUtils().post(Api.PARTNERDETAIL+ widget.posts.userID.toString() + '/react', queryParameters: {
+                              'react': '0'
+                            });
+                            print(response);
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          } : () async {
+                            print('UnReact to React so bool is' + isLiked.toString() + 'to 1');
+                            var response = await DioUtils().post(Api.PARTNERDETAIL+ widget.posts.userID.toString() + '/react', queryParameters: {
+                              'react': '1'
+                            });
+                            print(response);
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          }
                         ),
 
-                        if(posts.isReacted == 1)
+                        if(widget.posts.isReacted == 1)
                         /// [like animation while user was reacted] 
-                        LikeButton(
-                          circleColor: CircleColor(
-                            start: Colors.pink, end: Colors.pinkAccent),
-                          bubblesColor: BubblesColor(
-                            dotPrimaryColor: Colors.pink,
-                            dotSecondaryColor: Colors.pinkAccent,
-                          ),
-                          likeBuilder: (bool isLiked){
-                            return Icon(
-                              FontAwesomeIcons.heart,
-                              color: isLiked ? Colors.black : Colors.pinkAccent,
-                              // size: 28, 
-                            );
-                          },
-                          likeCount: posts.reactionCount,
-                          countBuilder: (int count, bool isLiked, String text) {
-                          var color = isLiked ? Colors.grey : Colors.pinkAccent;
-                          Widget result;
-                          if (count == 0) {
-                          result = Text(''
-                            // "love",
-                            // style: TextStyle(color: color),
-                          );
-                          } else
-                          result = Text(
-                            text,
-                            style: TextStyle(color: color),
-                          );
-                        return result;},
+                        InkWell(
+                          child: 
+                            Icon( isLiked? FontAwesomeIcons.heart : FontAwesomeIcons.solidHeart, 
+                            color: isLiked ?  Theme.of(context).iconTheme.color : Colors.red[400]),
+                          onTap: isLiked? () async {
+                            print('Unreact to React so bool is' + isLiked.toString() + 'to 1');
+                            var response = await DioUtils().post(Api.PARTNERDETAIL+ widget.posts.userID.toString() + '/react', queryParameters: {
+                              'react': '1'
+                            });
+                            print(response);
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          } : () async {
+                            print('React to unreact so bool is' + isLiked.toString() + 'to 0');
+                            var response = await DioUtils().post(Api.PARTNERDETAIL+ widget.posts.userID.toString() + '/react', queryParameters: {
+                              'react': '0'
+                            });
+                            print(response);
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          }
                         ),
 
                         // IconButton(
@@ -154,7 +149,7 @@ class PostItemWidget extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 2.0),
                         alignment: Alignment.bottomLeft,
-                        child: Text(posts.creatdAt, style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                        child: Text(widget.posts.creatdAt, style: TextStyle(color: Colors.grey, fontSize: 12.0),
                         ),
                       )
                     ],
@@ -171,10 +166,5 @@ class PostItemWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  //TODO:
-  likePostRequest() async{
-    await DioUtils().post(Api.PARTNERDETAIL+ posts.userID.toString() + '/react');
   }
 }
