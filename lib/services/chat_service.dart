@@ -27,6 +27,7 @@ class ChatModel extends Model{
   List<Message> messages = List<Message>();
   List<Files> files = List<Files>();
   List<Chatlist> chatlist = List<Chatlist>();
+  bool gotten = false;
   
   final Map<String, dynamic> _constraints = {
     'mandatory': {
@@ -72,16 +73,19 @@ class ChatModel extends Model{
     //receiver peer
     socket.on("receiver-peer", (data) {
       print(data);
+      Map<String, dynamic> msgs = json.decode(data);
       messages.add(Message(
-         data[0],  data[1], data[2], data[3]
+         msgs['message'], msgs['sender_id'], msgs['receiver_id'], msgs['time']
       ));
+      notifyListeners();
     }
     );
-
+    ///[NEED TO FIX]
     //receiver-attach
     socket.on("receiver-attach", (data){ 
+      Map<String, dynamic> fs = json.decode(data);
       files.add(Files(
-        data[0],data[1],data[2],data[3]
+        fs["0"],data["1"],data["2"],data["3"]
       ));
     }
     );
@@ -148,6 +152,7 @@ class ChatModel extends Model{
     );
     notifyListeners();
   }
+
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
@@ -156,8 +161,7 @@ class ChatModel extends Model{
       chatlist.clear();
       var response = ResponseData.fromJson(data);
       for (var i = 0; i < response.data.length; i++) {
-        var res = Map<String, dynamic>.from(response.data["$i"]);
-        Chatlist chat = Chatlist.fromMap(res);
+        Chatlist chat = Chatlist.fromMap(response.data[i]);
         chatlist.add(chat);
       }
       notifyListeners(); 
@@ -218,7 +222,8 @@ class ChatModel extends Model{
   ///[get Messages]
   List<Message> getMessagesForChatID(int id) {
     print("Get Messages");
-    // message(id);
+    message(id);
+    print(messages);
     return messages
       .where((msg) => msg.senderID == id || msg.receiverID == id)
       .toList();     
@@ -230,17 +235,17 @@ class ChatModel extends Model{
     .toList();
   }
   
-  // Future message(int id) async{
-  //   Lastmsg msgs;
-  //   var usertoken = StorageManager.sharedPreferences.getString(token);
-  //   var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
-  //     'Authorization': 'Bearer' + usertoken.toString()
-  //   });
-  //   List<Lastmsg> data = response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
-  //   for (var i = 0; i < data.length; i++) {
-  //     msgs = data[i];
-  //     messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
-  //   }
-  //   return messages;   
-  // }
+  Future message(int id) async{
+    Lastmsg msgs;
+    var usertoken = StorageManager.sharedPreferences.getString(token);
+    var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
+      'Authorization': 'Bearer' + usertoken.toString()
+    });
+    List<Lastmsg> data = response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
+    for (var i = 0; i < data.length; i++) {
+      msgs = data[i];
+      messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
+    }
+    return messages;
+  }
 }
