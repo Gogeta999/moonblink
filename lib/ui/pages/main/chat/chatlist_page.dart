@@ -1,59 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
-import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
-import 'package:moonblink/view_model/conversation_model.dart';
-import 'package:provider/provider.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../../../../services/chat_service.dart';
+
+String usertoken= StorageManager.sharedPreferences.getString(token);
 class ChatListPage extends StatefulWidget {
   @override
   _ChatListPageState createState() => _ChatListPageState();
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  // list() {
-  //   List<Chatlist> users = [];
-  //   users.addAll(users);
-  //   users.forEach((user) {
-  //   items.add(
-  //     Column(
-  //       children: <Widget>[ 
-  //         ListTile(
-  //           leading: CircleAvatar(
-  //             backgroundImage: NetworkImage(user.profile),
-  //           ),
-  //           title: Text(user.name),
-  //           ///[Last Message]
-  //           //subtitle: Text(user.contactUserProfile),
-  //           onTap: () {
-  //             Navigator.push(
-  //               context, MaterialPageRoute(builder: (context) => ChatBoxPage(user.id)));
-  //           },         
-  //         ),
-  //         Divider(color: Colors.grey,)
-  //         ]
-  //         )
-  //     );   
-  //     }
-  //   );
-  // }
+  List<Chatlist> chatlist;
+  @override
+  void initState() { 
+    super.initState();
+    if (usertoken != null){
+      ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: AppbarLogo()),
-      body: ProviderWidget<ConversationModel> (
-        model: ConversationModel(),
-        onModelReady: (model) => model.initData(),
-        builder: (context,model,child) {
-          print(model.list.length);
+      body: ScopedModelDescendant<ChatModel> (
+        builder: (context,child,model) {
+          // chatlist.clear();
+          chatlist = model.conversationlist();
+          print(chatlist.length);
+          // return Container(child: Text("getting chat"),);
           return CustomScrollView(
             slivers: <Widget> [
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                 (context, index){
-                  Chatlist chat = model.list[index];
+                  Chatlist chat = chatlist[index];
                     return Column(
                       children: <Widget>[ 
                       ListTile(
@@ -64,6 +50,7 @@ class _ChatListPageState extends State<ChatListPage> {
                         title: Text(chat.name),
                         ///[Last Message]
                         subtitle: Text(chat.lastmsg),
+                        trailing: Text(chat.updated),
                         onTap: () {
                           Navigator.push(
                             context, MaterialPageRoute(builder: (context) => ChatBoxPage(chat.userid)));
@@ -73,7 +60,7 @@ class _ChatListPageState extends State<ChatListPage> {
                       ]
                     );
                   },
-                childCount: model.list?.length ?? 0,
+                childCount: chatlist?.length ?? 0,
                 ),
               )
             ]

@@ -41,10 +41,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   PartnerUser partnerdata;
   Uint8List bytes;
   RTCPeerConnection pc;
+  List<Message> messages;
   // ByteData _byteData;
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
   //File formatting
+  
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
@@ -143,14 +145,12 @@ void initState() {
   //Conversation List
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {  
-      List<Message> messages = model.getMessagesForChatID(id);
-      print(messages);
+      builder: (context, child, model) {
+      messages = model.getMessagesForChatID(id); 
       //List<Files> files = model.getAttachForChatID(id);
         return Container(
           height: MediaQuery.of(context).size.height * 0.75,
           child: ListView.builder(
-            reverse: true,
             itemCount: messages.length,
             itemBuilder: (BuildContext context, int index) {
               return buildSingleMessage(messages[index]);

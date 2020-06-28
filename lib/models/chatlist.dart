@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Chatlist{
  int id;
  String name;
