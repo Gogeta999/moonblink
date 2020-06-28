@@ -47,7 +47,8 @@ dependencies:
   # azlistview: ^0.1.2
   lpinyin: ^1.0.9
   # signIn helper
-  # google_sign_in: ^4.5.1 #need to add things for ios
+  google_sign_in: ^4.5.1 #complete for both
+  flutter_facebook_login: ^3.0.0 #complete for both
 
 
   common_utils: ^1.2.1
