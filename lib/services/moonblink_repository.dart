@@ -88,10 +88,27 @@ class MoonBlinkRepository {
             .toList();
   }
   /// [login api]
+  //login with email & password
   static Future login(String mail, String password) async{
     var response = await DioUtils().post(Api.LOGIN, queryParameters: {
       'mail': mail,
       'password': password,
+    });
+    return User.fromJsonMap(response.data);
+  }
+
+  static Future loginWithFacebook(String token) async {
+    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
+      'access_token': token,
+      'type': 'facebook'
+    });
+    return User.fromJsonMap(response.data);
+  }
+
+  static Future loginWithGoogle(String token) async {
+    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
+      'access_token': token,
+      'type': 'google'
     });
     return User.fromJsonMap(response.data);
   }

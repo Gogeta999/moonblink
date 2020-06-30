@@ -42,6 +42,7 @@ with AutomaticKeepAliveClientMixin{
   Widget build(BuildContext context) {
     super.build(context);
     return ProviderWidget2<HomeModel, TapToTopModel>(
+      autoDispose: false,
       model1: HomeModel(),
       model2: TapToTopModel(PrimaryScrollController.of(context),
           height: kToolbarHeight),
