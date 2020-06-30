@@ -125,7 +125,7 @@ void initState() {
               if (bytes ==null) {
                 if(textEditingController.text != ''){
                 model.sendMessage(
-                textEditingController.text, id);
+                textEditingController.text, id, messages);
                 textEditingController.text = '';
                 }
               }

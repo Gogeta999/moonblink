@@ -27,7 +27,6 @@ class ChatModel extends Model{
   List<Message> messages = List<Message>();
   List<Files> files = List<Files>();
   List<Chatlist> chatlist = List<Chatlist>();
-  bool gotten = false;
   
   final Map<String, dynamic> _constraints = {
     'mandatory': {
@@ -113,8 +112,8 @@ class ChatModel extends Model{
 
   ///[Chating Text]
   //send messages
-  void sendMessage(String text, int receiverChatID) {
-    messages.add(Message( text, userid, receiverChatID, now));
+  void sendMessage(String text, int receiverChatID, List<Message> msg) {
+    msg.insert(0, Message( text, userid, receiverChatID, now));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Message : $text");
@@ -235,22 +234,5 @@ class ChatModel extends Model{
     return files
     .where((file) => file.senderID == id || file.receiverID == id)
     .toList();
-  }
-  // List<Message> getmessge(int id) {
-  //   message(id);
-  //   return messages;
-  // }
-  Future message(int id) async{
-    Lastmsg msgs;
-    var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
-      'Authorization': 'Bearer' + usertoken.toString()
-    });
-    List<Lastmsg> data = response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
-    for (var i = 0; i < data.length; i++) {
-      msgs = data[i];
-      messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
-    }
-    return messages;
   }
 }
