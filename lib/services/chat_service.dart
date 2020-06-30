@@ -222,8 +222,10 @@ class ChatModel extends Model{
   ///[get Messages]
   List<Message> getMessagesForChatID(int id) {
     print("Get Messages");
-    message(id);
+    // message(id);
+
     print(messages);
+    // notifyListeners();
     return messages
       .where((msg) => msg.senderID == id || msg.receiverID == id)
       .toList();     
@@ -234,7 +236,10 @@ class ChatModel extends Model{
     .where((file) => file.senderID == id || file.receiverID == id)
     .toList();
   }
-  
+  // List<Message> getmessge(int id) {
+  //   message(id);
+  //   return messages;
+  // }
   Future message(int id) async{
     Lastmsg msgs;
     var usertoken = StorageManager.sharedPreferences.getString(token);

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
@@ -24,12 +23,12 @@ class MoonBlinkRepository {
       .toList();
   }
   // get Messages
-  static Future message(int id, int pageNum) async{
+  static Future message(int id) async{
     var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page= $pageNum', queryParameters: {
+    var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
       'Authorization': 'Bearer' + usertoken.toString()
     });
-    return response.data['data'].map<Message>((item) => Message);
+    return response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
   }
   // Homepage's story data
   static Future fetchStory() async {
@@ -50,16 +49,6 @@ class MoonBlinkRepository {
     });
     return response.data.map<Contact>((item) => 
     Contact.fromJson(item)).toList();
-  }
-
-  ///[Conversation List]
-  static Future conversationlist() async {
-    var userToken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().get(Api.ConversationList, queryParameters: {
-      'Authorization' : 'Bearer' + userToken.toString()
-    });
-    return response.data['data'].map<Chatlist>((item) => Chatlist.fromMap(item))
-    .toList();
   }
 
   /// [Normal user to fetch partner user page data]

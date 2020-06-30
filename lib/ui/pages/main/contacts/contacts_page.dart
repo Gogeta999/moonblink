@@ -4,8 +4,10 @@ import 'package:moonblink/base_widget/azlist.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/contact_model.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _ContactsPageState extends State<ContactsPage> {
   List<String> strList = [];
   Contact contact;
   List<Widget> items = [];
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
   TextEditingController searchController = TextEditingController();
 
   ///[Tiles]
@@ -82,7 +85,6 @@ class _ContactsPageState extends State<ContactsPage> {
           contacts
             .sort((a, b) => a.contactUser.contactUserName.toLowerCase().compareTo(b.contactUser.contactUserName.toLowerCase()));
             filterList();
-   
           // print(strList.length);
             return AlphabetListScrollView(
               strList: strList,
