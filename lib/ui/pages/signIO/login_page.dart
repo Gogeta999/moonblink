@@ -85,16 +85,14 @@ class _LoginPageState extends State<LoginPage> {
                                 focusNode: _pwdFocus,
                                 textInputAction: TextInputAction.done,
                               ),
-                              SizedBox(height: 30,),
                               LoginButton(_mailController, _passwordController),
-                              SizedBox(height: 30,),
+                              ThirdLogin(),
                               SignUpWidget(_mailController),
-
                             ],
                           ),
                         ),
                       ),
-                      ThirdLogin()
+
                     ],
                   ),
                 )
@@ -131,7 +129,7 @@ class LoginButton extends StatelessWidget {
             var formState = Form.of(context);
             if (formState.validate()){
               model
-                  .login(mailController.text, passwordController.text)
+                  .login(mailController.text, passwordController.text, 'email')
                   .then((value){
                     if(value){
                       Navigator.of(context).pop(true);

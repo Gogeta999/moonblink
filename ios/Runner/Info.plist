@@ -55,14 +55,14 @@
     	<dict>
           <key>CFBundleURLSchemes</key>
           <array>
-            <string>fb3314918385186932</string>
+            <string>fb217943735875327</string>
           </array>
           </dict>
         </array>
         <key>FacebookAppID</key>
-        <string>3314918385186932</string>
+        <string>217943735875327</string>
         <key>FacebookDisplayName</key>
-        <string>Moon Blink</string>
+        <string>moonblink</string>
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>fbapi</string>
