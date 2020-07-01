@@ -11,6 +11,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/call/callerscreen.dart';
+import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
   Map<String, dynamic> _iceServers = {
@@ -41,7 +42,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   PartnerUser partnerdata;
   Uint8List bytes;
   RTCPeerConnection pc;
-  List<Message> messages;
+  List<Message> messages = [];
+  String now = DateTime.now().toString();
   // ByteData _byteData;
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
@@ -123,7 +125,7 @@ void initState() {
               if (bytes ==null) {
                 if(textEditingController.text != ''){
                 model.sendMessage(
-                textEditingController.text, id);
+                textEditingController.text, id, messages);
                 textEditingController.text = '';
                 }
               }
@@ -146,11 +148,12 @@ void initState() {
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(
       builder: (context, child, model) {
-      messages = model.getMessagesForChatID(id); 
-      //List<Files> files = model.getAttachForChatID(id);
+        // List<Message> msgs = model.getMessagesForChatID(id);
+        // messages.addAll(msgs);
         return Container(
           height: MediaQuery.of(context).size.height * 0.75,
           child: ListView.builder(
+            reverse: true,
             itemCount: messages.length,
             itemBuilder: (BuildContext context, int index) {
               return buildSingleMessage(messages[index]);
@@ -181,28 +184,39 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<PartnerDetailModel>(
-      model: PartnerDetailModel(partnerdata, widget.detailPageId),
-      onModelReady: (partnerModel){
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel >(
+      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+      model2: GetmsgModel(widget.detailPageId),
+      onModelReady: (partnerModel, msgModel){
         partnerModel.initData();
+        msgModel.initData();
       },
-    builder: (context,model, child) {
-        if (model.isBusy) {
+    builder: (context,partnermodel, msgmodel, child) {
+        if (partnermodel.isBusy && msgmodel.isBusy) {
           return ViewStateBusyWidget();
         } 
-        else if (model.isError ) {
-          return ViewStateErrorWidget(error: model.viewStateError, onPressed: model.initData);
+        else if (partnermodel.isError && msgmodel.isError ) {
+          return ViewStateErrorWidget(error: partnermodel.viewStateError, onPressed:(){ 
+            partnermodel.initData();
+            msgmodel.initData();
+          });
         }
+        print(msgmodel.list.length);
+      for (var i = 0; i < msgmodel.list.length; i++) {
+        Lastmsg msgs = msgmodel.list[i];
+        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
+      }
+      print(messages);
       return Scaffold(
-        floatingActionButton: buildfloat(model.partnerData.partnerId),
+        floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
       appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
       AppBar(
-        title: Text(model.partnerData.partnerName),
+        title: Text(partnermodel.partnerData.partnerName),
       ),
       body: ListView(
         children: <Widget>[
-          buildChatList(model.partnerData.partnerId),
-          buildmessage(model.partnerData.partnerId),
+          buildChatList(partnermodel.partnerData.partnerId),
+          buildmessage(partnermodel.partnerData.partnerId),
         ],
       ),
       );
