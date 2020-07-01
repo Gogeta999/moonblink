@@ -18,13 +18,14 @@ import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+
 class UserStatusPage extends StatefulWidget {
   @override
   _UserStatusPageState createState() => _UserStatusPageState();
 }
 
-class _UserStatusPageState extends State<UserStatusPage> 
-    with AutomaticKeepAliveClientMixin{
+class _UserStatusPageState extends State<UserStatusPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -36,33 +37,35 @@ class _UserStatusPageState extends State<UserStatusPage>
         slivers: <Widget>[
           SliverAppBar(
             actions: <Widget>[
-            ProviderWidget<LoginModel>(
-                model: LoginModel(Provider.of(context)),
-                builder: (context, model, child) {
-                  if (model.isBusy) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: AppBarIndicator(),
-                    );
-                  }
-                  if (model.userModel.hasUser) {
-                    return IconButton(
-                      tooltip: S.of(context).logout,
-                      icon: Icon(FontAwesomeIcons.signOutAlt),
-                      onPressed: () {
-                        model.logout();
-                        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
-                      },
-                    );
-                  }
-                  return SizedBox.shrink();
-                })
-          ],
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          expandedHeight: 200 + MediaQuery.of(context).padding.top,
-          flexibleSpace: UserHeaderWidget(),
-          pinned: false,
-        ),
+              ProviderWidget<LoginModel>(
+                  model: LoginModel(Provider.of(context)),
+                  builder: (context, model, child) {
+                    if (model.isBusy) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 15.0),
+                        child: AppBarIndicator(),
+                      );
+                    }
+                    if (model.userModel.hasUser) {
+                      return IconButton(
+                        tooltip: S.of(context).logout,
+                        icon: Icon(FontAwesomeIcons.signOutAlt),
+                        onPressed: () {
+                          model.logout().then((value) => value
+                              ? Navigator.of(context).pushNamedAndRemoveUntil(
+                                  RouteName.splash, (route) => false)
+                              : null);
+                        },
+                      );
+                    }
+                    return SizedBox.shrink();
+                  })
+            ],
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            expandedHeight: 200 + MediaQuery.of(context).padding.top,
+            flexibleSpace: UserHeaderWidget(),
+            pinned: false,
+          ),
           UserListWidget(),
         ],
       ),
@@ -70,13 +73,12 @@ class _UserStatusPageState extends State<UserStatusPage>
   }
 }
 
-
 class UserHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      // in widget
-      clipper: BottomClipper(),
+        // in widget
+        clipper: BottomClipper(),
         child: Container(
             color: Theme.of(context).primaryColor.withAlpha(200),
             padding: EdgeInsets.only(top: 10),
@@ -92,10 +94,12 @@ class UserHeaderWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           InkWell(
-                            onTap: (){
-                              int usertype = StorageManager.sharedPreferences.getInt(mUserType);
-                              if(usertype == 1){
-                                Navigator.of(context).pushNamed(RouteName.partnerOwnProfile);
+                            onTap: () {
+                              int usertype = StorageManager.sharedPreferences
+                                  .getInt(mUserType);
+                              if (usertype == 1) {
+                                Navigator.of(context)
+                                    .pushNamed(RouteName.partnerOwnProfile);
                               }
                               // else if(model.user == null){
                               //   Navigator.of(context).pushNamed(RouteName.login);
@@ -105,7 +109,8 @@ class UserHeaderWidget extends StatelessWidget {
                               tag: 'loginLogo',
                               child: ClipOval(
                                 child: Image.asset(
-                                    ImageHelper.wrapAssetsLogo('MoonBlink_logo.png'),
+                                    ImageHelper.wrapAssetsLogo(
+                                        'MoonBlink_logo.png'),
                                     fit: BoxFit.cover,
                                     width: 110,
                                     height: 110,
@@ -138,47 +143,44 @@ class UserHeaderWidget extends StatelessWidget {
                               height: 10,
                             ),
                             // if (model.hasUser) UserCoin()
-                          ]
-                          )
-                        ]
-                      )
-                    )
-                  )
-                )
-    );
+                          ])
+                        ])))));
   }
 }
-
 
 class UserListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var iconColor = Theme.of(context).accentColor;
-    int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+    // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return ListTileTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 30),
       child: SliverList(
         delegate: SliverChildListDelegate([
           /// for normal user to signup as partner
-          if(usertype != 1)
-          ListTile(
-            title: Text('Register as our partner'),
-            onTap: () async {
-              CupertinoActivityIndicator();
-              var userid = StorageManager.sharedPreferences.getInt(mUserId);
-              var usertoken = StorageManager.sharedPreferences.getString(token);     
-              var response = await DioUtils().post(Api.RegisterAsPartner + '$userid/register', queryParameters: {
-                'Authorization': 'Bearer' + usertoken.toString()
-              });
-              print(response);
-             Navigator.of(context).pushNamed(RouteName.registerAsPartner);
-            },
-            leading: Icon(
-              FontAwesomeIcons.user,
-              color: iconColor,
-            ),
-            trailing: Icon(Icons.chevron_right),
-          ),
+          // if (usertype != 1)
+          //   ListTile(
+          //     title: Text('Register as our partner'),
+          //     onTap: () async {
+          //       CupertinoActivityIndicator();
+          //       var userid = StorageManager.sharedPreferences.getInt(mUserId);
+          //       var usertoken =
+          //           StorageManager.sharedPreferences.getString(token);
+          //       var response = await DioUtils().post(
+          //           Api.RegisterAsPartner + '$userid/register',
+          //           queryParameters: {
+          //             'Authorization': 'Bearer' + usertoken.toString()
+          //           });
+          //       print(response);
+          //       Navigator.of(context).pushNamed(RouteName.registerAsPartner);
+          //     },
+          //     leading: Icon(
+          //       FontAwesomeIcons.user,
+          //       color: iconColor,
+          //     ),
+          //     trailing: Icon(Icons.chevron_right),
+          //   ),
+
           /// wallet
           ListTile(
             leading: Icon(
@@ -186,16 +188,17 @@ class UserListWidget extends StatelessWidget {
               color: iconColor,
             ),
             title: Text('Wallet'),
-            onTap: (){
+            onTap: () {
               Navigator.of(context).pushNamed(RouteName.wallet);
             },
             trailing: Icon(Icons.chevron_right),
           ),
+
           /// for chat their favorites
           ListTile(
             title: Text(S.of(context).favorites),
-            onTap: () {     
-             Navigator.of(context).pushNamed(RouteName.network);
+            onTap: () {
+              Navigator.of(context).pushNamed(RouteName.network);
             },
             leading: Icon(
               FontAwesomeIcons.solidHeart,
@@ -218,24 +221,24 @@ class UserListWidget extends StatelessWidget {
               ),
             ),
             trailing: CupertinoSwitch(
-              value:  Theme.of(context).brightness == Brightness.dark,
-             onChanged: (value){
-              switchDarkMode(context);
-            }),
-
+                value: Theme.of(context).brightness == Brightness.dark,
+                onChanged: (value) {
+                  switchDarkMode(context);
+                }),
           ),
           SettingThemeWidget(),
-          
+
           ListTile(
             title: Text(S.of(context).settings),
             onTap: () {
-              Navigator.push(context, 
-              MaterialPageRoute(builder: (context){ 
-                return SettingsPage();
-              },
-              ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SettingsPage();
+                  },
+                ),
               );
-
             },
             leading: Icon(
               FontAwesomeIcons.cog,
@@ -267,16 +270,13 @@ class UserListWidget extends StatelessWidget {
       ),
     );
   }
-  void switchDarkMode(BuildContext context){
-      if(MediaQuery.of(context).platformBrightness == 
-      Brightness.dark){
-        
-      } else{
-        Provider.of<ThemeModel>(context, listen: false).switchTheme(
-          userDarkMode: 
-          Theme.of(context).brightness == Brightness.light);
-      }
-  
+
+  void switchDarkMode(BuildContext context) {
+    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+    } else {
+      Provider.of<ThemeModel>(context, listen: false).switchTheme(
+          userDarkMode: Theme.of(context).brightness == Brightness.light);
+    }
   }
 }
 
@@ -303,7 +303,8 @@ class SettingThemeWidget extends StatelessWidget {
                   color: color,
                   child: InkWell(
                     onTap: () {
-                      var model = Provider.of<ThemeModel>(context,listen: false);
+                      var model =
+                          Provider.of<ThemeModel>(context, listen: false);
                       // var brightness = Theme.of(context).brightness;
                       model.switchTheme(color: color);
                     },
@@ -317,7 +318,7 @@ class SettingThemeWidget extends StatelessWidget {
               Material(
                 child: InkWell(
                   onTap: () {
-                    var model = Provider.of<ThemeModel>(context,listen: false);
+                    var model = Provider.of<ThemeModel>(context, listen: false);
                     var brightness = Theme.of(context).brightness;
                     model.switchRandomTheme(brightness: brightness);
                   },
@@ -343,4 +344,3 @@ class SettingThemeWidget extends StatelessWidget {
     );
   }
 }
-
