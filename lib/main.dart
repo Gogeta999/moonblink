@@ -8,6 +8,7 @@ import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
