@@ -49,7 +49,8 @@ dependencies:
   # signIn helper
   google_sign_in: ^4.5.1 #complete for both
   flutter_facebook_login: ^3.0.0 #complete for both
-
+  # FCM
+  firebase_messaging: ^6.0.16
 
   common_utils: ^1.2.1
 

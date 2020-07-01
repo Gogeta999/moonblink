@@ -17,10 +17,14 @@
          FlutterApplication and put your custom class here. -->
          <!-- tools:replace="android:label" here is for background fetch -->
          <!-- android:name="io.flutter.app.FlutterApplication" to android:name=".Application" for background fetch -->
+    <!--android:name="io.flutter.app.FlutterApplication"-->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".Application"
         android:label="moonblink"
         android:icon="@mipmap/moonblink">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_icon" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -48,6 +52,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
