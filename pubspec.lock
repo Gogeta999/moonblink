@@ -129,6 +129,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.16"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -296,13 +303,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.11.4"
-  lpinyin:
-    dependency: "direct main"
-    description:
-      name: lpinyin
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.9"
   matcher:
     dependency: transitive
     description:

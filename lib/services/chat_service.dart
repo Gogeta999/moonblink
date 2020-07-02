@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-
 import 'package:flutter_webrtc/webrtc.dart';
-import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/generated/intl/messages_en.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/callmodel.dart';
 import 'package:moonblink/models/chatlist.dart';
@@ -14,21 +11,20 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class ChatModel extends Model{
+class ChatModel extends Model {
   String now = DateTime.now().toString();
   IO.Socket socket = IO.io('http://54.179.117.84', <String, dynamic>{
-   'transports': ['websocket'],
-   'autoConnect': false,
+    'transports': ['websocket'],
+    'autoConnect': false,
   });
 
-  String usertoken= StorageManager.sharedPreferences.getString(token);
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   int userid = StorageManager.sharedPreferences.getInt(mUserId);
   // List<User> friendList = List<User>();
   List<Message> messages = List<Message>();
   List<Files> files = List<Files>();
   List<Chatlist> chatlist = List<Chatlist>();
-  bool gotten = false;
-  
+
   final Map<String, dynamic> _constraints = {
     'mandatory': {
       'OfferToReceiveAudio': true,
@@ -68,27 +64,22 @@ class ChatModel extends Model{
       int callerid = jsondata.map((m) => m['from']);
       String answer = jsondata.map((m) => m['answer']);
       print("Answer");
-    }
-    );
+    });
     //receiver peer
     socket.on("receiver-peer", (data) {
       print(data);
       Map<String, dynamic> msgs = json.decode(data);
-      messages.add(Message(
-         msgs['message'], msgs['sender_id'], msgs['receiver_id'], msgs['time']
-      ));
+      messages.add(Message(msgs['message'], msgs['sender_id'],
+          msgs['receiver_id'], msgs['time']));
       notifyListeners();
-    }
-    );
+    });
+
     ///[NEED TO FIX]
     //receiver-attach
-    socket.on("receiver-attach", (data){ 
+    socket.on("receiver-attach", (data) {
       Map<String, dynamic> fs = json.decode(data);
-      files.add(Files(
-        fs["0"],data["1"],data["2"],data["3"]
-      ));
-    }
-    );
+      files.add(Files(fs["0"], data["1"], data["2"], data["3"]));
+    });
     // ///[Conversation List]
     // socket.on("conversation", (data){
     //   print(data);
@@ -113,50 +104,46 @@ class ChatModel extends Model{
 
   ///[Chating Text]
   //send messages
-  void sendMessage(String text, int receiverChatID) {
-    messages.add(Message( text, userid, receiverChatID, now));
+  void sendMessage(String text, int receiverChatID, List<Message> msg) {
+    msg.insert(0, Message(text, userid, receiverChatID, now));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Message : $text");
     print("Time : $now");
-    socket.emit(
-      'chat-message',
-      [{
-        "message": text,
-        "sender_id": userid,
-        "receiver_id": receiverChatID
-      }]    
+    socket.emit('chat-message', [
+      {"message": text, "sender_id": userid, "receiver_id": receiverChatID}
+    ]
         // jsonEncode({
         //   'sender_id': userid,
         //   'receiver_id': receiverChatID,
         //   'message' : text
         // })
-    );
+        );
     notifyListeners();
   }
+
   //file message
-  void filemessage(String name,Uint8List file, int receiverChatID){
+  void filemessage(String name, Uint8List file, int receiverChatID) {
     files.add(Files(name, file, userid, receiverChatID));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
     print("File : ${file.toString()}");
-    socket.emit(
-      'upload-attach',
-      [{
+    socket.emit('upload-attach', [
+      {
         "name": name,
         "data": file,
         "sender_id": userid,
         "receiver_id": receiverChatID
-      }]
-    );
+      }
+    ]);
     notifyListeners();
   }
 
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
-    socket.on("conversation", (data){
+    socket.on("conversation", (data) {
       print(data);
       chatlist.clear();
       var response = ResponseData.fromJson(data);
@@ -164,10 +151,9 @@ class ChatModel extends Model{
         Chatlist chat = Chatlist.fromMap(response.data[i]);
         chatlist.add(chat);
       }
-      notifyListeners(); 
-      }
-    ); 
-    return chatlist;  
+      notifyListeners();
+    });
+    return chatlist;
   }
 
   //Answermade
@@ -183,10 +169,11 @@ class ChatModel extends Model{
 
   ///[For Voice Call]
   //Create Answer
-  void createOffer(int receiverChatID, RTCPeerConnection pc, String media) async {
+  void createOffer(
+      int receiverChatID, RTCPeerConnection pc, String media) async {
     try {
       RTCSessionDescription s = await pc
-      .createOffer(media == 'data' ? _dc_constraints : _constraints);
+          .createOffer(media == 'data' ? _dc_constraints : _constraints);
       pc.setLocalDescription(s);
       socket.emit('call-user', [
         userid,
@@ -199,6 +186,7 @@ class ChatModel extends Model{
       print(e.toString());
     }
   }
+
   //To answer call
   void createAnswer(int receiverChatID, RTCPeerConnection pc, media) async {
     try {
@@ -214,38 +202,28 @@ class ChatModel extends Model{
       print(e.toString());
     }
   }
+
   //end call
   void bye() {
-    socket.emit("bye", [
-    ]);
+    socket.emit("bye", []);
   }
+
   ///[get Messages]
   List<Message> getMessagesForChatID(int id) {
     print("Get Messages");
-    message(id);
+    // message(id);
+
     print(messages);
+    // notifyListeners();
     return messages
-      .where((msg) => msg.senderID == id || msg.receiverID == id)
-      .toList();     
+        .where((msg) => msg.senderID == id || msg.receiverID == id)
+        .toList();
   }
+
   List<Files> getAttachForChatID(int id) {
     print("Get Attachment");
     return files
-    .where((file) => file.senderID == id || file.receiverID == id)
-    .toList();
-  }
-  
-  Future message(int id) async{
-    Lastmsg msgs;
-    var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await  DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1', queryParameters: {
-      'Authorization': 'Bearer' + usertoken.toString()
-    });
-    List<Lastmsg> data = response.data['data'].map<Lastmsg>((item) => Lastmsg.fromMap(item)).toList();
-    for (var i = 0; i < data.length; i++) {
-      msgs = data[i];
-      messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now));
-    }
-    return messages;
+        .where((file) => file.senderID == id || file.receiverID == id)
+        .toList();
   }
 }

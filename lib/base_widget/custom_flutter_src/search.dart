@@ -433,7 +433,7 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
 //    );
 
     Widget body;
-    switch(widget.delegate._currentBody) {
+    switch (widget.delegate._currentBody) {
       case _SearchBody.suggestions:
         body = KeyedSubtree(
           key: const ValueKey<_SearchBody>(_SearchBody.suggestions),
@@ -458,13 +458,10 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
         routeName = searchFieldLabel;
         break;
       case TargetPlatform.linux:
-        // TODO: Handle this case.
         break;
       case TargetPlatform.macOS:
-        // TODO: Handle this case.
         break;
       case TargetPlatform.windows:
-        // TODO: Handle this case.
         break;
     }
 
@@ -483,7 +480,7 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
           title: TextField(
             controller: widget.delegate._queryTextController,
             focusNode: focusNode,
-            style: theme.textTheme.title,
+            style: theme.textTheme.headline6,
             textInputAction: TextInputAction.search,
             onSubmitted: (String _) {
               widget.delegate.showResults(context);

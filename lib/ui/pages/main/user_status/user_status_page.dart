@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/api/moonblink_api.dart';
-import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/BottomClipper.dart';
 import 'package:moonblink/base_widget/indicator/appbar_indicator.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -16,7 +14,6 @@ import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class UserStatusPage extends StatefulWidget {
@@ -137,7 +134,7 @@ class UserHeaderWidget extends StatelessWidget {
                                     : S.of(context).toSignIn,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .title
+                                    .headline6
                                     .apply(color: Colors.white.withAlpha(200))),
                             SizedBox(
                               height: 10,

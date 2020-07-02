@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 
-
 import 'view_state.dart';
 
 /// Loading widgets
@@ -36,7 +35,7 @@ class ViewStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var titleStyle =
-        Theme.of(context).textTheme.subhead.copyWith(color: Colors.grey);
+        Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.grey);
     var messageStyle = titleStyle.copyWith(
         color: titleStyle.color.withOpacity(0.7), fontSize: 14);
     return Column(
@@ -139,7 +138,6 @@ class ViewStateErrorWidget extends StatelessWidget {
   }
 }
 
-
 /// Page is empty
 class ViewStateEmptyWidget extends StatelessWidget {
   final String message;
@@ -168,7 +166,6 @@ class ViewStateEmptyWidget extends StatelessWidget {
   }
 }
 
-
 /// Still not login
 class ViewStateUnAuthWidget extends StatelessWidget {
   final String message;
@@ -178,10 +175,10 @@ class ViewStateUnAuthWidget extends StatelessWidget {
 
   const ViewStateUnAuthWidget(
       {Key key,
-        this.image,
-        this.message,
-        this.buttonText,
-        @required this.onPressed})
+      this.image,
+      this.message,
+      this.buttonText,
+      @required this.onPressed})
       : super(key: key);
 
   @override

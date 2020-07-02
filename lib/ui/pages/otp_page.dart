@@ -34,8 +34,8 @@ class _OtpPageState extends State<OtpPage> {
   final _mailController = TextEditingController();
   final _otpCodeController = TextEditingController();
 
-  @override 
-  void dispose(){
+  @override
+  void dispose() {
     _mailController.dispose();
     _otpCodeController.dispose();
     super.dispose();
@@ -64,20 +64,24 @@ class _OtpPageState extends State<OtpPage> {
                         height: 3,
                       ),
                       Container(
-                        child: Text('Welcome to be our partner',
-                        style: Theme.of(context).accentTextTheme
-                                .title.copyWith(wordSpacing: 6),),
+                        child: Text(
+                          'Welcome to be our partner',
+                          style: Theme.of(context)
+                              .accentTextTheme
+                              .headline6
+                              .copyWith(wordSpacing: 6),
+                        ),
                       ),
                       LoginFormContainer(
                         child: ProviderWidget<LoginModel>(
                           model: LoginModel(Provider.of(context)),
-                          builder: (context, model, child){
+                          builder: (context, model, child) {
                             return Form(
                               onWillPop: () async {
                                 return !model.isBusy;
                               },
                               child: child,
-                              );
+                            );
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,13 +96,12 @@ class _OtpPageState extends State<OtpPage> {
                                 label: 'Please enter OTP Code',
                                 icon: FontAwesomeIcons.phone,
                                 controller: _otpCodeController,
-                                
-                                ),
+                              ),
                               // SizedBox( height: 30),
                               SignAsPartnerButton(_otpCodeController),
                             ],
                           ),
-                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -120,25 +123,28 @@ class SignAsPartnerButton extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     return LoginButtonWidget(
       child: model.isBusy
-        ? ButtonProgressIndicator()
-        : Text('Sign As Partner', 
-          style: Theme.of(context).accentTextTheme
-                  .title.copyWith(wordSpacing: 6),),
+          ? ButtonProgressIndicator()
+          : Text(
+              'Sign As Partner',
+              style: Theme.of(context)
+                  .accentTextTheme
+                  .title
+                  .copyWith(wordSpacing: 6),
+            ),
       onPressed: model.isBusy
-          ? null : () {
-          var formState = Form.of(context);
-          if (formState.validate()){
-            model
-                .signAsPartner(otpController.text)
-                .then((value) {
+          ? null
+          : () {
+              var formState = Form.of(context);
+              if (formState.validate()) {
+                model.signAsPartner(otpController.text).then((value) {
                   if (value) {
                     Navigator.of(context).pushNamed(RouteName.setprofile);
                   } else {
                     model.showErrorMessage(context);
                   }
                 });
-          }
-          },
+              }
+            },
     );
   }
 }
@@ -151,26 +157,28 @@ class GetOtpWordsWidget extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     return Container(
       child: model.isBusy
-      ? ButtonProgressIndicator()
-      : InkWell(
-        child: Text("Get Otp Code",
-                    style: TextStyle(color: Colors.blue),),
-        onTap: model.isBusy
-        ? null : (){
-          var formState = Form.of(context);
-          if (formState.validate()){
-            model
-                .getOtpCodeAgain(mailController.text)
-                .then((value) {
-                  if (value) {
-                    print('success');
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
-          }
-        }       
-        ),
-      );
+          ? ButtonProgressIndicator()
+          : InkWell(
+              child: Text(
+                "Get Otp Code",
+                style: TextStyle(color: Colors.blue),
+              ),
+              onTap: model.isBusy
+                  ? null
+                  : () {
+                      var formState = Form.of(context);
+                      if (formState.validate()) {
+                        model
+                            .getOtpCodeAgain(mailController.text)
+                            .then((value) {
+                          if (value) {
+                            print('success');
+                          } else {
+                            model.showErrorMessage(context);
+                          }
+                        });
+                      }
+                    }),
+    );
   }
 }

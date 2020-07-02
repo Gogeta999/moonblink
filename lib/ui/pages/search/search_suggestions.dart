@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 class SearchSuggestions<T> extends StatelessWidget {
   final SearchDelegate<T> delegate;
   SearchSuggestions({@required this.delegate});
-  
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints){
+      builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -29,7 +29,7 @@ class SearchSuggestions<T> extends StatelessWidget {
                 child: MultiProvider(
                   providers: [
                     Provider<TextStyle>.value(
-                        value: Theme.of(context).textTheme.body1),
+                        value: Theme.of(context).textTheme.bodyText2),
                     ProxyProvider<TextStyle, Color>(
                       update: (context, textStyle, _) =>
                           textStyle.color.withOpacity(0.5),
@@ -55,7 +55,7 @@ class SearchSuggestions<T> extends StatelessWidget {
 class SearchHistoriesWidget<T> extends StatefulWidget {
   final SearchDelegate<T> delegate;
   SearchHistoriesWidget({@required this.delegate, key}) : super(key: key);
-  
+
   @override
   _SearchHistoriesWidgetState createState() => _SearchHistoriesWidgetState();
 }
@@ -64,7 +64,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      Provider.of<SearchHistoryModel>(context,listen: false).initData();
+      Provider.of<SearchHistoryModel>(context, listen: false).initData();
     });
     super.initState();
   }

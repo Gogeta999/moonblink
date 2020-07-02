@@ -15,7 +15,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-String usertoken= StorageManager.sharedPreferences.getString(token);
+String usertoken = StorageManager.sharedPreferences.getString(token);
 StreamController<String> streamController = new StreamController();
 
 main() async {
@@ -23,8 +23,8 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
   if (usertoken != null) {
-  // BackgroundFetch.registerHeadlessTask(chatinits);
-  
+    // BackgroundFetch.registerHeadlessTask(chatinits);
+
   }
   runApp(MyApp());
   // android's statusbar will change with theme
@@ -33,36 +33,33 @@ main() async {
       statusBarBrightness: Brightness.light));
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OKToast(
-        child: MultiProvider(
+      child: MultiProvider(
         providers: providers,
-        child: Consumer2<ThemeModel , LocaleModel>(
-          builder: (context, themeModel, localModel, child){
-        return ScopedModel(
-        model: ChatModel(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: themeModel.themeData(),
-          darkTheme: themeModel.themeData(platformDarkMode: true),
-          locale: localModel.locale,
-          localizationsDelegates: const[
-            S.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          onGenerateRoute: Router.generateRoute,
-          initialRoute: RouteName.splash,
-        ));
-          }
-          ),
-        ),
+        child: Consumer2<ThemeModel, LocaleModel>(
+            builder: (context, themeModel, localModel, child) {
+          return ScopedModel(
+              model: ChatModel(),
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: themeModel.themeData(),
+                darkTheme: themeModel.themeData(platformDarkMode: true),
+                locale: localModel.locale,
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                onGenerateRoute: Router.generateRoute,
+                initialRoute: RouteName.splash,
+              ));
+        }),
+      ),
     );
   }
 }
-

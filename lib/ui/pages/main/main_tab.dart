@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
@@ -7,7 +8,6 @@ import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
-
 
 List<Widget> pages = <Widget>[
   HomePage(),
@@ -23,24 +23,25 @@ class MainTabPage extends StatefulWidget {
   _MainTabPageState createState() => _MainTabPageState();
 }
 
-
-class _MainTabPageState extends State<MainTabPage> with SingleTickerProviderStateMixin {
+class _MainTabPageState extends State<MainTabPage>
+    with SingleTickerProviderStateMixin {
   var _pageController = PageController();
+  // ignore: unused_field
   int _selectedIndex = 0;
   DateTime _lastPressed;
-  
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
           if (_lastPressed == null ||
-              DateTime.now().difference(_lastPressed) > Duration(seconds: 1)){
-              // if time is separate more than 1 second, then continue to count
-              _lastPressed = DateTime.now();
-              return false;
-              }
-            return true;
+              DateTime.now().difference(_lastPressed) > Duration(seconds: 1)) {
+            // if time is separate more than 1 second, then continue to count
+            _lastPressed = DateTime.now();
+            return false;
+          }
+          return true;
         },
         child: PageView.builder(
           // this ctx is also context, but avoid to affect from PageState's context
@@ -48,45 +49,41 @@ class _MainTabPageState extends State<MainTabPage> with SingleTickerProviderStat
           itemCount: pages.length,
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (index){
+          onPageChanged: (index) {
             setState(() {
               _selectedIndex = index;
             });
           },
-          ),
         ),
+      ),
       bottomNavigationBar: FancyBottomNavigation(
         tabs: [
-            TabData(iconData: FontAwesomeIcons.home, title: "Home"),
-            TabData(iconData: FontAwesomeIcons.commentAlt, title:"Chat"),
-            TabData(iconData: FontAwesomeIcons.calendar, title:"Contacts"),
-            TabData(iconData: FontAwesomeIcons.userAlt, title: "User" ),
+          TabData(
+              iconData: FontAwesomeIcons.home, title: S.of(context).tabHome),
+          TabData(
+              iconData: FontAwesomeIcons.commentAlt,
+              title: S.of(context).tabChat),
+          TabData(
+              iconData: FontAwesomeIcons.calendar,
+              title: S.of(context).tabContacts),
+          TabData(
+              iconData: FontAwesomeIcons.userAlt, title: S.of(context).tabUser),
         ],
-          circleHeight: 50,
-          arcHeight: 55,
-          arcWidth: 80,
-          barHeight: 55,
-          circleColor: Theme.of(context).accentColor,
-          onTabChangedListener: (index){
-            _pageController.jumpToPage(index);
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-        ),
+        circleHeight: 50,
+        arcHeight: 55,
+        arcWidth: 80,
+        barHeight: 55,
+        circleColor: Theme.of(context).accentColor,
+        onTabChangedListener: (index) {
+          _pageController.jumpToPage(index);
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
-
 }
-
-
-
-
-
-
-
-
-
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -141,14 +138,13 @@ class _MainTabPageState extends State<MainTabPage> with SingleTickerProviderStat
 //             });
 //           },
 
-
 //           tabs: [
 //             // TabData(iconData: Icons.home, title: "Home"),
 //             TabData(iconData: FontAwesomeIcons.home, title: "Home"),
 //             TabData(iconData: Icons.chat_bubble, title:"Chat"),
 //             TabData(iconData: Icons.perm_contact_calendar, title:"Contacts"),
 //             TabData(iconData: Icons.person, title: "User" ),
-            
+
 //           ],
 //         ),
 //       ),
@@ -175,4 +171,4 @@ class _MainTabPageState extends State<MainTabPage> with SingleTickerProviderStat
 //         ) ??
 //         false;
 //   }
-// } 
+// }

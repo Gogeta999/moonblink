@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';

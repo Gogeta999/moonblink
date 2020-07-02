@@ -12,30 +12,33 @@ class BookingButton extends StatefulWidget {
 
 class _BookingButtonState extends State<BookingButton> {
   ///[Partner idle]
-  void available(context, model) {
+  void available(context, BookingModel model) {
     showDialog(
         context: context,
         builder: (context) {
-          return new AlertDialog(
-            title: new Text("Book To Play With"),
+          return AlertDialog(
+            title: Text("Book To Play With"),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
-            actions: [
+            actions: <Widget>[
+              BookingDropDown(),
+              SizedBox(width: 60.0),
               FlatButton(
-                  child: new Text("Cancel"),
+                  child: Text("Cancel"),
                   onPressed: () {
                     Navigator.pop(context, 'Cancel');
                   }),
               FlatButton(
-                  child: new Text("Book"),
+                  child: Text("Book"),
                   onPressed: () {
                     if (model.isError) {
                       print("Error Booking");
                     } else {
-                      model.booking();
-                      waitingoffer(context, model);
+                      model.booking().then((value) =>
+                          value ? waitingoffer(context, model) : null);
                     }
+                    //api call
                   })
             ],
           );
@@ -82,7 +85,7 @@ class _BookingButtonState extends State<BookingButton> {
               FlatButton(
                   child: new Text("Cancel"),
                   onPressed: () {
-                    model.isEmpty;
+                    model.isEmpty();
                     Navigator.pop(context, 'Cancel');
                   })
             ],
@@ -108,8 +111,44 @@ class _BookingButtonState extends State<BookingButton> {
             ///[to add pop up]
             onPressed: () {
               available(context, model);
+              //testDialog(context, model);
             },
           );
         });
+  }
+}
+
+class BookingDropDown extends StatefulWidget {
+  @override
+  _BookingDropDownState createState() => _BookingDropDownState();
+}
+
+class _BookingDropDownState extends State<BookingDropDown> {
+  String dropdownValue = 'ML';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: dropdownValue,
+        isExpanded: false,
+        isDense: true,
+        iconEnabledColor: Theme.of(context).primaryColor,
+        style: TextStyle(color: Theme.of(context).primaryColor),
+        onChanged: (String newValue) {
+          setState(() {
+            dropdownValue = newValue;
+          });
+        },
+        elevation: 0,
+        items: <String>['ML', 'PUBG', 'CoC']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value, softWrap: false),
+          );
+        }).toList(),
+      ),
+    );
   }
 }

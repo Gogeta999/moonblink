@@ -104,7 +104,6 @@ class DioUtils {
       if (respData.errorCode == 101) {
         throw const UnAuthorizedException();
       }
-      // TODO:
       //Tell toe hlaing win to solve normal user problem
       else if (respData.errorCode == 123) {
         response.data = respData.data;

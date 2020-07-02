@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/base_widget/indicator/activity_indicator.dart';
 import 'package:moonblink/base_widget/notifications.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
-
 
 class NetWorkPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => PageState();
 }
+
 class PageState extends State<NetWorkPage> {
   bool isOpen = false;
   var resultJson = "";
@@ -48,34 +46,36 @@ class PageState extends State<NetWorkPage> {
           MaterialButton(
             color: Colors.red,
             child: Text("test Notifications"),
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LocalNotifications()));
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LocalNotifications()));
             },
-            ),
+          ),
           GestureDetector(
             child: Container(
               alignment: Alignment.center,
               height: 35,
               width: 80,
               decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15)
-                )
-              ),
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
               child: isOpen ? spinkit : Text('False show this'),
             ),
-            onTap: isOpen ? (){
-              print('True to False');
-              setState(() {
-                isOpen = !isOpen;
-              });
-            } : (){
-              print('False to True');
-              setState(() {
-                isOpen = !isOpen;
-              });
-            },
+            onTap: isOpen
+                ? () {
+                    print('True to False');
+                    setState(() {
+                      isOpen = !isOpen;
+                    });
+                  }
+                : () {
+                    print('False to True');
+                    setState(() {
+                      isOpen = !isOpen;
+                    });
+                  },
           ),
           SizedBox(
             height: 30,
@@ -86,26 +86,23 @@ class PageState extends State<NetWorkPage> {
               height: 35,
               width: 80,
               decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15)
-                )
-              ),
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
               child: Text('TestButton'),
             ),
             onTap: () async {
               String key = 'abc';
               var userId = StorageManager.sharedPreferences.getInt(mUserId);
-              var response =
-              await DioUtils().get(Api.SimpleRequestApi + '$userId/search', queryParameters: {
-                'name': key,
-              });
+              var response = await DioUtils().get(
+                  Api.SimpleRequestApi + '$userId/search',
+                  queryParameters: {
+                    'name': key,
+                  });
               return response.data['data']
-            .map<User>((item) => User.fromJsonMap(item))
-            .toList();
+                  .map<User>((item) => User.fromJsonMap(item))
+                  .toList();
             },
           ),
-
           Expanded(
               child: Padding(
             padding: EdgeInsets.all(20),
@@ -124,25 +121,25 @@ class PageState extends State<NetWorkPage> {
   }
 
   static const spinkit = SpinKitRotatingCircle(
-  color: Colors.white,
-  size: 50.0,
+    color: Colors.white,
+    size: 50.0,
   );
   doRequest() async {
     var pageNum = 1;
-    var response =
-        await DioUtils().get(Api.HOME + '$pageNum');
-    this.setState((){
+    var response = await DioUtils().get(Api.HOME + '$pageNum');
+    this.setState(() {
       resultJson = response.toString();
     });
   }
+
   loginPost() async {
     // var response = await DioUtils().post(Api.LOGIN, queryParameters: {
     //   "mail": "moon1@gmail.com",
     //   "password": "1234",
     //  });
 
-    var response = await DioUtils().post(Api.PARTNERDETAIL+ '16'+ '/follow');
-    this.setState((){
+    var response = await DioUtils().post(Api.PARTNERDETAIL + '16' + '/follow');
+    this.setState(() {
       resultJson = response.toString();
     });
   }

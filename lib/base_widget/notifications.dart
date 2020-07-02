@@ -21,7 +21,7 @@ class _LocalNotificationsState extends State<LocalNotifications> {
   }
 
   void initializing() async {
-    androidInitializationSettings = AndroidInitializationSettings('mipmap/ic_launcher');
+    androidInitializationSettings = AndroidInitializationSettings('@mipmap/moonblink');
     iosInitializationSettings = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     initializationSettings = InitializationSettings(
@@ -57,7 +57,7 @@ class _LocalNotificationsState extends State<LocalNotifications> {
   }
 
   Future<void> notificationAfterSec() async {
-    var timeDelayed = DateTime.now().add(Duration(seconds: 5));
+    var timeDelayed = DateTime.now().add(Duration(seconds: 1));
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
             'second channel ID', 'second Channel title', 'second channel body',

@@ -5,7 +5,6 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
 
 class PostItemWidget extends StatefulWidget {
@@ -176,9 +175,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       IconButton(
                         icon: Icon(FontAwesomeIcons.share),
                         onPressed: () {
+                          final RenderBox box = context.findRenderObject();
                           Share.share(
                               'check out my website https://example.com',
-                              subject: 'Look what I made!');
+                              subject: 'Please download our app',
+                              sharePositionOrigin:
+                                  box.localToGlobal(Offset.zero) & box.size);
                         },
                       )
                     ],
