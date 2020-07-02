@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
-
 
 /// OtpTextField
 class OtpTextField extends StatefulWidget {
@@ -19,17 +17,16 @@ class OtpTextField extends StatefulWidget {
   final ValueChanged<String> onFieldSubmitted;
   final TextInputType keyboardType;
 
-  OtpTextField(this.mailController,{
-    this.label,
-    this.icon,
-    this.controller,
-    this.obscureText: false,
-    this.validator,
-    this.focusNode,
-    this.textInputAction,
-    this.onFieldSubmitted,
-    this.keyboardType
-  });
+  OtpTextField(this.mailController,
+      {this.label,
+      this.icon,
+      this.controller,
+      this.obscureText: false,
+      this.validator,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted,
+      this.keyboardType});
 
   @override
   _OtpTextFieldState createState() => _OtpTextFieldState();
@@ -98,26 +95,28 @@ class GetOtpWordsWidget extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     return Container(
       child: model.isBusy
-      ? ButtonProgressIndicator()
-      : InkWell(
-        child: Text("Get Otp Code",
-                    style: TextStyle(color: Colors.blue),),
-        onTap: model.isBusy
-        ? null : (){
-          var formState = Form.of(context);
-          if (formState.validate()){
-            model
-                .getOtpCodeAgain(mailController.text)
-                .then((value) {
-                  if (value) {
-                    print('success');
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
-          }
-        }       
-        ),
-      );
+          ? ButtonProgressIndicator()
+          : InkWell(
+              child: Text(
+                "Get Otp Code",
+                style: TextStyle(color: Colors.blue),
+              ),
+              onTap: model.isBusy
+                  ? null
+                  : () {
+                      var formState = Form.of(context);
+                      if (formState.validate()) {
+                        model
+                            .getOtpCodeAgain(mailController.text)
+                            .then((value) {
+                          if (value) {
+                            print('success');
+                          } else {
+                            model.showErrorMessage(context);
+                          }
+                        });
+                      }
+                    }),
+    );
   }
 }

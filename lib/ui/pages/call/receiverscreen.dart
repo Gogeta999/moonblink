@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:moonblink/base_widget/callbutton.dart';
 import 'package:moonblink/global/resources_manager.dart';
 
 class ReceiverScreen extends StatefulWidget {
@@ -27,7 +24,6 @@ class _ReceiverScreen extends State<ReceiverScreen> {
   //             }
   //           }));
   // }
-  
 
   // String getTimerTime(int start) {
   //   int minutes = (start ~/ 60);
@@ -52,13 +48,13 @@ class _ReceiverScreen extends State<ReceiverScreen> {
   //   super.initState();
   //   startTimmer();
   // }
-  
+
   // @override
   // void dispose() {
   //   _timmerInstance.cancel();
   //   super.dispose();
   // }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,33 +120,32 @@ class _ReceiverScreen extends State<ReceiverScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                FloatingActionButton(
-                  onPressed: () {
-                    //to Accept call
-                  },
-                  elevation: 20.0,
-                  shape: CircleBorder(side: BorderSide(color: Colors.green)),
-                  mini: false,
-                  child: Icon(
-                    Icons.call,
-                    color: Colors.green,
+                  FloatingActionButton(
+                    onPressed: () {
+                      //to Accept call
+                    },
+                    elevation: 20.0,
+                    shape: CircleBorder(side: BorderSide(color: Colors.green)),
+                    mini: false,
+                    child: Icon(
+                      Icons.call,
+                      color: Colors.green,
+                    ),
+                    backgroundColor: Colors.green[100],
                   ),
-                  backgroundColor: Colors.green[100],
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    
-                    //to Reject call
-                  },
-                  elevation: 20.0,
-                  shape: CircleBorder(side: BorderSide(color: Colors.red)),
-                  mini: false,
-                  child: Icon(
-                    Icons.call_end,
-                    color: Colors.red,
-                  ),
-                  backgroundColor: Colors.red[100],
-                )
+                  FloatingActionButton(
+                    onPressed: () {
+                      //to Reject call
+                    },
+                    elevation: 20.0,
+                    shape: CircleBorder(side: BorderSide(color: Colors.red)),
+                    mini: false,
+                    child: Icon(
+                      Icons.call_end,
+                      color: Colors.red,
+                    ),
+                    backgroundColor: Colors.red[100],
+                  )
                 ],
               ),
               SizedBox(
@@ -163,4 +158,3 @@ class _ReceiverScreen extends State<ReceiverScreen> {
     );
   }
 }
-

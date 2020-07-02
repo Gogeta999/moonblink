@@ -11,25 +11,23 @@ class NormalUser {
   int followerCount;
   int isFollow;
   // String normalProfileImage;
-  //TODO: add later
   // String normalBackendImage;
-  
-  NormalUser.fromJsonMap(Map <String, dynamic> map) :
 
-  normalId = map['id'],
-  normalName = map['name'],
-  normalLastName = map['last_name'],
-  normalEmail = map['email'],
-  verified = map['verified'],
-  verifiedAt = map['verified_at'],
-  createdAt = map['created_at'],
-  updatedAt = map['updated_at'],
-  type = map['type'],
-  followerCount = map['follower_count'],
-  isFollow = map['is_follow'];
+  NormalUser.fromJsonMap(Map<String, dynamic> map)
+      : normalId = map['id'],
+        normalName = map['name'],
+        normalLastName = map['last_name'],
+        normalEmail = map['email'],
+        verified = map['verified'],
+        verifiedAt = map['verified_at'],
+        createdAt = map['created_at'],
+        updatedAt = map['updated_at'],
+        type = map['type'],
+        followerCount = map['follower_count'],
+        isFollow = map['is_follow'];
   // normalProfileImage = map['profile'],
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = normalId;
     data['name'] = normalName;

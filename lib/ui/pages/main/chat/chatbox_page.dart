@@ -14,22 +14,23 @@ import 'package:moonblink/ui/pages/call/callerscreen.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
-  Map<String, dynamic> _iceServers = {
-    'iceServers': [
-      {'url': 'stun:54.179.117.84:3478'},
-      {
-        'url': 'turn:54.179.117.84:3478',
-        'username': 'moonblink',
-        'credential': 'm00nblink'
-      },
-    ]
-  };
-  final Map<String, dynamic> _config = {
-    'mandatory': {},
-    'optional': [
-      {'DtlsSrtpKeyAgreement': true},
-    ],
-  };
+
+Map<String, dynamic> _iceServers = {
+  'iceServers': [
+    {'url': 'stun:54.179.117.84:3478'},
+    {
+      'url': 'turn:54.179.117.84:3478',
+      'username': 'moonblink',
+      'credential': 'm00nblink'
+    },
+  ]
+};
+final Map<String, dynamic> _config = {
+  'mandatory': {},
+  'optional': [
+    {'DtlsSrtpKeyAgreement': true},
+  ],
+};
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -48,7 +49,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
   //File formatting
-  
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
@@ -59,15 +60,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       // print(_byteData);
     });
   }
+
   //create peer connection
   _createPeerConnection() async {
     pc = await createPeerConnection(_iceServers, _config);
   }
-@override
-void initState() { 
-  super.initState();
-  _createPeerConnection();
-}
+
+  @override
+  void initState() {
+    super.initState();
+    _createPeerConnection();
+  }
+
   //build message
   Widget buildSingleMessage(Message message) {
     return Container(
@@ -79,6 +83,7 @@ void initState() {
       child: Text(message.text),
     );
   }
+
   //show File
   Widget buildfile(Files file) {
     return Container(
@@ -90,6 +95,7 @@ void initState() {
       child: Text(file.name),
     );
   }
+
   //Send message
   Widget buildmessage(id) {
     return ScopedModelDescendant<ChatModel>(
@@ -129,22 +135,14 @@ void initState() {
                 textEditingController.text, id, messages);
                 textEditingController.text = '';
                 }
-              }
-              else {
-                if (bytes != null) {
-                model.filemessage(textEditingController.text, bytes, id);
-                textEditingController.text = null;
-                bytes = null;
-                }
-              }
-            },
-          ),
-        ],
-      ),
-    );
-    }
-  );
+              }},
+            ),
+          ],
+        ),
+      );
+    });
   }
+
   //Conversation List
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(
@@ -162,46 +160,49 @@ void initState() {
             },
           ),
         );
-      }, 
+      },
     );
   }
+
   ///[Call Button]
   Widget buildfloat(id) {
-    return ScopedModelDescendant<ChatModel> (
+    return ScopedModelDescendant<ChatModel>(
       builder: (context, child, model) {
         // RTCPeerConnection pc = _createPeerConnection();
         return FloatingActionButton(
-              child: Text("Call"),
-              onPressed: () { 
-                model.createOffer(id, pc, "video");
-                Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CallerScreen(),) 
-                );
-                // model.createAnswer(id, pc, "video");
-              }
-        );
+            child: Text("Call"),
+            onPressed: () {
+              model.createOffer(id, pc, "video");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CallerScreen(),
+                  ));
+              // model.createAnswer(id, pc, "video");
+            });
       },
-      );
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<PartnerDetailModel, GetmsgModel >(
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
       model1: PartnerDetailModel(partnerdata, widget.detailPageId),
       model2: GetmsgModel(widget.detailPageId),
-      onModelReady: (partnerModel, msgModel){
+      onModelReady: (partnerModel, msgModel) {
         partnerModel.initData();
         msgModel.initData();
       },
-    builder: (context,partnermodel, msgmodel, child) {
+      builder: (context, partnermodel, msgmodel, child) {
         if (partnermodel.isBusy && msgmodel.isBusy) {
           return ViewStateBusyWidget();
-        } 
-        else if (partnermodel.isError && msgmodel.isError ) {
-          return ViewStateErrorWidget(error: partnermodel.viewStateError, onPressed:(){ 
-            partnermodel.initData();
-            msgmodel.initData();
-          });
+        } else if (partnermodel.isError && msgmodel.isError) {
+          return ViewStateErrorWidget(
+              error: partnermodel.viewStateError,
+              onPressed: () {
+                partnermodel.initData();
+                msgmodel.initData();
+              });
         }
         print(msgmodel.list.length);
       for (var i = 0; i < msgmodel.list.length; i++) {

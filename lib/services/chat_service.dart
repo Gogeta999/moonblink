@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-
 import 'package:flutter_webrtc/webrtc.dart';
-import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/generated/intl/messages_en.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/callmodel.dart';
 import 'package:moonblink/models/chatlist.dart';
@@ -16,17 +13,17 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
   String now = DateTime.now().toString();
   IO.Socket socket = IO.io('http://54.179.117.84', <String, dynamic>{
-   'transports': ['websocket'],
-   'autoConnect': false,
+    'transports': ['websocket'],
+    'autoConnect': false,
   });
 
-  String usertoken= StorageManager.sharedPreferences.getString(token);
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   int userid = StorageManager.sharedPreferences.getInt(mUserId);
   // List<User> friendList = List<User>();
   List<Message> messages = List<Message>();
   List<Files> files = List<Files>();
   List<Chatlist> chatlist = List<Chatlist>();
-  
+
   final Map<String, dynamic> _constraints = {
     'mandatory': {
       'OfferToReceiveAudio': true,
@@ -71,7 +68,7 @@ class ChatModel extends Model{
     );
     ///[NEED TO FIX]
     //receiver-attach
-    socket.on("receiver-attach", (data){ 
+    socket.on("receiver-attach", (data) {
       Map<String, dynamic> fs = json.decode(data);
       files.add(Files(
         fs["0"],data["1"],data["2"],data["3"]
@@ -91,42 +88,38 @@ class ChatModel extends Model{
   ///[Chating Text]
   //send messages
   void sendMessage(String text, int receiverChatID, List<Message> msg) {
-    msg.insert(0, Message( text, userid, receiverChatID, now));
+    msg.insert(0, Message(text, userid, receiverChatID, now));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Message : $text");
     print("Time : $now");
-    socket.emit(
-      'chat-message',
-      [{
-        "message": text,
-        "sender_id": userid,
-        "receiver_id": receiverChatID
-      }]    
+    socket.emit('chat-message', [
+      {"message": text, "sender_id": userid, "receiver_id": receiverChatID}
+    ]
         // jsonEncode({
         //   'sender_id': userid,
         //   'receiver_id': receiverChatID,
         //   'message' : text
         // })
-    );
+        );
     notifyListeners();
   }
+
   //file message
-  void filemessage(String name,Uint8List file, int receiverChatID){
+  void filemessage(String name, Uint8List file, int receiverChatID) {
     files.add(Files(name, file, userid, receiverChatID));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
     print("File : ${file.toString()}");
-    socket.emit(
-      'upload-attach',
-      [{
+    socket.emit('upload-attach', [
+      {
         "name": name,
         "data": file,
         "sender_id": userid,
         "receiver_id": receiverChatID
-      }]
-    );
+      }
+    ]);
     notifyListeners();
   }
 
@@ -141,10 +134,9 @@ class ChatModel extends Model{
         Chatlist chat = Chatlist.fromMap(response.data[i]);
         chatlist.add(chat);
       }
-      notifyListeners(); 
-      }
-    ); 
-    return chatlist;  
+      notifyListeners();
+    });
+    return chatlist;
   }
   ///[For receiving message]
   void receiver(List<Message> message) {
@@ -174,10 +166,11 @@ class ChatModel extends Model{
 
   ///[For Voice Call]
   //Create Answer
-  void createOffer(int receiverChatID, RTCPeerConnection pc, String media) async {
+  void createOffer(
+      int receiverChatID, RTCPeerConnection pc, String media) async {
     try {
       RTCSessionDescription s = await pc
-      .createOffer(media == 'data' ? _dc_constraints : _constraints);
+          .createOffer(media == 'data' ? _dc_constraints : _constraints);
       pc.setLocalDescription(s);
       socket.emit('call-user', [
         userid,
@@ -190,6 +183,7 @@ class ChatModel extends Model{
       print(e.toString());
     }
   }
+
   //To answer call
   void createAnswer(int receiverChatID, RTCPeerConnection pc, media) async {
     try {
@@ -205,10 +199,10 @@ class ChatModel extends Model{
       print(e.toString());
     }
   }
+
   //end call
   void bye() {
-    socket.emit("bye", [
-    ]);
+    socket.emit("bye", []);
   }
   // ///[get Messages]
   // List<Message> getMessagesForChatID(int id) {

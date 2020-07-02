@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _pwdFocus = FocusNode();
   @override
-  void dispose(){
+  void dispose() {
     _mailController.dispose();
     _passwordController.dispose();
     _pwdFocus.unfocus();
@@ -53,10 +53,10 @@ class _LoginPageState extends State<LoginPage> {
                       LoginFormContainer(
                         child: ProviderWidget<LoginModel>(
                           model: LoginModel(Provider.of(context)),
-                          onModelReady: (model){
+                          onModelReady: (model) {
                             _mailController.text = model.getLoginName();
                           },
-                          builder: (context, model, child){
+                          builder: (context, model, child) {
                             return Form(
                               onWillPop: () async {
                                 return !model.isBusy;
@@ -72,9 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                                 icon: Icons.perm_identity,
                                 controller: _mailController,
                                 textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (text){
+                                onFieldSubmitted: (text) {
                                   FocusScope.of(context)
-                                    .requestFocus(_pwdFocus);
+                                      .requestFocus(_pwdFocus);
                                 },
                               ),
                               LoginTextField(
@@ -85,16 +85,13 @@ class _LoginPageState extends State<LoginPage> {
                                 focusNode: _pwdFocus,
                                 textInputAction: TextInputAction.done,
                               ),
-                              SizedBox(height: 30,),
                               LoginButton(_mailController, _passwordController),
-                              SizedBox(height: 30,),
+                              ThirdLogin(),
                               SignUpWidget(_mailController),
-
                             ],
                           ),
                         ),
                       ),
-                      ThirdLogin()
                     ],
                   ),
                 )
@@ -117,30 +114,31 @@ class LoginButton extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     return LoginButtonWidget(
       child: model.isBusy
-        ? ButtonProgressIndicator()
-        : Text(
-          S.of(context).signIn,
-          style: Theme.of(context)
-                .accentTextTheme
-                .headline6
-                .copyWith(wordSpacing: 6),
-        ),
-        onPressed: model.isBusy
+          ? ButtonProgressIndicator()
+          : Text(
+              S.of(context).signIn,
+              style: Theme.of(context)
+                  .accentTextTheme
+                  .headline6
+                  .copyWith(wordSpacing: 6),
+            ),
+      onPressed: model.isBusy
           ? null
           : () {
-            var formState = Form.of(context);
-            if (formState.validate()){
-              model
-                  .login(mailController.text, passwordController.text)
-                  .then((value){
-                    if(value){
-                      Navigator.of(context).pop(true);
-                    } else {
-                      model.showErrorMessage(context);
-                    }
-                  });
-            }
-          },     
+              var formState = Form.of(context);
+              if (formState.validate()) {
+                model
+                    .login(
+                        mailController.text, passwordController.text, 'email')
+                    .then((value) {
+                  if (value) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    model.showErrorMessage(context);
+                  }
+                });
+              }
+            },
     );
   }
 }

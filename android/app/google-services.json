@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "155573283200",
+    "firebase_url": "https://moonblink.firebaseio.com",
+    "project_id": "moonblink",
+    "storage_bucket": "moonblink.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155573283200:android:b333b1a87ffe4b557f7965",
+        "android_client_info": {
+          "package_name": "com.moonuniverse.moonblink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155573283200-r8d6i6ue528irdbbl44t4lp4b66dfgao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonuniverse.moonblink",
+            "certificate_hash": "730b676b84cf370ef525f595b6ff00abadc94856"
+          }
+        },
+        {
+          "client_id": "155573283200-hbnlgak51ubfkvgcvqfunuiak7dk6r30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonuniverse.moonblink",
+            "certificate_hash": "30e1dc304364d9446b0f63760ec255560fd7b975"
+          }
+        },
+        {
+          "client_id": "155573283200-cdp186jb1182sdd4h1kjmv5hb4me1ksf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs-enq3He2ZuApE4_UXBFVaG6aUV53CUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155573283200-cdp186jb1182sdd4h1kjmv5hb4me1ksf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "155573283200-bo8f6agv919bv4es3aoappoghc7abb0c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.moonuniverse.moonblink"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,23 +1,21 @@
-import 'package:flutter/cupertino.dart';
-
-class Chatlist{
- int id;
- String name;
- String lastmsgt;
- int msgs;
- int type;
- int leave;
- String created;
- String updated;
- String profile;
- String lastmsg;
- String file;
- int userid;
+class Chatlist {
+  int id;
+  String name;
+  String lastmsgt;
+  int msgs;
+  int type;
+  int leave;
+  String created;
+  String updated;
+  String profile;
+  String lastmsg;
+  String file;
+  int userid;
 //  Chatlist({this.id, this.name, this.lastmsg,
 //           this.msgs, this.type, this.leave, this.created, this.updated, this.profile});
 
 //  factory Chatlist.fromJson(Map<String, dynamic> map){
-//    return Chatlist( 
+//    return Chatlist(
 //      id: map['id'],
 //      name: map['name'],
 //      lastmsg: map['last_msg_time'],
@@ -29,7 +27,7 @@ class Chatlist{
 //      profile: map['profile_image']
 //    );
 //  }
-  static Chatlist fromMap(Map<String, dynamic> map){
+  static Chatlist fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     Chatlist chat = Chatlist();
     chat.id = map['id'];

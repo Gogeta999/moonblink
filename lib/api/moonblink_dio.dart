@@ -9,11 +9,11 @@ import 'package:moonblink/utils/platform_utils.dart';
 //user token will change with data at login model
 import 'package:moonblink/view_model/login_model.dart';
 
-_parseAndDecode(String response){
+_parseAndDecode(String response) {
   return jsonDecode(response);
 }
 
-parseJson(String text){
+parseJson(String text) {
   return compute(_parseAndDecode, text);
 }
 
@@ -44,7 +44,7 @@ class DioUtils {
       connectTimeout: 5000,
       receiveTimeout: 5000,
       headers: {
-        //Default necessary header 
+        //Default necessary header
         //appkey will remain old key unless we generate new key on server
         'app-key': 'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=',
       },
@@ -58,17 +58,17 @@ class DioUtils {
     //Adding necessary interceptor for our app
     _dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
-        if (usertoken == null){
-        var appVersion = await PlatformUtils.getAppVersion();
-        requestions.headers['app-version'] = appVersion;
-        // debugPrint('Base Requestions--->' + requestions.headers.toString());
-        return requestions;
+        if (usertoken == null) {
+          var appVersion = await PlatformUtils.getAppVersion();
+          requestions.headers['app-version'] = appVersion;
+          // debugPrint('Base Requestions--->' + requestions.headers.toString());
+          return requestions;
         } else {
-        var appVersion = await PlatformUtils.getAppVersion();
-        requestions.headers['app-version'] = appVersion;
-        requestions.headers['Authorization'] = 'Bearer' + usertoken;
-        // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
-        return requestions;
+          var appVersion = await PlatformUtils.getAppVersion();
+          requestions.headers['app-version'] = appVersion;
+          requestions.headers['Authorization'] = 'Bearer' + usertoken;
+          // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
+          return requestions;
         }
       }, onResponse: (Response response) {
         //maybe add something here
@@ -89,35 +89,35 @@ class DioUtils {
     print('get---request---from--->$url');
     // print('requestParameter---is--->$queryParameters');
     // print('Test ah--platform is- {$appVersion}-verions-in-$appPlatorm----');
-    Response response;    
-    response = await _dio.get(url, queryParameters: queryParameters, options: options);
+    Response response;
+    response =
+        await _dio.get(url, queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     // debugPrint('debug code error--- ${respData.data}');
-    if (respData.success ){
+    if (respData.success) {
       response.data = respData.data;
-      debugPrint('result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+      debugPrint(
+          'result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
       return response;
     } else {
       // or if(usertoken = null)
-      if (respData.errorCode == 101 ){
+      if (respData.errorCode == 101) {
         throw const UnAuthorizedException();
       }
-      // TODO: 
       //Tell toe hlaing win to solve normal user problem
-      else if(respData.errorCode == 123){
+      else if (respData.errorCode == 123) {
         response.data = respData.data;
-        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));  
-        debugPrint('result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        debugPrint(
+            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         // debugPrint('assetJson-->result---<$emptyData');
         // return emptyData;
         return response;
-      }
-      else {
+      } else {
         throw NotSuccessException.fromRespData(respData);
       }
     }
   }
-
 
   /*
    * Post request
@@ -125,14 +125,16 @@ class DioUtils {
   post(url, {queryParameters, options}) async {
     print('post request path ------$url-------queryParameters$queryParameters');
     Response response;
-    response = await _dio.post(url, queryParameters: queryParameters, options: options);
+    response = await _dio.post(url,
+        queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
-    if (respData.success){
-    response.data = respData.data;
-    debugPrint('api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
-    return response;
+    if (respData.success) {
+      response.data = respData.data;
+      debugPrint(
+          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      return response;
     } else {
-      if (respData.errorCode == 101){
+      if (respData.errorCode == 101) {
         throw const UnAuthorizedException();
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -145,23 +147,25 @@ class DioUtils {
    */
   postwithData(url, {data, options}) async {
     print('post request path ------$url-------data $data');
-    Response response; 
-    response = await _dio.post(url, data: data, options: options, onSendProgress: (int count, int total){
+    Response response;
+    response = await _dio.post(url, data: data, options: options,
+        onSendProgress: (int count, int total) {
       print('Uploading progress----->${count / total}----count/total process');
     });
     ResponseData respData = ResponseData.fromJson(response.data);
-    if (respData.success){
-    response.data = respData.data;
-    debugPrint('api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
-    debugPrint('$respData');
-    return respData;
+    if (respData.success) {
+      response.data = respData.data;
+      debugPrint(
+          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      debugPrint('$respData');
+      return respData;
     } else {
-      if (respData.errorCode == 101){
+      if (respData.errorCode == 101) {
         throw const UnAuthorizedException();
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
-    }  
+    }
   }
 
   /*
@@ -226,10 +230,10 @@ abstract class BaseResponseData {
   dynamic data;
   String getMessage;
 
-
   bool get success;
 
-  BaseResponseData({this.errorCode, this.errorMessage, this.data, this.getMessage});
+  BaseResponseData(
+      {this.errorCode, this.errorMessage, this.data, this.getMessage});
 
   @override
   String toString() {
@@ -247,7 +251,8 @@ class NotSuccessException implements Exception {
 
   @override
   String toString() {
-    return 'NotExpectedException{respData: $message}';
+    // return 'NotExpectedException{respData: $message}';
+    return 'Sorry for $message';
   }
 }
 

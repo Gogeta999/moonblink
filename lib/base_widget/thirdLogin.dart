@@ -1,42 +1,15 @@
 import 'package:flutter/material.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:provider/provider.dart';
 
 class ThirdLogin extends StatelessWidget {
-
-  // GoogleSignIn _googleSignIn = GoogleSignIn(
-  //   scopes: [
-  //     'profile',
-  //     'email'
-  //   ]
-  // );
-  // GoogleSignInAccount _signInAccount;
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    //var theme = Theme.of(context);
+    var model = Provider.of<LoginModel>(context);
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              color: theme.hintColor.withAlpha(50),
-              height: 0.6,
-              width: 60,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Third Login',
-                  style: TextStyle(color: theme.hintColor)),
-            ),
-            Container(
-              color: theme.hintColor.withAlpha(50),
-              height: 0.6,
-              width: 60,
-            ),
-          ],
-        ),
         Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Row(
@@ -44,7 +17,13 @@ class ThirdLogin extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  showToast('Developing........');
+                  model.login(null, null, 'google').then((value) {
+                    if (value) {
+                      Navigator.of(context).pop(true);
+                    } else {
+                      model.showErrorMessage(context);
+                    }
+                  });
                 },
                 child: Image.asset(
                   ImageHelper.wrapAssetsLogo('google_logo.png'),
@@ -54,7 +33,13 @@ class ThirdLogin extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  showToast('Developing........');
+                  model.login(null, null, 'facebook').then((value) {
+                    if (value) {
+                      Navigator.of(context).pop(true);
+                    } else {
+                      model.showErrorMessage(context);
+                    }
+                  });
                 },
                 child: Image.asset(
                   ImageHelper.wrapAssetsLogo('facebook_logo.png'),
@@ -64,10 +49,9 @@ class ThirdLogin extends StatelessWidget {
               )
             ],
           ),
-        )
+        ),
+        SizedBox(height: 20)
       ],
     );
   }
-
 }
-
