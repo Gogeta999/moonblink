@@ -35,8 +35,13 @@ class _BookingButtonState extends State<BookingButton> {
                     if (model.isError) {
                       print("Error Booking");
                     } else {
-                      model.booking().then((value) =>
-                          value ? waitingoffer(context, model) : null);
+                      model.booking().then((value) => value
+                          ? {
+                              Navigator.pop(context,
+                                  'Cancel'), //remove booking dialog and open another
+                              waitingoffer(context, model)
+                            }
+                          : null);
                     }
                     //api call
                   })

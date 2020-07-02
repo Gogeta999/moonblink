@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    //init FCM
     PushNotificationsManager().init();
     super.initState();
   }

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
+import 'package:moonblink/view_model/login_model.dart';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -28,24 +30,31 @@ class PushNotificationsManager {
     if (message.containsKey('notification')) {
       // Handle notification message
       final dynamic notification = message['notification'];
-      print(notification);
+      PushNotificationsManager()._showNotification(message);
+      print('myBackgroundMessageHandler: $notification');
     }
     return null;
     // Or do other work.
   }
 
-  void _configLocalNotification() {
+  Future<void> removeFcmToken() async{
+    await StorageManager.sharedPreferences.remove(FCMToken);
+    await _firebaseMessaging.deleteInstanceID();
+    print('${await _firebaseMessaging.getToken()}');
+  }
+
+  Future<void> _configLocalNotification() async{
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('@mipmap/moonblink');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void _registerNotification() {
+  Future<void> _registerNotification() async{
     // For iOS request permission first.
-    _firebaseMessaging.requestNotificationPermissions();
+    await _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) {
           print('onMessage: $message');
@@ -64,13 +73,13 @@ class PushNotificationsManager {
           return;
         });
 
-    _firebaseMessaging.getToken().then((token) {
-      print('token: $token');
-      //send token to backend
+    _firebaseMessaging.onTokenRefresh.listen((event) {
+      print('onTokenRefresh $event');
+      StorageManager.sharedPreferences.setString(FCMToken, event);
     });
   }
 
-  void _showNotification(message) async {
+  Future<void> _showNotification(message) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
       'Moon Blink',
@@ -81,7 +90,11 @@ class PushNotificationsManager {
       priority: Priority.High,
     );
 
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true
+    );
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
@@ -94,8 +107,9 @@ class PushNotificationsManager {
 
   Future<void> init() async {
     if (!_initialized) {
-      _configLocalNotification();
-      _registerNotification();
+      print('FCM initializing');
+      await _configLocalNotification();
+      await _registerNotification();
       _initialized = true;
     }
   }
