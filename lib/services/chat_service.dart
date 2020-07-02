@@ -14,7 +14,6 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class ChatModel extends Model{
   String now = DateTime.now().toString();
   IO.Socket socket = IO.io('http://54.179.117.84', <String, dynamic>{
    'transports': ['websocket'],
@@ -43,7 +42,8 @@ class ChatModel extends Model{
     },
     'optional': [],
   };
-
+  
+class ChatModel extends Model{
   //connect
   void init() {
     socket.emit('connect-user', usertoken);
@@ -69,16 +69,6 @@ class ChatModel extends Model{
       print("Answer");
     }
     );
-    //receiver peer
-    socket.on("receiver-peer", (data) {
-      print(data);
-      Map<String, dynamic> msgs = json.decode(data);
-      messages.add(Message(
-         msgs['message'], msgs['sender_id'], msgs['receiver_id'], msgs['time']
-      ));
-      notifyListeners();
-    }
-    );
     ///[NEED TO FIX]
     //receiver-attach
     socket.on("receiver-attach", (data){ 
@@ -88,20 +78,8 @@ class ChatModel extends Model{
       ));
     }
     );
-    // ///[Conversation List]
-    // socket.on("conversation", (data){
-    //   print(data);
-    //   var response = ResponseData.fromJson(data);
-    //   print(response.data.runtimeType);
-    //   for (var i = 0; i < response.data.length; i++) {
-    //     var res = Map<String, dynamic>.from(response.data["$i"]);
-    //     Chatlist chat = Chatlist.fromMap(res);
-    //     chatlist.add(chat);
-    //   }
-    //   return chatlist;
-    // });
     //connect user list
-    socket.on('connected-users', (jsonData) {
+    socket.once('connected-users', (jsonData) {
       print(jsonData);
       var connetion_id = jsonData.map((m) => m['connection_id']);
       var user_id = jsonData.map((m) => m['user_id']);
@@ -155,7 +133,7 @@ class ChatModel extends Model{
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
-    socket.on("conversation", (data){
+    socket.once("conversation", (data){
       print(data);
       chatlist.clear();
       var response = ResponseData.fromJson(data);
@@ -167,6 +145,20 @@ class ChatModel extends Model{
       }
     ); 
     return chatlist;  
+  }
+  ///[For receiving message]
+  void receiver(List<Message> message) {
+    print("Received Messages");
+    socket.clearListeners();
+    socket.once("receiver-peer", (data) {
+      print("success");
+      print(data);
+      message.insert(0,Message(
+         data['message'], data['sender_id'], data['receiver_id'], data['time']
+      ));
+      notifyListeners();
+    }
+    );
   }
 
   //Answermade
@@ -218,21 +210,24 @@ class ChatModel extends Model{
     socket.emit("bye", [
     ]);
   }
-  ///[get Messages]
-  List<Message> getMessagesForChatID(int id) {
-    print("Get Messages");
-    // message(id);
+  // ///[get Messages]
+  // List<Message> getMessagesForChatID(int id) {
+  //   print("Get Messages");
+  //   // message(id);
 
-    print(messages);
-    // notifyListeners();
-    return messages
-      .where((msg) => msg.senderID == id || msg.receiverID == id)
-      .toList();     
-  }
-  List<Files> getAttachForChatID(int id) {
-    print("Get Attachment");
-    return files
-    .where((file) => file.senderID == id || file.receiverID == id)
-    .toList();
+  //   print(messages);
+  //   // notifyListeners();
+  //   return messages
+  //     .where((msg) => msg.senderID == id || msg.receiverID == id)
+  //     .toList();     
+  // }
+  // List<Files> getAttachForChatID(int id) {
+  //   print("Get Attachment");
+  //   return files
+  //   .where((file) => file.senderID == id || file.receiverID == id)
+  //   .toList();
+  // }
+  void disconnect(){
+    socket.disconnect();
   }
 }

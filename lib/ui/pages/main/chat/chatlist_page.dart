@@ -20,7 +20,7 @@ class _ChatListPageState extends State<ChatListPage> {
   @override
   void initState() { 
     super.initState();
-    if (usertoken != null){
+    if (usertoken != "token") {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
     }
   }

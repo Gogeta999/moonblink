@@ -97,13 +97,14 @@ void initState() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       height: 70.0,
-      color: Colors.white,
+      //color: Theme.of(context).backgroundColor,
+
       child: Row(
         children: <Widget>[
           IconButton(
             icon: Icon(FontAwesomeIcons.image),
             iconSize: 30.0,
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).accentColor,
             onPressed: () {
               getImage();
             },
@@ -118,7 +119,7 @@ void initState() {
             ),
           ),
           IconButton(
-            icon: Icon(FontAwesomeIcons.circle),
+            icon: Icon(FontAwesomeIcons.upload),
             iconSize: 30.0,
             color: Theme.of(context).accentColor,
             onPressed: () {
@@ -150,8 +151,9 @@ void initState() {
       builder: (context, child, model) {
         // List<Message> msgs = model.getMessagesForChatID(id);
         // messages.addAll(msgs);
+        model.receiver(messages);
         return Container(
-          height: MediaQuery.of(context).size.height * 0.75,
+          height: MediaQuery.of(context).size.height * 0.8,
           child: ListView.builder(
             reverse: true,
             itemCount: messages.length,
@@ -208,7 +210,7 @@ void initState() {
       }
       print(messages);
       return Scaffold(
-        floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
+        // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
       appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
       AppBar(
         title: Text(partnermodel.partnerData.partnerName),
