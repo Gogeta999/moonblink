@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:moonblink/base_widget/notifications.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -10,6 +10,9 @@ import 'package:moonblink/models/message.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../base_widget/notifications.dart';
+
 
   String now = DateTime.now().toString();
   IO.Socket socket = IO.io('http://54.179.117.84', <String, dynamic>{
@@ -45,6 +48,7 @@ class ChatModel extends Model{
   void init() {
     socket.emit('connect-user', usertoken);
     socket.connect();
+    LocalNotifications().init();
     print("Connected Socket");
     //callmade
     socket.on('call-made', (jsondata) {
@@ -88,7 +92,7 @@ class ChatModel extends Model{
   ///[Chating Text]
   //send messages
   void sendMessage(String text, int receiverChatID, List<Message> msg) {
-    msg.insert(0, Message(text, userid, receiverChatID, now));
+    msg.insert(0, Message(text, userid, receiverChatID, now, ''));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Message : $text");
@@ -106,8 +110,8 @@ class ChatModel extends Model{
   }
 
   //file message
-  void filemessage(String name, Uint8List file, int receiverChatID) {
-    files.add(Files(name, file, userid, receiverChatID));
+  void sendfile(String name, Uint8List file, int receiverChatID, List<Message> msg) {
+    // msg.insert(0,Message(name, file, userid, receiverChatID));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
@@ -129,6 +133,7 @@ class ChatModel extends Model{
     socket.once("conversation", (data){
       print(data);
       chatlist.clear();
+      // LocalNotifications().notification(1,"new", "message");
       var response = ResponseData.fromJson(data);
       for (var i = 0; i < response.data.length; i++) {
         Chatlist chat = Chatlist.fromMap(response.data[i]);
@@ -143,16 +148,28 @@ class ChatModel extends Model{
     print("Received Messages");
     socket.clearListeners();
     socket.once("receiver-peer", (data) {
-      print("success");
+      print("Messages");
       print(data);
+      receivenoti(data["sender_id"], data["time"],data["message"]);
       message.insert(0,Message(
-         data['message'], data['sender_id'], data['receiver_id'], data['time']
+         data['message'], data['sender_id'], data['receiver_id'], data['time'], '' 
       ));
       notifyListeners();
     }
     );
+    socket.once("receiver-attach", (data) {
+      print("Images");
+      print(data);
+      receivenoti(data['sender_id'], data['time'], "File Message");
+      message.insert(0, Message("", data['sender_id'], data['receiver_id'], data["time"], data['attach']));
+      notifyListeners();
+    } 
+    );
   }
-
+  void receivenoti(int id, String text, String msg) {
+    LocalNotifications().notification(id, text, msg);
+  }
+  
   //Answermade
   // void answermade() {
   //   socket.on('answer-made', (jsondata) {

@@ -13,8 +13,9 @@ class Message{
   final int senderID;
   final int receiverID;
   final String now;
+  final String attach;
 
-  Message(this.text,this.senderID,this.receiverID, this.now);
+  Message(this.text,this.senderID,this.receiverID, this.now, this.attach);
 }
 
 class Lastmsg{

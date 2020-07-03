@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
+import 'package:moonblink/base_widget/notifications.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
+import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -17,6 +19,7 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPageState extends State<ChatListPage> {
   List<Chatlist> chatlist;
+  List<Message> msg = [];
   @override
   void initState() { 
     super.initState();
@@ -31,7 +34,8 @@ class _ChatListPageState extends State<ChatListPage> {
       body: ScopedModelDescendant<ChatModel> (
         builder: (context,child,model) {
           // chatlist.clear();
-          chatlist = model.conversationlist();
+          model.receiver(msg);
+          chatlist = model.conversationlist();  
           print(chatlist.length);
           // return Container(child: Text("getting chat"),);
           return CustomScrollView(
