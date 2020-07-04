@@ -105,21 +105,28 @@ class UserHeaderWidget extends StatelessWidget {
                             child: Hero(
                               tag: 'loginLogo',
                               child: ClipOval(
-                                child: Image.asset(
-                                    ImageHelper.wrapAssetsLogo(
-                                        'MoonBlink_logo.png'),
-                                    fit: BoxFit.cover,
-                                    width: 110,
-                                    height: 110,
-                                    color: model.hasUser
-                                        ? Theme.of(context)
-                                            .accentColor
-                                            .withAlpha(200)
-                                        : Theme.of(context)
+                                child: model.hasUser
+                                    ? Image.network(
+                                        model.user.profileUrl,
+                                        fit: BoxFit.cover,
+                                        width: 130,
+                                        height: 130,
+                                        // color: Theme.of(context)
+                                        //     .accentColor
+                                        //     .withAlpha(100),
+                                        // colorBlendMode: BlendMode.colorDodge
+                                      )
+                                    : Image.asset(
+                                        ImageHelper.wrapAssetsLogo(
+                                            'MoonBlink_logo.png'),
+                                        fit: BoxFit.cover,
+                                        width: 130,
+                                        height: 130,
+                                        color: Theme.of(context)
                                             .accentColor
                                             .withAlpha(100),
-                                    // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
-                                    colorBlendMode: BlendMode.colorDodge),
+                                        // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
+                                        colorBlendMode: BlendMode.colorDodge),
                               ),
                             ),
                           ),
@@ -130,7 +137,7 @@ class UserHeaderWidget extends StatelessWidget {
                           Column(children: <Widget>[
                             Text(
                                 model.hasUser
-                                    ? model.user.name
+                                    ? model.user.id.toString()
                                     : S.of(context).toSignIn,
                                 style: Theme.of(context)
                                     .textTheme

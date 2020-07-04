@@ -214,7 +214,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         }
         print(messages);
         return Scaffold(
-          floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
+          // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
           appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
               AppBar(
             title: Text(partnermodel.partnerData.partnerName),
@@ -227,7 +227,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ),
         );
       },
-      autoDispose: null,
+      autoDispose: true,
     );
   }
 }

@@ -24,6 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
     "appUpdateCheck" : MessageLookupByLibrary.simpleMessage("Check App Update"),
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("Auto with system"),
+    "confirmBook" : MessageLookupByLibrary.simpleMessage("Book"),
     "darkMode" : MessageLookupByLibrary.simpleMessage("Dark Mode"),
     "favorites" : MessageLookupByLibrary.simpleMessage("favorite"),
     "feedback" : MessageLookupByLibrary.simpleMessage("Feedback"),
@@ -47,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "signUpPassword" : MessageLookupByLibrary.simpleMessage("Password"),
     "splashSkip" : MessageLookupByLibrary.simpleMessage("Skip"),
     "tabChat" : MessageLookupByLibrary.simpleMessage("Chat"),
-    "tabContacts" : MessageLookupByLibrary.simpleMessage("Contacts"),
+    "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("Home"),
     "tabUser" : MessageLookupByLibrary.simpleMessage("User"),
     "theme" : MessageLookupByLibrary.simpleMessage("Theme"),
@@ -60,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "viewStateMessageEmpty" : MessageLookupByLibrary.simpleMessage("Empty"),
     "viewStateMessageError" : MessageLookupByLibrary.simpleMessage("Load Failed"),
     "viewStateMessageNetworkError" : MessageLookupByLibrary.simpleMessage("Network Error"),
-    "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("Not Sign in yet")
+    "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("Not Sign in yet"),
+    "zzz" : MessageLookupByLibrary.simpleMessage("zzz")
   };
 }

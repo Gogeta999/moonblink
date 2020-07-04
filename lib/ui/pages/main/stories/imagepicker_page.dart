@@ -10,7 +10,8 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
-
+// import 'package:path_provider/path_provider.dart';
+// import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -22,129 +23,157 @@ class ImagePickerPage extends StatefulWidget {
 class _ImagePickerState extends State<ImagePickerPage> {
   final _picker = ImagePicker();
   File _chossingItem;
+  int _fileType;
   bool _uploadDone = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Post Story', style: Theme.of(context).accentTextTheme.headline6),
+        title: Text('Post Story',
+            style: Theme.of(context).accentTextTheme.headline6),
       ),
       body: Column(
         children: <Widget>[
           // Row 1
           Container(
-          height: 75,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-
-              Container(
-                // color: Colors.blue,
-                child: FlatButton(
-                  color: Theme.of(context).accentColor,
-                  child: Text('Camera', style: Theme.of(context).accentTextTheme.button.copyWith(wordSpacing: 5),),
-                  onPressed: () {
-                    _takePhoto();
-                  })
-              ),
-
-              Container(
-                // color: Colors.blue,
-                child: FlatButton(
-                  color: Theme.of(context).accentColor,
-                  child: Text('Gallery', style: Theme.of(context).accentTextTheme.button.copyWith(wordSpacing: 5),),
-                  onPressed: () {
-                    _openGallery();
-                  })
-              ),
-
-              Container(
-                // color: Colors.blue,
-                child: FlatButton(
-                  color: Theme.of(context).accentColor,
-                  child: Text('Video', style: Theme.of(context).accentTextTheme.button.copyWith(wordSpacing: 5),),
-                  onPressed: (){
-                    _pickVideo();
-                  })
-              ),
-
-            ],
+            height: 75,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                    // color: Colors.blue,
+                    child: FlatButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text(
+                          'Camera',
+                          style: Theme.of(context)
+                              .accentTextTheme
+                              .button
+                              .copyWith(wordSpacing: 5),
+                        ),
+                        onPressed: () {
+                          _takePhoto();
+                        })),
+                Container(
+                    // color: Colors.blue,
+                    child: FlatButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text(
+                          'Gallery',
+                          style: Theme.of(context)
+                              .accentTextTheme
+                              .button
+                              .copyWith(wordSpacing: 5),
+                        ),
+                        onPressed: () {
+                          _openGallery();
+                        })),
+                Container(
+                    // color: Colors.blue,
+                    child: FlatButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text(
+                          'Video',
+                          style: Theme.of(context)
+                              .accentTextTheme
+                              .button
+                              .copyWith(wordSpacing: 5),
+                        ),
+                        onPressed: () {
+                          _pickVideo();
+                        })),
+              ],
+            ),
           ),
-        ),
 
-        //Row 2
-        Container(
-          padding: EdgeInsets.only(left: 50, right: 50),
-          height: 80,
-          child: Text('Choose your image or video to post')
-        ),
+          //Row 2
+          Container(
+              padding: EdgeInsets.only(left: 50, right: 50),
+              height: 80,
+              child: Text('Choose your image or video to post')),
 
-        ShowImageWidget(file: _chossingItem),
+          ShowImageWidget(file: _chossingItem),
 
-        RaisedButton(
-        color: Theme.of(context).accentColor,
-        onPressed: () async {
-          setState(() {
-            _uploadDone = !_uploadDone;
-          });
-          var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
-          var storyPath = _chossingItem.path;
-          FormData formData = FormData.fromMap({
-            'body': '',
-            'media': await MultipartFile.fromFile(storyPath, filename: 'xxx.jpg'),
-            'media_type': 1
-          });
-      
-            var response = await DioUtils().postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
-            if(response.errorCode == 1){
+          RaisedButton(
+            color: Theme.of(context).accentColor,
+            onPressed: () async {
               setState(() {
                 _uploadDone = !_uploadDone;
               });
-              Navigator.of(context).pop();
-              // Navigator.of(context).pushNamed(RouteName.network);
-            }
-            // return Story.fromMap(response.data);
-            return response.data;
+              var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
+              var storyPath = _chossingItem.path;
+              FormData formData = FormData.fromMap({
+                'body': '',
+                'media': await MultipartFile.fromFile(storyPath,
+                    filename: 'xxx.jpg'),
+                'media_type': _fileType
+              });
 
-          },
-          child: _uploadDone ? ButtonProgressIndicator() : Text('Upload', style: Theme.of(context).accentTextTheme.button,),
+              var response = await DioUtils().postwithData(
+                  Api.POSTSTORY + '$partnerId/story',
+                  data: formData);
+              if (response.errorCode == 1) {
+                setState(() {
+                  _uploadDone = !_uploadDone;
+                });
+                Navigator.of(context).pop();
+                // Navigator.of(context).pushNamed(RouteName.network);
+              }
+              // return Story.fromMap(response.data);
+              return response.data;
+            },
+            child: _uploadDone
+                ? ButtonProgressIndicator()
+                : Text(
+                    'Upload',
+                    style: Theme.of(context).accentTextTheme.button,
+                  ),
           ),
-
         ],
-              
       ),
-
     );
   }
 
   _takePhoto() async {
-    PickedFile image =
-        await _picker.getImage(source: ImageSource.camera);
+    PickedFile image = await _picker.getImage(source: ImageSource.camera);
     setState(() {
       // this._uploadImage(image);
       _chossingItem = File(image.path);
+      _fileType = 1;
     });
   }
 
   _openGallery() async {
-    var image =
-        await _picker.getImage(source: ImageSource.gallery, maxWidth: 300, maxHeight: 300);
+    var image = await _picker.getImage(
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 300);
 
     setState(() {
       // this._uploadImage(image);
       _chossingItem = File(image.path);
+      _fileType = 1;
     });
   }
 
-  _pickVideo() async{
-    var video = await _picker.getVideo(source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
-  
+  _pickVideo() async {
+    PickedFile video = await _picker.getVideo(
+        source: ImageSource.camera, maxDuration: Duration(seconds: 2));
+    // var video = await _picker.getVideo(
+    //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
+
     setState(() {
       _chossingItem = File(video.path);
+      _fileType = 2;
     });
+    // final uint8list = await VideoThumbnail.thumbnailFile(
+    //   video:
+    //       "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+    //   thumbnailPath: (await getTemporaryDirectory()).path,
+    //   imageFormat: ImageFormat.WEBP,
+    //   maxHeight:
+    //       64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+    //   quality: 75,
+    // );
   }
-
-
 }
 
 class ShowImageWidget extends StatelessWidget {
@@ -152,15 +181,13 @@ class ShowImageWidget extends StatelessWidget {
   final file;
   @override
   Widget build(BuildContext context) {
-    if(this.file != null){
+    if (this.file != null) {
       return Container(
         height: 300,
         child: Image.file(file),
       );
     }
-    return Container(
-      
-    );
+    return Container();
   }
 }
 
@@ -171,11 +198,11 @@ class ShowImageWidget extends StatelessWidget {
 //   final uploadDone = false;
 //   @override
 //   Widget build(BuildContext context) {
-    
+
 //     return RaisedButton(
 //       color: Theme.of(context).accentColor,
 //       onPressed: () async {
-//         // uploadDone = !uploadDone; 
+//         // uploadDone = !uploadDone;
 //         var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
 //         var storyPath = story.path;
 //         FormData formData = FormData.fromMap({
@@ -183,7 +210,7 @@ class ShowImageWidget extends StatelessWidget {
 //           'media': await MultipartFile.fromFile(storyPath, filename: 'xxx.jpg'),
 //           'media_type': 1
 //         });
-    
+
 //           var response = await DioUtils().postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
 //           if(response.errorCode == 1){
 //             // Navigator.of(context).pop();
@@ -199,6 +226,3 @@ class ShowImageWidget extends StatelessWidget {
 
 //   }
 // }
-
-
-

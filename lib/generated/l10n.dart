@@ -63,6 +63,36 @@ class S {
     );
   }
 
+  /// `Book`
+  String get confirmBook {
+    return Intl.message(
+      'Book',
+      name: 'confirmBook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dark Mode`
+  String get darkMode {
+    return Intl.message(
+      'Dark Mode',
+      name: 'darkMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `favorite`
+  String get favorites {
+    return Intl.message(
+      'favorite',
+      name: 'favorites',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Feedback`
   String get feedback {
     return Intl.message(
@@ -83,16 +113,6 @@ class S {
     );
   }
 
-  /// `Logout`
-  String get logout {
-    return Intl.message(
-      'Logout',
-      name: 'logout',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Email`
   String get loginMail {
     return Intl.message(
@@ -108,6 +128,16 @@ class S {
     return Intl.message(
       'Password',
       name: 'loginPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
       desc: '',
       args: [],
     );
@@ -283,11 +313,11 @@ class S {
     );
   }
 
-  /// `Contacts`
-  String get tabContacts {
+  /// `Following`
+  String get tabFollowing {
     return Intl.message(
-      'Contacts',
-      name: 'tabContacts',
+      'Following',
+      name: 'tabFollowing',
       desc: '',
       args: [],
     );
@@ -298,16 +328,6 @@ class S {
     return Intl.message(
       'User',
       name: 'tabUser',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign In`
-  String get toSignIn {
-    return Intl.message(
-      'Sign In',
-      name: 'toSignIn',
       desc: '',
       args: [],
     );
@@ -333,31 +353,21 @@ class S {
     );
   }
 
+  /// `Sign In`
+  String get toSignIn {
+    return Intl.message(
+      'Sign In',
+      name: 'toSignIn',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please Sign Up`
   String get toSignUp {
     return Intl.message(
       'Please Sign Up',
       name: 'toSignUp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `favorite`
-  String get favorites {
-    return Intl.message(
-      'favorite',
-      name: 'favorites',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Dark Mode`
-  String get darkMode {
-    return Intl.message(
-      'Dark Mode',
-      name: 'darkMode',
       desc: '',
       args: [],
     );
@@ -432,6 +442,16 @@ class S {
       args: [],
     );
   }
+
+  /// `zzz`
+  String get zzz {
+    return Intl.message(
+      'zzz',
+      name: 'zzz',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -440,6 +460,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'mm'),
     ];
   }
 

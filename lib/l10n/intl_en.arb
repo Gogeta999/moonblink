@@ -39,5 +39,6 @@
     "viewStateMessageEmpty": "Empty",
     "viewStateMessageUnAuth": "Not Sign in yet",
     "viewStateMessageNetworkError": "Network Error",
-    "viewStateMessageError": "Load Failed"
+    "viewStateMessageError": "Load Failed",
+    "zzz": "zzz"
 }

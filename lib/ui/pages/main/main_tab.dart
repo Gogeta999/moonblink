@@ -65,7 +65,7 @@ class _MainTabPageState extends State<MainTabPage>
               title: S.of(context).tabChat),
           TabData(
               iconData: FontAwesomeIcons.calendar,
-              title: S.of(context).tabContacts),
+              title: S.of(context).tabFollowing),
           TabData(
               iconData: FontAwesomeIcons.userAlt, title: S.of(context).tabUser),
         ],
