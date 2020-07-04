@@ -113,7 +113,12 @@ class DioUtils {
         // debugPrint('assetJson-->result---<$emptyData');
         // return emptyData;
         return response;
-      } else {
+      }
+      // 111 status is for newest user to see home page
+      // else if (respData.errorCode == 111) {
+      //   var newsetStory = {};
+      // }
+      else {
         throw NotSuccessException.fromRespData(respData);
       }
     }

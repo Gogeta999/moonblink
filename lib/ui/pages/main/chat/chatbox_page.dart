@@ -6,14 +6,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/call/callerscreen.dart';
-import 'package:moonblink/view_model/contact_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -49,7 +47,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   bool img = false;
   // bool local = false;
   List<Message> messages = [];
-  List<Contact> contacts = [];
   String now = DateTime.now().toString();
   String filename;
   File _image;
@@ -82,7 +79,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     _createPeerConnection();
   }
 
-  //build message
+  //build messages
   Widget buildSingleMessage(Message message) {
     if(message.attach != ""){ img = true;}
     return Container(
@@ -90,27 +87,26 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ? Alignment.centerLeft
           : Alignment.centerRight,
       // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-      padding: EdgeInsets.all(10.0),
-      width: 100,
+      // padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.all(10.0),
-      // decoration: BoxDecoration(
-      // color: Theme.of(context).accentColor,
-      // borderRadius: message.senderID == widget.detailPageId
-      //   ? BorderRadius.only(
-      //     topLeft: Radius.circular(15.0),
-      //     bottomLeft: Radius.circular(15.0),
-      //   )
-      //   : BorderRadius.only(
-      //     topRight: Radius.circular(15.0),
-      //     bottomRight: Radius.circular(15.0),
-      //   ),
-      // ),
-      child: Column(
-        children: <Widget>[
-          Text(message.text),
-          img ? buildimage(message) : Text("")        
-      ],)
+      child: img ? buildimage(message) : buildmsg(message)        
     );
+  }
+  //build msg template
+  buildmsg(Message msg){
+    return Container(
+      width: 150,
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).accentColor,
+          borderRadius: msg.senderID == widget.detailPageId
+            ? BorderRadius.all(Radius.circular(15.0),
+            )
+            : BorderRadius.all(Radius.circular(15.0),
+            ),
+          ),
+          child: Text(msg.text),
+      );
   }
 
   //build image
@@ -127,6 +123,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       fit: BoxFit.fill),
     );
   }
+  
   //Send message
   Widget buildmessage(id) {
     return ScopedModelDescendant<ChatModel>(
@@ -148,6 +145,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ),
           Expanded(
             child: TextField(
+              maxLines: null,
               textCapitalization: TextCapitalization.sentences,
               controller: textEditingController,
               decoration: InputDecoration.collapsed(
@@ -222,47 +220,42 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<ContactModel, GetmsgModel>(
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
       autoDispose: true,
-      model1: ContactModel(),
+      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
       model2: GetmsgModel(widget.detailPageId),
-      onModelReady: (contactModel, msgModel) {
-        contactModel.initData();
+      onModelReady: (partnerModel, msgModel) {
+        partnerModel.initData();
         msgModel.initData();
       },
-      builder: (context, contactmodel, msgmodel, child) {
-        if (contactmodel.isBusy && msgmodel.isBusy) {
+      builder: (context, partnermodel, msgmodel, child) {
+        if (partnermodel.isBusy && msgmodel.isBusy) {
           return ViewStateBusyWidget();
-        } else if (contactmodel.isError && msgmodel.isError) {
+        } else if (partnermodel.isError && msgmodel.isError) {
           return ViewStateErrorWidget(
-              error: contactmodel.viewStateError,
+              error: partnermodel.viewStateError,
               onPressed: () {
-                contactmodel.initData();
+                partnermodel.initData();
                 msgmodel.initData();
               });
         }
         print(msgmodel.list.length);
       for (var i = 0; i < msgmodel.list.length; i++) {
         Lastmsg msgs = msgmodel.list[i];
-        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now, msgs.attach));      
+        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now, msgs.attach));
+        
       }
-      for (var i = 0; i < contactmodel.list.length; i++) {
-        Contact contact = contactmodel.list[i];
-        contacts.add(contact);
-      }
-      var contact = contacts.where((user) => user.userId == widget.detailPageId);
       print(messages);
-      print(contact);
       return Scaffold(
         // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
       appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
       AppBar(
-        title: Text(""),
+        title: Text(partnermodel.partnerData.partnerName),
       ),
       body: ListView(
         children: <Widget>[
-          buildChatList(5),
-          buildmessage(5),
+          buildChatList(partnermodel.partnerData.partnerId),
+          buildmessage(partnermodel.partnerData.partnerId),
         ],
       ),
       );
