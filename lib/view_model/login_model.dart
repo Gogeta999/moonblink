@@ -37,9 +37,10 @@ class LoginModel extends ViewStateModel {
     String fcmToken = StorageManager.sharedPreferences.getString(FCMToken);
     try {
       var user;
-      if (type == 'email' && mail != null && password != null) {
+      if (type == 'email' && mail != null && password != null && fcmToken != null) {
         user = await MoonBlinkRepository.login(mail, password, fcmToken);
-      } else if (type == 'google') {
+      } else if (type == 'google' && fcmToken != null) {
+        await _googleSignIn.signOut();
         GoogleSignInAccount googleUser = await _googleSignIn.signIn();
         if(googleUser != null){
           //user cancelled login
@@ -47,7 +48,7 @@ class LoginModel extends ViewStateModel {
           user = await MoonBlinkRepository.loginWithGoogle(
               auth.accessToken, fcmToken);
         }
-      } else if (type == 'facebook') {
+      } else if (type == 'facebook' && fcmToken != null) {
         final FacebookLoginResult result =
             await _facebookLogin.logIn(['email']);
         switch (result.status) {

@@ -72,7 +72,7 @@ class _BookingButtonState extends State<BookingButton> {
   }
 
   ///[Request offer]
-  void waitingoffer(context, model) {
+  void waitingoffer(context, BookingModel model) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -90,7 +90,7 @@ class _BookingButtonState extends State<BookingButton> {
               FlatButton(
                   child: new Text("Cancel"),
                   onPressed: () {
-                    model.isEmpty();
+                    model.isEmpty;
                     Navigator.pop(context, 'Cancel');
                   })
             ],

@@ -16,6 +16,9 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'services/locator.dart';
+import 'services/navigation_service.dart';
+
 String usertoken = StorageManager.sharedPreferences.getString(token);
 StreamController<String> streamController = new StreamController();
 
@@ -27,6 +30,7 @@ main() async {
     // BackgroundFetch.registerHeadlessTask(chatinits);
 
   }
+  setupLocator();
   runApp(MyApp());
   // android's statusbar will change with theme
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -35,6 +39,7 @@ main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return OKToast(
@@ -58,6 +63,7 @@ class MyApp extends StatelessWidget {
                 supportedLocales: S.delegate.supportedLocales,
                 onGenerateRoute: Router.generateRoute,
                 initialRoute: RouteName.splash,
+                navigatorKey: locator<NavigationService>().navigatorKey,
               ));
         }),
       ),
