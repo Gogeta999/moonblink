@@ -43,16 +43,16 @@ class PageState extends State<NetWorkPage> {
               onPressed: () {
                 loginPost();
               }),
-          MaterialButton(
-            color: Colors.red,
-            child: Text("test Notifications"),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LocalNotifications()));
-            },
-          ),
+          // MaterialButton(
+          //   color: Colors.red,
+          //   child: Text("test Notifications"),
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => LocalNotifications()));
+          //   },
+          // ),
           GestureDetector(
             child: Container(
               alignment: Alignment.center,

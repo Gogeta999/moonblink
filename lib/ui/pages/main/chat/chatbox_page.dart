@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,8 +44,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   PartnerUser partnerdata;
   Uint8List bytes;
   RTCPeerConnection pc;
+  bool img = false;
+  // bool local = false;
   List<Message> messages = [];
   String now = DateTime.now().toString();
+  String filename;
+  File _image;
+
   // ByteData _byteData;
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
@@ -53,7 +59,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
-      File _image = File(pickedFile.path);
+      _image = File(pickedFile.path);
+      filename = _image.path;
       bytes = _image.readAsBytesSync();
       print(bytes);
       // _byteData = ByteData.view(bytes.buffer);
@@ -74,25 +81,50 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //build message
   Widget buildSingleMessage(Message message) {
+    if (message.attach != "") {
+      img = true;
+    }
     return Container(
-      alignment: message.senderID == widget.detailPageId
-          ? Alignment.centerLeft
-          : Alignment.centerRight,
-      padding: EdgeInsets.all(10.0),
-      margin: EdgeInsets.all(10.0),
-      child: Text(message.text),
-    );
+        alignment: message.senderID == widget.detailPageId
+            ? Alignment.centerLeft
+            : Alignment.centerRight,
+        // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+        padding: EdgeInsets.all(10.0),
+        width: 100,
+        margin: EdgeInsets.all(10.0),
+        // decoration: BoxDecoration(
+        // color: Theme.of(context).accentColor,
+        // borderRadius: message.senderID == widget.detailPageId
+        //   ? BorderRadius.only(
+        //     topLeft: Radius.circular(15.0),
+        //     bottomLeft: Radius.circular(15.0),
+        //   )
+        //   : BorderRadius.only(
+        //     topRight: Radius.circular(15.0),
+        //     bottomRight: Radius.circular(15.0),
+        //   ),
+        // ),
+        child: Column(
+          children: <Widget>[
+            Text(message.text),
+            img ? buildimage(message) : Text("")
+          ],
+        ));
   }
 
-  //show File
-  Widget buildfile(Files file) {
+  //build image
+  buildimage(Message msg) {
+    img = false;
+    // local = false;
     return Container(
-      alignment: file.senderID == widget.detailPageId
-          ? Alignment.centerLeft
-          : Alignment.centerRight,
-      padding: EdgeInsets.all(10.0),
-      margin: EdgeInsets.all(10.0),
-      child: Text(file.name),
+      height: 100,
+      width: 100,
+      child:
+          Image.network(msg.attach, loadingBuilder: (context, child, progress) {
+        return progress == null
+            ? child
+            : SpinKitCircle(color: Theme.of(context).accentColor);
+      }, fit: BoxFit.fill),
     );
   }
 
@@ -102,13 +134,14 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: 70.0,
-        color: Colors.white,
+        //color: Theme.of(context).backgroundColor,
+
         child: Row(
           children: <Widget>[
             IconButton(
               icon: Icon(FontAwesomeIcons.image),
               iconSize: 30.0,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).accentColor,
               onPressed: () {
                 getImage();
               },
@@ -123,7 +156,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               ),
             ),
             IconButton(
-              icon: Icon(FontAwesomeIcons.circle),
+              icon: Icon(FontAwesomeIcons.upload),
               iconSize: 30.0,
               color: Theme.of(context).accentColor,
               onPressed: () {
@@ -133,11 +166,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     textEditingController.text = '';
                   }
                 } else {
-                  if (bytes != null) {
-                    model.filemessage(textEditingController.text, bytes, id);
-                    textEditingController.text = null;
-                    bytes = null;
-                  }
+                  model.sendfile(filename, bytes, id, messages);
+                  textEditingController.text = '';
+                  bytes = null;
                 }
               },
             ),
@@ -153,8 +184,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       builder: (context, child, model) {
         // List<Message> msgs = model.getMessagesForChatID(id);
         // messages.addAll(msgs);
+        model.receiver(messages);
         return Container(
-          height: MediaQuery.of(context).size.height * 0.75,
+          height: MediaQuery.of(context).size.height * 0.8,
           child: ListView.builder(
             reverse: true,
             itemCount: messages.length,
@@ -190,44 +222,44 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
-      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
-      model2: GetmsgModel(widget.detailPageId),
-      onModelReady: (partnerModel, msgModel) {
-        partnerModel.initData();
-        msgModel.initData();
-      },
-      builder: (context, partnermodel, msgmodel, child) {
-        if (partnermodel.isBusy && msgmodel.isBusy) {
-          return ViewStateBusyWidget();
-        } else if (partnermodel.isError && msgmodel.isError) {
-          return ViewStateErrorWidget(
-              error: partnermodel.viewStateError,
-              onPressed: () {
-                partnermodel.initData();
-                msgmodel.initData();
-              });
-        }
-        print(msgmodel.list.length);
-        for (var i = 0; i < msgmodel.list.length; i++) {
-          Lastmsg msgs = msgmodel.list[i];
-          messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now));
-        }
-        print(messages);
-        return Scaffold(
-          // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
-          appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-              AppBar(
-            title: Text(partnermodel.partnerData.partnerName),
-          ),
-          body: ListView(
-            children: <Widget>[
-              buildChatList(partnermodel.partnerData.partnerId),
-              buildmessage(partnermodel.partnerData.partnerId),
-            ],
-          ),
-        );
-      },
-      autoDispose: true,
-    );
+        autoDispose: true,
+        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+        model2: GetmsgModel(widget.detailPageId),
+        onModelReady: (partnerModel, msgModel) {
+          partnerModel.initData();
+          msgModel.initData();
+        },
+        builder: (context, partnermodel, msgmodel, child) {
+          if (partnermodel.isBusy && msgmodel.isBusy) {
+            return ViewStateBusyWidget();
+          } else if (partnermodel.isError && msgmodel.isError) {
+            return ViewStateErrorWidget(
+                error: partnermodel.viewStateError,
+                onPressed: () {
+                  partnermodel.initData();
+                  msgmodel.initData();
+                });
+          }
+          print(msgmodel.list.length);
+          for (var i = 0; i < msgmodel.list.length; i++) {
+            Lastmsg msgs = msgmodel.list[i];
+            messages.add(Message(
+                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
+          }
+          print(messages);
+          return Scaffold(
+            // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
+            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+                AppBar(
+              title: Text(partnermodel.partnerData.partnerName),
+            ),
+            body: ListView(
+              children: <Widget>[
+                buildChatList(partnermodel.partnerData.partnerId),
+                buildmessage(partnermodel.partnerData.partnerId),
+              ],
+            ),
+          );
+        });
   }
 }

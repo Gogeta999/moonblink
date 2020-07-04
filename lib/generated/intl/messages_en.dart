@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "favorites" : MessageLookupByLibrary.simpleMessage("favorite"),
     "feedback" : MessageLookupByLibrary.simpleMessage("Feedback"),
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("Can\'t be empty"),
+    "hello" : MessageLookupByLibrary.simpleMessage("hello"),
     "loginMail" : MessageLookupByLibrary.simpleMessage("Email"),
     "loginPassword" : MessageLookupByLibrary.simpleMessage("Password"),
     "logout" : MessageLookupByLibrary.simpleMessage("Logout"),

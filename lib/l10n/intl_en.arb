@@ -40,5 +40,9 @@
     "viewStateMessageUnAuth": "Not Sign in yet",
     "viewStateMessageNetworkError": "Network Error",
     "viewStateMessageError": "Load Failed",
+<<<<<<< HEAD
     "zzz": "zzz"
+=======
+    "hello": "hello"
+>>>>>>> 70a547429c402624dddd0a0820453e2c7ce4b924
 }
