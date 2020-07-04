@@ -6,12 +6,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/call/callerscreen.dart';
+import 'package:moonblink/view_model/contact_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -47,6 +49,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   bool img = false;
   // bool local = false;
   List<Message> messages = [];
+  List<Contact> contacts = [];
   String now = DateTime.now().toString();
   String filename;
   File _image;
@@ -219,42 +222,47 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+    return ProviderWidget2<ContactModel, GetmsgModel>(
       autoDispose: true,
-      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+      model1: ContactModel(),
       model2: GetmsgModel(widget.detailPageId),
-      onModelReady: (partnerModel, msgModel) {
-        partnerModel.initData();
+      onModelReady: (contactModel, msgModel) {
+        contactModel.initData();
         msgModel.initData();
       },
-      builder: (context, partnermodel, msgmodel, child) {
-        if (partnermodel.isBusy && msgmodel.isBusy) {
+      builder: (context, contactmodel, msgmodel, child) {
+        if (contactmodel.isBusy && msgmodel.isBusy) {
           return ViewStateBusyWidget();
-        } else if (partnermodel.isError && msgmodel.isError) {
+        } else if (contactmodel.isError && msgmodel.isError) {
           return ViewStateErrorWidget(
-              error: partnermodel.viewStateError,
+              error: contactmodel.viewStateError,
               onPressed: () {
-                partnermodel.initData();
+                contactmodel.initData();
                 msgmodel.initData();
               });
         }
         print(msgmodel.list.length);
       for (var i = 0; i < msgmodel.list.length; i++) {
         Lastmsg msgs = msgmodel.list[i];
-        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now, msgs.attach));
-        
+        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now, msgs.attach));      
       }
+      for (var i = 0; i < contactmodel.list.length; i++) {
+        Contact contact = contactmodel.list[i];
+        contacts.add(contact);
+      }
+      var contact = contacts.where((user) => user.userId == widget.detailPageId);
       print(messages);
+      print(contact);
       return Scaffold(
         // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
       appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
       AppBar(
-        title: Text(partnermodel.partnerData.partnerName),
+        title: Text(""),
       ),
       body: ListView(
         children: <Widget>[
-          buildChatList(partnermodel.partnerData.partnerId),
-          buildmessage(partnermodel.partnerData.partnerId),
+          buildChatList(5),
+          buildmessage(5),
         ],
       ),
       );
