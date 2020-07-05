@@ -52,6 +52,8 @@ dependencies:
   flutter_facebook_login: ^3.0.0 #complete for both
   # FCM
   firebase_messaging: ^6.0.16
+  # This is a simple Service Locator for Dart and Flutter projects with some additional goodies highly inspired by Splat. It can be used instead of InheritedWidget or Provider to access objects e.g. from your UI.
+  get_it: ^4.0.2
 
   common_utils: ^1.2.1
 

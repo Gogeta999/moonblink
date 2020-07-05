@@ -35,8 +35,13 @@ class _BookingButtonState extends State<BookingButton> {
                     if (model.isError) {
                       print("Error Booking");
                     } else {
-                      model.booking().then((value) =>
-                          value ? waitingoffer(context, model) : null);
+                      model.booking().then((value) => value
+                          ? {
+                              Navigator.pop(context,
+                                  'Cancel'), //remove booking dialog and open another
+                              waitingoffer(context, model)
+                            }
+                          : null);
                     }
                     //api call
                   })
@@ -67,7 +72,7 @@ class _BookingButtonState extends State<BookingButton> {
   }
 
   ///[Request offer]
-  void waitingoffer(context, model) {
+  void waitingoffer(context, BookingModel model) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -85,7 +90,7 @@ class _BookingButtonState extends State<BookingButton> {
               FlatButton(
                   child: new Text("Cancel"),
                   onPressed: () {
-                    model.isEmpty();
+                    model.isEmpty;
                     Navigator.pop(context, 'Cancel');
                   })
             ],

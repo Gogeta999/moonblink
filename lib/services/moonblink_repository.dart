@@ -84,23 +84,24 @@ class MoonBlinkRepository {
 
   /// [login api]
   //login with email & password
-  static Future login(String mail, String password) async {
+  static Future login(String mail, String password, String fcmToken) async {
     var response = await DioUtils().post(Api.LOGIN, queryParameters: {
       'mail': mail,
       'password': password,
+      'fcm_token': fcmToken
     });
     return User.fromJsonMap(response.data);
   }
 
-  static Future loginWithFacebook(String token) async {
+  static Future loginWithFacebook(String token, String fcmToken) async {
     var response = await DioUtils().post(Api.LOGIN,
-        queryParameters: {'access_token': token, 'type': 'facebook'});
+        queryParameters: {'access_token': token, 'type': 'facebook', 'fcm_token': fcmToken});
     return User.fromJsonMap(response.data);
   }
 
-  static Future loginWithGoogle(String token) async {
+  static Future loginWithGoogle(String token, String fcmToken) async {
     var response = await DioUtils().post(Api.LOGIN,
-        queryParameters: {'access_token': token, 'type': 'google'});
+        queryParameters: {'access_token': token, 'type': 'google', 'fcm_token': fcmToken});
     return User.fromJsonMap(response.data);
   }
 
@@ -152,7 +153,7 @@ class MoonBlinkRepository {
   static Future booking() async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils()
-        .post(Api.Booking + '$userid/booking', queryParameters: {});
+        .post(Api.Booking + '$userid/booking');
     return response.data;
   }
 
