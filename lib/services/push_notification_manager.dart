@@ -2,7 +2,13 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
+import 'package:moonblink/view_model/login_model.dart';
+
+import 'locator.dart';
+import 'navigation_service.dart';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -13,7 +19,7 @@ class PushNotificationsManager {
       PushNotificationsManager._();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
@@ -28,24 +34,47 @@ class PushNotificationsManager {
     if (message.containsKey('notification')) {
       // Handle notification message
       final dynamic notification = message['notification'];
-      print(notification);
+      PushNotificationsManager()._showNotification(notification);
+      print('myBackgroundMessageHandler: $notification');
     }
     return null;
     // Or do other work.
   }
 
-  void _configLocalNotification() {
+  Future<void> removeFcmToken() async {
+    //await StorageManager.sharedPreferences.remove(FCMToken);
+    //actually storing new fcm token
+    await _firebaseMessaging.deleteInstanceID();
+    saveFcmToken();
+  }
+
+  Future<void> saveFcmToken() async {
+    _firebaseMessaging
+        .getToken()
+        .then((token) async =>
+            await StorageManager.sharedPreferences.setString(FCMToken, token))
+        .then((value) => print(StorageManager.sharedPreferences.getString(FCMToken)));
+  }
+
+  Future<void> _configLocalNotification() async {
+    Future<void> onSelectNotification(String payload) async {
+      if (payload != null) {
+        print('notification payload: ' + payload);
+        locator<NavigationService>().navigateToAndReplace(RouteName.main, arguments: 1);
+      }
+    }
+
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('@mipmap/moonblink');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
   }
 
-  void _registerNotification() {
+  Future<void> _registerNotification() async {
     // For iOS request permission first.
-    _firebaseMessaging.requestNotificationPermissions();
+    await _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) {
           print('onMessage: $message');
@@ -56,21 +85,25 @@ class PushNotificationsManager {
         },
         onBackgroundMessage: _myBackgroundMessageHandler,
         onResume: (Map<String, dynamic> message) {
-          print('onResumse: $message');
+          print('onResume: $message');
+          //final page = message['body']['page'];
+          //print('onReumse: $page');
+          locator<NavigationService>().navigateToAndReplace(RouteName.main, arguments: 1);
           return;
         },
         onLaunch: (Map<String, dynamic> message) {
           print('onLaunch: $message');
           return;
         });
-
-    _firebaseMessaging.getToken().then((token) {
-      print('token: $token');
-      //send token to backend
+    //testing
+    _firebaseMessaging.onTokenRefresh.listen((event) async {
+      print('onTokenRefresh $event');
     });
+
+    saveFcmToken();
   }
 
-  void _showNotification(message) async {
+  Future<void> _showNotification(message) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
       'Moon Blink',
@@ -81,21 +114,22 @@ class PushNotificationsManager {
       priority: Priority.High,
     );
 
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true);
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     print(message);
-
-    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+    await _flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
         payload: json.encode(message));
   }
 
   Future<void> init() async {
     if (!_initialized) {
-      _configLocalNotification();
-      _registerNotification();
+      print('FCM initializing');
+      await _configLocalNotification();
+      await _registerNotification();
       _initialized = true;
     }
   }

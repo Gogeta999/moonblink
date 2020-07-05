@@ -49,7 +49,7 @@ class Router {
       case RouteName.splash:
         return NoAnimRouteBuilder(SplashPage());
       case RouteName.main:
-        return NoAnimRouteBuilder(MainTabPage());
+        return NoAnimRouteBuilder(MainTabPage(initPage: settings.arguments != null ? settings.arguments : 0));
       case RouteName.userStatus:
         return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:

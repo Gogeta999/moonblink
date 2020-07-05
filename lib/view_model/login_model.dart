@@ -3,12 +3,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';
 // save token to pass our server
 const String token = 'token';
+const String FCMToken = 'FCM Token';
 const String mUserType = 'mUserType';
 const String mUserId = 'mUserId';
 const String mLoginMail = 'mLoginMail';
@@ -32,19 +34,21 @@ class LoginModel extends ViewStateModel {
 
   Future<bool> login(String mail, String password, String type) async {
     setBusy();
+    String fcmToken = StorageManager.sharedPreferences.getString(FCMToken);
     try {
       var user;
-      if (type == 'email' && mail != null && password != null) {
-        user = await MoonBlinkRepository.login(mail, password);
-      } else if (type == 'google') {
+      if (type == 'email' && mail != null && password != null && fcmToken != null) {
+        user = await MoonBlinkRepository.login(mail, password, fcmToken);
+      } else if (type == 'google' && fcmToken != null) {
+        await _googleSignIn.signOut();
         GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-
-        if (googleUser != null) {
+        if(googleUser != null){
           //user cancelled login
           GoogleSignInAuthentication auth = await googleUser.authentication;
-          user = await MoonBlinkRepository.loginWithGoogle(auth.accessToken);
+          user = await MoonBlinkRepository.loginWithGoogle(
+              auth.accessToken, fcmToken);
         }
-      } else if (type == 'facebook') {
+      } else if (type == 'facebook' && fcmToken != null) {
         final FacebookLoginResult result =
             await _facebookLogin.logIn(['email']);
         switch (result.status) {
@@ -52,7 +56,7 @@ class LoginModel extends ViewStateModel {
             print('case loggedIn');
             final FacebookAccessToken accessToken = result.accessToken;
             user =
-                await MoonBlinkRepository.loginWithFacebook(accessToken.token);
+                await MoonBlinkRepository.loginWithFacebook(accessToken.token, fcmToken);
             break;
           case FacebookLoginStatus.cancelledByUser:
             print('case cancelledByUser');
@@ -69,7 +73,7 @@ class LoginModel extends ViewStateModel {
         setIdle();
         return false;
       }
-      if (user != null) {
+      if(user != null){
         userModel.saveUser(user);
         StorageManager.sharedPreferences.setString(token, userModel.user.token);
         StorageManager.sharedPreferences
@@ -78,7 +82,7 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
         setIdle();
         return true;
-      } else {
+      }else{
         setIdle();
         return false;
       }
@@ -95,6 +99,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
+      await PushNotificationsManager().removeFcmToken();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

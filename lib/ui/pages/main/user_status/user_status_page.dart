@@ -98,9 +98,9 @@ class UserHeaderWidget extends StatelessWidget {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.partnerOwnProfile);
                               }
-                              // else if(model.user == null){
-                              //   Navigator.of(context).pushNamed(RouteName.login);
-                              // }
+                              else if(model.user == null){
+                                Navigator.of(context).pushNamed(RouteName.login);
+                              }
                             },
                             child: Hero(
                               tag: 'loginLogo',
@@ -137,7 +137,7 @@ class UserHeaderWidget extends StatelessWidget {
                           Column(children: <Widget>[
                             Text(
                                 model.hasUser
-                                    ? model.user.id.toString()
+                                    ? model.user.name.toString()
                                     : S.of(context).toSignIn,
                                 style: Theme.of(context)
                                     .textTheme

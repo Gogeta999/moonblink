@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
@@ -17,18 +18,33 @@ List<Widget> pages = <Widget>[
 ];
 
 class MainTabPage extends StatefulWidget {
-  MainTabPage({Key key}) : super(key: key);
+  final int initPage;
+  MainTabPage({Key key, this.initPage}) : super(key: key);
 
   @override
-  _MainTabPageState createState() => _MainTabPageState();
+  _MainTabPageState createState() => _MainTabPageState(initPage);
 }
 
 class _MainTabPageState extends State<MainTabPage>
     with SingleTickerProviderStateMixin {
-  var _pageController = PageController();
+  var _pageController;
   // ignore: unused_field
+  final int initPage;
   int _selectedIndex = 0;
   DateTime _lastPressed;
+
+  _MainTabPageState(this.initPage);
+
+  @override
+  void initState() {
+    PushNotificationsManager().init();
+    setState(() {
+      _pageController =
+          PageController(initialPage: initPage);
+      _selectedIndex = initPage;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +85,7 @@ class _MainTabPageState extends State<MainTabPage>
           TabData(
               iconData: FontAwesomeIcons.userAlt, title: S.of(context).tabUser),
         ],
+        initialSelection: initPage,
         circleHeight: 50,
         arcHeight: 55,
         arcWidth: 80,
