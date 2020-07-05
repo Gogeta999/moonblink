@@ -75,7 +75,7 @@ class PartnerUser {
 class PartnerProfile {
   int partnerId;
   int userId;
-  int phone;
+  String phone;
   String mail;
   String address;
   String profileImage;

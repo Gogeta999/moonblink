@@ -79,37 +79,34 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     _createPeerConnection();
   }
 
-  //build message
+  //build messages
   Widget buildSingleMessage(Message message) {
-    if (message.attach != "") {
-      img = true;
-    }
+    if(message.attach != ""){ img = true;}
     return Container(
-        alignment: message.senderID == widget.detailPageId
-            ? Alignment.centerLeft
-            : Alignment.centerRight,
-        // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+      alignment: message.senderID == widget.detailPageId
+          ? Alignment.centerLeft
+          : Alignment.centerRight,
+      // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+      // padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(10.0),
+      child: img ? buildimage(message) : buildmsg(message)        
+    );
+  }
+  //build msg template
+  buildmsg(Message msg){
+    return Container(
+      width: 150,
         padding: EdgeInsets.all(10.0),
-        width: 100,
-        margin: EdgeInsets.all(10.0),
-        // decoration: BoxDecoration(
-        // color: Theme.of(context).accentColor,
-        // borderRadius: message.senderID == widget.detailPageId
-        //   ? BorderRadius.only(
-        //     topLeft: Radius.circular(15.0),
-        //     bottomLeft: Radius.circular(15.0),
-        //   )
-        //   : BorderRadius.only(
-        //     topRight: Radius.circular(15.0),
-        //     bottomRight: Radius.circular(15.0),
-        //   ),
-        // ),
-        child: Column(
-          children: <Widget>[
-            Text(message.text),
-            img ? buildimage(message) : Text("")
-          ],
-        ));
+        decoration: BoxDecoration(
+          color: Theme.of(context).accentColor,
+          borderRadius: msg.senderID == widget.detailPageId
+            ? BorderRadius.all(Radius.circular(15.0),
+            )
+            : BorderRadius.all(Radius.circular(15.0),
+            ),
+          ),
+          child: Text(msg.text),
+      );
   }
 
   //build image
@@ -119,58 +116,60 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       height: 100,
       width: 100,
-      child:
-          Image.network(msg.attach, loadingBuilder: (context, child, progress) {
-        return progress == null
-            ? child
-            : SpinKitCircle(color: Theme.of(context).accentColor);
-      }, fit: BoxFit.fill),
+      child: Image.network(msg.attach,
+      loadingBuilder: (context, child, progress){
+        return progress == null ? child : SpinKitCircle(color: Theme.of(context).accentColor);
+      },
+      fit: BoxFit.fill),
     );
   }
-
+  
   //Send message
   Widget buildmessage(id) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: 70.0,
-        //color: Theme.of(context).backgroundColor,
+    return ScopedModelDescendant<ChatModel>(
+    builder: (context, child, model) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      height: 70.0,
+      //color: Theme.of(context).backgroundColor,
 
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(FontAwesomeIcons.image),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                getImage();
-              },
-            ),
-            Expanded(
-              child: TextField(
-                textCapitalization: TextCapitalization.sentences,
-                controller: textEditingController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Input message',
-                ),
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(FontAwesomeIcons.image),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              getImage();
+            },
+          ),
+          Expanded(
+            child: TextField(
+              maxLines: null,
+              textCapitalization: TextCapitalization.sentences,
+              controller: textEditingController,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Input message',
               ),
             ),
-            IconButton(
-              icon: Icon(FontAwesomeIcons.upload),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                if (bytes == null) {
-                  if (textEditingController.text != '') {
-                    model.sendMessage(textEditingController.text, id, messages);
-                    textEditingController.text = '';
-                  }
-                } else {
-                  model.sendfile(filename, bytes, id, messages);
-                  textEditingController.text = '';
-                  bytes = null;
+          ),
+          IconButton(
+            icon: Icon(FontAwesomeIcons.upload),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              if (bytes ==null) {
+                if(textEditingController.text != ''){
+                model.sendMessage(
+                textEditingController.text, id, messages);
+                textEditingController.text = '';
                 }
-              },
+              }
+              else{
+                model.sendfile(filename, bytes, id, messages);
+                textEditingController.text = '';
+                bytes = null;  
+              }},
             ),
           ],
         ),
@@ -222,44 +221,45 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
-        autoDispose: true,
-        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
-        model2: GetmsgModel(widget.detailPageId),
-        onModelReady: (partnerModel, msgModel) {
-          partnerModel.initData();
-          msgModel.initData();
-        },
-        builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy && msgmodel.isBusy) {
-            return ViewStateBusyWidget();
-          } else if (partnermodel.isError && msgmodel.isError) {
-            return ViewStateErrorWidget(
-                error: partnermodel.viewStateError,
-                onPressed: () {
-                  partnermodel.initData();
-                  msgmodel.initData();
-                });
-          }
-          print(msgmodel.list.length);
-          for (var i = 0; i < msgmodel.list.length; i++) {
-            Lastmsg msgs = msgmodel.list[i];
-            messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
-          }
-          print(messages);
-          return Scaffold(
-            // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
-            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                AppBar(
-              title: Text(partnermodel.partnerData.partnerName),
-            ),
-            body: ListView(
-              children: <Widget>[
-                buildChatList(partnermodel.partnerData.partnerId),
-                buildmessage(partnermodel.partnerData.partnerId),
-              ],
-            ),
-          );
-        });
+      autoDispose: true,
+      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+      model2: GetmsgModel(widget.detailPageId),
+      onModelReady: (partnerModel, msgModel) {
+        partnerModel.initData();
+        msgModel.initData();
+      },
+      builder: (context, partnermodel, msgmodel, child) {
+        if (partnermodel.isBusy && msgmodel.isBusy) {
+          return ViewStateBusyWidget();
+        } else if (partnermodel.isError && msgmodel.isError) {
+          return ViewStateErrorWidget(
+              error: partnermodel.viewStateError,
+              onPressed: () {
+                partnermodel.initData();
+                msgmodel.initData();
+              });
+        }
+        print(msgmodel.list.length);
+      for (var i = 0; i < msgmodel.list.length; i++) {
+        Lastmsg msgs = msgmodel.list[i];
+        messages.add(Message(msgs.msg, msgs.sender , msgs.receiver, now, msgs.attach));
+        
+      }
+      print(messages);
+      return Scaffold(
+        // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
+      appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+      AppBar(
+        title: Text(partnermodel.partnerData.partnerName),
+      ),
+      body: ListView(
+        children: <Widget>[
+          buildChatList(partnermodel.partnerData.partnerId),
+          buildmessage(partnermodel.partnerData.partnerId),
+        ],
+      ),
+      );
+      }
+      );
   }
 }
