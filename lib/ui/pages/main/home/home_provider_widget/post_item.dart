@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/api/moonblink_api.dart';
-import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:provider/provider.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
@@ -24,7 +24,7 @@ class PostItemWidget extends StatefulWidget {
 
 class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
-
+  var usertoken = StorageManager.sharedPreferences.getString(token);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,14 +37,18 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 /// [user_Profile]
                 Material(
                   child: InkWell(
-                    onTap: () {
-                      int detailPageId = widget.posts.userID;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PartnerDetailPage(detailPageId)));
-                    },
+                    onTap: usertoken == null
+                        ? () {
+                            showToast('Login First');
+                          }
+                        : () {
+                            int detailPageId = widget.posts.userID;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PartnerDetailPage(detailPageId)));
+                          },
                     child: Container(
                       margin: EdgeInsets.all(8.0),
                       child: Row(
@@ -88,124 +92,113 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                if (widget.posts.isReacted == 0)
+                            if (widget.posts.isReacted == 0)
 
-                                  /// [like animation while user unreacted]
-                                  InkWell(
-                                      child: Icon(
-                                          isLiked
-                                              ? FontAwesomeIcons.solidHeart
-                                              : FontAwesomeIcons.heart,
-                                          color: isLiked
-                                              ? Colors.red[400]
-                                              : Theme.of(context)
-                                                  .iconTheme
-                                                  .color),
-                                      onTap: isLiked
-                                          ? () {
-                                              // var formState = Form.of(context);
-                                              // if (formState.validate()) {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 0)
-                                                  .then((value) {
-                                                if (value) {
-                                                  showToast(
-                                                      'Unlike Successful');
-                                                  setState(() {
-                                                    isLiked = !isLiked;
-                                                  });
-                                                } else {
-                                                  reactModel.showErrorMessage(
-                                                      context);
-                                                }
+                              /// [like animation while user unreacted]
+                              InkWell(
+                                  child: Icon(
+                                      isLiked
+                                          ? FontAwesomeIcons.solidHeart
+                                          : FontAwesomeIcons.heart,
+                                      color: isLiked
+                                          ? Colors.red[400]
+                                          : Theme.of(context).iconTheme.color),
+                                  onTap: isLiked
+                                      ? () {
+                                          // var formState = Form.of(context);
+                                          // if (formState.validate()) {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 0)
+                                              .then((value) {
+                                            if (value) {
+                                              showToast('Unlike Successful');
+                                              setState(() {
+                                                isLiked = !isLiked;
                                               });
+                                            } else {
+                                              reactModel
+                                                  .showErrorMessage(context);
+                                            }
+                                          });
+                                          // }
+                                        }
+                                      : () {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 1)
+                                              // ignore: missing_return
+                                              .then((value) {
+                                            if (value) {
+                                              showToast('Like Successful');
+                                              setState(() {
+                                                isLiked = !isLiked;
+                                              });
+                                            } else if (reactModel.isError) {
+                                              // if (reactModel.viewStateError
+                                              //     .isUnauthorized) {
+                                              //   loginHelper(context);
+                                              // } else {
+                                              // loginHelper(context);
+                                              reactModel
+                                                  .showErrorMessage(context);
                                               // }
                                             }
-                                          : () {
-                                              // var formState = Form.of(context);
-                                              // if (formState.validate()) {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 1)
-                                                  // ignore: missing_return
-                                                  .then((value) {
-                                                if (value) {
-                                                  showToast('Like Successful');
-                                                  setState(() {
-                                                    isLiked = !isLiked;
-                                                  });
-                                                } else {
-                                                  if (reactModel.viewStateError
-                                                      .isUnauthorized) {
-                                                    loginHelper(context);
-                                                  } else {
-                                                    // loginHelper(context);
-                                                    reactModel.showErrorMessage(
-                                                        context);
-                                                  }
-                                                }
-                                              });
-                                              // }
-                                            }),
+                                          });
+                                          // }
+                                        }),
 
-                                /// [when user react in this profile]
-                                if (widget.posts.isReacted == 1)
-                                  InkWell(
-                                      child: Icon(
-                                          isLiked
-                                              ? FontAwesomeIcons.heart
-                                              : FontAwesomeIcons.solidHeart,
-                                          color: isLiked
-                                              ? Theme.of(context)
-                                                  .iconTheme
-                                                  .color
-                                              : Colors.red[400]),
-                                      onTap: isLiked
-                                          ? () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 1)
-                                                  .then((value) {
-                                                if (value) {
-                                                  showToast('Like Successful');
-                                                  setState(() {
-                                                    isLiked = !isLiked;
-                                                  });
-                                                } else {
-                                                  reactModel.showErrorMessage(
-                                                      context);
-                                                }
+                            /// [when user react in this profile]
+                            if (widget.posts.isReacted == 1)
+                              InkWell(
+                                  child: Icon(
+                                      isLiked
+                                          ? FontAwesomeIcons.heart
+                                          : FontAwesomeIcons.solidHeart,
+                                      color: isLiked
+                                          ? Theme.of(context).iconTheme.color
+                                          : Colors.red[400]),
+                                  onTap: isLiked
+                                      ? () {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 1)
+                                              .then((value) {
+                                            if (value) {
+                                              showToast('Like Successful');
+                                              setState(() {
+                                                isLiked = !isLiked;
                                               });
+                                            } else {
+                                              reactModel
+                                                  .showErrorMessage(context);
                                             }
-                                          : () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 0)
-                                                  .then((value) {
-                                                if (value) {
-                                                  showToast(
-                                                      'Unlike Successful');
-                                                  setState(() {
-                                                    isLiked = !isLiked;
-                                                  });
-                                                } else {
-                                                  reactModel.showErrorMessage(
-                                                      context);
-                                                }
+                                          });
+                                        }
+                                      : () {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 0)
+                                              .then((value) {
+                                            if (value) {
+                                              showToast('Unlike Successful');
+                                              setState(() {
+                                                isLiked = !isLiked;
                                               });
-                                            }),
-
-                                // IconButton(
-                                //   icon: Icon(FontAwesomeIcons.comment),
-                                //   onPressed: (){
-                                //     Navigator.of(context).pushNamed(RouteName.comment);
-                                //   }
-                                //   )
-                              ],
-                            ),
+                                            } else {
+                                              reactModel
+                                                  .showErrorMessage(context);
+                                            }
+                                          });
+                                        }),
+                            // IconButton(
+                            //   icon: Icon(FontAwesomeIcons.comment),
+                            //   onPressed: (){
+                            //     Navigator.of(context).pushNamed(RouteName.comment);
+                            //   }
+                            //   )
+                            //   ],
+                            // ),
                             IconButton(
                               icon: Icon(FontAwesomeIcons.share),
                               onPressed: () {
@@ -226,25 +219,27 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
                 /// [bottom date]
                 Container(
-                  margin: EdgeInsets.only(left: 10.0, top: 0.05),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 2.0),
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          widget.posts.creatdAt,
-                          style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                        ),
-                      )
-                    ],
+                  margin: EdgeInsets.only(left: 10.0, top: 0.5),
+                  // child: Column(
+                  //   children: <Widget>[
+                  //     Container(
+                  //       margin: EdgeInsets.only(top: 2.0),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    widget.posts.creatdAt,
+                    style: TextStyle(color: Colors.grey, fontSize: 12.0),
                   ),
+                  //     )
+                  //   ],
+                  // ),
                 ),
-
-                Container(
+                Divider(
                   height: 0.5,
-                  color: Colors.grey,
                 ),
+                // Container(
+                //   height: 0.5,
+                //   color: Colors.grey,
+                // ),
               ],
             ),
           ),
