@@ -132,6 +132,7 @@ class LoginButton extends StatelessWidget {
                         mailController.text, passwordController.text, 'email')
                     .then((value) {
                   if (value) {
+                    model.showErrorMessage(context);
                     Navigator.of(context).pop(true);
                   } else {
                     model.showErrorMessage(context);

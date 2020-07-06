@@ -3,8 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/view_model/home_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
 
 class PostItemWidget extends StatefulWidget {
@@ -75,117 +80,149 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 //   child: Image.network('http://128.199.254.89/moonblink/api/v1/social/user?limit=5&type=1&page=1'+ posts.profileImage.toString(), fit: BoxFit.cover,),
                 // ),
                 /// [User_bottom data]
-                Container(
-                  margin: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          if (widget.posts.isReacted == 0)
+                ProviderWidget(
+                    model: HomeModel(),
+                    builder: (context, reactModel, child) {
+                      return Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                if (widget.posts.isReacted == 0)
 
-                            /// [like animation while user unreacted]
-                            InkWell(
-                                child: Icon(
-                                    isLiked
-                                        ? FontAwesomeIcons.solidHeart
-                                        : FontAwesomeIcons.heart,
-                                    color: isLiked
-                                        ? Colors.red[400]
-                                        : Theme.of(context).iconTheme.color),
-                                onTap: isLiked
-                                    ? () async {
-                                        print('React to React so bool is' +
-                                            isLiked.toString() +
-                                            'to 0');
-                                        var response = await DioUtils().post(
-                                            Api.PARTNERDETAIL +
-                                                widget.posts.userID.toString() +
-                                                '/react',
-                                            queryParameters: {'react': '0'});
-                                        print(response);
-                                        setState(() {
-                                          isLiked = !isLiked;
-                                        });
-                                      }
-                                    : () async {
-                                        print('UnReact to React so bool is' +
-                                            isLiked.toString() +
-                                            'to 1');
-                                        var response = await DioUtils().post(
-                                            Api.PARTNERDETAIL +
-                                                widget.posts.userID.toString() +
-                                                '/react',
-                                            queryParameters: {'react': '1'});
-                                        print(response);
-                                        setState(() {
-                                          isLiked = !isLiked;
-                                        });
-                                      }),
+                                  /// [like animation while user unreacted]
+                                  InkWell(
+                                      child: Icon(
+                                          isLiked
+                                              ? FontAwesomeIcons.solidHeart
+                                              : FontAwesomeIcons.heart,
+                                          color: isLiked
+                                              ? Colors.red[400]
+                                              : Theme.of(context)
+                                                  .iconTheme
+                                                  .color),
+                                      onTap: isLiked
+                                          ? () {
+                                              // var formState = Form.of(context);
+                                              // if (formState.validate()) {
+                                              reactModel
+                                                  .reactProfile(
+                                                      widget.posts.userID, 0)
+                                                  .then((value) {
+                                                if (value) {
+                                                  showToast(
+                                                      'Unlike Successful');
+                                                  setState(() {
+                                                    isLiked = !isLiked;
+                                                  });
+                                                } else {
+                                                  reactModel.showErrorMessage(
+                                                      context);
+                                                }
+                                              });
+                                              // }
+                                            }
+                                          : () {
+                                              // var formState = Form.of(context);
+                                              // if (formState.validate()) {
+                                              reactModel
+                                                  .reactProfile(
+                                                      widget.posts.userID, 1)
+                                                  // ignore: missing_return
+                                                  .then((value) {
+                                                if (value) {
+                                                  showToast('Like Successful');
+                                                  setState(() {
+                                                    isLiked = !isLiked;
+                                                  });
+                                                } else {
+                                                  if (reactModel.viewStateError
+                                                      .isUnauthorized) {
+                                                    loginHelper(context);
+                                                  } else {
+                                                    // loginHelper(context);
+                                                    reactModel.showErrorMessage(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                              // }
+                                            }),
 
-                          if (widget.posts.isReacted == 1)
+                                /// [when user react in this profile]
+                                if (widget.posts.isReacted == 1)
+                                  InkWell(
+                                      child: Icon(
+                                          isLiked
+                                              ? FontAwesomeIcons.heart
+                                              : FontAwesomeIcons.solidHeart,
+                                          color: isLiked
+                                              ? Theme.of(context)
+                                                  .iconTheme
+                                                  .color
+                                              : Colors.red[400]),
+                                      onTap: isLiked
+                                          ? () {
+                                              reactModel
+                                                  .reactProfile(
+                                                      widget.posts.userID, 1)
+                                                  .then((value) {
+                                                if (value) {
+                                                  showToast('Like Successful');
+                                                  setState(() {
+                                                    isLiked = !isLiked;
+                                                  });
+                                                } else {
+                                                  reactModel.showErrorMessage(
+                                                      context);
+                                                }
+                                              });
+                                            }
+                                          : () {
+                                              reactModel
+                                                  .reactProfile(
+                                                      widget.posts.userID, 0)
+                                                  .then((value) {
+                                                if (value) {
+                                                  showToast(
+                                                      'Unlike Successful');
+                                                  setState(() {
+                                                    isLiked = !isLiked;
+                                                  });
+                                                } else {
+                                                  reactModel.showErrorMessage(
+                                                      context);
+                                                }
+                                              });
+                                            }),
 
-                            /// [like animation while user was reacted]
-                            InkWell(
-                                child: Icon(
-                                    isLiked
-                                        ? FontAwesomeIcons.heart
-                                        : FontAwesomeIcons.solidHeart,
-                                    color: isLiked
-                                        ? Theme.of(context).iconTheme.color
-                                        : Colors.red[400]),
-                                onTap: isLiked
-                                    ? () async {
-                                        print('Unreact to React so bool is' +
-                                            isLiked.toString() +
-                                            'to 1');
-                                        var response = await DioUtils().post(
-                                            Api.PARTNERDETAIL +
-                                                widget.posts.userID.toString() +
-                                                '/react',
-                                            queryParameters: {'react': '1'});
-                                        print(response);
-                                        setState(() {
-                                          isLiked = !isLiked;
-                                        });
-                                      }
-                                    : () async {
-                                        print('React to unreact so bool is' +
-                                            isLiked.toString() +
-                                            'to 0');
-                                        var response = await DioUtils().post(
-                                            Api.PARTNERDETAIL +
-                                                widget.posts.userID.toString() +
-                                                '/react',
-                                            queryParameters: {'react': '0'});
-                                        print(response);
-                                        setState(() {
-                                          isLiked = !isLiked;
-                                        });
-                                      }),
-
-                          // IconButton(
-                          //   icon: Icon(FontAwesomeIcons.comment),
-                          //   onPressed: (){
-                          //     Navigator.of(context).pushNamed(RouteName.comment);
-                          //   }
-                          //   )
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(FontAwesomeIcons.share),
-                        onPressed: () {
-                          final RenderBox box = context.findRenderObject();
-                          Share.share(
-                              'check out my website https://example.com',
-                              subject: 'Please download our app',
-                              sharePositionOrigin:
-                                  box.localToGlobal(Offset.zero) & box.size);
-                        },
-                      )
-                    ],
-                  ),
-                ),
+                                // IconButton(
+                                //   icon: Icon(FontAwesomeIcons.comment),
+                                //   onPressed: (){
+                                //     Navigator.of(context).pushNamed(RouteName.comment);
+                                //   }
+                                //   )
+                              ],
+                            ),
+                            IconButton(
+                              icon: Icon(FontAwesomeIcons.share),
+                              onPressed: () {
+                                final RenderBox box =
+                                    context.findRenderObject();
+                                Share.share(
+                                    'check out my website https://example.com',
+                                    subject: 'Please download our app',
+                                    sharePositionOrigin:
+                                        box.localToGlobal(Offset.zero) &
+                                            box.size);
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    }),
 
                 /// [bottom date]
                 Container(
@@ -213,6 +250,21 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  void loginHelper(context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('You Need to Login'),
+          actions: <Widget>[
+            FlatButton(onPressed: null, child: Text('Cancel')),
+            FlatButton(onPressed: null, child: Text('Login'))
+          ],
+        );
+      },
     );
   }
 }
