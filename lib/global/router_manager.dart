@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
+import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/camera_page.dart';
@@ -40,6 +41,7 @@ class RouteName{
   static const String partnerOwnProfile = 'parnterOwnProfile';
   static const String wallet = 'wallet';
   static const String topUp = 'topUp';
+  static const String chatBox = 'chatBox';
 
 }
 
@@ -74,6 +76,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
+      case RouteName.chatBox:
+        return CupertinoPageRoute(builder: (_) => ChatBoxPage(settings.arguments));
     
       /// [get some error to pass params in route name method, using simple push method first]
       // case RouteName.partnerDetail:
