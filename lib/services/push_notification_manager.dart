@@ -23,19 +23,15 @@ class PushNotificationsManager {
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
-  static Future<dynamic> _myBackgroundMessageHandler(
-      Map<String, dynamic> message) {
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async{
     if (message.containsKey('data')) {
-      // Handle data message
-      final dynamic data = message['data'];
-      print(data);
+      final chatId = int.tryParse(json.decode(message['data']['booking_user_id']));
+      await locator<NavigationService>().navigateTo(RouteName.chatBox, arguments: chatId);
     }
 
     if (message.containsKey('notification')) {
-      // Handle notification message
-      final dynamic notification = message['notification'];
-      PushNotificationsManager()._showNotification(notification);
-      print('myBackgroundMessageHandler: $notification');
+      PushNotificationsManager()._showNotification(message['notification'], message['data']);
     }
     return null;
     // Or do other work.
@@ -53,15 +49,16 @@ class PushNotificationsManager {
         .getToken()
         .then((token) async =>
             await StorageManager.sharedPreferences.setString(FCMToken, token))
-        .then((value) => print(StorageManager.sharedPreferences.getString(FCMToken)));
+        .then((value) =>
+            print(StorageManager.sharedPreferences.getString(FCMToken)));
   }
 
   Future<void> _configLocalNotification() async {
+
     Future<void> onSelectNotification(String payload) async {
-      if (payload != null) {
-        print('notification payload: ' + payload);
-        locator<NavigationService>().navigateToAndReplace(RouteName.main, arguments: 1);
-      }
+      final chatId = int.tryParse(payload);
+      await locator<NavigationService>()
+          .navigateTo(RouteName.chatBox, arguments: chatId);
     }
 
     var initializationSettingsAndroid =
@@ -69,7 +66,8 @@ class PushNotificationsManager {
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
   Future<void> _registerNotification() async {
@@ -79,16 +77,20 @@ class PushNotificationsManager {
         onMessage: (Map<String, dynamic> message) {
           print('onMessage: $message');
           Platform.isAndroid
-              ? _showNotification(message['notification'])
-              : _showNotification(message['aps']['alert']);
+              ? _showNotification(message['notification'], message['data'])
+              : _showNotification(message['aps']['alert'], null);
           return;
         },
-        onBackgroundMessage: _myBackgroundMessageHandler,
+        onBackgroundMessage: myBackgroundMessageHandler,
         onResume: (Map<String, dynamic> message) {
           print('onResume: $message');
-          //final page = message['body']['page'];
-          //print('onReumse: $page');
-          locator<NavigationService>().navigateToAndReplace(RouteName.main, arguments: 1);
+          ///onResume need 'click_action: FLUTTER_NOTIFICATION_CLICK' on data
+          ///if id from json type is Int
+          final chatIdFromInt = json.decode(message['data']['booking_user_id']);
+          ///if id from json type is String
+          //final chatIdFromString = int.tryParse(json.decode(message['data']['booking_user_id']));
+          locator<NavigationService>()
+              .navigateTo(RouteName.chatBox, arguments: chatIdFromInt);
           return;
         },
         onLaunch: (Map<String, dynamic> message) {
@@ -103,7 +105,7 @@ class PushNotificationsManager {
     saveFcmToken();
   }
 
-  Future<void> _showNotification(message) async {
+  Future<void> _showNotification(message, data) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
       'Moon Blink',
@@ -120,9 +122,11 @@ class PushNotificationsManager {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     print(message);
+    print(data);
+    print(json.decode(data['booking_user_id']));
     await _flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
-        payload: json.encode(message));
+        payload: json.decode(data['booking_user_id']).toString());
   }
 
   Future<void> init() async {

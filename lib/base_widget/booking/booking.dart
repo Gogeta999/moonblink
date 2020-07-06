@@ -4,6 +4,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/booking_model.dart';
+import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:provider/provider.dart';
 
 class BookingButton extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class BookingButton extends StatefulWidget {
 
 class _BookingButtonState extends State<BookingButton> {
   ///[Partner idle]
-  void available(context, BookingModel model) {
+  void available(context, BookingModel bookingModel, PartnerDetailModel partnerDetailModel) {
     showDialog(
         context: context,
         builder: (context) {
@@ -32,14 +34,14 @@ class _BookingButtonState extends State<BookingButton> {
               FlatButton(
                   child: Text("Book"),
                   onPressed: () {
-                    if (model.isError) {
+                    if (bookingModel.isError) {
                       print("Error Booking");
                     } else {
-                      model.booking().then((value) => value
+                      bookingModel.booking(partnerDetailModel.partnerId).then((value) => value
                           ? {
                               Navigator.pop(context,
                                   'Cancel'), //remove booking dialog and open another
-                              waitingoffer(context, model)
+                              waitingoffer(context, bookingModel)
                             }
                           : null);
                     }
@@ -100,6 +102,7 @@ class _BookingButtonState extends State<BookingButton> {
 
   @override
   Widget build(BuildContext context) {
+    var partnerDetailModel = Provider.of<PartnerDetailModel>(context);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
         builder: (context, model, child) {
@@ -115,7 +118,7 @@ class _BookingButtonState extends State<BookingButton> {
 
             ///[to add pop up]
             onPressed: () {
-              available(context, model);
+              available(context, model, partnerDetailModel);
               //testDialog(context, model);
             },
           );

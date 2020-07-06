@@ -3,10 +3,10 @@ import 'package:moonblink/services/moonblink_repository.dart';
 
 class BookingModel extends ViewStateModel{
   
-  Future<bool> booking() async {
+  Future<bool> booking(int partnerId) async {
     setBusy();
     try{
-      await MoonBlinkRepository.booking();
+      await MoonBlinkRepository.booking(partnerId);
       setIdle();
       return true;
     } catch (e,s){

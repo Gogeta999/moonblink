@@ -150,10 +150,9 @@ class MoonBlinkRepository {
   }
 
   // Booking
-  static Future booking() async {
-    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+  static Future booking(int partnerId) async {
     var response = await DioUtils()
-        .post(Api.Booking + '$userid/booking');
+        .post(Api.Booking + '$partnerId/booking');
     return response.data;
   }
 

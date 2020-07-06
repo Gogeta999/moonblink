@@ -48,7 +48,7 @@ class ChatModel extends Model{
   void init() {
     socket.emit('connect-user', usertoken);
     socket.connect();
-    LocalNotifications().init();
+    //LocalNotifications().init();
     print("Connected Socket");
     //callmade
     socket.on('call-made', (jsondata) {
