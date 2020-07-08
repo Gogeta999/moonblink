@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +30,8 @@ class SetPartnerProfilePage extends StatefulWidget {
 }
 
 class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
+  bool finished;
+  final _picker = ImagePicker();
   String _genderController;
   List<String> genderList = ["Male", "Female", "Rather Not Say"];
   final _sexController = TextEditingController();
@@ -55,17 +58,17 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   File _profile;
   //pick Cover
   _pickCoverFromGallery() async {
-    var cover = await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
     setState(() {
-      _cover = cover;
+      _cover = File(cover.path);
     });
   }
 
   //pick profile
   _pickprofileFromGallery() async {
-    var profile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
     setState(() {
-      _profile = profile;
+      _profile = File(profile.path);
     });
   }
 
@@ -88,6 +91,12 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                   model: LoginModel(Provider.of(context)),
                   builder: (context, model, child) => Form(
                         onWillPop: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CupertinoAlertDialog(
+                                    title:
+                                        Text('Please fill information first'),
+                                  ));
                           return !model.isBusy;
                         },
 
@@ -289,7 +298,7 @@ class PartnerCoverWidget extends StatelessWidget {
       return Image.file(
         cover,
         filterQuality: FilterQuality.medium,
-        fit: BoxFit.contain,
+        fit: BoxFit.cover,
       );
     }
   }
@@ -303,7 +312,7 @@ class PartnerProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.profile == null) {
       return Image.asset(
-        ImageHelper.wrapAssetsImage('images.jpg'),
+        ImageHelper.wrapAssetsLogo('friend_acc.png'),
         fit: BoxFit.fill,
       );
     } else {
@@ -353,7 +362,7 @@ class SetProfileButton extends StatelessWidget {
               filename: 'profile.jpg'),
           'nrc': nrc,
           'mail': mail,
-          'gender': gender.toString(),
+          'gender': gender,
           'dob': dob,
           'phone': phone,
           'bios': bios,
