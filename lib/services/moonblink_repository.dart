@@ -82,6 +82,16 @@ class MoonBlinkRepository {
         .toList();
   }
 
+  //React at homepage
+  static Future react(int partnerId, int reactType) async {
+    var response = await DioUtils()
+        .post(Api.PARTNERDETAIL + '$partnerId/react', queryParameters: {
+      'react': reactType,
+    });
+    print(response);
+    return response;
+  }
+
   /// [login api]
   //login with email & password
   static Future login(String mail, String password, String fcmToken) async {
@@ -94,14 +104,20 @@ class MoonBlinkRepository {
   }
 
   static Future loginWithFacebook(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN,
-        queryParameters: {'access_token': token, 'type': 'facebook', 'fcm_token': fcmToken});
+    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
+      'access_token': token,
+      'type': 'facebook',
+      'fcm_token': fcmToken
+    });
     return User.fromJsonMap(response.data);
   }
 
   static Future loginWithGoogle(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN,
-        queryParameters: {'access_token': token, 'type': 'google', 'fcm_token': fcmToken});
+    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
+      'access_token': token,
+      'type': 'google',
+      'fcm_token': fcmToken
+    });
     return User.fromJsonMap(response.data);
   }
 

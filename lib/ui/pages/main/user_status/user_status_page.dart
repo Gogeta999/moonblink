@@ -97,9 +97,9 @@ class UserHeaderWidget extends StatelessWidget {
                               if (usertype == 1) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.partnerOwnProfile);
-                              }
-                              else if(model.user == null){
-                                Navigator.of(context).pushNamed(RouteName.login);
+                              } else if (model.user == null) {
+                                Navigator.of(context)
+                                    .pushNamed(RouteName.login);
                               }
                             },
                             child: Hero(
@@ -202,7 +202,7 @@ class UserListWidget extends StatelessWidget {
           ListTile(
             title: Text(S.of(context).favorites),
             onTap: () {
-              Navigator.of(context).pushNamed(RouteName.network);
+              Navigator.of(context).pushNamed(RouteName.setprofile);
             },
             leading: Icon(
               FontAwesomeIcons.solidHeart,

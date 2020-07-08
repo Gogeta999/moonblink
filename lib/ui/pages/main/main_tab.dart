@@ -30,6 +30,7 @@ class _MainTabPageState extends State<MainTabPage>
   var _pageController;
   // ignore: unused_field
   final int initPage;
+  // ignore: unused_field
   int _selectedIndex = 0;
   DateTime _lastPressed;
 
@@ -39,8 +40,7 @@ class _MainTabPageState extends State<MainTabPage>
   void initState() {
     PushNotificationsManager().init();
     setState(() {
-      _pageController =
-          PageController(initialPage: initPage);
+      _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
     super.initState();

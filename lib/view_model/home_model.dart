@@ -37,4 +37,16 @@ class HomeModel extends ViewStateRefreshListModel {
       return result[0];
     }
   }
+
+  Future<bool> reactProfile(partnerId, reactType) async {
+    setBusy();
+    try {
+      await MoonBlinkRepository.react(partnerId, reactType);
+      setIdle();
+      return true;
+    } catch (e, s) {
+      setError(e, s);
+      return false;
+    }
+  }
 }
