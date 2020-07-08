@@ -21,16 +21,17 @@ class PushNotificationsManager {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
   bool _initialized = false;
 
   static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) async{
-    if (message.containsKey('data')) {
-      final chatId = int.tryParse(json.decode(message['data']['booking_user_id']));
-      await locator<NavigationService>().navigateTo(RouteName.chatBox, arguments: chatId);
-    }
+      Map<String, dynamic> message) {
 
     if (message.containsKey('notification')) {
+      //PushNotificationsManager()._showNotification(message['notification'], message['data']);
+    }
+    
+    if(message != null) {
       PushNotificationsManager()._showNotification(message['notification'], message['data']);
     }
     return null;
@@ -56,9 +57,11 @@ class PushNotificationsManager {
   Future<void> _configLocalNotification() async {
 
     Future<void> onSelectNotification(String payload) async {
-      final chatId = int.tryParse(payload);
-      await locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: chatId);
+      if(payload != null){
+        final chatId = int.tryParse(payload);
+        await locator<NavigationService>()
+            .navigateTo(RouteName.chatBox, arguments: chatId);
+      }
     }
 
     var initializationSettingsAndroid =
@@ -126,7 +129,27 @@ class PushNotificationsManager {
     print(json.decode(data['booking_user_id']));
     await _flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
-        payload: json.decode(data['booking_user_id']).toString());
+        payload: json.decode(data['booking_user_id']));
+  }
+
+  //chatting notification
+  Future<void> notification(int id,String user, String message) async {
+    print("showing noti");
+    AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+        'ChannelID', 'Channel title', 'channel body',
+        priority: Priority.High,
+        importance: Importance.Max,
+        autoCancel: false,
+        // ongoing: true,
+        ticker: 'test');
+
+    IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+
+    NotificationDetails notificationDetails =
+    NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+    await _flutterLocalNotificationsPlugin.show(
+        id, user, message, notificationDetails);
   }
 
   Future<void> init() async {

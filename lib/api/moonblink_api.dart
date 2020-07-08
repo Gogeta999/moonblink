@@ -1,6 +1,6 @@
 class Api {
   // BASE URL
-  static const String BASE = "http://128.199.254.89/";
+  static const String BASE = "https://moonblinkuniverse.com/";
 
   /// Story for normal user
   static const String STORY = 'moonblink/api/v1/social/stories';
