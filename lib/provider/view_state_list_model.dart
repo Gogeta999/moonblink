@@ -1,7 +1,7 @@
 import 'package:moonblink/provider/view_state_model.dart';
 
 //Base
-abstract class ViewStateListModel<T> extends ViewStateModel{
+abstract class ViewStateListModel<T> extends ViewStateModel {
   /// PageData
   List<T> list = [];
 
@@ -10,6 +10,7 @@ abstract class ViewStateListModel<T> extends ViewStateModel{
     setBusy();
     await refresh(init: true);
   }
+
   // Pull down to refresh
   refresh({bool init = false}) async {
     try {
@@ -28,8 +29,9 @@ abstract class ViewStateListModel<T> extends ViewStateModel{
       setError(e, s);
     }
   }
+
   // Load data
   Future<List<T>> loadData();
-
+  // Load with partner data
   onCompleted(List<T> data) {}
 }
