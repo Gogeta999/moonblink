@@ -5,6 +5,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:moonblink/view_model/theme_model.dart';
 import 'package:provider/provider.dart';
 
 class BookingButton extends StatefulWidget {
@@ -141,8 +142,8 @@ class _BookingDropDownState extends State<BookingDropDown> {
         value: dropdownValue,
         isExpanded: false,
         isDense: true,
-        iconEnabledColor: Theme.of(context).primaryColor,
-        style: TextStyle(color: Theme.of(context).primaryColor),
+        iconEnabledColor: Theme.of(context).accentColor,
+        style: TextStyle(color: Theme.of(context).accentColor),
         onChanged: (String newValue) {
           setState(() {
             dropdownValue = newValue;
