@@ -27,6 +27,31 @@ class _ChatListPageState extends State<ChatListPage> {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
     }
   }
+
+  //Chat Tile
+  buildtile(Chatlist chat) {
+    return Column(
+      children: <Widget>[ 
+        ListTile(
+          leading: CircleAvatar(
+            radius: 28,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundImage: NetworkImage(chat.profile),
+          ),
+          title: Text(chat.name),
+          ///[Last Message]
+          subtitle: Text(chat.lastmsg, maxLines: 1),
+          trailing: Text(chat.updated),
+          onTap: () {
+            Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ChatBoxPage(chat.userid)));
+            },         
+          ),
+        Divider(color: Colors.grey,)
+      ]
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,26 +69,8 @@ class _ChatListPageState extends State<ChatListPage> {
                 delegate: SliverChildBuilderDelegate(
                 (context, index){
                   Chatlist chat = chatlist[index];
-                    return Column(
-                      children: <Widget>[ 
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                          backgroundImage: NetworkImage(chat.profile),
-                        ),
-                        title: Text(chat.name),
-                        ///[Last Message]
-                        subtitle: Text(chat.lastmsg),
-                        trailing: Text(chat.updated),
-                        onTap: () {
-                          Navigator.push(
-                            context, MaterialPageRoute(builder: (context) => ChatBoxPage(chat.userid)));
-                          },         
-                        ),
-                        Divider(color: Colors.grey,)
-                      ]
-                    );
-                  },
+                  return buildtile(chat);
+                },
                 childCount: chatlist?.length ?? 0,
                 ),
               )

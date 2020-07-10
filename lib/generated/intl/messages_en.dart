@@ -62,7 +62,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "viewStateMessageEmpty" : MessageLookupByLibrary.simpleMessage("Empty"),
     "viewStateMessageError" : MessageLookupByLibrary.simpleMessage("Load Failed"),
     "viewStateMessageNetworkError" : MessageLookupByLibrary.simpleMessage("Network Error"),
-    "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("Not Sign in yet"),
-    "zzz" : MessageLookupByLibrary.simpleMessage("zzz")
+    "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("Not Sign in yet")
   };
 }
