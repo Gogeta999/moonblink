@@ -49,6 +49,8 @@ class Api {
   ///Booking
   static const String Booking = "moonblink/api/v1/social/user/";
 
+  static const String BookingAccept = "/moonblink/api/v1/user/";
+
   //Partner Status
   static const String SetStatus = "moonblink/api/v1/user/";
 
