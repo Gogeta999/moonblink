@@ -5,7 +5,6 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
-import 'package:moonblink/view_model/theme_model.dart';
 import 'package:provider/provider.dart';
 
 class BookingButton extends StatefulWidget {
@@ -23,10 +22,13 @@ class _BookingButtonState extends State<BookingButton> {
             title: Text("Book To Play With"),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
-            content: Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
+            content: Column(
+              children: <Widget>[
+                Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
+                Expanded(child: BookingDropdown(bookingModel: bookingModel)),
+              ],
+            ),
             actions: <Widget>[
-              BookingDropDown(),
-              SizedBox(width: 60.0),
               FlatButton(
                   child: Text("Cancel"),
                   onPressed: () {
@@ -120,37 +122,41 @@ class _BookingButtonState extends State<BookingButton> {
             ///[to add pop up]
             onPressed: () {
               available(context, model, partnerDetailModel);
-              //testDialog(context, model);
             },
           );
         });
   }
 }
 
-class BookingDropDown extends StatefulWidget {
+class BookingDropdown extends StatefulWidget {
+  final bookingModel;
+
+  const BookingDropdown({Key key, this.bookingModel}) : super(key: key);
+
   @override
-  _BookingDropDownState createState() => _BookingDropDownState();
+  _BookingDropdownState createState() => _BookingDropdownState();
 }
 
-class _BookingDropDownState extends State<BookingDropDown> {
-  String dropdownValue = 'ML';
+class _BookingDropdownState extends State<BookingDropdown> {
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        value: dropdownValue,
+        value: widget.bookingModel.dropdownList[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,
         iconEnabledColor: Theme.of(context).accentColor,
         style: TextStyle(color: Theme.of(context).accentColor),
         onChanged: (String newValue) {
           setState(() {
-            dropdownValue = newValue;
+            final int selectedIndex = widget.bookingModel.dropdownList.indexOf(newValue);
+            print(selectedIndex);
+            widget.bookingModel.selectedIndex = selectedIndex;
           });
         },
         elevation: 0,
-        items: <String>['ML', 'PUBG', 'CoC']
+        items: widget.bookingModel.dropdownList
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -161,3 +167,4 @@ class _BookingDropDownState extends State<BookingDropDown> {
     );
   }
 }
+
