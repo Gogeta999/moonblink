@@ -50,7 +50,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                         onPressed: () {
                           model.logout().then((value) => value
                               ? Navigator.of(context).pushNamedAndRemoveUntil(
-                                  RouteName.splash, (route) => false)
+                                  RouteName.main, (route) => false)
                               : null);
                         },
                       );
@@ -97,7 +97,7 @@ class UserHeaderWidget extends StatelessWidget {
                               if (usertype == 1) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.partnerOwnProfile);
-                              } else if (model.user == null) {
+                              } else if (model.user.token == null) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.login);
                               }

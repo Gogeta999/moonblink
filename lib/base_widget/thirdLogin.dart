@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,8 @@ class ThirdLogin extends StatelessWidget {
                 onTap: () {
                   model.login(null, null, 'google').then((value) {
                     if (value) {
-                      Navigator.of(context).pop(true);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false);
                     } else {
                       model.showErrorMessage(context);
                     }
@@ -35,7 +37,8 @@ class ThirdLogin extends StatelessWidget {
                 onTap: () {
                   model.login(null, null, 'facebook').then((value) {
                     if (value) {
-                      Navigator.of(context).pop(true);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false);
                     } else {
                       model.showErrorMessage(context);
                     }

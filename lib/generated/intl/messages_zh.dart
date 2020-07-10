@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a zh locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -17,7 +17,7 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'zh';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -48,10 +48,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "signUpName" : MessageLookupByLibrary.simpleMessage("Name"),
     "signUpPassword" : MessageLookupByLibrary.simpleMessage("Password"),
     "splashSkip" : MessageLookupByLibrary.simpleMessage("Skip"),
-    "tabChat" : MessageLookupByLibrary.simpleMessage("Chat"),
+    "tabChat" : MessageLookupByLibrary.simpleMessage("聊天"),
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
-    "tabHome" : MessageLookupByLibrary.simpleMessage("Home"),
-    "tabUser" : MessageLookupByLibrary.simpleMessage("User"),
+    "tabHome" : MessageLookupByLibrary.simpleMessage("主页"),
+    "tabUser" : MessageLookupByLibrary.simpleMessage("个人"),
     "theme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("Third Login"),
     "toSignIn" : MessageLookupByLibrary.simpleMessage("Sign In"),

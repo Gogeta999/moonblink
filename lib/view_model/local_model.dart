@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 
-
-
 class LocaleModel extends ChangeNotifier {
 //  static const localeNameList = ['auto', '中文', 'English'];
-  static const localeValueList = ['', 'en'];
+  static const localeValueList = ['', 'en', 'mm', 'zh'];
 
   //
   static const mLocaleIndex = 'mLocaleIndex';
@@ -40,6 +38,10 @@ class LocaleModel extends ChangeNotifier {
         return S.of(context).autoBySystem;
       case 1:
         return 'English';
+      case 2:
+        return 'Myanmar';
+      case 3:
+        return 'Chinese';
       default:
         return '';
     }
