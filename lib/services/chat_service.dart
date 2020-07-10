@@ -13,11 +13,19 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../base_widget/notifications.dart';
 
+typedef void OnMessageCallback(String tag, dynamic msg);
+typedef void OnCloseCallback(int code, String reason);
+typedef void OnOpenCallback();
 
+  const CLIENT_ID_EVENT = 'client-id-event';
+  const OFFER_EVENT = 'offer-event';
+  const ANSWER_EVENT = 'answer-event';
+  const ICE_CANDIDATE_EVENT = 'ice-candidate-event';
+  String url = 'http://54.179.117.84';
   String now = DateTime.now().toString();
-  IO.Socket socket = IO.io('http://54.179.117.84', <String, dynamic>{
+  IO.Socket socket = IO.io(url, <String, dynamic>{
     'transports': ['websocket'],
-    'autoConnect': false,
+    // 'autoConnect': false,
   });
 
   String usertoken = StorageManager.sharedPreferences.getString(token);
@@ -27,58 +35,67 @@ import '../base_widget/notifications.dart';
   List<Files> files = List<Files>();
   List<Chatlist> chatlist = List<Chatlist>();
 
-  final Map<String, dynamic> _constraints = {
-    'mandatory': {
-      'OfferToReceiveAudio': true,
-      'OfferToReceiveVideo': true,
-    },
-    'optional': [],
-  };
+  // final Map<String, dynamic> _constraints = {
+  //   'mandatory': {
+  //     'OfferToReceiveAudio': true,
+  //     'OfferToReceiveVideo': true,
+  //   },
+  //   'optional': [],
+  // };
 
-  final Map<String, dynamic> _dc_constraints = {
-    'mandatory': {
-      'OfferToReceiveAudio': false,
-      'OfferToReceiveVideo': false,
-    },
-    'optional': [],
-  };
+  // final Map<String, dynamic> _dc_constraints = {
+  //   'mandatory': {
+  //     'OfferToReceiveAudio': false,
+  //     'OfferToReceiveVideo': false,
+  //   },
+  //   'optional': [],
+  // };
   
 class ChatModel extends Model{
+  String url;
+  OnOpenCallback onOpen;
+  OnMessageCallback onMessage;
+  OnCloseCallback onClose;
   //connect
   void init() {
     socket.emit('connect-user', usertoken);
     socket.connect();
-    //LocalNotifications().init();
+    // onOpen();
+    LocalNotifications().init();
     print("Connected Socket");
-    //callmade
-    socket.on('call-made', (jsondata) {
-      //print(jsondata);
-      print(jsondata.length);
-      var callm = Callmade.fromJson(jsondata);
-      print(callm);
-      // int callerid = jsondata.map((m) => m['from']);
-      // String offer = jsondata.map((m) => m['offer']);
-      // String media = jsondata.map((m)=> m['media']);
-      // callm = Callmade(offer, callerid, media);
-      print("Call is made");
+
+    socket.on(CLIENT_ID_EVENT, (data) {
+      onMessage(CLIENT_ID_EVENT, data);
     });
-    //answermade
-    socket.on('answer-made', (jsondata) {
-      print(jsondata.length);
-      int callerid = jsondata.map((m) => m['from']);
-      String answer = jsondata.map((m) => m['answer']);
-      print("Answer");
-    }
-    );
-    ///[NEED TO FIX]
-    //receiver-attach
-    socket.on("receiver-attach", (data) {
-      Map<String, dynamic> fs = json.decode(data);
-      files.add(Files(
-        fs["0"],data["1"],data["2"],data["3"]
-      ));
-    }
-    );
+    socket.on(OFFER_EVENT, (data) {
+      onMessage(OFFER_EVENT, data);
+    });
+    socket.on(ANSWER_EVENT, (data) {
+      onMessage(ANSWER_EVENT, data);
+    });
+    socket.on(ICE_CANDIDATE_EVENT, (data) {
+      onMessage(ICE_CANDIDATE_EVENT, data);
+    });
+    //callmade
+    // socket.on('call-made', (jsondata) {
+    //   //print(jsondata);
+    //   print(jsondata.length);
+    //   var callm = Callmade.fromJson(jsondata);
+    //   print(callm);
+    //   // int callerid = jsondata.map((m) => m['from']);
+    //   // String offer = jsondata.map((m) => m['offer']);
+    //   // String media = jsondata.map((m)=> m['media']);
+    //   // callm = Callmade(offer, callerid, media);
+    //   print("Call is made");
+    // });
+    // //answermade
+    // socket.on('answer-made', (jsondata) {
+    //   print(jsondata.length);
+    //   int callerid = jsondata.map((m) => m['from']);
+    //   String answer = jsondata.map((m) => m['answer']);
+    //   print("Answer");
+    // }
+    // );
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -181,64 +198,47 @@ class ChatModel extends Model{
   //   );
   // }
 
-  ///[For Voice Call]
-  //Create Answer
-  void createOffer(
-      int receiverChatID, RTCPeerConnection pc, String media) async {
-    try {
-      RTCSessionDescription s = await pc
-          .createOffer(media == 'data' ? _dc_constraints : _constraints);
-      pc.setLocalDescription(s);
-      socket.emit('call-user', [
-        userid,
-        16,
-        s.sdp,
-        // 'session_id': this._sessionId,
-        media,
-      ]);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  //To answer call
-  void createAnswer(int receiverChatID, RTCPeerConnection pc, media) async {
-    try {
-      RTCSessionDescription s = await pc
-          .createAnswer(media == 'data' ? _dc_constraints : _constraints);
-      pc.setLocalDescription(s);
-      socket.emit('make-answer', [
-        userid,
-        16,
-        s.sdp,
-      ]);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  //end call
-  void bye() {
-    socket.emit("bye", []);
-  }
-  // ///[get Messages]
-  // List<Message> getMessagesForChatID(int id) {
-  //   print("Get Messages");
-  //   // message(id);
-
-  //   print(messages);
-  //   // notifyListeners();
-  //   return messages
-  //     .where((msg) => msg.senderID == id || msg.receiverID == id)
-  //     .toList();     
+  // ///[For Voice Call]
+  // //Create Answer
+  // void createOffer(
+  //     int receiverChatID, RTCPeerConnection pc, String media) async {
+  //   try {
+  //     RTCSessionDescription s = await pc
+  //         .createOffer(media == 'data' ? _dc_constraints : _constraints);
+  //     pc.setLocalDescription(s);
+  //     socket.emit('call-user', [
+  //       userid,
+  //       16,
+  //       s.sdp,
+  //       // 'session_id': this._sessionId,
+  //       media,
+  //     ]);
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
   // }
-  // List<Files> getAttachForChatID(int id) {
-  //   print("Get Attachment");
-  //   return files
-  //   .where((file) => file.senderID == id || file.receiverID == id)
-  //   .toList();
+
+  // //To answer call
+  // void createAnswer(int receiverChatID, RTCPeerConnection pc, media) async {
+  //   try {
+  //     RTCSessionDescription s = await pc
+  //         .createAnswer(media == 'data' ? _dc_constraints : _constraints);
+  //     pc.setLocalDescription(s);
+  //     socket.emit('make-answer', [
+  //       userid,
+  //       16,
+  //       s.sdp,
+  //     ]);
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
   // }
+
   void disconnect(){
     socket.disconnect();
+  }
+  
+  void send(event, data) {
+    socket.emit(event, data);
   }
 }

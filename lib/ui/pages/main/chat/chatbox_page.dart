@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:moonblink/view_model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_webrtc/webrtc.dart';
@@ -11,6 +13,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/ui/pages/call/callerscreen.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
@@ -47,10 +50,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   bool img = false;
   // bool local = false;
   List<Message> messages = [];
+  List<Contact> contacts = [];
+  List<Contact> users = [];
   String now = DateTime.now().toString();
   String filename;
   File _image;
-
+  bool end = true;
   // ByteData _byteData;
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
@@ -68,17 +73,31 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
-  //create peer connection
-  _createPeerConnection() async {
-    pc = await createPeerConnection(_iceServers, _config);
-  }
+  // Timer _timer;
+  // int _start = 10;
+  
+  // void startTimer(bool end) {
+  //   const oneSec = const Duration(seconds: 1);
+  //   _timer = new Timer.periodic(
+  //     oneSec,
+  //     (Timer timer) => setState(
+  //       () {
+  //         if (_start < 1) {
+  //           timer.cancel();
+  //         } else {
+  //           _start = _start - 1;
+  //         }
+  //       },
+  //     ),
+  //   );
+  //   end = false;
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    _createPeerConnection();
-  }
-
+  // @override
+  // void dispose() {
+  //   _timer.cancel();
+  //   super.dispose();
+  // }
   //build messages
   Widget buildSingleMessage(Message message) {
     if (message.attach != "") {
@@ -153,14 +172,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               child: TextField(
                 maxLines: null,
                 textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.send,
                 controller: textEditingController,
                 decoration: InputDecoration.collapsed(
                   hintText: 'Input message',
                 ),
+                onSubmitted: (text) {
+                  model.sendMessage(text, id, messages);
+          
+                },
               ),
             ),
             IconButton(
-              icon: Icon(FontAwesomeIcons.upload),
+              icon: Icon(Icons.send),
               iconSize: 30.0,
               color: Theme.of(context).accentColor,
               onPressed: () {
@@ -204,45 +228,46 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   ///[Call Button]
-  Widget buildfloat(id) {
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {
-        // RTCPeerConnection pc = _createPeerConnection();
-        return FloatingActionButton(
-            child: Text("Call"),
-            onPressed: () {
-              model.createOffer(id, pc, "video");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CallerScreen(),
-                  ));
-              // model.createAnswer(id, pc, "video");
-            });
-      },
-    );
-  }
+  // Widget buildfloat(id) {
+  //   return ScopedModelDescendant<ChatModel>(
+  //     builder: (context, child, model) {
+  //       // RTCPeerConnection pc = _createPeerConnection();
+  //       return FloatingActionButton(
+  //           child: Text("Call"),
+  //           onPressed: () {
+  //             model.createOffer(id, pc, "video");
+  //             Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => CallerScreen(),
+  //                 ));
+  //             // model.createAnswer(id, pc, "video");
+  //           });
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+    return ProviderWidget2<ContactModel, GetmsgModel>(
         autoDispose: true,
-        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+        model1: ContactModel(),
         model2: GetmsgModel(widget.detailPageId),
         onModelReady: (partnerModel, msgModel) {
           partnerModel.initData();
           msgModel.initData();
         },
-        builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy && msgmodel.isBusy) {
+        builder: (context, contactModel, msgmodel, child) {
+          if (contactModel.isBusy && msgmodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (partnermodel.isError && msgmodel.isError) {
+          } else if (contactModel.isError && msgmodel.isError) {
             return ViewStateErrorWidget(
-                error: partnermodel.viewStateError,
-                onPressed: () {
-                  partnermodel.initData();
-                  msgmodel.initData();
-                });
+              error: contactModel.viewStateError,
+              onPressed: () {
+                contactModel.initData();
+                msgmodel.initData();
+              }
+            );
           }
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
@@ -250,17 +275,27 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             messages.add(Message(
                 msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
+          for (var i = 0; i < contactModel.list.length; i++) {
+            Contact contact = contactModel.list[i];
+            contacts.add(contact);
+          }
+          var data = contacts.where((element) => element.userId == widget.detailPageId);
+          users = List<Contact>.from(data);
+          Contact user = users[0];
           print(messages);
           return Scaffold(
             // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
                 AppBar(
-              title: Text(partnermodel.partnerData.partnerName),
+              title: Text(user.contactUser.contactUserName),
+              actions: <Widget>[
+                // end ? Text("$_start") : Container()
+              ],
             ),
             body: ListView(
               children: <Widget>[
-                buildChatList(partnermodel.partnerData.partnerId),
-                buildmessage(partnermodel.partnerData.partnerId),
+                buildChatList(user.contactUser.contactUserId),
+                buildmessage(user.contactUser.contactUserId),
               ],
             ),
           );

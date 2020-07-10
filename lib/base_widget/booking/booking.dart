@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,7 @@ class BookingButton extends StatefulWidget {
 }
 
 class _BookingButtonState extends State<BookingButton> {
+
   ///[Partner idle]
   void available(context, BookingModel bookingModel, PartnerDetailModel partnerDetailModel) {
     showDialog(
@@ -44,7 +48,9 @@ class _BookingButtonState extends State<BookingButton> {
                           ? {
                               Navigator.pop(context,
                                   'Cancel'), //remove booking dialog and open another
-                              waitingoffer(context, bookingModel)
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => ChatBoxPage(partnerDetailModel.partnerData.partnerId),) 
+                              )
                             }
                           : null);
                     }
@@ -76,32 +82,6 @@ class _BookingButtonState extends State<BookingButton> {
         });
   }
 
-  ///[Request offer]
-  void waitingoffer(context, BookingModel model) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          ///[Animated Waiter]
-          final waiter = SpinKitPouringHourglass(
-            color: Theme.of(context).accentColor,
-            size: 120,
-          );
-          return new AlertDialog(
-            title: new Text("Please wait Partner to Accept"),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            content: Container(width: 180, height: 150, child: waiter),
-            actions: [
-              FlatButton(
-                  child: new Text("Cancel"),
-                  onPressed: () {
-                    model.isEmpty;
-                    Navigator.pop(context, 'Cancel');
-                  })
-            ],
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
