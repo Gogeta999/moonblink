@@ -36,9 +36,17 @@ class MoonBlinkRepository {
 
   // Homepage's story data
   static Future fetchStory() async {
-    var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().get(Api.STORY,
-        queryParameters: {'Authorization': 'Bearer' + usertoken.toString()});
+    // var usertoken = StorageManager.sharedPreferences.getString(token);
+    var response = await DioUtils().get(Api.STORY);
+    return response.data['data']
+        .map<Story>((item) => Story.fromMap(item))
+        .toList();
+  }
+
+  // User's today active story
+  static Future fetchActiveStory(int partnerID) async {
+    var response =
+        await DioUtils().get(Api.SocialRequest + '$partnerID/stories');
     return response.data['data']
         .map<Story>((item) => Story.fromMap(item))
         .toList();
@@ -47,10 +55,9 @@ class MoonBlinkRepository {
   /// [Get following list]Contact for get following list for current user
   static Future getFollowingContact() async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var userToken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().get(
-        Api.SimpleRequestApi + '$userId/following',
-        queryParameters: {'Authorization': 'Bearer' + userToken.toString()});
+    // var userToken = StorageManager.sharedPreferences.getString(token);
+    var response =
+        await DioUtils().get(Api.SimpleRequestApi + '$userId/following');
     return response.data
         .map<Contact>((item) => Contact.fromJson(item))
         .toList();
@@ -58,7 +65,7 @@ class MoonBlinkRepository {
 
   /// [Normal user to fetch partner user page data]
   static Future fetchPartner(int partnerId) async {
-    var response = await DioUtils().get(Api.PARTNERDETAIL + '$partnerId');
+    var response = await DioUtils().get(Api.SocialRequest + '$partnerId');
     return PartnerUser.fromJson(response.data);
   }
 
@@ -85,7 +92,7 @@ class MoonBlinkRepository {
   //React at homepage
   static Future react(int partnerId, int reactType) async {
     var response = await DioUtils()
-        .post(Api.PARTNERDETAIL + '$partnerId/react', queryParameters: {
+        .post(Api.SocialRequest + '$partnerId/react', queryParameters: {
       'react': reactType,
     });
     print(response);
@@ -123,9 +130,8 @@ class MoonBlinkRepository {
 
   /// [lout api]
   static logout() async {
-    var usertoken = StorageManager.sharedPreferences.getString(token);
-    await DioUtils().get(Api.LOGOUT,
-        queryParameters: {'Authorization': 'Bearer' + usertoken.toString()});
+    // var usertoken = StorageManager.sharedPreferences.getString(token);
+    await DioUtils().get(Api.LOGOUT);
   }
 
   //Registerwith dio_moonblink another method

@@ -37,12 +37,15 @@ class LoginModel extends ViewStateModel {
     String fcmToken = StorageManager.sharedPreferences.getString(FCMToken);
     try {
       var user;
-      if (type == 'email' && mail != null && password != null && fcmToken != null) {
+      if (type == 'email' &&
+          mail != null &&
+          password != null &&
+          fcmToken != null) {
         user = await MoonBlinkRepository.login(mail, password, fcmToken);
       } else if (type == 'google' && fcmToken != null) {
         await _googleSignIn.signOut();
         GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-        if(googleUser != null){
+        if (googleUser != null) {
           //user cancelled login
           GoogleSignInAuthentication auth = await googleUser.authentication;
           user = await MoonBlinkRepository.loginWithGoogle(
@@ -55,8 +58,8 @@ class LoginModel extends ViewStateModel {
           case FacebookLoginStatus.loggedIn:
             print('case loggedIn');
             final FacebookAccessToken accessToken = result.accessToken;
-            user =
-                await MoonBlinkRepository.loginWithFacebook(accessToken.token, fcmToken);
+            user = await MoonBlinkRepository.loginWithFacebook(
+                accessToken.token, fcmToken);
             break;
           case FacebookLoginStatus.cancelledByUser:
             print('case cancelledByUser');
@@ -73,7 +76,7 @@ class LoginModel extends ViewStateModel {
         setIdle();
         return false;
       }
-      if(user != null){
+      if (user != null) {
         userModel.saveUser(user);
         StorageManager.sharedPreferences.setString(token, userModel.user.token);
         StorageManager.sharedPreferences
@@ -82,7 +85,7 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
         setIdle();
         return true;
-      }else{
+      } else {
         setIdle();
         return false;
       }
