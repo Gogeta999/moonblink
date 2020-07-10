@@ -6,9 +6,8 @@ import 'package:moonblink/ui/pages/main/stories/user_stories.dart';
 class StoryItemWidget extends StatelessWidget {
   final Story stories;
   final int index;
-
   StoryItemWidget(this.stories, {this.index})
-  : super(key: ValueKey(stories.id));
+      : super(key: ValueKey(stories.id));
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +31,19 @@ class StoryItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 15),
       child: InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => StoriesPage(stories)));
-        },
-        child: Align(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StoriesPage(stories.userId)));
+          },
+          child: Align(
             child: CircleAvatar(
-            radius: 33,
-            backgroundColor: Colors.grey[300],
-            backgroundImage: NetworkImage(stories.profileImage),
+              radius: 33,
+              backgroundColor: Colors.grey[300],
+              backgroundImage: NetworkImage(stories.profileImage),
             ),
-        )
-        ),
-      );
+          )),
+    );
   }
 }

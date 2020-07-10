@@ -11,6 +11,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -130,14 +131,22 @@ class LoginButton extends StatelessWidget {
                 model
                     .login(
                         mailController.text, passwordController.text, 'email')
-                    .then((value) {
-                  if (value) {
-                    model.showErrorMessage(context);
-                    Navigator.of(context).pop(true);
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
+                    .then((value) => value
+                        ? Navigator.of(context).pushNamedAndRemoveUntil(
+                            RouteName.main, (route) => false)
+                        : model.showErrorMessage(context));
+                // model
+                //     .login(
+                //         mailController.text, passwordController.text, 'email')
+                //     .then((value) {
+                //   if (value) {
+                //     showToast('Login Success');
+                //     Navigator.of(context).pushNamedAndRemoveUntil(
+                //         RouteName.splash, (route) => false);
+                //   } else {
+                //     model.showErrorMessage(context);
+                //   }
+                // });
               }
             },
     );
@@ -160,7 +169,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   void initState() {
     _recognizerRegister = TapGestureRecognizer()
       ..onTap = () async {
-        // 将注册成功的用户名,回填如登录框
+        // Fill Register UserName Into logn name widget
         widget.nameController.text =
             await Navigator.of(context).pushNamed(RouteName.register);
       };

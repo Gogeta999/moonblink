@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/notifications.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -34,8 +35,16 @@ class PageState extends State<NetWorkPage> {
               color: Colors.pinkAccent,
               child: Text("Get with token request"),
               onPressed: () async {
-                var test = await PlatformUtils.getBuildNum();
-                print(test.toString());
+                var usertoken =
+                    StorageManager.sharedPreferences.getString(token);
+                var test = await DioUtils().get(Api.SocialRequest + '8/stories',
+                    queryParameters: {
+                      'Authorization': 'Bearer' + usertoken.toString()
+                    });
+                return test.data
+                    .map<Story>((item) => Story.fromMap(item))
+                    .toList();
+                // print(test.toString());
               }),
           MaterialButton(
               color: Colors.blueAccent,
@@ -138,7 +147,7 @@ class PageState extends State<NetWorkPage> {
     //   "password": "1234",
     //  });
 
-    var response = await DioUtils().post(Api.PARTNERDETAIL + '16' + '/follow');
+    var response = await DioUtils().post(Api.SocialRequest + '16' + '/follow');
     this.setState(() {
       resultJson = response.toString();
     });

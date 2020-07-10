@@ -50,7 +50,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                         onPressed: () {
                           model.logout().then((value) => value
                               ? Navigator.of(context).pushNamedAndRemoveUntil(
-                                  RouteName.splash, (route) => false)
+                                  RouteName.main, (route) => false)
                               : null);
                         },
                       );
@@ -97,7 +97,7 @@ class UserHeaderWidget extends StatelessWidget {
                               if (usertype == 1) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.partnerOwnProfile);
-                              } else if (model.user == null) {
+                              } else if (model.user.token == null) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.login);
                               }
@@ -161,30 +161,6 @@ class UserListWidget extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 30),
       child: SliverList(
         delegate: SliverChildListDelegate([
-          /// for normal user to signup as partner
-          // if (usertype != 1)
-          //   ListTile(
-          //     title: Text('Register as our partner'),
-          //     onTap: () async {
-          //       CupertinoActivityIndicator();
-          //       var userid = StorageManager.sharedPreferences.getInt(mUserId);
-          //       var usertoken =
-          //           StorageManager.sharedPreferences.getString(token);
-          //       var response = await DioUtils().post(
-          //           Api.RegisterAsPartner + '$userid/register',
-          //           queryParameters: {
-          //             'Authorization': 'Bearer' + usertoken.toString()
-          //           });
-          //       print(response);
-          //       Navigator.of(context).pushNamed(RouteName.registerAsPartner);
-          //     },
-          //     leading: Icon(
-          //       FontAwesomeIcons.user,
-          //       color: iconColor,
-          //     ),
-          //     trailing: Icon(Icons.chevron_right),
-          //   ),
-
           /// wallet
           ListTile(
             leading: Icon(
@@ -202,7 +178,7 @@ class UserListWidget extends StatelessWidget {
           ListTile(
             title: Text(S.of(context).favorites),
             onTap: () {
-              Navigator.of(context).pushNamed(RouteName.setprofile);
+              Navigator.of(context).pushNamed(RouteName.network);
             },
             leading: Icon(
               FontAwesomeIcons.solidHeart,

@@ -156,7 +156,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
 
   _pickVideo() async {
     PickedFile video = await _picker.getVideo(
-        source: ImageSource.camera, maxDuration: Duration(seconds: 2));
+        source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
     // var video = await _picker.getVideo(
     //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
 
