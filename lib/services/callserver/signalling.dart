@@ -29,8 +29,7 @@ typedef void DataChannelCallback(RTCDataChannel dc);
 
 class Signaling {
   ChatModel _socket;
-  var _host;
-  var _port = 3000;
+  // var _port = 3000;
   RTCPeerConnection peerConnection;
   RTCDataChannel dataChannel;
   var _remoteCandidates = [];
@@ -80,7 +79,7 @@ class Signaling {
     'optional': [],
   };
 
-  Signaling(this._host);
+  // Signaling(this._host);
 
   close() {
     if (_localStream != null) {

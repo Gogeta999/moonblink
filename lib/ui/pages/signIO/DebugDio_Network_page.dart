@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/base_widget/notifications.dart';
+import 'package:moonblink/base_widget/audiorecorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
 class NetWorkPage extends StatefulWidget {
@@ -52,16 +51,16 @@ class PageState extends State<NetWorkPage> {
               onPressed: () {
                 loginPost();
               }),
-          // MaterialButton(
-          //   color: Colors.red,
-          //   child: Text("test Notifications"),
-          //   onPressed: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) => LocalNotifications()));
-          //   },
-          // ),
+          MaterialButton(
+            color: Colors.red,
+            child: Text("Audio recorder"),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Recorder()));
+            },
+          ),
           GestureDetector(
             child: Container(
               alignment: Alignment.center,
