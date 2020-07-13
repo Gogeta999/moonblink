@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -26,10 +27,10 @@ main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
-  if (usertoken != null) {
-    // BackgroundFetch.registerHeadlessTask(chatinits);
+  // if (usertoken != null) {
+  //   // BackgroundFetch.registerHeadlessTask(chatinits);
 
-  }
+  // }
   setupLocator();
   Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme

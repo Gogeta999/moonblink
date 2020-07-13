@@ -75,7 +75,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   // Timer _timer;
   // int _start = 10;
-  
+
   // void startTimer(bool end) {
   //   const oneSec = const Duration(seconds: 1);
   //   _timer = new Timer.periodic(
@@ -179,7 +179,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 ),
                 onSubmitted: (text) {
                   model.sendMessage(text, id, messages);
-          
                 },
               ),
             ),
@@ -262,12 +261,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             return ViewStateBusyWidget();
           } else if (contactModel.isError && msgmodel.isError) {
             return ViewStateErrorWidget(
-              error: contactModel.viewStateError,
-              onPressed: () {
-                contactModel.initData();
-                msgmodel.initData();
-              }
-            );
+                error: contactModel.viewStateError,
+                onPressed: () {
+                  contactModel.initData();
+                  msgmodel.initData();
+                });
           }
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
@@ -279,7 +277,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             Contact contact = contactModel.list[i];
             contacts.add(contact);
           }
-          var data = contacts.where((element) => element.userId == widget.detailPageId);
+          var data = contacts
+              .where((element) => element.userId == widget.detailPageId);
           users = List<Contact>.from(data);
           Contact user = users[0];
           print(messages);
