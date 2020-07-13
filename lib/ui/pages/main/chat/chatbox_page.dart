@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/view_model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,9 +15,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
-import 'package:moonblink/ui/pages/call/callerscreen.dart';
 import 'package:moonblink/view_model/message_model.dart';
-import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 Map<String, dynamic> _iceServers = {
@@ -141,18 +140,25 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       height: 100,
       width: 100,
-      child:
-          Image.network(msg.attach, loadingBuilder: (context, child, progress) {
+      
+      child: GestureDetector(
+        child: Image.network(msg.attach, loadingBuilder: (context, child, progress) {
         return progress == null
             ? child
             : SpinKitCircle(color: Theme.of(context).accentColor);
       }, fit: BoxFit.fill),
+        onTap: (){
+          Navigator.push(context, 
+            MaterialPageRoute(builder: (context) => ImageView(msg.attach),)
+          );
+        },
+    ),
+    
     );
   }
 
   //Send message
-  Widget buildmessage(id) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+  Widget buildmessage(id, model) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: 70.0,
@@ -203,16 +209,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ],
         ),
       );
-    });
   }
 
   //Conversation List
-  Widget buildChatList(id) {
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {
-        // List<Message> msgs = model.getMessagesForChatID(id);
-        // messages.addAll(msgs);
-        model.receiver(messages);
+  Widget buildChatList(id, model) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.8,
           child: ListView.builder(
@@ -223,30 +223,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             },
           ),
         );
-      },
-    );
   }
-
-  ///[Call Button]
-  // Widget buildfloat(id) {
-  //   return ScopedModelDescendant<ChatModel>(
-  //     builder: (context, child, model) {
-  //       // RTCPeerConnection pc = _createPeerConnection();
-  //       return FloatingActionButton(
-  //           child: Text("Call"),
-  //           onPressed: () {
-  //             model.createOffer(id, pc, "video");
-  //             Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => CallerScreen(),
-  //                 ));
-  //             // model.createAnswer(id, pc, "video");
-  //           });
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ProviderWidget2<ContactModel, GetmsgModel>(
@@ -283,8 +260,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           users = List<Contact>.from(data);
           Contact user = users[0];
           print(messages);
-          return Scaffold(
-            // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
+          return ScopedModelDescendant<ChatModel>(
+            builder: (context, child, model) {
+            model.receiver(messages);
+            return Scaffold(
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
                 AppBar(
               title: Text(user.contactUser.contactUserName),
@@ -294,11 +273,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             ),
             body: ListView(
               children: <Widget>[
-                buildChatList(user.contactUser.contactUserId),
-                buildmessage(user.contactUser.contactUserId),
+                buildChatList(user.contactUser.contactUserId, model),
+                buildmessage(user.contactUser.contactUserId, model),
               ],
             ),
           );
         });
-  }
+        });
+    }
 }
+
