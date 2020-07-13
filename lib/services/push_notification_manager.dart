@@ -60,7 +60,7 @@ class PushNotificationsManager {
     }
 
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/moonblink');
+        AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
