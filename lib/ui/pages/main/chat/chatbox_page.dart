@@ -16,24 +16,25 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/view_model/message_model.dart';
+import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-Map<String, dynamic> _iceServers = {
-  'iceServers': [
-    {'url': 'stun:54.179.117.84:3478'},
-    {
-      'url': 'turn:54.179.117.84:3478',
-      'username': 'moonblink',
-      'credential': 'm00nblink'
-    },
-  ]
-};
-final Map<String, dynamic> _config = {
-  'mandatory': {},
-  'optional': [
-    {'DtlsSrtpKeyAgreement': true},
-  ],
-};
+// Map<String, dynamic> _iceServers = {
+//   'iceServers': [
+//     {'url': 'stun:54.179.117.84:3478'},
+//     {
+//       'url': 'turn:54.179.117.84:3478',
+//       'username': 'moonblink',
+//       'credential': 'm00nblink'
+//     },
+//   ]
+// };
+// final Map<String, dynamic> _config = {
+//   'mandatory': {},
+//   'optional': [
+//     {'DtlsSrtpKeyAgreement': true},
+//   ],
+// };
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -163,7 +164,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: 70.0,
         //color: Theme.of(context).backgroundColor,
-
         child: Row(
           children: <Widget>[
             IconButton(
@@ -226,39 +226,40 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<ContactModel, GetmsgModel>(
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
         autoDispose: true,
-        model1: ContactModel(),
+        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
         model2: GetmsgModel(widget.detailPageId),
         onModelReady: (partnerModel, msgModel) {
           partnerModel.initData();
           msgModel.initData();
         },
-        builder: (context, contactModel, msgmodel, child) {
-          if (contactModel.isBusy && msgmodel.isBusy) {
+        builder: (context, partnermodel, msgmodel, child) {
+          if (partnermodel.isBusy && msgmodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (contactModel.isError && msgmodel.isError) {
+          } else if (partnermodel.isError && msgmodel.isError) {
             return ViewStateErrorWidget(
-              error: contactModel.viewStateError,
+              error: partnermodel.viewStateError,
               onPressed: () {
-                contactModel.initData();
+                partnermodel.initData();
                 msgmodel.initData();
               }
             );
           }
+          messages.clear();
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
             messages.add(Message(
                 msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
-          for (var i = 0; i < contactModel.list.length; i++) {
-            Contact contact = contactModel.list[i];
-            contacts.add(contact);
-          }
-          var data = contacts.where((element) => element.userId == widget.detailPageId);
-          users = List<Contact>.from(data);
-          Contact user = users[0];
+          // for (var i = 0; i < partnermodel.list.length; i++) {
+          //   Contact contact = partnermodel.list[i];
+          //   contacts.add(contact);
+          // }
+          // var data = contacts.where((element) => element.userId == widget.detailPageId);
+          // users = List<Contact>.from(data);
+          // Contact user = users[0];
           print(messages);
           return ScopedModelDescendant<ChatModel>(
             builder: (context, child, model) {
@@ -266,15 +267,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             return Scaffold(
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
                 AppBar(
-              title: Text(user.contactUser.contactUserName),
+              title: Text(partnermodel.partnerData.partnerName),
               actions: <Widget>[
                 // end ? Text("$_start") : Container()
               ],
             ),
             body: ListView(
               children: <Widget>[
-                buildChatList(user.contactUser.contactUserId, model),
-                buildmessage(user.contactUser.contactUserId, model),
+                buildChatList(partnermodel.partnerData.partnerId, model),
+                buildmessage(partnermodel.partnerData.partnerId, model),
               ],
             ),
           );
