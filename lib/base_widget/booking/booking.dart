@@ -23,9 +23,12 @@ class _BookingButtonState extends State<BookingButton> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
-                Expanded(child: BookingDropdown(bookingModel: bookingModel)),
+                SizedBox(height: 10.0),
+                BookingDropdown(bookingModel: bookingModel),
               ],
             ),
             actions: <Widget>[

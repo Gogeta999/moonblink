@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -29,20 +28,13 @@ class PushNotificationsManager {
 
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) {
-    if (message.containsKey('notification')) {
-      //PushNotificationsManager()._showNotification(message['notification'], message['data']);
-    }
-
-    if (message != null) {
-      PushNotificationsManager()
-          ._showNotification(message['notification'], message['data']);
-    }
+    print('myBackgroundMessageHandler Executed Thanks God');
+    PushNotificationsManager()
+        ._showNotification(message['notification'], message['data']);
     return null;
-    // Or do other work.
   }
 
   Future<void> removeFcmToken() async {
-    //await StorageManager.sharedPreferences.remove(FCMToken);
     //actually storing new fcm token
     await _firebaseMessaging.deleteInstanceID();
     saveFcmToken();
@@ -61,12 +53,9 @@ class PushNotificationsManager {
     Future<void> onSelectNotification(String payload) async {
       if (payload != null) {
         print('payload: $payload');
-        //final chatId = int.tryParse(payload);
         locator<NavigationService>().showBookingDialog(
             () => _bookingManager.bookingAccept(),
             () => _bookingManager.bookingDecline());
-        /*await locator<NavigationService>()
-            .navigateTo(RouteName.chatBox, arguments: chatId);*/
       }
     }
 
@@ -93,15 +82,19 @@ class PushNotificationsManager {
         onBackgroundMessage: myBackgroundMessageHandler,
         onResume: (Map<String, dynamic> message) {
           print('onResume: $message');
-
-          ///onResume need 'click_action: FLUTTER_NOTIFICATION_CLICK' on data
-          ///if id from json type is Int
-          final chatIdFromInt = json.decode(message['data']['booking_user_id']);
-
-          ///if id from json type is String
-          //final chatIdFromString = int.tryParse(json.decode(message['data']['booking_user_id']));
-          locator<NavigationService>()
-              .navigateTo(RouteName.chatBox, arguments: chatIdFromInt);
+          final int userId = json.decode(message['data']['user_id']);
+          final int bookingId = json.decode(message['data']['id']);
+          final int bookingUserId =
+              json.decode(message['data']['booking_user_id']);
+          print(
+              'userId: $userId, bookingId: $bookingId, bookingUserId: $bookingUserId');
+          _bookingManager.bookingPrepare(
+              userId: userId,
+              bookingId: bookingId,
+              bookingUserId: bookingUserId);
+          locator<NavigationService>().showBookingDialog(
+              () => _bookingManager.bookingAccept(),
+              () => _bookingManager.bookingDecline());
           return;
         },
         onLaunch: (Map<String, dynamic> message) {
