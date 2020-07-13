@@ -34,7 +34,7 @@ main() async {
 
   }
   setupLocator();
-  runApp(MyApp());
+  Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -42,7 +42,6 @@ main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return OKToast(

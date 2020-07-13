@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  video_thumbnail: ^0.2.2
+
   flutter_webrtc: ^0.2.8 #require to add code at android and ios
   cupertino_icons: ^0.1.2
   # State Management

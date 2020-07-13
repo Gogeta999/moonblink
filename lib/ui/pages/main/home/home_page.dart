@@ -85,28 +85,7 @@ class _HomePageState extends State<HomePage>
                     child: CustomScrollView(
                       controller: tapToTopModel.scrollController,
                       slivers: <Widget>[
-                        SliverAppBar(
-                          // centerTitle: true,
-                          ///[Appbar]
-                          title: GestureDetector(
-                              onDoubleTap: tapToTopModel.scrollToTop,
-                              child: AppbarLogo()),
-                          pinned: true,
-                          expandedHeight: kToolbarHeight,
-                          brightness:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Brightness.light
-                                  : Brightness.dark,
-                          actions: <Widget>[
-                            IconButton(
-                                icon: Icon(FontAwesomeIcons.search),
-                                onPressed: () {
-                                  showSearch(
-                                      context: context, delegate: SearchPage());
-                                })
-                          ],
-                          flexibleSpace: null,
-                        ),
+                        HomeAppBar(),
                         if (homeModel.isEmpty)
                           SliverToBoxAdapter(
                               child: Padding(
@@ -121,6 +100,32 @@ class _HomePageState extends State<HomePage>
               })),
         );
       },
+    );
+  }
+}
+
+class HomeAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    TapToTopModel tapToTopModel = Provider.of(context);
+    return SliverAppBar(
+      // centerTitle: true,
+      ///[Appbar]
+      title: GestureDetector(
+          onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
+      pinned: true,
+      expandedHeight: kToolbarHeight,
+      brightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.light
+          : Brightness.dark,
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(FontAwesomeIcons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: SearchPage());
+            })
+      ],
+      flexibleSpace: null,
     );
   }
 }
