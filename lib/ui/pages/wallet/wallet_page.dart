@@ -11,6 +11,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   ///TODO need to connect with backend.
+  ///Current coin amount.
   ///query List<IAPItem> from the store. IOS only
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
@@ -40,12 +41,13 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   void dispose() {
-    super.dispose();
     asyncDisposeState();
+    super.dispose();
   }
 
   void asyncInitState() async {
     await FlutterInappPurchase.instance.initConnection;
+    await getItems();
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -69,11 +71,6 @@ class _WalletPageState extends State<WalletPage> {
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
       print('purchase-error: $purchaseError');
     });
-
-    await getItems();
-
-    //consumed all purchased item
-    //await FlutterInappPurchase.instance.consumeAllItems;
   }
 
   ///You should end the billing service in android when you are done with it.
@@ -100,9 +97,10 @@ class _WalletPageState extends State<WalletPage> {
   Future<void> getItems() async {
     List<IAPItem> items =
         await FlutterInappPurchase.instance.getProducts(_productLists);
-    items..sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
-        ? 1
-        : 0); //sort by price;
+    items
+      ..sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
+          ? 1
+          : 0); //sort by price;
     setState(() {
       this._items = items;
     });
@@ -179,6 +177,27 @@ class _WalletPageState extends State<WalletPage> {
         ));
   }
 
+  Widget _buildCurrentCoinAmount() {
+    return Container(
+      alignment: Alignment.center,
+      // // color: Colors.grey,
+      margin: EdgeInsets.all(10),
+      height: 60,
+      decoration: BoxDecoration(
+        border: Border.all(width: 2.0, color: Colors.grey),
+        // color: Colors.grey,
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+      ),
+      child: ListTile(
+        leading: Icon(
+          FontAwesomeIcons.coins,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: Text('Current coin amount : 0'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,9 +205,11 @@ class _WalletPageState extends State<WalletPage> {
         title: Text('Wallet'),
       ),
       body: ListView.builder(
-        itemCount: _items.length,
+        itemCount: _items.length + 1,
         itemBuilder: (context, index) {
-          return _buildProductListTile(_items[index]);
+          return index == _items.length
+              ? _buildCurrentCoinAmount()
+              : _buildProductListTile(_items[index]);
         },
       ),
     );

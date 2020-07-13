@@ -31,10 +31,11 @@ class _BookingButtonState extends State<BookingButton> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
-                SizedBox(height: 10.0),
+                SizedBox(height: 20.0),
                 BookingDropdown(bookingModel: bookingModel),
               ],
             ),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
             actions: <Widget>[
               FlatButton(
                   child: Text("Cancel"),
