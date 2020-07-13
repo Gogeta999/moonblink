@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -18,14 +17,18 @@ import 'package:scoped_model/scoped_model.dart';
 
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
+import 'services/push_notification_manager.dart';
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
 StreamController<String> streamController = new StreamController();
+
+//main() => runApp(TestInAPP());
 
 main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
+  await PushNotificationsManager().init();
   if (usertoken != null) {
     // BackgroundFetch.registerHeadlessTask(chatinits);
 
