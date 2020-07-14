@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
@@ -16,9 +13,9 @@ class BookingButton extends StatefulWidget {
 }
 
 class _BookingButtonState extends State<BookingButton> {
-
   ///[Partner idle]
-  void available(context, BookingModel bookingModel, PartnerDetailModel partnerDetailModel) {
+  void available(context, BookingModel bookingModel,
+      PartnerDetailModel partnerDetailModel) {
     showDialog(
         context: context,
         builder: (context) {
@@ -27,11 +24,15 @@ class _BookingButtonState extends State<BookingButton> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Image.asset(ImageHelper.wrapAssetsImage("images.jpg")),
-                Expanded(child: BookingDropdown(bookingModel: bookingModel)),
+                SizedBox(height: 20.0),
+                BookingDropdown(bookingModel: bookingModel),
               ],
             ),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
             actions: <Widget>[
               FlatButton(
                   child: Text("Cancel"),
@@ -44,15 +45,21 @@ class _BookingButtonState extends State<BookingButton> {
                     if (bookingModel.isError) {
                       print("Error Booking");
                     } else {
-                      bookingModel.booking(partnerDetailModel.partnerId).then((value) => value
-                          ? {
-                              Navigator.pop(context,
-                                  'Cancel'), //remove booking dialog and open another
-                              Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ChatBoxPage(partnerDetailModel.partnerData.partnerId),) 
-                              )
-                            }
-                          : null);
+                      bookingModel
+                          .booking(partnerDetailModel.partnerId)
+                          .then((value) => value
+                              ? {
+                                  Navigator.pop(context,
+                                      'Cancel'), //remove booking dialog and open another
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatBoxPage(
+                                            partnerDetailModel
+                                                .partnerData.partnerId),
+                                      ))
+                                }
+                              : null);
                     }
                     //api call
                   })
@@ -81,7 +88,6 @@ class _BookingButtonState extends State<BookingButton> {
           );
         });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,19 +124,20 @@ class BookingDropdown extends StatefulWidget {
 }
 
 class _BookingDropdownState extends State<BookingDropdown> {
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        value: widget.bookingModel.dropdownList[widget.bookingModel.selectedIndex],
+        value:
+            widget.bookingModel.dropdownList[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,
         iconEnabledColor: Theme.of(context).accentColor,
         style: TextStyle(color: Theme.of(context).accentColor),
         onChanged: (String newValue) {
           setState(() {
-            final int selectedIndex = widget.bookingModel.dropdownList.indexOf(newValue);
+            final int selectedIndex =
+                widget.bookingModel.dropdownList.indexOf(newValue);
             print(selectedIndex);
             widget.bookingModel.selectedIndex = selectedIndex;
           });
@@ -147,4 +154,3 @@ class _BookingDropdownState extends State<BookingDropdown> {
     );
   }
 }
-

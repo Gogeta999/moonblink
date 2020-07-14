@@ -11,7 +11,6 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {

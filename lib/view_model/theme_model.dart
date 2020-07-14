@@ -6,7 +6,6 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/ui/helper/theme_helper.dart';
 
-
 //const Color(0xFF5394FF),
 
 class ThemeModel with ChangeNotifier {
@@ -19,7 +18,7 @@ class ThemeModel with ChangeNotifier {
   /// user's choosing mode
   bool _userDarkMode;
 
-  /// current theme 
+  /// current theme
   MaterialColor _themeColor;
 
   // font index
@@ -59,7 +58,7 @@ class ThemeModel with ChangeNotifier {
     );
   }
 
-  // 
+  //
   switchFont(int index) {
     _fontIndex = index;
     switchTheme();
@@ -99,8 +98,9 @@ class ThemeModel with ChangeNotifier {
       errorColor: Colors.red,
       cursorColor: accentColor,
       textTheme: themeData.textTheme.copyWith(
-        /// 解决中文hint不居中的问题 https://github.com/flutter/flutter/issues/40248
-          subhead: themeData.textTheme.subhead
+
+          /// 解决中文hint不居中的问题 https://github.com/flutter/flutter/issues/40248
+          subtitle2: themeData.textTheme.subtitle2
               .copyWith(textBaseline: TextBaseline.alphabetic)),
       textSelectionColor: accentColor.withAlpha(60),
       textSelectionHandleColor: accentColor.withAlpha(60),

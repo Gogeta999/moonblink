@@ -296,6 +296,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   }
 }
 
+// ignore: must_be_immutable
 class FollowButton extends StatelessWidget {
   // FollowButton(this.isFollow, this.model);
   // final isFollow;

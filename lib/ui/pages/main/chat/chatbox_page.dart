@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/view_model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,27 +15,9 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
-import 'package:moonblink/ui/pages/call/callerscreen.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
-
-Map<String, dynamic> _iceServers = {
-  'iceServers': [
-    {'url': 'stun:54.179.117.84:3478'},
-    {
-      'url': 'turn:54.179.117.84:3478',
-      'username': 'moonblink',
-      'credential': 'm00nblink'
-    },
-  ]
-};
-final Map<String, dynamic> _config = {
-  'mandatory': {},
-  'optional': [
-    {'DtlsSrtpKeyAgreement': true},
-  ],
-};
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -141,163 +124,138 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       height: 100,
       width: 100,
-      child:
-          Image.network(msg.attach, loadingBuilder: (context, child, progress) {
-        return progress == null
-            ? child
-            : SpinKitCircle(color: Theme.of(context).accentColor);
-      }, fit: BoxFit.fill),
+      child: GestureDetector(
+        child: Image.network(msg.attach,
+            loadingBuilder: (context, child, progress) {
+          return progress == null
+              ? child
+              : SpinKitCircle(color: Theme.of(context).accentColor);
+        }, fit: BoxFit.fill),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageView(msg.attach),
+              ));
+        },
+      ),
     );
   }
 
   //Send message
-  Widget buildmessage(id) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: 70.0,
-        //color: Theme.of(context).backgroundColor,
-
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(FontAwesomeIcons.image),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                getImage();
-              },
-            ),
-            Expanded(
-              child: TextField(
-                maxLines: null,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.send,
-                controller: textEditingController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Input message',
-                ),
-                onSubmitted: (text) {
-                  model.sendMessage(text, id, messages);
-                },
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.send),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                if (bytes == null) {
-                  if (textEditingController.text != '') {
-                    model.sendMessage(textEditingController.text, id, messages);
-                    textEditingController.text = '';
-                  }
-                } else {
-                  model.sendfile(filename, bytes, id, messages);
-                  textEditingController.text = '';
-                  bytes = null;
-                }
-              },
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  //Conversation List
-  Widget buildChatList(id) {
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {
-        // List<Message> msgs = model.getMessagesForChatID(id);
-        // messages.addAll(msgs);
-        model.receiver(messages);
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: ListView.builder(
-            reverse: true,
-            itemCount: messages.length,
-            itemBuilder: (BuildContext context, int index) {
-              return buildSingleMessage(messages[index]);
+  Widget buildmessage(id, model) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      height: 70.0,
+      //color: Theme.of(context).backgroundColor,
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(FontAwesomeIcons.image),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              getImage();
             },
           ),
-        );
-      },
+          Expanded(
+            child: TextField(
+              maxLines: null,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.send,
+              controller: textEditingController,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Input message',
+              ),
+              onSubmitted: (text) {
+                model.sendMessage(text, id, messages);
+              },
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              if (bytes == null) {
+                if (textEditingController.text != '') {
+                  model.sendMessage(textEditingController.text, id, messages);
+                  textEditingController.text = '';
+                }
+              } else {
+                model.sendfile(filename, bytes, id, messages);
+                textEditingController.text = '';
+                bytes = null;
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  ///[Call Button]
-  // Widget buildfloat(id) {
-  //   return ScopedModelDescendant<ChatModel>(
-  //     builder: (context, child, model) {
-  //       // RTCPeerConnection pc = _createPeerConnection();
-  //       return FloatingActionButton(
-  //           child: Text("Call"),
-  //           onPressed: () {
-  //             model.createOffer(id, pc, "video");
-  //             Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => CallerScreen(),
-  //                 ));
-  //             // model.createAnswer(id, pc, "video");
-  //           });
-  //     },
-  //   );
-  // }
+  //Conversation List
+  Widget buildChatList(id, model) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: ListView.builder(
+        reverse: true,
+        itemCount: messages.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildSingleMessage(messages[index]);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget2<ContactModel, GetmsgModel>(
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
         autoDispose: true,
-        model1: ContactModel(),
+        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
         model2: GetmsgModel(widget.detailPageId),
         onModelReady: (partnerModel, msgModel) {
           partnerModel.initData();
           msgModel.initData();
         },
-        builder: (context, contactModel, msgmodel, child) {
-          if (contactModel.isBusy && msgmodel.isBusy) {
+        builder: (context, partnermodel, msgmodel, child) {
+          if (partnermodel.isBusy && msgmodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (contactModel.isError && msgmodel.isError) {
+          } else if (partnermodel.isError && msgmodel.isError) {
             return ViewStateErrorWidget(
-                error: contactModel.viewStateError,
+                error: partnermodel.viewStateError,
                 onPressed: () {
-                  contactModel.initData();
+                  partnermodel.initData();
                   msgmodel.initData();
                 });
           }
+          messages.clear();
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
             messages.add(Message(
                 msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
-          for (var i = 0; i < contactModel.list.length; i++) {
-            Contact contact = contactModel.list[i];
-            contacts.add(contact);
-          }
-          var data = contacts
-              .where((element) => element.userId == widget.detailPageId);
-          users = List<Contact>.from(data);
-          Contact user = users[0];
           print(messages);
-          return Scaffold(
-            // floatingActionButton: buildfloat(partnermodel.partnerData.partnerId),
-            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                AppBar(
-              title: Text(user.contactUser.contactUserName),
-              actions: <Widget>[
-                // end ? Text("$_start") : Container()
-              ],
-            ),
-            body: ListView(
-              children: <Widget>[
-                buildChatList(user.contactUser.contactUserId),
-                buildmessage(user.contactUser.contactUserId),
-              ],
-            ),
-          );
+          return ScopedModelDescendant<ChatModel>(
+              builder: (context, child, model) {
+            model.receiver(messages);
+            return Scaffold(
+              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+                  AppBar(
+                title: Text(partnermodel.partnerData.partnerName),
+                actions: <Widget>[
+                  // end ? Text("$_start") : Container()
+                ],
+              ),
+              body: ListView(
+                children: <Widget>[
+                  buildChatList(partnermodel.partnerData.partnerId, model),
+                  buildmessage(partnermodel.partnerData.partnerId, model),
+                ],
+              ),
+            );
+          });
         });
   }
 }
