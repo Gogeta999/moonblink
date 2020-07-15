@@ -2,21 +2,26 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/imageview.dart';
-import 'package:moonblink/view_model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_webrtc/webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/recorder.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ChatBoxPage extends StatefulWidget {
@@ -27,19 +32,21 @@ class ChatBoxPage extends StatefulWidget {
 }
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
+  String voiceChannelName = '';
   PartnerUser partnerdata;
+  int type;
   Uint8List bytes;
-  RTCPeerConnection pc;
   bool img = false;
-  // bool local = false;
+  bool file = false;
   List<Message> messages = [];
   List<Contact> contacts = [];
   List<Contact> users = [];
   String now = DateTime.now().toString();
   String filename;
   File _image;
-  bool end = true;
+
   // ByteData _byteData;
+  final selfId = StorageManager.sharedPreferences.getInt(mUserId);
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
   //File formatting
@@ -81,6 +88,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //   _timer.cancel();
   //   super.dispose();
   // }
+
   //build messages
   Widget buildSingleMessage(Message message) {
     if (message.attach != "") {
@@ -96,6 +104,50 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         child: img ? buildimage(message) : buildmsg(message));
   }
 
+  ///VoiceCallContainer
+  ///Container(
+  // alignment: Alignment.center,
+  // padding: EdgeInsets.all(50),
+  //   margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+  //   height: 100,
+  //   width: 50,
+  //   decoration: BoxDecoration(
+  //     border: Border.all(width: 2.0, color: Colors.grey),
+  //     // color: Colors.grey,
+  //     borderRadius: BorderRadius.all(Radius.circular(20.0)),
+  //   ),
+  //   child: Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //     children: <Widget>[
+  //       CircleAvatar(
+  //         radius: 35,
+  //         backgroundColor: Colors.black,
+  //       ),
+  //       IconButton(
+  //           icon: Icon(
+  //             FontAwesomeIcons.phoneSlash,
+  //             color: Colors.red[500],
+  //           ),
+  //           onPressed: () {
+  //             print('Decline');
+  //           }),
+  //       IconButton(
+  //           icon: Icon(
+  //             FontAwesomeIcons.phone,
+  //             color: Colors.green[300],
+  //           ),
+  //           onPressed: () {
+  //             Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => VoiceCallWidget(
+  //                     channelName: 'voiceChannelName',
+  //                   ),
+  //                 ));
+  //           }),
+  //     ],
+  //   ),
+  // ),
   //build msg template
   buildmsg(Message msg) {
     return Container(
@@ -143,69 +195,92 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Send message
-  Widget buildmessage(id, model) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      height: 70.0,
-      //color: Theme.of(context).backgroundColor,
-      child: Row(
-        children: <Widget>[
-          IconButton(
-            icon: Icon(FontAwesomeIcons.image),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              getImage();
-            },
-          ),
-          Expanded(
-            child: TextField(
-              maxLines: null,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.send,
-              controller: textEditingController,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Input message',
-              ),
-              onSubmitted: (text) {
-                model.sendMessage(text, id, messages);
+  Widget buildmessage(id) {
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        height: 70.0,
+        //color: Theme.of(context).backgroundColor,
+        child: Row(
+          children: <Widget>[
+            //Image select button
+            IconButton(
+              icon: Icon(FontAwesomeIcons.image),
+              iconSize: 30.0,
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                getImage();
               },
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              if (bytes == null) {
-                if (textEditingController.text != '') {
-                  model.sendMessage(textEditingController.text, id, messages);
+            //Voice record
+            Voicemsg(),
+            //Text Input
+            Expanded(
+              child: TextField(
+                maxLines: null,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.send,
+                controller: textEditingController,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Input message',
+                ),
+              ),
+            ),
+            //Send button
+            IconButton(
+              icon: Icon(Icons.send),
+              iconSize: 30.0,
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                if (bytes == null) {
+                  if (textEditingController.text != '') {
+                    model.sendMessage(textEditingController.text, id, messages);
+                    textEditingController.text = '';
+                  }
+                } else {
+                  model.sendfile(filename, bytes, id, type, messages);
                   textEditingController.text = '';
                 }
-              } else {
-                model.sendfile(filename, bytes, id, messages);
-                textEditingController.text = '';
-                bytes = null;
-              }
-            },
-          ),
-        ],
-      ),
-    );
+              },
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  //For call button
+  Widget callbtn(anotherPersonId) {
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
+      return IconButton(
+        icon: Icon(
+          FontAwesomeIcons.phone,
+          size: 20,
+        ),
+        onPressed: () {
+          model.call(selfId, anotherPersonId, voiceChannelName);
+          joinChannel();
+        },
+      );
+    });
   }
 
   //Conversation List
-  Widget buildChatList(id, model) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      child: ListView.builder(
-        reverse: true,
-        itemCount: messages.length,
-        itemBuilder: (BuildContext context, int index) {
-          return buildSingleMessage(messages[index]);
-        },
-      ),
-    );
+  Widget buildChatList(id) {
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      model.receiver(messages);
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: ListView.builder(
+          reverse: true,
+          itemCount: messages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return buildSingleMessage(messages[index]);
+          },
+        ),
+      );
+    });
   }
 
   @override
@@ -237,25 +312,100 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
           print(messages);
-          return ScopedModelDescendant<ChatModel>(
-              builder: (context, child, model) {
-            model.receiver(messages);
-            return Scaffold(
-              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                  AppBar(
-                title: Text(partnermodel.partnerData.partnerName),
-                actions: <Widget>[
-                  // end ? Text("$_start") : Container()
-                ],
+          return Scaffold(
+            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+                AppBar(
+              title: Text(partnermodel.partnerData.partnerName),
+              actions: <Widget>[
+                callbtn(partnermodel.partnerData.partnerId),
+              ],
+            ),
+            body: ListView(
+              children: <Widget>[
+                buildChatList(partnermodel.partnerData.partnerId),
+                buildmessage(partnermodel.partnerData.partnerId),
+              ],
+            ),
+          );
+        });
+  }
+
+  ///[CallFunction]
+  ///Here is for voicCall
+  Future<void> joinChannel() async {
+    if (voiceChannelName.isNotEmpty) {
+      await _handleVoiceCall();
+    } else if (voiceChannelName.isEmpty) {
+      showToast('Developer error');
+    }
+  }
+
+  Future<void> _handleVoiceCall() async {
+    await [Permission.microphone].request();
+    if (await Permission.camera.request().isGranted) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VoiceCallWidget(
+              channelName: voiceChannelName,
+            ),
+          ));
+    } else if (await Permission.camera.request().isDenied) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(
+                "Please allow Microphone",
+                textAlign: TextAlign.center,
               ),
-              body: ListView(
-                children: <Widget>[
-                  buildChatList(partnermodel.partnerData.partnerId, model),
-                  buildmessage(partnermodel.partnerData.partnerId, model),
-                ],
-              ),
+              content: Text(
+                  "You need to allow Microphone permission to enable voice call"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             );
           });
-        });
+    } else if (await Permission.camera.request().isPermanentlyDenied) {
+      print('Permanently being denied,user need to allow in app setting');
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(
+                "Please allow Microphone to",
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                  "You need to allow Microphone permission at App Settings"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    openAppSettings();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
   }
 }

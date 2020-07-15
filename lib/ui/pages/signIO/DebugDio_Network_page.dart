@@ -18,7 +18,7 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
-  String channelName = '';
+  String channelName = '11';
   bool isOpen = false;
   var resultJson = "";
   @override
@@ -128,7 +128,9 @@ class PageState extends State<NetWorkPage> {
                       FontAwesomeIcons.phone,
                       color: Colors.green[300],
                     ),
-                    onPressed: joinChannel),
+                    onPressed: () {
+                      print('joinChannel');
+                    }),
               ],
             ),
           ),
@@ -147,83 +149,5 @@ class PageState extends State<NetWorkPage> {
         ],
       ),
     );
-  }
-
-  ///Here is for voicCall
-  Future<void> joinChannel() async {
-    if (channelName.isNotEmpty) {
-      await _handleVoiceCall();
-    } else if (channelName.isEmpty) {
-      showToast('Developer error');
-    }
-  }
-
-  Future<void> _handleVoiceCall() async {
-    await [Permission.microphone].request();
-    if (await Permission.camera.request().isGranted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VoiceCallWidget(
-              channelName: channelName,
-            ),
-          ));
-    } else if (await Permission.camera.request().isDenied) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                "Please allow Microphone",
-                textAlign: TextAlign.center,
-              ),
-              content: Text(
-                  "You need to allow Microphone permission to enable voice call"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    } else if (await Permission.camera.request().isPermanentlyDenied) {
-      print('Permanently being denied,user need to allow in app setting');
-      showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                "Please allow Microphone to",
-                textAlign: TextAlign.center,
-              ),
-              content: Text(
-                  "You need to allow Microphone permission at App Settings"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    openAppSettings();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
   }
 }
