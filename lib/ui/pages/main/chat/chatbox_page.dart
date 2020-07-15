@@ -3,12 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:moonblink/base_widget/imageview.dart';
-import 'package:moonblink/view_model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_webrtc/webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -19,23 +18,6 @@ import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-// Map<String, dynamic> _iceServers = {
-//   'iceServers': [
-//     {'url': 'stun:54.179.117.84:3478'},
-//     {
-//       'url': 'turn:54.179.117.84:3478',
-//       'username': 'moonblink',
-//       'credential': 'm00nblink'
-//     },
-//   ]
-// };
-// final Map<String, dynamic> _config = {
-//   'mandatory': {},
-//   'optional': [
-//     {'DtlsSrtpKeyAgreement': true},
-//   ],
-// };
-
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
   final int detailPageId;
@@ -45,17 +27,17 @@ class ChatBoxPage extends StatefulWidget {
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
   PartnerUser partnerdata;
+  int type;
   Uint8List bytes;
-  RTCPeerConnection pc;
   bool img = false;
-  // bool local = false;
+  bool file = false;
   List<Message> messages = [];
   List<Contact> contacts = [];
   List<Contact> users = [];
   String now = DateTime.now().toString();
   String filename;
   File _image;
-  bool end = true;
+
   // ByteData _byteData;
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
@@ -98,6 +80,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //   _timer.cancel();
   //   super.dispose();
   // }
+
   //build messages
   Widget buildSingleMessage(Message message) {
     if (message.attach != "") {
@@ -141,7 +124,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       height: 100,
       width: 100,
-      
       child: GestureDetector(
         child: Image.network(msg.attach, loadingBuilder: (context, child, progress) {
         return progress == null
@@ -159,13 +141,16 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Send message
-  Widget buildmessage(id, model) {
+  Widget buildmessage(id) {
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model){
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: 70.0,
         //color: Theme.of(context).backgroundColor,
         child: Row(
           children: <Widget>[
+            //Image select button
             IconButton(
               icon: Icon(FontAwesomeIcons.image),
               iconSize: 30.0,
@@ -174,6 +159,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 getImage();
               },
             ),
+            //Voice record
+            Voicemsg(),
+            //Text Input
             Expanded(
               child: TextField(
                 maxLines: null,
@@ -183,12 +171,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 decoration: InputDecoration.collapsed(
                   hintText: 'Input message',
                 ),
-                onSubmitted: (text) {
-                  model.sendMessage(text, id, messages);
-          
-                },
               ),
             ),
+            //Send button
             IconButton(
               icon: Icon(Icons.send),
               iconSize: 30.0,
@@ -200,7 +185,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     textEditingController.text = '';
                   }
                 } else {
-                  model.sendfile(filename, bytes, id, messages);
+                  model.sendfile(filename, bytes, id, type, messages);
                   textEditingController.text = '';
                   bytes = null;
                 }
@@ -209,10 +194,24 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ],
         ),
       );
+    }
+    );
   }
+  //For call button
+  Widget callbtn(id) {
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model){
+        return Container(
 
+        );
+      }
+    );
+  }
   //Conversation List
-  Widget buildChatList(id, model) {
+  Widget buildChatList(id) {
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model) {
+        model.receiver(messages);
         return Container(
           height: MediaQuery.of(context).size.height * 0.8,
           child: ListView.builder(
@@ -223,6 +222,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             },
           ),
         );
+      }
+    );
   }
   @override
   Widget build(BuildContext context) {
@@ -251,7 +252,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
             messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
+              msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
           // for (var i = 0; i < partnermodel.list.length; i++) {
           //   Contact contact = partnermodel.list[i];
@@ -261,26 +262,23 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           // users = List<Contact>.from(data);
           // Contact user = users[0];
           print(messages);
-          return ScopedModelDescendant<ChatModel>(
-            builder: (context, child, model) {
-            model.receiver(messages);
-            return Scaffold(
+          return Scaffold(
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
                 AppBar(
               title: Text(partnermodel.partnerData.partnerName),
               actions: <Widget>[
-                // end ? Text("$_start") : Container()
+                callbtn(partnermodel.partnerData.partnerId),
               ],
             ),
             body: ListView(
               children: <Widget>[
-                buildChatList(partnermodel.partnerData.partnerId, model),
-                buildmessage(partnermodel.partnerData.partnerId, model),
+                buildChatList(partnermodel.partnerData.partnerId),
+                buildmessage(partnermodel.partnerData.partnerId),
               ],
             ),
           );
-        });
-        });
+        }
+      );
     }
 }
 

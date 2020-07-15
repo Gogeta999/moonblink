@@ -110,7 +110,11 @@ class RecorderExampleState extends State<RecorderExample> {
                   // ),
                 ],
               ),
-              new Text("Status : $_currentStatus"),
+              new Container(child: GestureDetector(
+                child: Text("S"),
+                onLongPressStart: (LongPressStartDetails details) => start(),
+                onLongPressUp: () => stop(),
+              ),),
               new Text('Avg Power: ${_current?.metering?.averagePower}'),
               new Text('Peak Power: ${_current?.metering?.peakPower}'),
               new Text("File path of the record: ${_current?.path}"),
@@ -147,6 +151,7 @@ class RecorderExampleState extends State<RecorderExample> {
         // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
         _recorder =
             FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+        print(_recorder);
 
         await _recorder.initialized;
         // after initialization
@@ -166,7 +171,16 @@ class RecorderExampleState extends State<RecorderExample> {
       print(e);
     }
   }
-
+  void start() {
+    final result = _start();
+    print(result);
+    return result;
+  }
+  void stop() {
+    final end = _stop();
+    print(end);
+    return end;
+  }
   _start() async {
     try {
       await _recorder.start();
@@ -206,9 +220,11 @@ class RecorderExampleState extends State<RecorderExample> {
   _stop() async {
     var result = await _recorder.stop();
     print("Stop recording: ${result.path}");
+    print(result.path.runtimeType);
     print("Stop recording: ${result.duration}");
     File file = widget.localFileSystem.file(result.path);
     print("File length: ${await file.length()}");
+    print(file.runtimeType);
     setState(() {
       _current = result;
       _currentStatus = _current.status;
