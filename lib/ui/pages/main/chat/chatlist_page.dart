@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
-import 'package:moonblink/base_widget/notifications.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
