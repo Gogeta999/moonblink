@@ -4,7 +4,6 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -259,5 +258,4 @@ class RecorderExampleState extends State<RecorderExample> {
     }
     return Text(text, style: TextStyle(color: Colors.white));
   }
-
 }

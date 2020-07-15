@@ -57,7 +57,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   // Timer _timer;
   // int _start = 10;
-  
+
   // void startTimer(bool end) {
   //   const oneSec = const Duration(seconds: 1);
   //   _timer = new Timer.periodic(
@@ -125,18 +125,20 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       height: 100,
       width: 100,
       child: GestureDetector(
-        child: Image.network(msg.attach, loadingBuilder: (context, child, progress) {
-        return progress == null
-            ? child
-            : SpinKitCircle(color: Theme.of(context).accentColor);
-      }, fit: BoxFit.fill),
-        onTap: (){
-          Navigator.push(context, 
-            MaterialPageRoute(builder: (context) => ImageView(msg.attach),)
-          );
+        child: Image.network(msg.attach,
+            loadingBuilder: (context, child, progress) {
+          return progress == null
+              ? child
+              : SpinKitCircle(color: Theme.of(context).accentColor);
+        }, fit: BoxFit.fill),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageView(msg.attach),
+              ));
         },
-    ),
-    
+      ),
     );
   }
 
@@ -187,7 +189,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 } else {
                   model.sendfile(filename, bytes, id, type, messages);
                   textEditingController.text = '';
-                  bytes = null;
                 }
               },
             ),
@@ -225,6 +226,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       }
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
@@ -240,12 +242,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             return ViewStateBusyWidget();
           } else if (partnermodel.isError && msgmodel.isError) {
             return ViewStateErrorWidget(
-              error: partnermodel.viewStateError,
-              onPressed: () {
-                partnermodel.initData();
-                msgmodel.initData();
-              }
-            );
+                error: partnermodel.viewStateError,
+                onPressed: () {
+                  partnermodel.initData();
+                  msgmodel.initData();
+                });
           }
           messages.clear();
           print(msgmodel.list.length);
@@ -254,13 +255,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             messages.add(Message(
               msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
           }
-          // for (var i = 0; i < partnermodel.list.length; i++) {
-          //   Contact contact = partnermodel.list[i];
-          //   contacts.add(contact);
-          // }
-          // var data = contacts.where((element) => element.userId == widget.detailPageId);
-          // users = List<Contact>.from(data);
-          // Contact user = users[0];
           print(messages);
           return Scaffold(
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
@@ -281,4 +275,3 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       );
     }
 }
-

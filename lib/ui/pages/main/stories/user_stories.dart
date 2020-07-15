@@ -90,28 +90,26 @@ class Indicator extends StatelessWidget {
     this.itemCount: 0,
   }) : assert(controller != null);
 
-  /// PageView的控制器
+  /// PageView Controller
   final PageController controller;
 
-  /// 指示器的个数
+  /// Indicator Count
   final int itemCount;
 
-  /// 普通的颜色
   final Color normalColor = Colors.grey;
 
-  /// 选中的颜色
   final Color selectedColor = Colors.white;
 
-  /// 点的大小
+  /// dot size
   final double size = 8.0;
 
-  /// 点的间距
+  /// distnce between
   final double spacing = 4.0;
 
-  /// 点的Widget
+  /// dot indicator widget
   Widget _buildIndicator(
       int index, int pageCount, double dotSize, double spacing) {
-    // 是否是当前页面被选中
+    // current dot is selected or not
     // bool isCurrentPageSelected = index ==
     //     (controller.page != null ? controller.page.round() % pageCount : 0);
 

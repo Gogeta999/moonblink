@@ -15,41 +15,41 @@ typedef void OnMessageCallback(String tag, dynamic msg);
 typedef void OnCloseCallback(int code, String reason);
 typedef void OnOpenCallback();
 
-  const CLIENT_ID_EVENT = 'client-id-event';
-  const OFFER_EVENT = 'offer-event';
-  const ANSWER_EVENT = 'answer-event';
-  const ICE_CANDIDATE_EVENT = 'ice-candidate-event';
-  String url = 'http://54.179.117.84';
-  String now = DateTime.now().toString();
-  IO.Socket socket = IO.io(url, <String, dynamic>{
-    'transports': ['websocket'],
-    // 'autoConnect': false,
-  });
+const CLIENT_ID_EVENT = 'client-id-event';
+const OFFER_EVENT = 'offer-event';
+const ANSWER_EVENT = 'answer-event';
+const ICE_CANDIDATE_EVENT = 'ice-candidate-event';
+String url = 'http://54.179.117.84';
+String now = DateTime.now().toString();
+IO.Socket socket = IO.io(url, <String, dynamic>{
+  'transports': ['websocket'],
+  // 'autoConnect': false,
+});
 
-  String usertoken = StorageManager.sharedPreferences.getString(token);
-  int userid = StorageManager.sharedPreferences.getInt(mUserId);
-  // List<User> friendList = List<User>();
-  List<Message> messages = List<Message>();
-  List<Files> files = List<Files>();
-  List<Chatlist> chatlist = List<Chatlist>();
+String usertoken = StorageManager.sharedPreferences.getString(token);
+int userid = StorageManager.sharedPreferences.getInt(mUserId);
+// List<User> friendList = List<User>();
+List<Message> messages = List<Message>();
+List<Files> files = List<Files>();
+List<Chatlist> chatlist = List<Chatlist>();
 
-  // final Map<String, dynamic> _constraints = {
-  //   'mandatory': {
-  //     'OfferToReceiveAudio': true,
-  //     'OfferToReceiveVideo': true,
-  //   },
-  //   'optional': [],
-  // };
+// final Map<String, dynamic> _constraints = {
+//   'mandatory': {
+//     'OfferToReceiveAudio': true,
+//     'OfferToReceiveVideo': true,
+//   },
+//   'optional': [],
+// };
 
-  // final Map<String, dynamic> _dc_constraints = {
-  //   'mandatory': {
-  //     'OfferToReceiveAudio': false,
-  //     'OfferToReceiveVideo': false,
-  //   },
-  //   'optional': [],
-  // };
-  
-class ChatModel extends Model{
+// final Map<String, dynamic> _dc_constraints = {
+//   'mandatory': {
+//     'OfferToReceiveAudio': false,
+//     'OfferToReceiveVideo': false,
+//   },
+//   'optional': [],
+// };
+
+class ChatModel extends Model {
   String url;
   OnOpenCallback onOpen;
   OnMessageCallback onMessage;
@@ -108,7 +108,7 @@ class ChatModel extends Model{
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
-    socket.once("conversation", (data){
+    socket.once("conversation", (data) {
       print(data);
       chatlist.clear();
       // LocalNotifications().notification(1,"new", "message");
@@ -121,6 +121,7 @@ class ChatModel extends Model{
     });
     return chatlist;
   }
+
   ///[For receiving message]
   void receiver(List<Message> message) {
     print("Received Messages");
@@ -128,22 +129,25 @@ class ChatModel extends Model{
     socket.once("receiver-peer", (data) {
       print("Messages");
       print(data);
-      receivenoti(data["sender_id"], data["time"],data["message"]);
-      message.insert(0,Message(
-         data['message'], data['sender_id'], data['receiver_id'], data['time'], '' 
-      ));
+      receivenoti(data["sender_id"], data["time"], data["message"]);
+      message.insert(
+          0,
+          Message(data['message'], data['sender_id'], data['receiver_id'],
+              data['time'], ''));
       notifyListeners();
-    }
-    );
+    });
     socket.once("receiver-attach", (data) {
       print("Images");
       print(data);
       receivenoti(data['sender_id'], data['time'], "File Message");
-      message.insert(0, Message("", data['sender_id'], data['receiver_id'], data["time"], data['attach']));
+      message.insert(
+          0,
+          Message("", data['sender_id'], data['receiver_id'], data["time"],
+              data['attach']));
       notifyListeners();
-    } 
-    );
+    });
   }
+
   void receivenoti(int id, String text, String msg) {
     PushNotificationsManager().notification(id, text, msg);
   }

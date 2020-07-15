@@ -4,7 +4,8 @@ import 'package:moonblink/services/moonblink_repository.dart';
 
 class StoryModel extends ViewStateModel {
   // List<Story> _storiesList;
-  List<Story> stories;
+  ///fix stories length null error
+  List<Story> stories = [];
 
   // @override
   // Future<List<Story>> loadData({int partnerId}) async {

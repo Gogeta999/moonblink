@@ -38,7 +38,7 @@ class _MainTabPageState extends State<MainTabPage>
 
   @override
   void initState() {
-    PushNotificationsManager().init();
+    //PushNotificationsManager().init();
     setState(() {
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;

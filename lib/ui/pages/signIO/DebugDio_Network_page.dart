@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/audiorecorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
+import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NetWorkPage extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
+  String channelName = '123abc';
   bool isOpen = false;
   var resultJson = "";
   @override
@@ -56,9 +60,7 @@ class PageState extends State<NetWorkPage> {
             child: Text("Audio recorder"),
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Recorder()));
+                  context, MaterialPageRoute(builder: (context) => Recorder()));
             },
           ),
           GestureDetector(
@@ -111,6 +113,44 @@ class PageState extends State<NetWorkPage> {
                   .toList();
             },
           ),
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            // alignment: Alignment.center,
+            // padding: EdgeInsets.all(50),
+            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            height: 100,
+            width: 50,
+            decoration: BoxDecoration(
+              border: Border.all(width: 2.0, color: Colors.grey),
+              // color: Colors.grey,
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.black,
+                ),
+                IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.phoneSlash,
+                      color: Colors.red[500],
+                    ),
+                    onPressed: () {
+                      print('Decline');
+                    }),
+                IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.phone,
+                      color: Colors.green[300],
+                    ),
+                    onPressed: joinChannel),
+              ],
+            ),
+          ),
           Expanded(
               child: Padding(
             padding: EdgeInsets.all(20),
@@ -150,5 +190,17 @@ class PageState extends State<NetWorkPage> {
     this.setState(() {
       resultJson = response.toString();
     });
+  }
+
+  Future<void> joinChannel() async {
+    if (channelName.isNotEmpty) {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VoiceCallWidget(
+              channelName: channelName,
+            ),
+          ));
+    }
   }
 }
