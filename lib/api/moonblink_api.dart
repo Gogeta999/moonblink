@@ -19,6 +19,13 @@ class Api {
 
   ///[partner's ownprofile page api]
   static const String PartnerOwnProfile = "moonblink/api/v1/user/";
+
+  //user wallet
+  static const String UserWallet = 'moonblink/api/v1/user/';
+
+  //top up
+  static const String TopUp = '/moonblink/api/v1/user/'; //full endpoint = '/moonblink/api/v1/user/10/coin/topup'
+
   // register
   static const String REGISTER = "moonblink/api/v1/register";
 

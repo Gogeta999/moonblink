@@ -35,7 +35,7 @@ class PushNotificationsManager {
   }
 
   Future<void> removeFcmToken() async {
-    //actually storing new fcm token
+    //actually it's just storing new fcm token
     await _firebaseMessaging.deleteInstanceID();
     saveFcmToken();
   }
@@ -55,7 +55,7 @@ class PushNotificationsManager {
         print('payload: $payload');
         locator<NavigationService>().showBookingDialog(
             () => _bookingManager.bookingAccept(),
-            () => _bookingManager.bookingDecline());
+            () => _bookingManager.bookingReject());
       }
     }
 
@@ -94,18 +94,13 @@ class PushNotificationsManager {
               bookingUserId: bookingUserId);
           locator<NavigationService>().showBookingDialog(
               () => _bookingManager.bookingAccept(),
-              () => _bookingManager.bookingDecline());
+              () => _bookingManager.bookingReject());
           return;
         },
         onLaunch: (Map<String, dynamic> message) {
           print('onLaunch: $message');
           return;
         });
-    //testing
-    _firebaseMessaging.onTokenRefresh.listen((event) async {
-      print('onTokenRefresh $event');
-    });
-
     saveFcmToken();
   }
 

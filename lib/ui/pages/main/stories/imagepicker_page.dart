@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -10,8 +11,8 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class ImagePickerPage extends StatefulWidget {
 class _ImagePickerState extends State<ImagePickerPage> {
   final _picker = ImagePicker();
   File _chossingItem;
+  String _filePath;
   int _fileType;
   bool _uploadDone = false;
   @override
@@ -134,22 +136,46 @@ class _ImagePickerState extends State<ImagePickerPage> {
     );
   }
 
+  // 2. compress file and get file.
+  Future<File> compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path, targetPath,
+      quality: 50,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<File> getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    _filePath = '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(_filePath);
+  }
+
   _takePhoto() async {
-    PickedFile image = await _picker.getImage(source: ImageSource.camera);
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    File temporaryImage = await getLocalFile();
+    File compressedImage = await compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
-      // this._uploadImage(image);
-      _chossingItem = File(image.path);
+      _chossingItem = compressedImage;
       _fileType = 1;
     });
   }
 
   _openGallery() async {
-    var image = await _picker.getImage(
+    PickedFile pickedFile = await _picker.getImage(
         source: ImageSource.gallery, maxWidth: 300, maxHeight: 300);
-
+    File image = File(pickedFile.path);
+    File temporaryImage = await getLocalFile();
+    File compressedImage = await compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       // this._uploadImage(image);
-      _chossingItem = File(image.path);
+      _chossingItem = compressedImage;
       _fileType = 1;
     });
   }

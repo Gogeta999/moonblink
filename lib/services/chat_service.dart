@@ -61,7 +61,7 @@ class ChatModel extends Model {
     socket.emit('connect-user', usertoken);
     socket.connect();
     // onOpen();
-    LocalNotifications().init();
+    //LocalNotifications().init();
     print("Connected Socket");
 
     socket.on(CLIENT_ID_EVENT, (data) {

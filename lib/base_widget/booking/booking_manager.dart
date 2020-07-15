@@ -4,7 +4,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
 
 const int BOOKING_ACCEPT = 1;
-const int BOOKING_DECLINE = 6;
+const int BOOKING_REJECT = 2;
 
 class BookingManager {
   int _userId;
@@ -25,11 +25,11 @@ class BookingManager {
             : null);
   }
 
-  void bookingDecline() {
-    MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_DECLINE).then((value) =>
+  void bookingReject() {
+    MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_REJECT);/*.then((value) =>
     value != null
         ? locator<NavigationService>()
         .navigateTo(RouteName.chatBox, arguments: _bookingUserId)
-        : null);
+        : null);*/
   }
 }

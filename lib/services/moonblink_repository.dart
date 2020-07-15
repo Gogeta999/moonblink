@@ -9,6 +9,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
+import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
@@ -99,6 +100,13 @@ class MoonBlinkRepository {
     return response;
   }
 
+  ///user wallet
+  static Future getUserWallet() async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(Api.UserWallet + '$userId');
+    return Wallet.fromJson(response.data['wallet']);
+  }
+
   /// [login api]
   //login with email & password
   static Future login(String mail, String password, String fcmToken) async {
@@ -181,6 +189,15 @@ class MoonBlinkRepository {
   static Future bookingAcceptOrDecline(int userId, int bookingId, int status) async {
     var response = await DioUtils()
         .post(Api.BookingAccept + '$userId/booking/$bookingId/?status=$status');
+    return response.data;
+  }
+  // top up
+  static Future topUp(String productId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .post(Api.TopUp + '$userId/coin/topup', queryParameters: {
+          'product_id': productId
+    });
     return response.data;
   }
 
