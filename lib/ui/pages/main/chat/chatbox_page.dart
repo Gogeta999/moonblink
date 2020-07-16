@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:moonblink/base_widget/audioplayer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -34,7 +36,7 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   String voiceChannelName = '';
   PartnerUser partnerdata;
-  int type;
+  int type = 1;
   Uint8List bytes;
   bool img = false;
   bool file = false;
@@ -43,7 +45,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   List<Contact> users = [];
   String now = DateTime.now().toString();
   String filename;
-  File _image;
+  File _file;
 
   // ByteData _byteData;
   final selfId = StorageManager.sharedPreferences.getInt(mUserId);
@@ -54,9 +56,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
-      _image = File(pickedFile.path);
-      filename = _image.path;
-      bytes = _image.readAsBytesSync();
+      _file = File(pickedFile.path);
+      filename = _file.path;
+      bytes = _file.readAsBytesSync();
       print(bytes);
       // _byteData = ByteData.view(bytes.buffer);
       // print(_byteData);
@@ -91,9 +93,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //build messages
   Widget buildSingleMessage(Message message) {
-    if (message.attach != "") {
-      img = true;
-    }
     return Container(
         alignment: message.senderID == widget.detailPageId
             ? Alignment.centerLeft
@@ -101,7 +100,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
-        child: img ? buildimage(message) : buildmsg(message));
+        child: builds(message));
+        // child: img ? buildimage(message) : buildmsg(message));
   }
 
   ///VoiceCallContainer
@@ -148,8 +148,23 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //     ],
   //   ),
   // ),
+
+  //build msg
+  builds(Message msg){
+    switch (msg.type){
+      //build widget for text msgs
+      case(0): return buildmsg(msg);
+      break;
+      case(1): return buildimage(msg);
+      break;
+      case(2): return null;
+      break;
+      case(3): return buildaudio(msg);         
+    }
+  }
   //build msg template
   buildmsg(Message msg) {
+    print(msg.text);
     return Container(
       width: 150,
       padding: EdgeInsets.all(10.0),
@@ -157,11 +172,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         color: msg.senderID == widget.detailPageId
             ? Colors.grey[300]
             : Theme.of(context).accentColor,
-        borderRadius: msg.senderID == widget.detailPageId
-            ? BorderRadius.all(
-                Radius.circular(15.0),
-              )
-            : BorderRadius.all(
+        borderRadius: BorderRadius.all(
                 Radius.circular(15.0),
               ),
       ),
@@ -171,8 +182,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //build image
   buildimage(Message msg) {
-    img = false;
-    // local = false;
     return Container(
       height: 100,
       width: 100,
@@ -194,6 +203,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  //build audio player 
+  buildaudio(Message msg){
+    return PlayerWidget(url: msg.attach);
+  }
+
   //Send message
   Widget buildmessage(id) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -213,7 +227,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(),
+            Voicemsg(id: id),
             //Text Input
             Expanded(
               child: TextField(
@@ -309,7 +323,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
             messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach));
+                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach, msgs.type));
           }
           print(messages);
           return Scaffold(

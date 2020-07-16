@@ -73,13 +73,13 @@ class ChatModel extends Model {
   ///[Chating Text]
   //send messages
   void sendMessage(String text, int receiverChatID, List<Message> msg) {
-    msg.insert(0, Message(text, userid, receiverChatID, now, ''));
+    msg.insert(0, Message(text, userid, receiverChatID, now, '', 0));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Message : $text");
     print("Time : $now");
     socket.emit('chat-message', [
-      {"message": text, "sender_id": userid, "receiver_id": receiverChatID}
+      {"message": text, "sender_id": userid, "receiver_id": receiverChatID, "type": 0}
     ]);
     notifyListeners();
   }
@@ -143,7 +143,7 @@ class ChatModel extends Model {
       message.insert(
           0,
           Message(data['message'], data['sender_id'], data['receiver_id'],
-              data['time'], ''));
+              data['time'], '', data["type"]));
       notifyListeners();
     });
     socket.once("receiver-attach", (data) {
@@ -153,7 +153,7 @@ class ChatModel extends Model {
       message.insert(
           0,
           Message("", data['sender_id'], data['receiver_id'], data["time"],
-              data['attach']));
+              data['attach'], data['now']));
       notifyListeners();
     });
   }
