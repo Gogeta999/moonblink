@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.1"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.15.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -216,13 +223,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.4"
-  flutter_spinkit:
-    dependency: "direct main"
-    description:
-      name: flutter_spinkit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.2+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,7 +20,6 @@ import 'services/navigation_service.dart';
 import 'services/push_notification_manager.dart';
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
-StreamController<String> streamController = new StreamController();
 
 //main() => runApp(TestInAPP());
 

@@ -1,17 +1,23 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:moonblink/models/message.dart';
+import 'package:moonblink/services/chat_service.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
-  final model;
+  final id;
+  // final file;
+  // final bytes;
 
-  Voicemsg({localFileSystem, this.model})
+  Voicemsg({localFileSystem, this.id})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -22,6 +28,10 @@ class _VoicemsgState extends State<Voicemsg> {
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
+  String filename;
+  File _file;
+  Uint8List bytes;
+  List<Message> messages = [];
   @override
   void initState() { 
     super.initState();
@@ -30,7 +40,7 @@ class _VoicemsgState extends State<Voicemsg> {
   _init() async {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
-        String customPath = '/flutter_audio_recorder_';
+        String customPath = '';
         io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
         if (io.Platform.isIOS) {
@@ -67,6 +77,7 @@ class _VoicemsgState extends State<Voicemsg> {
       }
     } catch (e) {
       print(e);
+    
     }
   }
   _start() async {
@@ -94,29 +105,39 @@ class _VoicemsgState extends State<Voicemsg> {
       print(e);
     }
   }
-  _stop() async {
+  _stop(String filename, File file, Uint8List bytes, model) async {
     var result = await _recorder.stop();
     print("Stop recording: ${result.path}");
-    print(result.path.runtimeType);
+    print(result.path);
+    filename = widget.id.toString() +DateTime.now().millisecondsSinceEpoch.toString() + ".wav"; 
     print("Stop recording: ${result.duration}");
-    File file = widget.localFileSystem.file(result.path);
+    file = widget.localFileSystem.file(result.path);
     print("File length: ${await file.length()}");
-    print(file.runtimeType);
-    setState(() {
-      _current = result;
-      _currentStatus = _current.status;
-    });
+    bytes = file.readAsBytesSync();
+    print(filename);
+    // print(files.runtimeType);
+    model.sendfile(filename, bytes, widget.id, 3, messages);
+    // setState(() {
+    //   file = widget.localFileSystem.file(result.path);
+    //   _current = result;
+    //   _currentStatus = _current.status;
+    // });
   }
   @override
   Widget build(BuildContext context) {
+    return ScopedModelDescendant<ChatModel>(
+    builder: (context,child, model) {
     return Container(
-    height: 20,
-    width: 20,
+    height: 30,
+    width: 30,
     child: GestureDetector(
-      child: Icon(Icons.voice_chat, color: Theme.of(context).accentColor,),
+      child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
       onLongPressStart:(LongPressStartDetails details)=> _start(),
-      onLongPressUp: ()=> _stop(),
-    )
+      onLongPressUp: () {
+        _stop(filename, _file, bytes, model);
+      },
+      )
     );
+    });
   }
 }
