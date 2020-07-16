@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/base_widget/audiorecorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
+import 'package:moonblink/base_widget/audioplayer.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -35,14 +35,14 @@ class PageState extends State<NetWorkPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          MaterialButton(
-            color: Colors.red,
-            child: Text("Audio recorder"),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Recorder()));
-            },
-          ),
+          // MaterialButton(
+          //   color: Colors.red,
+          //   child: Text("Audio recorder"),
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context, MaterialPageRoute(builder: (context) => ExampleApp()));
+          //   },
+          // ),
           GestureDetector(
             child: Container(
               alignment: Alignment.center,

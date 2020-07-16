@@ -14,8 +14,9 @@ class Message{
   final int receiverID;
   final String now;
   final String attach;
+  final int type;
 
-  Message(this.text,this.senderID,this.receiverID, this.now, this.attach);
+  Message(this.text,this.senderID,this.receiverID, this.now, this.attach, this.type);
 }
 
 class Lastmsg{
@@ -24,6 +25,7 @@ class Lastmsg{
   int sender;
   int receiver;
   String msg;
+  int type;
   String attach;
   String created;
   String updated;
@@ -37,6 +39,7 @@ class Lastmsg{
     chat.sender = map['sender_id'];
     chat.receiver = map['receiver_id'];
     chat.msg = map['msg'];
+    chat.type = map['type'];
     chat.attach = map['attach'];
     chat.created = map['created_at'];
     chat.updated = map['updated_at'];
