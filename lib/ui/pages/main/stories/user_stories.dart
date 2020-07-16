@@ -67,8 +67,9 @@ class _StoriesPageState extends State<StoriesPage> {
                           return GestureDetector(
                             onTap: () {
                               _currentPageNotifier.value ==
-                                  storyModel.stories.length - 1
-                                  ? Navigator.pop(context)//{_currentPageNotifier.value = 0, Navigator.pop(context)}
+                                      storyModel.stories.length - 1
+                                  ? Navigator.pop(
+                                      context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
                                   : _currentPageNotifier.value += 1;
                             },
                             child: Container(
@@ -100,58 +101,58 @@ class _StoriesPageState extends State<StoriesPage> {
   }
 }
 
-class Indicator extends StatelessWidget {
-  Indicator({
-    this.controller,
-    this.itemCount: 0,
-  }) : assert(controller != null);
+// class Indicator extends StatelessWidget {
+//   Indicator({
+//     this.controller,
+//     this.itemCount: 0,
+//   }) : assert(controller != null);
 
-  /// PageView Controller
-  final PageController controller;
+//   /// PageView Controller
+//   final PageController controller;
 
-  /// Indicator Count
-  final int itemCount;
+//   /// Indicator Count
+//   final int itemCount;
 
-  final Color normalColor = Colors.grey;
+//   final Color normalColor = Colors.grey;
 
-  final Color selectedColor = Colors.white;
+//   final Color selectedColor = Colors.white;
 
-  /// dot size
-  final double size = 8.0;
+//   /// dot size
+//   final double size = 8.0;
 
-  /// distnce between
-  final double spacing = 4.0;
+//   /// distnce between
+//   final double spacing = 4.0;
 
-  /// dot indicator widget
-  Widget _buildIndicator(
-      int index, int pageCount, double dotSize, double spacing) {
-    // current dot is selected or not
-    // bool isCurrentPageSelected = index ==
-    //     (controller.page != null ? controller.page.round() % pageCount : 0);
+//   /// dot indicator widget
+//   Widget _buildIndicator(
+//       int index, int pageCount, double dotSize, double spacing) {
+//     // current dot is selected or not
+//     // bool isCurrentPageSelected = index ==
+//     //     (controller.page != null ? controller.page.round() % pageCount : 0);
 
-    return new Container(
-      height: size,
-      width: size + (2 * spacing),
-      child: new Center(
-        child: new Material(
-          color: normalColor,
-          type: MaterialType.circle,
-          child: new Container(
-            width: dotSize,
-            height: dotSize,
-          ),
-        ),
-      ),
-    );
-  }
+//     return new Container(
+//       height: size,
+//       width: size + (2 * spacing),
+//       child: new Center(
+//         child: new Material(
+//           color: normalColor,
+//           type: MaterialType.circle,
+//           child: new Container(
+//             width: dotSize,
+//             height: dotSize,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: new List<Widget>.generate(itemCount, (int index) {
-        return _buildIndicator(index, itemCount, size, spacing);
-      }),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return new Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: new List<Widget>.generate(itemCount, (int index) {
+//         return _buildIndicator(index, itemCount, size, spacing);
+//       }),
+//     );
+//   }
+// }

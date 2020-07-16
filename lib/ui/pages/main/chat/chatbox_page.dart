@@ -5,9 +5,9 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -179,9 +179,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: GestureDetector(
         child: Image.network(msg.attach,
             loadingBuilder: (context, child, progress) {
-          return progress == null
-              ? child
-              : SpinKitCircle(color: Theme.of(context).accentColor);
+          return progress == null ? child : ButtonProgressIndicator();
         }, fit: BoxFit.fill),
         onTap: () {
           Navigator.push(
