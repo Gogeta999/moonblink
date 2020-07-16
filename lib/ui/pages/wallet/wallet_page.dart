@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/models/wallet.dart';
+import 'package:moonblink/provider/view_state.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:oktoast/oktoast.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -11,7 +15,6 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   ///TODO need to connect with backend.
-  ///Current coin amount.
   ///query List<IAPItem> from the store. IOS only
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
@@ -33,6 +36,10 @@ class _WalletPageState extends State<WalletPage> {
   List<PurchasedItem> _purchases = [];
   List<PurchasedItem> _purchasedHistories = [];
 
+  bool isLoading = false;
+
+  Wallet wallet;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +55,8 @@ class _WalletPageState extends State<WalletPage> {
   void asyncInitState() async {
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
+    await getUserWallet();
+    //FlutterInappPurchase.instance.consumeAllItems;
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -60,6 +69,7 @@ class _WalletPageState extends State<WalletPage> {
       try {
         //consume after purchase success so user buy the product again.
         //need to connect with backend to process purchase.
+        userTopUp(productItem.productId);
         var msg = FlutterInappPurchase.instance.consumeAllItems;
         print('consumeAllItems: $msg');
       } catch (err) {
@@ -91,6 +101,14 @@ class _WalletPageState extends State<WalletPage> {
       _purchaseErrorSubscription.cancel();
       _purchaseErrorSubscription = null;
     }
+  }
+
+  ///get user wallet
+  Future<void> getUserWallet() async {
+    Wallet wallet = await MoonBlinkRepository.getUserWallet();
+    setState(() {
+      this.wallet = wallet;
+    });
   }
 
   ///get IAP items.
@@ -144,11 +162,27 @@ class _WalletPageState extends State<WalletPage> {
     try {
       //consume after purchase success so user buy the product again.
       //need to connect with backend to process purchase.
-      var msg = FlutterInappPurchase.instance.consumeAllItems;
+      var msg = await FlutterInappPurchase.instance.consumeAllItems;
       print('consumeAllItems: $msg');
     } catch (err) {
       print('consumeAllItems error: $err');
     }
+  }
+
+  userTopUp(String productId) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var msg = await MoonBlinkRepository.topUp(productId);
+      print(msg);
+      await getUserWallet();
+    } catch (err) {
+      print(err);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget _buildProductListTile(IAPItem iapItem) {
@@ -156,20 +190,19 @@ class _WalletPageState extends State<WalletPage> {
         alignment: Alignment.center,
         // // color: Colors.grey,
         margin: EdgeInsets.all(10),
-        height: 100,
         decoration: BoxDecoration(
-          border: Border.all(width: 2.0, color: Colors.grey),
+          border: Border.all(width: 1.5, color: Colors.grey),
           // color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
         ),
         child: ListTile(
           leading: Icon(
             FontAwesomeIcons.coins,
-            color: Theme.of(context).iconTheme.color,
+            color: Colors.amber[500],
           ),
           title: Text('${iapItem.description}'),
           subtitle: Text('${iapItem.price} ${iapItem.currency}'),
-          trailing: FlatButton(
+          trailing: RaisedButton(
               color: Theme.of(context).accentColor,
               child: Text('Top Up',
                   style: Theme.of(context).accentTextTheme.button),
@@ -179,23 +212,23 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _buildCurrentCoinAmount() {
     return Container(
-      alignment: Alignment.center,
-      // // color: Colors.grey,
-      margin: EdgeInsets.all(10),
-      height: 60,
-      decoration: BoxDecoration(
-        border: Border.all(width: 2.0, color: Colors.grey),
-        // color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-      ),
-      child: ListTile(
-        leading: Icon(
-          FontAwesomeIcons.coins,
-          color: Theme.of(context).iconTheme.color,
+        alignment: Alignment.center,
+        // // color: Colors.grey,
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.5, color: Colors.grey),
+          // color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
         ),
-        title: Text('Current coin amount : 0'),
-      ),
-    );
+        child: ListTile(
+          leading: Icon(
+            FontAwesomeIcons.coins,
+            color: Colors.amber[500],
+          ),
+          title: Text(
+              'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
+          trailing: isLoading ? CircularProgressIndicator() : null,
+        ));
   }
 
   @override
@@ -204,14 +237,16 @@ class _WalletPageState extends State<WalletPage> {
       appBar: AppBar(
         title: Text('Wallet'),
       ),
-      body: ListView.builder(
-        itemCount: _items.length + 1,
-        itemBuilder: (context, index) {
-          return index == _items.length
-              ? _buildCurrentCoinAmount()
-              : _buildProductListTile(_items[index]);
-        },
-      ),
+      body: _items.isEmpty || wallet == null
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: _items.length + 1,
+              itemBuilder: (context, index) {
+                return index == _items.length
+                    ? _buildCurrentCoinAmount()
+                    : _buildProductListTile(_items[index]);
+              },
+            ),
     );
   }
 }

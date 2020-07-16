@@ -13,10 +13,10 @@ class NavigationService {
     return navigatorKey.currentState.pushNamed(routeName, arguments: arguments);
   }
 
-  void showBookingDialog(Function accept, Function decline) {
+  void showBookingDialog(Function accept, Function reject) {
     showDialog(
       context: navigatorKey.currentState.overlay.context,
-      builder: (context) => BookingDialog(accept: accept, decline: decline),
+      builder: (context) => BookingDialog(accept: accept, reject: reject),
     );
   }
 

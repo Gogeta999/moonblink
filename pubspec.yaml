@@ -62,7 +62,8 @@ dependencies:
   get_it: ^4.0.2
   # in_app_purchase
   flutter_inapp_purchase: ^2.2.0
-
+  # image_compressing
+  flutter_image_compress: ^0.7.0
   common_utils: ^1.2.1
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.

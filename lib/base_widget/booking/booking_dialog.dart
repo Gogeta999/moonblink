@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class BookingDialog extends StatelessWidget {
   final Function accept;
-  final Function decline;
+  final Function reject;
 
-  const BookingDialog({Key key, this.accept, this.decline}) : super(key: key);
+  const BookingDialog({Key key, this.accept, this.reject}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +13,11 @@ class BookingDialog extends StatelessWidget {
       content: Text('Somone want to play with you'),
       actions: <Widget>[
         FlatButton(
-            child: Text('Decline'),
+            child: Text('Reject'),
             onPressed: () {
-              print('Decline');
-              decline();
-              Navigator.pop(context, 'Decline');
+              print('Rejected');
+              reject();
+              Navigator.pop(context, 'Reject');
             }),
         FlatButton(
           child: Text('Accept'),

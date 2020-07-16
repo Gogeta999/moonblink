@@ -64,15 +64,31 @@ class _StoriesPageState extends State<StoriesPage> {
                       itemBuilder: (context, index) {
                         Story story = storyModel.stories[index];
                         if (story.mediaType == 2) {
-                          return Container(
-                            child: StoryVideo.url(story.mediaUrl,
-                                controller: storyController),
+                          return GestureDetector(
+                            onTap: () {
+                              _currentPageNotifier.value ==
+                                  storyModel.stories.length - 1
+                                  ? Navigator.pop(context)//{_currentPageNotifier.value = 0, Navigator.pop(context)}
+                                  : _currentPageNotifier.value += 1;
+                            },
+                            child: Container(
+                              child: StoryVideo.url(story.mediaUrl,
+                                  controller: storyController),
+                            ),
                           );
                         }
-                        return Container(
-                          child: StoryImage.url(
-                            story.mediaUrl,
-                            controller: storyController,
+                        return GestureDetector(
+                          onTap: () {
+                            _currentPageNotifier.value ==
+                                    storyModel.stories.length - 1
+                                ? Navigator.pop(context)
+                                : _currentPageNotifier.value += 1;
+                          },
+                          child: Container(
+                            child: StoryImage.url(
+                              story.mediaUrl,
+                              controller: storyController,
+                            ),
                           ),
                         );
                       }),
