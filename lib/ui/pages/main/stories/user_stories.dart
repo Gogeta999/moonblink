@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/indicator/story_pageview_indicator.dart';
+import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/story_model.dart';
 import 'package:story_view/story_view.dart';
 
@@ -67,8 +70,9 @@ class _StoriesPageState extends State<StoriesPage> {
                           return GestureDetector(
                             onTap: () {
                               _currentPageNotifier.value ==
-                                  storyModel.stories.length - 1
-                                  ? Navigator.pop(context)//{_currentPageNotifier.value = 0, Navigator.pop(context)}
+                                      storyModel.stories.length - 1
+                                  ? Navigator.pop(
+                                      context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
                                   : _currentPageNotifier.value += 1;
                             },
                             child: Container(
@@ -83,6 +87,37 @@ class _StoriesPageState extends State<StoriesPage> {
                                     storyModel.stories.length - 1
                                 ? Navigator.pop(context)
                                 : _currentPageNotifier.value += 1;
+                          },
+                          onDoubleTap: () {
+                            var userId = StorageManager.sharedPreferences.get(mUserId);
+                            if(userId == widget.partnerId) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'You are about to delete this story.'),
+                                      actions: <Widget>[
+                                        RaisedButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text('Cancel'),
+                                        ),
+                                        RaisedButton(
+                                          onPressed: () async{
+                                            //Navigator.pop(context);
+                                            await storyModel.dropStory(
+                                                storyModel
+                                                    .stories[
+                                                _currentPageNotifier.value]
+                                                    .id);
+                                            Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
+                                          },
+                                          child: Text('Delete'),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            }
                           },
                           child: Container(
                             child: StoryImage.url(

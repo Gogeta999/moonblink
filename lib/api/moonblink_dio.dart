@@ -147,6 +147,27 @@ class DioUtils {
     }
   }
 
+  //delete request
+  delete(url, {queryParameters, options}) async {
+    print('post request path ------$url-------queryParameters$queryParameters');
+    Response response;
+    response = await _dio.delete(url,
+        queryParameters: queryParameters, options: options);
+    ResponseData respData = ResponseData.fromJson(response.data);
+    if (respData.success) {
+      response.data = respData.data;
+      debugPrint(
+          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      return response;
+    } else {
+      if (respData.errorCode == 101) {
+        throw const UnAuthorizedException();
+      } else {
+        throw NotSuccessException.fromRespData(respData);
+      }
+    }
+  }
+
   /*
    * Post request
    */

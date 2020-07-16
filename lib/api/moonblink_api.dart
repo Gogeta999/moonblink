@@ -6,6 +6,9 @@ class Api {
   /// Story for normal user
   static const String STORY = 'moonblink/api/v1/social/stories';
 
+  /// Drop specific story
+  static const String DropStory = 'moonblink/api/v1/user/'; //example = moonblink/api/v1/user/10/story/28
+
   /// Home Data [type 1 is partner type]
   static const String HOME =
       "moonblink/api/v1/social/user?limit=5&type=1&page=";
