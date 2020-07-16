@@ -1,15 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/audiorecorder.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 
 class NetWorkPage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
-  String channelName = '123abc';
+  String channelName = '11';
   bool isOpen = false;
   var resultJson = "";
   @override
@@ -29,32 +30,11 @@ class PageState extends State<NetWorkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Dio Demo Page"),
+        title: Text("Testing Page"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          MaterialButton(
-              color: Colors.pinkAccent,
-              child: Text("Get with token request"),
-              onPressed: () async {
-                var usertoken =
-                    StorageManager.sharedPreferences.getString(token);
-                var test = await DioUtils().get(Api.SocialRequest + '8/stories',
-                    queryParameters: {
-                      'Authorization': 'Bearer' + usertoken.toString()
-                    });
-                return test.data
-                    .map<Story>((item) => Story.fromMap(item))
-                    .toList();
-                // print(test.toString());
-              }),
-          MaterialButton(
-              color: Colors.blueAccent,
-              child: Text("POST with simple request"),
-              onPressed: () {
-                loginPost();
-              }),
           MaterialButton(
             color: Colors.red,
             child: Text("Audio recorder"),
@@ -71,7 +51,8 @@ class PageState extends State<NetWorkPage> {
               decoration: BoxDecoration(
                   color: Colors.red,
                   borderRadius: BorderRadius.all(Radius.circular(15))),
-              child: isOpen ? spinkit : Text('False show this'),
+              child:
+                  isOpen ? ButtonProgressIndicator() : Text('False show this'),
             ),
             onTap: isOpen
                 ? () {
@@ -147,7 +128,9 @@ class PageState extends State<NetWorkPage> {
                       FontAwesomeIcons.phone,
                       color: Colors.green[300],
                     ),
-                    onPressed: joinChannel),
+                    onPressed: () {
+                      print('joinChannel');
+                    }),
               ],
             ),
           ),
@@ -166,41 +149,5 @@ class PageState extends State<NetWorkPage> {
         ],
       ),
     );
-  }
-
-  static const spinkit = SpinKitRotatingCircle(
-    color: Colors.white,
-    size: 50.0,
-  );
-  doRequest() async {
-    var pageNum = 1;
-    var response = await DioUtils().get(Api.HOME + '$pageNum');
-    this.setState(() {
-      resultJson = response.toString();
-    });
-  }
-
-  loginPost() async {
-    // var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-    //   "mail": "moon1@gmail.com",
-    //   "password": "1234",
-    //  });
-
-    var response = await DioUtils().post(Api.SocialRequest + '16' + '/follow');
-    this.setState(() {
-      resultJson = response.toString();
-    });
-  }
-
-  Future<void> joinChannel() async {
-    if (channelName.isNotEmpty) {
-      await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VoiceCallWidget(
-              channelName: channelName,
-            ),
-          ));
-    }
   }
 }

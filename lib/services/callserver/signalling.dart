@@ -4,7 +4,6 @@ import 'dart:js';
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'turn.dart';
 
 enum SignalingState {
   CallStateNew,
@@ -46,14 +45,14 @@ class Signaling {
   DataChannelCallback onDataChannel;
 
   Map<String, dynamic> _iceServers = {
-  'iceServers': [
-    {'url': 'stun:54.179.117.84:3478'},
-    {
-      'url': 'turn:54.179.117.84:3478',
-      'username': 'moonblink',
-      'credential': 'm00nblink'
-    },
-  ]
+    'iceServers': [
+      {'url': 'stun:54.179.117.84:3478'},
+      {
+        'url': 'turn:54.179.117.84:3478',
+        'username': 'moonblink',
+        'credential': 'm00nblink'
+      },
+    ]
   };
 
   final Map<String, dynamic> _config = {
@@ -87,7 +86,7 @@ class Signaling {
       _localStream = null;
     }
 
-    if(peerConnection != null) {
+    if (peerConnection != null) {
       peerConnection.close();
     }
     if (_socket != null) _socket.disconnect();
@@ -119,10 +118,10 @@ class Signaling {
       _localStream = null;
     }
 
-    if(dataChannel != null) {
+    if (dataChannel != null) {
       dataChannel.close();
     }
-    if(peerConnection != null) {
+    if (peerConnection != null) {
       peerConnection.close();
     }
 
@@ -146,8 +145,8 @@ class Signaling {
 
           var pc = await _createPeerConnection(id, media, false);
           peerConnection = pc;
-          await pc.setRemoteDescription(RTCSessionDescription(
-              description['sdp'], description['type']));
+          await pc.setRemoteDescription(
+              RTCSessionDescription(description['sdp'], description['type']));
           await _createAnswer(id, pc, media);
           if (this._remoteCandidates.length > 0) {
             _remoteCandidates.forEach((candidate) async {
@@ -162,8 +161,8 @@ class Signaling {
           var description = message;
           var pc = peerConnection;
           if (pc != null) {
-            await pc.setRemoteDescription(RTCSessionDescription(
-                description['sdp'], description['type']));
+            await pc.setRemoteDescription(
+                RTCSessionDescription(description['sdp'], description['type']));
           }
         }
         break;
@@ -199,16 +198,16 @@ class Signaling {
   void connect() async {
     //_socket.init();
     print('connect to $url');
-        _iceServers = {
-          'iceServers': [
-            {'url': 'stun:54.179.117.84:3478'},
-            {
-              'url': 'turn:54.179.117.84:3478',
-              'username': 'moonblink',
-              'credential': 'm00nblink'
-            },
-          ]       
-        }; 
+    _iceServers = {
+      'iceServers': [
+        {'url': 'stun:54.179.117.84:3478'},
+        {
+          'url': 'turn:54.179.117.84:3478',
+          'username': 'moonblink',
+          'credential': 'm00nblink'
+        },
+      ]
+    };
 
     _socket.onOpen = () {
       print('onOpen');
@@ -270,8 +269,8 @@ class Signaling {
 
     pc.onIceConnectionState = (state) {
       print('onIceConnectionState $state');
-      if(state == RTCIceConnectionState.RTCIceConnectionStateClosed ||
-      state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
+      if (state == RTCIceConnectionState.RTCIceConnectionStateClosed ||
+          state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
         bye();
       }
     };
@@ -314,8 +313,8 @@ class Signaling {
 
   _createOffer(String id, RTCPeerConnection pc, String media) async {
     try {
-      RTCSessionDescription s = await pc
-          .createOffer(media == 'data' ? _dcConstraints : _constraints);
+      RTCSessionDescription s =
+          await pc.createOffer(media == 'data' ? _dcConstraints : _constraints);
       pc.setLocalDescription(s);
 
       final description = {'sdp': s.sdp, 'type': s.type};
