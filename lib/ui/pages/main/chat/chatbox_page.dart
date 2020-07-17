@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
+import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
@@ -158,11 +159,16 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       break;
       case(1): return buildimage(msg);
       break;
-      case(2): return null;
+      case(2): return buildVideo(msg);
       break;
       case(3): return buildaudio(msg);         
     }
   }
+
+  buildVideo(Message msg) {
+    return VideoPlayerWidget(videoUrl: msg.attach);
+  }
+
   //build msg template
   buildmsg(Message msg) {
     print(msg.text);
