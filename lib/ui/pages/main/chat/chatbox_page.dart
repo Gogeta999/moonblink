@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -160,7 +161,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       break;
       case(2): return null;
       break;
-      case(3): return buildaudio(msg);         
+      case(3): return buildaudio(msg);
+      break;
+      case(4): return null;
+      break;
+      case(5): return buildlocal(msg);
+      break;        
     }
   }
   //build msg template
@@ -204,6 +210,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build audio player 
   buildaudio(Message msg){
     return PlayerWidget(url: msg.attach);
+  }
+
+  buildlocal(Message msg){
+    print("Building local file");
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    print(file);
+    return Container(child: Text("File messages"));
   }
 
   //Send message

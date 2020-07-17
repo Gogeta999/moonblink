@@ -7,10 +7,11 @@ class StoryItemWidget extends StatelessWidget {
   final Story stories;
   final int index;
   StoryItemWidget(this.stories, {this.index})
-      : super(key: ValueKey(stories.id));
+      : super(key: ValueKey(stories));
 
   @override
   Widget build(BuildContext context) {
+    print(stories);
     // if(stories.body == "null"){
     // return Padding(
     //   padding: const EdgeInsets.only(left: 15),
@@ -35,13 +36,13 @@ class StoryItemWidget extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoriesPage(stories.id)));
+                    builder: (context) => StoriesPage(stories.storys)));
           },
           child: Align(
             child: CircleAvatar(
               radius: 33,
               backgroundColor: Colors.grey[300],
-              backgroundImage: NetworkImage(stories.profileImage),
+              backgroundImage: NetworkImage(stories.profile),
             ),
           )),
     );

@@ -86,8 +86,10 @@ class ChatModel extends Model {
 
   //file message
   void sendfile(String name, Uint8List file, int receiverChatID, int type,
-      List<Message> msg) {
-    // msg.insert(0,Message(name, file, userid, receiverChatID));
+    List<Message> msg) {
+    String local = new String.fromCharCodes(file);
+    print("Local File: $local");
+    msg.insert(0, Message(name, userid, receiverChatID, now, local, 5));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");

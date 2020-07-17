@@ -44,15 +44,6 @@ class MoonBlinkRepository {
         .toList();
   }
 
-  // User's today active story
-  static Future fetchActiveStory(int partnerID) async {
-    var response =
-        await DioUtils().get(Api.SocialRequest + '$partnerID/stories');
-    return response.data['data']
-        .map<Story>((item) => Story.fromJson(item))
-        .toList();
-  }
-
   static Future dropStory(int storyId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().delete(Api.DropStory + '$userId/story/$storyId');
