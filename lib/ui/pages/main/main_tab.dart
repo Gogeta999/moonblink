@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';

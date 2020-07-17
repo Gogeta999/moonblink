@@ -137,10 +137,10 @@ class _ImagePickerState extends State<ImagePickerPage> {
   }
 
   // 2. compress file and get file.
-  Future<File> compressAndGetFile(File file, String targetPath) async {
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path, targetPath,
-      quality: 50,
+      quality: 80,
     );
 
     print(file.lengthSync());
@@ -149,7 +149,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
     return result;
   }
 
-  Future<File> getLocalFile() async {
+  Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
     _filePath = '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
@@ -159,8 +159,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
   _takePhoto() async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
-    File temporaryImage = await getLocalFile();
-    File compressedImage = await compressAndGetFile(image, temporaryImage.absolute.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _chossingItem = compressedImage;
       _fileType = 1;
@@ -169,10 +169,10 @@ class _ImagePickerState extends State<ImagePickerPage> {
 
   _openGallery() async {
     PickedFile pickedFile = await _picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 300);
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
     File image = File(pickedFile.path);
-    File temporaryImage = await getLocalFile();
-    File compressedImage = await compressAndGetFile(image, temporaryImage.absolute.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;
@@ -182,7 +182,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
 
   _pickVideo() async {
     PickedFile video = await _picker.getVideo(
-        source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
+        source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
     // var video = await _picker.getVideo(
     //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
 

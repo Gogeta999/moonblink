@@ -18,6 +18,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
@@ -271,6 +272,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         onPressed: () {
           model.call(selfId, anotherPersonId, voiceChannelName);
+          PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
           joinChannel();
         },
       );

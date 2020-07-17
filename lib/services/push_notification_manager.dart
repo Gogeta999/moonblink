@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -51,7 +52,8 @@ class PushNotificationsManager {
 
   Future<void> _configLocalNotification() async {
     Future<void> onSelectNotification(String payload) async {
-      if (payload != null) {
+      if (payload.isNotEmpty) {
+        await _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
         locator<NavigationService>().showBookingDialog(
             () => _bookingManager.bookingAccept(),
@@ -104,6 +106,7 @@ class PushNotificationsManager {
     saveFcmToken();
   }
 
+  //For Fcm
   Future<void> _showNotification(message, data) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
@@ -113,6 +116,7 @@ class PushNotificationsManager {
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
+      ongoing: true,
     );
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
@@ -132,9 +136,30 @@ class PushNotificationsManager {
     _bookingManager.bookingPrepare(
         userId: userId, bookingId: bookingId, bookingUserId: bookingUserId);
 
+
     await _flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
         payload: bookingUserId.toString());
+  }
+
+  Future<void> showVoiceCallNotification(String channelName, String title, String body) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'com.moonuniverse.moonblink', //same package name for both platform
+      channelName,
+      'Moon Blink',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+      importance: Importance.Max,
+      priority: Priority.High,
+      ongoing: true,
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true);
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await _flutterLocalNotificationsPlugin.show(0, title,
+        body, platformChannelSpecifics, payload: null);
   }
 
   //chatting notification
@@ -145,7 +170,7 @@ class PushNotificationsManager {
             priority: Priority.High,
             importance: Importance.Max,
             autoCancel: false,
-            // ongoing: true,
+            ongoing: true,
             ticker: 'test');
 
     IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();

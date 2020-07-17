@@ -40,7 +40,7 @@ class MoonBlinkRepository {
     // var usertoken = StorageManager.sharedPreferences.getString(token);
     var response = await DioUtils().get(Api.STORY);
     return response.data['data']
-        .map<Story>((item) => Story.fromMap(item))
+        .map<Story>((item) => Story.fromJson(item))
         .toList();
   }
 
@@ -49,8 +49,14 @@ class MoonBlinkRepository {
     var response =
         await DioUtils().get(Api.SocialRequest + '$partnerID/stories');
     return response.data['data']
-        .map<Story>((item) => Story.fromMap(item))
+        .map<Story>((item) => Story.fromJson(item))
         .toList();
+  }
+
+  static Future dropStory(int storyId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().delete(Api.DropStory + '$userId/story/$storyId');
+    return response.data['message'];
   }
 
   /// [Get following list]Contact for get following list for current user

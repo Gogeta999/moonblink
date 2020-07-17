@@ -50,5 +50,16 @@ class StoryModel extends ViewStateModel {
     }
   }
 
+  Future<void> dropStory(int storyId) async {
+    setBusy();
+    try{
+      var msg = await MoonBlinkRepository.dropStory(storyId);
+      print(msg);
+    }catch(err){
+      print(err);
+    }
+    setIdle();
+  }
+
   onCompleted(List<Story> data) {}
 }
