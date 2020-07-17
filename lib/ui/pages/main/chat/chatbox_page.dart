@@ -164,7 +164,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
   //build msg template
   buildmsg(Message msg) {
-    print(msg.text);
     return Container(
       width: 150,
       padding: EdgeInsets.all(10.0),
