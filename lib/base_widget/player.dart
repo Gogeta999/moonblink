@@ -27,8 +27,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   AudioPlayer _audioPlayer;
   AudioPlayerState _audioPlayerState;
-  Duration _duration;
-  Duration _position;
+  Duration _duration = Duration(seconds: 0);
+  Duration _position = Duration(seconds: 0);
 
   PlayerState _playerState = PlayerState.stopped;
   PlayingRouteState _playingRouteState = PlayingRouteState.speakers;
@@ -40,7 +40,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   get _isPlaying => _playerState == PlayerState.playing;
   get _isPaused => _playerState == PlayerState.paused;
-  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+  get _durationText =>
+      _duration?.inSeconds?.toString()?.split('.')?.first ?? '';
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
   get _isPlayingThroughEarpiece =>
@@ -68,9 +69,50 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-    height: 150,
-    width: 180,
-    child: Column(
+        width: 200,
+        decoration: BoxDecoration(
+          color: Theme.of(context).accentColor,
+          borderRadius: BorderRadius.all(
+            Radius.circular(20.0),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _isPlaying
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => _pause(),
+                    icon: Icon(Icons.pause),
+                    iconSize: 20.0,
+                  )
+                : IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => _play(),
+                    icon: Icon(Icons.play_arrow),
+                    iconSize: 20.0,
+                  ),
+            Flexible(
+                child: LinearProgressIndicator(
+              backgroundColor: Colors.white,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+              value: (_position != null &&
+                      _duration != null &&
+                      _position.inMilliseconds > 0 &&
+                      _position.inMilliseconds < _duration.inMilliseconds)
+                  ? _position.inMilliseconds / _duration.inMilliseconds
+                  : 0.0,
+            )),
+            /// can't get max duration at start
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '${((_position.inSeconds / 60) % 60).floor().toString().padLeft(1, '0')}:${(_position.inSeconds % 60).floor().toString().padLeft(2, '0')}',
+                style: TextStyle(fontSize: 14.0),
+              ),
+            ),
+          ],
+        ) /*Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Row(
@@ -124,12 +166,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           ],
         ),
       ],
-    ));
+    )*/
+        );
   }
 
-  void _initAudioPlayer() {
+  void _initAudioPlayer() async {
     _audioPlayer = AudioPlayer(mode: mode);
-
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
       setState(() => _duration = duration);
 
