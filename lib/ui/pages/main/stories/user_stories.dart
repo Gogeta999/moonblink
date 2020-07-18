@@ -5,18 +5,18 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/view_model/story_model.dart';
 import 'package:story_view/story_view.dart';
 
 class StoriesPage extends StatefulWidget {
-  StoriesPage(this.partnerId);
-  final partnerId;
+  StoriesPage( this.stories);
+  List stories;
   @override
   _StoriesPageState createState() => _StoriesPageState();
 }
 
 class _StoriesPageState extends State<StoriesPage> {
   final storyController = StoryController();
+  List<Stories> storys = []; 
 
   @override
   void dispose() {
@@ -28,15 +28,14 @@ class _StoriesPageState extends State<StoriesPage> {
   Widget build(BuildContext context) {
     final PageController pageController = PageController();
     final _currentPageNotifier = ValueNotifier<int>(0);
-    // final StoryController storyController = StoryController();
-    return ProviderWidget<StoryModel>(
-        model: StoryModel(),
-        onModelReady: (storyModel) {
-          storyModel.fetchStory(partnerId: widget.partnerId);
-          // storyModel.initData();
-          // storyModel.loadData();
-        },
-        builder: (context, storyModel, child) {
+    final StoryController storyController = StoryController();
+    print(widget.stories.length);
+    for (var i = 0; i < widget.stories.length; i++) {
+      Stories stories = Stories.fromJson(widget.stories[i]);
+      storys.add(stories);
+    }
+    print(storys);
+    
           return Stack(
             children: <Widget>[
               Align(
@@ -46,7 +45,7 @@ class _StoriesPageState extends State<StoriesPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: StepPageIndicator(
                     currentPageNotifier: _currentPageNotifier,
-                    itemCount: storyModel.stories.length,
+                    itemCount: widget.stories.length,
                     onPageSelected: (int pageIndex) {
                       if (_currentPageNotifier.value > pageIndex)
                         pageController.jumpToPage(pageIndex);
@@ -63,65 +62,67 @@ class _StoriesPageState extends State<StoriesPage> {
                         _currentPageNotifier.value = pageIndex;
                       },
                       controller: pageController,
-                      itemCount: storyModel.stories.length,
+                      itemCount: widget.stories.length,
                       itemBuilder: (context, index) {
-                        Story story = storyModel.stories[index];
-                        if (story.mediaType == 2) {
+                        Stories story = storys[index];
+                        print(story.id);
+                        if (story.type == 2) {
                           return GestureDetector(
                             onTap: () {
                               _currentPageNotifier.value ==
-                                      storyModel.stories.length - 1
+                                      widget.stories.length - 1
                                   ? Navigator.pop(
                                       context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
                                   : _currentPageNotifier.value += 1;
                             },
                             child: Container(
-                              child: StoryVideo.url(story.mediaUrl,
-                                  controller: storyController),
+                              child: Text('a'),
+                              // child: StoryVideo.url(story.n,
+                              //     controller: storyController),
                             ),
                           );
                         }
                         return GestureDetector(
                           onTap: () {
                             _currentPageNotifier.value ==
-                                    storyModel.stories.length - 1
+                                    widget.stories.length - 1
                                 ? Navigator.pop(context)
                                 : _currentPageNotifier.value += 1;
                           },
-                          onDoubleTap: () {
-                            var userId = StorageManager.sharedPreferences.get(mUserId);
-                            if(userId == widget.partnerId) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          'You are about to delete this story.'),
-                                      actions: <Widget>[
-                                        RaisedButton(
-                                          onPressed: () => Navigator.pop(context),
-                                          child: Text('Cancel'),
-                                        ),
-                                        RaisedButton(
-                                          onPressed: () async{
-                                            //Navigator.pop(context);
-                                            await storyModel.dropStory(
-                                                storyModel
-                                                    .stories[
-                                                _currentPageNotifier.value]
-                                                    .id);
-                                            Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
-                                          },
-                                          child: Text('Delete'),
-                                        )
-                                      ],
-                                    );
-                                  });
-                            }
-                          },
+                          // onDoubleTap: () {
+                          //   var userId = StorageManager.sharedPreferences.get(mUserId);
+                          //   if(userId == 1) {
+                          //     showDialog(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return AlertDialog(
+                          //             title: Text(
+                          //                 'You are about to delete this story.'),
+                          //             actions: <Widget>[
+                          //               RaisedButton(
+                          //                 onPressed: () => Navigator.pop(context),
+                          //                 child: Text('Cancel'),
+                          //               ),
+                          //               RaisedButton(
+                          //                 onPressed: () async{
+                          //                   //Navigator.pop(context);
+                          //                   await storyModel.dropStory(
+                          //                       storyModel
+                          //                           .stories[
+                          //                       _currentPageNotifier.value]
+                          //                           .id);
+                          //                   Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
+                          //                 },
+                          //                 child: Text('Delete'),
+                          //               )
+                          //             ],
+                          //           );
+                          //         });
+                          //   }
+                          // },
                           child: Container(
                             child: StoryImage.url(
-                              story.mediaUrl,
+                              story.media,
                               controller: storyController,
                             ),
                           ),
@@ -131,7 +132,6 @@ class _StoriesPageState extends State<StoriesPage> {
               ),
             ],
           );
-        });
   }
 }
 
