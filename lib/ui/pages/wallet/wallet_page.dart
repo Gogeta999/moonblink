@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/models/wallet.dart';
-import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:oktoast/oktoast.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -14,8 +12,10 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  ///TODO need to connect with backend.
+  // ignore: todo
+  ///TODO: need to connect with backend.
   ///query List<IAPItem> from the store. IOS only
+  // ignore: unused_field
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
   ///to monitor the connection more thoroughly from 2.0.1.
@@ -33,7 +33,9 @@ class _WalletPageState extends State<WalletPage> {
     'coin_1000'
   ]; //for now only android
   List<IAPItem> _items = [];
+  // ignore: unused_field
   List<PurchasedItem> _purchases = [];
+  // ignore: unused_field
   List<PurchasedItem> _purchasedHistories = [];
 
   bool isLoading = false;

@@ -9,9 +9,9 @@ import 'package:dio/dio.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
 class ImagePickerPage extends StatefulWidget {
@@ -31,7 +31,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Post Story',
+        title: Text(S.of(context).imagePickerAppBar,
             style: Theme.of(context).accentTextTheme.headline6),
       ),
       body: Column(
@@ -47,7 +47,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          'Camera',
+                          S.of(context).imagePickerCamera,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -61,7 +61,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          'Gallery',
+                          S.of(context).imagePickerGallery,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -75,7 +75,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          'Video',
+                          S.of(context).imagePickerVideo,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -92,7 +92,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
           Container(
               padding: EdgeInsets.only(left: 50, right: 50),
               height: 80,
-              child: Text('Choose your image or video to post')),
+              child: Text(S.of(context).imagePickerChooseSome)),
 
           ShowImageWidget(file: _chossingItem),
 
@@ -127,7 +127,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
             child: _uploadDone
                 ? ButtonProgressIndicator()
                 : Text(
-                    'Upload',
+                    S.of(context).imagePickerUploadButton,
                     style: Theme.of(context).accentTextTheme.button,
                   ),
           ),
@@ -139,7 +139,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
   // 2. compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path, targetPath,
+      file.absolute.path,
+      targetPath,
       quality: 80,
     );
 
@@ -152,7 +153,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
   Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
-    _filePath = '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    _filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
     return File(_filePath);
   }
 
@@ -160,7 +162,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _chossingItem = compressedImage;
       _fileType = 1;
@@ -172,7 +175,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
         source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
     File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;
@@ -216,39 +220,3 @@ class ShowImageWidget extends StatelessWidget {
     return Container();
   }
 }
-
-// class UploadButton extends StatelessWidget {
-//   UploadButton({this.story});
-//   // final body;
-//   final story;
-//   final uploadDone = false;
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return RaisedButton(
-//       color: Theme.of(context).accentColor,
-//       onPressed: () async {
-//         // uploadDone = !uploadDone;
-//         var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
-//         var storyPath = story.path;
-//         FormData formData = FormData.fromMap({
-//           'body': '',
-//           'media': await MultipartFile.fromFile(storyPath, filename: 'xxx.jpg'),
-//           'media_type': 1
-//         });
-
-//           var response = await DioUtils().postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
-//           if(response.errorCode == 1){
-//             // Navigator.of(context).pop();
-//             Navigator.of(context).pushNamed(RouteName.network);
-//           }
-//           // return Story.fromMap(response.data);
-//           Navigator.of(context).pop();
-//           return response.data;
-
-//        },
-//       child: uploadDone ? ButtonProgressIndicator() : Text('Upload', style: Theme.of(context).accentTextTheme.button,),
-//     );
-
-//   }
-// }

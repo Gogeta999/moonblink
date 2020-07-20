@@ -7,6 +7,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/local_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
@@ -28,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).settings),
+        title: Text(S.of(context).settingsSettings),
       ),
       body: SingleChildScrollView(
         child: ListTileTheme(
@@ -41,23 +42,31 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: ListTile(
                     title: isSigning
                         ? CupertinoActivityIndicator()
-                        : Text('Register As our partner'),
+                        : Text(S.of(context).settingsSignAsPartner),
                     onTap: () async {
-                      setState(() {
-                        isSigning = !isSigning;
-                      });
                       var userid =
                           StorageManager.sharedPreferences.getInt(mUserId);
                       var usertoken =
                           StorageManager.sharedPreferences.getString(token);
-                      var response = await DioUtils().post(
-                          Api.RegisterAsPartner + '$userid/register',
-                          queryParameters: {
-                            'Authorization': 'Bearer' + usertoken.toString()
-                          });
-                      print(response);
-                      Navigator.of(context)
-                          .pushNamed(RouteName.registerAsPartner);
+                      if (usertoken != null) {
+                        setState(() {
+                          isSigning = !isSigning;
+                        });
+                        var response = await DioUtils().post(
+                            Api.RegisterAsPartner + '$userid/register',
+                            queryParameters: {
+                              'Authorization': 'Bearer' + usertoken.toString()
+                            });
+                        print(response);
+                        Navigator.of(context)
+                            .pushNamed(RouteName.registerAsPartner);
+                        setState(() {
+                          isSigning = !isSigning;
+                        });
+                      } else {
+                        showToast(S.of(context).showToastSignInFirst);
+                      }
+
                       // if (response.errorcode == 1) {
                       //   setState(() {
                       //     isSigning = !isSigning;
@@ -68,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.user,
                       color: iconColor,
                     ),
-                    // trailing: Icon(Icons.chevron_right),
+                    trailing: Icon(Icons.chevron_right),
                   ),
                 ),
               SizedBox(

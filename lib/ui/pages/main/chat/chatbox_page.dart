@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:moonblink/base_widget/audioplayer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -104,7 +102,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
         child: builds(message));
-        // child: img ? buildimage(message) : buildmsg(message));
+    // child: img ? buildimage(message) : buildmsg(message));
   }
 
   ///VoiceCallContainer
@@ -153,21 +151,27 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // ),
 
   //build msg
-  builds(Message msg){
-    switch (msg.type){
+  builds(Message msg) {
+    switch (msg.type) {
       //build widget for text msgs
-      case(0): return buildmsg(msg);
-      break;
-      case(1): return buildimage(msg);
-      break;
-      case(2): return buildVideo(msg);
-      break;
-      case(3): return buildaudio(msg);
-      break;
-      case(4): return null;
-      break;
-      case(5): return buildlocal(msg);
-      break;        
+      case (0):
+        return buildmsg(msg);
+        break;
+      case (1):
+        return buildimage(msg);
+        break;
+      case (2):
+        return buildVideo(msg);
+        break;
+      case (3):
+        return buildaudio(msg);
+        break;
+      case (4):
+        return null;
+        break;
+      case (5):
+        return buildlocal(msg);
+        break;
     }
   }
 
@@ -185,8 +189,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             ? Colors.grey[300]
             : Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
-                Radius.circular(15.0),
-              ),
+          Radius.circular(15.0),
+        ),
       ),
       child: Text(msg.text),
     );
@@ -213,12 +217,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  //build audio player 
-  buildaudio(Message msg){
+  //build audio player
+  buildaudio(Message msg) {
     return PlayerWidget(url: msg.attach);
   }
 
-  buildlocal(Message msg){
+  buildlocal(Message msg) {
     print("Building local file");
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     print(file);
@@ -291,7 +295,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         onPressed: () {
           model.call(selfId, anotherPersonId, voiceChannelName);
-          PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
+          PushNotificationsManager().showVoiceCallNotification(
+              'com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
           joinChannel();
         },
       );
@@ -340,8 +345,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
-            messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach, msgs.type));
+            messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                msgs.attach, msgs.type));
           }
           print(messages);
           return Scaffold(

@@ -3,6 +3,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -54,7 +55,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
               enablePullUp: false,
               controller: _refreshController,
               header: ShimmerHeader(
-                  text: Text("PullToRefresh",
+                  text: Text(S.of(context).pullDownToRefresh,
                       style: TextStyle(color: Colors.grey, fontSize: 22))),
               enablePullDown: false,
               onRefresh: () async {
@@ -145,11 +146,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0)),
                             child: followButtonClicked
-                                ? Text('Following',
+                                ? Text(S.of(context).detailPageFollowing,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button)
-                                : Text('Follow',
+                                : Text(S.of(context).detailPageFollow,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button),
@@ -201,11 +202,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0)),
                             child: followButtonClicked
-                                ? Text('Follow',
+                                ? Text(S.of(context).detailPageFollow,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button)
-                                : Text('Following',
+                                : Text(S.of(context).detailPageFollowing,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button),
@@ -329,7 +330,7 @@ class FollowButton extends StatelessWidget {
         height: 30,
         width: 80,
         // color: Colors.red,
-        child: isFollow ? Text('Follow') : Text('Following'),
+        child: isFollow ? Text('Follow') : Text(S.of(context).search),
       ),
     );
     // return RaisedButton(
@@ -337,7 +338,7 @@ class FollowButton extends StatelessWidget {
     //   highlightColor: Theme.of(context).accentColor,
     //   splashColor: Colors.grey,
     //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-    //   child: isFollow ? Text('Follow') : Text('Following'),
+    //   child: isFollow ? Text('Follow') : Text(S.of(context).search),
     //   onPressed: isFollow ? (){
     //     print('now is what 0');
     //   } : (){

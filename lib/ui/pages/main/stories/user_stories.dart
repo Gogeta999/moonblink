@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/indicator/story_pageview_indicator.dart';
-import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/story.dart';
-import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:story_view/story_view.dart';
 
 class StoriesPage extends StatefulWidget {
-  StoriesPage( this.stories);
-  List stories;
+  StoriesPage(this.stories);
+  final List stories;
   @override
   _StoriesPageState createState() => _StoriesPageState();
 }
 
 class _StoriesPageState extends State<StoriesPage> {
   final storyController = StoryController();
-  List<Stories> storys = []; 
+  List<Stories> storys = [];
 
   @override
   void dispose() {
@@ -35,103 +31,101 @@ class _StoriesPageState extends State<StoriesPage> {
       storys.add(stories);
     }
     print(storys);
-    
-          return Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  color: Colors.black,
-                  padding: const EdgeInsets.all(16.0),
-                  child: StepPageIndicator(
-                    currentPageNotifier: _currentPageNotifier,
-                    itemCount: widget.stories.length,
-                    onPageSelected: (int pageIndex) {
-                      if (_currentPageNotifier.value > pageIndex)
-                        pageController.jumpToPage(pageIndex);
-                    },
-                  ),
-                ),
-              ),
-              Center(
-                // height: 500,
-                child: SizedBox(
-                  height: 400,
-                  child: PageView.builder(
-                      onPageChanged: (int pageIndex) {
-                        _currentPageNotifier.value = pageIndex;
+
+    return Stack(
+      children: <Widget>[
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            color: Colors.black,
+            padding: const EdgeInsets.all(16.0),
+            child: StepPageIndicator(
+              currentPageNotifier: _currentPageNotifier,
+              itemCount: widget.stories.length,
+              onPageSelected: (int pageIndex) {
+                if (_currentPageNotifier.value > pageIndex)
+                  pageController.jumpToPage(pageIndex);
+              },
+            ),
+          ),
+        ),
+        Center(
+          // height: 500,
+          child: SizedBox(
+            height: 400,
+            child: PageView.builder(
+                onPageChanged: (int pageIndex) {
+                  _currentPageNotifier.value = pageIndex;
+                },
+                controller: pageController,
+                itemCount: widget.stories.length,
+                itemBuilder: (context, index) {
+                  Stories story = storys[index];
+                  print(story.id);
+                  if (story.type == 2) {
+                    return GestureDetector(
+                      onTap: () {
+                        _currentPageNotifier.value == widget.stories.length - 1
+                            ? Navigator.pop(
+                                context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
+                            : _currentPageNotifier.value += 1;
                       },
-                      controller: pageController,
-                      itemCount: widget.stories.length,
-                      itemBuilder: (context, index) {
-                        Stories story = storys[index];
-                        print(story.id);
-                        if (story.type == 2) {
-                          return GestureDetector(
-                            onTap: () {
-                              _currentPageNotifier.value ==
-                                      widget.stories.length - 1
-                                  ? Navigator.pop(
-                                      context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
-                                  : _currentPageNotifier.value += 1;
-                            },
-                            child: Container(
-                              child: Text('a'),
-                              // child: StoryVideo.url(story.n,
-                              //     controller: storyController),
-                            ),
-                          );
-                        }
-                        return GestureDetector(
-                          onTap: () {
-                            _currentPageNotifier.value ==
-                                    widget.stories.length - 1
-                                ? Navigator.pop(context)
-                                : _currentPageNotifier.value += 1;
-                          },
-                          // onDoubleTap: () {
-                          //   var userId = StorageManager.sharedPreferences.get(mUserId);
-                          //   if(userId == 1) {
-                          //     showDialog(
-                          //         context: context,
-                          //         builder: (context) {
-                          //           return AlertDialog(
-                          //             title: Text(
-                          //                 'You are about to delete this story.'),
-                          //             actions: <Widget>[
-                          //               RaisedButton(
-                          //                 onPressed: () => Navigator.pop(context),
-                          //                 child: Text('Cancel'),
-                          //               ),
-                          //               RaisedButton(
-                          //                 onPressed: () async{
-                          //                   //Navigator.pop(context);
-                          //                   await storyModel.dropStory(
-                          //                       storyModel
-                          //                           .stories[
-                          //                       _currentPageNotifier.value]
-                          //                           .id);
-                          //                   Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
-                          //                 },
-                          //                 child: Text('Delete'),
-                          //               )
-                          //             ],
-                          //           );
-                          //         });
-                          //   }
-                          // },
-                          child: Container(
-                            child: StoryImage.url(
-                              story.media,
-                              controller: storyController,
-                            ),
-                          ),
-                        );
-                      }),
-                ),
-              ),
-            ],
-          );
+                      child: Container(
+                        child: Text('a'),
+                        // child: StoryVideo.url(story.n,
+                        //     controller: storyController),
+                      ),
+                    );
+                  }
+                  return GestureDetector(
+                    onTap: () {
+                      _currentPageNotifier.value == widget.stories.length - 1
+                          ? Navigator.pop(context)
+                          : _currentPageNotifier.value += 1;
+                    },
+                    // onDoubleTap: () {
+                    //   var userId = StorageManager.sharedPreferences.get(mUserId);
+                    //   if(userId == 1) {
+                    //     showDialog(
+                    //         context: context,
+                    //         builder: (context) {
+                    //           return AlertDialog(
+                    //             title: Text(
+                    //                 'You are about to delete this story.'),
+                    //             actions: <Widget>[
+                    //               RaisedButton(
+                    //                 onPressed: () => Navigator.pop(context),
+                    //                 child: Text('Cancel'),
+                    //               ),
+                    //               RaisedButton(
+                    //                 onPressed: () async{
+                    //                   //Navigator.pop(context);
+                    //                   await storyModel.dropStory(
+                    //                       storyModel
+                    //                           .stories[
+                    //                       _currentPageNotifier.value]
+                    //                           .id);
+                    //                   Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
+                    //                 },
+                    //                 child: Text('Delete'),
+                    //               )
+                    //             ],
+                    //           );
+                    //         });
+                    //   }
+                    // },
+                    child: Container(
+                      child: StoryImage.url(
+                        story.media,
+                        controller: storyController,
+                      ),
+                    ),
+                  );
+                }),
+          ),
+        ),
+      ],
+    );
   }
 }
 

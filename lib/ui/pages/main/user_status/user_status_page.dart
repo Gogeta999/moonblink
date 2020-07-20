@@ -167,7 +167,7 @@ class UserListWidget extends StatelessWidget {
               FontAwesomeIcons.wallet,
               color: iconColor,
             ),
-            title: Text('Wallet'),
+            title: Text(S.of(context).userStatusWallet),
             onTap: () {
               Navigator.of(context).pushNamed(RouteName.wallet);
             },
@@ -176,7 +176,7 @@ class UserListWidget extends StatelessWidget {
 
           /// for chat their favorites
           ListTile(
-            title: Text(S.of(context).favorites),
+            title: Text(S.of(context).userStatusFavorite),
             onTap: () {
               Navigator.of(context).pushNamed(RouteName.network);
             },
@@ -187,7 +187,7 @@ class UserListWidget extends StatelessWidget {
             trailing: Icon(Icons.chevron_right),
           ),
           ListTile(
-            title: Text(S.of(context).darkMode),
+            title: Text(S.of(context).userStatusDarkMode),
             onTap: () {
               switchDarkMode(context);
             },
@@ -209,7 +209,7 @@ class UserListWidget extends StatelessWidget {
           SettingThemeWidget(),
 
           ListTile(
-            title: Text(S.of(context).settings),
+            title: Text(S.of(context).userStatusSettings),
             onTap: () {
               Navigator.push(
                 context,
@@ -227,7 +227,7 @@ class UserListWidget extends StatelessWidget {
             trailing: Icon(Icons.chevron_right),
           ),
           ListTile(
-            title: Text(S.of(context).appUpdateCheck),
+            title: Text(S.of(context).userStatusCheckAppUpdate),
             onTap: () {
               // Navigator.push(
               //   context,
@@ -266,7 +266,7 @@ class SettingThemeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(S.of(context).theme),
+      title: Text(S.of(context).userStatusTheme),
       leading: Icon(
         FontAwesomeIcons.palette,
         color: Theme.of(context).accentColor,

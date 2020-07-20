@@ -93,7 +93,6 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 ),
               ),
 
-              /// TODO: [add booking and follow function here]
               SliverToBoxAdapter(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
