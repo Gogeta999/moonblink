@@ -164,10 +164,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       break;
       case(3): return buildaudio(msg);
       break;
-      case(4): return null;
+      case(4): return print("calling");
       break;
-      case(5): return buildlocal(msg);
-      break;        
+      case(5): return buildlocalimg(msg);
+      break;
+      case(6): return buildlocalaudio(msg);
+      break;
     }
   }
 
@@ -191,7 +193,31 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Text(msg.text),
     );
   }
-
+  //build temporary img file
+  buildlocalimg(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    return Container(
+      height: 100,
+      width: 100,
+      child: GestureDetector(
+        child: Image.memory(file, fit: BoxFit.fill),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageView(msg.attach),
+              ));
+        },
+      ),
+    );
+  }
+  //build temporary audio file
+  buildlocalaudio(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    File audio = File.fromRawPath(file);
+    //need to fix path
+    return PlayerWidget(url: audio.path);
+  }
   //build image
   buildimage(Message msg) {
     return Container(
@@ -218,12 +244,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return PlayerWidget(url: msg.attach);
   }
 
-  buildlocal(Message msg){
-    print("Building local file");
-    var file = new Uint8List.fromList(msg.attach.codeUnits);
-    print(file);
-    return Container(child: Text("File messages"));
-  }
 
   //Send message
   Widget buildmessage(id) {
@@ -244,7 +264,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(id: id),
+            Voicemsg(id: id, messages: messages,),
             //Text Input
             Expanded(
               child: TextField(

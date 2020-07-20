@@ -28,28 +28,13 @@ IO.Socket socket = IO.io(url, <String, dynamic>{
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
 int userid = StorageManager.sharedPreferences.getInt(mUserId);
-// List<User> friendList = List<User>();
-List<Message> messages = List<Message>();
+// List<Message> messages = List<Message>();
 List<Files> files = List<Files>();
 List<Chatlist> chatlist = List<Chatlist>();
 
-// final Map<String, dynamic> _constraints = {
-//   'mandatory': {
-//     'OfferToReceiveAudio': true,
-//     'OfferToReceiveVideo': true,
-//   },
-//   'optional': [],
-// };
-
-// final Map<String, dynamic> _dc_constraints = {
-//   'mandatory': {
-//     'OfferToReceiveAudio': false,
-//     'OfferToReceiveVideo': false,
-//   },
-//   'optional': [],
-// };
 
 class ChatModel extends Model {
+  int booking = 0;
   String url;
   OnOpenCallback onOpen;
   OnMessageCallback onMessage;
@@ -58,8 +43,10 @@ class ChatModel extends Model {
   void init() {
     socket.emit('connect-user', usertoken);
     socket.connect();
-    // onOpen();
-    print("Connected Socket");
+    socket.once("booking_status", (data) => print(data));
+    if(socket.connect() != null){
+      print("Connected Socket");
+    }
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -88,12 +75,11 @@ class ChatModel extends Model {
   void sendfile(String name, Uint8List file, int receiverChatID, int type,
     List<Message> msg) {
     String local = new String.fromCharCodes(file);
-    print("Local File: $local");
-    msg.insert(0, Message(name, userid, receiverChatID, now, local, 5));
+    msg.insert(0, Message(name, userid, receiverChatID, now, local , 5));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
-    print("File : ${file.toString()}");
+    //print("File : ${file.toString()}");
     socket.emit('upload-attach', [
       {
         "name": name,
@@ -105,7 +91,27 @@ class ChatModel extends Model {
     ]);
     notifyListeners();
   }
-
+    //file message
+  void sendaudio(String name, Uint8List file, int receiverChatID, int type,
+    List<Message> msg) {
+    String local = new String.fromCharCodes(file);
+    msg.insert(0, Message(name, userid, receiverChatID, now, local , 6));
+    print("User ID : $userid");
+    print("Receiver ID : $receiverChatID");
+    print("Name : $name");
+    //print("File : ${file.toString()}");
+    socket.emit('upload-attach', [
+      {
+        "name": name,
+        "data": file,
+        "sender_id": userid,
+        "receiver_id": receiverChatID,
+        "media_type": type
+      }
+    ]);
+    notifyListeners();
+  }
+  //call
   void call(int fromId, int toId, String voiceCallChannelName) {
     print("from ID : $fromId");
     print("to ID : $toId");
