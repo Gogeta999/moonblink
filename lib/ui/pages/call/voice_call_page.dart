@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/videoUserSession.dart';
 
 class VoiceCallWidget extends StatefulWidget {
@@ -184,7 +185,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     height: 140,
                     color: Colors.green,
                     child: Text(
-                      "Wait Anotehr Person to join",
+                      S.of(context).voiceCallWaitAnotherToJoin,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),

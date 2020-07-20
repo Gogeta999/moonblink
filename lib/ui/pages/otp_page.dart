@@ -8,6 +8,7 @@ import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/otp_field_widget.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -65,7 +66,7 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                       Container(
                         child: Text(
-                          'Welcome to be our partner',
+                          S.of(context).otpWelcomePartner,
                           style: Theme.of(context)
                               .accentTextTheme
                               .headline6
@@ -125,10 +126,10 @@ class SignAsPartnerButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              'Sign As Partner',
+              S.of(context).otpSignAsPartnerButton,
               style: Theme.of(context)
                   .accentTextTheme
-                  .title
+                  .headline6
                   .copyWith(wordSpacing: 6),
             ),
       onPressed: model.isBusy
@@ -160,7 +161,7 @@ class GetOtpWordsWidget extends StatelessWidget {
           ? ButtonProgressIndicator()
           : InkWell(
               child: Text(
-                "Get Otp Code",
+                S.of(context).otpGetCode,
                 style: TextStyle(color: Colors.blue),
               ),
               onTap: model.isBusy

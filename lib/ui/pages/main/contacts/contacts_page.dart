@@ -18,6 +18,7 @@ class _ContactsPageState extends State<ContactsPage> {
   List<String> strList = [];
   Contact contact;
   List<Widget> items = [];
+  // ignore: unused_field
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   TextEditingController searchController = TextEditingController();

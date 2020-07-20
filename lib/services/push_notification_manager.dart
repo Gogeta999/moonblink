@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -136,13 +135,13 @@ class PushNotificationsManager {
     _bookingManager.bookingPrepare(
         userId: userId, bookingId: bookingId, bookingUserId: bookingUserId);
 
-
     await _flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
         payload: bookingUserId.toString());
   }
 
-  Future<void> showVoiceCallNotification(String channelName, String title, String body) async {
+  Future<void> showVoiceCallNotification(
+      String channelName, String title, String body) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
       channelName,
@@ -158,8 +157,8 @@ class PushNotificationsManager {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    await _flutterLocalNotificationsPlugin.show(0, title,
-        body, platformChannelSpecifics, payload: null);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, platformChannelSpecifics, payload: null);
   }
 
   //chatting notification
