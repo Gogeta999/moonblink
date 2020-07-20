@@ -14,10 +14,11 @@ import 'package:scoped_model/scoped_model.dart';
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
+  final messages;
   // final file;
   // final bytes;
 
-  Voicemsg({localFileSystem, this.id})
+  Voicemsg({localFileSystem, this.id, this.messages})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -31,7 +32,6 @@ class _VoicemsgState extends State<Voicemsg> {
   String filename;
   File _file;
   Uint8List bytes;
-  List<Message> messages = [];
   @override
   void initState() { 
     super.initState();
@@ -116,7 +116,7 @@ class _VoicemsgState extends State<Voicemsg> {
     bytes = file.readAsBytesSync();
     print(filename);
     // print(files.runtimeType);
-    model.sendfile(filename, bytes, widget.id, 3, messages);
+    model.sendaudio(filename, bytes, widget.id, 3, widget.messages);
     // setState(() {
     //   file = widget.localFileSystem.file(result.path);
     //   _current = result;

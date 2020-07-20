@@ -154,24 +154,20 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   builds(Message msg) {
     switch (msg.type) {
       //build widget for text msgs
-      case (0):
-        return buildmsg(msg);
-        break;
-      case (1):
-        return buildimage(msg);
-        break;
-      case (2):
-        return buildVideo(msg);
-        break;
-      case (3):
-        return buildaudio(msg);
-        break;
-      case (4):
-        return null;
-        break;
-      case (5):
-        return buildlocal(msg);
-        break;
+      case(0): return buildmsg(msg);
+      break;
+      case(1): return buildimage(msg);
+      break;
+      case(2): return buildVideo(msg);
+      break;
+      case(3): return buildaudio(msg);
+      break;
+      case(4): return print("calling");
+      break;
+      case(5): return buildlocalimg(msg);
+      break;
+      case(6): return buildlocalaudio(msg);
+      break;
     }
   }
 
@@ -195,7 +191,31 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Text(msg.text),
     );
   }
-
+  //build temporary img file
+  buildlocalimg(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    return Container(
+      height: 100,
+      width: 100,
+      child: GestureDetector(
+        child: Image.memory(file, fit: BoxFit.fill),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageView(msg.attach),
+              ));
+        },
+      ),
+    );
+  }
+  //build temporary audio file
+  buildlocalaudio(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    File audio = File.fromRawPath(file);
+    //need to fix path
+    return PlayerWidget(url: audio.path);
+  }
   //build image
   buildimage(Message msg) {
     return Container(
@@ -248,7 +268,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(id: id),
+            Voicemsg(id: id, messages: messages,),
             //Text Input
             Expanded(
               child: TextField(
