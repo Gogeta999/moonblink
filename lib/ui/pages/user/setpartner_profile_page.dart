@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -81,7 +82,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Set Your Profile"),
+        title: Text(S.of(context).setPartnerProfile),
       ),
       body: CustomScrollView(
         physics: ClampingScrollPhysics(),
@@ -94,8 +95,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                           showDialog(
                               context: context,
                               builder: (context) => CupertinoAlertDialog(
-                                    title:
-                                        Text('Please fill information first'),
+                                    title: Text(S
+                                        .of(context)
+                                        .setPartnerFillInformations),
                                   ));
                           return !model.isBusy;
                         },
@@ -258,7 +260,6 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           ),
                                           _space,
 
-                                          /// TODO: here can get textediting controller text
                                           SetProfileButton(
                                               _cover,
                                               _profile,
@@ -346,7 +347,7 @@ class SetProfileButton extends StatelessWidget {
       //controller: _btnController,
       child: model.isBusy
           ? ButtonProgressIndicator()
-          : Text('Upload Profile',
+          : Text(S.of(context).setPartnerButton,
               style: Theme.of(context)
                   .accentTextTheme
                   .button

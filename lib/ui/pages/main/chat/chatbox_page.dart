@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:moonblink/base_widget/audioplayer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -107,7 +105,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
         child: builds(message));
-        // child: img ? buildimage(message) : buildmsg(message));
+    // child: img ? buildimage(message) : buildmsg(message));
   }
 
   ///VoiceCallContainer
@@ -157,8 +155,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // );
   // }
   //build msg
-  builds(Message msg){
-    switch (msg.type){
+  builds(Message msg) {
+    switch (msg.type) {
       //build widget for text msgs
       case(0): return buildmsg(msg);
       break;
@@ -191,8 +189,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             ? Colors.grey[300]
             : Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
-                Radius.circular(15.0),
-              ),
+          Radius.circular(15.0),
+        ),
       ),
       child: Text(msg.text),
     );
@@ -243,11 +241,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  //build audio player 
-  buildaudio(Message msg){
+  //build audio player
+  buildaudio(Message msg) {
     return PlayerWidget(url: msg.attach);
   }
 
+  buildlocal(Message msg) {
+    print("Building local file");
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    print(file);
+    return Container(child: Text("File messages"));
+  }
 
   //Send message
   Widget buildmessage(id) {
@@ -386,8 +390,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
-            messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach, msgs.type));
+            messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                msgs.attach, msgs.type));
           }
           print(messages);
           return Scaffold(

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 
@@ -98,7 +99,7 @@ class GetOtpWordsWidget extends StatelessWidget {
           ? ButtonProgressIndicator()
           : InkWell(
               child: Text(
-                "Get Otp Code",
+                S.of(context).otpGetCode,
                 style: TextStyle(color: Colors.blue),
               ),
               onTap: model.isBusy

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -68,11 +69,11 @@ class _HomePageState extends State<HomePage>
                 return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
-                        text: Text("PullToRefresh",
+                        text: Text(S.of(context).pullDownToRefresh,
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 22))),
                     footer: ShimmerFooter(
-                        text: Text("LoadMore",
+                        text: Text(S.of(context).pullTopToLoad,
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 22))),
                     enablePullDown: homeModel.list.isNotEmpty,

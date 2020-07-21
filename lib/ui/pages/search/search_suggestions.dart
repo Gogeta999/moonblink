@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchDelegate;
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/view_state_list_model.dart';
 import 'package:moonblink/view_model/search_model.dart';
@@ -82,7 +83,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
               FlatButton(
                 onPressed: null,
                 child: Text(
-                  'History',
+                  S.of(context).searchHistory,
                   style: Provider.of<TextStyle>(context),
                 ),
               ),
@@ -94,12 +95,12 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
                             textColor: Provider.of<Color>(context),
                             onPressed: model.clearHistory,
                             icon: Icon(Icons.clear),
-                            label: Text('Clear'))
+                            label: Text(S.of(context).searchClear))
                         : FlatButton.icon(
                             textColor: Provider.of<Color>(context),
                             onPressed: model.initData,
                             icon: Icon(Icons.refresh),
-                            label: Text('Retry'))),
+                            label: Text(S.of(context).searchRetry))),
               ),
             ],
           ),

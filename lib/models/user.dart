@@ -7,16 +7,16 @@ class User {
   String token;
   String expiry;
   String name;
-  String last_name;
+  String lastName;
   String email;
   String profileUrl;
   String coverUrl;
   //verify as partner api
   // String verify;
   int verified;
-  String verified_at;
-  String created_at;
-  String updated_at;
+  String verifiedAt;
+  String createdAt;
+  String updatedAt;
   String password;
   // for partner user
   int partnerUserid;
@@ -42,15 +42,15 @@ class User {
         token = map['token'],
         expiry = map['expiry'],
         name = map['name'],
-        last_name = map['last_name'],
+        lastName = map['last_name'],
         email = map['email'],
         profileUrl = map['profile_image'],
         coverUrl = map['cover_image'],
         // verify = map['verify'],
         verified = map['verified'],
-        verified_at = map['verified_at'],
-        created_at = map['created_at'],
-        updated_at = map['updated_at'],
+        verifiedAt = map['verified_at'],
+        createdAt = map['created_at'],
+        updatedAt = map['updated_at'],
         password = map['password'],
         partnerUserid = map['user_id'],
         partnerPhone = map['phone'],
@@ -75,15 +75,15 @@ class User {
     data['token'] = token;
     data['expiry'] = expiry;
     data['name'] = name;
-    data['last_name'] = last_name;
+    data['last_name'] = lastName;
     data['email'] = email;
     data['profile_image'] = profileUrl;
     data['cover_image'] = coverUrl;
     // data['verify'] = verify;
     data['verified'] = verified;
-    data['verified_at'] = verified_at;
-    data['created_at'] = created_at;
-    data['updated_at'] = updated_at;
+    data['verified_at'] = verifiedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     data['password'] = password;
 
     data['user_id'] = partnerUserid;

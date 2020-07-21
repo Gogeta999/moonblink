@@ -43,16 +43,6 @@ class S {
     );
   }
 
-  /// `Check App Update`
-  String get appUpdateCheck {
-    return Intl.message(
-      'Check App Update',
-      name: 'appUpdateCheck',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Auto with system`
   String get autoBySystem {
     return Intl.message(
@@ -64,30 +54,100 @@ class S {
   }
 
   /// `Book`
-  String get confirmBook {
+  String get bookingBook {
     return Intl.message(
       'Book',
-      name: 'confirmBook',
+      name: 'bookingBook',
       desc: '',
       args: [],
     );
   }
 
-  /// `Dark Mode`
-  String get darkMode {
+  /// `Choose game type to play with our partner`
+  String get bookingChooseGameType {
     return Intl.message(
-      'Dark Mode',
-      name: 'darkMode',
+      'Choose game type to play with our partner',
+      name: 'bookingChooseGameType',
       desc: '',
       args: [],
     );
   }
 
-  /// `favorite`
-  String get favorites {
+  /// `Cancel`
+  String get bookingCancel {
     return Intl.message(
-      'favorite',
-      name: 'favorites',
+      'Cancel',
+      name: 'bookingCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Player is currently unavailable to Play`
+  String get bookingPlayerBusy {
+    return Intl.message(
+      'Player is currently unavailable to Play',
+      name: 'bookingPlayerBusy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Booking Dialog`
+  String get bookingDialog {
+    return Intl.message(
+      'Booking Dialog',
+      name: 'bookingDialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `want to play with you`
+  String get bookingDialogSomeoneBook {
+    return Intl.message(
+      'want to play with you',
+      name: 'bookingDialogSomeoneBook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reject`
+  String get bookingDialogReject {
+    return Intl.message(
+      'Reject',
+      name: 'bookingDialogReject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get bookingDialogAccept {
+    return Intl.message(
+      'Accept',
+      name: 'bookingDialogAccept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow`
+  String get detailPageFollow {
+    return Intl.message(
+      'Follow',
+      name: 'detailPageFollow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Following`
+  String get detailPageFollowing {
+    return Intl.message(
+      'Following',
+      name: 'detailPageFollowing',
       desc: '',
       args: [],
     );
@@ -108,6 +168,66 @@ class S {
     return Intl.message(
       'Can\'t be empty',
       name: 'fieldNotEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Your Story`
+  String get imagePickerAppBar {
+    return Intl.message(
+      'Upload Your Story',
+      name: 'imagePickerAppBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your image or video to your story`
+  String get imagePickerChooseSome {
+    return Intl.message(
+      'Choose your image or video to your story',
+      name: 'imagePickerChooseSome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get imagePickerCamera {
+    return Intl.message(
+      'Camera',
+      name: 'imagePickerCamera',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gallery`
+  String get imagePickerGallery {
+    return Intl.message(
+      'Gallery',
+      name: 'imagePickerGallery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Video`
+  String get imagePickerVideo {
+    return Intl.message(
+      'Video',
+      name: 'imagePickerVideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload`
+  String get imagePickerUploadButton {
+    return Intl.message(
+      'Upload',
+      name: 'imagePickerUploadButton',
       desc: '',
       args: [],
     );
@@ -173,6 +293,56 @@ class S {
     );
   }
 
+  /// `Get your otp code`
+  String get otpGetCode {
+    return Intl.message(
+      'Get your otp code',
+      name: 'otpGetCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to be our partner`
+  String get otpWelcomePartner {
+    return Intl.message(
+      'Welcome to be our partner',
+      name: 'otpWelcomePartner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign As Partner`
+  String get otpSignAsPartnerButton {
+    return Intl.message(
+      'Sign As Partner',
+      name: 'otpSignAsPartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refreshing`
+  String get pullDownToRefresh {
+    return Intl.message(
+      'Refreshing',
+      name: 'pullDownToRefresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading`
+  String get pullTopToLoad {
+    return Intl.message(
+      'Loading',
+      name: 'pullTopToLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Search`
   String get search {
     return Intl.message(
@@ -183,11 +353,81 @@ class S {
     );
   }
 
+  /// `History`
+  String get searchHistory {
+    return Intl.message(
+      'History',
+      name: 'searchHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get searchClear {
+    return Intl.message(
+      'Clear',
+      name: 'searchClear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get searchRetry {
+    return Intl.message(
+      'Retry',
+      name: 'searchRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setup your profile`
+  String get setPartnerProfile {
+    return Intl.message(
+      'Setup your profile',
+      name: 'setPartnerProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please fill all your informations first`
+  String get setPartnerFillInformations {
+    return Intl.message(
+      'Please fill all your informations first',
+      name: 'setPartnerFillInformations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Profile`
+  String get setPartnerButton {
+    return Intl.message(
+      'Upload Profile',
+      name: 'setPartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Settings`
-  String get settings {
+  String get settingsSettings {
     return Intl.message(
       'Settings',
-      name: 'settings',
+      name: 'settingsSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register as our partner`
+  String get settingsSignAsPartner {
+    return Intl.message(
+      'Register as our partner',
+      name: 'settingsSignAsPartner',
       desc: '',
       args: [],
     );
@@ -198,6 +438,16 @@ class S {
     return Intl.message(
       'Language',
       name: 'settingLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in First`
+  String get showToastSignInFirst {
+    return Intl.message(
+      'Sign in First',
+      name: 'showToastSignInFirst',
       desc: '',
       args: [],
     );
@@ -333,16 +583,6 @@ class S {
     );
   }
 
-  /// `Theme`
-  String get theme {
-    return Intl.message(
-      'Theme',
-      name: 'theme',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Third Login`
   String get thirdLogin {
     return Intl.message(
@@ -368,6 +608,96 @@ class S {
     return Intl.message(
       'Please Sign Up',
       name: 'toSignUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Your Profile`
+  String get updatePartnerProfile {
+    return Intl.message(
+      'Update Your Profile',
+      name: 'updatePartnerProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get updatePartnerButton {
+    return Intl.message(
+      'Update',
+      name: 'updatePartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet`
+  String get userStatusWallet {
+    return Intl.message(
+      'Wallet',
+      name: 'userStatusWallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Favorite`
+  String get userStatusFavorite {
+    return Intl.message(
+      'Favorite',
+      name: 'userStatusFavorite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dark Mode`
+  String get userStatusDarkMode {
+    return Intl.message(
+      'Dark Mode',
+      name: 'userStatusDarkMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Theme`
+  String get userStatusTheme {
+    return Intl.message(
+      'Theme',
+      name: 'userStatusTheme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get userStatusSettings {
+    return Intl.message(
+      'Settings',
+      name: 'userStatusSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check App Update`
+  String get userStatusCheckAppUpdate {
+    return Intl.message(
+      'Check App Update',
+      name: 'userStatusCheckAppUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting another to join`
+  String get voiceCallWaitAnotherToJoin {
+    return Intl.message(
+      'Waiting another to join',
+      name: 'voiceCallWaitAnotherToJoin',
       desc: '',
       args: [],
     );
@@ -438,16 +768,6 @@ class S {
     return Intl.message(
       'Load Failed',
       name: 'viewStateMessageError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `hello`
-  String get hello {
-    return Intl.message(
-      'hello',
-      name: 'hello',
       desc: '',
       args: [],
     );

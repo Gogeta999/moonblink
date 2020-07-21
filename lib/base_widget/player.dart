@@ -26,6 +26,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   PlayerMode mode;
 
   AudioPlayer _audioPlayer;
+  // ignore: unused_field
   AudioPlayerState _audioPlayerState;
   Duration _duration = Duration(seconds: 0);
   Duration _position = Duration(seconds: 0);
@@ -39,11 +40,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   StreamSubscription _playerStateSubscription;
 
   get _isPlaying => _playerState == PlayerState.playing;
+  // ignore: unused_element
   get _isPaused => _playerState == PlayerState.paused;
+  // ignore: unused_element
   get _durationText =>
       _duration?.inSeconds?.toString()?.split('.')?.first ?? '';
+  // ignore: unused_element
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
+  // ignore: unused_element
   get _isPlayingThroughEarpiece =>
       _playingRouteState == PlayingRouteState.earpiece;
 
@@ -103,6 +108,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   ? _position.inMilliseconds / _duration.inMilliseconds
                   : 0.0,
             )),
+
             /// can't get max duration at start
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -175,6 +181,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
       setState(() => _duration = duration);
 
+      // ignore: todo
       // TODO implemented for iOS, waiting for android impl
       if (Theme.of(context).platform == TargetPlatform.iOS) {
         // (Optional) listen for notification updates in the background
@@ -254,6 +261,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return result;
   }
 
+  // ignore: unused_element
   Future<int> _earpieceOrSpeakersToggle() async {
     final result = await _audioPlayer.earpieceOrSpeakersToggle();
     if (result == 1)
@@ -264,6 +272,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return result;
   }
 
+  // ignore: unused_element
   Future<int> _stop() async {
     final result = await _audioPlayer.stop();
     if (result == 1) {

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 // import 'package:flutter_webrtc/webrtc.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -50,10 +49,10 @@ class ChatModel extends Model {
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
-      var connetion_id = jsonData.map((m) => m['connection_id']);
-      var user_id = jsonData.map((m) => m['user_id']);
-      print(connetion_id);
-      print(user_id);
+      var connectionId = jsonData.map((m) => m['connection_id']);
+      var userId = jsonData.map((m) => m['user_id']);
+      print(connectionId);
+      print(userId);
     });
   }
 
@@ -66,14 +65,19 @@ class ChatModel extends Model {
     print("Message : $text");
     print("Time : $now");
     socket.emit('chat-message', [
-      {"message": text, "sender_id": userid, "receiver_id": receiverChatID, "type": 0}
+      {
+        "message": text,
+        "sender_id": userid,
+        "receiver_id": receiverChatID,
+        "type": 0
+      }
     ]);
     notifyListeners();
   }
 
   //file message
   void sendfile(String name, Uint8List file, int receiverChatID, int type,
-    List<Message> msg) {
+      List<Message> msg) {
     String local = new String.fromCharCodes(file);
     msg.insert(0, Message(name, userid, receiverChatID, now, local , 5));
     print("User ID : $userid");
