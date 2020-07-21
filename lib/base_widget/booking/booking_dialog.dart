@@ -10,6 +10,8 @@ class BookingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)),
       title: Text(S.of(context).bookingDialog),
       //TODO: change someone to customer name late
       content: Text('Somone' + S.of(context).bookingDialogSomeoneBook),
