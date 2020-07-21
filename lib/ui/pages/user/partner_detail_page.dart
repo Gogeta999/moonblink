@@ -259,15 +259,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            '100 Following',
-                          ),
-                          Text(
-                            '|',
-                          ),
-                          Text(partnerModel.partnerData.followerCount
-                                  .toString() +
-                              'Followers')
+                          Center(
+                            child: Text(partnerModel.partnerData.partnerName +
+                                ' have ' +
+                                partnerModel.partnerData.followerCount
+                                    .toString() +
+                                ' followers'),
+                          )
                         ],
                       ),
                     ),
@@ -283,7 +281,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   ),
 
                   /// [user feed]
-                  SliverToBoxAdapter(child: Feed()),
+                  SliverToBoxAdapter(
+                      child: Feed(partnerModel.partnerData.partnerName)),
 
                   /// nothing just test
                   // SliverToBoxAdapter(

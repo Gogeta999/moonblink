@@ -154,20 +154,27 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   builds(Message msg) {
     switch (msg.type) {
       //build widget for text msgs
-      case(0): return buildmsg(msg);
-      break;
-      case(1): return buildimage(msg);
-      break;
-      case(2): return buildVideo(msg);
-      break;
-      case(3): return buildaudio(msg);
-      break;
-      case(4): return print("calling");
-      break;
-      case(5): return buildlocalimg(msg);
-      break;
-      case(6): return buildlocalaudio(msg);
-      break;
+      case (0):
+        return buildmsg(msg);
+        break;
+      case (1):
+        return buildimage(msg);
+        break;
+      case (2):
+        return buildVideo(msg);
+        break;
+      case (3):
+        return buildaudio(msg);
+        break;
+      case (4):
+        return print("calling");
+        break;
+      case (5):
+        return buildlocalimg(msg);
+        break;
+      case (6):
+        return buildlocalaudio(msg);
+        break;
     }
   }
 
@@ -191,8 +198,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Text(msg.text),
     );
   }
+
   //build temporary img file
-  buildlocalimg(Message msg){
+  buildlocalimg(Message msg) {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     return Container(
       height: 100,
@@ -209,13 +217,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
     );
   }
+
   //build temporary audio file
-  buildlocalaudio(Message msg){
+  buildlocalaudio(Message msg) {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     File audio = File.fromRawPath(file);
     //need to fix path
     return PlayerWidget(url: audio.path);
   }
+
   //build image
   buildimage(Message msg) {
     return Container(
@@ -268,7 +278,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(id: id, messages: messages,),
+            Voicemsg(
+              id: id,
+              messages: messages,
+            ),
             //Text Input
             Expanded(
               child: TextField(
@@ -399,7 +412,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   Future<void> _handleVoiceCall() async {
     await [Permission.microphone].request();
-    if (await Permission.camera.request().isGranted) {
+    if (await Permission.microphone.request().isGranted) {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -407,7 +420,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               channelName: voiceChannelName,
             ),
           ));
-    } else if (await Permission.camera.request().isDenied) {
+    } else if (await Permission.microphone.request().isDenied) {
       showDialog(
           context: context,
           builder: (context) {
@@ -434,7 +447,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               ],
             );
           });
-    } else if (await Permission.camera.request().isPermanentlyDenied) {
+    } else if (await Permission.microphone.request().isPermanentlyDenied) {
       print('Permanently being denied,user need to allow in app setting');
       showDialog(
           context: context,
