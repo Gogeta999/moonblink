@@ -27,7 +27,6 @@ main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
-  await PushNotificationsManager().init();
   // if (usertoken != null) {
   // BackgroundFetch.registerHeadlessTask(chatinits);
 
@@ -40,7 +39,23 @@ main() async {
       statusBarBrightness: Brightness.light));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    await PushNotificationsManager().init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return OKToast(

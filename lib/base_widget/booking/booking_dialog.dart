@@ -10,6 +10,8 @@ class BookingDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Booking dialog'),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)),
       content: Text('Somone want to play with you'),
       actions: <Widget>[
         FlatButton(
