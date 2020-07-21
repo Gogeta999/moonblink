@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
@@ -20,7 +21,7 @@ class _BookingButtonState extends State<BookingButton> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Book To Play With"),
+            title: Text(S.of(context).bookingChooseGameType),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Column(
@@ -35,12 +36,12 @@ class _BookingButtonState extends State<BookingButton> {
             contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
             actions: <Widget>[
               FlatButton(
-                  child: Text("Cancel"),
+                  child: Text(S.of(context).bookingCancel),
                   onPressed: () {
                     Navigator.pop(context, 'Cancel');
                   }),
               FlatButton(
-                  child: Text("Book"),
+                  child: Text(S.of(context).bookingBook),
                   onPressed: () {
                     if (bookingModel.isError) {
                       print("Error Booking");
@@ -74,13 +75,13 @@ class _BookingButtonState extends State<BookingButton> {
         context: context,
         builder: (BuildContext context) {
           return new AlertDialog(
-            title: new Text("Player is unavailable to Play with"),
+            title: new Text(S.of(context).bookingPlayerBusy),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Image.asset(ImageHelper.wrapAssetsImage('busy.gif')),
             actions: [
               FlatButton(
-                  child: new Text("Go Back"),
+                  child: Text("Go Back"),
                   onPressed: () {
                     Navigator.pop(context, 'Cancel');
                   })
@@ -100,8 +101,8 @@ class _BookingButtonState extends State<BookingButton> {
             highlightColor: Theme.of(context).accentColor,
             colorBrightness: Theme.of(context).brightness,
             splashColor: Colors.grey,
-            child:
-                Text('Book', style: Theme.of(context).accentTextTheme.button),
+            child: Text(S.of(context).bookingBook,
+                style: Theme.of(context).accentTextTheme.button),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
 

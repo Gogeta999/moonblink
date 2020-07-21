@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -15,39 +16,38 @@ class SearchResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<SearchResultModel>(
-      model: SearchResultModel(
-        keyword: keyword, searchHistoryModel: searchHistoryModel),
-      onModelReady: (model) {
-        model.initData();
-      },
-      builder: (context, model, child) {
-        if (model.isBusy) {
-          return ViewStateBusyWidget();
-        } else if (model.isError && model.list.isEmpty) {
-          return ViewStateErrorWidget(
-              error: model.viewStateError, onPressed: model.initData);
-        } else if (model.isEmpty) {
-          return ViewStateEmptyWidget(onPressed: model.initData);
-        }
-        return SmartRefresher(
-            controller: model.refreshController,
-            header: ShimmerHeader(
-                text: Text("PullToRefresh", 
-                style: TextStyle(color: Colors.grey, fontSize: 22))),
-          footer: ShimmerFooter(
-                text: Text("LoadMore",
-                style: TextStyle(color: Colors.grey, fontSize: 22))),
-            onRefresh: model.refresh,
-            onLoading: model.loadMore,
-            enablePullUp: model.list.isNotEmpty,
-            child: ListView.builder(
-                itemCount: model.list.length,
-                itemBuilder: (context, index) {
-                  User item = model.list[index];
-                  return SearchUserWidget(item);
-                }));
-      }
-    );
+        model: SearchResultModel(
+            keyword: keyword, searchHistoryModel: searchHistoryModel),
+        onModelReady: (model) {
+          model.initData();
+        },
+        builder: (context, model, child) {
+          if (model.isBusy) {
+            return ViewStateBusyWidget();
+          } else if (model.isError && model.list.isEmpty) {
+            return ViewStateErrorWidget(
+                error: model.viewStateError, onPressed: model.initData);
+          } else if (model.isEmpty) {
+            return ViewStateEmptyWidget(onPressed: model.initData);
+          }
+          return SmartRefresher(
+              controller: model.refreshController,
+              header: ShimmerHeader(
+                  text: Text(S.of(context).pullDownToRefresh,
+                      style: TextStyle(color: Colors.grey, fontSize: 22))),
+              footer: ShimmerFooter(
+                  text: Text(S.of(context).pullTopToLoad,
+                      style: TextStyle(color: Colors.grey, fontSize: 22))),
+              onRefresh: model.refresh,
+              onLoading: model.loadMore,
+              enablePullUp: model.list.isNotEmpty,
+              child: ListView.builder(
+                  itemCount: model.list.length,
+                  itemBuilder: (context, index) {
+                    User item = model.list[index];
+                    return SearchUserWidget(item);
+                  }));
+        });
   }
 }
 
@@ -64,27 +64,30 @@ class SearchUserWidget extends StatelessWidget {
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            GestureDetector(
-            onTap: () {
-              int detailPageId = user.id;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => PartnerDetailPage(detailPageId)));
-            },
-            child: CircleAvatar(
-                radius: 45,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundImage: NetworkImage(user.partnerProfileImage)
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  int detailPageId = user.id;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PartnerDetailPage(detailPageId)));
+                },
+                child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    backgroundImage: NetworkImage(user.partnerProfileImage)),
               ),
-            ),
-            Text(user.name + user.id.toString()),
-          ],
-        ),
-        Container(
-          height: 0.5,
-          color: Colors.grey,
-        )
+              Text(user.name + user.id.toString()),
+            ],
+          ),
+          Container(
+            height: 0.5,
+            color: Colors.grey,
+          )
         ],
       ),
     );

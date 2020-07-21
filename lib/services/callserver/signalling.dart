@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:js';
 
 import 'package:flutter_webrtc/webrtc.dart';
 import 'package:moonblink/services/chat_service.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 enum SignalingState {
   CallStateNew,

@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:moonblink/base_widget/audioplayer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -104,7 +102,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
         child: builds(message));
-        // child: img ? buildimage(message) : buildmsg(message));
+    // child: img ? buildimage(message) : buildmsg(message));
   }
 
   ///VoiceCallContainer
@@ -153,8 +151,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // ),
 
   //build msg
-  builds(Message msg){
-    switch (msg.type){
+  builds(Message msg) {
+    switch (msg.type) {
       //build widget for text msgs
       case(0): return buildmsg(msg);
       break;
@@ -164,10 +162,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       break;
       case(3): return buildaudio(msg);
       break;
-      case(4): return null;
+      case(4): return print("calling");
       break;
-      case(5): return buildlocal(msg);
-      break;        
+      case(5): return buildlocalimg(msg);
+      break;
+      case(6): return buildlocalaudio(msg);
+      break;
     }
   }
 
@@ -185,13 +185,37 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             ? Colors.grey[300]
             : Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
-                Radius.circular(15.0),
-              ),
+          Radius.circular(15.0),
+        ),
       ),
       child: Text(msg.text),
     );
   }
-
+  //build temporary img file
+  buildlocalimg(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    return Container(
+      height: 100,
+      width: 100,
+      child: GestureDetector(
+        child: Image.memory(file, fit: BoxFit.fill),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageView(msg.attach),
+              ));
+        },
+      ),
+    );
+  }
+  //build temporary audio file
+  buildlocalaudio(Message msg){
+    var file = new Uint8List.fromList(msg.attach.codeUnits);
+    File audio = File.fromRawPath(file);
+    //need to fix path
+    return PlayerWidget(url: audio.path);
+  }
   //build image
   buildimage(Message msg) {
     return Container(
@@ -213,12 +237,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  //build audio player 
-  buildaudio(Message msg){
+  //build audio player
+  buildaudio(Message msg) {
     return PlayerWidget(url: msg.attach);
   }
 
-  buildlocal(Message msg){
+  buildlocal(Message msg) {
     print("Building local file");
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     print(file);
@@ -244,7 +268,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(id: id),
+            Voicemsg(id: id, messages: messages,),
             //Text Input
             Expanded(
               child: TextField(
@@ -291,7 +315,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         onPressed: () {
           model.call(selfId, anotherPersonId, voiceChannelName);
-          PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
+          PushNotificationsManager().showVoiceCallNotification(
+              'com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
           joinChannel();
         },
       );
@@ -340,8 +365,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
-            messages.add(Message(
-                msgs.msg, msgs.sender, msgs.receiver, now, msgs.attach, msgs.type));
+            messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                msgs.attach, msgs.type));
           }
           print(messages);
           return Scaffold(

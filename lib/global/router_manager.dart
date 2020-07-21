@@ -4,7 +4,6 @@ import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
-import 'package:moonblink/ui/pages/main/stories/camera_page.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
@@ -18,7 +17,8 @@ import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
-class RouteName{
+
+class RouteName {
   static const String splash = 'splash';
   static const String main = '/';
   static const String userStatus = '/userStatus';
@@ -26,7 +26,6 @@ class RouteName{
   static const String network = 'network';
   // static const String error = 'error';
   static const String imagepick = 'imagepick';
-  static const String camerPage = 'cameraPage';
   static const String takepicture = 'takepicture';
   static const String story = 'story';
   static const String setprofile = 'setprofile';
@@ -42,16 +41,16 @@ class RouteName{
   static const String wallet = 'wallet';
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
-
 }
 
 class Router {
-  static Route<dynamic> generateRoute(RouteSettings settings){
-    switch (settings.name){
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
       case RouteName.splash:
         return NoAnimRouteBuilder(SplashPage());
       case RouteName.main:
-        return NoAnimRouteBuilder(MainTabPage(initPage: settings.arguments != null ? settings.arguments : 0));
+        return NoAnimRouteBuilder(MainTabPage(
+            initPage: settings.arguments != null ? settings.arguments : 0));
       case RouteName.userStatus:
         return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
@@ -62,23 +61,22 @@ class Router {
       //   return CupertinoPageRoute(builder: (_) => SearchPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
-      case RouteName.camerPage:
-        return CupertinoPageRoute(builder: (_) => CameraPage());
       // case RouteName.story:
       //   return CupertinoPageRoute(builder: (_) => StoriesPage());
       case RouteName.login:
         return CupertinoPageRoute(
-          fullscreenDialog: true, builder: (_) => LoginPage());
+            fullscreenDialog: true, builder: (_) => LoginPage());
       case RouteName.registerAsPartner:
         return CupertinoPageRoute(
-          fullscreenDialog: true, builder: (_) => OtpPage());
+            fullscreenDialog: true, builder: (_) => OtpPage());
       case RouteName.register:
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
       case RouteName.chatBox:
-        return CupertinoPageRoute(builder: (_) => ChatBoxPage(settings.arguments));
-    
+        return CupertinoPageRoute(
+            builder: (_) => ChatBoxPage(settings.arguments));
+
       /// [get some error to pass params in route name method, using simple push method first]
       // case RouteName.partnerDetail:
       //   // var posts = settings.arguments as PartnerUser;
@@ -108,7 +106,7 @@ class Router {
 }
 
 //Pop route
-class PopRoute extends PopupRoute{
+class PopRoute extends PopupRoute {
   final Duration _duration = Duration(milliseconds: 300);
   Widget child;
 

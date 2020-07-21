@@ -11,6 +11,7 @@ class TestInAPP extends StatefulWidget {
 
 class _TestInAPPState extends State<TestInAPP> {
   ///query List<IAPItem> from the store. IOS only
+  // ignore: unused_field
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
   ///to monitor the connection more thoroughly from 2.0.1.
