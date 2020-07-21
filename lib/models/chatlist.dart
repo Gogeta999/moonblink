@@ -8,6 +8,8 @@ class Chatlist {
   String created;
   String updated;
   String profile;
+  int bookingStatus;
+  int bookingid;
   String lastmsg;
   String file;
   int userid;
@@ -39,6 +41,8 @@ class Chatlist {
     chat.created = map['created_at'];
     chat.updated = map['updated_at'];
     chat.profile = map['profile_image'];
+    chat.bookingStatus = map['booking_status'];
+    chat.bookingid = map['booking_id'];
     chat.lastmsg = map['last_message'];
     chat.file = map['last_attach'];
     chat.userid = map['user_id'];

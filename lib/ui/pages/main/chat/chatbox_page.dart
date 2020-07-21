@@ -14,6 +14,8 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/main.dart';
+import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -45,6 +47,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   bool file = false;
   List<Message> messages = [];
   List<Contact> contacts = [];
+  List<Chatlist> chatlist = [];
   List<Contact> users = [];
   String now = DateTime.now().toString();
   String filename;
@@ -108,7 +111,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   ///VoiceCallContainer
-  ///Container(
+  // Widget callbutton(){
+  // return Container(
   // alignment: Alignment.center,
   // padding: EdgeInsets.all(50),
   //   margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -150,8 +154,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //           }),
   //     ],
   //   ),
-  // ),
-
+  // );
+  // }
   //build msg
   builds(Message msg){
     switch (msg.type){
@@ -311,13 +315,35 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         onPressed: () {
           model.call(selfId, anotherPersonId, voiceChannelName);
-          PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
+          // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
           joinChannel();
         },
       );
     });
   }
-
+  //booking check
+  checking(id){
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model){
+        chatlist = model.conversationlist();
+        print(chatlist.length);
+        var status = chatlist.where((user) => user.userid == id );
+        // print(booking);
+        List chat = status.toList();
+        Chatlist user = chat[0];
+        return statuscheck(id, user.bookingStatus);
+      }
+      );
+  }
+  //action widget
+  statuscheck (id, status){
+    switch (status){
+      case(0): return Text("hello");
+      break;
+      case(1): return callbtn(id);
+      break;
+    }
+  }
   //Conversation List
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -346,9 +372,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           msgModel.initData();
         },
         builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy && msgmodel.isBusy) {
+          if (partnermodel.isBusy || msgmodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (partnermodel.isError && msgmodel.isError) {
+          } else if (partnermodel.isError || msgmodel.isError) {
             return ViewStateErrorWidget(
                 error: partnermodel.viewStateError,
                 onPressed: () {
@@ -369,7 +395,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 AppBar(
               title: Text(partnermodel.partnerData.partnerName),
               actions: <Widget>[
-                callbtn(partnermodel.partnerData.partnerId),
+                checking(partnermodel.partnerData.partnerId)
+                // statuscheck(partnermodel.partnerData.partnerId)
               ],
             ),
             body: ListView(

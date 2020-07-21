@@ -38,7 +38,7 @@ class _ChatListPageState extends State<ChatListPage> {
           backgroundImage: NetworkImage(chat.profile),
         ),
         title: Text(chat.name),
-
+        
         ///[Last Message]
         subtitle: Text(chat.lastmsg, maxLines: 1),
         trailing: Text(chat.updated),
