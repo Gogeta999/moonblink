@@ -3,10 +3,13 @@ import 'package:moonblink/base_widget/booking/booking_dialog.dart';
 
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey =
-  new GlobalKey<NavigatorState>();
+      new GlobalKey<NavigatorState>();
 
-  Future<dynamic> navigateToAndRemoveUntil(String routeName, {dynamic arguments}) {
-    return navigatorKey.currentState.pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
+  Future<dynamic> navigateToAndRemoveUntil(String routeName,
+      {dynamic arguments}) {
+    return navigatorKey.currentState.pushNamedAndRemoveUntil(
+        routeName, (route) => false,
+        arguments: arguments);
   }
 
   Future<dynamic> navigateTo(String routeName, {dynamic arguments}) {
@@ -14,13 +17,19 @@ class NavigationService {
   }
 
   Future<dynamic> navigateToAndReplace(String routeName, {dynamic arguments}) {
-    return navigatorKey.currentState.pushReplacementNamed(routeName, arguments: arguments);
+    return navigatorKey.currentState
+        .pushReplacementNamed(routeName, arguments: arguments);
   }
 
-  void showBookingDialog(Function accept, Function reject) {
+  void showBookingDialog(
+      String bookingUserName, int gameType, Function accept, Function reject) {
     showDialog(
       context: navigatorKey.currentState.overlay.context,
-      builder: (context) => BookingDialog(accept: accept, reject: reject),
+      builder: (context) => BookingDialog(
+          bookingUserName: bookingUserName,
+          gameType: gameType,
+          accept: accept,
+          reject: reject),
     );
   }
 

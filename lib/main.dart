@@ -21,8 +21,6 @@ import 'services/push_notification_manager.dart';
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
 
-//main() => runApp(TestInAPP());
-
 main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();

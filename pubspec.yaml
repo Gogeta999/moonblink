@@ -68,6 +68,8 @@ dependencies:
   # video_player
   video_player: ^0.10.11+2
   common_utils: ^1.2.1
+  # DateFormat
+  intl: ^0.16.1
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   
