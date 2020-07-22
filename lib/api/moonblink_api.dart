@@ -67,4 +67,7 @@ class Api {
 
   //Messages
   static const String Messages = "moonblink/api/v1/social/user/";
+
+  //Calling
+  static const String Calling = "moonblink/api/v1/social/user/conversations/call";
 }
