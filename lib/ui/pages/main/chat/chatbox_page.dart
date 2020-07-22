@@ -22,11 +22,13 @@ import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ChatBoxPage extends StatefulWidget {
@@ -37,7 +39,7 @@ class ChatBoxPage extends StatefulWidget {
 }
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
-  String voiceChannelName = '';
+  // String voiceChannelName = '';
   PartnerUser partnerdata;
   int type = 1;
   Uint8List bytes;
@@ -158,34 +160,54 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   builds(Message msg) {
     switch (msg.type) {
       //build widget for text msgs
-      case (0):
-        return buildmsg(msg);
-        break;
-      case (1):
-        return buildimage(msg);
-        break;
-      case (2):
-        return buildVideo(msg);
-        break;
-      case (3):
-        return buildaudio(msg);
-        break;
-      case (4):
-        return print("calling");
-        break;
-      case (5):
-        return buildlocalimg(msg);
-        break;
-      case (6):
-        return buildlocalaudio(msg);
-        break;
+      case(0): return buildmsg(msg);
+      break;
+      case(1): return buildimage(msg);
+      break;
+      case(2): return buildVideo(msg);
+      break;
+      case(3): return buildaudio(msg);
+      break;
+      case(4): return buildcallmsg(msg);
+      break;
+      case(5): return buildlocalimg(msg);
+      break;
+      case(6): return buildlocalaudio(msg);
+      break;
     }
   }
-
+  //build video
   buildVideo(Message msg) {
     return VideoPlayerWidget(videoUrl: msg.attach);
   }
-
+  //build call msg
+  buildcallmsg(Message msg){
+    print(msg.text);
+    print(msg.attach);
+    return Container(
+      width: 150,
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: msg.senderID == widget.detailPageId
+            ? Colors.grey[300]
+            : Theme.of(context).accentColor,
+        borderRadius: BorderRadius.all(
+          Radius.circular(15.0),
+        ),
+      ),
+      child: Column(
+        children: <Widget>[
+          Text("Someone is Calling u"),
+          MaterialButton(
+            child: Text("Enter call"),
+            onPressed: () {
+              joinChannel(msg.attach);
+            },
+          )
+        ],
+      ),
+    );
+  }
   //build msg template
   buildmsg(Message msg) {
     return Container(
@@ -323,17 +345,22 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //For call button
   Widget callbtn(anotherPersonId) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
+    String voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
+    return ProviderWidget(
+      model: CallModel(),
+      builder: (context, child, model) {
+      
+      // var callmodel = Provider.of<CallModel>(context);
       return IconButton(
         icon: Icon(
           FontAwesomeIcons.phone,
           size: 20,
         ),
         onPressed: () {
-          model.call(selfId, anotherPersonId, voiceChannelName);
+          // model.call(selfId, anotherPersonId, voiceChannelName);
+          child.call(voiceChannelName, anotherPersonId);
           // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
-          joinChannel();
+          joinChannel(voiceChannelName);
         },
       );
     });
@@ -343,6 +370,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return ScopedModelDescendant<ChatModel>(
       builder: (context, child, model){
         chatlist = model.conversationlist();
+        if (chatlist != null){
         print(chatlist.length);
         var status = chatlist.where((user) => user.userid == id );
         // print(booking);
@@ -350,15 +378,30 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         Chatlist user = chat[0];
         return statuscheck(id, user.bookingStatus);
       }
+      else return Container();
+      }
       );
   }
   //action widget
   statuscheck (id, status){
     switch (status){
-      case(0): return Text("hello");
+      case(1): return Text("pending");
       break;
-      case(1): return callbtn(id);
+      case(0): return Text("normal");
       break;
+      case(-1): return callbtn(id);
+      break;
+      case(2): return Text("reject");
+      break;
+      case(3): return Text("done");
+      break;
+      case(4): return Text("expired");
+      break;
+      case(5): return Text("unavailable");
+      break;
+      case(6): return Text("cancel");
+      break;
+      default: return Text("default");
     }
   }
   //Conversation List
@@ -389,9 +432,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           msgModel.initData();
         },
         builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy || msgmodel.isBusy) {
+          if (partnermodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (partnermodel.isError || msgmodel.isError) {
+          } else if (partnermodel.isError) {
             return ViewStateErrorWidget(
                 error: partnermodel.viewStateError,
                 onPressed: () {
@@ -400,6 +443,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 });
           }
           messages.clear();
+          messages= [];
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
@@ -428,15 +472,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   ///[CallFunction]
   ///Here is for voicCall
-  Future<void> joinChannel() async {
+  Future<void> joinChannel(voiceChannelName) async {
     if (voiceChannelName.isNotEmpty) {
-      await _handleVoiceCall();
+      await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
       showToast('Developer error');
     }
   }
 
-  Future<void> _handleVoiceCall() async {
+  Future<void> _handleVoiceCall(voiceChannelName) async {
     await [Permission.microphone].request();
     if (await Permission.microphone.request().isGranted) {
       Navigator.push(

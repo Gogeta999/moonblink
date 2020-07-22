@@ -46,6 +46,12 @@ class ChatModel extends Model {
     if(socket.connect() != null){
       print("Connected Socket");
     }
+    //call made
+    socket.once("call-made", (data) => null);
+    //answer-made
+    socket.once("made-answer", (data) => null);
+    //call rejected
+    socket.once("call-rejected", (data) => null);
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
