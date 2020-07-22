@@ -10,6 +10,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -118,7 +119,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
                 setState(() {
                   _uploadDone = !_uploadDone;
                 });
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
                 // Navigator.of(context).pushNamed(RouteName.network);
               }
               // return Story.fromMap(response.data);

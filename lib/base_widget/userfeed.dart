@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 
 class Feed extends StatefulWidget {
-
+  final String partnerName;
+  Feed(this.partnerName);
   @override
   _Feed createState() => new _Feed();
 }
 
-class _Feed extends State<Feed>
-    with TickerProviderStateMixin {
+class _Feed extends State<Feed> with TickerProviderStateMixin {
   List<Tab> _tabs;
   List<Widget> _pages;
   TabController _controller;
@@ -17,14 +17,14 @@ class _Feed extends State<Feed>
   void initState() {
     super.initState();
     _tabs = [
-      new Tab(text: 'Stories'),
-      new Tab(text: 'Gamelist'),
+      Tab(text: 'Rating'),
+      Tab(text: 'History'),
     ];
     _pages = [
-      new UserFeedWidget(),
-      new UsergamesList(),
+      PartnerRatingWidget(widget.partnerName),
+      PartnerGameHistoryWidget(widget.partnerName),
     ];
-    _controller = new TabController(
+    _controller = TabController(
       length: _tabs.length,
       vsync: this,
     );

@@ -28,7 +28,7 @@ dependencies:
   pull_to_refresh: ^1.6.0
   share: ^0.6.4+3
   flutter_local_notifications: ^1.4.4+1 # Android API 16+ (4.1+, the minimum version supported by Flutter). Uses the NotificationCompat APIs so it can be run older Android devices # iOS 8.0+ (the minimum version supported by Flutter). Supports the old and new iOS notification APIs (the User Notifications Framework introduced in iOS 10 but will use the UILocalNotification APIs for devices predating iOS 10)
-  image: ^2.1.12
+  smooth_star_rating: ^1.1.1
   # fancy_bottom_navigation: ^0.3.2
   fancy_bottom_navigation:
     git:

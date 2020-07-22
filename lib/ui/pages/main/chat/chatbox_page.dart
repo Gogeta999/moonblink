@@ -224,8 +224,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Text(msg.text),
     );
   }
+
   //build temporary img file
-  buildlocalimg(Message msg){
+  buildlocalimg(Message msg) {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     return Container(
       height: 100,
@@ -242,13 +243,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
     );
   }
+
   //build temporary audio file
-  buildlocalaudio(Message msg){
+  buildlocalaudio(Message msg) {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     File audio = File.fromRawPath(file);
     //need to fix path
     return PlayerWidget(url: audio.path);
   }
+
   //build image
   buildimage(Message msg) {
     return Container(
@@ -301,7 +304,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               },
             ),
             //Voice record
-            Voicemsg(id: id, messages: messages,),
+            Voicemsg(
+              id: id,
+              messages: messages,
+            ),
             //Text Input
             Expanded(
               child: TextField(
