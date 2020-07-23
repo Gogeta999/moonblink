@@ -14,4 +14,16 @@ class CallModel extends ViewStateModel {
       return false;
     }
   }
+
+  Future<bool> endbooking(id, bookingid, status) async {
+    setBusy();
+    try {
+      await MoonBlinkRepository.endbooking(id, bookingid, status);
+      setIdle();
+      return true;
+    } catch (e, s) {
+      setError(e,s);
+      return false;
+    }
+  }
 }

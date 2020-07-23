@@ -70,4 +70,7 @@ class Api {
 
   //Calling
   static const String Calling = "moonblink/api/v1/social/user/conversations/call";
+
+  //set status
+  static const String Endbooking = "moonblink/api/v1/user/";
 }

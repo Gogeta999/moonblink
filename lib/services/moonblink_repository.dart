@@ -32,6 +32,12 @@ class MoonBlinkRepository {
     print(response.data);
     return response.data;
   }
+  //End Booking
+  static Future endbooking(int id, int bookingid, int status) async{
+    var response = await DioUtils().post(Api.Endbooking+"$id/booking/$bookingid?status=$status");
+    print(response.data);
+    return response.data;
+  }
   // get Messages
   static Future message(int id) async {
     var usertoken = StorageManager.sharedPreferences.getString(token);
