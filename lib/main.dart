@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
@@ -15,6 +16,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'bloc_pattern/simple_bloc_observer.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
 import 'services/push_notification_manager.dart';
@@ -29,6 +31,7 @@ main() async {
   // BackgroundFetch.registerHeadlessTask(chatinits);
 
   // }
+  Bloc.observer = SimpleBlocObserver();
   setupLocator();
   Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
