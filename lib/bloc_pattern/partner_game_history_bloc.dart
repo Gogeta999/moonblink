@@ -41,11 +41,18 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
           return;
         }
       } catch (_) {
-        yield PartnerGameHistoryFailure();
+        if (currentState is PartnerGameHistoryInitial) {
+          yield PartnerGameHistoryNoData();
+          return;
+        }
+        if (currentState is PartnerGameHistorySuccess) {
+          yield PartnerGameHistoryFailure();
+          return;
+        }
       }
     }
 
-    if (event is PartnerGameHistoryRefreshed) {
+    /*if (event is PartnerGameHistoryRefreshed) {
       try {
         if (currentState is PartnerGameHistoryInitial) {
           final data = await _fetchPartnerGameHistory(partnerId: partnerId, limit: historyLimit, page: 1);
@@ -68,7 +75,7 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
       } catch (_) {
         yield PartnerGameHistoryFailure();
       }
-    }
+    }*/
   }
 
   bool _hasReachedMax(PartnerGameHistoryState state) =>
