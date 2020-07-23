@@ -68,6 +68,12 @@ class Api {
   //Messages
   static const String Messages = "moonblink/api/v1/social/user/";
 
+  //Calling
+  static const String Calling = "moonblink/api/v1/social/user/conversations/call";
+
+  //set status
+  static const String Endbooking = "moonblink/api/v1/user/";
+
   //get user history
   static const String UserHistory = 'moonblink/api/v1/social/user/'; //eg - moonblink/api/v1/social/user/4/transaction
 }

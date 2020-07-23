@@ -8,6 +8,7 @@ import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -130,20 +131,23 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return Container(
-          height: 30,
-          width: 30,
-          child: GestureDetector(
-            child: Icon(
-              Icons.voicemail,
-              color: Theme.of(context).accentColor,
-            ),
-            onLongPressStart: (LongPressStartDetails details) => _start(),
-            onLongPressUp: () {
-              _stop(filename, _file, bytes, model);
-            },
-          ));
+    return ScopedModelDescendant<ChatModel>(
+    builder: (context,child, model) {
+    return Container(
+    height: 30,
+    width: 30,
+    child: GestureDetector(
+      child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
+      onLongPressStart:(LongPressStartDetails details){
+        _start();
+        showToastWidget(Text("Start Recording"));
+      },
+      onLongPressUp: () {
+        _stop(filename, _file, bytes, model);
+        showToastWidget(Text("Send Voice Message"));
+      },
+      )
+    );
     });
   }
 }
