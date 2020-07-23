@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.1"
+  bloc:
+    dependency: transitive
+    description:
+      name: bloc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -127,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.2"
   fancy_bottom_navigation:
     dependency: "direct main"
     description:
@@ -162,6 +176,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.5"
+  flutter_bloc:
+    dependency: "direct main"
+    description:
+      name: flutter_bloc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.1"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -311,7 +332,7 @@ packages:
     source: hosted
     version: "1.1.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
@@ -493,7 +514,7 @@ packages:
     source: hosted
     version: "0.3.8"
   rxdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rxdart
       url: "https://pub.dartlang.org"

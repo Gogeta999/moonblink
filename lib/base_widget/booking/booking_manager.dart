@@ -10,11 +10,15 @@ class BookingManager {
   int _userId;
   int _bookingId;
   int _bookingUserId;
+  String bookingUserName;
+  int gameType;
 
-  void bookingPrepare({int userId, int bookingId, int bookingUserId}){
+  void bookingPrepare({int userId, int bookingId, int bookingUserId, String bookingUserName, int gameType}){
     this._userId = userId;
     this._bookingId = bookingId;
     this._bookingUserId = bookingUserId;
+    this.bookingUserName = bookingUserName;
+    this.gameType = gameType;
   }
 
   void bookingAccept() {
