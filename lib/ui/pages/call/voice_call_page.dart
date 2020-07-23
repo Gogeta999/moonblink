@@ -2,13 +2,19 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/videoUserSession.dart';
+import 'package:moonblink/services/locator.dart';
+import 'package:moonblink/services/navigation_service.dart';
+import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
   final String channelName;
-
-  VoiceCallWidget({Key key, this.channelName}) : super(key: key);
+  //get partnerId to pop back to chatbox page
+  final int partnerId;
+  VoiceCallWidget({Key key, this.channelName, this.partnerId})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +22,10 @@ class VoiceCallWidget extends StatefulWidget {
   }
 }
 
-class AudioCallPageState extends State<VoiceCallWidget> {
+class AudioCallPageState extends State<VoiceCallWidget>
+    with TickerProviderStateMixin {
+  // Animation<int> _timeCoundown;
+  AnimationController _countdownController;
   //Check User Session for Moonblink
   static final _userSessions = List<VideoUserSession>();
   //muted or Not
@@ -32,12 +41,16 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   void initState() {
     super.initState();
     //initAgora
+    _countdownController =
+        AnimationController(vsync: this, duration: Duration(seconds: 10));
+    _countdownController.forward();
     initAgoraSdk();
   }
 
   //After this page Close
   @override
   void dispose() {
+    _countdownController.dispose();
     _userSessions.clear();
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
@@ -119,7 +132,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
     //Listen User exit or not
     AgoraRtcEngine.onUserOffline = (int uid, int reason) {
-      print("用户离开的id为:$uid");
+      print("Leaving UserId:$uid");
       setState(() {
         _removeRenderView(uid);
       });
@@ -168,7 +181,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
       case 1:
         return Positioned(
           //Show User Name in Container
-          top: 180,
+          top: 80,
           left: 30,
           right: 30,
           child: Container(
@@ -190,6 +203,14 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
+                ),
+                VoiceCallCoundown(
+                  context: context,
+                  timeCoundown: StepTween(begin: 10, end: 0)
+                      .animate(_countdownController),
+                  pop: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ],
             ),
@@ -293,15 +314,41 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.channelName),
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.channelName),
+      // ),
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
-          children: <Widget>[_viewAudio(), _bottomToolBar()],
+          children: <Widget>[
+            _viewAudio(),
+            _bottomToolBar(),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class VoiceCallCoundown extends AnimatedWidget {
+  final Animation<int> timeCoundown;
+  final int partnerId;
+  final Function pop;
+  VoiceCallCoundown({key, this.timeCoundown, this.partnerId, this.pop, context})
+      : super(key: key, listenable: timeCoundown) {
+    this.timeCoundown.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        AgoraRtcEngine.leaveChannel();
+        pop();
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    var value = timeCoundown.value + 1;
+    return Text(
+      (value == 0 ? '' : '$value '),
+      style: TextStyle(color: Colors.white),
     );
   }
 }

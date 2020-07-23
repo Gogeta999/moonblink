@@ -333,34 +333,37 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         onPressed: () {
           model.call(selfId, anotherPersonId, voiceChannelName);
           // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
-          joinChannel();
+          joinChannel(anotherPersonId);
         },
       );
     });
   }
+
   //booking check
-  checking(id){
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model){
-        chatlist = model.conversationlist();
-        print(chatlist.length);
-        var status = chatlist.where((user) => user.userid == id );
-        // print(booking);
-        List chat = status.toList();
-        Chatlist user = chat[0];
-        return statuscheck(id, user.bookingStatus);
-      }
-      );
+  checking(id) {
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      chatlist = model.conversationlist();
+      print(chatlist.length);
+      var status = chatlist.where((user) => user.userid == id);
+      // print(booking);
+      List chat = status.toList();
+      Chatlist user = chat[0];
+      return statuscheck(id, user.bookingStatus);
+    });
   }
+
   //action widget
-  statuscheck (id, status){
-    switch (status){
-      case(0): return Text("hello");
-      break;
-      case(1): return callbtn(id);
-      break;
+  statuscheck(id, status) {
+    switch (status) {
+      case (0):
+        return '';
+        break;
+      case (1):
+        return callbtn(id);
+        break;
     }
   }
+
   //Conversation List
   Widget buildChatList(id) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -428,15 +431,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   ///[CallFunction]
   ///Here is for voicCall
-  Future<void> joinChannel() async {
+  Future<void> joinChannel(anotherPersonId) async {
     if (voiceChannelName.isNotEmpty) {
-      await _handleVoiceCall();
+      await _handleVoiceCall(anotherPersonId);
     } else if (voiceChannelName.isEmpty) {
       showToast('Developer error');
     }
   }
 
-  Future<void> _handleVoiceCall() async {
+  Future<void> _handleVoiceCall(anotherPersonId) async {
     await [Permission.microphone].request();
     if (await Permission.microphone.request().isGranted) {
       Navigator.push(
@@ -444,6 +447,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           MaterialPageRoute(
             builder: (context) => VoiceCallWidget(
               channelName: voiceChannelName,
+              partnerId: anotherPersonId,
             ),
           ));
     } else if (await Permission.microphone.request().isDenied) {

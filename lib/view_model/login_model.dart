@@ -108,7 +108,7 @@ class LoginModel extends ViewStateModel {
       _googleSignIn
           .isSignedIn()
           .then((value) async => value ? await _googleSignIn.signOut() : null);
-      await MoonBlinkRepository.logout();
+      // await MoonBlinkRepository.logout();
       userModel.clearUser();
       setIdle();
       return true;
