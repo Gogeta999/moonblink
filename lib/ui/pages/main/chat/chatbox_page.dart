@@ -577,6 +577,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           MaterialPageRoute(
             builder: (context) => VoiceCallWidget(
               channelName: voiceChannelName,
+              partnerId: anotherPersonId,
             ),
           ));
     } else if (await Permission.microphone.request().isDenied) {

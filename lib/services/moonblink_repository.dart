@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -9,6 +10,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/user.dart';
+import 'package:moonblink/models/user_history.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -60,7 +62,8 @@ class MoonBlinkRepository {
 
   static Future dropStory(int storyId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().delete(Api.DropStory + '$userId/story/$storyId');
+    var response =
+        await DioUtils().delete(Api.DropStory + '$userId/story/$storyId');
     return response.data['message'];
   }
 
@@ -116,6 +119,16 @@ class MoonBlinkRepository {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.UserWallet + '$userId');
     return Wallet.fromJson(response.data['wallet']);
+  }
+
+  ///user history
+  static Future getUserHistory({int partnerId, int limit, int page}) async {
+    var response = await DioUtils()
+        .get(Api.UserHistory + '$partnerId/transaction', queryParameters: {
+      'limit': limit,
+      'page': page,
+    });
+    return UserHistory.fromJson(response.data);
   }
 
   /// [login api]
@@ -192,23 +205,23 @@ class MoonBlinkRepository {
 
   // Booking
   static Future booking(int partnerId, int gameType) async {
-    var response = await DioUtils()
-        .post(Api.Booking + '$partnerId/booking', queryParameters: {'game_type': gameType});
+    var response = await DioUtils().post(Api.Booking + '$partnerId/booking',
+        queryParameters: {'game_type': gameType});
     return response.data;
   }
 
-  static Future bookingAcceptOrDecline(int userId, int bookingId, int status) async {
+  static Future bookingAcceptOrDecline(
+      int userId, int bookingId, int status) async {
     var response = await DioUtils()
         .post(Api.BookingAccept + '$userId/booking/$bookingId/?status=$status');
     return response.data;
   }
+
   // top up
   static Future topUp(String productId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils()
-        .post(Api.TopUp + '$userId/coin/topup', queryParameters: {
-          'product_id': productId
-    });
+    var response = await DioUtils().post(Api.TopUp + '$userId/coin/topup',
+        queryParameters: {'product_id': productId});
     return response.data;
   }
 
