@@ -33,6 +33,18 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     // _scrollController.dispose();
     super.dispose();
   }
+  userstatus (status) {
+    switch(status){
+      case(0): return Center(child:Text("Online", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)));
+      break;
+      case(1): return Center(child: Text("Busy",style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+      break;
+      case(2): return Center(child: Text("Connection Error",style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)));
+      break;
+      case(3): return Center(child: Text("In Game",style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)));
+      break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,17 +87,18 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           ? Brightness.light
                           : Brightness.dark,
 
-                      actions: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.more_horiz),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChatBoxPage(widget.detailPageId)));
-                            })
-                      ],
+                    actions: <Widget>[
+                      userstatus(partnerModel.partnerData.status),
+                      IconButton(
+                          icon: Icon(Icons.more_horiz),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChatBoxPage(widget.detailPageId)));
+                      }),
+                    ],
 
                       /// [background image to show here]
                       flexibleSpace: FlexibleSpaceBar(

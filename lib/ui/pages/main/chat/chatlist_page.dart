@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
+import 'package:moonblink/view_model/login_model.dart';
 
 class ChatListPage extends StatefulWidget {
   @override
@@ -14,13 +16,15 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  List<Chatlist> chatlist;
+  List<Chatlist> chatlist = [];
   List<Message> msg = [];
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   @override
   void initState() {
     super.initState();
-    if (usertoken != "token") {
-      ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+    chatlist.clear();
+    if (usertoken != null) {
+      ScopedModel.of<ChatModel>(context).init();
     }
   }
 
@@ -57,11 +61,8 @@ class _ChatListPageState extends State<ChatListPage> {
         appBar: AppBar(title: AppbarLogo()),
         body: ScopedModelDescendant<ChatModel>(
           builder: (context, child, model) {
-            // chatlist.clear();
-            model.receiver(msg);
             chatlist = model.conversationlist();
             print(chatlist.length);
-            // return Container(child: Text("getting chat"),);
             return CustomScrollView(slivers: <Widget>[
               SliverList(
                 delegate: SliverChildBuilderDelegate(

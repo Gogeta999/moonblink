@@ -8,11 +8,13 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:provider/provider.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -46,6 +48,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                         tooltip: S.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
+                          ScopedModel.of<ChatModel>(context, rebuildOnChange: false).disconnect();
                           model.logout().then((value) => value
                               ? Navigator.of(context).pushNamedAndRemoveUntil(
                                   RouteName.main, (route) => false)
