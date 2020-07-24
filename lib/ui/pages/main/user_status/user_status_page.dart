@@ -9,6 +9,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -182,7 +183,7 @@ class UserListWidget extends StatelessWidget {
         ///settings
         PageCard(pageTitle: S.of(context).userStatusSettings, iconData: FontAwesomeIcons.cog, onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
         ///check app update
-        PageCard(pageTitle: S.of(context).userStatusCheckAppUpdate, iconData: FontAwesomeIcons.android, onTap: null),
+        PageCard(pageTitle: S.of(context).userStatusCheckAppUpdate, iconData: Platform.isAndroid ? FontAwesomeIcons.android : FontAwesomeIcons.appStoreIos, onTap: null),
       ]),
     );
   }
@@ -230,8 +231,9 @@ class PageCard extends StatelessWidget {
             Icon(
               iconData,
               color: Colors.white,
+              size: 26.0,
             ),
-            Text(pageTitle, style: TextStyle(color: Colors.white.withAlpha(200)), softWrap: true)
+            Text(pageTitle, style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white), softWrap: true)
           ],
         ),
       ),

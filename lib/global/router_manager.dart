@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
+import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
@@ -41,6 +42,7 @@ class RouteName {
   static const String wallet = 'wallet';
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
+  static const String callScreen = 'callScreen';
 }
 
 class Router {
@@ -94,6 +96,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => TopUpPage());
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
+      case RouteName.callScreen:
+        return CupertinoPageRoute(builder: (_) => VoiceCallWidget(channelName: settings.arguments != null ? settings.arguments : 'Unknown Channel'));
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(
