@@ -100,7 +100,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // }
 
   //build messages
-  Widget buildSingleMessage(int status ,int bookingid, Message message) {
+  Widget buildSingleMessage(int status, int bookingid, Message message) {
     return Container(
         alignment: message.senderID == widget.detailPageId
             ? Alignment.centerLeft
@@ -112,8 +112,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     // child: img ? buildimage(message) : buildmsg(message));
   }
   //build msg
-  builds(int status, int bookingid,Message msg) {
-    print(msg.type);
+  builds(int status, int bookingid, Message msg) {
     switch (msg.type) {
       //build widget for text msgs
       case(0): return buildmsg(msg);
@@ -136,8 +135,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       break;
     }
   }
+
   //build request
-  buildrequest(msg, bookingid){
+  buildrequest(msg, bookingid) {
     return Container(
       width: 160,
       padding: EdgeInsets.all(10.0),
@@ -157,9 +157,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
     );
   }
+
   //Partner Only
-  partneronly(msg, bookingid){
-    if (msg.senderID == widget.detailPageId){
+  partneronly(msg, bookingid) {
+    if (msg.senderID == widget.detailPageId) {
       return Flex(
         mainAxisSize: MainAxisSize.min,
         direction: Axis.horizontal,
@@ -168,37 +169,45 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           acceptbtn(bookingid),
         ],
       );
-    }
-    else return Container();
+    } else
+      return Container();
   }
+
   //accept button
-  acceptbtn(bookingid){
+  acceptbtn(bookingid) {
     return ButtonTheme(
-    minWidth: 70,
-    child: FlatButton(
-      child: Text("Accept", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-      onPressed: () {
-        MoonBlinkRepository.bookingAcceptOrDecline(selfId, bookingid, booking_accept);
-      },
-    ));
+        minWidth: 70,
+        child: FlatButton(
+          child: Text("Accept",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, booking_accept);
+          },
+        ));
   }
+
   //reject button
-  rejectbtn(bookingid){
+  rejectbtn(bookingid) {
     return ButtonTheme(
-    minWidth: 70,
-    child: FlatButton(
-      child: Text("Reject", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-      onPressed: () {
-        MoonBlinkRepository.bookingAcceptOrDecline(selfId, bookingid, booking_reject);
-      },
-    ));
+        minWidth: 70,
+        child: FlatButton(
+          child: Text("Reject",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, booking_reject);
+          },
+        ));
   }
+
   //build video
   buildVideo(Message msg) {
     return VideoPlayerWidget(videoUrl: msg.attach);
   }
+
   //build call msg
-  buildcallmsg(int status, int id, Message msg){
+  buildcallmsg(int status, int id, Message msg) {
     return Container(
       width: 150,
       padding: EdgeInsets.all(10.0),
@@ -218,20 +227,22 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
     );
   }
+
   //button enable
-  buttoncheck(status, msg){
-    if (status ==1){
-    return MaterialButton(
-      child: Text("Enter call"),
+  buttoncheck(status, msg) {
+    if (status == 1) {
+      return MaterialButton(
+        child: Text("Enter call"),
         onPressed: () {
           joinChannel(msg.attach);
-      },
-    );
-    }
-    else{
-      return Text("Booking is ended",style: TextStyle(fontWeight: FontWeight.bold));
+        },
+      );
+    } else {
+      return Text("Booking is ended",
+          style: TextStyle(fontWeight: FontWeight.bold));
     }
   }
+
   //build msg template
   buildmsg(Message msg) {
     return Container(
@@ -357,89 +368,109 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
       );
   }
+
   //Booking End button
-  Widget endbtn(bookingid){
+  Widget endbtn(bookingid) {
     return ProviderWidget(
-      model: CallModel(),
-      builder: (context, model, child){
-        return FlatButton(
-          child: Text("End"),
-          onPressed: () {
-            model.endbooking(selfId, bookingid, 3);
-          },
-        );
-      }
-    );
+        model: CallModel(),
+        builder: (context, model, child) {
+          return FlatButton(
+            child: Text("End"),
+            onPressed: () {
+              model.endbooking(selfId, bookingid, 3);
+            },
+          );
+        });
   }
+
   //For call button
   Widget callbtn(anotherPersonId) {
     String voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
     return ProviderWidget(
-      model: CallModel(),
-      builder: (context, child, model) {
-      
-      // var callmodel = Provider.of<CallModel>(context);
-      return IconButton(
-        icon: Icon(
-          FontAwesomeIcons.phone,
-          size: 20,
-        ),
-        onPressed: () {
-          // model.call(selfId, anotherPersonId, voiceChannelName);
-          // messages.insert(0, Message("Someone", selfId, anotherPersonId,now,voiceChannelName , 4));
-          child.call(voiceChannelName, anotherPersonId);
-          // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
-          joinChannel(voiceChannelName);
-        },
-      );
-    });
+        model: CallModel(),
+        builder: (context, child, model) {
+          // var callmodel = Provider.of<CallModel>(context);
+          return IconButton(
+            icon: Icon(
+              FontAwesomeIcons.phone,
+              size: 20,
+            ),
+            onPressed: () {
+              // model.call(selfId, anotherPersonId, voiceChannelName);
+              child.call(voiceChannelName, anotherPersonId);
+              // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
+              joinChannel(voiceChannelName);
+            },
+          );
+        });
   }
+
   //action widget
-  action1 (id, status){
-    switch (status){
-      case(-1): return Text("pending");
-      break;
-      case(0): return Text("normal");
-      break;
-      case(1): return callbtn(id);
-      break;
-      case(2): return Text("reject");
-      break;
-      case(3): return Text("done");
-      break;
-      case(4): return Text("expired");
-      break;
-      case(5): return Text("unavailable");
-      break;
-      case(6): return Text("cancel");
-      break;
-      default: return Text("default");
+  action1(id, status) {
+    switch (status) {
+      case (-1):
+        return Text("error");
+        break;
+      case (0):
+        return Text("pending");
+        break;
+      case (1):
+        return callbtn(id);
+        break;
+      case (2):
+        return Text("reject");
+        break;
+      case (3):
+        return Text("done");
+        break;
+      case (4):
+        return Text("expired");
+        break;
+      case (5):
+        return Text("unavailable");
+        break;
+      case (6):
+        return Text("cancel");
+        break;
+      default:
+        return Text("default");
     }
   }
-  action2 ( status, bookingid){
-    if (usertype == 1){
-    switch (status){
-      case(-1): return Text("pending");
-      break;
-      case(0): return Text("normal");
-      break;
-      case(1): return endbtn(bookingid);
-      break;
-      case(2): return Text("reject");
-      break;
-      case(3): return Text("done");
-      break;
-      case(4): return Text("expired");
-      break;
-      case(5): return Text("unavailable");
-      break;
-      case(6): return Text("cancel");
-      break;
-      default: return Text("default");
-    }
-    }
-    else return Container();
+
+  action2(status, bookingid) {
+    if (usertype == 1) {
+      switch (status) {
+        case (-1):
+          return Text("error");
+          break;
+        case (0):
+          return Text("pending");
+          break;
+        case (1):
+          return endbtn(bookingid);
+          break;
+        case (2):
+          return Text("reject");
+          break;
+        case (3):
+          return Text("done");
+          break;
+        case (4):
+          return Text("expired");
+          break;
+        case (5):
+          return Text("unavailable");
+          break;
+        case (6):
+          return Text("cancel");
+          break;
+        default:
+          return Text("default");
+      }
+    } else
+      return Container();
   }
+
   //Conversation List
   Widget buildChatList(status, bookingid, id, model) {
       model.receiver(messages);
@@ -476,8 +507,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   msgmodel.initData();
                 });
           }
-          // messages.clear();
-          // print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
             messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,

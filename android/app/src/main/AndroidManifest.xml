@@ -26,8 +26,16 @@
     <!--android:name="io.flutter.app.FlutterApplication"-->
     <application
         android:name=".Application"
-        android:label="moonblink"
+        android:label="Moon Go"
         android:icon="@mipmap/moonblink">
+        <!--FCM noti icon-->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_icon" />
+        <!--FCM noti color-->
+        <!--<meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />-->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

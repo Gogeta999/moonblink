@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:provider/provider.dart';
 
@@ -93,6 +95,7 @@ class _BookingButtonState extends State<BookingButton> {
   @override
   Widget build(BuildContext context) {
     var partnerDetailModel = Provider.of<PartnerDetailModel>(context);
+    int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
         builder: (context, model, child) {
@@ -107,9 +110,7 @@ class _BookingButtonState extends State<BookingButton> {
                 borderRadius: BorderRadius.circular(20.0)),
 
             ///[to add pop up]
-            onPressed: () {
-              available(context, model, partnerDetailModel);
-            },
+            onPressed: userId == partnerDetailModel.partnerId ? null : () => available(context, model, partnerDetailModel),
           );
         });
   }

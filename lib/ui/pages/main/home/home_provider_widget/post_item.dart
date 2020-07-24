@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -224,7 +225,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   //       margin: EdgeInsets.only(top: 2.0),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    widget.posts.creatdAt,
+                    DateFormat.jm().format(DateTime.parse(widget.posts.creatdAt)),
                     style: TextStyle(color: Colors.grey, fontSize: 12.0),
                   ),
                   //     )

@@ -34,10 +34,11 @@ class _VoicemsgState extends State<Voicemsg> {
   File _file;
   Uint8List bytes;
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _init();
   }
+
   _init() async {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
@@ -78,9 +79,9 @@ class _VoicemsgState extends State<Voicemsg> {
       }
     } catch (e) {
       print(e);
-    
     }
   }
+
   _start() async {
     try {
       await _recorder.start();
@@ -106,11 +107,14 @@ class _VoicemsgState extends State<Voicemsg> {
       print(e);
     }
   }
+
   _stop(String filename, File file, Uint8List bytes, model) async {
     var result = await _recorder.stop();
     print("Stop recording: ${result.path}");
     print(result.path);
-    filename = widget.id.toString() +DateTime.now().millisecondsSinceEpoch.toString() + ".wav"; 
+    filename = widget.id.toString() +
+        DateTime.now().millisecondsSinceEpoch.toString() +
+        ".wav";
     print("Stop recording: ${result.duration}");
     file = widget.localFileSystem.file(result.path);
     print("File length: ${await file.length()}");
@@ -124,6 +128,7 @@ class _VoicemsgState extends State<Voicemsg> {
     //   _currentStatus = _current.status;
     // });
   }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(
@@ -133,13 +138,13 @@ class _VoicemsgState extends State<Voicemsg> {
     width: 30,
     child: GestureDetector(
       child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
-      onLongPressStart:(LongPressStartDetails details){
+      onLongPressStart:(LongPressStartDetails details) {
+        showToast('Start Recording. Press to hold');
         _start();
-        showToast("Start Recording Your message");
       },
       onLongPressUp: () {
         _stop(filename, _file, bytes, model);
-        showToastWidget(Icon(Icons.error));
+        showToast('Stop Recording', dismissOtherToast: true);
       },
       )
     );

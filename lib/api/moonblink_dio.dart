@@ -104,6 +104,11 @@ class DioUtils {
       if (respData.errorCode == 101) {
         throw const UnAuthorizedException();
       }
+      //TODO:
+      // Platform and version Control
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+      }
       //Tell toe hlaing win to solve normal user problem
       else if (respData.errorCode == 123) {
         response.data = respData.data;
