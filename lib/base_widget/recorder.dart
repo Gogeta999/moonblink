@@ -6,7 +6,6 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
-import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
@@ -131,23 +130,24 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(
-    builder: (context,child, model) {
-    return Container(
-    height: 30,
-    width: 30,
-    child: GestureDetector(
-      child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
-      onLongPressStart:(LongPressStartDetails details) {
-        showToast('Start Recording. Press to hold');
-        _start();
-      },
-      onLongPressUp: () {
-        _stop(filename, _file, bytes, model);
-        showToast('Stop Recording', dismissOtherToast: true);
-      },
-      )
-    );
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      return Container(
+          height: 30,
+          width: 30,
+          child: GestureDetector(
+            child: Icon(
+              Icons.voicemail,
+              color: Theme.of(context).accentColor,
+            ),
+            onLongPressStart: (LongPressStartDetails details) {
+              showToast('Start Recording. Press to hold');
+              _start();
+            },
+            onLongPressUp: () {
+              _stop(filename, _file, bytes, model);
+              showToast('Stop Recording', dismissOtherToast: true);
+            },
+          ));
     });
   }
 }

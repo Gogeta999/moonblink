@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -137,8 +135,7 @@ class UserHeaderWidget extends StatelessWidget {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(
-                              children: <Widget>[
+                          Column(children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()
@@ -169,20 +166,45 @@ class UserListWidget extends StatelessWidget {
       ),
       delegate: SliverChildListDelegate.fixed([
         ///wallet
-        PageCard(pageTitle: S.of(context).userStatusWallet, iconData: FontAwesomeIcons.wallet, onTap: () => Navigator.of(context).pushNamed(RouteName.wallet),),
+        PageCard(
+          pageTitle: S.of(context).userStatusWallet,
+          iconData: FontAwesomeIcons.wallet,
+          onTap: () => Navigator.of(context).pushNamed(RouteName.wallet),
+        ),
+
         ///favorites
-        PageCard(pageTitle: S.of(context).userStatusFavorite, iconData: FontAwesomeIcons.solidHeart, onTap: () => Navigator.of(context).pushNamed(RouteName.network)),
+        PageCard(
+            pageTitle: S.of(context).userStatusFavorite,
+            iconData: FontAwesomeIcons.solidHeart,
+            onTap: () => Navigator.of(context).pushNamed(RouteName.network)),
+
         ///switch dark mode
-        PageCard(pageTitle: S.of(context).userStatusDarkMode, iconData: Theme.of(context).brightness == Brightness.light
-            ? FontAwesomeIcons.sun
-            : FontAwesomeIcons.moon,
-        onTap: () => _switchDarkMode(context)),
+        PageCard(
+            pageTitle: S.of(context).userStatusDarkMode,
+            iconData: Theme.of(context).brightness == Brightness.light
+                ? FontAwesomeIcons.sun
+                : FontAwesomeIcons.moon,
+            onTap: () => _switchDarkMode(context)),
+
         ///theme
-        PageCard(pageTitle: S.of(context).userStatusTheme, iconData: FontAwesomeIcons.palette, onTap: () => _showPaletteDialog(context)),
+        PageCard(
+            pageTitle: S.of(context).userStatusTheme,
+            iconData: FontAwesomeIcons.palette,
+            onTap: () => _showPaletteDialog(context)),
+
         ///settings
-        PageCard(pageTitle: S.of(context).userStatusSettings, iconData: FontAwesomeIcons.cog, onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+        PageCard(
+            pageTitle: S.of(context).userStatusSettings,
+            iconData: FontAwesomeIcons.cog,
+            onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+
         ///check app update
-        PageCard(pageTitle: S.of(context).userStatusCheckAppUpdate, iconData: Platform.isAndroid ? FontAwesomeIcons.android : FontAwesomeIcons.appStoreIos, onTap: null),
+        PageCard(
+            pageTitle: S.of(context).userStatusCheckAppUpdate,
+            iconData: Platform.isAndroid
+                ? FontAwesomeIcons.android
+                : FontAwesomeIcons.appStoreIos,
+            onTap: null),
       ]),
     );
   }
@@ -199,9 +221,7 @@ class UserListWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          child: SettingThemeWidget()
-        );
+        return Dialog(child: SettingThemeWidget());
       },
     );
   }
@@ -212,7 +232,12 @@ class PageCard extends StatelessWidget {
   final IconData iconData;
   final Function onTap;
 
-  const PageCard({Key key, @required this.pageTitle, @required this.iconData, @required this.onTap}) : super(key: key);
+  const PageCard(
+      {Key key,
+      @required this.pageTitle,
+      @required this.iconData,
+      @required this.onTap})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return InkResponse(
@@ -220,8 +245,8 @@ class PageCard extends StatelessWidget {
       child: Card(
         elevation: 0.0,
         color: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -232,14 +257,16 @@ class PageCard extends StatelessWidget {
               color: Colors.white,
               size: 26.0,
             ),
-            Text(pageTitle, style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white), softWrap: true)
+            Text(pageTitle,
+                style:
+                    TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+                softWrap: true)
           ],
         ),
       ),
     );
   }
 }
-
 
 class SettingThemeWidget extends StatelessWidget {
   SettingThemeWidget();
