@@ -10,8 +10,10 @@ import 'package:moonblink/base_widget/thirdLogin.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -130,10 +132,19 @@ class LoginButton extends StatelessWidget {
                 model
                     .login(
                         mailController.text, passwordController.text, 'email')
-                    .then((value) => value
-                        ? Navigator.of(context).pushNamedAndRemoveUntil(
-                            RouteName.main, (route) => false)
-                        : model.showErrorMessage(context));
+                    .then((value){
+                      if (value)
+                       {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false); 
+                          ScopedModel.of<ChatModel>(context).disconnect();
+                          ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+                       }
+                      else{
+                        model.showErrorMessage(context);
+                        }
+                      }
+                    );
                 // model
                 //     .login(
                 //         mailController.text, passwordController.text, 'email')

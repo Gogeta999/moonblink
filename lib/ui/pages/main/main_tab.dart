@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
@@ -8,7 +10,7 @@ import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
-import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 List<Widget> pages = <Widget>[
@@ -29,6 +31,7 @@ class MainTabPage extends StatefulWidget {
 class _MainTabPageState extends State<MainTabPage>
     with SingleTickerProviderStateMixin {
   var _pageController;
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   // ignore: unused_field
   final int initPage;
   // ignore: unused_field
@@ -39,9 +42,9 @@ class _MainTabPageState extends State<MainTabPage>
 
   @override
   void initState() {
+    print(usertoken);
     //PushNotificationsManager().init();
-    // ScopedModel.of<ChatModel>(context, rebuildOnChange: false).disconnect();
-    if (usertoken != "token") {
+    if (usertoken != null) {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
     }
     setState(() {

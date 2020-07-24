@@ -10,22 +10,13 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-typedef void OnMessageCallback(String tag, dynamic msg);
-typedef void OnCloseCallback(int code, String reason);
-typedef void OnOpenCallback();
-
-const CLIENT_ID_EVENT = 'client-id-event';
-const OFFER_EVENT = 'offer-event';
-const ANSWER_EVENT = 'answer-event';
-const ICE_CANDIDATE_EVENT = 'ice-candidate-event';
 String url = 'http://54.179.117.84';
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],
-  // 'autoConnect': false,
+  'autoConnect': false,
 });
 
-String usertoken = StorageManager.sharedPreferences.getString(token);
 int userid = StorageManager.sharedPreferences.getInt(mUserId);
 // List<Message> messages = List<Message>();
 List<Files> files = List<Files>();
@@ -33,25 +24,13 @@ List<Chatlist> chatlist = List<Chatlist>();
 
 
 class ChatModel extends Model {
-  int booking = 0;
-  String url;
-  OnOpenCallback onOpen;
-  OnMessageCallback onMessage;
-  OnCloseCallback onClose;
+  
   //connect
   void init() {
+    String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
     socket.once("booking_status", (data) => print(data));
-    if(socket.connect() != null){
-      print("Connected Socket");
-    }
-    //call made
-    socket.once("call-made", (data) => null);
-    //answer-made
-    socket.once("made-answer", (data) => null);
-    //call rejected
-    socket.once("call-rejected", (data) => null);
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -154,24 +133,20 @@ class ChatModel extends Model {
   void receiver(List<Message> message) {
     print("Received Messages");
     socket.clearListeners();
-    socket.once("receiver-peer", (data) {
-      print("Messages");
-      print(data);
-      receivenoti(data["sender_id"], data["time"], data["message"]);
+    socket.on("receiver-peer", (data) {
       message.insert(
           0,
           Message(data['message'], data['sender_id'], data['receiver_id'],
               data['time'], '', data["type"]));
+      print("msg added");
       notifyListeners();
     });
-    socket.once("receiver-attach", (data) {
-      print("Images");
+    socket.on("receiver-attach", (data) {
       print(data);
-      receivenoti(data['sender_id'], data['time'], "File Message");
       message.insert(
           0,
           Message("", data['sender_id'], data['receiver_id'], data["time"],
-              data['attach'], data['now']));
+              data['attach'], data['type']));
       notifyListeners();
     });
   }
@@ -182,6 +157,7 @@ class ChatModel extends Model {
 
   void disconnect() {
     socket.disconnect();
+    print("Disconnected");
   }
 
   void send(event, data) {

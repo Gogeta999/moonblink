@@ -18,13 +18,15 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  List<Chatlist> chatlist;
+  List<Chatlist> chatlist =[];
   List<Message> msg = [];
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   @override
   void initState() {
     super.initState();
-    if (usertoken != "token") {
-      ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+    chatlist.clear();
+    if (usertoken != null) {
+      ScopedModel.of<ChatModel>(context).init();
     }
   }
 
@@ -61,11 +63,8 @@ class _ChatListPageState extends State<ChatListPage> {
         appBar: AppBar(title: AppbarLogo()),
         body: ScopedModelDescendant<ChatModel>(
           builder: (context, child, model) {
-            // chatlist.clear();
-            model.receiver(msg);
             chatlist = model.conversationlist();
             print(chatlist.length);
-            // return Container(child: Text("getting chat"),);
             return CustomScrollView(slivers: <Widget>[
               SliverList(
                 delegate: SliverChildBuilderDelegate(
