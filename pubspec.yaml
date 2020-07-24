@@ -77,6 +77,7 @@ dependencies:
   # Simplify Equality Comparisons
   equatable: ^1.2.2
 
+
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   
 dev_dependencies:
@@ -91,6 +92,7 @@ flutter:
   assets:
     - assets/images/
     - assets/logos/
+
   fonts:
     - family: iconfont
       fonts:

@@ -138,13 +138,13 @@ class _VoicemsgState extends State<Voicemsg> {
     width: 30,
     child: GestureDetector(
       child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
-      onLongPressStart:(LongPressStartDetails details){
+      onLongPressStart:(LongPressStartDetails details) {
+        showToast('Start Recording. Press to hold');
         _start();
-        showToastWidget(Text("Start Recording"));
       },
       onLongPressUp: () {
         _stop(filename, _file, bytes, model);
-        showToastWidget(Text("Send Voice Message"));
+        showToast('Stop Recording', dismissOtherToast: true);
       },
       )
     );

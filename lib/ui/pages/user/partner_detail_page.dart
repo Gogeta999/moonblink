@@ -36,263 +36,262 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<PartnerDetailModel>(
-        model: PartnerDetailModel(partnerData, widget.detailPageId),
-        onModelReady: (partnerModel) {
-          partnerModel.initData();
-        },
-        builder: (context, partnerModel, child) {
-          if (partnerModel.isBusy) {
-            return ViewStateBusyWidget();
-          } else if (partnerModel.isError) {
-            return ViewStateErrorWidget(
-                error: partnerModel.viewStateError,
-                onPressed: partnerModel.initData);
-          }
+    return Scaffold(
+      body: ProviderWidget<PartnerDetailModel>(
+          model: PartnerDetailModel(partnerData, widget.detailPageId),
+          onModelReady: (partnerModel) {
+            partnerModel.initData();
+          },
+          builder: (context, partnerModel, child) {
+            if (partnerModel.isBusy) {
+              return ViewStateBusyWidget();
+            } else if (partnerModel.isError) {
+              return ViewStateErrorWidget(
+                  error: partnerModel.viewStateError,
+                  onPressed: partnerModel.initData);
+            }
+            return SmartRefresher(
+                enablePullUp: false,
+                controller: _refreshController,
+                header: ShimmerHeader(
+                    text: Text(S.of(context).pullDownToRefresh,
+                        style: TextStyle(color: Colors.grey, fontSize: 22))),
+                enablePullDown: false,
+                onRefresh: () async {
+                  // await Future.delayed(Duration(milliseconds: 300));
+                  partnerModel.initData();
+                  _refreshController.refreshCompleted();
+                  partnerModel.showErrorMessage(context);
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    // SliverToBoxAdapter(),
+                    SliverAppBar(
+                      /// [showing partner name]
+                      title: Text(partnerModel.partnerData.partnerName),
+                      pinned: true,
+                      expandedHeight: 220,
+                      brightness: Theme.of(context).brightness == Brightness.light
+                          ? Brightness.light
+                          : Brightness.dark,
 
-          return Scaffold(
-            body: SmartRefresher(
-              enablePullUp: false,
-              controller: _refreshController,
-              header: ShimmerHeader(
-                  text: Text(S.of(context).pullDownToRefresh,
-                      style: TextStyle(color: Colors.grey, fontSize: 22))),
-              enablePullDown: false,
-              onRefresh: () async {
-                // await Future.delayed(Duration(milliseconds: 300));
-                partnerModel.initData();
-                _refreshController.refreshCompleted();
-                partnerModel.showErrorMessage(context);
-              },
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  // SliverToBoxAdapter(),
-                  SliverAppBar(
-                    /// [showing partner name]
-                    title: Text(partnerModel.partnerData.partnerName),
-                    pinned: true,
-                    expandedHeight: 220,
-                    brightness: Theme.of(context).brightness == Brightness.light
-                        ? Brightness.light
-                        : Brightness.dark,
-
-                    actions: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.more_horiz),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChatBoxPage(widget.detailPageId)));
-                          })
-                    ],
-
-                    /// [background image to show here]
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      // background: Image.network(partnerModel.data.partnerCover),
-                      background: Image.network(
-                          partnerModel
-                              .partnerData.prfoileFromPartner.coverImage,
-                          fit: BoxFit.cover),
-                    ),
-                  ),
-
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 25,
-                    ),
-                  ),
-
-                  SliverToBoxAdapter(
-                    /// [user avatar]
-                    child: Hero(
-                        tag: 'UserAvatar',
-                        child: Align(
-                          child: ClipOval(
-                              child: SizedBox(
-                                  width: 100.0,
-                                  height: 100.0,
-                                  child: Image.network(
-                                    partnerModel.partnerData.prfoileFromPartner
-                                        .profileImage,
-                                    fit: BoxFit.cover,
-                                  ))),
-                        )),
-                  ),
-
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 25,
-                    ),
-                  ),
-
-                  SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ///[Booking Button move to class]
-                        BookingButton(),
-
-                        /// [Follow Button] different statement to show different button
-                        /// Gonna get little confused, but try to think followbuton is true or false and statement
-                        if (partnerModel.partnerData.isFollow == 0)
-                          RaisedButton(
-                            color: Theme.of(context).primaryColor,
-                            highlightColor: Theme.of(context).accentColor,
-                            colorBrightness: Theme.of(context).brightness,
-                            splashColor: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: followButtonClicked
-                                ? Text(S.of(context).detailPageFollowing,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button)
-                                : Text(S.of(context).detailPageFollow,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button),
-                            onPressed: followButtonClicked
-                                ? () async {
-                                    print('status is 1 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 0');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '0'},
-                                    );
-                                    print(
-                                        'stauts now is 0 and switch to follow button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  }
-                                : () async {
-                                    print('status is 0 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 1');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '1'},
-                                    );
-                                    print(
-                                        'stauts now is 1 and switch to following button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  },
-                          ),
-
-                        if (partnerModel.partnerData.isFollow == 1)
-                          RaisedButton(
-                            color: Theme.of(context).primaryColor,
-                            highlightColor: Theme.of(context).accentColor,
-                            colorBrightness: Theme.of(context).brightness,
-                            splashColor: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: followButtonClicked
-                                ? Text(S.of(context).detailPageFollow,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button)
-                                : Text(S.of(context).detailPageFollowing,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button),
-                            onPressed: followButtonClicked
-                                ? () async {
-                                    print('status is 0 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 1');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '1'},
-                                    );
-                                    print(
-                                        'stauts now is 1 and switch to following button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  }
-                                : () async {
-                                    print('status is 1 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 0');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '0'},
-                                    );
-                                    print(
-                                        'stauts now is 0 and switch to follow button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  },
-                          ),
+                      actions: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.more_horiz),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChatBoxPage(widget.detailPageId)));
+                            })
                       ],
-                    ),
-                  ),
 
-                  /// [info]
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      /// [background image to show here]
+                      flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.parallax,
+                        // background: Image.network(partnerModel.data.partnerCover),
+                        background: Image.network(
+                            partnerModel
+                                .partnerData.prfoileFromPartner.coverImage,
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 25,
+                      ),
+                    ),
+
+                    SliverToBoxAdapter(
+                      /// [user avatar]
+                      child: Hero(
+                          tag: 'UserAvatar',
+                          child: Align(
+                            child: ClipOval(
+                                child: SizedBox(
+                                    width: 100.0,
+                                    height: 100.0,
+                                    child: Image.network(
+                                      partnerModel.partnerData.prfoileFromPartner
+                                          .profileImage,
+                                      fit: BoxFit.cover,
+                                    ))),
+                          )),
+                    ),
+
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 25,
+                      ),
+                    ),
+
+                    SliverToBoxAdapter(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Center(
-                            child: Text(partnerModel.partnerData.partnerName +
-                                ' have ' +
-                                partnerModel.partnerData.followerCount
-                                    .toString() +
-                                ' followers'),
-                          )
+                          ///[Booking Button move to class]
+                          BookingButton(),
+
+                          /// [Follow Button] different statement to show different button
+                          /// Gonna get little confused, but try to think followbuton is true or false and statement
+                          if (partnerModel.partnerData.isFollow == 0)
+                            RaisedButton(
+                              color: Theme.of(context).primaryColor,
+                              highlightColor: Theme.of(context).accentColor,
+                              colorBrightness: Theme.of(context).brightness,
+                              splashColor: Colors.grey,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: followButtonClicked
+                                  ? Text(S.of(context).detailPageFollowing,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .button)
+                                  : Text(S.of(context).detailPageFollow,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .button),
+                              onPressed: followButtonClicked
+                                  ? () async {
+                                      print('status is 1 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to 0');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '0'},
+                                      );
+                                      print(
+                                          'stauts now is 0 and switch to follow button');
+                                      setState(() {
+                                        followButtonClicked =
+                                            !followButtonClicked;
+                                      });
+                                    }
+                                  : () async {
+                                      print('status is 0 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to 1');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '1'},
+                                      );
+                                      print(
+                                          'stauts now is 1 and switch to following button');
+                                      setState(() {
+                                        followButtonClicked =
+                                            !followButtonClicked;
+                                      });
+                                    },
+                            ),
+
+                          if (partnerModel.partnerData.isFollow == 1)
+                            RaisedButton(
+                              color: Theme.of(context).primaryColor,
+                              highlightColor: Theme.of(context).accentColor,
+                              colorBrightness: Theme.of(context).brightness,
+                              splashColor: Colors.grey,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: followButtonClicked
+                                  ? Text(S.of(context).detailPageFollow,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .button)
+                                  : Text(S.of(context).detailPageFollowing,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .button),
+                              onPressed: followButtonClicked
+                                  ? () async {
+                                      print('status is 0 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to 1');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '1'},
+                                      );
+                                      print(
+                                          'stauts now is 1 and switch to following button');
+                                      setState(() {
+                                        followButtonClicked =
+                                            !followButtonClicked;
+                                      });
+                                    }
+                                  : () async {
+                                      print('status is 1 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to 0');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '0'},
+                                      );
+                                      print(
+                                          'stauts now is 0 and switch to follow button');
+                                      setState(() {
+                                        followButtonClicked =
+                                            !followButtonClicked;
+                                      });
+                                    },
+                            ),
                         ],
                       ),
                     ),
-                  ),
 
-                  /// [user bio]
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(25),
-                      child: Text(
-                          partnerModel.partnerData.prfoileFromPartner.bios),
+                    /// [info]
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(
+                              child: Text(partnerModel.partnerData.partnerName +
+                                  ' have ' +
+                                  partnerModel.partnerData.followerCount
+                                      .toString() +
+                                  ' followers'),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
 
-                  /// [user feed]
-                  SliverToBoxAdapter(
-                      child: Feed(partnerModel.partnerData.partnerName)),
+                    /// [user bio]
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(25),
+                        child: Text(
+                            partnerModel.partnerData.prfoileFromPartner.bios),
+                      ),
+                    ),
 
-                  /// nothing just test
-                  // SliverToBoxAdapter(
-                  //   child: UserFeedWidget(),
-                  // ),
-                ],
-              ),
-            ),
-          );
-        });
+                    /// [user feed]
+                    SliverToBoxAdapter(
+                        child: Feed(partnerModel.partnerData.partnerName)),
+
+                    /// nothing just test
+                    // SliverToBoxAdapter(
+                    //   child: UserFeedWidget(),
+                    // ),
+                  ],
+                ),
+              );
+          }),
+    );
   }
 }
 

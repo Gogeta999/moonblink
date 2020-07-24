@@ -107,6 +107,11 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
               ),
             );
           }
+          if (state is PartnerGameHistoryNoData) {
+            return Center(
+              child: Text('This user has no history.'),
+            );
+          }
           if (state is PartnerGameHistorySuccess) {
             if (state.data.isEmpty) {
               return Center(

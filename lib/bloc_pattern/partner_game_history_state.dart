@@ -14,6 +14,11 @@ class PartnerGameHistoryFailure extends PartnerGameHistoryState {
   List<Object> get props => [];
 }
 
+class PartnerGameHistoryNoData extends PartnerGameHistoryState {
+  @override
+  List<Object> get props => [];
+}
+
 class PartnerGameHistorySuccess extends PartnerGameHistoryState {
   final List<String> data;
   final bool hasReachedMax;

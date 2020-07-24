@@ -10,7 +10,6 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -63,6 +62,9 @@ class _UserStatusPageState extends State<UserStatusPage>
             flexibleSpace: UserHeaderWidget(),
             pinned: false,
           ),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+          ),
           UserListWidget(),
         ],
       ),
@@ -97,7 +99,7 @@ class UserHeaderWidget extends StatelessWidget {
                               if (usertype == 1) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.partnerOwnProfile);
-                              } else if (model.user.token == null) {
+                              } else if (model?.user?.token == null) {
                                 Navigator.of(context)
                                     .pushNamed(RouteName.login);
                               }
@@ -134,7 +136,8 @@ class UserHeaderWidget extends StatelessWidget {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(children: <Widget>[
+                          Column(
+                              children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()
@@ -157,7 +160,152 @@ class UserListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var iconColor = Theme.of(context).accentColor;
     // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
-    return ListTileTheme(
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        mainAxisSpacing: 15.0,
+      ),
+      delegate: SliverChildListDelegate.fixed([
+        ///wallet
+        PageCard(pageTitle: S.of(context).userStatusWallet, iconData: FontAwesomeIcons.wallet, onTap: () => Navigator.of(context).pushNamed(RouteName.wallet),),
+        ///favorites
+        PageCard(pageTitle: S.of(context).userStatusFavorite, iconData: FontAwesomeIcons.solidHeart, onTap: () => Navigator.of(context).pushNamed(RouteName.network)),
+        ///switch dark mode
+        PageCard(pageTitle: S.of(context).userStatusDarkMode, iconData: Theme.of(context).brightness == Brightness.light
+            ? FontAwesomeIcons.sun
+            : FontAwesomeIcons.moon,
+        onTap: () => _switchDarkMode(context)),
+        ///theme
+        PageCard(pageTitle: S.of(context).userStatusTheme, iconData: FontAwesomeIcons.palette, onTap: () => _showPaletteDialog(context)),
+        ///settings
+        PageCard(pageTitle: S.of(context).userStatusSettings, iconData: FontAwesomeIcons.cog, onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+        ///check app update
+        PageCard(pageTitle: S.of(context).userStatusCheckAppUpdate, iconData: FontAwesomeIcons.android, onTap: null),
+      ]),
+    );
+  }
+
+  void _switchDarkMode(BuildContext context) {
+    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+    } else {
+      Provider.of<ThemeModel>(context, listen: false).switchTheme(
+          userDarkMode: Theme.of(context).brightness == Brightness.light);
+    }
+  }
+
+  void _showPaletteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SettingThemeWidget()
+        );
+      },
+    );
+  }
+}
+
+class PageCard extends StatelessWidget {
+  final String pageTitle;
+  final IconData iconData;
+  final Function onTap;
+
+  const PageCard({Key key, @required this.pageTitle, @required this.iconData, @required this.onTap}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return InkResponse(
+      onTap: onTap,
+      child: Card(
+        elevation: 0.0,
+        color: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0)),
+        margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Icon(
+              iconData,
+              color: Colors.white,
+            ),
+            Text(pageTitle, style: TextStyle(color: Colors.white.withAlpha(200)), softWrap: true)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class SettingThemeWidget extends StatelessWidget {
+  SettingThemeWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(S.of(context).userStatusTheme),
+      leading: Icon(
+        FontAwesomeIcons.palette,
+        color: Theme.of(context).accentColor,
+      ),
+      initiallyExpanded: true,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: <Widget>[
+              ...Colors.primaries.map((color) {
+                return Material(
+                  color: color,
+                  child: InkWell(
+                    onTap: () {
+                      var model =
+                          Provider.of<ThemeModel>(context, listen: false);
+                      // var brightness = Theme.of(context).brightness;
+                      model.switchTheme(color: color);
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                );
+              }).toList(),
+              Material(
+                child: InkWell(
+                  onTap: () {
+                    var model = Provider.of<ThemeModel>(context, listen: false);
+                    var brightness = Theme.of(context).brightness;
+                    model.switchRandomTheme(brightness: brightness);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Theme.of(context).accentColor)),
+                    width: 40,
+                    height: 40,
+                    child: Text(
+                      "?",
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).accentColor),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/*ListTileTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 30),
       child: SliverList(
         delegate: SliverChildListDelegate([
@@ -248,79 +396,4 @@ class UserListWidget extends StatelessWidget {
           )
         ]),
       ),
-    );
-  }
-
-  void switchDarkMode(BuildContext context) {
-    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
-    } else {
-      Provider.of<ThemeModel>(context, listen: false).switchTheme(
-          userDarkMode: Theme.of(context).brightness == Brightness.light);
-    }
-  }
-}
-
-class SettingThemeWidget extends StatelessWidget {
-  SettingThemeWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: Text(S.of(context).userStatusTheme),
-      leading: Icon(
-        FontAwesomeIcons.palette,
-        color: Theme.of(context).accentColor,
-      ),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: <Widget>[
-              ...Colors.primaries.map((color) {
-                return Material(
-                  color: color,
-                  child: InkWell(
-                    onTap: () {
-                      var model =
-                          Provider.of<ThemeModel>(context, listen: false);
-                      // var brightness = Theme.of(context).brightness;
-                      model.switchTheme(color: color);
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                    ),
-                  ),
-                );
-              }).toList(),
-              Material(
-                child: InkWell(
-                  onTap: () {
-                    var model = Provider.of<ThemeModel>(context, listen: false);
-                    var brightness = Theme.of(context).brightness;
-                    model.switchRandomTheme(brightness: brightness);
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Theme.of(context).accentColor)),
-                    width: 40,
-                    height: 40,
-                    child: Text(
-                      "?",
-                      style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).accentColor),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
+    );*/
