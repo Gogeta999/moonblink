@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/models/wallet.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:oktoast/oktoast.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -41,6 +44,8 @@ class _WalletPageState extends State<WalletPage> {
   bool isLoading = false;
 
   Wallet wallet;
+
+  bool hasError = false;
 
   @override
   void initState() {
@@ -107,10 +112,16 @@ class _WalletPageState extends State<WalletPage> {
 
   ///get user wallet
   Future<void> getUserWallet() async {
+    try{
     Wallet wallet = await MoonBlinkRepository.getUserWallet();
     setState(() {
       this.wallet = wallet;
     });
+    }catch(error){
+      setState(() {
+        hasError = !hasError;
+      });
+    }
   }
 
   ///get IAP items.
@@ -233,22 +244,44 @@ class _WalletPageState extends State<WalletPage> {
         ));
   }
 
+  Widget _buildWalletList() {
+    if(_items.isEmpty) {
+      return ViewStateErrorWidget(
+        error: ViewStateError(
+          ViewStateErrorType.defaultError
+        ),
+        onPressed: () => showToast('_items is Empty'),
+      );
+    }else if(wallet == null) {
+      return ViewStateErrorWidget(
+        error: ViewStateError(
+            ViewStateErrorType.defaultError
+        ),
+        onPressed: () => showToast('Wallet == null'),
+      );
+    }else if(hasError) {
+      return ViewStateErrorWidget(
+        error: ViewStateError(
+            ViewStateErrorType.defaultError
+        ),
+        onPressed: () => showToast('hasError'),
+      );
+    }
+    return ViewStateErrorWidget(
+      error: ViewStateError(
+          ViewStateErrorType.defaultError
+      ),
+      onPressed: () => showToast('Something went wrong'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Wallet'),
       ),
-      body: _items.isEmpty || wallet == null
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _items.length + 1,
-              itemBuilder: (context, index) {
-                return index == _items.length
-                    ? _buildCurrentCoinAmount()
-                    : _buildProductListTile(_items[index]);
-              },
-            ),
+      body: _buildWalletList(),
     );
   }
 }
