@@ -10,7 +10,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 
-String usertoken = StorageManager.sharedPreferences.getString(token);
+
 
 class ChatListPage extends StatefulWidget {
   @override

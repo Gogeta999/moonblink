@@ -26,7 +26,7 @@
     <!--android:name="io.flutter.app.FlutterApplication"-->
     <application
         android:name=".Application"
-        android:label="moonblink"
+        android:label="Moon Go"
         android:icon="@mipmap/moonblink">
         <!--FCM noti icon-->
         <meta-data

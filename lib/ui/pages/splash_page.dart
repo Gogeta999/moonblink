@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/services/chat_service.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -111,6 +113,7 @@ class AnimatedCountdown extends AnimatedWidget {
     );
   }
 }
+
 void nextPage(context) {
   Navigator.of(context).pushReplacementNamed(RouteName.main);
 }

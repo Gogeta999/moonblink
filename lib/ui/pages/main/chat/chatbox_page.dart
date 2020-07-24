@@ -12,7 +12,6 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
@@ -20,8 +19,9 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
-import 'package:moonblink/services/push_notification_manager.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
@@ -37,7 +37,7 @@ class ChatBoxPage extends StatefulWidget {
 }
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
-  String voiceChannelName = '';
+  // String voiceChannelName = '';
   PartnerUser partnerdata;
   int type = 1;
   Uint8List bytes;
@@ -47,11 +47,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   List<Contact> contacts = [];
   List<Chatlist> chatlist = [];
   List<Contact> users = [];
+  Chatlist user;
   String now = DateTime.now().toString();
   String filename;
   File _file;
+  int booking_accept = 1;
+  int booking_reject = 2;
 
   // ByteData _byteData;
+  final usertype = StorageManager.sharedPreferences.getInt(mUserType);
   final selfId = StorageManager.sharedPreferences.getInt(mUserId);
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
@@ -96,7 +100,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // }
 
   //build messages
-  Widget buildSingleMessage(Message message) {
+  Widget buildSingleMessage(int status, int bookingid, Message message) {
     return Container(
         alignment: message.senderID == widget.detailPageId
             ? Alignment.centerLeft
@@ -104,7 +108,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
-        child: builds(message));
+        child: builds(status, bookingid, message));
     // child: img ? buildimage(message) : buildmsg(message));
   }
 
@@ -155,7 +159,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   // );
   // }
   //build msg
-  builds(Message msg) {
+  builds(int status, int bookingid, Message msg) {
     switch (msg.type) {
       //build widget for text msgs
       case (0):
@@ -171,7 +175,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         return buildaudio(msg);
         break;
       case (4):
-        return print("calling");
+        return buildcallmsg(status, bookingid, msg);
         break;
       case (5):
         return buildlocalimg(msg);
@@ -179,11 +183,116 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       case (6):
         return buildlocalaudio(msg);
         break;
+      case (7):
+        return buildrequest(msg, bookingid);
     }
   }
 
+  //build request
+  buildrequest(msg, bookingid) {
+    return Container(
+      width: 160,
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: msg.senderID == widget.detailPageId
+            ? Colors.grey[300]
+            : Theme.of(context).accentColor,
+        borderRadius: BorderRadius.all(
+          Radius.circular(15.0),
+        ),
+      ),
+      child: Column(
+        children: <Widget>[
+          Text("Booking Request"),
+          partneronly(msg, bookingid)
+        ],
+      ),
+    );
+  }
+
+  //Partner Only
+  partneronly(msg, bookingid) {
+    if (msg.senderID == widget.detailPageId) {
+      return Flex(
+        mainAxisSize: MainAxisSize.min,
+        direction: Axis.horizontal,
+        children: <Widget>[
+          rejectbtn(bookingid),
+          acceptbtn(bookingid),
+        ],
+      );
+    } else
+      return Container();
+  }
+
+  //accept button
+  acceptbtn(bookingid) {
+    return ButtonTheme(
+        minWidth: 70,
+        child: FlatButton(
+          child: Text("Accept",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, booking_accept);
+          },
+        ));
+  }
+
+  //reject button
+  rejectbtn(bookingid) {
+    return ButtonTheme(
+        minWidth: 70,
+        child: FlatButton(
+          child: Text("Reject",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, booking_reject);
+          },
+        ));
+  }
+
+  //build video
   buildVideo(Message msg) {
     return VideoPlayerWidget(videoUrl: msg.attach);
+  }
+
+  //build call msg
+  buildcallmsg(int status, int id, Message msg) {
+    return Container(
+      width: 150,
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: msg.senderID == widget.detailPageId
+            ? Colors.grey[300]
+            : Theme.of(context).accentColor,
+        borderRadius: BorderRadius.all(
+          Radius.circular(15.0),
+        ),
+      ),
+      child: Column(
+        children: <Widget>[
+          Text("Someone is Calling u"),
+          buttoncheck(status, msg)
+        ],
+      ),
+    );
+  }
+
+  //button enable
+  buttoncheck(status, msg) {
+    if (status == 1) {
+      return MaterialButton(
+        child: Text("Enter call"),
+        onPressed: () {
+          joinChannel(msg.attach);
+        },
+      );
+    } else {
+      return Text("Booking is ended",
+          style: TextStyle(fontWeight: FontWeight.bold));
+    }
   }
 
   //build msg template
@@ -256,13 +365,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return PlayerWidget(url: msg.attach);
   }
 
-  buildlocal(Message msg) {
-    print("Building local file");
-    var file = new Uint8List.fromList(msg.attach.codeUnits);
-    print(file);
-    return Container(child: Text("File messages"));
-  }
-
   //Send message
   Widget buildmessage(id) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -321,48 +423,110 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  //Booking End button
+  Widget endbtn(bookingid) {
+    return ProviderWidget(
+        model: CallModel(),
+        builder: (context, model, child) {
+          return FlatButton(
+            child: Text("End"),
+            onPressed: () {
+              model.endbooking(selfId, bookingid, 3);
+            },
+          );
+        });
+  }
+
   //For call button
   Widget callbtn(anotherPersonId) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
-      return IconButton(
-        icon: Icon(
-          FontAwesomeIcons.phone,
-          size: 20,
-        ),
-        onPressed: () {
-          model.call(selfId, anotherPersonId, voiceChannelName);
-          // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
-          joinChannel();
-        },
-      );
-    });
+    String voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
+    return ProviderWidget(
+        model: CallModel(),
+        builder: (context, child, model) {
+          // var callmodel = Provider.of<CallModel>(context);
+          return IconButton(
+            icon: Icon(
+              FontAwesomeIcons.phone,
+              size: 20,
+            ),
+            onPressed: () {
+              // model.call(selfId, anotherPersonId, voiceChannelName);
+              child.call(voiceChannelName, anotherPersonId);
+              // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
+              joinChannel(voiceChannelName);
+            },
+          );
+        });
   }
-  //booking check
-  checking(id){
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model){
-        chatlist = model.conversationlist();
-        print(chatlist.length);
-        var status = chatlist.where((user) => user.userid == id );
-        // print(booking);
-        List chat = status.toList();
-        Chatlist user = chat[0];
-        return statuscheck(id, user.bookingStatus);
-      }
-      );
-  }
+
   //action widget
-  statuscheck (id, status){
-    switch (status){
-      case(0): return Text("hello");
-      break;
-      case(1): return callbtn(id);
-      break;
+  action1(id, status) {
+    switch (status) {
+      case (-1):
+        return Text("error");
+        break;
+      case (0):
+        return Text("pending");
+        break;
+      case (1):
+        return callbtn(id);
+        break;
+      case (2):
+        return Text("reject");
+        break;
+      case (3):
+        return Text("done");
+        break;
+      case (4):
+        return Text("expired");
+        break;
+      case (5):
+        return Text("unavailable");
+        break;
+      case (6):
+        return Text("cancel");
+        break;
+      default:
+        return Text("default");
     }
   }
+
+  action2(status, bookingid) {
+    if (usertype == 1) {
+      switch (status) {
+        case (-1):
+          return Text("error");
+          break;
+        case (0):
+          return Text("pending");
+          break;
+        case (1):
+          return endbtn(bookingid);
+          break;
+        case (2):
+          return Text("reject");
+          break;
+        case (3):
+          return Text("done");
+          break;
+        case (4):
+          return Text("expired");
+          break;
+        case (5):
+          return Text("unavailable");
+          break;
+        case (6):
+          return Text("cancel");
+          break;
+        default:
+          return Text("default");
+      }
+    } else
+      return Container();
+  }
+
   //Conversation List
-  Widget buildChatList(id) {
+  Widget buildChatList(status, bookingid, id) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       model.receiver(messages);
       return Container(
@@ -371,7 +535,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           reverse: true,
           itemCount: messages.length,
           itemBuilder: (BuildContext context, int index) {
-            return buildSingleMessage(messages[index]);
+            return buildSingleMessage(status, bookingid, messages[index]);
           },
         ),
       );
@@ -389,9 +553,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           msgModel.initData();
         },
         builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy || msgmodel.isBusy) {
+          if (partnermodel.isBusy) {
             return ViewStateBusyWidget();
-          } else if (partnermodel.isError || msgmodel.isError) {
+          } else if (partnermodel.isError) {
             return ViewStateErrorWidget(
                 error: partnermodel.viewStateError,
                 onPressed: () {
@@ -400,6 +564,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 });
           }
           messages.clear();
+          messages = [];
           print(msgmodel.list.length);
           for (var i = 0; i < msgmodel.list.length; i++) {
             Lastmsg msgs = msgmodel.list[i];
@@ -407,36 +572,47 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 msgs.attach, msgs.type));
           }
           print(messages);
-          return Scaffold(
-            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                AppBar(
-              title: Text(partnermodel.partnerData.partnerName),
-              actions: <Widget>[
-                checking(partnermodel.partnerData.partnerId)
-                // statuscheck(partnermodel.partnerData.partnerId)
-              ],
-            ),
-            body: ListView(
-              children: <Widget>[
-                buildChatList(partnermodel.partnerData.partnerId),
-                buildmessage(partnermodel.partnerData.partnerId),
-              ],
-            ),
-          );
+          return ScopedModelDescendant<ChatModel>(
+              builder: (context, child, model) {
+            chatlist = model.conversationlist();
+            if (chatlist.isNotEmpty) {
+              var status =
+                  chatlist.where((user) => user.userid == widget.detailPageId);
+              List chat = status.toList();
+              user = chat[0];
+            }
+            return Scaffold(
+              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+                  AppBar(
+                title: Text(partnermodel.partnerData.partnerName),
+                actions: <Widget>[
+                  action2(user.bookingStatus, user.bookingid),
+                  action1(widget.detailPageId, user.bookingStatus),
+                ],
+              ),
+              body: ListView(
+                children: <Widget>[
+                  buildChatList(user.bookingStatus, user.bookingid,
+                      partnermodel.partnerData.partnerId),
+                  buildmessage(partnermodel.partnerData.partnerId),
+                ],
+              ),
+            );
+          });
         });
   }
 
   ///[CallFunction]
   ///Here is for voicCall
-  Future<void> joinChannel() async {
+  Future<void> joinChannel(voiceChannelName) async {
     if (voiceChannelName.isNotEmpty) {
-      await _handleVoiceCall();
+      await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
       showToast('Developer error');
     }
   }
 
-  Future<void> _handleVoiceCall() async {
+  Future<void> _handleVoiceCall(voiceChannelName) async {
     await [Permission.microphone].request();
     if (await Permission.microphone.request().isGranted) {
       Navigator.push(

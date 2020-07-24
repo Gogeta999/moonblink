@@ -71,9 +71,8 @@ class _StoriesPageState extends State<StoriesPage> {
                             : _currentPageNotifier.value += 1;
                       },
                       child: Container(
-                        child: Text('a'),
-                        // child: StoryVideo.url(story.n,
-                        //     controller: storyController),
+                        child: StoryVideo.url(story.media,
+                            controller: storyController),
                       ),
                     );
                   }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/azlist.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/contact_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -71,9 +73,11 @@ class _ContactsPageState extends State<ContactsPage> {
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
               if (contactModel.isError && contactModel.list.isEmpty) {
-                return ViewStateErrorWidget(
-                    error: contactModel.viewStateError,
-                    onPressed: contactModel.initData);
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: StatusBarUtils.systemUiOverlayStyle(context),
+                    child: ViewStateErrorWidget(
+                        error: contactModel.viewStateError,
+                        onPressed: contactModel.initData));
               }
               print(contactModel.list.length);
               // print(model.list);
@@ -87,6 +91,12 @@ class _ContactsPageState extends State<ContactsPage> {
                   .compareTo(b.contactUser.contactUserName.toLowerCase()));
               filterList();
               // print(strList.length);
+              if (contactModel.isEmpty)
+                SliverToBoxAdapter(
+                    child: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: ViewStateEmptyWidget(onPressed: contactModel.initData),
+                ));
               return AlphabetListScrollView(
                 strList: strList,
                 highlightTextStyle: TextStyle(

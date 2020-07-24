@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/videoUserSession.dart';
+import 'dart:async';
 
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
   final String channelName;
-
   VoiceCallWidget({Key key, this.channelName}) : super(key: key);
 
   @override
@@ -17,7 +17,10 @@ class VoiceCallWidget extends StatefulWidget {
 }
 
 class AudioCallPageState extends State<VoiceCallWidget> {
-  //Check User Session for Moonblink
+  Timer _timer;
+  int _countdownTime = 30;
+  bool _closeAgora = true;
+
   static final _userSessions = List<VideoUserSession>();
   //muted or Not
   bool muted = false;
@@ -31,6 +34,12 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   @override
   void initState() {
     super.initState();
+    timerCountDown();
+    //animation false
+    // _countdownController =
+    //     AnimationController(vsync: this, duration: Duration(seconds: 30));
+    // _countdownController.forward();
+
     //initAgora
     initAgoraSdk();
   }
@@ -38,10 +47,40 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   //After this page Close
   @override
   void dispose() {
+    _timer.cancel();
+    // _countdownController.dispose();
     _userSessions.clear();
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
     super.dispose();
+  }
+
+  // Future<void>testswitch() async {
+  //   switch () {
+  //     case :
+
+  //       break;
+  //     default:
+  //   }
+  // }
+  //Handle TODO:
+  Future<void> timerCountDown() async {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          if (_countdownTime < 1 && _closeAgora == true) {
+            timer.cancel();
+            _onExit(context);
+          } else if (_closeAgora == false) {
+            timer.cancel();
+          } else {
+            _countdownTime = _countdownTime - 1;
+          }
+        },
+      ),
+    );
   }
 
   // Render View For Profile
@@ -74,15 +113,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     }
   }
 
-  Future<void> _initAgoraRtcEngine() async {
-    //init AgoraInstance
-    await AgoraRtcEngine.create(Agora_AppId);
-    await AgoraRtcEngine.enableAudio();
-    await AgoraRtcEngine.setAudioProfile(
-        AudioProfile.SpeechStandard, AudioScenario.ChatRoomGaming);
-    _createRendererView(0);
-  }
-
   Future<void> initAgoraSdk() async {
     if (Agora_AppId.isEmpty) {
       print('APP_ID missing, please provide your APP_ID in settings.dart');
@@ -94,6 +124,15 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     _addAgoraEventListener();
     await AgoraRtcEngine.enableWebSdkInteroperability(true);
     await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
+  }
+
+  Future<void> _initAgoraRtcEngine() async {
+    //init AgoraInstance
+    await AgoraRtcEngine.create(Agora_AppId);
+    await AgoraRtcEngine.enableAudio();
+    await AgoraRtcEngine.setAudioProfile(
+        AudioProfile.SpeechStandard, AudioScenario.ChatRoomGaming);
+    _createRendererView(0);
   }
 
   void _addAgoraEventListener() {
@@ -119,9 +158,10 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
     //Listen User exit or not
     AgoraRtcEngine.onUserOffline = (int uid, int reason) {
-      print("用户离开的id为:$uid");
+      print("Leaving UserId:$uid");
       setState(() {
         _removeRenderView(uid);
+        _onExit(context);
       });
     };
 
@@ -168,7 +208,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
       case 1:
         return Positioned(
           //Show User Name in Container
-          top: 180,
+          top: 80,
           left: 30,
           right: 30,
           child: Container(
@@ -185,21 +225,39 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     height: 140,
                     color: Colors.green,
                     child: Text(
-                      S.of(context).voiceCallWaitAnotherToJoin,
+                      // S.of(context).voiceCallWaitAnotherToJoin,
+                      '$_countdownTime',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
+                Text(
+                  '$_countdownTime',
+                  style: TextStyle(color: Colors.white),
+                )
+                //TODO: countDownControll
+                // if (views.length == 1)
+                // VoiceCallCoundown(
+                //   context: context,
+                //   timeCoundown: StepTween(begin: 30, end: 0)
+                //       .animate(_countdownController),
+                //   pop: () {
+                //     Navigator.pop(context);
+                //   },
+                // ),
               ],
             ),
           ),
         );
       //Two user
       case 2:
+        setState(() {
+          _closeAgora = !_closeAgora;
+        });
         return Positioned(
           //Show User Name in Container
-          top: 180,
+          top: 80,
           left: 30,
           right: 30,
           child: Container(
@@ -222,6 +280,10 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     ),
                   ),
                 ),
+                Text(
+                  '$_countdownTime',
+                  style: TextStyle(color: Colors.white),
+                )
               ],
             ),
           ),
@@ -238,7 +300,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
       alignment: Alignment.bottomCenter,
       padding: EdgeInsets.symmetric(vertical: 48),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           //Mute Button
           RawMaterialButton(
@@ -276,7 +338,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
           RawMaterialButton(
             onPressed: () => _isSpeakPhone(),
             child: Icon(
-              speakPhone ? Icons.leak_remove : Icons.leak_add,
+              speakPhone ? Icons.volume_up : Icons.volume_off,
               color: Colors.blueAccent,
               size: 20.0,
             ),
@@ -293,15 +355,44 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.channelName),
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.channelName),
+      // ),
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
-          children: <Widget>[_viewAudio(), _bottomToolBar()],
+          children: <Widget>[
+            _viewAudio(),
+            _bottomToolBar(),
+          ],
         ),
       ),
     );
   }
 }
+
+// class VoiceCallCoundown extends AnimatedWidget {
+//   // _countdownController =
+//   //     AnimationController(vsync: this, duration: Duration(seconds: 30));
+//   // _countdownController.forward();
+//   final Animation<int> timeCoundown;
+//   final int partnerId;
+//   final Function pop;
+//   VoiceCallCoundown({key, this.timeCoundown, this.partnerId, this.pop, context})
+//       : super(key: key, listenable: timeCoundown) {
+//     this.timeCoundown.addStatusListener((status) {
+//       if (status == AnimationStatus.completed) {
+//         AgoraRtcEngine.leaveChannel();
+//         pop();
+//       } else if (status == AnimationStatus.dismissed) {}
+//     });
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     var value = timeCoundown.value + 1;
+//     return Text(
+//       (value == 0 ? '' : '$value '),
+//       style: TextStyle(color: Colors.white),
+//     );
+//   }
+// }

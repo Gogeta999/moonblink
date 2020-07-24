@@ -25,7 +25,21 @@ class MoonBlinkRepository {
         .map<Post>((item) => Post.fromMap(item))
         .toList();
   }
-
+  //Call other user
+  static Future call(String channel, int id) async {
+    var response = await DioUtils().post(Api.Calling, queryParameters: {
+      'channel': channel,
+      'user_id': id,
+    });
+    print(response.data);
+    return response.data;
+  }
+  //End Booking
+  static Future endbooking(int id, int bookingid, int status) async{
+    var response = await DioUtils().post(Api.Endbooking+"$id/booking/$bookingid?status=$status");
+    print(response.data);
+    return response.data;
+  }
   // get Messages
   static Future message(int id) async {
     var usertoken = StorageManager.sharedPreferences.getString(token);
