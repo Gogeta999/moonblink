@@ -8,7 +8,7 @@ import 'dart:async';
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
   final String channelName;
-  VoiceCallWidget({Key key, this.channelName}) : super(key: key);
+  VoiceCallWidget({Key key, @required this.channelName}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

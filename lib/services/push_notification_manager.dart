@@ -39,6 +39,7 @@ class PushNotificationsManager {
 
   final BookingManager _bookingManager = BookingManager();
   final _Message _message = _Message();
+  final _VoiceCall _voiceCall = _VoiceCall();
 
   Future<void> removeFcmToken() async {
     //actually it's just storing new fcm token
@@ -69,7 +70,12 @@ class PushNotificationsManager {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
         _message.navigateToChatBox();
-      } else {
+      }else if (payload == FcmTypeVoiceCall) {
+        _flutterLocalNotificationsPlugin.cancelAll();
+        print('payload: $payload');
+        _voiceCall.navigateToCallScreen();
+      }
+      else {
         _flutterLocalNotificationsPlugin.cancelAll();
       }
     }
@@ -111,7 +117,7 @@ class PushNotificationsManager {
     } else if (fcmType == FcmTypeMessage) {
       _showMessageNotification(message);
     } else if (fcmType == FcmTypeVoiceCall) {
-      //showVoiceCallNotification(channelName, title, body, message)
+      _showVoiceCallNotification(message);
     }
     showToast('onMessage');
     return;
@@ -178,7 +184,7 @@ class PushNotificationsManager {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
       'Moon Blink',
-      'Flutter Blink',
+      'Moon Blink',
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
@@ -244,13 +250,14 @@ class PushNotificationsManager {
         payload: message['data']['fcm_type'] ?? message['fcm_type']);
   }
 
-  Future<void> showVoiceCallNotification(
-      String channelName, String title, String body, message) async {
+  Future<void> _showVoiceCallNotification(message) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink', //same package name for both platform
-      channelName,
+      'Moon Blink',
       'Moon Blink',
       largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+      playSound: true,
+      enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
     );
@@ -260,8 +267,15 @@ class PushNotificationsManager {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
+    final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+
+    _voiceCall.prepare(callChannel: callChannel);
+
     await _flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpecifics,
+        0,
+        message['notification']['title'].toString(),
+        message['notification']['body'].toString(),
+        platformChannelSpecifics,
         payload: message['data']['fcm_type'] ?? message['fcm_type']);
   }
 
@@ -285,14 +299,26 @@ class PushNotificationsManager {
 }
 
 class _Message {
-  int partnerId;
+  int _partnerId;
 
   void prepare({int partnerId}) {
-    this.partnerId = partnerId;
+    this._partnerId = partnerId;
   }
 
   void navigateToChatBox() {
     locator<NavigationService>()
-        .navigateTo(RouteName.chatBox, arguments: partnerId);
+        .navigateTo(RouteName.chatBox, arguments: _partnerId);
+  }
+}
+//call_channel
+class _VoiceCall {
+  String _callChannel;
+
+  void prepare({String callChannel}) {
+    this._callChannel = callChannel;
+  }
+
+  void navigateToCallScreen() {
+    locator<NavigationService>().navigateTo(RouteName.callScreen, arguments: _callChannel);
   }
 }
