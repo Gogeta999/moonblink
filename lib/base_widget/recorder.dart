@@ -135,11 +135,11 @@ class _VoicemsgState extends State<Voicemsg> {
       child: Icon(Icons.voicemail, color: Theme.of(context).accentColor,),
       onLongPressStart:(LongPressStartDetails details){
         _start();
-        showToastWidget(Text("Start Recording"));
+        showToast("Start Recording Your message");
       },
       onLongPressUp: () {
         _stop(filename, _file, bytes, model);
-        showToastWidget(Text("Send Voice Message"));
+        showToastWidget(Icon(Icons.error));
       },
       )
     );

@@ -10,6 +10,7 @@ class PartnerUser {
   String verifiedAt;
   String createdAt;
   String updatedAt;
+  int status;
   int type;
   String password; // own Profile
   int followerCount;
@@ -29,6 +30,7 @@ class PartnerUser {
       this.createdAt,
       this.updatedAt,
       this.type,
+      this.status,
       this.password,
       this.followerCount,
       this.followingCount,
@@ -43,6 +45,7 @@ class PartnerUser {
         partnerEmail: map['email'],
         password: map['pass_word'],
         type: map['type'],
+        status: map['status'],
         followerCount: map['follower_count'],
         followingCount: map['following_count'],
         isFollow: map['is_follow'],
@@ -64,6 +67,7 @@ class PartnerUser {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['type'] = type;
+    data['status'] = status;
     data['follower_count'] = followerCount;
     data['is_follow'] = isFollow;
     // data['profile'] = profileFromPartner;
