@@ -47,7 +47,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   List<Contact> contacts = [];
   List<Chatlist> chatlist = [];
   List<Contact> users = [];
-  Chatlist user;
+  Chatlist user = Chatlist();
   String now = DateTime.now().toString();
   String filename;
   File _file;
@@ -172,7 +172,23 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     } else
       return Container();
   }
-
+  //Rating Box
+  void rating() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: Text("something"),
+            actions: [
+              FlatButton(
+                  child: Text("Go Back"),
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  })
+            ],
+          );
+        });
+  }
   //accept button
   acceptbtn(bookingid) {
     return ButtonTheme(
@@ -517,9 +533,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           builder:(context, child, model){
           chatlist = model.conversationlist();
           if (chatlist.isNotEmpty) {
+            print("is working chatlist");
             var status = chatlist.where((user) => user.userid == widget.detailPageId );
+            print(status.toList());
             List chat = status.toList();
             user = chat[0];
+          }
+          else{
+            print("Chatlist is empty");
+            user.bookingStatus = 0;
+          }
+          if(user.bookingStatus == 3 ){
+            Future.delayed(Duration.zero, () => rating());
           }
           return Scaffold(
             appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
