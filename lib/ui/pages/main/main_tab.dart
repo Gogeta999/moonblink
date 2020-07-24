@@ -8,6 +8,8 @@ import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
+import 'package:moonblink/services/chat_service.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 List<Widget> pages = <Widget>[
   HomePage(),
@@ -38,6 +40,10 @@ class _MainTabPageState extends State<MainTabPage>
   @override
   void initState() {
     //PushNotificationsManager().init();
+    // ScopedModel.of<ChatModel>(context, rebuildOnChange: false).disconnect();
+    if (usertoken != "token") {
+      ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+    }
     setState(() {
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;

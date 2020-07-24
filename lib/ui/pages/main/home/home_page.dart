@@ -12,7 +12,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_skeleton.dart';
-import 'package:moonblink/ui/pages/main/home/home_provider_widget/skeleton.dart';
+import 'package:moonblink/base_widget/skeleton.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';

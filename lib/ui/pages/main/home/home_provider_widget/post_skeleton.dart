@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'skeleton.dart';
+import '../../../../../base_widget/skeleton.dart';
 
 class PostSkeletonItem extends StatelessWidget {
   final int index;
