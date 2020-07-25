@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -25,6 +24,7 @@ class MoonBlinkRepository {
         .map<Post>((item) => Post.fromMap(item))
         .toList();
   }
+
   //Call other user
   static Future call(String channel, int id) async {
     var response = await DioUtils().post(Api.Calling, queryParameters: {
@@ -34,12 +34,15 @@ class MoonBlinkRepository {
     print(response.data);
     return response.data;
   }
+
   //End Booking
-  static Future endbooking(int id, int bookingid, int status) async{
-    var response = await DioUtils().post(Api.Endbooking+"$id/booking/$bookingid?status=$status");
+  static Future endbooking(int id, int bookingid, int status) async {
+    var response = await DioUtils()
+        .post(Api.Endbooking + "$id/booking/$bookingid?status=$status");
     print(response.data);
     return response.data;
   }
+
   // get Messages
   static Future message(int id) async {
     var usertoken = StorageManager.sharedPreferences.getString(token);
@@ -49,6 +52,17 @@ class MoonBlinkRepository {
     return response.data['data']
         .map<Lastmsg>((item) => Lastmsg.fromMap(item))
         .toList();
+  }
+
+  //Rate game
+  static Future rategame(id, bookingid, stars, comment) async {
+    var response = await DioUtils().post(Api.Rategame + "$id/booking/rating",
+        queryParameters: {
+          "booking_id": bookingid,
+          "star": stars,
+          "comment": comment
+        });
+    return response.data;
   }
 
   // Homepage's story data

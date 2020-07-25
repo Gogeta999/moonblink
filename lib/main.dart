@@ -19,7 +19,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'bloc_pattern/simple_bloc_observer.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
-import 'services/push_notification_manager.dart';
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
 
@@ -49,13 +48,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    init();
     super.initState();
   }
 
-  init() async {
-    await PushNotificationsManager().init();
-  }
+
 
   @override
   Widget build(BuildContext context) {

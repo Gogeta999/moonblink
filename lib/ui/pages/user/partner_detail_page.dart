@@ -34,33 +34,16 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     // _scrollController.dispose();
     super.dispose();
   }
-
-  userstatus(status) {
-    switch (status) {
-      case (0):
-        return Center(
-            child: Text("Online",
-                style: TextStyle(
-                    color: Colors.green, fontWeight: FontWeight.bold)));
-        break;
-      case (1):
-        return Center(
-            child: Text("Busy",
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
-        break;
-      case (2):
-        return Center(
-            child: Text("Connection Error",
-                style: TextStyle(
-                    color: Colors.orange, fontWeight: FontWeight.bold)));
-        break;
-      case (3):
-        return Center(
-            child: Text("In Game",
-                style: TextStyle(
-                    color: Colors.blue, fontWeight: FontWeight.bold)));
-        break;
+  userstatus (status) {
+    switch(status){
+      case(0): return Center(child:Text("Available", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)));
+      break;
+      case(1): return Center(child: Text("Busy",style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+      break;
+      case(2): return Center(child: Text("Connection Error",style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)));
+      break;
+      case(3): return Center(child: Text("In Game",style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)));
+      break;
     }
   }
 
@@ -313,9 +296,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
 
-                  /// [user feed]
-                  SliverToBoxAdapter(
-                      child: Feed(partnerModel.partnerData.partnerName)),
+                    /// [user feed]
+                    SliverToBoxAdapter(
+                        child: Feed(partnerModel.partnerData.partnerName, partnerModel.partnerData.partnerId)),
 
                   /// nothing just test
                   // SliverToBoxAdapter(

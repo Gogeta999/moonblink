@@ -4,6 +4,8 @@ import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/models/videoUserSession.dart';
 import 'dart:async';
 
+import 'package:moonblink/services/push_notification_manager.dart';
+
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
   final String channelName;
@@ -32,6 +34,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
   @override
   void initState() {
+    PushNotificationsManager().showVoiceCallNotification(widget.channelName);
     super.initState();
     timerCountDown();
     //animation false
@@ -51,6 +54,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     _userSessions.clear();
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
+    PushNotificationsManager().cancelVoiceCallNotification();
     super.dispose();
   }
 

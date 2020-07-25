@@ -11,6 +11,7 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
@@ -22,13 +23,16 @@ import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -38,7 +42,8 @@ class ChatBoxPage extends StatefulWidget {
 }
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
-  // String voiceChannelName = '';
+  //for Rating
+  TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
   Uint8List bytes;
@@ -211,20 +216,73 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Rating Box
-  void rating() {
+  void rating(bookingid) {
+    var rate = 5.0;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return new AlertDialog(
-            title: Text("something"),
-            actions: [
-              FlatButton(
-                  child: Text("Go Back"),
-                  onPressed: () {
-                    Navigator.pop(context, 'Cancel');
-                  })
-            ],
-          );
+          return ProviderWidget<RateModel>(
+              model: RateModel(),
+              builder: (context, model, child) {
+                return new AlertDialog(
+                  title: Text("Please give rating for this game"),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  content: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SmoothStarRating(
+                        starCount: 5,
+                        rating: rate,
+                        isReadOnly: false,
+                        size: 30,
+                        filledIconData: Icons.star,
+                        halfFilledIconData: Icons.star_half,
+                        defaultIconData: Icons.star_border,
+                        allowHalfRating: true,
+                        spacing: 2.0,
+                        onRated: (value) {
+                          print("rating value -> $value");
+                          setState(() {
+                            rate = value;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.5, color: Colors.grey),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                          child: TextField(
+                            controller: comment,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              labelText: "Please give some comments",
+                            ),
+                          ))
+                    ],
+                  ),
+                  actions: [
+                    FlatButton(
+                        child: Text("Summit"),
+                        onPressed: () {
+                          model
+                              .rate(widget.detailPageId, bookingid, rate,
+                                  comment.text)
+                              .then((value) => value
+                                  ? Navigator.pop(context)
+                                  : showToast("Rating Failed"));
+                        })
+                  ],
+                );
+              });
         });
   }
 
@@ -318,6 +376,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build temporary img file
   buildlocalimg(Message msg) {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
+    print(file);
     return Container(
       height: 100,
       width: 100,
@@ -327,7 +386,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ImageView(msg.attach),
+                builder: (context) => LocalImageView(file),
               ));
         },
       ),
@@ -460,14 +519,31 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         });
   }
 
+  bookingcancel(bookingid) {
+    if (usertype == 0) {
+      return ProviderWidget(
+          model: CallModel(),
+          builder: (context, model, child) {
+            return FlatButton(
+              child: Text("End"),
+              onPressed: () {
+                model.endbooking(selfId, bookingid, 6);
+              },
+            );
+          });
+    } else {
+      return Center(child: Text("Cancel"));
+    }
+  }
+
   //action widget
-  action1(id, status) {
+  action1(id, status, bookingid) {
     switch (status) {
       case (-1):
-        return Text("error");
+        return Text("normal");
         break;
       case (0):
-        return Text("pending");
+        return bookingcancel(bookingid);
         break;
       case (1):
         return callbtn(id);
@@ -496,7 +572,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (usertype == 1) {
       switch (status) {
         case (-1):
-          return Text("error");
+          return Text("normal");
           break;
         case (0):
           return Text("pending");
@@ -543,6 +619,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool got = false;
     return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
         autoDispose: true,
         model1: PartnerDetailModel(partnerdata, widget.detailPageId),
@@ -562,10 +639,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   msgmodel.initData();
                 });
           }
-          for (var i = 0; i < msgmodel.list.length; i++) {
-            Lastmsg msgs = msgmodel.list[i];
-            messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
-                msgs.attach, msgs.type));
+          if (got == false) {
+            for (var i = 0; i < msgmodel.list.length; i++) {
+              Lastmsg msgs = msgmodel.list[i];
+              messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                  msgs.attach, msgs.type));
+            }
+            got = true;
           }
           // print(messages);
           return ScopedModelDescendant<ChatModel>(
@@ -577,21 +657,33 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   chatlist.where((user) => user.userid == widget.detailPageId);
               print(status.toList());
               List chat = status.toList();
-              user = chat[0];
+              if (chat.isNotEmpty) {
+                user = chat[0];
+              } else {
+                user.bookingStatus = -1;
+              }
             } else {
               print("Chatlist is empty");
-              user.bookingStatus = 0;
+              user.bookingStatus = -1;
             }
-            if (user.bookingStatus == 3) {
-              Future.delayed(Duration.zero, () => rating());
+            if (user.bookingStatus == 3 && msgmodel.isBusy) {
+              Future.delayed(Duration.zero, () => rating(user.bookingid));
             }
             return Scaffold(
+              // resizeToAvoidBottomInset: false,
               appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
                   AppBar(
-                title: Text(partnermodel.partnerData.partnerName),
+                title: GestureDetector(
+                    child: Text(partnermodel.partnerData.partnerName),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PartnerDetailPage(widget.detailPageId)))),
                 actions: <Widget>[
                   action2(user.bookingStatus, user.bookingid),
-                  action1(widget.detailPageId, user.bookingStatus),
+                  action1(
+                      widget.detailPageId, user.bookingStatus, user.bookingid),
                 ],
               ),
               body: ListView(
