@@ -35,7 +35,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   }
   userstatus (status) {
     switch(status){
-      case(0): return Center(child:Text("Online", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)));
+      case(0): return Center(child:Text("Available", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)));
       break;
       case(1): return Center(child: Text("Busy",style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
       break;

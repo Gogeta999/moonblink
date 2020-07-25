@@ -97,7 +97,11 @@ class Router {
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:
-        return CupertinoPageRoute(builder: (_) => VoiceCallWidget(channelName: settings.arguments != null ? settings.arguments : 'Unknown Channel'));
+        return CupertinoPageRoute(
+            builder: (_) => VoiceCallWidget(
+                channelName: settings.arguments != null
+                    ? settings.arguments
+                    : 'Unknown Channel'));
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

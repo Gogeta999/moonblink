@@ -11,10 +11,15 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/provider/view_state.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:provider/provider.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
@@ -30,6 +35,7 @@ class UpdatePartnerProfilePage extends StatefulWidget {
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _biosController = TextEditingController();
   final _picker = ImagePicker();
+  PartnerUser partnerData;
   @override
   void dispose() {
     _biosController.dispose();
@@ -56,115 +62,132 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).updatePartnerProfile),
-      ),
-      body: CustomScrollView(
-        physics: ClampingScrollPhysics(),
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: ProviderWidget<LoginModel>(
-              model: LoginModel(Provider.of(context)),
-              builder: (context, model, child) => Form(
-                  onWillPop: () async {
-                    return !model.isBusy;
-                  },
-
-                  /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
-                  child: Stack(
-                    children: <Widget>[
-                      GestureDetector(
-                        /// [You need to put before OnTap]
-                        onTap: () {
-                          _pickCoverFromGallery();
+    return ProviderWidget<PartnerOwnProfileModel>(
+        model: PartnerOwnProfileModel(partnerData),
+        onModelReady: (partnerModel) {
+          partnerModel.initData();
+        },
+        builder: (context, partnermodel, child) {
+          if (partnermodel.isBusy) {
+            return ViewStateBusyWidget();
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(S.of(context).updatePartnerProfile),
+            ),
+            body: CustomScrollView(
+              physics: ClampingScrollPhysics(),
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: ProviderWidget<LoginModel>(
+                    model: LoginModel(Provider.of(context)),
+                    builder: (context, model, child) => Form(
+                        onWillPop: () async {
+                          return !model.isBusy;
                         },
-                        child: PartnerCoverWidget(_cover),
-                      ),
 
-                      /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0, right: 20.0, top: 140.0),
-                        child: Container(
-                          child: Align(
-                              alignment: Alignment.center,
-                              child: GestureDetector(
+                        /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
+                        child: Stack(
+                          children: <Widget>[
+                            GestureDetector(
+
                                 /// [You need to put before OnTap]
                                 onTap: () {
-                                  _pickprofileFromGallery();
+                                  _pickCoverFromGallery();
                                 },
-                                child: CircleAvatar(
-                                  radius: 75,
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  child: ClipOval(
-                                    child: new SizedBox(
-                                      width: 150.0,
-                                      height: 150.0,
-                                      child: PartnerProfileWidget(_profile),
-                                    ),
-                                  ),
-                                ),
-                              )),
-                        ),
-                      ),
+                                child: AspectRatio(
+                                  aspectRatio: 100 / 60,
+                                  child:
+                                      PartnerCoverWidget(_cover, partnermodel),
+                                )),
 
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 270,
+                            /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, top: 140.0),
+                              child: Container(
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: GestureDetector(
+                                      /// [You need to put before OnTap]
+                                      onTap: () {
+                                        _pickprofileFromGallery();
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 75,
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                        child: ClipOval(
+                                          child: new SizedBox(
+                                            width: 150.0,
+                                            height: 150.0,
+                                            child: PartnerProfileWidget(
+                                                _profile, partnermodel),
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                              ),
                             ),
-                            LoginFormContainer(
+
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 20),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                // mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  //bios
-                                  LoginTextField(
-                                    validator: (value) => value.isEmpty
-                                        ? 'Please enter Bios'
-                                        : null,
-                                    label: "Please enter Bios",
-                                    icon: FontAwesomeIcons.book,
-                                    controller: _biosController,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.text,
+                                  SizedBox(
+                                    height: 270,
                                   ),
-                                  // _space,
-                                  UpdateProfileButton(
-                                    cover: _cover,
-                                    profile: _profile,
-                                    bios: _biosController.text,
+                                  LoginFormContainer(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      // mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        //bios
+                                        LoginTextField(
+                                          validator: (value) => value.isEmpty
+                                              ? 'Please enter Bios'
+                                              : null,
+                                          label: "Please enter Bios",
+                                          icon: FontAwesomeIcons.book,
+                                          controller: _biosController,
+                                          textInputAction: TextInputAction.next,
+                                          keyboardType: TextInputType.text,
+                                        ),
+                                        // _space,
+                                        UpdateProfileButton(
+                                          cover: _cover,
+                                          profile: _profile,
+                                          bios: _biosController.text,
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
                             )
                           ],
-                        ),
-                      )
-                    ],
-                  )),
+                        )),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerCoverWidget extends StatelessWidget {
-  PartnerCoverWidget(this.cover);
+  PartnerCoverWidget(this.cover, this.partnermodel);
   final cover;
+  final partnermodel;
   @override
   Widget build(BuildContext context) {
     if (this.cover == null) {
-      return Image.asset(
-        ImageHelper.wrapAssetsImage('images.jpg'),
+      return Image.network(
+        partnermodel.partnerData.prfoileFromPartner.coverImage,
         fit: BoxFit.cover,
       );
     } else {
@@ -179,19 +202,20 @@ class PartnerCoverWidget extends StatelessWidget {
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerProfileWidget extends StatelessWidget {
-  PartnerProfileWidget(this.profile);
+  PartnerProfileWidget(this.profile, this.partnermodel);
   final profile;
+  final partnermodel;
   @override
   Widget build(BuildContext context) {
     if (this.profile == null) {
-      return Image.asset(
-        ImageHelper.wrapAssetsImage('images.jpg'),
-        fit: BoxFit.cover,
+      return Image.network(
+        partnermodel.partnerData.prfoileFromPartner.profileImage,
+        fit: BoxFit.fill,
       );
     } else {
       return Image.file(
         this.profile,
-        fit: BoxFit.cover,
+        fit: BoxFit.fill,
       );
     }
   }

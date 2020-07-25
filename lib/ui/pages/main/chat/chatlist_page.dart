@@ -24,12 +24,16 @@ class _ChatListPageState extends State<ChatListPage> {
   @override
   void initState() {
     super.initState();
-    chatlist.clear();
+    // chatlist.clear();
     if (usertoken != null) {
       ScopedModel.of<ChatModel>(context).init();
     }
   }
-
+  @override
+  void dispose(){
+    super.dispose();
+    chatlist.clear();
+  }
   //Chat Tile
   buildtile(Chatlist chat) {
     return Column(children: <Widget>[
