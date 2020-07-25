@@ -313,9 +313,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
 
-                  /// [user feed]
-                  SliverToBoxAdapter(
-                      child: Feed(partnerModel.partnerData.partnerName)),
+                    /// [user feed]
+                    SliverToBoxAdapter(
+                        child: Feed(partnerModel.partnerData.partnerName, partnerModel.partnerData.partnerId)),
 
                   /// nothing just test
                   // SliverToBoxAdapter(

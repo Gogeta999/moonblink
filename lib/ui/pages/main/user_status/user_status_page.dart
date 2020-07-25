@@ -72,6 +72,9 @@ class _UserStatusPageState extends State<UserStatusPage>
             padding: EdgeInsets.symmetric(vertical: 10.0),
           ),
           UserListWidget(),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+          )
         ],
       ),
     );
