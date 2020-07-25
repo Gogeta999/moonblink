@@ -4,8 +4,9 @@ import 'package:moonblink/models/story.dart';
 import 'package:story_view/story_view.dart';
 
 class StoriesPage extends StatefulWidget {
-  StoriesPage(this.stories);
+  StoriesPage(this.stories, this.partnerProfile);
   final List stories;
+  final partnerProfile;
   @override
   _StoriesPageState createState() => _StoriesPageState();
 }
@@ -34,6 +35,12 @@ class _StoriesPageState extends State<StoriesPage> {
 
     return Stack(
       children: <Widget>[
+        Align(
+          alignment: Alignment.topLeft,
+          child: CircleAvatar(
+            radius: 20,
+          ),
+        ),
         Align(
           alignment: Alignment.topCenter,
           child: Container(
