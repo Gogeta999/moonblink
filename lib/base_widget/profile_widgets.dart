@@ -57,7 +57,8 @@ class PartnerRatingWidget extends StatelessWidget {
 
 class PartnerGameHistoryWidget extends StatefulWidget {
   final partnerName;
-  PartnerGameHistoryWidget(this.partnerName);
+  final partnerId;
+  PartnerGameHistoryWidget(this.partnerName, this.partnerId);
 
   @override
   _PartnerGameHistoryWidgetState createState() =>
@@ -65,7 +66,7 @@ class PartnerGameHistoryWidget extends StatefulWidget {
 }
 
 class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
-  PartnerDetailModel partnerDetailModel;
+  //PartnerDetailModel partnerDetailModel;
 
   //RefreshController _refreshController = RefreshController();
   //Completer<void> _refreshCompleter;
@@ -83,10 +84,10 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    partnerDetailModel = Provider.of<PartnerDetailModel>(context);
+    //partnerDetailModel = Provider.of<PartnerDetailModel>(context);
     return BlocProvider<PartnerGameHistoryBloc>(
       create: (context) =>
-          PartnerGameHistoryBloc(partnerId: partnerDetailModel.partnerId)
+          PartnerGameHistoryBloc(/*partnerId: partnerDetailModel.partnerId ?? */partnerId: widget.partnerId)
             ..add(PartnerGameHistoryFetched()),
       child: BlocBuilder<PartnerGameHistoryBloc, PartnerGameHistoryState>(
         builder: (context, state) {
@@ -97,7 +98,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
           }
           if (state is PartnerGameHistoryFailure) {
             return Center(
-              child: Text('Error Connecting to Server.'),
+              child: Text('Error: ${state.error}.'),
             );
           }
           if (state is PartnerGameHistoryNoData) {
@@ -108,7 +109,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
           if (state is PartnerGameHistorySuccess) {
             if (state.data.isEmpty) {
               return Center(
-                child: Text('no data'),
+                child: Text('This user has no history.'),
               );
             }
             return HistoryListView(state: state);

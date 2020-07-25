@@ -48,7 +48,9 @@ class _UserStatusPageState extends State<UserStatusPage>
                         tooltip: S.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
-                          ScopedModel.of<ChatModel>(context, rebuildOnChange: false).disconnect();
+                          ScopedModel.of<ChatModel>(context,
+                                  rebuildOnChange: false)
+                              .disconnect();
                           model.logout().then((value) => value
                               ? Navigator.of(context).pushNamedAndRemoveUntil(
                                   RouteName.main, (route) => false)
@@ -68,6 +70,9 @@ class _UserStatusPageState extends State<UserStatusPage>
             padding: EdgeInsets.symmetric(vertical: 10.0),
           ),
           UserListWidget(),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+          )
         ],
       ),
     );

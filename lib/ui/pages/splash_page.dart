@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    init();
     _logoController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1500));
 
@@ -37,6 +39,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
     super.initState();
+  }
+
+  init() async {
+    await PushNotificationsManager().init();
   }
 
   @override

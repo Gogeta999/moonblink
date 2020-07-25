@@ -10,6 +10,10 @@ class PartnerGameHistoryInitial extends PartnerGameHistoryState {
 }
 
 class PartnerGameHistoryFailure extends PartnerGameHistoryState {
+  final error;
+
+  const PartnerGameHistoryFailure({this.error});
+
   @override
   List<Object> get props => [];
 }

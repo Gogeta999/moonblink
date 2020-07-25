@@ -19,7 +19,7 @@ class PushNotificationsManager {
 
   factory PushNotificationsManager() => _instance;
 
-  static final PushNotificationsManager _instance =
+  static PushNotificationsManager _instance =
       PushNotificationsManager._();
 
   bool _initialized = false;
@@ -29,11 +29,33 @@ class PushNotificationsManager {
       print('FCM initializing');
       await _configLocalNotification();
       await _registerNotification();
+      _firebaseMessaging.onTokenRefresh.listen((event) {print('onTokenRefresh: $event');});
       _initialized = true;
     }
   }
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  Future<void> reInit() async {
+    if (!_initialized) {
+      print('FCM reInit');
+      await _registerNotification();
+      _initialized = true;
+    }
+  }
+
+  void dispose() {
+    if(_initialized) {
+      print('FCM disposing');
+      _firebaseMessaging.configure(
+        onBackgroundMessage: myBackgroundMessageHandler,
+        onMessage: (Map<String, dynamic> message) {print(message); return;},
+        onLaunch: (Map<String, dynamic> message) {print(message); return;},
+        onResume: (Map<String, dynamic> message) {print(message); return;},
+      );
+      _initialized = false;
+    }
+  }
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()..autoInitEnabled();
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -41,19 +63,23 @@ class PushNotificationsManager {
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
 
-  Future<void> removeFcmToken() async {
+  /*Future<void> removeFcmToken() async {
     //actually it's just storing new fcm token
     await _firebaseMessaging.deleteInstanceID();
     saveFcmToken();
-  }
+  }*/
 
-  Future<void> saveFcmToken() async {
+  /*Future<void> saveFcmToken() async {
     _firebaseMessaging
         .getToken()
         .then((token) async =>
             await StorageManager.sharedPreferences.setString(FCMToken, token))
         .then((value) =>
             print(StorageManager.sharedPreferences.getString(FCMToken)));
+  }*/
+
+  Future<String> getFcmToken() async {
+    return _firebaseMessaging.getToken();
   }
 
   Future<void> _configLocalNotification() async {
@@ -61,11 +87,7 @@ class PushNotificationsManager {
       if (payload == FcmTypeBooking) {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
-        locator<NavigationService>().showBookingDialog(
-            'Someone',
-            0,
-            () => _bookingManager.bookingAccept(),
-            () => _bookingManager.bookingReject());
+        _bookingManager.showBookingDialog();
       } else if (payload == FcmTypeMessage) {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
@@ -74,9 +96,6 @@ class PushNotificationsManager {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
         _voiceCall.navigateToCallScreen();
-      }
-      else {
-        _flutterLocalNotificationsPlugin.cancelAll();
       }
     }
 
@@ -97,7 +116,7 @@ class PushNotificationsManager {
         onBackgroundMessage: myBackgroundMessageHandler,
         onResume: _onResume,
         onLaunch: _onLaunch);
-    saveFcmToken();
+    //saveFcmToken();
   }
 
   static Future<dynamic> myBackgroundMessageHandler(
@@ -133,8 +152,12 @@ class PushNotificationsManager {
     } else if (fcmType == FcmTypeMessage) {
       final int partnerId =
           json.decode(message['data']['sender_id'] ?? message['sender_id']);
-      locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: partnerId);
+      _message.prepare(partnerId: partnerId);
+      _message.navigateToChatBox();
+    } else if (fcmType == FcmTypeVoiceCall) {
+      final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+      _voiceCall.prepare(callChannel: callChannel);
+      _voiceCall.navigateToCallScreen();
     }
     return;
   }
@@ -144,45 +167,46 @@ class PushNotificationsManager {
     print('onLaunch: $message');
     var fcmType = message['data']['fcm_type'] ?? message['fcm_type'];
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
+    showToast('onLaunch');
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
       final int partnerId =
           json.decode(message['data']['sender_id'] ?? message['sender_id']);
-      locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: partnerId);
+      _message.prepare(partnerId: partnerId);
+      _message.navigateToChatBox();
+    } else if (fcmType == FcmTypeVoiceCall) {
+      final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+      _voiceCall.prepare(callChannel: callChannel);
+      _voiceCall.navigateToCallScreen();
     }
-    return;
   }
 
   _showBookingDialog(message) async {
     final int userId =
-        json.decode(message['data']['user_id'] ?? message['user_id']);
+    json.decode(message['data']['user_id'] ?? message['user_id']);
     final int bookingId = json.decode(message['data']['id'] ?? message['id']);
     final int bookingUserId = json.decode(
         message['data']['booking_user_id'] ?? message['booking_user_id']);
     final int gameType =
-        json.decode(message['data']['game_type'] ?? message['game_type']);
+    json.decode(message['data']['game_type'] ?? message['game_type']);
+    final String bookingUserName = message['data']['name'] ?? message['name'];
     print(
         'userId: $userId, bookingId: $bookingId, bookingUserId: $bookingUserId, gameType: $gameType');
     _bookingManager.bookingPrepare(
-      bookingUserName: 'Someone',
+      bookingUserName: bookingUserName,
       gameType: gameType,
       userId: userId,
       bookingId: bookingId,
       bookingUserId: bookingUserId,
     );
-    locator<NavigationService>().showBookingDialog(
-        _bookingManager.bookingUserName,
-        _bookingManager.gameType,
-        () => _bookingManager.bookingAccept(),
-        () => _bookingManager.bookingReject());
+    _bookingManager.showBookingDialog();
   }
 
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'com.moonuniverse.moonblink', //same package name for both platform
+      'com.moonuniverse.moonblink.booking', //same package name for both platform
       'Moon Blink',
       'Moon Blink',
       playSound: true,
@@ -203,14 +227,17 @@ class PushNotificationsManager {
         message['data']['booking_user_id'] ?? message['booking_user_id']);
     final int gameType =
         json.decode(message['data']['game_type'] ?? message['game_type']);
+    final String bookingUserName = message['data']['name'] ?? message['name'];
     print(
         'userId: $userId, bookingId: $bookingId, bookingUserId: $bookingUserId, gameTpye: $gameType');
+
     _bookingManager.bookingPrepare(
-        bookingUserName: 'Someone',
-        gameType: gameType,
-        userId: userId,
-        bookingId: bookingId,
-        bookingUserId: bookingUserId);
+      bookingUserName: bookingUserName,
+      gameType: gameType,
+      userId: userId,
+      bookingId: bookingId,
+      bookingUserId: bookingUserId,
+    );
 
     await _flutterLocalNotificationsPlugin.show(
         0,
@@ -279,22 +306,31 @@ class PushNotificationsManager {
         payload: message['data']['fcm_type'] ?? message['fcm_type']);
   }
 
-  //chatting notification
-  Future<void> notification(int id, String user, String message) async {
-    print("showing noti");
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('ChannelID', 'Channel title', 'channel body',
-            priority: Priority.High,
-            importance: Importance.Max,
-            autoCancel: false,
-            ticker: 'test');
+  //local voice call notification
+  Future<void> showVoiceCallNotification(String channelName) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'com.moonuniverse.moonblink', //same package name for both platform
+      channelName,
+      'Moon Blink',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.Max,
+      priority: Priority.High,
+      ongoing: true,
+      autoCancel: false
+    );
 
-    IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true);
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    NotificationDetails notificationDetails =
-        NotificationDetails(androidNotificationDetails, iosNotificationDetails);
-    await _flutterLocalNotificationsPlugin.show(
-        id, user, message, notificationDetails);
+    await _flutterLocalNotificationsPlugin.show(1, 'Voice Call', 'Calling', platformChannelSpecifics);
+  }
+
+  Future<void> cancelVoiceCallNotification() async {
+    await _flutterLocalNotificationsPlugin.cancel(1);
   }
 }
 

@@ -3,7 +3,8 @@ import 'package:moonblink/base_widget/profile_widgets.dart';
 
 class Feed extends StatefulWidget {
   final String partnerName;
-  Feed(this.partnerName);
+  final int partnerId;
+  Feed(this.partnerName, this.partnerId);
   @override
   _Feed createState() => new _Feed();
 }
@@ -22,7 +23,7 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
     ];
     _pages = [
       PartnerRatingWidget(widget.partnerName),
-      PartnerGameHistoryWidget(widget.partnerName),
+      PartnerGameHistoryWidget(widget.partnerName, widget.partnerId),
     ];
     _controller = TabController(
       length: _tabs.length,

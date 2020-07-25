@@ -266,13 +266,20 @@ class _WalletPageState extends State<WalletPage> {
         ),
         onPressed: () => showToast('hasError'),
       );
+    }else {
+      return ListView.builder(
+        itemCount: _items.length + 1,
+        itemBuilder: (context, index) {
+          return index == _items.length ? _buildCurrentCoinAmount() : _buildProductListTile(_items[index]);
+        },
+      );
     }
-    return ViewStateErrorWidget(
+    /*return ViewStateErrorWidget(
       error: ViewStateError(
           ViewStateErrorType.defaultError
       ),
       onPressed: () => showToast('Something went wrong'),
-    );
+    );*/
   }
 
   @override
