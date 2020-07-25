@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
@@ -462,7 +463,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ),
           //Send button
           IconButton(
-            icon: Icon(Icons.send),
+            icon: Icon(IconFonts.sendIcon),
             iconSize: 30.0,
             color: Theme.of(context).accentColor,
             onPressed: () {

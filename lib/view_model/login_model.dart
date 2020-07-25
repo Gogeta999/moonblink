@@ -34,7 +34,8 @@ class LoginModel extends ViewStateModel {
 
   Future<bool> login(String mail, String password, String type) async {
     setBusy();
-    String fcmToken = StorageManager.sharedPreferences.getString(FCMToken);
+    //String fcmToken = StorageManager.sharedPreferences.getString(FCMToken);
+    String fcmToken = await PushNotificationsManager().getFcmToken();
     try {
       var user;
       if (type == 'email' &&
@@ -76,6 +77,7 @@ class LoginModel extends ViewStateModel {
         setIdle();
         return false;
       }
+      //login success then store data
       if (user != null) {
         userModel.saveUser(user);
         StorageManager.sharedPreferences.setString(token, userModel.user.token);
@@ -83,6 +85,7 @@ class LoginModel extends ViewStateModel {
             .setString(mLoginName, userModel.user.name);
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
+        PushNotificationsManager().reInit();
         setIdle();
         return true;
       } else {
@@ -102,7 +105,8 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      await PushNotificationsManager().removeFcmToken();
+      //await PushNotificationsManager().removeFcmToken();
+      PushNotificationsManager().dispose();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn
