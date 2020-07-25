@@ -110,7 +110,9 @@ class _BookingButtonState extends State<BookingButton> {
                 borderRadius: BorderRadius.circular(20.0)),
 
             ///[to add pop up]
-            onPressed: userId == partnerDetailModel.partnerId ? null : () => available(context, model, partnerDetailModel),
+            onPressed: userId == partnerDetailModel.partnerId
+                ? null
+                : () => available(context, model, partnerDetailModel),
           );
         });
   }
