@@ -102,7 +102,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      await PushNotificationsManager().removeFcmToken();
+      // await PushNotificationsManager().removeFcmToken();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

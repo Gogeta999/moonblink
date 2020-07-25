@@ -104,11 +104,8 @@ class ViewStateErrorWidget extends StatelessWidget {
     String defaultTextData = S.of(context).viewStateButtonRetry;
     switch (error.errorType) {
       case ViewStateErrorType.networkTimeOutError:
-        defaultImage = Transform.translate(
-          offset: Offset(-50, 0),
-          child: const Icon(IconFonts.pageNetworkError,
-              size: 100, color: Colors.grey),
-        );
+        defaultImage = const Icon(IconFonts.pageNetworkError,
+            size: 100, color: Colors.grey);
         defaultTitle = S.of(context).viewStateMessageNetworkError;
         // errorMessage = ''; // showing widggest when get network error message
         break;
@@ -199,14 +196,15 @@ class ViewStateUnAuthImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Hero(
       tag: 'loginLogo',
-      child: Image.asset(
-        ImageHelper.wrapAssetsLogo('login_logo.png'),
-        width: 130,
-        height: 100,
-        fit: BoxFit.fitWidth,
-        color: Theme.of(context).accentColor,
-        colorBlendMode: BlendMode.srcIn,
-      ),
+      child: Icon(IconFonts.pageUnAuth),
+      // child: Image.asset(
+      //   ImageHelper.wrapAssetsLogo('login_logo.png'),
+      //   width: 130,
+      //   height: 100,
+      //   fit: BoxFit.fitWidth,
+      //   color: Theme.of(context).accentColor,
+      //   colorBlendMode: BlendMode.srcIn,
+      // ),
     );
   }
 }

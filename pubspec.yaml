@@ -94,8 +94,10 @@ flutter:
     - assets/logos/
 
   fonts:
-    - family: iconfont
+    # - family: iconfont
+    - family: appIconFonts
       fonts:
+        # - asset: assets/fonts/alihomeiconfont.ttf
         - asset: assets/fonts/iconfont.ttf
 
 flutter_intl:

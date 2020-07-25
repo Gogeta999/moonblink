@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ImageHelper{
-
-  static String wrapAssetsLogo(String url){
+class ImageHelper {
+  static String wrapAssetsLogo(String url) {
     return "assets/logos/" + url;
   }
 
-  static String wrapAssetsImage(String url){
+  static String wrapAssetsImage(String url) {
     return "assets/images/" + url;
   }
 
@@ -23,12 +22,25 @@ class ImageHelper{
 
 class IconFonts {
   IconFonts._();
+  //AliIcon
+  static const String fontFamily = 'appIconFonts';
+  //Button Icon
+  static const IconData messageIcon = IconData(0xe605, fontFamily: fontFamily);
+  static const IconData sendIcon = IconData(0xe603, fontFamily: fontFamily);
+  //Page Icon
+  static const IconData homePageIcon = IconData(0xe607, fontFamily: fontFamily);
+  static const IconData chatPageIcon = IconData(0xe670, fontFamily: fontFamily);
+  static const IconData followingPageIcon =
+      IconData(0xe6a2, fontFamily: fontFamily);
+  static const IconData statusPageIcon =
+      IconData(0xe71e, fontFamily: fontFamily);
 
   /// iconfont:flutter base
-  static const String fontFamily = 'iconfont';
+  // static const String fontFamily = 'iconfont';
   //Here to show defalut error on some pages
-  static const IconData pageEmpty = IconData(0xe63c, fontFamily: fontFamily);
-  static const IconData pageError = IconData(0xe600, fontFamily: fontFamily);
-  static const IconData pageNetworkError = IconData(0xe678, fontFamily: fontFamily);
-  static const IconData pageUnAuth = IconData(0xe65f, fontFamily: fontFamily);
+  static const IconData pageEmpty = IconData(0xe622, fontFamily: fontFamily);
+  static const IconData pageError = IconData(0xe6bf, fontFamily: fontFamily);
+  static const IconData pageNetworkError =
+      IconData(0xe6d0, fontFamily: fontFamily);
+  static const IconData pageUnAuth = IconData(0xe60c, fontFamily: fontFamily);
 }

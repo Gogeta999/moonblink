@@ -11,6 +11,7 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
@@ -111,28 +112,38 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         child: builds(status, bookingid, message));
     // child: img ? buildimage(message) : buildmsg(message));
   }
+
   //build msg
   builds(int status, int bookingid, Message msg) {
     switch (msg.type) {
       //build widget for text msgs
-      case(0): return buildmsg(msg);
-      break;
-      case(1): return buildimage(msg);
-      break;
-      case(2): return buildVideo(msg);
-      break;
-      case(3): return buildaudio(msg);
-      break;
-      case(4): return buildcallmsg(status, bookingid, msg);
-      break;
-      case(5): return buildlocalimg(msg);
-      break;
-      case(6): return buildlocalaudio(msg);
-      break;
-      case(7): return buildrequest(msg, bookingid);
-      break;
-      default: return Text("error");
-      break;
+      case (0):
+        return buildmsg(msg);
+        break;
+      case (1):
+        return buildimage(msg);
+        break;
+      case (2):
+        return buildVideo(msg);
+        break;
+      case (3):
+        return buildaudio(msg);
+        break;
+      case (4):
+        return buildcallmsg(status, bookingid, msg);
+        break;
+      case (5):
+        return buildlocalimg(msg);
+        break;
+      case (6):
+        return buildlocalaudio(msg);
+        break;
+      case (7):
+        return buildrequest(msg, bookingid);
+        break;
+      default:
+        return Text("error");
+        break;
     }
   }
 
@@ -198,6 +209,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     } else
       return Container();
   }
+
   //Rating Box
   void rating() {
     showDialog(
@@ -215,6 +227,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           );
         });
   }
+
   //accept button
   acceptbtn(bookingid) {
     return ButtonTheme(
@@ -357,58 +370,58 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //Send message
   Widget buildmessage(id, model) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: 70.0,
-        //color: Theme.of(context).backgroundColor,
-        child: Row(
-          children: <Widget>[
-            //Image select button
-            IconButton(
-              icon: Icon(FontAwesomeIcons.image),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                getImage();
-              },
-            ),
-            //Voice record
-            Voicemsg(
-              id: id,
-              messages: messages,
-            ),
-            //Text Input
-            Expanded(
-              child: TextField(
-                maxLines: null,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.send,
-                controller: textEditingController,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Input message',
-                ),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      height: 70.0,
+      //color: Theme.of(context).backgroundColor,
+      child: Row(
+        children: <Widget>[
+          //Image select button
+          IconButton(
+            icon: Icon(FontAwesomeIcons.image),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              getImage();
+            },
+          ),
+          //Voice record
+          Voicemsg(
+            id: id,
+            messages: messages,
+          ),
+          //Text Input
+          Expanded(
+            child: TextField(
+              maxLines: null,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.send,
+              controller: textEditingController,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Input message',
               ),
             ),
-            //Send button
-            IconButton(
-              icon: Icon(Icons.send),
-              iconSize: 30.0,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                if (bytes == null) {
-                  if (textEditingController.text != '') {
-                    model.sendMessage(textEditingController.text, id, messages);
-                    textEditingController.text = '';
-                  }
-                } else {
-                  model.sendfile(filename, bytes, id, type, messages);
+          ),
+          //Send button
+          IconButton(
+            icon: Icon(IconFonts.sendIcon),
+            iconSize: 30.0,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              if (bytes == null) {
+                if (textEditingController.text != '') {
+                  model.sendMessage(textEditingController.text, id, messages);
                   textEditingController.text = '';
                 }
-              },
-            ),
-          ],
-        ),
-      );
+              } else {
+                model.sendfile(filename, bytes, id, type, messages);
+                textEditingController.text = '';
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   //Booking End button
@@ -515,17 +528,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //Conversation List
   Widget buildChatList(status, bookingid, id, model) {
-      model.receiver(messages);
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: ListView.builder(
-          reverse: true,
-          itemCount: messages.length,
-          itemBuilder: (BuildContext context, int index) {
-            return buildSingleMessage(status, bookingid, messages[index]);
-          },
-        ),
-      );
+    model.receiver(messages);
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: ListView.builder(
+        reverse: true,
+        itemCount: messages.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildSingleMessage(status, bookingid, messages[index]);
+        },
+      ),
+    );
   }
 
   @override
@@ -556,39 +569,40 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           }
           // print(messages);
           return ScopedModelDescendant<ChatModel>(
-          builder:(context, child, model){
-          chatlist = model.conversationlist();
-          if (chatlist.isNotEmpty) {
-            print("is working chatlist");
-            var status = chatlist.where((user) => user.userid == widget.detailPageId );
-            print(status.toList());
-            List chat = status.toList();
-            user = chat[0];
-          }
-          else{
-            print("Chatlist is empty");
-            user.bookingStatus = 0;
-          }
-          if(user.bookingStatus == 3 ){
-            Future.delayed(Duration.zero, () => rating());
-          }
-          return Scaffold(
-            appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                AppBar(
-              title: Text(partnermodel.partnerData.partnerName),
-              actions: <Widget>[ 
-                action2(user.bookingStatus, user.bookingid),
-                action1(widget.detailPageId, user.bookingStatus),
-              ],
-            ),
-            body: ListView(
-              children: <Widget>[
-                buildChatList(user.bookingStatus, user.bookingid,partnermodel.partnerData.partnerId, model),
-                buildmessage(partnermodel.partnerData.partnerId, model),
-              ],
-            ),
-          );
-        });
+              builder: (context, child, model) {
+            chatlist = model.conversationlist();
+            if (chatlist.isNotEmpty) {
+              print("is working chatlist");
+              var status =
+                  chatlist.where((user) => user.userid == widget.detailPageId);
+              print(status.toList());
+              List chat = status.toList();
+              user = chat[0];
+            } else {
+              print("Chatlist is empty");
+              user.bookingStatus = 0;
+            }
+            if (user.bookingStatus == 3) {
+              Future.delayed(Duration.zero, () => rating());
+            }
+            return Scaffold(
+              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
+                  AppBar(
+                title: Text(partnermodel.partnerData.partnerName),
+                actions: <Widget>[
+                  action2(user.bookingStatus, user.bookingid),
+                  action1(widget.detailPageId, user.bookingStatus),
+                ],
+              ),
+              body: ListView(
+                children: <Widget>[
+                  buildChatList(user.bookingStatus, user.bookingid,
+                      partnermodel.partnerData.partnerId, model),
+                  buildmessage(partnermodel.partnerData.partnerId, model),
+                ],
+              ),
+            );
+          });
         });
   }
 

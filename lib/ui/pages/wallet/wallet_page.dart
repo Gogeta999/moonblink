@@ -112,12 +112,12 @@ class _WalletPageState extends State<WalletPage> {
 
   ///get user wallet
   Future<void> getUserWallet() async {
-    try{
-    Wallet wallet = await MoonBlinkRepository.getUserWallet();
-    setState(() {
-      this.wallet = wallet;
-    });
-    }catch(error){
+    try {
+      Wallet wallet = await MoonBlinkRepository.getUserWallet();
+      setState(() {
+        this.wallet = wallet;
+      });
+    } catch (error) {
       setState(() {
         hasError = !hasError;
       });
@@ -245,34 +245,29 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget _buildWalletList() {
-    if(_items.isEmpty) {
+    if (_items.isEmpty) {
       return ViewStateErrorWidget(
-        error: ViewStateError(
-          ViewStateErrorType.defaultError
-        ),
+        error: ViewStateError(ViewStateErrorType.defaultError),
         onPressed: () => showToast('_items is Empty'),
       );
-    }else if(wallet == null) {
+    } else if (wallet == null) {
       return ViewStateErrorWidget(
-        error: ViewStateError(
-            ViewStateErrorType.defaultError
-        ),
+        error: ViewStateError(ViewStateErrorType.defaultError),
         onPressed: () => showToast('Wallet == null'),
       );
-    }else if(hasError) {
+    } else if (hasError) {
       return ViewStateErrorWidget(
-        error: ViewStateError(
-            ViewStateErrorType.defaultError
-        ),
+        error: ViewStateError(ViewStateErrorType.defaultError),
         onPressed: () => showToast('hasError'),
       );
     }
-    return ViewStateErrorWidget(
-      error: ViewStateError(
-          ViewStateErrorType.defaultError
-      ),
-      onPressed: () => showToast('Something went wrong'),
-    );
+    return ListView.builder(
+        itemCount: _items.length + 1,
+        itemBuilder: (context, index) {
+          return index == _items.length
+              ? _buildCurrentCoinAmount()
+              : _buildProductListTile(_items[index]);
+        });
   }
 
   @override
