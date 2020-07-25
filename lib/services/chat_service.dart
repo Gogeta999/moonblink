@@ -5,7 +5,6 @@ import 'package:moonblink/global/storage_manager.dart';
 // import 'package:moonblink/models/callmodel.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
-import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -22,15 +21,22 @@ int userid = StorageManager.sharedPreferences.getInt(mUserId);
 List<Files> files = List<Files>();
 List<Chatlist> chatlist = List<Chatlist>();
 
-
 class ChatModel extends Model {
-  
   //connect
   void init() {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
     socket.once("booking_status", (data) => print(data));
+    if (socket.connect() != null) {
+      print("Connected Socket");
+    }
+    //call made
+    socket.once("call-made", (data) => null);
+    //answer-made
+    socket.once("made-answer", (data) => null);
+    //call rejected
+    socket.once("call-rejected", (data) => null);
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -64,7 +70,7 @@ class ChatModel extends Model {
   void sendfile(String name, Uint8List file, int receiverChatID, int type,
       List<Message> msg) {
     String local = new String.fromCharCodes(file);
-    msg.insert(0, Message(name, userid, receiverChatID, now, local , 5));
+    msg.insert(0, Message(name, userid, receiverChatID, now, local, 5));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
@@ -80,11 +86,12 @@ class ChatModel extends Model {
     ]);
     notifyListeners();
   }
-    //file message
+
+  //file message
   void sendaudio(String name, Uint8List file, int receiverChatID, int type,
-    List<Message> msg) {
+      List<Message> msg) {
     String local = new String.fromCharCodes(file);
-    msg.insert(0, Message(name, userid, receiverChatID, now, local , 6));
+    msg.insert(0, Message(name, userid, receiverChatID, now, local, 6));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
@@ -100,6 +107,7 @@ class ChatModel extends Model {
     ]);
     notifyListeners();
   }
+
   //call
   void call(int fromId, int toId, String voiceCallChannelName) {
     print("from ID : $fromId");
@@ -152,7 +160,7 @@ class ChatModel extends Model {
   }
 
   void receivenoti(int id, String text, String msg) {
-    PushNotificationsManager().notification(id, text, msg);
+    // PushNotificationsManager().notification(id, text, msg);
   }
 
   void disconnect() {

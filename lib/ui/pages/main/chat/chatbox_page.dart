@@ -167,10 +167,36 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Column(
         children: <Widget>[
           Text("Booking Request"),
+          // noramlUserCancel(msg, bookingid),
           partneronly(msg, bookingid)
         ],
       ),
     );
+  }
+
+  //NormalUserToCancelBooking
+  noramlUserCancel(msg, bookingid) {
+    if (msg.senderID != widget.detailPageId) {
+      return Flex(
+        direction: Axis.horizontal,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[cancelRequestButton(bookingid)],
+      );
+    }
+  }
+
+  //TODO:
+  cancelRequestButton(bookingid) {
+    return ButtonTheme(
+        minWidth: 70,
+        child: FlatButton(
+          child: Text("Delete Request",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, booking_reject);
+          },
+        ));
   }
 
   //Partner Only

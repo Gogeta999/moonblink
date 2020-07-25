@@ -1,14 +1,9 @@
-
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/bloc_pattern/bloc.dart';
 import 'package:moonblink/bloc_pattern/partner_game_history_bloc.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/provider/view_state.dart';
-import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -65,7 +60,8 @@ class PartnerGameHistoryWidget extends StatefulWidget {
   PartnerGameHistoryWidget(this.partnerName);
 
   @override
-  _PartnerGameHistoryWidgetState createState() => _PartnerGameHistoryWidgetState();
+  _PartnerGameHistoryWidgetState createState() =>
+      _PartnerGameHistoryWidgetState();
 }
 
 class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
@@ -73,7 +69,6 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
 
   //RefreshController _refreshController = RefreshController();
   //Completer<void> _refreshCompleter;
-
 
   @override
   void initState() {
@@ -91,8 +86,8 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
     partnerDetailModel = Provider.of<PartnerDetailModel>(context);
     return BlocProvider<PartnerGameHistoryBloc>(
       create: (context) =>
-      PartnerGameHistoryBloc(partnerId: partnerDetailModel.partnerId)
-        ..add(PartnerGameHistoryFetched()),
+          PartnerGameHistoryBloc(partnerId: partnerDetailModel.partnerId)
+            ..add(PartnerGameHistoryFetched()),
       child: BlocBuilder<PartnerGameHistoryBloc, PartnerGameHistoryState>(
         builder: (context, state) {
           if (state is PartnerGameHistoryInitial) {
@@ -102,9 +97,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
           }
           if (state is PartnerGameHistoryFailure) {
             return Center(
-              child: Text(
-                'Error Connecting to Server.'
-              ),
+              child: Text('Error Connecting to Server.'),
             );
           }
           if (state is PartnerGameHistoryNoData) {
@@ -174,7 +167,8 @@ class _HistoryListViewState extends State<HistoryListView> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      BlocProvider.of<PartnerGameHistoryBloc>(context).add(PartnerGameHistoryFetched());
+      BlocProvider.of<PartnerGameHistoryBloc>(context)
+          .add(PartnerGameHistoryFetched());
     }
   }
 
@@ -183,7 +177,6 @@ class _HistoryListViewState extends State<HistoryListView> {
     return _refreshCompleter.future;
   }*/
 }
-
 
 class BottomLoader extends StatelessWidget {
   @override
@@ -238,7 +231,8 @@ class HistoryWidget extends StatelessWidget {
                 ),
                 Text(
                   '$history',
-                  style: Theme.of(context).textTheme.bodyText2, overflow: TextOverflow.visible,
+                  style: Theme.of(context).textTheme.bodyText2,
+                  overflow: TextOverflow.visible,
                 )
               ],
             ),

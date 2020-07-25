@@ -6,11 +6,9 @@ import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
-
-
+import 'package:moonblink/view_model/login_model.dart';
 
 class ChatListPage extends StatefulWidget {
   @override
@@ -18,7 +16,7 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  List<Chatlist> chatlist =[];
+  List<Chatlist> chatlist = [];
   List<Message> msg = [];
   String usertoken = StorageManager.sharedPreferences.getString(token);
   @override
@@ -44,7 +42,7 @@ class _ChatListPageState extends State<ChatListPage> {
           backgroundImage: NetworkImage(chat.profile),
         ),
         title: Text(chat.name),
-        
+
         ///[Last Message]
         subtitle: Text(chat.lastmsg, maxLines: 1),
         trailing: Text(DateFormat.jm().format(DateTime.parse(chat.updated))),
