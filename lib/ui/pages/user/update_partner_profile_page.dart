@@ -156,11 +156,43 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           keyboardType: TextInputType.text,
                                         ),
                                         // _space,
-                                        UpdateProfileButton(
-                                          cover: _cover,
-                                          profile: _profile,
-                                          bios: _biosController.text,
+                                        FlatButton(
+                                          child: Text("Update"),
+                                          onPressed: () async {
+                                            var userid = StorageManager
+                                                .sharedPreferences
+                                                .getInt(mUserId);
+                                            var coverPath = _cover.path;
+                                            var profilePath = _profile.path;
+                                            FormData formData =
+                                                FormData.fromMap({
+                                              'cover_image':
+                                                  await MultipartFile.fromFile(
+                                                      coverPath,
+                                                      filename: 'cover.jpg'),
+                                              'profile_image':
+                                                  await MultipartFile.fromFile(
+                                                      profilePath,
+                                                      filename: 'profile.jpg'),
+                                              'bios': _biosController.text
+                                                  .toString(),
+                                            });
+                                            var response = await DioUtils()
+                                                .postwithData(
+                                                    Api.SetProfile +
+                                                        '$userid/profile',
+                                                    data: formData);
+                                            print(response);
+                                            Navigator.of(context).pop();
+                                            return User.fromJsonMap(
+                                                response.data);
+                                          },
                                         )
+                                        // UpdateProfileButton(
+                                        //   cover: _cover,
+                                        //   profile: _profile,
+                                        //   bios: _biosController.text,
+                                        // )
                                       ],
                                     ),
                                   )
@@ -221,52 +253,52 @@ class PartnerProfileWidget extends StatelessWidget {
   }
 }
 
-class UpdateProfileButton extends StatelessWidget {
-  final cover;
-  final profile;
-  final bios;
-  // final LoginModel model;
-  // final cover;
+// class UpdateProfileButton extends StatelessWidget {
+//   final cover;
+//   final profile;
+//   final bios;
+//   // final LoginModel model;
+//   // final cover;
 
-  UpdateProfileButton({this.cover, this.profile, this.bios});
-  @override
-  Widget build(BuildContext context) {
-    var model = Provider.of<LoginModel>(context);
-    return LoginButtonWidget(
-      //controller: _btnController,
-      child: model.isBusy
-          ? ButtonProgressIndicator()
-          : Text(S.of(context).updatePartnerButton,
-              style: Theme.of(context)
-                  .accentTextTheme
-                  .button
-                  .copyWith(wordSpacing: 6)),
-      onPressed: model.isBusy
-          ? null
-          : () async {
-              var userid = StorageManager.sharedPreferences.getInt(mUserId);
-              var coverPath = cover.path;
-              var profilePath = profile.path;
-              FormData formData = FormData.fromMap({
-                'cover_image': await MultipartFile.fromFile(coverPath,
-                    filename: 'cover.jpg'),
-                'profile_image': await MultipartFile.fromFile(profilePath,
-                    filename: 'profile.jpg'),
-                // 'nrc': nrc,
-                // 'mail': mail,
-                // 'gender': gender.toString(),
-                // 'dob': dob,
-                // 'phone': phone,
-                'bios': bios.toString(),
-                // 'address': address
-              });
-              var response = await DioUtils().postwithData(
-                  Api.SetProfile + '$userid/profile',
-                  data: formData);
-              print(response);
-              Navigator.of(context).pop();
-              return User.fromJsonMap(response.data);
-            },
-    );
-  }
-}
+//   UpdateProfileButton({this.cover, this.profile, this.bios});
+//   @override
+//   Widget build(BuildContext context) {
+//     var model = Provider.of<LoginModel>(context);
+//     return LoginButtonWidget(
+//       //controller: _btnController,
+//       child: model.isBusy
+//           ? ButtonProgressIndicator()
+//           : Text(S.of(context).updatePartnerButton,
+//               style: Theme.of(context)
+//                   .accentTextTheme
+//                   .button
+//                   .copyWith(wordSpacing: 6)),
+//       onPressed: model.isBusy
+//           ? null
+//           : () async {
+//               var userid = StorageManager.sharedPreferences.getInt(mUserId);
+//               var coverPath = cover.path;
+//               var profilePath = profile.path;
+//               FormData formData = FormData.fromMap({
+//                 'cover_image': await MultipartFile.fromFile(coverPath,
+//                     filename: 'cover.jpg'),
+//                 'profile_image': await MultipartFile.fromFile(profilePath,
+//                     filename: 'profile.jpg'),
+//                 // 'nrc': nrc,
+//                 // 'mail': mail,
+//                 // 'gender': gender.toString(),
+//                 // 'dob': dob,
+//                 // 'phone': phone,
+//                 'bios': bios.toString(),
+//                 // 'address': address
+//               });
+//               var response = await DioUtils().postwithData(
+//                   Api.SetProfile + '$userid/profile',
+//                   data: formData);
+//               print(response);
+//               Navigator.of(context).pop();
+//               return User.fromJsonMap(response.data);
+//             },
+//     );
+//   }
+// }
