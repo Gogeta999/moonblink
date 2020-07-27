@@ -28,7 +28,7 @@ class IconFonts {
   static const IconData messageIcon = IconData(0xe605, fontFamily: fontFamily);
   static const IconData sendIcon = IconData(0xe603, fontFamily: fontFamily);
   static const IconData voieMsgIcon = IconData(0xe659, fontFamily: fontFamily);
-  static const IconData dayModeIcon = IconData(0xe616, fontFamily: fontFamily);
+  static const IconData dayModeIcon = IconData(0xe64e, fontFamily: fontFamily);
   static const IconData setProfileIcon =
       IconData(0xe65d, fontFamily: fontFamily);
   //Page Icon

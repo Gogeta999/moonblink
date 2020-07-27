@@ -8,14 +8,12 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserStatusPage extends StatefulWidget {
@@ -207,6 +205,7 @@ class UserListWidget extends StatelessWidget {
         PageCard(
             pageTitle: S.of(context).userStatusDarkMode,
             iconData: Theme.of(context).brightness == Brightness.light
+                // ? IconFonts.dayModeIcon
                 ? IconFonts.dayModeIcon
                 : FontAwesomeIcons.moon,
             onTap: () => _switchDarkMode(context)),

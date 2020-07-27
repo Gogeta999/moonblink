@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 
 class SplashPage extends StatefulWidget {
@@ -13,12 +16,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  String adImage;
   AnimationController _countdownController;
 
   @override
   void initState() {
     init();
+    // showAd();
     _countdownController =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
@@ -28,6 +31,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   init() async {
     await PushNotificationsManager().init();
   }
+
+  // showAd() async {
+  //   var response = await DioUtils().get(Api.ShowAds);
+  //   return SplashAds.fromJson(response);
+  // }
 
   @override
   void dispose() {
@@ -42,27 +50,27 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       body: WillPopScope(
         onWillPop: () => Future.value(false),
         child: Stack(fit: StackFit.expand, children: <Widget>[
-          if (adImage == null)
-            GestureDetector(
-              child: Image.network(
-                'https://s3-ap-southeast-1.amazonaws.com/dev.moonblink.com/images/ads/moon-ads.jpeg',
-                fit: BoxFit.fill,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-          if (adImage != null)
-            Image.asset(
-                ImageHelper.wrapAssetsImage(
-                    Theme.of(context).brightness == Brightness.light
-                        ? 'MoonBlink_white.jpg'
-                        : 'MoonBlink_black.jpg'),
-                // colorBlendMode: BlendMode
-                //     .srcOver
-                // color: Colors.black.withOpacity(
-                //     Theme.of(context).brightness == Brightness.light
-                //         ? 0
-                //         : 0.65),
-                fit: BoxFit.fill),
+          // if ()
+          //   GestureDetector(
+          //     child: Image.network(
+          //       'https://s3-ap-southeast-1.amazonaws.com/dev.moonblink.com/images/ads/moon-ads.jpeg',
+          //       fit: BoxFit.fill,
+          //       filterQuality: FilterQuality.high,
+          //     ),
+          //   ),
+          // if (adImage != null)
+          Image.asset(
+              ImageHelper.wrapAssetsImage(
+                  Theme.of(context).brightness == Brightness.light
+                      ? 'MoonBlink_white.jpg'
+                      : 'MoonBlink_black.jpg'),
+              // colorBlendMode: BlendMode
+              //     .srcOver
+              // color: Colors.black.withOpacity(
+              //     Theme.of(context).brightness == Brightness.light
+              //         ? 0
+              //         : 0.65),
+              fit: BoxFit.fill),
           Align(
             alignment: Alignment.bottomRight,
             child: SafeArea(
