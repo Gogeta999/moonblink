@@ -132,31 +132,17 @@ class LoginButton extends StatelessWidget {
                 model
                     .login(
                         mailController.text, passwordController.text, 'email')
-                    .then((value){
-                      if (value)
-                       {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                          RouteName.main, (route) => false); 
-                          ScopedModel.of<ChatModel>(context).disconnect();
-                          ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
-                       }
-                      else{
-                        model.showErrorMessage(context);
-                        }
-                      }
-                    );
-                // model
-                //     .login(
-                //         mailController.text, passwordController.text, 'email')
-                //     .then((value) {
-                //   if (value) {
-                //     showToast('Login Success');
-                //     Navigator.of(context).pushNamedAndRemoveUntil(
-                //         RouteName.splash, (route) => false);
-                //   } else {
-                //     model.showErrorMessage(context);
-                //   }
-                // });
+                    .then((value) {
+                  if (value) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        RouteName.main, (route) => false);
+                    ScopedModel.of<ChatModel>(context).disconnect();
+                    ScopedModel.of<ChatModel>(context, rebuildOnChange: false)
+                        .init();
+                  } else {
+                    model.showErrorMessage(context);
+                  }
+                });
               }
             },
     );

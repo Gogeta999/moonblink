@@ -6,6 +6,7 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
@@ -136,7 +137,7 @@ class _VoicemsgState extends State<Voicemsg> {
           width: 30,
           child: GestureDetector(
             child: Icon(
-              Icons.voicemail,
+              IconFonts.voieMsgIcon,
               color: Theme.of(context).accentColor,
             ),
             onLongPressStart: (LongPressStartDetails details) {

@@ -16,7 +16,7 @@ import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -35,6 +35,27 @@ class _UserStatusPageState extends State<UserStatusPage>
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            leading: ProviderWidget<LoginModel>(
+                model: LoginModel(Provider.of(context)),
+                builder: (context, model, child) {
+                  if (model.isBusy) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 15.0),
+                      child: AppBarIndicator(),
+                    );
+                  }
+                  if (model.userModel.hasUser) {
+                    return IconButton(
+                      tooltip: S.of(context).logout,
+                      icon: Icon(IconFonts.setProfileIcon),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(RouteName.partnerOwnProfile);
+                      },
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
             actions: <Widget>[
               ProviderWidget<LoginModel>(
                   model: LoginModel(Provider.of(context)),
@@ -50,13 +71,8 @@ class _UserStatusPageState extends State<UserStatusPage>
                         tooltip: S.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
-                          ScopedModel.of<ChatModel>(context,
-                                  rebuildOnChange: false)
-                              .disconnect();
-                          model.logout().then((value) => value
-                              ? Navigator.of(context).pushNamedAndRemoveUntil(
-                                  RouteName.main, (route) => false)
-                              : null);
+                          Navigator.of(context)
+                              .pushNamed(RouteName.partnerOwnProfile);
                         },
                       );
                     }
@@ -128,14 +144,12 @@ class UserHeaderWidget extends StatelessWidget {
                                         // colorBlendMode: BlendMode.colorDodge
                                       )
                                     : Image.asset(
-                                        ImageHelper.wrapAssetsLogo(
-                                            'MoonBlink_Cute.png'),
-                                        fit: BoxFit.cover,
+                                        ImageHelper.wrapAssetsImage(
+                                            'MoonBlinkProfile.jpg'),
+                                        fit: BoxFit.fill,
                                         width: 120,
                                         height: 120,
-                                        color: Theme.of(context)
-                                            .accentColor
-                                            .withAlpha(100),
+                                        color: Theme.of(context).accentColor,
                                         // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
                                         colorBlendMode: BlendMode.colorDodge),
                               ),
@@ -165,7 +179,7 @@ class UserHeaderWidget extends StatelessWidget {
 
 class UserListWidget extends StatelessWidget {
   // var statusModel = Provider.of < (context);
-  var hasUser = StorageManager.localStorage.getItem(mUser);
+  final hasUser = StorageManager.localStorage.getItem(mUser);
   @override
   Widget build(BuildContext context) {
     // var iconColor = Theme.of(context).accentColor;
@@ -183,29 +197,17 @@ class UserListWidget extends StatelessWidget {
             iconData: FontAwesomeIcons.wallet,
             onTap: hasUser == null
                 ? () {
-                    showToast('Login First');
+                    showToast(S.of(context).loginFirst);
                   }
                 : () {
                     Navigator.of(context).pushNamed(RouteName.wallet);
-                  }),
-
-        ///favorites
-        PageCard(
-            pageTitle: S.of(context).userStatusFavorite,
-            iconData: FontAwesomeIcons.solidHeart,
-            onTap: hasUser == null
-                ? () {
-                    showToast('Login First');
-                  }
-                : () {
-                    Navigator.of(context).pushNamed(RouteName.network);
                   }),
 
         ///switch dark mode
         PageCard(
             pageTitle: S.of(context).userStatusDarkMode,
             iconData: Theme.of(context).brightness == Brightness.light
-                ? FontAwesomeIcons.sun
+                ? IconFonts.dayModeIcon
                 : FontAwesomeIcons.moon,
             onTap: () => _switchDarkMode(context)),
 
@@ -214,6 +216,19 @@ class UserListWidget extends StatelessWidget {
             pageTitle: S.of(context).userStatusTheme,
             iconData: FontAwesomeIcons.palette,
             onTap: () => _showPaletteDialog(context)),
+
+        ///favorites
+        PageCard(
+            pageTitle: S.of(context).userStatusCustomerService,
+            iconData: FontAwesomeIcons.handsHelping,
+            onTap: hasUser == null
+                ? () {
+                    showToast(S.of(context).loginFirst);
+                  }
+                // : () {
+                //     Navigator.of(context).pushNamed(RouteName.network);
+                //   }),
+                : _openFacebookPage),
 
         ///settings
         PageCard(
@@ -227,9 +242,48 @@ class UserListWidget extends StatelessWidget {
             iconData: Platform.isAndroid
                 ? FontAwesomeIcons.android
                 : FontAwesomeIcons.appStoreIos,
-            onTap: null),
+            onTap: _openStore),
       ]),
     );
+  }
+
+  void _openStore() async {
+    String appStoreUrl;
+    if (Platform.isIOS) {
+      appStoreUrl = 'fb://profile/103254564508101';
+    } else {
+      appStoreUrl =
+          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(appStoreUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
+  }
+
+  void _openFacebookPage() async {
+    String fbProtocolUrl;
+    if (Platform.isIOS) {
+      fbProtocolUrl = 'fb://profile/103254564508101';
+    } else {
+      fbProtocolUrl = 'fb://page/103254564508101';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(fbProtocolUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
   }
 
   void _switchDarkMode(BuildContext context) {
@@ -356,96 +410,3 @@ class SettingThemeWidget extends StatelessWidget {
     );
   }
 }
-
-/*ListTileTheme(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 30),
-      child: SliverList(
-        delegate: SliverChildListDelegate([
-          /// wallet
-          ListTile(
-            leading: Icon(
-              FontAwesomeIcons.wallet,
-              color: iconColor,
-            ),
-            title: Text(S.of(context).userStatusWallet),
-            onTap: () {
-              Navigator.of(context).pushNamed(RouteName.wallet);
-            },
-            trailing: Icon(Icons.chevron_right),
-          ),
-
-          /// for chat their favorites
-          ListTile(
-            title: Text(S.of(context).userStatusFavorite),
-            onTap: () {
-              Navigator.of(context).pushNamed(RouteName.network);
-            },
-            leading: Icon(
-              FontAwesomeIcons.solidHeart,
-              color: iconColor,
-            ),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          ListTile(
-            title: Text(S.of(context).userStatusDarkMode),
-            onTap: () {
-              switchDarkMode(context);
-            },
-            leading: Transform.rotate(
-              angle: -pi,
-              child: Icon(
-                Theme.of(context).brightness == Brightness.light
-                    ? FontAwesomeIcons.sun
-                    : FontAwesomeIcons.moon,
-                color: iconColor,
-              ),
-            ),
-            trailing: CupertinoSwitch(
-                value: Theme.of(context).brightness == Brightness.dark,
-                onChanged: (value) {
-                  switchDarkMode(context);
-                }),
-          ),
-          SettingThemeWidget(),
-
-          ListTile(
-            title: Text(S.of(context).userStatusSettings),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return SettingsPage();
-                  },
-                ),
-              );
-            },
-            leading: Icon(
-              FontAwesomeIcons.cog,
-              color: iconColor,
-            ),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          ListTile(
-            title: Text(S.of(context).userStatusCheckAppUpdate),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   CupertinoPageRoute(
-              //     builder: (context) => ChangeLogPage(),
-              //     fullscreenDialog: true,
-              //   ),
-              // );
-            },
-            leading: Icon(
-              FontAwesomeIcons.android,
-              color: iconColor,
-            ),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          SizedBox(
-            height: 30,
-          )
-        ]),
-      ),
-    );*/

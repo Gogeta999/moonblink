@@ -233,6 +233,16 @@ class S {
     );
   }
 
+  /// `Login First`
+  String get loginFirst {
+    return Intl.message(
+      'Login First',
+      name: 'loginFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Email`
   String get loginMail {
     return Intl.message(
@@ -643,11 +653,11 @@ class S {
     );
   }
 
-  /// `Favorite`
-  String get userStatusFavorite {
+  /// `Customer Service`
+  String get userStatusCustomerService {
     return Intl.message(
-      'Favorite',
-      name: 'userStatusFavorite',
+      'Customer Service',
+      name: 'userStatusCustomerService',
       desc: '',
       args: [],
     );

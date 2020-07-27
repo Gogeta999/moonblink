@@ -41,6 +41,7 @@ dependencies:
   shared_preferences: ^0.5.6+3
   socket_io_client: ^0.9.4
   scoped_model: ^1.0.1
+  url_launcher: ^5.5.0
   #voice call
   agora_rtc_engine: ^1.0.13 #need to edit at android and ios
   permission_handler: ^5.0.1

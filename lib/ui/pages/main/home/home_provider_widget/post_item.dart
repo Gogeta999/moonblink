@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -37,7 +38,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 child: InkWell(
                   onTap: usertoken == null
                       ? () {
-                          showToast('Login First');
+                          showToast(S.of(context).loginFirst);
                         }
                       : () {
                           int detailPageId = widget.posts.userID;

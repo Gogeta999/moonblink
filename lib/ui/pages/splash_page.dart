@@ -13,28 +13,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  AnimationController _logoController;
-  Animation<double> _animation;
+  String adImage;
   AnimationController _countdownController;
 
   @override
   void initState() {
     init();
-    _logoController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1500));
-
-    _animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(curve: Curves.easeInOutBack, parent: _logoController));
-
-    _animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _logoController.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _logoController.forward();
-      }
-    });
-    _logoController.forward();
-
     _countdownController =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
@@ -47,7 +31,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _logoController.dispose();
+    // _logoController.dispose();
     _countdownController.dispose();
     super.dispose();
   }
@@ -58,15 +42,27 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       body: WillPopScope(
         onWillPop: () => Future.value(false),
         child: Stack(fit: StackFit.expand, children: <Widget>[
-          Image.asset(
-              ImageHelper.wrapAssetsImage(
-                  Theme.of(context).brightness == Brightness.light
-                      ? 'MoonBlink_white.jpg'
-                      : 'MoonBlink_black.jpg'),
-//              colorBlendMode: BlendMode.srcOver,//colorBlendMode方式在android等机器上有些延迟,导致有些闪屏,故采用两套图片的方式
-//              color: Colors.black.withOpacity(
-//                  Theme.of(context).brightness == Brightness.light ? 0 : 0.65),
-              fit: BoxFit.fill),
+          if (adImage == null)
+            GestureDetector(
+              child: Image.network(
+                'https://s3-ap-southeast-1.amazonaws.com/dev.moonblink.com/images/ads/moon-ads.jpeg',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.high,
+              ),
+            ),
+          if (adImage != null)
+            Image.asset(
+                ImageHelper.wrapAssetsImage(
+                    Theme.of(context).brightness == Brightness.light
+                        ? 'MoonBlink_white.jpg'
+                        : 'MoonBlink_black.jpg'),
+                // colorBlendMode: BlendMode
+                //     .srcOver
+                // color: Colors.black.withOpacity(
+                //     Theme.of(context).brightness == Brightness.light
+                //         ? 0
+                //         : 0.65),
+                fit: BoxFit.fill),
           Align(
             alignment: Alignment.bottomRight,
             child: SafeArea(
