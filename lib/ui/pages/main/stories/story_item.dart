@@ -6,8 +6,7 @@ import 'package:moonblink/ui/pages/main/stories/user_stories.dart';
 class StoryItemWidget extends StatelessWidget {
   final Story stories;
   final int index;
-  StoryItemWidget(this.stories, {this.index})
-      : super(key: ValueKey(stories));
+  StoryItemWidget(this.stories, {this.index}) : super(key: ValueKey(stories));
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,8 @@ class StoryItemWidget extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoriesPage(stories.storys)));
+                    builder: (context) =>
+                        StoriesPage(stories.storys, stories.profile)));
           },
           child: Align(
             child: CircleAvatar(

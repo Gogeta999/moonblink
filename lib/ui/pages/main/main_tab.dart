@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
@@ -83,17 +84,17 @@ class _MainTabPageState extends State<MainTabPage>
       bottomNavigationBar: FancyBottomNavigation(
         tabs: [
           TabData(
-              iconData: FontAwesomeIcons.home, title: S.of(context).tabHome),
+              iconData: IconFonts.homePageIcon, title: S.of(context).tabHome),
           TabData(
-              iconData: FontAwesomeIcons.commentAlt,
-              title: S.of(context).tabChat),
+              iconData: IconFonts.chatPageIcon, title: S.of(context).tabChat),
           TabData(
-              iconData: FontAwesomeIcons.calendar,
+              iconData: IconFonts.followingPageIcon,
               title: S.of(context).tabFollowing),
           TabData(
-              iconData: FontAwesomeIcons.userAlt, title: S.of(context).tabUser),
+              iconData: IconFonts.statusPageIcon, title: S.of(context).tabUser),
         ],
         initialSelection: initPage,
+        // inactiveIconSize: 30,
         circleHeight: 50,
         arcHeight: 55,
         arcWidth: 80,

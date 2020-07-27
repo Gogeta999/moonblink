@@ -7,7 +7,8 @@ class Api {
   static const String STORY = 'moonblink/api/v1/social/stories';
 
   /// Drop specific story
-  static const String DropStory = 'moonblink/api/v1/user/'; //example = moonblink/api/v1/user/10/story/28
+  static const String DropStory =
+      'moonblink/api/v1/user/'; //example = moonblink/api/v1/user/10/story/28
 
   /// Home Data [type 1 is partner type]
   static const String HOME =
@@ -27,7 +28,8 @@ class Api {
   static const String UserWallet = 'moonblink/api/v1/user/';
 
   //top up
-  static const String TopUp = '/moonblink/api/v1/user/'; //full endpoint = '/moonblink/api/v1/user/10/coin/topup'
+  static const String TopUp =
+      '/moonblink/api/v1/user/'; //full endpoint = '/moonblink/api/v1/user/10/coin/topup'
 
   // register
   static const String REGISTER = "moonblink/api/v1/register";
@@ -72,11 +74,16 @@ class Api {
   static const String Messages = "moonblink/api/v1/social/user/";
 
   //Calling
-  static const String Calling = "moonblink/api/v1/social/user/conversations/call";
+  static const String Calling =
+      "moonblink/api/v1/social/user/conversations/call";
 
   //set status
   static const String Endbooking = "moonblink/api/v1/user/";
 
+  //Rating
+  static const String Rategame = "moonblink/api/v1/social/user/";
+
   //get user history
-  static const String UserHistory = 'moonblink/api/v1/social/user/'; //eg - moonblink/api/v1/social/user/4/transaction
+  static const String UserHistory =
+      'moonblink/api/v1/social/user/'; //eg - moonblink/api/v1/social/user/4/transaction
 }

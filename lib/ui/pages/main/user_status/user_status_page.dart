@@ -16,8 +16,10 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -141,8 +143,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                     ? Image.network(
                                         model.user.profileUrl,
                                         fit: BoxFit.cover,
-                                        width: 130,
-                                        height: 130,
+                                        width: 120,
+                                        height: 120,
                                         // color: Theme.of(context)
                                         //     .accentColor
                                         //     .withAlpha(100),
@@ -150,10 +152,10 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                       )
                                     : Image.asset(
                                         ImageHelper.wrapAssetsLogo(
-                                            'MoonBlink_logo.png'),
+                                            'MoonBlink_Cute.png'),
                                         fit: BoxFit.cover,
-                                        width: 130,
-                                        height: 130,
+                                        width: 120,
+                                        height: 120,
                                         color: Theme.of(context)
                                             .accentColor
                                             .withAlpha(100),
@@ -199,9 +201,11 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
 }
 
 class UserListWidget extends StatelessWidget {
+  // var statusModel = Provider.of < (context);
+  var hasUser = StorageManager.localStorage.getItem(mUser);
   @override
   Widget build(BuildContext context) {
-    var iconColor = Theme.of(context).accentColor;
+    // var iconColor = Theme.of(context).accentColor;
     // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -212,16 +216,27 @@ class UserListWidget extends StatelessWidget {
       delegate: SliverChildListDelegate.fixed([
         ///wallet
         PageCard(
-          pageTitle: S.of(context).userStatusWallet,
-          iconData: FontAwesomeIcons.wallet,
-          onTap: () => Navigator.of(context).pushNamed(RouteName.wallet),
-        ),
+            pageTitle: S.of(context).userStatusWallet,
+            iconData: FontAwesomeIcons.wallet,
+            onTap: hasUser == null
+                ? () {
+                    showToast('Login First');
+                  }
+                : () {
+                    Navigator.of(context).pushNamed(RouteName.wallet);
+                  }),
 
         ///favorites
         PageCard(
             pageTitle: S.of(context).userStatusFavorite,
             iconData: FontAwesomeIcons.solidHeart,
-            onTap: () => Navigator.of(context).pushNamed(RouteName.network)),
+            onTap: hasUser == null
+                ? () {
+                    showToast('Login First');
+                  }
+                : () {
+                    Navigator.of(context).pushNamed(RouteName.network);
+                  }),
 
         ///switch dark mode
         PageCard(

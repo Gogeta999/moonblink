@@ -283,7 +283,7 @@ class NotSuccessException implements Exception {
   @override
   String toString() {
     // return 'NotExpectedException{respData: $message}';
-    return 'Sorry for $message';
+    return 'Sorry,Please $message';
   }
 }
 
