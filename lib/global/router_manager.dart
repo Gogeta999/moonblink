@@ -7,6 +7,7 @@ import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
+import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
@@ -18,6 +19,7 @@ import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
+import 'package:moonblink/ui/terms_and_conditions_page.dart';
 
 class RouteName {
   static const String splash = 'splash';
@@ -43,6 +45,8 @@ class RouteName {
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
   static const String callScreen = 'callScreen';
+  static const String newUserSwiperPage = 'newUserSwiperPage';
+  static const String termsAndConditionsPage = 'termsAndConditionsPage';
 }
 
 class Router {
@@ -50,6 +54,10 @@ class Router {
     switch (settings.name) {
       case RouteName.splash:
         return NoAnimRouteBuilder(SplashPage());
+      case RouteName.newUserSwiperPage:
+        return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
+      case RouteName.termsAndConditionsPage:
+        return CupertinoPageRoute(builder: (_) => TermsAndConditions());
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));

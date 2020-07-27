@@ -7,8 +7,14 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+<<<<<<< HEAD
 import 'package:moonblink/models/adModel.dart';
+=======
+import 'package:moonblink/global/storage_manager.dart';
+>>>>>>> 5399f0da6bae503f7a448b76b60b1a8ffb785daa
 import 'package:moonblink/services/push_notification_manager.dart';
+
+import 'new_user_swiper_page.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -123,5 +129,6 @@ class AnimatedCountdown extends AnimatedWidget {
 }
 
 void nextPage(context) {
-  Navigator.of(context).pushReplacementNamed(RouteName.main);
+  bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
+  newUser ? Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage) : Navigator.of(context).pushNamedAndRemoveUntil(RouteName.main, (route) => false);
 }
