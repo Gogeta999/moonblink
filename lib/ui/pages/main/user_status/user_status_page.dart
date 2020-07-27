@@ -10,11 +10,8 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/main.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-<<<<<<< HEAD
-=======
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
->>>>>>> 5399f0da6bae503f7a448b76b60b1a8ffb785daa
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -112,7 +109,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
 
   @override
   void initState() {
-    if(usertoken != null) init();
+    if (usertoken != null) init();
     super.initState();
   }
 
@@ -196,7 +193,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             SizedBox(
                               height: 10,
                             ),
-                            if(model.hasUser)
+                            if (model.hasUser)
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
