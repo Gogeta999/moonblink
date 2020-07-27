@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -19,6 +20,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'bloc_pattern/simple_bloc_observer.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
+
 
 String usertoken = StorageManager.sharedPreferences.getString(token);
 
@@ -50,8 +52,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

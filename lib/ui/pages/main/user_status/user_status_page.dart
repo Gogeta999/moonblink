@@ -7,8 +7,11 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/main.dart';
+import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -97,7 +100,27 @@ class _UserStatusPageState extends State<UserStatusPage>
   }
 }
 
-class UserHeaderWidget extends StatelessWidget {
+class UserHeaderWidget extends StatefulWidget {
+  @override
+  _UserHeaderWidgetState createState() => _UserHeaderWidgetState();
+}
+
+class _UserHeaderWidgetState extends State<UserHeaderWidget> {
+  Wallet wallet = Wallet(value: 0);
+
+  @override
+  void initState() {
+    if(usertoken != null) init();
+    super.initState();
+  }
+
+  init() async {
+    Wallet wallet = await MoonBlinkRepository.getUserWallet();
+    setState(() {
+      this.wallet = wallet;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -171,6 +194,20 @@ class UserHeaderWidget extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
+                            if(model.hasUser)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    FontAwesomeIcons.coins,
+                                    color: Colors.amber[500],
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 5.0),
+                                  Text(
+                                      'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}')
+                                ],
+                              ),
                             // if (model.hasUser) UserCoin()
                           ])
                         ])))));

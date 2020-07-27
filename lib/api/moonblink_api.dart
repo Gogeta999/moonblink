@@ -55,6 +55,9 @@ class Api {
   //SetProfile
   static const String SetProfile = "moonblink/api/v1/user/";
 
+  //Game List
+  static const String GameList = 'moonblink/api/v1/social/game/price';
+
   ///Booking
   static const String Booking = "moonblink/api/v1/social/user/";
 

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
+import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
@@ -33,6 +35,19 @@ class _BookingButtonState extends State<BookingButton> {
                 Image.asset(ImageHelper.wrapAssetsImage("bookingWaiting.jpg")),
                 SizedBox(height: 20.0),
                 BookingDropdown(bookingModel: bookingModel),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      FontAwesomeIcons.coins,
+                      color: Colors.amber[500],
+                      size: 16,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                        'Current coin : ${bookingModel.wallet.value} ${bookingModel.wallet.value > 1 ? 'coins' : 'coin'}')
+                  ],
+                ),
               ],
             ),
             contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
@@ -98,6 +113,7 @@ class _BookingButtonState extends State<BookingButton> {
     int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
+        onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           return RaisedButton(
             color: Theme.of(context).primaryColor,
@@ -119,7 +135,7 @@ class _BookingButtonState extends State<BookingButton> {
 }
 
 class BookingDropdown extends StatefulWidget {
-  final bookingModel;
+  final BookingModel bookingModel;
 
   const BookingDropdown({Key key, this.bookingModel}) : super(key: key);
 
@@ -129,6 +145,41 @@ class BookingDropdown extends StatefulWidget {
 
 class _BookingDropdownState extends State<BookingDropdown> {
   @override
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: widget.bookingModel.dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
+        isExpanded: false,
+        isDense: true,
+        iconEnabledColor: Theme.of(context).accentColor,
+        style: TextStyle(color: Theme.of(context).accentColor),
+        onChanged: (String newValue) {
+          setState(() {
+            final int selectedIndex =
+            widget.bookingModel.dropdownGameListAndPrice.indexOf(newValue);
+            print(selectedIndex);
+            widget.bookingModel.selectedIndex = selectedIndex;
+          });
+        },
+        elevation: 0,
+        items: widget.bookingModel.dropdownGameListAndPrice
+            .map<DropdownMenuItem<String>>((String value) {
+              List<String> splitValue = value.split('.');
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(splitValue[0], softWrap: true),
+                Text('    ${splitValue[1]}', softWrap: true)
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+  /*@override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
@@ -151,10 +202,16 @@ class _BookingDropdownState extends State<BookingDropdown> {
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, softWrap: false),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(value, softWrap: true),
+                Text('   \$1', softWrap: true),
+              ],
+            ),
           );
         }).toList(),
       ),
     );
-  }
+  }*/
 }
