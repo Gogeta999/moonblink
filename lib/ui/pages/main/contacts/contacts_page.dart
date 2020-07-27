@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/azlist.dart';
+import 'package:moonblink/base_widget/skeleton.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_skeleton.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/contact_model.dart';
@@ -38,21 +40,24 @@ class _ContactsPageState extends State<ContactsPage> {
     }
     users.forEach((user) {
       items.add(Column(children: <Widget>[
-        ListTile(
-          leading: CircleAvatar(
-            radius: 28,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            backgroundImage: NetworkImage(user.contactUser.contactUserProfile),
+        Container(
+          margin: const EdgeInsets.only(top: 8.0),
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 28,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundImage: NetworkImage(user.contactUser.contactUserProfile),
+            ),
+            title: Text(user.contactUser.contactUserName),
+            // subtitle: Text(user.contactUser.contactUserProfile),
+            onTap: () {
+              int detailPageId = user.contactUser.contactUserId;
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PartnerDetailPage(detailPageId)));
+            },
           ),
-          title: Text(user.contactUser.contactUserName),
-          // subtitle: Text(user.contactUser.contactUserProfile),
-          onTap: () {
-            int detailPageId = user.contactUser.contactUserId;
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PartnerDetailPage(detailPageId)));
-          },
         ),
         Divider(
           color: Colors.grey,
@@ -72,6 +77,9 @@ class _ContactsPageState extends State<ContactsPage> {
             model: ContactModel(),
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
+              if(contactModel.isBusy) {
+                return SkeletonList(builder: (context, index) => PostSkeletonItem());
+              }
               if (contactModel.isError && contactModel.list.isEmpty) {
                 return AnnotatedRegion<SystemUiOverlayStyle>(
                     value: StatusBarUtils.systemUiOverlayStyle(context),

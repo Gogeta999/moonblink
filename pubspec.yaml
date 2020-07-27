@@ -76,6 +76,7 @@ dependencies:
   rxdart: ^0.24.1
   # Simplify Equality Comparisons
   equatable: ^1.2.2
+  flutter_swiper: ^1.1.6
 
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.
@@ -92,6 +93,13 @@ flutter:
   assets:
     - assets/images/
     - assets/logos/
+    - images/0.jpeg
+    - images/1.jpeg
+    - images/2.jpeg
+    - images/3.jpeg
+    - images/4.jpeg
+    - images/5.jpeg
+
 
   fonts:
     - family: iconfont
