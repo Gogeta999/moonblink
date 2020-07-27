@@ -5,8 +5,10 @@ import 'package:moonblink/view_model/favorite_model.dart';
 
 import 'login_model.dart';
 
+const String mUser = 'mUser';
+
 class UserModel extends ChangeNotifier {
-  static const String mUser = 'mUser';
+  // static const String mUser = 'mUser';
 
   final GlobalFavouriteStateModel globalFavouriteStateModel;
 
@@ -33,8 +35,7 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
     StorageManager.localStorage.deleteItem(mUser);
     StorageManager.sharedPreferences.remove(token);
-    StorageManager.sharedPreferences
-        .remove(mLoginName);
+    StorageManager.sharedPreferences.remove(mLoginName);
     StorageManager.sharedPreferences.remove(mUserId);
     StorageManager.sharedPreferences.remove(mUserType);
     //StorageManager.sharedPreferences.clear();
