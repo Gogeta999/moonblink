@@ -6,7 +6,6 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
-import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
