@@ -90,6 +90,8 @@ class _UserStatusPageState extends State<UserStatusPage>
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
                           model.logout();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              RouteName.main, (route) => false);
                         },
                       );
                     }
