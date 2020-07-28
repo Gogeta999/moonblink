@@ -7,7 +7,6 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:oktoast/oktoast.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -47,6 +46,8 @@ class _WalletPageState extends State<WalletPage> {
 
   bool hasError = false;
 
+  bool isInitState = true;
+
   @override
   void initState() {
     super.initState();
@@ -60,10 +61,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   void asyncInitState() async {
-    await FlutterInappPurchase.instance.initConnection;
-    await getItems();
-    await getUserWallet();
-    //FlutterInappPurchase.instance.consumeAllItems;
+    await initData();
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -88,6 +86,10 @@ class _WalletPageState extends State<WalletPage> {
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
       print('purchase-error: $purchaseError');
     });
+
+    setState(() {
+      isInitState = !isInitState;
+    });
   }
 
   ///You should end the billing service in android when you are done with it.
@@ -107,6 +109,18 @@ class _WalletPageState extends State<WalletPage> {
     if (_purchaseErrorSubscription != null) {
       _purchaseErrorSubscription.cancel();
       _purchaseErrorSubscription = null;
+    }
+  }
+
+  Future<void> initData() async {
+    await FlutterInappPurchase.instance.initConnection;
+    List<Future> futures = [getItems(), getUserWallet()];
+    try {
+      await Future.wait(futures);
+    }catch(_){
+      setState(() {
+        hasError = !hasError;
+      });
     }
   }
 
@@ -245,20 +259,10 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget _buildWalletList() {
-    if (_items.isEmpty) {
+    if (_items.isEmpty || wallet == null || hasError) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => showToast('_items is Empty'),
-      );
-    } else if (wallet == null) {
-      return ViewStateErrorWidget(
-        error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => showToast('Wallet == null'),
-      );
-    } else if (hasError) {
-      return ViewStateErrorWidget(
-        error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => showToast('hasError'),
+        onPressed: initData,
       );
     } else {
       return ListView.builder(
@@ -274,11 +278,25 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Wallet'),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Wallet'),
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(icon: Icon(FontAwesomeIcons.appStore)),
+              Tab(icon: Icon(FontAwesomeIcons.appStoreIos))
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList(),
+            isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList(),
+          ],
+        ),
       ),
-      body: _buildWalletList(),
     );
   }
 }

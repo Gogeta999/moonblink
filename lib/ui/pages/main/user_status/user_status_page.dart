@@ -16,6 +16,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,6 +30,24 @@ class _UserStatusPageState extends State<UserStatusPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  Wallet wallet = Wallet(value: 0);
+  bool hasUser = false;
+
+  @override
+  void initState() {
+    if(StorageManager.sharedPreferences.getString(token) != null) init();
+    print('token: ${StorageManager.sharedPreferences.getString(token)}');
+    super.initState();
+  }
+
+  init() async {
+    Wallet wallet = await MoonBlinkRepository.getUserWallet();
+    setState(() {
+      this.wallet = wallet;
+      hasUser = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +105,26 @@ class _UserStatusPageState extends State<UserStatusPage>
             flexibleSpace: UserHeaderWidget(),
             pinned: false,
           ),
+          if(hasUser)
+          SliverToBoxAdapter(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  FontAwesomeIcons.coins,
+                  color: Colors.amber[500],
+                  size: 20,
+                ),
+                SizedBox(width: 5.0),
+                Text(
+                  'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}', style: TextStyle(fontSize: 16))
+              ],
+              ),
+          ),
           SliverPadding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
+            padding: EdgeInsets.only(top: 10),
           ),
           UserListWidget(),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-          )
         ],
       ),
     );
@@ -105,21 +137,6 @@ class UserHeaderWidget extends StatefulWidget {
 }
 
 class _UserHeaderWidgetState extends State<UserHeaderWidget> {
-  Wallet wallet = Wallet(value: 0);
-
-  @override
-  void initState() {
-    if (usertoken != null) init();
-    super.initState();
-  }
-
-  init() async {
-    Wallet wallet = await MoonBlinkRepository.getUserWallet();
-    setState(() {
-      this.wallet = wallet;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -193,20 +210,6 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             SizedBox(
                               height: 10,
                             ),
-                            if (model.hasUser)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    FontAwesomeIcons.coins,
-                                    color: Colors.amber[500],
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 5.0),
-                                  Text(
-                                      'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}')
-                                ],
-                              ),
                             // if (model.hasUser) UserCoin()
                           ])
                         ])))));
