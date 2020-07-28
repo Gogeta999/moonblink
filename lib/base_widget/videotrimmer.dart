@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -73,7 +74,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Video"),
+        title: Text(S.of(context).trimYourVideo),
       ),
       body: Builder(
         builder: (context) => Center(
@@ -102,7 +103,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                             Scaffold.of(context).showSnackBar(snackBar);
                           });
                         },
-                  child: Text("Upload"),
+                  child: Text(S.of(context).upload),
                 ),
                 Expanded(
                   child: VideoViewer(),

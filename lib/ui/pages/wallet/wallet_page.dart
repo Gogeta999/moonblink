@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/models/wallet.dart';
+// ignore: unused_import
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
@@ -15,8 +16,6 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  // ignore: todo
-  ///TODO: need to connect with backend.
   ///query List<IAPItem> from the store. IOS only
   // ignore: unused_field
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -260,8 +259,6 @@ class _WalletPageState extends State<WalletPage> {
           trailing: isLoading ? CircularProgressIndicator() : null,
         ));
   }
-
-  Widget _buildHistoryList() {}
 
   Widget _buildWalletList() {
     if (_items.isEmpty || wallet == null || hasError) {

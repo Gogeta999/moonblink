@@ -6,7 +6,7 @@ import 'package:moonblink/ui/pages/search/search_suggestions.dart';
 import 'package:moonblink/view_model/search_model.dart';
 import 'package:provider/provider.dart';
 
-class SearchPage extends SearchDelegate{
+class SearchPage extends SearchDelegate {
   SearchHistoryModel _searchHistoryModel = SearchHistoryModel();
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -15,6 +15,7 @@ class SearchPage extends SearchDelegate{
         primaryColor: theme.scaffoldBackgroundColor,
         primaryColorBrightness: theme.brightness);
   }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -47,7 +48,9 @@ class SearchPage extends SearchDelegate{
     debugPrint('buildResults-query ' + query);
     if (query.length > 0) {
       return SearchResults(
-          keyword: query, searchHistoryModel: _searchHistoryModel,);
+        keyword: query,
+        searchHistoryModel: _searchHistoryModel,
+      );
     }
     return SizedBox.shrink();
     // return ListView();
@@ -57,23 +60,15 @@ class SearchPage extends SearchDelegate{
   Widget buildSuggestions(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<SearchHistoryModel>.value(value: _searchHistoryModel),
-
+        ChangeNotifierProvider<SearchHistoryModel>.value(
+            value: _searchHistoryModel),
       ],
       child: SearchSuggestions(delegate: this),
-      );
-    // return Container(
-    //   height: 20,
-    //   // color: Colors.black,
-    //   child: Text('Search Suggestions here'),
-    // );
-    // return SizedBox.shrink(
-      
-    // );
+    );
   }
 
-  @override 
-  void close(BuildContext context, result){
+  @override
+  void close(BuildContext context, result) {
     _searchHistoryModel.dispose();
     super.close(context, result);
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -65,9 +64,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 10.0),
-                          child: Text(widget.posts.userName +
-                              ' id' +
-                              widget.posts.userID.toString()),
+                          child: Text(widget.posts.userName),
                         ),
                       ],
                     ),
@@ -82,13 +79,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   fit: BoxFit.contain,
                   height: 200,
                 ),
-                // child: Text(posts.profileImage.toString()),
-                // child: Image.asset(ImageHelper.wrapAssetsImage('images.jpg'), fit: BoxFit.cover,
-                // ),
               ),
-              // Container(
-              //   child: Image.network('http://128.199.254.89/moonblink/api/v1/social/user?limit=5&type=1&page=1'+ posts.profileImage.toString(), fit: BoxFit.cover,),
-              // ),
+
               /// [User_bottom data]
               ProviderWidget(
                   model: HomeModel(),
@@ -197,20 +189,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           }
                                         });
                                       }),
-                          // IconButton(
-                          //   icon: Icon(FontAwesomeIcons.comment),
-                          //   onPressed: (){
-                          //     Navigator.of(context).pushNamed(RouteName.comment);
-                          //   }
-                          //   )
-                          //   ],
-                          // ),
                           IconButton(
                             icon: Icon(FontAwesomeIcons.share),
                             onPressed: () {
                               final RenderBox box = context.findRenderObject();
                               Share.share(
-                                  'check out my website https://example.com',
+                                  'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
                                   subject: 'Please download our app',
                                   sharePositionOrigin:
                                       box.localToGlobal(Offset.zero) &
@@ -224,19 +208,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
               /// [bottom date]
               Container(
-                margin: EdgeInsets.only(left: 10.0, top: 0.5),
-                // child: Column(
-                //   children: <Widget>[
-                //     Container(
-                //       margin: EdgeInsets.only(top: 2.0),
+                margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
                 alignment: Alignment.topLeft,
                 child: Text(
                   DateFormat.jm().format(DateTime.parse(widget.posts.creatdAt)),
                   style: TextStyle(color: Colors.grey, fontSize: 12.0),
                 ),
-                //     )
-                //   ],
-                // ),
               ),
               Divider(
                 height: 0.5,
@@ -249,21 +226,6 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
         ),
       ],
-    );
-  }
-
-  void loginHelper(context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('You Need to Login'),
-          actions: <Widget>[
-            FlatButton(onPressed: null, child: Text('Cancel')),
-            FlatButton(onPressed: null, child: Text('Login'))
-          ],
-        );
-      },
     );
   }
 }

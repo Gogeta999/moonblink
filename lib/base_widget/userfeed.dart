@@ -4,7 +4,9 @@ import 'package:moonblink/base_widget/profile_widgets.dart';
 class Feed extends StatefulWidget {
   final String partnerName;
   final int partnerId;
-  Feed(this.partnerName, this.partnerId);
+  //TODO: need to change to double with backend
+  final int partnerRating;
+  Feed(this.partnerName, this.partnerId, this.partnerRating);
   @override
   _Feed createState() => new _Feed();
 }
@@ -22,7 +24,7 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
       Tab(text: 'History'),
     ];
     _pages = [
-      PartnerRatingWidget(widget.partnerName),
+      PartnerRatingWidget(widget.partnerName, widget.partnerRating),
       PartnerGameHistoryWidget(widget.partnerName, widget.partnerId),
     ];
     _controller = TabController(

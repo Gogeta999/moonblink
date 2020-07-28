@@ -1,13 +1,20 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/services/locator.dart';
+import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 //user token will change with data at login model
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 _parseAndDecode(String response) {
   return jsonDecode(response);
@@ -29,7 +36,7 @@ class DioUtils {
 
   static DioUtils getInstance() {
     if (_instance == null) {
-      _instance = new DioUtils();
+      _instance = DioUtils();
     }
     return _instance;
   }
@@ -39,13 +46,13 @@ class DioUtils {
    */
   DioUtils() {
     //request parametrs
-    _baseOptions = new BaseOptions(
+    _baseOptions = BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: 5000,
       receiveTimeout: 5000,
       headers: {
         //Default necessary header
-        //appkey will remain old key unless we generate new key on server
+        //appkey will remain old key unless we generate  key on server
         'app-key': 'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=',
       },
       contentType: Headers.formUrlEncodedContentType,
@@ -53,7 +60,7 @@ class DioUtils {
     );
 
     //create dio instance
-    _dio = new Dio(_baseOptions);
+    _dio = Dio(_baseOptions);
 
     //Adding necessary interceptor for our app
     _dio.interceptors.add(
@@ -107,6 +114,7 @@ class DioUtils {
       //TODO:
       // Platform and version Control
       else if (respData.errorCode == 102 && Platform.isAndroid) {
+        throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
       }
       //Tell toe hlaing win to solve normal user problem
@@ -119,9 +127,9 @@ class DioUtils {
         // return emptyData;
         return response;
       }
-      // 111 status is for newest user to see home page
+      // 111 status is for est user to see home page
       // else if (respData.errorCode == 111) {
-      //   var newsetStory = {};
+      //   var setStory = {};
       // }
       else {
         throw NotSuccessException.fromRespData(respData);
@@ -250,6 +258,67 @@ class DioUtils {
     } else {
       //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
       print("Unknown Error");
+    }
+  }
+
+  Future<void> forceUpdateAndroidDialog() async {
+    showDialog(
+        context: locator<NavigationService>()
+            .navigatorKey
+            .currentState
+            .overlay
+            .context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(S.of(context).forceUpdateTitle),
+            content: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Text(S.of(context).forceUpdateContent),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text(S.of(context).cancel),
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text(S.of(context).confirm),
+                onPressed: () {
+                  _openStore();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void _openStore() async {
+    String appStoreUrl;
+    if (Platform.isIOS) {
+      appStoreUrl = 'fb://profile/103254564508101';
+    } else {
+      appStoreUrl =
+          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(appStoreUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
     }
   }
 }

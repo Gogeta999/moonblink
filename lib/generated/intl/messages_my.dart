@@ -31,8 +31,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "bookingDialogReject" : MessageLookupByLibrary.simpleMessage("Reject"),
     "bookingDialogSomeoneBook" : MessageLookupByLibrary.simpleMessage("want to play with you"),
     "bookingPlayerBusy" : MessageLookupByLibrary.simpleMessage("Player is currently unavailable to Play"),
-    "detailPageFollow" : MessageLookupByLibrary.simpleMessage("Follow"),
-    "detailPageFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "feedback" : MessageLookupByLibrary.simpleMessage("Feedback"),
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("Can\'t be empty"),
     "imagePickerAppBar" : MessageLookupByLibrary.simpleMessage("Upload Your Story"),

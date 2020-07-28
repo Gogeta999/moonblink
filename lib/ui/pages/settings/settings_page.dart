@@ -157,50 +157,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   trailing: Icon(Icons.chevron_right),
                 ),
               ),
+
               ///newUser on/off Test
               SizedBox(
                 height: 20,
               ),
-              TestNewUser(iconColor: iconColor),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class TestNewUser extends StatefulWidget {
-  final Color iconColor;
-
-  const TestNewUser({Key key, this.iconColor}) : super(key: key);
-  @override
-  _TestNewUserState createState() => _TestNewUserState();
-}
-
-class _TestNewUserState extends State<TestNewUser> {
-  bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).cardColor,
-      child: ListTile(
-        title: Text('isNewUser'),
-        leading: Icon(
-          Icons.supervisor_account,
-          color: widget.iconColor,
-        ),
-        trailing: CupertinoSwitch(
-          value: newUser,
-          onChanged: (value) {
-            StorageManager.sharedPreferences.setBool(isNewUser, value);
-            setState(() {
-              newUser = value;
-            });
-            print('newUser: $newUser');
-            print('isNewUser: ${StorageManager.sharedPreferences.getBool(isNewUser)}');
-          },
         ),
       ),
     );

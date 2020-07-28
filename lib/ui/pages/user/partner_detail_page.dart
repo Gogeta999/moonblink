@@ -34,16 +34,33 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     // _scrollController.dispose();
     super.dispose();
   }
-  userstatus (status) {
-    switch(status){
-      case(0): return Center(child:Text("Available", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)));
-      break;
-      case(1): return Center(child: Text("Busy",style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
-      break;
-      case(2): return Center(child: Text("Connection Error",style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)));
-      break;
-      case(3): return Center(child: Text("In Game",style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)));
-      break;
+
+  userstatus(status) {
+    switch (status) {
+      case (0):
+        return Center(
+            child: Text("Available",
+                style: TextStyle(
+                    color: Colors.green, fontWeight: FontWeight.bold)));
+        break;
+      case (1):
+        return Center(
+            child: Text("Busy",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+        break;
+      case (2):
+        return Center(
+            child: Text("Connection Error",
+                style: TextStyle(
+                    color: Colors.orange, fontWeight: FontWeight.bold)));
+        break;
+      case (3):
+        return Center(
+            child: Text("In Game",
+                style: TextStyle(
+                    color: Colors.blue, fontWeight: FontWeight.bold)));
+        break;
     }
   }
 
@@ -162,11 +179,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0)),
                             child: followButtonClicked
-                                ? Text(S.of(context).detailPageFollowing,
+                                ? Text(S.of(context).following,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button)
-                                : Text(S.of(context).detailPageFollow,
+                                : Text(S.of(context).follow,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button),
@@ -218,11 +235,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0)),
                             child: followButtonClicked
-                                ? Text(S.of(context).detailPageFollow,
+                                ? Text(S.of(context).follow,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button)
-                                : Text(S.of(context).detailPageFollowing,
+                                : Text(S.of(context).following,
                                     style: Theme.of(context)
                                         .accentTextTheme
                                         .button),
@@ -296,14 +313,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
 
-                    /// [user feed]
-                    SliverToBoxAdapter(
-                        child: Feed(partnerModel.partnerData.partnerName, partnerModel.partnerData.partnerId)),
-
-                  /// nothing just test
-                  // SliverToBoxAdapter(
-                  //   child: UserFeedWidget(),
-                  // ),
+                  /// [user feed]
+                  SliverToBoxAdapter(
+                      child: Feed(
+                          partnerModel.partnerData.partnerName,
+                          partnerModel.partnerData.partnerId,
+                          partnerModel.partnerData.rating)),
                 ],
               ),
             );
@@ -345,20 +360,10 @@ class FollowButton extends StatelessWidget {
         height: 30,
         width: 80,
         // color: Colors.red,
-        child: isFollow ? Text('Follow') : Text(S.of(context).search),
+        child: isFollow
+            ? Text(S.of(context).follow)
+            : Text(S.of(context).following),
       ),
     );
-    // return RaisedButton(
-    //   color: Theme.of(context).primaryColor,
-    //   highlightColor: Theme.of(context).accentColor,
-    //   splashColor: Colors.grey,
-    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-    //   child: isFollow ? Text('Follow') : Text(S.of(context).search),
-    //   onPressed: isFollow ? (){
-    //     print('now is what 0');
-    //   } : (){
-    //     print('now is what 1');
-    //   }
-    // );
   }
 }

@@ -168,8 +168,10 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
 
               /// [user feed]
               SliverToBoxAdapter(
-                  child: Feed(partnerModel.partnerData.partnerName,
-                      partnerModel.partnerData.partnerId)),
+                  child: Feed(
+                      partnerModel.partnerData.partnerName,
+                      partnerModel.partnerData.partnerId,
+                      partnerModel.partnerData.rating)),
 
               /// nothing just test
               // SliverToBoxAdapter(

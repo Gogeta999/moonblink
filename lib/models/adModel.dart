@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 class SplashAds {
   final String status;
   final String adUrl;

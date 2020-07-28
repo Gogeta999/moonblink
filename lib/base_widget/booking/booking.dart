@@ -85,27 +85,6 @@ class _BookingButtonState extends State<BookingButton> {
         });
   }
 
-  ///[Partner busy]
-  void busy() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AlertDialog(
-            title: new Text(S.of(context).bookingPlayerBusy),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            content: Image.asset(ImageHelper.wrapAssetsImage('busy.gif')),
-            actions: [
-              FlatButton(
-                  child: Text("Go Back"),
-                  onPressed: () {
-                    Navigator.pop(context, 'Cancel');
-                  })
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     var partnerDetailModel = Provider.of<PartnerDetailModel>(context);
@@ -147,7 +126,8 @@ class _BookingDropdownState extends State<BookingDropdown> {
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        value: widget.bookingModel.dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
+        value: widget.bookingModel
+            .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,
         iconEnabledColor: Theme.of(context).accentColor,
@@ -155,7 +135,7 @@ class _BookingDropdownState extends State<BookingDropdown> {
         onChanged: (String newValue) {
           setState(() {
             final int selectedIndex =
-            widget.bookingModel.dropdownGameListAndPrice.indexOf(newValue);
+                widget.bookingModel.dropdownGameListAndPrice.indexOf(newValue);
             print(selectedIndex);
             widget.bookingModel.selectedIndex = selectedIndex;
           });
@@ -163,7 +143,7 @@ class _BookingDropdownState extends State<BookingDropdown> {
         elevation: 0,
         items: widget.bookingModel.dropdownGameListAndPrice
             .map<DropdownMenuItem<String>>((String value) {
-              List<String> splitValue = value.split('.');
+          List<String> splitValue = value.split('.');
           return DropdownMenuItem<String>(
             value: value,
             child: Row(
@@ -178,39 +158,4 @@ class _BookingDropdownState extends State<BookingDropdown> {
       ),
     );
   }
-  /*@override
-  Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value:
-            widget.bookingModel.dropdownList[widget.bookingModel.selectedIndex],
-        isExpanded: false,
-        isDense: true,
-        iconEnabledColor: Theme.of(context).accentColor,
-        style: TextStyle(color: Theme.of(context).accentColor),
-        onChanged: (String newValue) {
-          setState(() {
-            final int selectedIndex =
-                widget.bookingModel.dropdownList.indexOf(newValue);
-            print(selectedIndex);
-            widget.bookingModel.selectedIndex = selectedIndex;
-          });
-        },
-        elevation: 0,
-        items: widget.bookingModel.dropdownList
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(value, softWrap: true),
-                Text('   \$1', softWrap: true),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }*/
 }

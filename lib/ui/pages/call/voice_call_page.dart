@@ -58,15 +58,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     super.dispose();
   }
 
-  // Future<void>testswitch() async {
-  //   switch () {
-  //     case :
-
-  //       break;
-  //     default:
-  //   }
-  // }
-  //Handle TODO:
   Future<void> timerCountDown() async {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
@@ -239,16 +230,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                   '$_countdownTime',
                   style: TextStyle(color: Colors.white),
                 )
-                //TODO: countDownControll
-                // if (views.length == 1)
-                // VoiceCallCoundown(
-                //   context: context,
-                //   timeCoundown: StepTween(begin: 30, end: 0)
-                //       .animate(_countdownController),
-                //   pop: () {
-                //     Navigator.pop(context);
-                //   },
-                // ),
               ],
             ),
           ),
@@ -373,29 +354,3 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     );
   }
 }
-
-// class VoiceCallCoundown extends AnimatedWidget {
-//   // _countdownController =
-//   //     AnimationController(vsync: this, duration: Duration(seconds: 30));
-//   // _countdownController.forward();
-//   final Animation<int> timeCoundown;
-//   final int partnerId;
-//   final Function pop;
-//   VoiceCallCoundown({key, this.timeCoundown, this.partnerId, this.pop, context})
-//       : super(key: key, listenable: timeCoundown) {
-//     this.timeCoundown.addStatusListener((status) {
-//       if (status == AnimationStatus.completed) {
-//         AgoraRtcEngine.leaveChannel();
-//         pop();
-//       } else if (status == AnimationStatus.dismissed) {}
-//     });
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     var value = timeCoundown.value + 1;
-//     return Text(
-//       (value == 0 ? '' : '$value '),
-//       style: TextStyle(color: Colors.white),
-//     );
-//   }
-// }

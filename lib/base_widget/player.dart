@@ -118,62 +118,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               ),
             ),
           ],
-        ) /*Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              key: Key('play_button'),
-              onPressed: _isPlaying ? null : () => _play(),
-              iconSize: 20.0,
-              icon: Icon(Icons.play_arrow),
-              color: Colors.cyan,
-            ),
-            IconButton(
-              key: Key('pause_button'),
-              onPressed: _isPlaying ? () => _pause() : null,
-              iconSize: 20.0,
-              icon: Icon(Icons.pause),
-              color: Colors.cyan,
-            ),
-          ],
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Stack(
-                children: [
-                  Slider(
-                    onChanged: (v) {
-                      final Position = v * _duration.inMilliseconds;
-                      _audioPlayer
-                          .seek(Duration(milliseconds: Position.round()));
-                    },
-                    value: (_position != null &&
-                            _duration != null &&
-                            _position.inMilliseconds > 0 &&
-                            _position.inMilliseconds < _duration.inMilliseconds)
-                        ? _position.inMilliseconds / _duration.inMilliseconds
-                        : 0.0,
-                  ),
-                ],
-              ),
-            ),
-            Text(
-              _position != null
-                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                  : _duration != null ? _durationText : '',
-              style: TextStyle(fontSize: 20.0),
-            ),
-          ],
-        ),
-      ],
-    )*/
-        );
+        ));
   }
 
   void _initAudioPlayer() async {

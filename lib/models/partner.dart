@@ -16,6 +16,7 @@ class PartnerUser {
   int followerCount;
   int followingCount; // own Profile
   int isFollow;
+  int rating;
   PartnerProfile prfoileFromPartner;
 
   // String partnerProfileImage;
@@ -35,6 +36,7 @@ class PartnerUser {
       this.followerCount,
       this.followingCount,
       this.isFollow,
+      this.rating,
       this.prfoileFromPartner});
 
   factory PartnerUser.fromJson(Map<String, dynamic> map) {
@@ -49,6 +51,7 @@ class PartnerUser {
         followerCount: map['follower_count'],
         followingCount: map['following_count'],
         isFollow: map['is_follow'],
+        rating: map['rating'],
         verified: map['verified'],
         verifiedAt: map['verified_at'],
         createdAt: map['created_at'],
@@ -70,6 +73,7 @@ class PartnerUser {
     data['status'] = status;
     data['follower_count'] = followerCount;
     data['is_follow'] = isFollow;
+    data['rating'] = rating;
     // data['profile'] = profileFromPartner;
     // 'profile'] =partnerProfileImage;
     return data;

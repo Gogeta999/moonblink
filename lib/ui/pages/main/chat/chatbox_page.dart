@@ -11,7 +11,7 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
@@ -128,7 +128,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         return buildrequest(msg, bookingid);
         break;
       default:
-        return Text("error");
+        return Text("Error");
         break;
     }
   }
@@ -148,7 +148,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       child: Column(
         children: <Widget>[
-          Text("Booking Request"),
+          Text(S.of(context).bookingRequest),
           // noramlUserCancel(msg, bookingid),
           partneronly(msg, bookingid)
         ],
@@ -181,7 +181,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               model: RateModel(),
               builder: (context, model, child) {
                 return new AlertDialog(
-                  title: Text("Please give rating for this game"),
+                  title: Text(S.of(context).pleaseRatingForThisGame),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                   content: Column(
@@ -227,7 +227,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   ),
                   actions: [
                     FlatButton(
-                        child: Text("Summit"),
+                        child: Text(S.of(context).submit),
                         onPressed: () {
                           model
                               .rate(widget.detailPageId, bookingid, rate,
@@ -247,7 +247,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return ButtonTheme(
         minWidth: 70,
         child: FlatButton(
-          child: Text("Accept",
+          child: Text(S.of(context).accept,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
@@ -262,7 +262,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return ButtonTheme(
         minWidth: 70,
         child: FlatButton(
-          child: Text("Reject",
+          child: Text(S.of(context).reject,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
@@ -292,7 +292,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       child: Column(
         children: <Widget>[
-          Text("Someone is Calling u"),
+          Text(S.of(context).someoneCallingYou),
           buttoncheck(status, msg)
         ],
       ),
@@ -303,13 +303,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   buttoncheck(status, msg) {
     if (status == 1) {
       return MaterialButton(
-        child: Text("Enter call"),
+        child: Text(S.of(context).enterCall),
         onPressed: () {
           joinChannel(msg.attach);
         },
       );
     } else {
-      return Text("Booking is ended",
+      return Text(S.of(context).bookingEnded,
           style: TextStyle(fontWeight: FontWeight.bold));
     }
   }
@@ -447,7 +447,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         model: CallModel(),
         builder: (context, model, child) {
           return FlatButton(
-            child: Text("End"),
+            child: Text(S.of(context).end),
             onPressed: () {
               model.endbooking(selfId, bookingid, 3);
             },
@@ -483,14 +483,14 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           model: CallModel(),
           builder: (context, model, child) {
             return FlatButton(
-              child: Text("Cancel"),
+              child: Text(S.of(context).cancel),
               onPressed: () {
                 model.endbooking(selfId, bookingid, 6);
               },
             );
           });
     } else {
-      return Center(child: Text("Cancel"));
+      return Center(child: Text(S.of(context).cancel));
     }
   }
 
@@ -682,20 +682,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(
-                "Please allow Microphone",
+                S.of(context).pleaseAllowMicroPhone,
                 textAlign: TextAlign.center,
               ),
-              content: Text(
-                  "You need to allow Microphone permission to enable voice call"),
+              content: Text(S.of(context).youNeedToAllowMicroPermission),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Cancel"),
+                  child: Text(S.of(context).cancel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text("Ok"),
+                  child: Text(S.of(context).confirm),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -704,26 +703,26 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             );
           });
     } else if (await Permission.microphone.request().isPermanentlyDenied) {
-      print('Permanently being denied,user need to allow in app setting');
+      /// [Error]
+      // Permanently being denied,you need to allow in app setting
       showDialog(
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(
-                "Please allow Microphone to",
+                S.of(context).pleaseAllowMicroPhone,
                 textAlign: TextAlign.center,
               ),
-              content: Text(
-                  "You need to allow Microphone permission at App Settings"),
+              content: Text(S.of(context).youNeedToAllowMicroPermission),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Cancel"),
+                  child: Text(S.of(context).cancel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text("Ok"),
+                  child: Text(S.of(context).confirm),
                   onPressed: () {
                     openAppSettings();
                     Navigator.of(context).pop();

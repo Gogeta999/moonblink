@@ -4,8 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
@@ -19,8 +17,7 @@ class PushNotificationsManager {
 
   factory PushNotificationsManager() => _instance;
 
-  static PushNotificationsManager _instance =
-      PushNotificationsManager._();
+  static PushNotificationsManager _instance = PushNotificationsManager._();
 
   bool _initialized = false;
 
@@ -29,7 +26,9 @@ class PushNotificationsManager {
       print('FCM initializing');
       await _configLocalNotification();
       await _registerNotification();
-      _firebaseMessaging.onTokenRefresh.listen((event) {print('onTokenRefresh: $event');});
+      _firebaseMessaging.onTokenRefresh.listen((event) {
+        print('onTokenRefresh: $event');
+      });
       _initialized = true;
     }
   }
@@ -43,19 +42,29 @@ class PushNotificationsManager {
   }
 
   void dispose() {
-    if(_initialized) {
+    if (_initialized) {
       print('FCM disposing');
       _firebaseMessaging.configure(
         onBackgroundMessage: myBackgroundMessageHandler,
-        onMessage: (Map<String, dynamic> message) {print(message); return;},
-        onLaunch: (Map<String, dynamic> message) {print(message); return;},
-        onResume: (Map<String, dynamic> message) {print(message); return;},
+        onMessage: (Map<String, dynamic> message) {
+          print(message);
+          return;
+        },
+        onLaunch: (Map<String, dynamic> message) {
+          print(message);
+          return;
+        },
+        onResume: (Map<String, dynamic> message) {
+          print(message);
+          return;
+        },
       );
       _initialized = false;
     }
   }
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()..autoInitEnabled();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
+    ..autoInitEnabled();
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -92,7 +101,7 @@ class PushNotificationsManager {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
         _message.navigateToChatBox();
-      }else if (payload == FcmTypeVoiceCall) {
+      } else if (payload == FcmTypeVoiceCall) {
         _flutterLocalNotificationsPlugin.cancelAll();
         print('payload: $payload');
         _voiceCall.navigateToCallScreen();
@@ -155,7 +164,8 @@ class PushNotificationsManager {
       _message.prepare(partnerId: partnerId);
       _message.navigateToChatBox();
     } else if (fcmType == FcmTypeVoiceCall) {
-      final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+      final String callChannel =
+          message['data']['call_channel'] ?? message['call_channel'];
       _voiceCall.prepare(callChannel: callChannel);
       _voiceCall.navigateToCallScreen();
     }
@@ -176,7 +186,8 @@ class PushNotificationsManager {
       _message.prepare(partnerId: partnerId);
       _message.navigateToChatBox();
     } else if (fcmType == FcmTypeVoiceCall) {
-      final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+      final String callChannel =
+          message['data']['call_channel'] ?? message['call_channel'];
       _voiceCall.prepare(callChannel: callChannel);
       _voiceCall.navigateToCallScreen();
     }
@@ -184,12 +195,12 @@ class PushNotificationsManager {
 
   _showBookingDialog(message) async {
     final int userId =
-    json.decode(message['data']['user_id'] ?? message['user_id']);
+        json.decode(message['data']['user_id'] ?? message['user_id']);
     final int bookingId = json.decode(message['data']['id'] ?? message['id']);
     final int bookingUserId = json.decode(
         message['data']['booking_user_id'] ?? message['booking_user_id']);
     final int gameType =
-    json.decode(message['data']['game_type'] ?? message['game_type']);
+        json.decode(message['data']['game_type'] ?? message['game_type']);
     final String bookingUserName = message['data']['name'] ?? message['name'];
     print(
         'userId: $userId, bookingId: $bookingId, bookingUserId: $bookingUserId, gameType: $gameType');
@@ -294,7 +305,8 @@ class PushNotificationsManager {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    final String callChannel = message['data']['call_channel'] ?? message['call_channel'];
+    final String callChannel =
+        message['data']['call_channel'] ?? message['call_channel'];
 
     _voiceCall.prepare(callChannel: callChannel);
 
@@ -309,24 +321,24 @@ class PushNotificationsManager {
   //local voice call notification
   Future<void> showVoiceCallNotification(String channelName) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'com.moonuniverse.moonblink', //same package name for both platform
-      channelName,
-      'Moon Blink',
-      largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
-      playSound: true,
-      enableVibration: true,
-      importance: Importance.Max,
-      priority: Priority.High,
-      ongoing: true,
-      autoCancel: false
-    );
+        'com.moonuniverse.moonblink', //same package name for both platform
+        channelName,
+        'Moon Blink',
+        largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+        playSound: true,
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High,
+        ongoing: true,
+        autoCancel: false);
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
         presentAlert: true, presentBadge: true, presentSound: true);
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    await _flutterLocalNotificationsPlugin.show(1, 'Voice Call', 'Calling', platformChannelSpecifics);
+    await _flutterLocalNotificationsPlugin.show(
+        1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
   Future<void> cancelVoiceCallNotification() async {
@@ -346,6 +358,7 @@ class _Message {
         .navigateTo(RouteName.chatBox, arguments: _partnerId);
   }
 }
+
 //call_channel
 class _VoiceCall {
   String _callChannel;
@@ -355,6 +368,7 @@ class _VoiceCall {
   }
 
   void navigateToCallScreen() {
-    locator<NavigationService>().navigateTo(RouteName.callScreen, arguments: _callChannel);
+    locator<NavigationService>()
+        .navigateTo(RouteName.callScreen, arguments: _callChannel);
   }
 }

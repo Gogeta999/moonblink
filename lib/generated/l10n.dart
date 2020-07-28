@@ -33,6 +33,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Accept`
+  String get accept {
+    return Intl.message(
+      'Accept',
+      name: 'accept',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `MoonBlink`
   String get appName {
     return Intl.message(
@@ -48,6 +58,26 @@ class S {
     return Intl.message(
       'Auto with system',
       name: 'autoBySystem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `'s average rating is `
+  String get averageRatingIs {
+    return Intl.message(
+      '\'s average rating is ',
+      name: 'averageRatingIs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Booking request`
+  String get bookingRequest {
+    return Intl.message(
+      'Booking request',
+      name: 'bookingRequest',
       desc: '',
       args: [],
     );
@@ -78,6 +108,16 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'bookingCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Booking End`
+  String get bookingEnded {
+    return Intl.message(
+      'Booking End',
+      name: 'bookingEnded',
       desc: '',
       args: [],
     );
@@ -133,21 +173,111 @@ class S {
     );
   }
 
+  /// `Burmese`
+  String get burmese {
+    return Intl.message(
+      'Burmese',
+      name: 'burmese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chinese`
+  String get china {
+    return Intl.message(
+      'Chinese',
+      name: 'china',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End`
+  String get end {
+    return Intl.message(
+      'End',
+      name: 'end',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English`
+  String get english {
+    return Intl.message(
+      'English',
+      name: 'english',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Call`
+  String get enterCall {
+    return Intl.message(
+      'Enter Call',
+      name: 'enterCall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sorry we don't support this version`
+  String get forceUpdateTitle {
+    return Intl.message(
+      'Sorry we don\'t support this version',
+      name: 'forceUpdateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please download our app on AppStore`
+  String get forceUpdateContent {
+    return Intl.message(
+      'Please download our app on AppStore',
+      name: 'forceUpdateContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Follow`
-  String get detailPageFollow {
+  String get follow {
     return Intl.message(
       'Follow',
-      name: 'detailPageFollow',
+      name: 'follow',
       desc: '',
       args: [],
     );
   }
 
   /// `Following`
-  String get detailPageFollowing {
+  String get following {
     return Intl.message(
       'Following',
-      name: 'detailPageFollowing',
+      name: 'following',
       desc: '',
       args: [],
     );
@@ -273,6 +403,16 @@ class S {
     );
   }
 
+  /// `Myanmar`
+  String get myanmar {
+    return Intl.message(
+      'Myanmar',
+      name: 'myanmar',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No this account`
   String get noAccount {
     return Intl.message(
@@ -303,6 +443,16 @@ class S {
     );
   }
 
+  /// `Reject`
+  String get reject {
+    return Intl.message(
+      'Reject',
+      name: 'reject',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Get your otp code`
   String get otpGetCode {
     return Intl.message(
@@ -328,6 +478,26 @@ class S {
     return Intl.message(
       'Sign As Partner',
       name: 'otpSignAsPartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please rating for this game`
+  String get pleaseRatingForThisGame {
+    return Intl.message(
+      'Please rating for this game',
+      name: 'pleaseRatingForThisGame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please allow Microphone`
+  String get pleaseAllowMicroPhone {
+    return Intl.message(
+      'Please allow Microphone',
+      name: 'pleaseAllowMicroPhone',
       desc: '',
       args: [],
     );
@@ -453,6 +623,16 @@ class S {
     );
   }
 
+  /// `Someone is calling you`
+  String get someoneCallingYou {
+    return Intl.message(
+      'Someone is calling you',
+      name: 'someoneCallingYou',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sign in First`
   String get showToastSignInFirst {
     return Intl.message(
@@ -553,6 +733,16 @@ class S {
     );
   }
 
+  /// `Submit`
+  String get submit {
+    return Intl.message(
+      'Submit',
+      name: 'submit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get tabHome {
     return Intl.message(
@@ -618,6 +808,16 @@ class S {
     return Intl.message(
       'Please Sign Up',
       name: 'toSignUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trim your video`
+  String get trimYourVideo {
+    return Intl.message(
+      'Trim your video',
+      name: 'trimYourVideo',
       desc: '',
       args: [],
     );
@@ -703,6 +903,16 @@ class S {
     );
   }
 
+  /// `Upload`
+  String get upload {
+    return Intl.message(
+      'Upload',
+      name: 'upload',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Waiting another to join`
   String get voiceCallWaitAnotherToJoin {
     return Intl.message(
@@ -778,6 +988,26 @@ class S {
     return Intl.message(
       'Load Failed',
       name: 'viewStateMessageError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must accept permissions`
+  String get youMustAcceptPermission {
+    return Intl.message(
+      'You must accept permissions',
+      name: 'youMustAcceptPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need to allow Microphone permission to enable voice call`
+  String get youNeedToAllowMicroPermission {
+    return Intl.message(
+      'You need to allow Microphone permission to enable voice call',
+      name: 'youNeedToAllowMicroPermission',
       desc: '',
       args: [],
     );
