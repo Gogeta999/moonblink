@@ -139,9 +139,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       width: 160,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: msg.senderID == widget.detailPageId
-            ? Colors.grey[300]
-            : Theme.of(context).accentColor,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -283,9 +281,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       width: 150,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: msg.senderID == widget.detailPageId
-            ? Colors.grey[300]
-            : Theme.of(context).accentColor,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -320,9 +316,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       width: 150,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: msg.senderID == widget.detailPageId
-            ? Colors.grey[300]
-            : Theme.of(context).accentColor,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -494,67 +488,86 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     }
   }
 
-  //action widget
+  //action 1
   action1(id, status, bookingid) {
     switch (status) {
+      //normal
       case (-1):
-        return Text("normal");
+        return Container();
         break;
+      //cancel booking
       case (0):
         return bookingcancel(bookingid);
         break;
+      //in booking
       case (1):
         return callbtn(id);
         break;
+      //reject
       case (2):
-        return Text("reject");
+        return Container();
         break;
+      //done
       case (3):
-        return Text("done");
+        return Container();
         break;
+      //expired
       case (4):
-        return Text("expired");
+        return Container();
         break;
+      //unavailable
       case (5):
-        return Text("unavailable");
+        return Container();
         break;
+      //cancel
       case (6):
-        return Text("cancel");
+        return Container();
         break;
+      //default
       default:
-        return Text("default");
+        return Container();
     }
   }
 
+  //action2
   action2(status, bookingid) {
     if (usertype == 1) {
       switch (status) {
+        //normal
         case (-1):
-          return Text("normal");
+          return Container();
           break;
+        //pending
         case (0):
-          return Text("pending");
+          return Container();
           break;
+        //end booking
         case (1):
           return endbtn(bookingid);
           break;
+        //reject
         case (2):
-          return Text("reject");
+          return Container();
           break;
+        //done
         case (3):
-          return Text("done");
+          return Container();
           break;
+        //expired
         case (4):
-          return Text("expired");
+          return Container();
           break;
+        //unavailable
         case (5):
-          return Text("unavailable");
+          return Container();
           break;
+        //cancel
         case (6):
-          return Text("cancel");
+          return Container();
           break;
+        //default
         default:
-          return Text("default");
+          return Container();
       }
     } else
       return Container();

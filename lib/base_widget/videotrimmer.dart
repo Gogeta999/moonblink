@@ -97,10 +97,6 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                       : () async {
                           _saveVideo().then((outputPath) {
                             print('OUTPUT PATH: $outputPath');
-                            final snackBar = SnackBar(
-                              content: Text('Video Saved successfully'),
-                            );
-                            Scaffold.of(context).showSnackBar(snackBar);
                           });
                         },
                   child: Text(S.of(context).upload),
