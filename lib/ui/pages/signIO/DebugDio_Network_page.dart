@@ -17,7 +17,6 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
-  SplashAds splashAds;
   String channelName;
   bool isOpen = false;
   var resultJson = "";
@@ -36,7 +35,7 @@ class PageState extends State<NetWorkPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           ProviderWidget<SplashAdsModel>(
-            model: SplashAdsModel(splashAds),
+            model: SplashAdsModel(),
             onModelReady: (splashModel) {
               splashModel.initAds();
             },

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:moonblink/models/transaction.dart';
 
 abstract class PartnerGameHistoryState extends Equatable{
   const PartnerGameHistoryState();
@@ -24,13 +25,13 @@ class PartnerGameHistoryNoData extends PartnerGameHistoryState {
 }
 
 class PartnerGameHistorySuccess extends PartnerGameHistoryState {
-  final List<String> data;
+  final List<Transaction> data;
   final bool hasReachedMax;
   final int page;
 
   const PartnerGameHistorySuccess({this.data, this.hasReachedMax, this.page});
 
-  PartnerGameHistorySuccess copyWith({List<String> data, bool hasReachedMax, int page}) {
+  PartnerGameHistorySuccess copyWith({List<Transaction> data, bool hasReachedMax, int page}) {
     return PartnerGameHistorySuccess(
       data: data ?? this.data,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,

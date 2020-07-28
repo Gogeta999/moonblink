@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moonblink/bloc_pattern/bloc.dart';
-import 'package:moonblink/bloc_pattern/partner_game_history_bloc.dart';
-import 'package:moonblink/generated/l10n.dart';
+import 'package:intl/intl.dart';
+import 'package:moonblink/bloc_pattern/partner_game_history/bloc.dart';
+import 'package:moonblink/bloc_pattern/partner_game_history/partner_game_history_bloc.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/models/transaction.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class PartnerRatingWidget extends StatelessWidget {
@@ -182,6 +184,7 @@ class _HistoryListViewState extends State<HistoryListView> {
   }*/
 }
 
+///Use for both UserTransaction and PartnerGameUserHistory
 class BottomLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -200,13 +203,15 @@ class BottomLoader extends StatelessWidget {
   }
 }
 
+///Use for both UserTransaction and PartnerGameUserHistory
 class HistoryWidget extends StatelessWidget {
-  final String history;
+  final Transaction history;
 
   const HistoryWidget({Key key, this.history}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    //var fo
     return Container(
       // width: 1000,
       margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
@@ -225,74 +230,18 @@ class HistoryWidget extends StatelessWidget {
             height: 50,
             width: 45,
           ),
+          SizedBox(width: 10),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Game Type Name',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                Text(
-                  '$history',
-                  style: Theme.of(context).textTheme.bodyText2,
-                  overflow: TextOverflow.visible,
-                )
-              ],
+            child: Text(
+              '${history.transaction}',
+              style: Theme.of(context).textTheme.bodyText2,
+              overflow: TextOverflow.visible,
             ),
           ),
-          Text('Date')
+          SizedBox(width: 10),
+          Text(DateFormat.yMd().format(DateTime.parse(history.date)))
         ],
       ),
     );
   }
 }
-
-/*@override
-  Widget build(BuildContext context) {
-    partnerDetailModel = Provider.of<PartnerDetailModel>(context);
-    return ListView.builder(
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 70,
-            // width: 1000,
-            margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-            decoration: BoxDecoration(
-              border: Border.all(width: 1.5, color: Colors.grey),
-              // color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(12.0)),
-            ),
-            child: GestureDetector(
-              onTap: () => {
-                init()
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Image.asset(
-                    ImageHelper.wrapAssetsLogo('appbar.jpg'),
-                    height: 50,
-                    width: 45,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Game Type Name',
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        'Customer rated ${widget.partnerName} in 4 stars',
-                        style: Theme.of(context).textTheme.bodyText2,
-                      )
-                    ],
-                  ),
-                  Text('Date')
-                ],
-              ),
-            ),
-          );
-        });
-  }*/

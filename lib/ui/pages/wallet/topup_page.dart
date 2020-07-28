@@ -1,24 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'topup_page.dart';
-import 'user_transaction_page.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/models/wallet.dart';
-// ignore: unused_import
-import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
-class WalletPage extends StatefulWidget {
+class TopUpPage extends StatefulWidget {
   @override
-  _WalletPageState createState() => _WalletPageState();
+  _TopUpPageState createState() => _TopUpPageState();
 }
 
-class _WalletPageState extends State<WalletPage> {
+class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
   ///query List<IAPItem> from the store. IOS only
   // ignore: unused_field
   var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -68,27 +66,27 @@ class _WalletPageState extends State<WalletPage> {
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
-      print('connected: $connected');
-    });
+          print('connected: $connected');
+        });
 
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-      print('purchase-updated: $productItem');
-      try {
-        //consume after purchase success so user buy the product again.
-        //need to connect with backend to process purchase.
-        userTopUp(productItem.productId);
-        var msg = FlutterInappPurchase.instance.consumeAllItems;
-        print('consumeAllItems: $msg');
-      } catch (err) {
-        print('consumeAllItems error: $err');
-      }
-    });
+          print('purchase-updated: $productItem');
+          try {
+            //consume after purchase success so user buy the product again.
+            //need to connect with backend to process purchase.
+            userTopUp(productItem.productId);
+            var msg = FlutterInappPurchase.instance.consumeAllItems;
+            print('consumeAllItems: $msg');
+          } catch (err) {
+            print('consumeAllItems error: $err');
+          }
+        });
 
     _purchaseErrorSubscription =
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
-      print('purchase-error: $purchaseError');
-    });
+          print('purchase-error: $purchaseError');
+        });
 
     setState(() {
       isInitState = !isInitState;
@@ -115,14 +113,12 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
-  Future<void> initHistory() async {}
-
   Future<void> initData() async {
     await FlutterInappPurchase.instance.initConnection;
     List<Future> futures = [getItems(), getUserWallet()];
     try {
       await Future.wait(futures);
-    } catch (_) {
+    }catch(_){
       setState(() {
         hasError = !hasError;
       });
@@ -146,7 +142,7 @@ class _WalletPageState extends State<WalletPage> {
   ///get IAP items.
   Future<void> getItems() async {
     List<IAPItem> items =
-        await FlutterInappPurchase.instance.getProducts(_productLists);
+    await FlutterInappPurchase.instance.getProducts(_productLists);
     items
       ..sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
           ? 1
@@ -162,7 +158,7 @@ class _WalletPageState extends State<WalletPage> {
   ///get Purchased items.
   Future<void> getPurchasedItems() async {
     List<PurchasedItem> items =
-        await FlutterInappPurchase.instance.getAvailablePurchases();
+    await FlutterInappPurchase.instance.getAvailablePurchases();
     setState(() {
       this._purchases = items;
     });
@@ -174,7 +170,7 @@ class _WalletPageState extends State<WalletPage> {
   ///get PurchasedHistory items.
   Future<void> getPurchasedHistoryItems() async {
     List<PurchasedItem> items =
-        await FlutterInappPurchase.instance.getPurchaseHistory();
+    await FlutterInappPurchase.instance.getPurchaseHistory();
     setState(() {
       this._purchasedHistories = items;
     });
@@ -186,7 +182,7 @@ class _WalletPageState extends State<WalletPage> {
   ///purchase IAP items.
   purchaseItem(IAPItem iapItem) async {
     var msg =
-        await FlutterInappPurchase.instance.requestPurchase(iapItem.productId);
+    await FlutterInappPurchase.instance.requestPurchase(iapItem.productId);
     print('purchasedMsg: $msg');
   }
 
@@ -244,23 +240,23 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _buildCurrentCoinAmount() {
     return Container(
-        alignment: Alignment.center,
-        // // color: Colors.grey,
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.5, color: Colors.grey),
-          // color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      alignment: Alignment.center,
+      // // color: Colors.grey,
+      margin: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(width: 1.5, color: Colors.grey),
+        // color: Colors.grey,
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      ),
+      child: ListTile(
+        leading: Icon(
+          FontAwesomeIcons.coins,
+          color: Colors.amber[500],
         ),
-        child: ListTile(
-          leading: Icon(
-            FontAwesomeIcons.coins,
-            color: Colors.amber[500],
-          ),
-          title: Text(
-              'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-          trailing: isLoading ? CircularProgressIndicator() : null,
-        ));
+        title: Text(
+            'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
+        trailing: isLoading ? CircularProgressIndicator() : null,
+      ));
   }
 
   Widget _buildWalletList() {
@@ -283,22 +279,7 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Wallet'),
-          bottom: TabBar(
-            tabs: <Widget>[Tab(text: 'Top Up'), Tab(text: 'Transaction')],
-          ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            TopUpPage(),
-            UserTransactionPage(),
-          ],
-        ),
-      ),
-    );
+    super.build(context);
+    return isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList();
   }
 }

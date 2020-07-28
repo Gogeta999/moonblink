@@ -13,6 +13,7 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
+import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -160,6 +161,16 @@ class MoonBlinkRepository {
       'page': page,
     });
     return UserHistory.fromJson(response.data);
+  }
+
+  ///user transaction list
+  static Future getUserTransaction({int limit, int page}) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(Api.UserTransaction + '$userId/transaction', queryParameters: {
+      'limit': limit,
+      'page': page,
+    });
+    return UserTransaction.fromJson(response.data);
   }
 
   /// [login api]
