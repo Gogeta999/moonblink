@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/models/wallet.dart';
+import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -112,12 +113,14 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
+  Future<void> initHistory() async {}
+
   Future<void> initData() async {
     await FlutterInappPurchase.instance.initConnection;
     List<Future> futures = [getItems(), getUserWallet()];
     try {
       await Future.wait(futures);
-    }catch(_){
+    } catch (_) {
       setState(() {
         hasError = !hasError;
       });
@@ -258,6 +261,8 @@ class _WalletPageState extends State<WalletPage> {
         ));
   }
 
+  Widget _buildHistoryList() {}
+
   Widget _buildWalletList() {
     if (_items.isEmpty || wallet == null || hasError) {
       return ViewStateErrorWidget(
@@ -292,8 +297,12 @@ class _WalletPageState extends State<WalletPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList(),
-            isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList(),
+            isInitState
+                ? Center(child: CircularProgressIndicator())
+                : _buildWalletList(),
+            isInitState
+                ? Center(child: CircularProgressIndicator())
+                : _buildWalletList(),
           ],
         ),
       ),

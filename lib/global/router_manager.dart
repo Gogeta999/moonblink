@@ -18,7 +18,6 @@ import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
-import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/terms_and_conditions_page.dart';
 
 class RouteName {
@@ -100,8 +99,6 @@ class Router {
 
       case RouteName.updateprofile:
         return CupertinoPageRoute(builder: (_) => UpdatePartnerProfilePage());
-      case RouteName.topUp:
-        return CupertinoPageRoute(builder: (_) => TopUpPage());
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:

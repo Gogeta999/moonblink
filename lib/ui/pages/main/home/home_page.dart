@@ -165,7 +165,7 @@ class StoryList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: homeModel.stories.length,
                 itemBuilder: (context, index) {
-                  Story item = homeModel.stories[index];
+                  Story singleUserStories = homeModel.stories[index];
                   int usertype =
                       StorageManager.sharedPreferences.getInt(mUserType);
 
@@ -190,7 +190,7 @@ class StoryList extends StatelessWidget {
                   // if(item.body == String){
                   //   return StoryItemWidget(item);
                   // }
-                  return StoryItemWidget(item);
+                  return StoryItemWidget(singleUserStories);
                 }))
       ],
     ));
