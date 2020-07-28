@@ -37,11 +37,11 @@ class LocaleModel extends ChangeNotifier {
       case 0:
         return S.of(context).autoBySystem;
       case 1:
-        return 'English';
+        return S.of(context).english;
       case 2:
-        return 'Myanmar';
+        return S.of(context).burmese;
       case 3:
-        return 'Chinese';
+        return S.of(context).china;
       default:
         return '';
     }

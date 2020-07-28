@@ -7,15 +7,12 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +33,7 @@ class _UserStatusPageState extends State<UserStatusPage>
 
   @override
   void initState() {
-    if(StorageManager.sharedPreferences.getString(token) != null) init();
+    if (StorageManager.sharedPreferences.getString(token) != null) init();
     print('token: ${StorageManager.sharedPreferences.getString(token)}');
     super.initState();
   }
@@ -92,8 +89,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                         tooltip: S.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(RouteName.partnerOwnProfile);
+                          model.logout();
                         },
                       );
                     }
@@ -105,22 +101,23 @@ class _UserStatusPageState extends State<UserStatusPage>
             flexibleSpace: UserHeaderWidget(),
             pinned: false,
           ),
-          if(hasUser)
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  FontAwesomeIcons.coins,
-                  color: Colors.amber[500],
-                  size: 20,
-                ),
-                SizedBox(width: 5.0),
-                Text(
-                  'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}', style: TextStyle(fontSize: 16))
-              ],
+          if (hasUser)
+            SliverToBoxAdapter(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    FontAwesomeIcons.coins,
+                    color: Colors.amber[500],
+                    size: 20,
+                  ),
+                  SizedBox(width: 5.0),
+                  Text(
+                      'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                      style: TextStyle(fontSize: 16))
+                ],
               ),
-          ),
+            ),
           SliverPadding(
             padding: EdgeInsets.only(top: 10),
           ),
@@ -174,7 +171,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                 child: model.hasUser
                                     ? Image.network(
                                         model.user.profileUrl,
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                         width: 120,
                                         height: 120,
                                         // color: Theme.of(context)
@@ -188,9 +185,10 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                         fit: BoxFit.fill,
                                         width: 120,
                                         height: 120,
-                                        color: Theme.of(context).accentColor,
-                                        // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
-                                        colorBlendMode: BlendMode.colorDodge),
+                                        // color: Theme.of(context).accentColor,
+                                        // // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
+                                        // colorBlendMode: BlendMode.colorDodge
+                                      ),
                               ),
                             ),
                           ),
@@ -265,10 +263,10 @@ class UserListWidget extends StatelessWidget {
                 ? () {
                     showToast(S.of(context).loginFirst);
                   }
-                : () {
-                    Navigator.of(context).pushNamed(RouteName.network);
-                  }),
-        // : _openFacebookPage),
+                // : () {
+                //     Navigator.of(context).pushNamed(RouteName.network);
+                //   }),
+                : _openFacebookPage),
 
         ///settings
         PageCard(

@@ -10,6 +10,7 @@ import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
+import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
 import 'package:moonblink/models/user_transaction.dart';
@@ -133,6 +134,16 @@ class MoonBlinkRepository {
     });
     print(response);
     return response;
+  }
+
+  //Transcation List
+  static Future getTranscation() async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .get(Api.SimpleRequestApi + '$userId/transcation', queryParameters: {
+      'limit': 20,
+    });
+    return Transcation.fromJson(response.data);
   }
 
   ///user wallet

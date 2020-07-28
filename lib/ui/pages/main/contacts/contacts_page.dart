@@ -46,10 +46,10 @@ class _ContactsPageState extends State<ContactsPage> {
             leading: CircleAvatar(
               radius: 28,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              backgroundImage: NetworkImage(user.contactUser.contactUserProfile),
+              backgroundImage:
+                  NetworkImage(user.contactUser.contactUserProfile),
             ),
             title: Text(user.contactUser.contactUserName),
-            // subtitle: Text(user.contactUser.contactUserProfile),
             onTap: () {
               int detailPageId = user.contactUser.contactUserId;
               Navigator.push(
@@ -77,8 +77,9 @@ class _ContactsPageState extends State<ContactsPage> {
             model: ContactModel(),
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
-              if(contactModel.isBusy) {
-                return SkeletonList(builder: (context, index) => PostSkeletonItem());
+              if (contactModel.isBusy) {
+                return SkeletonList(
+                    builder: (context, index) => PostSkeletonItem());
               }
               if (contactModel.isError && contactModel.list.isEmpty) {
                 return AnnotatedRegion<SystemUiOverlayStyle>(

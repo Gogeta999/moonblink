@@ -6,11 +6,13 @@ import 'package:moonblink/bloc_pattern/partner_game_history/bloc.dart';
 import 'package:moonblink/bloc_pattern/partner_game_history/partner_game_history_bloc.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/transaction.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class PartnerRatingWidget extends StatelessWidget {
   final partnerName;
-  PartnerRatingWidget(this.partnerName);
+  final averageRating;
+  PartnerRatingWidget(this.partnerName, this.averageRating);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,7 +50,9 @@ class PartnerRatingWidget extends StatelessWidget {
               )),
           Positioned(
               bottom: 60,
-              child: Text(partnerName + '\'s average rating is 4.5'))
+              child: Text(partnerName +
+                  S.of(context).averageRatingIs +
+                  averageRating.toString()))
         ],
       ),
     );
@@ -86,9 +90,10 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
   Widget build(BuildContext context) {
     //partnerDetailModel = Provider.of<PartnerDetailModel>(context);
     return BlocProvider<PartnerGameHistoryBloc>(
-      create: (context) =>
-          PartnerGameHistoryBloc(/*partnerId: partnerDetailModel.partnerId ?? */partnerId: widget.partnerId)
-            ..add(PartnerGameHistoryFetched()),
+      create: (context) => PartnerGameHistoryBloc(
+          /*partnerId: partnerDetailModel.partnerId ?? */ partnerId:
+              widget.partnerId)
+        ..add(PartnerGameHistoryFetched()),
       child: BlocBuilder<PartnerGameHistoryBloc, PartnerGameHistoryState>(
         builder: (context, state) {
           if (state is PartnerGameHistoryInitial) {

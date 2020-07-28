@@ -10,7 +10,6 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/Datetime.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
-import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -259,17 +258,71 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
-
-                                          SetProfileButton(
-                                              _cover,
-                                              _profile,
-                                              _nrcController.text,
-                                              _mailController.text,
-                                              _genderController,
-                                              _dobController.text,
-                                              _phController.text,
-                                              _biosController.text,
-                                              _addressController.text),
+                                          RaisedButton(
+                                            child: finished
+                                                ? ButtonProgressIndicator()
+                                                : Text(
+                                                    S
+                                                        .of(context)
+                                                        .setPartnerButton,
+                                                    style: Theme.of(context)
+                                                        .accentTextTheme
+                                                        .button
+                                                        .copyWith(
+                                                            wordSpacing: 6)),
+                                            onPressed: () async {
+                                              var userid = StorageManager
+                                                  .sharedPreferences
+                                                  .getInt(mUserId);
+                                              var coverPath = _cover.path;
+                                              var profilePath = _profile.path;
+                                              FormData formData =
+                                                  FormData.fromMap({
+                                                'cover_image':
+                                                    await MultipartFile
+                                                        .fromFile(coverPath,
+                                                            filename:
+                                                                'cover.jpg'),
+                                                'profile_image':
+                                                    await MultipartFile
+                                                        .fromFile(
+                                                            profilePath,
+                                                            filename:
+                                                                'profile.jpg'),
+                                                'nrc': _nrcController.text,
+                                                'mail': _mailController.text,
+                                                'gender': _genderController,
+                                                'dob': _dobController.text,
+                                                'phone': _phController.text,
+                                                'bios': _biosController.text,
+                                                'address':
+                                                    _addressController.text
+                                              });
+                                              var response = await DioUtils()
+                                                  .postwithData(
+                                                      Api.SetProfile +
+                                                          '$userid/profile',
+                                                      data: formData);
+                                              print(response);
+                                              model.logout();
+                                              Navigator.of(context)
+                                                  .pushNamedAndRemoveUntil(
+                                                      RouteName.splash,
+                                                      (route) => false);
+                                              return User.fromJsonMap(
+                                                  response.data);
+                                            },
+                                          ),
+                                          // SetProfileButton(
+                                          //     _cover,
+                                          //     _profile,
+                                          //     _nrcController.text,
+                                          //     _mailController.text,
+                                          //     _genderController,
+                                          //     _dobController.text,
+                                          //     _phController.text,
+                                          //     _biosController.text,
+                                          //     _addressController.text),
                                         ]),
                                   ),
                                 ],
@@ -292,7 +345,7 @@ class PartnerCoverWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.cover == null) {
       return Image.asset(
-        ImageHelper.wrapAssetsImage('images.jpg'),
+        ImageHelper.wrapAssetsImage('defaultBackground.jpg'),
         fit: BoxFit.contain,
       );
     } else {
@@ -313,7 +366,7 @@ class PartnerProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.profile == null) {
       return Image.asset(
-        ImageHelper.wrapAssetsLogo('friend_acc.png'),
+        ImageHelper.wrapAssetsLogo('person.png'),
         fit: BoxFit.fill,
       );
     } else {
@@ -325,58 +378,58 @@ class PartnerProfileWidget extends StatelessWidget {
   }
 }
 
-class SetProfileButton extends StatelessWidget {
-  final cover;
-  final profile;
-  final phone;
-  final mail;
-  final address;
-  final nrc;
-  final gender;
-  final dob;
-  final bios;
-  // final LoginModel model;
-  // final cover;
+// class SetProfileButton extends StatelessWidget {
+//   final cover;
+//   final profile;
+//   final phone;
+//   final mail;
+//   final address;
+//   final nrc;
+//   final gender;
+//   final dob;
+//   final bios;
+//   // final LoginModel model;
+//   // final cover;
 
-  SetProfileButton(this.cover, this.profile, this.nrc, this.mail, this.gender,
-      this.dob, this.phone, this.bios, this.address);
-  @override
-  Widget build(BuildContext context) {
-    var model = Provider.of<LoginModel>(context);
-    return LoginButtonWidget(
-      //controller: _btnController,
-      child: model.isBusy
-          ? ButtonProgressIndicator()
-          : Text(S.of(context).setPartnerButton,
-              style: Theme.of(context)
-                  .accentTextTheme
-                  .button
-                  .copyWith(wordSpacing: 6)),
-      onPressed: () async {
-        var userid = StorageManager.sharedPreferences.getInt(mUserId);
-        var coverPath = cover.path;
-        var profilePath = profile.path;
-        FormData formData = FormData.fromMap({
-          'cover_image':
-              await MultipartFile.fromFile(coverPath, filename: 'cover.jpg'),
-          'profile_image': await MultipartFile.fromFile(profilePath,
-              filename: 'profile.jpg'),
-          'nrc': nrc,
-          'mail': mail,
-          'gender': gender,
-          'dob': dob,
-          'phone': phone,
-          'bios': bios,
-          'address': address
-        });
-        var response = await DioUtils()
-            .postwithData(Api.SetProfile + '$userid/profile', data: formData);
-        print(response);
-        model.logout();
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
-        return User.fromJsonMap(response.data);
-      },
-    );
-  }
-}
+//   SetProfileButton(this.cover, this.profile, this.nrc, this.mail, this.gender,
+//       this.dob, this.phone, this.bios, this.address);
+//   @override
+//   Widget build(BuildContext context) {
+//     var model = Provider.of<LoginModel>(context);
+//     return LoginButtonWidget(
+//       //controller: _btnController,
+//       child: model.isBusy
+//           ? ButtonProgressIndicator()
+//           : Text(S.of(context).setPartnerButton,
+//               style: Theme.of(context)
+//                   .accentTextTheme
+//                   .button
+//                   .copyWith(wordSpacing: 6)),
+//       onPressed: () async {
+//         var userid = StorageManager.sharedPreferences.getInt(mUserId);
+//         var coverPath = cover.path;
+//         var profilePath = profile.path;
+//         FormData formData = FormData.fromMap({
+//           'cover_image':
+//               await MultipartFile.fromFile(coverPath, filename: 'cover.jpg'),
+//           'profile_image': await MultipartFile.fromFile(profilePath,
+//               filename: 'profile.jpg'),
+//           'nrc': nrc,
+//           'mail': mail,
+//           'gender': gender,
+//           'dob': dob,
+//           'phone': phone,
+//           'bios': bios,
+//           'address': address
+//         });
+//         var response = await DioUtils()
+//             .postwithData(Api.SetProfile + '$userid/profile', data: formData);
+//         print(response);
+//         model.logout();
+//         Navigator.of(context)
+//             .pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
+//         return User.fromJsonMap(response.data);
+//       },
+//     );
+//   }
+// }

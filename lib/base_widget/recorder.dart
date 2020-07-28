@@ -6,6 +6,7 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';
@@ -74,8 +75,8 @@ class _VoicemsgState extends State<Voicemsg> {
           print(_currentStatus);
         });
       } else {
-        Scaffold.of(context).showSnackBar(
-            new SnackBar(content: new Text("You must accept permissions")));
+        Scaffold.of(context).showSnackBar(new SnackBar(
+            content: new Text(S.of(context).youMustAcceptPermission)));
       }
     } catch (e) {
       print(e);

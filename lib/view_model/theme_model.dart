@@ -27,7 +27,7 @@ class ThemeModel with ChangeNotifier {
   ThemeModel() {
     /// user didn't choose darkmode
     _userDarkMode =
-        StorageManager.sharedPreferences.getBool(mThemeUserDarkMode) ?? false;
+        StorageManager.sharedPreferences.getBool(mThemeUserDarkMode) ?? true;
 
     /// get theme
     _themeColor = Colors.primaries[

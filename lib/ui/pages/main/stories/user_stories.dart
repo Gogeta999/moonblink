@@ -71,12 +71,25 @@ class _StoriesPageState extends State<StoriesPage> {
                   print(story.id);
                   if (story.type == 2) {
                     return GestureDetector(
-                      onTap: () {
-                        _currentPageNotifier.value == widget.stories.length - 1
-                            ? Navigator.pop(
-                                context) //{_currentPageNotifier.value = 0, Navigator.pop(context)}
-                            : _currentPageNotifier.value += 1;
-                      },
+                      // onTap: () {
+                      //   _currentPageNotifier.value == widget.stories.length - 1
+                      //       ? Navigator.pop(context)
+                      //       : (index) {
+                      //           _currentPageNotifier.value += 1;
+                      //           pageController
+                      //               .jumpToPage(_currentPageNotifier.value);
+                      //         };
+                      // },
+                      onTap: _currentPageNotifier.value ==
+                              widget.stories.length - 1
+                          ? () {
+                              Navigator.pop(context);
+                            }
+                          : () {
+                              _currentPageNotifier.value += 1;
+                              pageController
+                                  .jumpToPage(_currentPageNotifier.value);
+                            },
                       child: Container(
                         child: StoryVideo.url(story.media,
                             controller: storyController),
@@ -84,42 +97,25 @@ class _StoriesPageState extends State<StoriesPage> {
                     );
                   }
                   return GestureDetector(
-                    onTap: () {
-                      _currentPageNotifier.value == widget.stories.length - 1
-                          ? Navigator.pop(context)
-                          : _currentPageNotifier.value += 1;
-                    },
-                    // onDoubleTap: () {
-                    //   var userId = StorageManager.sharedPreferences.get(mUserId);
-                    //   if(userId == 1) {
-                    //     showDialog(
-                    //         context: context,
-                    //         builder: (context) {
-                    //           return AlertDialog(
-                    //             title: Text(
-                    //                 'You are about to delete this story.'),
-                    //             actions: <Widget>[
-                    //               RaisedButton(
-                    //                 onPressed: () => Navigator.pop(context),
-                    //                 child: Text('Cancel'),
-                    //               ),
-                    //               RaisedButton(
-                    //                 onPressed: () async{
-                    //                   //Navigator.pop(context);
-                    //                   await storyModel.dropStory(
-                    //                       storyModel
-                    //                           .stories[
-                    //                       _currentPageNotifier.value]
-                    //                           .id);
-                    //                   Navigator.pushNamedAndRemoveUntil(context, RouteName.main, (route) => false);
-                    //                 },
-                    //                 child: Text('Delete'),
-                    //               )
-                    //             ],
-                    //           );
-                    //         });
-                    //   }
+                    // onTap: () {
+                    //   _currentPageNotifier.value == widget.stories.length - 1
+                    //       ? Navigator.pop(context)
+                    //       : (index) {
+                    //           _currentPageNotifier.value += 1;
+                    //           pageController
+                    //               .jumpToPage(_currentPageNotifier.value);
+                    //         };
                     // },
+                    onTap:
+                        _currentPageNotifier.value == widget.stories.length - 1
+                            ? () {
+                                Navigator.pop(context);
+                              }
+                            : () {
+                                _currentPageNotifier.value += 1;
+                                pageController
+                                    .jumpToPage(_currentPageNotifier.value);
+                              },
                     child: Container(
                       child: StoryImage.url(
                         story.media,
@@ -134,59 +130,3 @@ class _StoriesPageState extends State<StoriesPage> {
     );
   }
 }
-
-// class Indicator extends StatelessWidget {
-//   Indicator({
-//     this.controller,
-//     this.itemCount: 0,
-//   }) : assert(controller != null);
-
-//   /// PageView Controller
-//   final PageController controller;
-
-//   /// Indicator Count
-//   final int itemCount;
-
-//   final Color normalColor = Colors.grey;
-
-//   final Color selectedColor = Colors.white;
-
-//   /// dot size
-//   final double size = 8.0;
-
-//   /// distnce between
-//   final double spacing = 4.0;
-
-//   /// dot indicator widget
-//   Widget _buildIndicator(
-//       int index, int pageCount, double dotSize, double spacing) {
-//     // current dot is selected or not
-//     // bool isCurrentPageSelected = index ==
-//     //     (controller.page != null ? controller.page.round() % pageCount : 0);
-
-//     return new Container(
-//       height: size,
-//       width: size + (2 * spacing),
-//       child: new Center(
-//         child: new Material(
-//           color: normalColor,
-//           type: MaterialType.circle,
-//           child: new Container(
-//             width: dotSize,
-//             height: dotSize,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: new List<Widget>.generate(itemCount, (int index) {
-//         return _buildIndicator(index, itemCount, size, spacing);
-//       }),
-//     );
-//   }
-// }

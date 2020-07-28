@@ -165,7 +165,7 @@ class StoryList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: homeModel.stories.length,
                 itemBuilder: (context, index) {
-                  Story item = homeModel.stories[index];
+                  Story singleUserStories = homeModel.stories[index];
                   int usertype =
                       StorageManager.sharedPreferences.getInt(mUserType);
 
@@ -174,23 +174,17 @@ class StoryList extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 14),
                       child: InkWell(
                         onTap: () {
-                          // final storyItem = item.mediaUrl;
                           Navigator.of(context).pushNamed(RouteName.imagepick);
                         },
                         child: CircleAvatar(
                           radius: 33,
                           backgroundColor: Colors.grey[300],
                           child: Icon(Icons.add, size: 24, color: Colors.black),
-                          // child: Text(item.id.toString()),
                         ),
-                        // child: Text(usertype.toString()),),
                       ),
                     );
                   }
-                  // if(item.body == String){
-                  //   return StoryItemWidget(item);
-                  // }
-                  return StoryItemWidget(item);
+                  return StoryItemWidget(singleUserStories);
                 }))
       ],
     ));
