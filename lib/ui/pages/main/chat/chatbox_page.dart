@@ -43,6 +43,7 @@ class ChatBoxPage extends StatefulWidget {
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
+  bool got = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
@@ -79,31 +80,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
-  // Timer _timer;
-  // int _start = 10;
-
-  // void startTimer(bool end) {
-  //   const oneSec = const Duration(seconds: 1);
-  //   _timer = new Timer.periodic(
-  //     oneSec,
-  //     (Timer timer) => setState(
-  //       () {
-  //         if (_start < 1) {
-  //           timer.cancel();
-  //         } else {
-  //           _start = _start - 1;
-  //         }
-  //       },
-  //     ),
-  //   );
-  //   end = false;
-  // }
-
-  // @override
-  // void dispose() {
-  //   _timer.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    got = false;
+  }
 
   //build messages
   Widget buildSingleMessage(int status, int bookingid, Message message) {
@@ -175,31 +156,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  //NormalUserToCancelBooking
-  noramlUserCancel(msg, bookingid) {
-    if (msg.senderID != widget.detailPageId) {
-      return Flex(
-        direction: Axis.horizontal,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[cancelRequestButton(bookingid)],
-      );
-    }
-  }
-
-  //TODO:
-  cancelRequestButton(bookingid) {
-    return ButtonTheme(
-        minWidth: 70,
-        child: FlatButton(
-          child: Text("Delete Request",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-          onPressed: () {
-            MoonBlinkRepository.bookingAcceptOrDecline(
-                selfId, bookingid, booking_reject);
-          },
-        ));
-  }
-
   //Partner Only
   partneronly(msg, bookingid) {
     if (msg.senderID == widget.detailPageId) {
@@ -207,8 +163,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         mainAxisSize: MainAxisSize.min,
         direction: Axis.horizontal,
         children: <Widget>[
-          rejectbtn(bookingid),
-          acceptbtn(bookingid),
+          rejectbtn(bookingid, msg),
+          acceptbtn(bookingid, msg),
         ],
       );
     } else
@@ -287,7 +243,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //accept button
-  acceptbtn(bookingid) {
+  acceptbtn(bookingid, msg) {
     return ButtonTheme(
         minWidth: 70,
         child: FlatButton(
@@ -296,12 +252,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, booking_accept);
+            msg.type = 0;
           },
         ));
   }
 
   //reject button
-  rejectbtn(bookingid) {
+  rejectbtn(bookingid, msg) {
     return ButtonTheme(
         minWidth: 70,
         child: FlatButton(
@@ -310,6 +267,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, booking_reject);
+            msg.type = 0;
           },
         ));
   }
@@ -525,7 +483,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           model: CallModel(),
           builder: (context, model, child) {
             return FlatButton(
-              child: Text("End"),
+              child: Text("Cancel"),
               onPressed: () {
                 model.endbooking(selfId, bookingid, 6);
               },
@@ -619,9 +577,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool got = false;
+    print(got);
     return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
-        autoDispose: true,
+        autoDispose: false,
         model1: PartnerDetailModel(partnerdata, widget.detailPageId),
         model2: GetmsgModel(widget.detailPageId),
         onModelReady: (partnerModel, msgModel) {
@@ -639,7 +597,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   msgmodel.initData();
                 });
           }
-          if (got == false) {
+          if (got == false && msgmodel.list.isNotEmpty) {
             for (var i = 0; i < msgmodel.list.length; i++) {
               Lastmsg msgs = msgmodel.list[i];
               messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
