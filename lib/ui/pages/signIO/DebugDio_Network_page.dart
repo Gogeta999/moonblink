@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/user.dart';
+import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/view_model/splahAd_model.dart';
 
 class NetWorkPage extends StatefulWidget {
   @override
@@ -14,6 +18,7 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
+  SplashAds splashAds;
   String channelName;
   bool isOpen = false;
   var resultJson = "";
@@ -31,6 +36,16 @@ class PageState extends State<NetWorkPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          ProviderWidget<SplashAdsModel>(
+            model: SplashAdsModel(splashAds),
+            onModelReady: (splashModel) {
+              splashModel.initAds();
+            },
+            builder: (context, splashModel, child) {
+              return Container(
+                  height: 50, child: Text(splashModel.splashAds.adUrl));
+            },
+          ),
           // MaterialButton(
           //   color: Colors.red,
           //   child: Text("Audio recorder"),

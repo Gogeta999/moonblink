@@ -31,7 +31,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  var esm = 1;
   @override
   bool get wantKeepAlive => true;
 

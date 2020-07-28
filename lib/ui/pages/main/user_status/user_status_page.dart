@@ -262,10 +262,10 @@ class UserListWidget extends StatelessWidget {
                 ? () {
                     showToast(S.of(context).loginFirst);
                   }
-                // : () {
-                //     Navigator.of(context).pushNamed(RouteName.network);
-                //   }),
-                : _openFacebookPage),
+                : () {
+                    Navigator.of(context).pushNamed(RouteName.network);
+                  }),
+        // : _openFacebookPage),
 
         ///settings
         PageCard(

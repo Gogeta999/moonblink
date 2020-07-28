@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
@@ -16,6 +17,10 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
 class MoonBlinkRepository {
+  static Future showAd() async {
+    var response = await DioUtils().get(Api.ShowAds, queryParameters: {});
+    return response.data;
+  }
   // home page's post data
 
   static Future fetchPosts(int pageNum) async {
