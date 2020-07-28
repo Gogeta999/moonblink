@@ -6,6 +6,7 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Material(
                 color: Theme.of(context).cardColor,
@@ -155,9 +156,51 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   trailing: Icon(Icons.chevron_right),
                 ),
-              )
+              ),
+              ///newUser on/off Test
+              SizedBox(
+                height: 20,
+              ),
+              TestNewUser(iconColor: iconColor),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TestNewUser extends StatefulWidget {
+  final Color iconColor;
+
+  const TestNewUser({Key key, this.iconColor}) : super(key: key);
+  @override
+  _TestNewUserState createState() => _TestNewUserState();
+}
+
+class _TestNewUserState extends State<TestNewUser> {
+  bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).cardColor,
+      child: ListTile(
+        title: Text('isNewUser'),
+        leading: Icon(
+          Icons.supervisor_account,
+          color: widget.iconColor,
+        ),
+        trailing: CupertinoSwitch(
+          value: newUser,
+          onChanged: (value) {
+            StorageManager.sharedPreferences.setBool(isNewUser, value);
+            setState(() {
+              newUser = value;
+            });
+            print('newUser: $newUser');
+            print('isNewUser: ${StorageManager.sharedPreferences.getBool(isNewUser)}');
+          },
         ),
       ),
     );

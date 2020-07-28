@@ -2,10 +2,16 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/adModel.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
+
+import 'new_user_swiper_page.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -13,28 +19,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  AnimationController _logoController;
-  Animation<double> _animation;
   AnimationController _countdownController;
 
   @override
   void initState() {
     init();
-    _logoController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1500));
-
-    _animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(curve: Curves.easeInOutBack, parent: _logoController));
-
-    _animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _logoController.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _logoController.forward();
-      }
-    });
-    _logoController.forward();
-
+    // showAd();
     _countdownController =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
@@ -45,9 +35,14 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     await PushNotificationsManager().init();
   }
 
+  // showAd() async {
+  //   var response = await DioUtils().get(Api.ShowAds);
+  //   return SplashAds.fromJson(response);
+  // }
+
   @override
   void dispose() {
-    _logoController.dispose();
+    // _logoController.dispose();
     _countdownController.dispose();
     super.dispose();
   }
@@ -58,14 +53,26 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       body: WillPopScope(
         onWillPop: () => Future.value(false),
         child: Stack(fit: StackFit.expand, children: <Widget>[
+          // if ()
+          //   GestureDetector(
+          //     child: Image.network(
+          //       'https://s3-ap-southeast-1.amazonaws.com/dev.moonblink.com/images/ads/moon-ads.jpeg',
+          //       fit: BoxFit.fill,
+          //       filterQuality: FilterQuality.high,
+          //     ),
+          //   ),
+          // if (adImage != null)
           Image.asset(
               ImageHelper.wrapAssetsImage(
                   Theme.of(context).brightness == Brightness.light
                       ? 'MoonBlink_white.jpg'
                       : 'MoonBlink_black.jpg'),
-//              colorBlendMode: BlendMode.srcOver,//colorBlendMode方式在android等机器上有些延迟,导致有些闪屏,故采用两套图片的方式
-//              color: Colors.black.withOpacity(
-//                  Theme.of(context).brightness == Brightness.light ? 0 : 0.65),
+              // colorBlendMode: BlendMode
+              //     .srcOver
+              // color: Colors.black.withOpacity(
+              //     Theme.of(context).brightness == Brightness.light
+              //         ? 0
+              //         : 0.65),
               fit: BoxFit.fill),
           Align(
             alignment: Alignment.bottomRight,
@@ -119,5 +126,9 @@ class AnimatedCountdown extends AnimatedWidget {
 }
 
 void nextPage(context) {
-  Navigator.of(context).pushReplacementNamed(RouteName.main);
+  bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
+  newUser
+      ? Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage)
+      : Navigator.of(context)
+          .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
 }

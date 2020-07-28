@@ -83,7 +83,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "updatePartnerProfile" : MessageLookupByLibrary.simpleMessage("Update Your Profile"),
     "userStatusCheckAppUpdate" : MessageLookupByLibrary.simpleMessage("Check App Update"),
     "userStatusDarkMode" : MessageLookupByLibrary.simpleMessage("Dark Mode"),
-    "userStatusFavorite" : MessageLookupByLibrary.simpleMessage("Favorite"),
     "userStatusSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "userStatusTheme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "userStatusWallet" : MessageLookupByLibrary.simpleMessage("Wallet"),

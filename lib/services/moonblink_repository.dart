@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
@@ -215,6 +216,12 @@ class MoonBlinkRepository {
     var response = await DioUtils()
         .postwithData(Api.POSTSTORY + '$userid/story', data: formData);
     return response.data;
+  }
+
+  //Game List
+  static Future getGameList() async {
+    var response = await DioUtils().get(Api.GameList);
+    return GameList.fromJson(response.data);
   }
 
   // Booking

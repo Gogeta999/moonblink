@@ -46,12 +46,16 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                     : Brightness.dark,
 
                 actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.more_horiz),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteName.updateprofile);
-                      })
+                  GestureDetector(
+                    child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Update Your Profile',
+                        )),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(RouteName.updateprofile);
+                    },
+                  )
                 ],
 
                 /// [background image to show here]
@@ -97,22 +101,22 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    RaisedButton(
-                      color: Theme.of(context).accentColor,
-                      highlightColor: Theme.of(context).highlightColor,
-                      colorBrightness: Theme.of(context).brightness,
-                      splashColor: Theme.of(context).splashColor,
-                      child: Text(
-                        'Following List',
-                        style: Theme.of(context)
-                            .accentTextTheme
-                            .button
-                            .copyWith(wordSpacing: 6),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      onPressed: () {},
-                    ),
+                    // RaisedButton(
+                    //   color: Theme.of(context).accentColor,
+                    //   highlightColor: Theme.of(context).highlightColor,
+                    //   colorBrightness: Theme.of(context).brightness,
+                    //   splashColor: Theme.of(context).splashColor,
+                    //   child: Text(
+                    //     'Following List',
+                    //     style: Theme.of(context)
+                    //         .accentTextTheme
+                    //         .button
+                    //         .copyWith(wordSpacing: 6),
+                    //   ),
+                    //   shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(20.0)),
+                    //   onPressed: () {},
+                    // ),
 
                     RaisedButton(
                       color: Theme.of(context).accentColor,
@@ -135,20 +139,6 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                         // });
                       },
                     ),
-                    // if(partnerModel.partnerData.isFollow == 0)
-                    // RaisedButton(
-                    //   color: Theme.of(context).primaryColor,
-                    //   highlightColor: Theme.of(context).accentColor,
-                    //   colorBrightness: Theme.of(context).brightness,
-                    //   splashColor: Colors.grey,
-                    //   shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                    //   child: Text('Follow'),
-                    //   onPressed: () async {
-                    //     await DioUtils().post(Api.PARTNERDETAIL+ partnerModel.partnerData.partnerId.toString()+ '/follow', queryParameters: {
-                    //       'status': '1',
-                    //     });
-                    //   },
-                    //     ),
                   ],
                 ),
               ),
@@ -160,13 +150,9 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text(partnerModel.partnerData.followingCount.toString() +
-                          'Following'),
-                      Text(
-                        '|',
-                      ),
-                      Text(partnerModel.partnerData.followerCount.toString() +
-                          'Followers')
+                      Text('You have ' +
+                          partnerModel.partnerData.followerCount.toString() +
+                          'followers now')
                     ],
                   ),
                 ),
@@ -182,7 +168,8 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
 
               /// [user feed]
               SliverToBoxAdapter(
-                  child: Feed(partnerModel.partnerData.partnerName, partnerModel.partnerData.partnerId)),
+                  child: Feed(partnerModel.partnerData.partnerName,
+                      partnerModel.partnerData.partnerId)),
 
               /// nothing just test
               // SliverToBoxAdapter(

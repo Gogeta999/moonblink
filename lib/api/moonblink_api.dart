@@ -17,6 +17,9 @@ class Api {
   /// [Simple Tasks Addresses]for user to get and post for simple tasks
   static const String SimpleRequestApi = "moonblink/api/v1/user/";
 
+  /// [Show Ad or not]
+  static const String ShowAds = "moonblink/api/v1/social/ads";
+
   /// Partner detail page for normal user to check and book
   /// Post to give reaction link is adding $userIdNum after user/ and then add /react;
   static const String SocialRequest = "moonblink/api/v1/social/user/";
@@ -54,6 +57,9 @@ class Api {
 
   //SetProfile
   static const String SetProfile = "moonblink/api/v1/user/";
+
+  //Game List
+  static const String GameList = 'moonblink/api/v1/social/game/price';
 
   ///Booking
   static const String Booking = "moonblink/api/v1/social/user/";

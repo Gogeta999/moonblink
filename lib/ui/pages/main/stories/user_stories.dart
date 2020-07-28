@@ -35,12 +35,12 @@ class _StoriesPageState extends State<StoriesPage> {
 
     return Stack(
       children: <Widget>[
-        Align(
-          alignment: Alignment.topLeft,
-          child: CircleAvatar(
-            radius: 20,
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: CircleAvatar(
+        //     radius: 20,
+        //   ),
+        // ),
         Align(
           alignment: Alignment.topCenter,
           child: Container(

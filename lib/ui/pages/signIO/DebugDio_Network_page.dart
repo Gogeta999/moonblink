@@ -14,7 +14,7 @@ class NetWorkPage extends StatefulWidget {
 }
 
 class PageState extends State<NetWorkPage> {
-  String channelName = '11';
+  String channelName;
   bool isOpen = false;
   var resultJson = "";
   @override
@@ -75,7 +75,7 @@ class PageState extends State<NetWorkPage> {
               decoration: BoxDecoration(
                   color: Colors.red,
                   borderRadius: BorderRadius.all(Radius.circular(15))),
-              child: Text('TestButton'),
+              child: Text(channelName.toString()),
             ),
             onTap: () async {
               String key = 'abc';
