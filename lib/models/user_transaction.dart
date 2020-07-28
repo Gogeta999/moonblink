@@ -1,15 +1,15 @@
 import 'package:moonblink/models/transaction.dart';
 
-class UserHistory {
+class UserTransaction {
   List<Transaction> data;
 
-  UserHistory({this.data});
+  UserTransaction({this.data});
 
-  factory UserHistory.fromJson(Map<String, dynamic> json){
+  factory UserTransaction.fromJson(Map<String, dynamic> json){
     List<dynamic> dataJson = json['data'];
 
     List<Transaction> dataList =  dataJson.map((e) => Transaction.fromJson(e)).toList();
 
-    return UserHistory(data: dataList);
+    return UserTransaction(data: dataList);
   }
 }

@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:moonblink/models/transaction.dart';
 import 'package:moonblink/models/user_history.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import './bloc.dart';
+import 'bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 const int historyLimit = 5;
@@ -24,7 +25,7 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
     final currentState = state;
     if (event is PartnerGameHistoryFetched && !_hasReachedMax(currentState)) {
       if (currentState is PartnerGameHistoryInitial) {
-        List<String> data = [];
+        List<Transaction> data = [];
         try {
           data = await _fetchPartnerGameHistory(
               partnerId: partnerId, limit: historyLimit, page: 1);
@@ -38,7 +39,7 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
       }
       if (currentState is PartnerGameHistorySuccess) {
         final nextPage = currentState.page + 1;
-        List<String> data = [];
+        List<Transaction> data = [];
         try {
           data = await _fetchPartnerGameHistory(
               partnerId: partnerId, limit: historyLimit, page: nextPage);
@@ -84,7 +85,7 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
   bool _hasReachedMax(PartnerGameHistoryState state) =>
       state is PartnerGameHistorySuccess && state.hasReachedMax;
 
-  Future<List<String>> _fetchPartnerGameHistory({int partnerId, int limit, int page}) async {
+  Future<List<Transaction>> _fetchPartnerGameHistory({int partnerId, int limit, int page}) async {
     UserHistory userHistory = await MoonBlinkRepository.getUserHistory(
         partnerId: partnerId, limit: limit, page: page);
     return userHistory.data;

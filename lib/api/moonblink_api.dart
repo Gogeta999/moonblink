@@ -89,4 +89,7 @@ class Api {
   //get user history
   static const String UserHistory =
       'moonblink/api/v1/social/user/'; //eg - moonblink/api/v1/social/user/4/transaction
+
+  //get user transaction
+  static const String UserTransaction = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/4/transaction
 }

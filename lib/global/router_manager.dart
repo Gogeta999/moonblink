@@ -19,7 +19,7 @@ import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
-import 'package:moonblink/ui/terms_and_conditions_page.dart';
+import 'package:moonblink/ui/pages/terms_and_conditions_page.dart';
 
 class RouteName {
   static const String splash = 'splash';

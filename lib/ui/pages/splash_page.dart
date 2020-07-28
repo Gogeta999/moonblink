@@ -10,6 +10,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/splahAd_model.dart';
 
@@ -21,7 +22,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  SplashAds splashAds;
   AnimationController _countdownController;
 
   @override
@@ -56,47 +56,64 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       body: WillPopScope(
         onWillPop: () => Future.value(false),
         child: Stack(fit: StackFit.expand, children: <Widget>[
-          ProviderWidget<SplashAdsModel>(
-            model: SplashAdsModel(splashAds),
-            onModelReady: (splashModel) {
-              splashModel.initAds();
-            },
-            builder: (context, splashModel, child) {
-              if (splashModel.splashAds.status == '1') {
-                print('--------------------0----------');
-                return InkWell(
-                  // onTap: ,
-                  child: Image.network(
-                    splashAds.adUrl,
-                    fit: BoxFit.fill,
-                    filterQuality: FilterQuality.high,
-                  ),
-                );
+          FutureBuilder(
+            future: MoonBlinkRepository.showAd(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Image.asset(
+                    ImageHelper.wrapAssetsImage(
+                        Theme.of(context).brightness == Brightness.light
+                            ? 'MoonBlink_white.jpg'
+                            : 'MoonBlink_black.jpg'),
+                    // colorBlendMode: BlendMode
+                    //     .srcOver
+                    // color: Colors.black.withOpacity(
+                    //     Theme.of(context).brightness == Brightness.light
+                    //         ? 0
+                    //         : 0.65),
+                    fit: BoxFit.fill);
               }
-              return Image.asset(
-                  ImageHelper.wrapAssetsImage(
-                      Theme.of(context).brightness == Brightness.light
-                          ? 'MoonBlink_white.jpg'
-                          : 'MoonBlink_black.jpg'),
-                  // colorBlendMode: BlendMode
-                  //     .srcOver
-                  // color: Colors.black.withOpacity(
-                  //     Theme.of(context).brightness == Brightness.light
-                  //         ? 0
-                  //         : 0.65),
-                  fit: BoxFit.fill);
+              else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                if (snapshot.data.status == '1') {
+                  return InkWell(
+                    // onTap: ,
+                    child: Image.network(
+                      snapshot.data.adUrl,
+                      fit: BoxFit.fill,
+                      filterQuality: FilterQuality.high,
+                    ),
+                  );
+                } else {
+                  return Image.asset(
+                      ImageHelper.wrapAssetsImage(
+                          Theme.of(context).brightness == Brightness.light
+                              ? 'MoonBlink_white.jpg'
+                              : 'MoonBlink_black.jpg'),
+                      // colorBlendMode: BlendMode
+                      //     .srcOver
+                      // color: Colors.black.withOpacity(
+                      //     Theme.of(context).brightness == Brightness.light
+                      //         ? 0
+                      //         : 0.65),
+                      fit: BoxFit.fill);
+                }
+              } else if (snapshot.hasError){
+                return Image.asset(
+                    ImageHelper.wrapAssetsImage(
+                        Theme.of(context).brightness == Brightness.light
+                            ? 'MoonBlink_white.jpg'
+                            : 'MoonBlink_black.jpg'),
+                    // colorBlendMode: BlendMode
+                    //     .srcOver
+                    // color: Colors.black.withOpacity(
+                    //     Theme.of(context).brightness == Brightness.light
+                    //         ? 0
+                    //         : 0.65),
+                    fit: BoxFit.fill);
+              }
+              return Center(child: CircularProgressIndicator());
             },
           ),
-          // if ()
-          //   GestureDetector(
-          //     child: Image.network(
-          //       'https://s3-ap-southeast-1.amazonaws.com/dev.moonblink.com/images/ads/moon-ads.jpeg',
-          //       fit: BoxFit.fill,
-          //       filterQuality: FilterQuality.high,
-          //     ),
-          //   ),
-          // if (adImage != null)
-
           Align(
             alignment: Alignment.bottomRight,
             child: SafeArea(
