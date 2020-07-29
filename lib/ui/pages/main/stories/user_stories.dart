@@ -4,9 +4,10 @@ import 'package:moonblink/models/story.dart';
 import 'package:story_view/story_view.dart';
 
 class StoriesPage extends StatefulWidget {
-  StoriesPage(this.stories, this.partnerProfile);
+  StoriesPage(this.stories, this.partnerProfile, this.name);
   final List stories;
   final partnerProfile;
+  final name;
   @override
   _StoriesPageState createState() => _StoriesPageState();
 }
@@ -35,12 +36,23 @@ class _StoriesPageState extends State<StoriesPage> {
 
     return Stack(
       children: <Widget>[
-        // Align(
-        //   alignment: Alignment.topLeft,
-        //   child: CircleAvatar(
-        //     radius: 20,
-        //   ),
-        // ),
+        Padding(
+          padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          child: Row(children: <Widget>[
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundImage: NetworkImage(widget.partnerProfile),
+            ),
+            Text(
+              widget.name,
+              style: TextStyle(
+                fontSize: 22,
+                color: Colors.white,
+              ),
+            )
+          ]),
+        ),
         Align(
           alignment: Alignment.topCenter,
           child: Container(

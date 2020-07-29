@@ -16,8 +16,8 @@ class StoryItemWidget extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        StoriesPage(stories.storys, stories.profile)));
+                    builder: (context) => StoriesPage(
+                        stories.storys, stories.profile, stories.name)));
           },
           child: Align(
             child: CircleAvatar(
