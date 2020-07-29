@@ -5,7 +5,7 @@ class Feed extends StatefulWidget {
   final String partnerName;
   final int partnerId;
   //TODO: need to change to double with backend
-  final int partnerRating;
+  final double partnerRating;
   Feed(this.partnerName, this.partnerId, this.partnerRating);
   @override
   _Feed createState() => new _Feed();

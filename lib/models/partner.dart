@@ -16,7 +16,7 @@ class PartnerUser {
   int followerCount;
   int followingCount; // own Profile
   int isFollow;
-  int rating;
+  double rating;
   PartnerProfile prfoileFromPartner;
 
   // String partnerProfileImage;

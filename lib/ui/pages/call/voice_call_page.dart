@@ -1,6 +1,8 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
+import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/videoUserSession.dart';
 import 'dart:async';
 
@@ -219,15 +221,14 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     height: 140,
                     color: Colors.green,
                     child: Text(
-                      // S.of(context).voiceCallWaitAnotherToJoin,
-                      '$_countdownTime',
+                      S.of(context).voiceCallWaitAnotherToJoin,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
                 Text(
-                  '$_countdownTime',
+                  'Waiting.........$_countdownTime',
                   style: TextStyle(color: Colors.white),
                 )
               ],
@@ -257,17 +258,14 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     width: 140,
                     height: 140,
                     color: Colors.red,
-                    child: Text(
-                      "Other side's name{$anotherUserId}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: Image.asset(
+                        ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg')),
                   ),
                 ),
-                Text(
-                  '$_countdownTime',
-                  style: TextStyle(color: Colors.white),
-                )
+                // Text(
+                //   '$_countdownTime',
+                //   style: TextStyle(color: Colors.white),
+                // )
               ],
             ),
           ),
