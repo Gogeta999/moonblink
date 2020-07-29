@@ -10,6 +10,7 @@ import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:provider/provider.dart';
+import 'package:oktoast/oktoast.dart';
 
 class BookingButton extends StatefulWidget {
   @override
@@ -61,6 +62,7 @@ class _BookingButtonState extends State<BookingButton> {
                   onPressed: () {
                     if (bookingModel.isError) {
                       print("Error Booking");
+                      showToast("Error");
                     } else {
                       bookingModel
                           .booking(partnerDetailModel.partnerId)
@@ -76,7 +78,7 @@ class _BookingButtonState extends State<BookingButton> {
                                                 .partnerData.partnerId),
                                       ))
                                 }
-                              : null);
+                              : showToast("The partner cannot be booked"));
                     }
                     //api call
                   })
