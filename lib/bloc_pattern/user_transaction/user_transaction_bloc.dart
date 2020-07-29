@@ -30,11 +30,9 @@ class UserTransactionBloc extends Bloc<UserTransactionEvent, UserTransactionStat
               limit: transactionLimit, page: 1);
         } catch(_) {
           yield UserTransactionNoData();
-          return;
         }
         bool hasReachedMax = data.length < transactionLimit ? true : false;
         yield UserTransactionSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
-        return;
       }
       if (currentState is UserTransactionSuccess) {
         final nextPage = currentState.page + 1;
@@ -44,14 +42,12 @@ class UserTransactionBloc extends Bloc<UserTransactionEvent, UserTransactionStat
               limit: transactionLimit, page: nextPage);
         } catch(error){
           yield UserTransactionFailure(error: error);
-          return;
         }
         bool hasReachedMax = data.length < transactionLimit ? true : false;
         yield data.isEmpty
             ? currentState.copyWith(hasReachedMax: true)
             : UserTransactionSuccess(
             data: currentState.data + data, hasReachedMax: hasReachedMax, page: nextPage);
-        return;
       }
     }
 
@@ -68,13 +64,11 @@ class UserTransactionBloc extends Bloc<UserTransactionEvent, UserTransactionStat
           limit: transactionLimit, page: 1);
     } catch (error) {
       yield UserTransactionFailure(error: error);
-      return;
     }
     bool hasReachedMax = data.length < transactionLimit ? true : false;
     yield data.isEmpty
         ? UserTransactionNoData()
         : UserTransactionSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
-    return;
   }
 
   bool _hasReachedMax(UserTransactionState state) =>
