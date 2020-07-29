@@ -31,7 +31,6 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
               partnerId: partnerId, limit: historyLimit, page: 1);
         } catch(_) {
           yield PartnerGameHistoryNoData();
-          return;
         }
         bool hasReachedMax = data.length < historyLimit ? true : false;
         yield PartnerGameHistorySuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
@@ -45,7 +44,6 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
               partnerId: partnerId, limit: historyLimit, page: nextPage);
         } catch(error){
           yield PartnerGameHistoryFailure(error: error);
-          return;
         }
         bool hasReachedMax = data.length < historyLimit ? true : false;
         yield data.isEmpty

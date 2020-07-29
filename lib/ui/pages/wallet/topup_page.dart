@@ -7,6 +7,8 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/utils/platform_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TopUpPage extends StatefulWidget {
   @override
@@ -14,12 +16,11 @@ class TopUpPage extends StatefulWidget {
 }
 
 class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixin{
-
   @override
   bool get wantKeepAlive => true;
   ///query List<IAPItem> from the store. IOS only
   // ignore: unused_field
-  var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+  //var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
   ///to monitor the connection more thoroughly from 2.0.1.
   StreamSubscription _connectionSubscription;
@@ -43,16 +44,14 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
 
   bool isLoading = false;
 
-  Wallet wallet;
+  Wallet wallet = Wallet(value: 0);
 
-  bool hasError = false;
-
-  bool isInitState = true;
-
+  List<Future> futures = [];
+  
   @override
-  void initState() {
+  void initState() {//async is not allowed on initState() directly;
+    asyncInitState();
     super.initState();
-    asyncInitState(); //async is not allowed on initState() directly;
   }
 
   @override
@@ -62,7 +61,9 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   }
 
   void asyncInitState() async {
-    await initData();
+    await FlutterInappPurchase.instance.initConnection;
+    await getItems();
+    await getUserWallet();
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -87,10 +88,6 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
           print('purchase-error: $purchaseError');
         });
-
-    setState(() {
-      isInitState = !isInitState;
-    });
   }
 
   ///You should end the billing service in android when you are done with it.
@@ -98,7 +95,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   /// We recommend to use this feature in dispose().
   void asyncDisposeState() async {
     //remove all Listeners and Streams
-    await FlutterInappPurchase.instance.endConnection;
+    //await FlutterInappPurchase.instance.endConnection;
     if (_connectionSubscription != null) {
       _connectionSubscription.cancel();
       _connectionSubscription = null;
@@ -113,18 +110,6 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
     }
   }
 
-  Future<void> initData() async {
-    await FlutterInappPurchase.instance.initConnection;
-    List<Future> futures = [getItems(), getUserWallet()];
-    try {
-      await Future.wait(futures);
-    }catch(_){
-      setState(() {
-        hasError = !hasError;
-      });
-    }
-  }
-
   ///get user wallet
   Future<void> getUserWallet() async {
     try {
@@ -133,21 +118,17 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
         this.wallet = wallet;
       });
     } catch (error) {
-      setState(() {
-        hasError = !hasError;
-      });
+      print(error);
     }
   }
 
   ///get IAP items.
   Future<void> getItems() async {
-    List<IAPItem> items =
-    await FlutterInappPurchase.instance.getProducts(_productLists);
-    items
-      ..sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
+    List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(_productLists);
+    items.sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
           ? 1
           : 0); //sort by price;
-    setState(() {
+    this.setState(() {
       this._items = items;
     });
     for (var item in items) {
@@ -259,20 +240,54 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
       ));
   }
 
+  Widget _buildTopUpWithCustomerService() {
+    return InkResponse(
+      onTap: _openFacebookPage,
+      child: Container(
+          alignment: Alignment.center,
+          // // color: Colors.grey,
+          margin: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1.5, color: Colors.grey),
+            // color: Colors.grey,
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+          child: ListTile(
+            leading: Icon(
+              FontAwesomeIcons.handsHelping,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            title: Text('Top up with our customer service.'),
+            trailing: Icon(
+                FontAwesomeIcons.facebook,
+                color: Theme.of(context).iconTheme.color,
+            ),
+          )),
+    );
+  }
+
   Widget _buildWalletList() {
-    if (_items.isEmpty || wallet == null || hasError) {
+    if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: initData,
+        onPressed: () => {getItems(),getUserWallet()},
       );
     } else {
-      return ListView.builder(
-        itemCount: _items.length + 1,
-        itemBuilder: (context, index) {
-          return index == _items.length
-              ? _buildCurrentCoinAmount()
-              : _buildProductListTile(_items[index]);
-        },
+      return Column(
+        children: <Widget>[
+          Flexible(
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _items.length,
+              itemBuilder: (context, index) {
+                return _buildProductListTile(_items[index]);
+              },
+            ),
+          ),
+          _buildCurrentCoinAmount(),
+          _buildTopUpWithCustomerService()
+        ],
       );
     }
   }
@@ -280,6 +295,25 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return isInitState ? Center(child: CircularProgressIndicator()) : _buildWalletList();
+    return _buildWalletList();
+  }
+
+  void _openFacebookPage() async {
+    String fbProtocolUrl;
+    if (Platform.isIOS) {
+      fbProtocolUrl = 'fb://profile/103254564508101';
+    } else {
+      fbProtocolUrl = 'fb://page/103254564508101';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(fbProtocolUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
   }
 }
