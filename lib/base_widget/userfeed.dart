@@ -4,7 +4,6 @@ import 'package:moonblink/base_widget/profile_widgets.dart';
 class Feed extends StatefulWidget {
   final String partnerName;
   final int partnerId;
-  //TODO: need to change to double with backend
   final double partnerRating;
   Feed(this.partnerName, this.partnerId, this.partnerRating);
   @override
