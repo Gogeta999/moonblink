@@ -646,11 +646,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   AppBar(
                 title: GestureDetector(
                     child: Text(partnermodel.partnerData.partnerName),
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                PartnerDetailPage(widget.detailPageId)))),
+                    onTap: partnermodel.partnerData.type == 1
+                        ? () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PartnerDetailPage(
+                                        widget.detailPageId)));
+                          }
+                        : null),
                 actions: <Widget>[
                   action2(user.bookingStatus, user.bookingid),
                   action1(
