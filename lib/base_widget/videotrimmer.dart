@@ -2,14 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/videotrimmer/storage_dir.dart';
+import 'package:moonblink/base_widget/videotrimmer/trim_editor.dart';
+import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
+import 'package:moonblink/base_widget/videotrimmer/video_viewer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:video_trimmer/trim_editor.dart';
-import 'package:video_trimmer/video_trimmer.dart';
-import 'package:video_trimmer/video_viewer.dart';
+import 'package:oktoast/oktoast.dart';
 
 class VideoTrimmer extends StatefulWidget {
   final Trimmer _trimmer;
@@ -29,45 +31,55 @@ class _VideoTrimmer extends State<VideoTrimmer> {
 
   Future<String> _saveVideo() async {
     setState(() {
+      duration = _endValue - _startValue;
       _progressVisibility = true;
     });
 
     String _value;
-
-    await widget._trimmer
-        .saveTrimmedVideo(startValue: _startValue, endValue: _endValue)
-        .then((value) async {
-      //upload video
-      setState(() {
-        _progressVisibility = false;
-        _value = value;
-        video = File(_value);
-        print(value);
-        print("111111111111111111111111111111");
-      });
-      var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
-      var storyPath = video.path;
-      print(storyPath);
-      print("------------------------------------------------------------");
-      FormData formData = FormData.fromMap({
-        'body': '',
-        'media': await MultipartFile.fromFile(storyPath, filename: 'video.mp4'),
-        'media_type': 2
-      });
-
-      var response = await DioUtils()
-          .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
-      if (response.errorCode == 1) {
+    if (duration < 10000) {
+      await widget._trimmer
+          .saveTrimmedVideo(
+              startValue: _startValue,
+              endValue: _endValue,
+              storageDir: StorageDir.temporaryDirectory,
+              applyVideoEncoding: true)
+          .then((value) async {
+        //upload video
         setState(() {
-          _uploadDone = !_uploadDone;
+          _progressVisibility = false;
+          _value = value;
+          video = File(_value);
+          print(value);
+          print("111111111111111111111111111111");
         });
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
-        // Navigator.of(context).pushNamed(RouteName.network);
-      }
-      // return Story.fromMap(response.data);
-      return response.data;
-    });
+        var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
+        var storyPath = video.path;
+        print(storyPath);
+        print("------------------------------------------------------------");
+        FormData formData = FormData.fromMap({
+          'body': '',
+          'media':
+              await MultipartFile.fromFile(storyPath, filename: 'video.mp4'),
+          'media_type': 2
+        });
+
+        var response = await DioUtils()
+            .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
+        if (response.errorCode == 1) {
+          setState(() {
+            _uploadDone = !_uploadDone;
+          });
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+          // Navigator.of(context).pushNamed(RouteName.network);
+        }
+        // return Story.fromMap(response.data);
+        return response.data;
+      });
+      return _value;
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -96,7 +108,12 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                       ? null
                       : () async {
                           _saveVideo().then((outputPath) {
-                            print('OUTPUT PATH: $outputPath');
+                            if (outputPath == null) {
+                              showToast("The video must be maximum 10 sec");
+                              _progressVisibility = false;
+                            } else {
+                              print('OUTPUT PATH: $outputPath');
+                            }
                           });
                         },
                   child: Text(S.of(context).upload),
@@ -140,8 +157,6 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                       endValue: _endValue,
                     );
                     setState(() {
-                      duration = _endValue - _startValue;
-                      print(duration);
                       print("-------------------------------------------");
                       _isPlaying = playbackState;
                     });

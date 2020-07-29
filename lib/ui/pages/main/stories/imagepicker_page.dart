@@ -9,11 +9,14 @@ import 'package:dio/dio.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/base_widget/videotrimmer.dart';
+import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -23,11 +26,15 @@ class ImagePickerPage extends StatefulWidget {
 }
 
 class _ImagePickerState extends State<ImagePickerPage> {
+  final FlutterFFprobe detail = new FlutterFFprobe();
+  final FlutterFFmpeg trim = new FlutterFFmpeg();
+  final Trimmer trimv = Trimmer();
   final _picker = ImagePicker();
   File _chossingItem;
   String _filePath;
   int _fileType;
   bool _uploadDone = false;
+  int duration;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,11 +198,25 @@ class _ImagePickerState extends State<ImagePickerPage> {
         source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
     // var video = await _picker.getVideo(
     //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
-
-    setState(() {
-      _chossingItem = File(video.path);
-      _fileType = 2;
+    await trimv.loadVideo(videoFile: File(video.path));
+    detail.getMediaInformation(video.path).then((info) {
+      print("Getting info of video");
+      print(info["duration"]);
+      duration = info['duration'];
+      if (duration > 10000) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VideoTrimmer(trimv),
+            ));
+      } else {
+        setState(() {
+          _chossingItem = File(video.path);
+          _fileType = 2;
+        });
+      }
     });
+
     // final uint8list = await VideoThumbnail.thumbnailFile(
     //   video:
     //       "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
