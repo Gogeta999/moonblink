@@ -257,7 +257,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     alignment: Alignment.center,
                     width: 140,
                     height: 140,
-                    color: Colors.red,
+                    // color: Colors.red,
                     child: Image.asset(
                         ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg')),
                   ),
@@ -290,7 +290,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
               return _isMute();
             },
             child: Icon(
-              muted ? Icons.mic : Icons.mic_off,
+              muted ? Icons.mic_off : Icons.mic_off,
               color: muted ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
@@ -320,13 +320,13 @@ class AudioCallPageState extends State<VoiceCallWidget> {
           RawMaterialButton(
             onPressed: () => _isSpeakPhone(),
             child: Icon(
-              speakPhone ? Icons.volume_up : Icons.volume_off,
-              color: Colors.blueAccent,
+              speakPhone ? Icons.volume_up : Icons.volume_up,
+              color: speakPhone ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor: Colors.white,
+            fillColor: speakPhone ? Colors.blueAccent : Colors.white,
             padding: const EdgeInsets.all(12.0),
           )
         ],

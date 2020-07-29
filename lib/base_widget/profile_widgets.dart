@@ -50,9 +50,12 @@ class PartnerRatingWidget extends StatelessWidget {
               )),
           Positioned(
               bottom: 60,
-              child: Text(partnerName +
-                  S.of(context).averageRatingIs +
-                  averageRating.toString()))
+              child: Text(
+                partnerName +
+                    S.of(context).averageRatingIs +
+                    averageRating.toString(),
+                style: TextStyle(color: Colors.black),
+              ))
         ],
       ),
     );

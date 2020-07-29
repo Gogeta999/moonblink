@@ -16,6 +16,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:provider/provider.dart';
+import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
   // final String cover;
@@ -178,7 +179,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                                         '$userid/profile',
                                                     data: formData);
                                             print(response);
-                                            Navigator.of(context).pop();
+                                            Navigator.of(context)
+                                                .pushNamedAndRemoveUntil(
+                                                    RouteName.main,
+                                                    (route) => false);
                                             return User.fromJsonMap(
                                                 response.data);
                                           },
@@ -237,12 +241,12 @@ class PartnerProfileWidget extends StatelessWidget {
     if (this.profile == null) {
       return Image.network(
         partnermodel.partnerData.prfoileFromPartner.profileImage,
-        fit: BoxFit.fill,
+        fit: BoxFit.cover,
       );
     } else {
       return Image.file(
         this.profile,
-        fit: BoxFit.fill,
+        fit: BoxFit.cover,
       );
     }
   }
