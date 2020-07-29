@@ -203,7 +203,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
       print("Getting info of video");
       print(info["duration"]);
       duration = info['duration'];
-      if (duration > 10000) {
+      if (duration > 10500) {
         Navigator.push(
             context,
             MaterialPageRoute(

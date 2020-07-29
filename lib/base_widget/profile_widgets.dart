@@ -19,7 +19,7 @@ class PartnerRatingWidget extends StatelessWidget {
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
         border: Border.all(width: 1.5, color: Colors.grey),
-        // color: Colors.grey,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(12.0)),
       ),
       child: Stack(
@@ -29,13 +29,13 @@ class PartnerRatingWidget extends StatelessWidget {
           Center(
             child: Image.asset(
               ImageHelper.wrapAssetsLogo('ratingsRabbit.png'),
-              fit: BoxFit.contain,
+              fit: BoxFit.fill,
             ),
           ),
           Positioned(
               bottom: 85,
               child: SmoothStarRating(
-                rating: 4.5,
+                rating: averageRating.roundToDouble(),
                 isReadOnly: true,
                 filledIconData: Icons.star,
                 halfFilledIconData: Icons.star_half,
@@ -50,9 +50,12 @@ class PartnerRatingWidget extends StatelessWidget {
               )),
           Positioned(
               bottom: 60,
-              child: Text(partnerName +
-                  S.of(context).averageRatingIs +
-                  averageRating.toString()))
+              child: Text(
+                partnerName +
+                    S.of(context).averageRatingIs +
+                    averageRating.roundToDouble().toString(),
+                style: TextStyle(color: Colors.black),
+              ))
         ],
       ),
     );
