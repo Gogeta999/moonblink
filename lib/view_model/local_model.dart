@@ -4,7 +4,7 @@ import 'package:moonblink/global/storage_manager.dart';
 
 class LocaleModel extends ChangeNotifier {
 //  static const localeNameList = ['auto', '中文', 'English'];
-  static const localeValueList = ['', 'en', 'mm', 'zh'];
+  static const localeValueList = ['', 'en', 'my', 'zh'];
 
   //
   static const mLocaleIndex = 'mLocaleIndex';
@@ -39,7 +39,7 @@ class LocaleModel extends ChangeNotifier {
       case 1:
         return S.of(context).english;
       case 2:
-        return 'S.of(context).burmese';
+        return S.of(context).burmese;
       case 3:
         return S.of(context).china;
       default:

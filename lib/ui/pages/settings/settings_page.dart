@@ -7,10 +7,12 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
+import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -127,15 +129,23 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).ratingApp),
+                  title: Text(S.of(context).termAndConditions),
                   onTap: () async {
-                    print(Text(
-                        'Will launch To review after registering at play and ios store'));
-                    //   LaunchReview.launch(
-                    //       androidAppId: "",
-                    //       iOSAppId: "");
-                    // },
+                    Navigator.of(context)
+                        .pushNamed(RouteName.termsAndConditionsPage);
                   },
+                  leading: Icon(Icons.book, color: iconColor),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Material(
+                color: Theme.of(context).cardColor,
+                child: ListTile(
+                  title: Text(S.of(context).ratingApp),
+                  onTap: _openStore,
                   leading: Icon(Icons.tag_faces, color: iconColor),
                   trailing: Icon(Icons.chevron_right),
                 ),
@@ -147,9 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Theme.of(context).cardColor,
                 child: ListTile(
                   title: Text(S.of(context).feedback),
-                  onTap: () async {
-                    print('');
-                  },
+                  onTap: _openFacebookPage,
                   leading: Icon(
                     Icons.feedback,
                     color: iconColor,
@@ -167,5 +175,44 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  void _openStore() async {
+    String appStoreUrl;
+    if (Platform.isIOS) {
+      appStoreUrl = 'fb://profile/103254564508101';
+    } else {
+      appStoreUrl =
+          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(appStoreUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
+  }
+
+  void _openFacebookPage() async {
+    String fbProtocolUrl;
+    if (Platform.isIOS) {
+      fbProtocolUrl = 'fb://profile/103254564508101';
+    } else {
+      fbProtocolUrl = 'fb://page/103254564508101';
+    }
+    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
+    try {
+      bool nativeAppLaunch = await launch(fbProtocolUrl,
+          forceSafariVC: false, universalLinksOnly: true);
+      if (!nativeAppLaunch) {
+        await launch(pageUrl, forceSafariVC: false);
+      }
+    } catch (e) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
   }
 }

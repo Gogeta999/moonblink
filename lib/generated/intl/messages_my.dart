@@ -95,7 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabChat" : MessageLookupByLibrary.simpleMessage("စကားပြောခန်း"),
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("ပင်မစာမျက်နှာ"),
-    "tabUser" : MessageLookupByLibrary.simpleMessage("အသုံးပြုသူ"),
+    "tabUser" : MessageLookupByLibrary.simpleMessage("အသုံးပြုသူလိုက်နာရန်စာတမ်း"),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("gmailသို့facebookဖြင့်၀င်ရန်"),
     "toSignIn" : MessageLookupByLibrary.simpleMessage("အကောင့်ဝင်ရန်"),
     "toSignUp" : MessageLookupByLibrary.simpleMessage("အကောင့်သစ်ဖွင့်ရန်"),

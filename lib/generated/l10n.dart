@@ -783,6 +783,16 @@ class S {
     );
   }
 
+  /// `Term and Conditions`
+  String get termAndConditions {
+    return Intl.message(
+      'Term and Conditions',
+      name: 'termAndConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Third Login`
   String get thirdLogin {
     return Intl.message(

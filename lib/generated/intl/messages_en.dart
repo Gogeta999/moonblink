@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("Home"),
     "tabUser" : MessageLookupByLibrary.simpleMessage("User"),
+    "termAndConditions" : MessageLookupByLibrary.simpleMessage("Term and Conditions"),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("Third Login"),
     "toSignIn" : MessageLookupByLibrary.simpleMessage("Sign In"),
     "toSignUp" : MessageLookupByLibrary.simpleMessage("Please Sign Up"),
