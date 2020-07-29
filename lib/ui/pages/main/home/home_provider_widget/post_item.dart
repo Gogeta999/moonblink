@@ -211,7 +211,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
                 alignment: Alignment.topLeft,
                 child: Text(
-                  DateFormat.jm().format(DateTime.parse(widget.posts.creatdAt)),
+                  widget.posts.creatdAt,
                   style: TextStyle(color: Colors.grey, fontSize: 12.0),
                 ),
               ),

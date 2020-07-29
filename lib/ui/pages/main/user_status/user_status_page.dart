@@ -49,6 +49,7 @@ class _UserStatusPageState extends State<UserStatusPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -62,7 +63,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                       child: AppBarIndicator(),
                     );
                   }
-                  if (model.userModel.hasUser) {
+                  if (model.userModel.hasUser && usertype == 1) {
                     return IconButton(
                       tooltip: S.of(context).logout,
                       icon: Icon(IconFonts.setProfileIcon),
@@ -173,7 +174,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                 child: model.hasUser
                                     ? Image.network(
                                         model.user.profileUrl,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                         width: 120,
                                         height: 120,
                                         // color: Theme.of(context)
