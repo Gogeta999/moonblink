@@ -37,7 +37,7 @@ class _StoriesPageState extends State<StoriesPage> {
     return Stack(
       children: <Widget>[
         Padding(
-          padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 40),
           child: Row(children: <Widget>[
             CircleAvatar(
               radius: 25,
@@ -47,7 +47,8 @@ class _StoriesPageState extends State<StoriesPage> {
             Text(
               widget.name,
               style: TextStyle(
-                fontSize: 22,
+                decoration: TextDecoration.none,
+                fontSize: 18,
                 color: Colors.white,
               ),
             )

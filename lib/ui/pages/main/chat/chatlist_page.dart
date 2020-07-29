@@ -9,6 +9,7 @@ import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class ChatListPage extends StatefulWidget {
   @override
@@ -25,6 +26,8 @@ class _ChatListPageState extends State<ChatListPage> {
     // chatlist.clear();
     if (usertoken != null) {
       ScopedModel.of<ChatModel>(context).init();
+    } else {
+      showToast("Login First");
     }
   }
 

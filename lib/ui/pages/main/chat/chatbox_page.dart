@@ -189,6 +189,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                       SmoothStarRating(
                         starCount: 5,
                         rating: rate,
+                        color: Theme.of(context).accentColor,
                         isReadOnly: false,
                         size: 30,
                         filledIconData: Icons.star,
@@ -246,7 +247,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         minWidth: 70,
         child: FlatButton(
           child: Text(S.of(context).accept,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: Colors.green)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, booking_accept);
@@ -261,7 +265,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         minWidth: 70,
         child: FlatButton(
           child: Text(S.of(context).reject,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: Colors.red)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, booking_reject);
@@ -299,7 +306,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   buttoncheck(status, msg) {
     if (status == 1) {
       return MaterialButton(
-        child: Text(S.of(context).enterCall),
+        child: Text(
+          S.of(context).enterCall,
+          style: TextStyle(color: Colors.greenAccent),
+        ),
         onPressed: () {
           joinChannel(msg.attach);
         },

@@ -36,7 +36,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
     });
 
     String _value;
-    if (duration < 10000) {
+    if (duration < 10500) {
       await widget._trimmer
           .saveTrimmedVideo(
               startValue: _startValue,
@@ -88,81 +88,90 @@ class _VideoTrimmer extends State<VideoTrimmer> {
       appBar: AppBar(
         title: Text(S.of(context).trimYourVideo),
       ),
-      body: Builder(
-        builder: (context) => Center(
-          child: Container(
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Visibility(
-                  visible: _progressVisibility,
-                  child: LinearProgressIndicator(
-                    backgroundColor: Colors.red,
+      body: WillPopScope(
+        onWillPop: () async {
+          if (_uploadDone == false) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        child: Builder(
+          builder: (context) => Center(
+            child: Container(
+              padding: EdgeInsets.only(bottom: 30.0),
+              color: Colors.black,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Visibility(
+                    visible: _progressVisibility,
+                    child: LinearProgressIndicator(
+                      backgroundColor: Colors.red,
+                    ),
                   ),
-                ),
-                RaisedButton(
-                  onPressed: _progressVisibility
-                      ? null
-                      : () async {
-                          _saveVideo().then((outputPath) {
-                            if (outputPath == null) {
-                              showToast("The video must be maximum 10 sec");
-                              _progressVisibility = false;
-                            } else {
-                              print('OUTPUT PATH: $outputPath');
-                            }
-                          });
-                        },
-                  child: Text(S.of(context).upload),
-                ),
-                Expanded(
-                  child: VideoViewer(),
-                ),
-                Center(
-                  child: TrimEditor(
-                    viewerHeight: 50.0,
-                    viewerWidth: MediaQuery.of(context).size.width,
-                    onChangeStart: (value) {
-                      _startValue = value;
-                    },
-                    onChangeEnd: (value) {
-                      _endValue = value;
-                    },
-                    onChangePlaybackState: (value) {
+                  RaisedButton(
+                    onPressed: _progressVisibility
+                        ? null
+                        : () async {
+                            _saveVideo().then((outputPath) {
+                              if (outputPath == null) {
+                                showToast("The video must be maximum 10 sec");
+                                _progressVisibility = false;
+                              } else {
+                                print('OUTPUT PATH: $outputPath');
+                              }
+                            });
+                          },
+                    child: Text(S.of(context).upload),
+                  ),
+                  Expanded(
+                    child: VideoViewer(),
+                  ),
+                  Center(
+                    child: TrimEditor(
+                      viewerHeight: 50.0,
+                      viewerWidth: MediaQuery.of(context).size.width / 1.2,
+                      onChangeStart: (value) {
+                        _startValue = value;
+                      },
+                      onChangeEnd: (value) {
+                        _endValue = value;
+                      },
+                      onChangePlaybackState: (value) {
+                        setState(() {
+                          _isPlaying = value;
+                        });
+                      },
+                    ),
+                  ),
+                  FlatButton(
+                    child: _isPlaying
+                        ? Icon(
+                            Icons.pause,
+                            size: 80.0,
+                            color: Colors.white,
+                          )
+                        : Icon(
+                            Icons.play_arrow,
+                            size: 80.0,
+                            color: Colors.white,
+                          ),
+                    onPressed: () async {
+                      bool playbackState =
+                          await widget._trimmer.videPlaybackControl(
+                        startValue: _startValue,
+                        endValue: _endValue,
+                      );
                       setState(() {
-                        _isPlaying = value;
+                        print("-------------------------------------------");
+                        _isPlaying = playbackState;
                       });
                     },
-                  ),
-                ),
-                FlatButton(
-                  child: _isPlaying
-                      ? Icon(
-                          Icons.pause,
-                          size: 80.0,
-                          color: Colors.white,
-                        )
-                      : Icon(
-                          Icons.play_arrow,
-                          size: 80.0,
-                          color: Colors.white,
-                        ),
-                  onPressed: () async {
-                    bool playbackState =
-                        await widget._trimmer.videPlaybackControl(
-                      startValue: _startValue,
-                      endValue: _endValue,
-                    );
-                    setState(() {
-                      print("-------------------------------------------");
-                      _isPlaying = playbackState;
-                    });
-                  },
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
