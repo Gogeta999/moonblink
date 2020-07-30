@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -15,6 +16,7 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
@@ -31,6 +33,7 @@ class UpdatePartnerProfilePage extends StatefulWidget {
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _biosController = TextEditingController();
   final _picker = ImagePicker();
+  String _filePath;
   PartnerUser partnerData;
   @override
   void dispose() {
@@ -42,18 +45,48 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   File _profile;
   //pick Cover
   _pickCoverFromGallery() async {
-    var cover = await _picker.getImage(source: ImageSource.gallery);
+    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
+    File image = File(cover.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+    await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
-      _cover = File(cover.path);
+      _cover = compressedImage;
     });
   }
 
   //pick profile
   _pickprofileFromGallery() async {
-    var profile = await _picker.getImage(source: ImageSource.gallery);
+    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
+    File image = File(profile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+    await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
-      _profile = File(profile.path);
+      _profile = compressedImage;
     });
+  }
+
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 80,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<File> _getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    _filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(_filePath);
   }
 
   @override
@@ -154,6 +187,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         // _space,
                                         FlatButton(
                                           child: Text("Update"),
+                                          color: Theme.of(context).buttonColor,
                                           onPressed: () async {
                                             var userid = StorageManager
                                                 .sharedPreferences

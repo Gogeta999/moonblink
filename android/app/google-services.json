@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "155573283200-r8d6i6ue528irdbbl44t4lp4b66dfgao.apps.googleusercontent.com",
+          "client_id": "155573283200-7jcli68vkqvr2ku9er13edejqla7dr9j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.moonuniverse.moonblink",
-            "certificate_hash": "730b676b84cf370ef525f595b6ff00abadc94856"
-          }
-        },
-        {
-          "client_id": "155573283200-hbnlgak51ubfkvgcvqfunuiak7dk6r30.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.moonuniverse.moonblink",
-            "certificate_hash": "30e1dc304364d9446b0f63760ec255560fd7b975"
+            "certificate_hash": "3d79b9d5ec97d10c3c38a4f316d8ef4f3e4623e7"
           }
         },
         {

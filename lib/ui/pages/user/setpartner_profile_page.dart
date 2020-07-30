@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -18,20 +19,18 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class SetPartnerProfilePage extends StatefulWidget {
-  final String cover;
-  final String profile;
-
-  SetPartnerProfilePage({this.cover, this.profile});
   @override
   _SetPartnerProfilePageState createState() => _SetPartnerProfilePageState();
 }
 
 class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
-  bool finished;
+  bool finished = false;
   final _picker = ImagePicker();
+  String _filePath;
   String _genderController;
   List<String> genderList = ["Male", "Female", "Rather Not Say"];
   final _sexController = TextEditingController();
@@ -59,17 +58,47 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   //pick Cover
   _pickCoverFromGallery() async {
     PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
+    File image = File(cover.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+    await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
-      _cover = File(cover.path);
+      _cover = compressedImage;
     });
   }
 
   //pick profile
   _pickprofileFromGallery() async {
     PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
+    File image = File(profile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+    await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
-      _profile = File(profile.path);
+      _profile = compressedImage;
     });
+  }
+
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 80,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<File> _getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    _filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(_filePath);
   }
 
   //get Space
@@ -274,36 +303,37 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                               var userid = StorageManager
                                                   .sharedPreferences
                                                   .getInt(mUserId);
-                                              var coverPath = _cover.path;
-                                              var profilePath = _profile.path;
+                                              var coverPath = _cover.absolute.path;
+                                              var profilePath = _profile.absolute.path;
                                               FormData formData =
                                                   FormData.fromMap({
                                                 'cover_image':
                                                     await MultipartFile
                                                         .fromFile(coverPath,
                                                             filename:
-                                                                'cover.jpg'),
+                                                                'cover.jpg',
+                                                    ),
                                                 'profile_image':
                                                     await MultipartFile
                                                         .fromFile(
                                                             profilePath,
                                                             filename:
                                                                 'profile.jpg'),
-                                                'nrc': _nrcController.text,
-                                                'mail': _mailController.text,
-                                                'gender': _genderController,
-                                                'dob': _dobController.text,
-                                                'phone': _phController.text,
-                                                'bios': _biosController.text,
+                                                'nrc': _nrcController.text.toString(),
+                                                'mail': _mailController.text.toString(),
+                                                'gender': _genderController.toString(),
+                                                'dob': _dobController.text.toString(),
+                                                'phone': _phController.text.toString(),
+                                                'bios': _biosController.text.toString(),
                                                 'address':
-                                                    _addressController.text
+                                                    _addressController.text.toString()
                                               });
                                               var response = await DioUtils()
                                                   .postwithData(
                                                       Api.SetProfile +
                                                           '$userid/profile',
                                                       data: formData);
-                                              print(response);
+                                              print('PRINTED $response');
                                               model.logout();
                                               Navigator.of(context)
                                                   .pushNamedAndRemoveUntil(
