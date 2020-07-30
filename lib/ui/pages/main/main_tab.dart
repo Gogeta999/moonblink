@@ -80,31 +80,33 @@ class _MainTabPageState extends State<MainTabPage>
           },
         ),
       ),
-      bottomNavigationBar: FancyBottomNavigation(
-        tabs: [
-          TabData(
-              iconData: IconFonts.homePageIcon, title: S.of(context).tabHome),
-          TabData(
-              iconData: IconFonts.chatPageIcon, title: S.of(context).tabChat),
-          TabData(
-              iconData: IconFonts.followingPageIcon,
-              title: S.of(context).tabFollowing),
-          TabData(
-              iconData: IconFonts.statusPageIcon, title: S.of(context).tabUser),
-        ],
-        initialSelection: initPage,
-        // inactiveIconSize: 30,
-        circleHeight: 50,
-        arcHeight: 55,
-        arcWidth: 80,
-        barHeight: 55,
-        circleColor: Theme.of(context).accentColor,
-        onTabChangedListener: (index) {
-          _pageController.jumpToPage(index);
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+      bottomNavigationBar: Container(
+        child: FancyBottomNavigation(
+          tabs: [
+            TabData(
+                iconData: IconFonts.homePageIcon, title: S.of(context).tabHome),
+            TabData(
+                iconData: IconFonts.chatPageIcon, title: S.of(context).tabChat),
+            TabData(
+                iconData: IconFonts.followingPageIcon,
+                title: S.of(context).tabFollowing),
+            TabData(
+                iconData: IconFonts.statusPageIcon, title: S.of(context).tabUser),
+          ],
+          initialSelection: initPage,
+          // inactiveIconSize: 30,
+          circleHeight: 50,
+          arcHeight: 55,
+          arcWidth: 80,
+          barHeight: 55,
+          circleColor: Theme.of(context).accentColor,
+          onTabChangedListener: (index) {
+            _pageController.jumpToPage(index);
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

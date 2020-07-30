@@ -9,7 +9,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-String url = 'http://54.179.117.84';
+String url = 'https://chat.moonblinkuniverse.com';
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],
