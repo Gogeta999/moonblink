@@ -23,10 +23,9 @@ class UserStatusPage extends StatefulWidget {
   _UserStatusPageState createState() => _UserStatusPageState();
 }
 
-class _UserStatusPageState extends State<UserStatusPage>
-    with AutomaticKeepAliveClientMixin {
+class _UserStatusPageState extends State<UserStatusPage> {
   @override
-  bool get wantKeepAlive => true;
+  // bool get wantKeepAlive => true;
 
   Wallet wallet = Wallet(value: 0);
   bool hasUser = false;
@@ -48,7 +47,6 @@ class _UserStatusPageState extends State<UserStatusPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
       body: CustomScrollView(

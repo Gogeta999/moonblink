@@ -32,7 +32,7 @@ class _BookingButtonState extends State<BookingButton> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Image.asset(ImageHelper.wrapAssetsImage("bookingWaiting.jpg")),
+                Image.asset(ImageHelper.wrapAssetsImage("bookingWaiting.gif")),
                 SizedBox(height: 20.0),
                 BookingDropdown(bookingModel: bookingModel),
                 SizedBox(height: 10.0),

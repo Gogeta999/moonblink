@@ -58,11 +58,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             future: MoonBlinkRepository.showAd(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Image.asset(
-                    ImageHelper.wrapAssetsImage(
-                        Theme.of(context).brightness == Brightness.light
-                            ? 'MoonBlink_white.jpg'
-                            : 'MoonBlink_black.jpg'),
+                return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
                     // colorBlendMode: BlendMode
                     //     .srcOver
                     // color: Colors.black.withOpacity(
@@ -82,11 +78,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     ),
                   );
                 } else {
-                  return Image.asset(
-                      ImageHelper.wrapAssetsImage(
-                          Theme.of(context).brightness == Brightness.light
-                              ? 'MoonBlink_white.jpg'
-                              : 'MoonBlink_black.jpg'),
+                  return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
                       // colorBlendMode: BlendMode
                       //     .srcOver
                       // color: Colors.black.withOpacity(
@@ -96,11 +88,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                       fit: BoxFit.fill);
                 }
               } else if (snapshot.hasError) {
-                return Image.asset(
-                    ImageHelper.wrapAssetsImage(
-                        Theme.of(context).brightness == Brightness.light
-                            ? 'MoonBlink_white.jpg'
-                            : 'MoonBlink_black.jpg'),
+                return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
                     // colorBlendMode: BlendMode
                     //     .srcOver
                     // color: Colors.black.withOpacity(

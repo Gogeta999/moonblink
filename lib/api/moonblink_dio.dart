@@ -15,6 +15,7 @@ import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 //user token will change with data at login model
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 _parseAndDecode(String response) {
@@ -110,6 +111,11 @@ class DioUtils {
     } else {
       // or if(usertoken = null)
       if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
       }
       // Platform and version Control
@@ -154,6 +160,11 @@ class DioUtils {
       return response;
     } else {
       if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -175,6 +186,11 @@ class DioUtils {
       return response;
     } else {
       if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -202,6 +218,11 @@ class DioUtils {
       return respData;
     } else {
       if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);

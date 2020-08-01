@@ -15,9 +15,11 @@ class TopUpPage extends StatefulWidget {
   _TopUpPageState createState() => _TopUpPageState();
 }
 
-class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixin{
+class _TopUpPageState extends State<TopUpPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   ///query List<IAPItem> from the store. IOS only
   // ignore: unused_field
   //var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -32,7 +34,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   StreamSubscription _purchaseErrorSubscription;
 
   final List<String> _productLists = [
-    'coin_100',
+    'coin_200',
     'coin_500',
     'coin_1000'
   ]; //for now only android
@@ -47,9 +49,10 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   Wallet wallet = Wallet(value: 0);
 
   List<Future> futures = [];
-  
+
   @override
-  void initState() {//async is not allowed on initState() directly;
+  void initState() {
+    //async is not allowed on initState() directly;
     asyncInitState();
     super.initState();
   }
@@ -67,27 +70,27 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
-          print('connected: $connected');
-        });
+      print('connected: $connected');
+    });
 
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-          print('purchase-updated: $productItem');
-          try {
-            //consume after purchase success so user buy the product again.
-            //need to connect with backend to process purchase.
-            userTopUp(productItem.productId);
-            var msg = FlutterInappPurchase.instance.consumeAllItems;
-            print('consumeAllItems: $msg');
-          } catch (err) {
-            print('consumeAllItems error: $err');
-          }
-        });
+      print('purchase-updated: $productItem');
+      try {
+        //consume after purchase success so user buy the product again.
+        //need to connect with backend to process purchase.
+        userTopUp(productItem.productId);
+        var msg = FlutterInappPurchase.instance.consumeAllItems;
+        print('consumeAllItems: $msg');
+      } catch (err) {
+        print('consumeAllItems error: $err');
+      }
+    });
 
     _purchaseErrorSubscription =
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
-          print('purchase-error: $purchaseError');
-        });
+      print('purchase-error: $purchaseError');
+    });
   }
 
   ///You should end the billing service in android when you are done with it.
@@ -124,10 +127,11 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
 
   ///get IAP items.
   Future<void> getItems() async {
-    List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(_productLists);
+    List<IAPItem> items =
+        await FlutterInappPurchase.instance.getProducts(_productLists);
     items.sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
-          ? 1
-          : 0); //sort by price;
+        ? 1
+        : 0); //sort by price;
     this.setState(() {
       this._items = items;
     });
@@ -139,7 +143,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   ///get Purchased items.
   Future<void> getPurchasedItems() async {
     List<PurchasedItem> items =
-    await FlutterInappPurchase.instance.getAvailablePurchases();
+        await FlutterInappPurchase.instance.getAvailablePurchases();
     setState(() {
       this._purchases = items;
     });
@@ -151,7 +155,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   ///get PurchasedHistory items.
   Future<void> getPurchasedHistoryItems() async {
     List<PurchasedItem> items =
-    await FlutterInappPurchase.instance.getPurchaseHistory();
+        await FlutterInappPurchase.instance.getPurchaseHistory();
     setState(() {
       this._purchasedHistories = items;
     });
@@ -163,7 +167,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
   ///purchase IAP items.
   purchaseItem(IAPItem iapItem) async {
     var msg =
-    await FlutterInappPurchase.instance.requestPurchase(iapItem.productId);
+        await FlutterInappPurchase.instance.requestPurchase(iapItem.productId);
     print('purchasedMsg: $msg');
   }
 
@@ -221,23 +225,23 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
 
   Widget _buildCurrentCoinAmount() {
     return Container(
-      alignment: Alignment.center,
-      // // color: Colors.grey,
-      margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.grey),
-        // color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-      ),
-      child: ListTile(
-        leading: Icon(
-          FontAwesomeIcons.coins,
-          color: Colors.amber[500],
+        alignment: Alignment.center,
+        // // color: Colors.grey,
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.5, color: Colors.grey),
+          // color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
         ),
-        title: Text(
-            'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-        trailing: isLoading ? CircularProgressIndicator() : null,
-      ));
+        child: ListTile(
+          leading: Icon(
+            FontAwesomeIcons.coins,
+            color: Colors.amber[500],
+          ),
+          title: Text(
+              'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
+          trailing: isLoading ? CircularProgressIndicator() : null,
+        ));
   }
 
   Widget _buildTopUpWithCustomerService() {
@@ -259,8 +263,8 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
             ),
             title: Text('Top up with our customer service.'),
             trailing: Icon(
-                FontAwesomeIcons.facebook,
-                color: Theme.of(context).iconTheme.color,
+              FontAwesomeIcons.facebook,
+              color: Theme.of(context).iconTheme.color,
             ),
           )),
     );
@@ -270,7 +274,7 @@ class _TopUpPageState extends State<TopUpPage> with AutomaticKeepAliveClientMixi
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(),getUserWallet()},
+        onPressed: () => {getItems(), getUserWallet()},
       );
     } else {
       return Column(

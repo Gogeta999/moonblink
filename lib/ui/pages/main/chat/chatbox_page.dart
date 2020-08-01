@@ -245,16 +245,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   acceptbtn(bookingid, msg) {
     return ButtonTheme(
         minWidth: 70,
-        child: FlatButton(
-          child: Text(S.of(context).accept,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.green)),
-          onPressed: () {
-            MoonBlinkRepository.bookingAcceptOrDecline(
-                selfId, bookingid, booking_accept);
-            msg.type = 0;
+        child: ProviderWidget(
+          model: CallModel(),
+          builder: (context, model, child) {
+            return FlatButton(
+              child: Text(S.of(context).accept,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              onPressed: () {
+                MoonBlinkRepository.bookingAcceptOrDecline(
+                    selfId, bookingid, booking_accept);
+                msg.type = 0;
+              },
+            );
           },
         ));
   }
@@ -263,16 +265,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   rejectbtn(bookingid, msg) {
     return ButtonTheme(
         minWidth: 70,
-        child: FlatButton(
-          child: Text(S.of(context).reject,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.red)),
-          onPressed: () {
-            MoonBlinkRepository.bookingAcceptOrDecline(
-                selfId, bookingid, booking_reject);
-            msg.type = 0;
+        child: ProviderWidget(
+          model: CallModel(),
+          builder: (context, model, child) {
+            return FlatButton(
+              child: Text(S.of(context).reject,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              onPressed: () {
+                MoonBlinkRepository.bookingAcceptOrDecline(
+                    selfId, bookingid, booking_reject);
+                msg.type = 0;
+              },
+            );
           },
         ));
   }
@@ -308,7 +312,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return MaterialButton(
         child: Text(
           S.of(context).enterCall,
-          style: TextStyle(color: Colors.greenAccent),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         onPressed: () {
           joinChannel(msg.attach);
