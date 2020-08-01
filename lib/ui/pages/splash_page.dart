@@ -11,7 +11,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/splahAd_model.dart';
-
+import 'package:moonblink/view_model/user_model.dart';
 import 'new_user_swiper_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -70,8 +70,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     //         ? 0
                     //         : 0.65),
                     fit: BoxFit.fill);
-              }
-              else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
                 if (snapshot.data.status == '1') {
                   return InkWell(
                     // onTap: ,
@@ -95,7 +95,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                       //         : 0.65),
                       fit: BoxFit.fill);
                 }
-              } else if (snapshot.hasError){
+              } else if (snapshot.hasError) {
                 return Image.asset(
                     ImageHelper.wrapAssetsImage(
                         Theme.of(context).brightness == Brightness.light
@@ -164,9 +164,19 @@ class AnimatedCountdown extends AnimatedWidget {
 }
 
 void nextPage(context) {
+  final hasUser = StorageManager.localStorage.getItem(mUser);
   bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
-  newUser
-      ? Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage)
-      : Navigator.of(context)
-          .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+  // newUser
+  //     ? Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage)
+  //     : Navigator.of(context)
+  //         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+  if (newUser == true) {
+    Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage);
+  } else if (newUser == false && hasUser == null) {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
+  } else {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+  }
 }

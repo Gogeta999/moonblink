@@ -243,6 +243,26 @@ class S {
     );
   }
 
+  /// `You need to login first`
+  String get forceLoginTitle {
+    return Intl.message(
+      'You need to login first',
+      name: 'forceLoginTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need to login and contiue to use our  app`
+  String get forceLoginContent {
+    return Intl.message(
+      'You need to login and contiue to use our  app',
+      name: 'forceLoginContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sorry we don't support this version`
   String get forceUpdateTitle {
     return Intl.message(

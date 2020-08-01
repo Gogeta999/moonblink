@@ -46,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("不能为空"),
     "follow" : MessageLookupByLibrary.simpleMessage("关注"),
     "following" : MessageLookupByLibrary.simpleMessage("正在关注"),
+    "forceLoginContent" : MessageLookupByLibrary.simpleMessage("您需要登录后继续使用我们的软件"),
+    "forceLoginTitle" : MessageLookupByLibrary.simpleMessage("很抱歉，您需要先登录"),
     "forceUpdateContent" : MessageLookupByLibrary.simpleMessage("请在AppStore上下载我们的应用程序"),
     "forceUpdateTitle" : MessageLookupByLibrary.simpleMessage("很抱歉,我们不支持该版本"),
     "imagePickerAppBar" : MessageLookupByLibrary.simpleMessage("上传您的故事"),

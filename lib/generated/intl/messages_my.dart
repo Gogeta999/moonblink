@@ -46,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("အလွတ်ထားမရပါ"),
     "follow" : MessageLookupByLibrary.simpleMessage("Follow"),
     "following" : MessageLookupByLibrary.simpleMessage("Following"),
+    "forceLoginContent" : MessageLookupByLibrary.simpleMessage("သင်Loginပြီးမှသာ ကျန်တော်တို့၏Appကိုဆက်သုံးနိုင်သည်။"),
+    "forceLoginTitle" : MessageLookupByLibrary.simpleMessage("သင်ပထမဦးဆုံး Login ဝင်ရန်လိုသည်"),
     "forceUpdateContent" : MessageLookupByLibrary.simpleMessage("ကျေးဇူးပြု၍ကျွန်ုပ်တို့၏appကိုAppStoreတွင်ဒေါင်းလုပ်လုပ်ပါ"),
     "forceUpdateTitle" : MessageLookupByLibrary.simpleMessage("တောင်းပန်ပါတယ်ကျွန်ုပ်တို့ဤဗားရှင်းကိုမထောက်ခံပါ"),
     "imagePickerAppBar" : MessageLookupByLibrary.simpleMessage("စတိုရီတခုဖန်တီးပါ"),

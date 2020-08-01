@@ -46,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("Can\'t be empty"),
     "follow" : MessageLookupByLibrary.simpleMessage("Follow"),
     "following" : MessageLookupByLibrary.simpleMessage("Following"),
+    "forceLoginContent" : MessageLookupByLibrary.simpleMessage("You need to login and contiue to use our  app"),
+    "forceLoginTitle" : MessageLookupByLibrary.simpleMessage("You need to login first"),
     "forceUpdateContent" : MessageLookupByLibrary.simpleMessage("Please download our app on AppStore"),
     "forceUpdateTitle" : MessageLookupByLibrary.simpleMessage("Sorry we don\'t support this version"),
     "imagePickerAppBar" : MessageLookupByLibrary.simpleMessage("Upload Your Story"),

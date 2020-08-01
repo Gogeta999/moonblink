@@ -20,6 +20,8 @@
     "end":"End",
     "english":"英语",
     "enterCall":"输入呼叫",
+    "forceLoginTitle": "很抱歉，您需要先登录",
+    "forceLoginContent": "您需要登录后继续使用我们的软件",
     "forceUpdateTitle":"很抱歉,我们不支持该版本",
     "forceUpdateContent":"请在AppStore上下载我们的应用程序",
     "follow":"关注",

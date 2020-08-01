@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/navigation_service.dart';
@@ -109,13 +110,13 @@ class DioUtils {
     } else {
       // or if(usertoken = null)
       if (respData.errorCode == 101) {
-        throw const UnAuthorizedException();
+        throw forceLoginDialog();
       }
-      //TODO:
       // Platform and version Control
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
+        //TODO: navigate to ios store
       }
       //Tell toe hlaing win to solve normal user problem
       else if (respData.errorCode == 123) {
@@ -153,7 +154,7 @@ class DioUtils {
       return response;
     } else {
       if (respData.errorCode == 101) {
-        throw const UnAuthorizedException();
+        throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
@@ -174,7 +175,7 @@ class DioUtils {
       return response;
     } else {
       if (respData.errorCode == 101) {
-        throw const UnAuthorizedException();
+        throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
@@ -201,7 +202,7 @@ class DioUtils {
       return respData;
     } else {
       if (respData.errorCode == 101) {
-        throw const UnAuthorizedException();
+        throw forceLoginDialog();
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
@@ -260,6 +261,43 @@ class DioUtils {
       //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
       print("Unknown Error");
     }
+  }
+
+  Future<void> forceLoginDialog() async {
+    showDialog(
+      context: locator<NavigationService>()
+          .navigatorKey
+          .currentState
+          .overlay
+          .context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(S.of(context).forceLoginTitle),
+          content: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: Text(S.of(context).forceLoginContent),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(S.of(context).confirm),
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   Future<void> forceUpdateAndroidDialog() async {

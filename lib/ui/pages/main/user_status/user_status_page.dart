@@ -65,7 +65,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                   }
                   if (model.userModel.hasUser && usertype == 1) {
                     return IconButton(
-                      tooltip: S.of(context).logout,
+                      tooltip: 'Set Partner Profile',
                       icon: Icon(IconFonts.setProfileIcon),
                       onPressed: () {
                         Navigator.of(context)
@@ -92,7 +92,7 @@ class _UserStatusPageState extends State<UserStatusPage>
                         onPressed: () {
                           model.logout();
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              RouteName.main, (route) => false);
+                              RouteName.login, (route) => false);
                         },
                       );
                     }

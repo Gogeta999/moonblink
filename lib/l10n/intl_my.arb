@@ -20,6 +20,8 @@
     "end": "အဆုံးသတ်သည်",
     "english": "အင်္ဂလိပ်",
     "enterCall": "ဖုန်းလက်ခံသည်",
+    "forceLoginTitle": "သင်ပထမဦးဆုံး Login ဝင်ရန်လိုသည်",
+    "forceLoginContent": "သင်Loginပြီးမှသာ ကျန်တော်တို့၏Appကိုဆက်သုံးနိုင်သည်။",
     "forceUpdateTitle": "တောင်းပန်ပါတယ်ကျွန်ုပ်တို့ဤဗားရှင်းကိုမထောက်ခံပါ",
     "forceUpdateContent": "ကျေးဇူးပြု၍ကျွန်ုပ်တို့၏appကိုAppStoreတွင်ဒေါင်းလုပ်လုပ်ပါ",
     "follow": "Follow",

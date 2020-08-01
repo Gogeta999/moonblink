@@ -20,6 +20,8 @@
     "end": "End",
     "english": "English",
     "enterCall": "Enter Call",
+    "forceLoginTitle": "You need to login first",
+    "forceLoginContent": "You need to login and contiue to use our  app",
     "forceUpdateTitle": "Sorry we don't support this version",
     "forceUpdateContent": "Please download our app on AppStore",
     "follow": "Follow",
