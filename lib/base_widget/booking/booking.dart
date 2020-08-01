@@ -32,7 +32,12 @@ class _BookingButtonState extends State<BookingButton> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Image.asset(ImageHelper.wrapAssetsImage("bookingWaiting.gif")),
+                Container(
+                    height: 220,
+                    child: Image.asset(
+                      ImageHelper.wrapAssetsImage("bookingWaiting.gif"),
+                      fit: BoxFit.cover,
+                    )),
                 SizedBox(height: 20.0),
                 BookingDropdown(bookingModel: bookingModel),
                 SizedBox(height: 10.0),
@@ -96,7 +101,7 @@ class _BookingButtonState extends State<BookingButton> {
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           return RaisedButton(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).accentColor,
             highlightColor: Theme.of(context).accentColor,
             colorBrightness: Theme.of(context).brightness,
             splashColor: Colors.grey,

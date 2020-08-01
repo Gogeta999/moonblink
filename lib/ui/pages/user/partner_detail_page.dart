@@ -172,7 +172,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                         /// Gonna get little confused, but try to think followbuton is true or false and statement
                         if (partnerModel.partnerData.isFollow == 0)
                           RaisedButton(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).accentColor,
                             highlightColor: Theme.of(context).accentColor,
                             colorBrightness: Theme.of(context).brightness,
                             splashColor: Colors.grey,
@@ -228,7 +228,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                         if (partnerModel.partnerData.isFollow == 1)
                           RaisedButton(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).accentColor,
                             highlightColor: Theme.of(context).accentColor,
                             colorBrightness: Theme.of(context).brightness,
                             splashColor: Colors.grey,
