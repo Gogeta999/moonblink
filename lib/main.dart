@@ -33,6 +33,7 @@ main() async {
   // }
   Bloc.observer = SimpleBlocObserver();
   setupLocator();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

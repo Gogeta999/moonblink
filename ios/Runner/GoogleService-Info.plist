@@ -6,6 +6,8 @@
 	<string>155573283200-bo8f6agv919bv4es3aoappoghc7abb0c.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.155573283200-bo8f6agv919bv4es3aoappoghc7abb0c</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>155573283200-7jcli68vkqvr2ku9er13edejqla7dr9j.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAptAqh60XUk0KSzhCTsG4_lS1PmJl8YW4</string>
 	<key>GCM_SENDER_ID</key>
@@ -19,15 +21,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>moonblink.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:155573283200:ios:153703000de520e57f7965</string>
 	<key>DATABASE_URL</key>

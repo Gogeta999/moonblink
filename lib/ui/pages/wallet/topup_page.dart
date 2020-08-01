@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +10,18 @@ import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
+///Emulator are always treated as test devices
+const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['game', 'mobile game'],
+  contentUrl: 'https://moonblinkunivser.com',
+  childDirected: true,
+  nonPersonalizedAds: true,
+);
+
+const String AdMobAppId = 'ca-app-pub-2553224590005557~4621580830';
+const String AdMobRewardedAdUnitId = 'ca-app-pub-2553224590005557/6918896522';
 
 class TopUpPage extends StatefulWidget {
   @override
@@ -47,9 +60,7 @@ class _TopUpPageState extends State<TopUpPage>
   bool isLoading = false;
 
   Wallet wallet = Wallet(value: 0);
-
-  List<Future> futures = [];
-
+  
   @override
   void initState() {
     //async is not allowed on initState() directly;
@@ -67,6 +78,20 @@ class _TopUpPageState extends State<TopUpPage>
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
     await getUserWallet();
+    await FirebaseAdMob.instance.initialize(appId: AdMobAppId);
+
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      print("RewardedVideoAd event $event");
+      if (event == RewardedVideoAdEvent.rewarded) {
+        setState(() {
+          //userWallet.topUp('coin_200');
+          userTopUp('coin_200');
+          print('Completed. You will get some coins');
+        });
+      }
+
+    };
 
     _connectionSubscription =
         FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -75,17 +100,21 @@ class _TopUpPageState extends State<TopUpPage>
 
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-      print('purchase-updated: $productItem');
-      try {
-        //consume after purchase success so user buy the product again.
-        //need to connect with backend to process purchase.
-        userTopUp(productItem.productId);
-        var msg = FlutterInappPurchase.instance.consumeAllItems;
-        print('consumeAllItems: $msg');
-      } catch (err) {
-        print('consumeAllItems error: $err');
-      }
-    });
+          print('purchase-updated: $productItem');
+          try {
+            //consume after purchase success so user buy the product again.
+            //need to connect with backend to process purchase.
+            //userTopUp(productItem.productId);
+            setState(() {
+              //userWallet.topUp(productItem.productId);
+              userTopUp(productItem.productId);
+            });
+            var msg = FlutterInappPurchase.instance.consumeAllItems;
+            print('consumeAllItems: $msg');
+          } catch (err) {
+            print('consumeAllItems error: $err');
+          }
+        });
 
     _purchaseErrorSubscription =
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
@@ -270,11 +299,36 @@ class _TopUpPageState extends State<TopUpPage>
     );
   }
 
+  Widget _buildAds() {
+    return InkResponse(
+      onTap: () async {
+        await RewardedVideoAd.instance.load(adUnitId: /*RewardedVideoAd.testAdUnitId*/AdMobRewardedAdUnitId, targetingInfo: targetingInfo);
+        await RewardedVideoAd.instance.show();
+      },
+      child: Container(
+          alignment: Alignment.center,
+          // // color: Colors.grey,
+          margin: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1.5, color: Colors.grey),
+            // color: Colors.grey,
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+          child: ListTile(
+            leading: Icon(
+              FontAwesomeIcons.ad,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            title: Text('Watch an Ad to get free coins.'),
+          )),
+    );
+  }
+
   Widget _buildWalletList() {
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(), getUserWallet()},
+        onPressed: () => {getItems(), getUserWallet()/*userWallet.refresh()*/},
       );
     } else {
       return Column(
@@ -290,11 +344,13 @@ class _TopUpPageState extends State<TopUpPage>
             ),
           ),
           _buildCurrentCoinAmount(),
+          _buildAds(),
           _buildTopUpWithCustomerService()
         ],
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
