@@ -191,6 +191,7 @@ class DioUtils {
         onSendProgress: (int count, int total) {
       print('Uploading progress----->${count / total}----count/total process');
     });
+    print(response.statusCode);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
@@ -370,6 +371,7 @@ class ResponseData extends BaseResponseData {
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     errorCode = json['error_code'];
+    print(errorCode);
     errorMessage = json['error_message'];
     getMessage = json['message'];
     data = json['data'];
