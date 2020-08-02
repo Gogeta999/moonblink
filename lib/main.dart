@@ -20,7 +20,6 @@ import 'bloc_pattern/simple_bloc_observer.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
 
-
 String usertoken = StorageManager.sharedPreferences.getString(token);
 
 main() async {
@@ -46,7 +45,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
