@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/main.dart';
 import 'package:oktoast/oktoast.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
@@ -15,6 +16,7 @@ const String FcmTypeVoiceCall = 'voice_call';
 class PushNotificationsManager {
   PushNotificationsManager._();
 
+
   factory PushNotificationsManager() => _instance;
 
   static PushNotificationsManager _instance = PushNotificationsManager._();
@@ -25,7 +27,9 @@ class PushNotificationsManager {
     if (!_initialized) {
       print('FCM initializing');
       await _configLocalNotification();
-      await _registerNotification();
+      // For iOS request permission first.
+      await _firebaseMessaging.requestNotificationPermissions();
+      usertoken != null ? _registerNotification() : _unregisterNotification();
       _firebaseMessaging.onTokenRefresh.listen((event) {
         print('onTokenRefresh: $event');
       });
@@ -36,7 +40,7 @@ class PushNotificationsManager {
   Future<void> reInit() async {
     if (!_initialized) {
       print('FCM reInit');
-      await _registerNotification();
+      _registerNotification();
       _initialized = true;
     }
   }
@@ -44,21 +48,7 @@ class PushNotificationsManager {
   void dispose() {
     if (_initialized) {
       print('FCM disposing');
-      _firebaseMessaging.configure(
-        onBackgroundMessage: myBackgroundMessageHandler,
-        onMessage: (Map<String, dynamic> message) {
-          print(message);
-          return;
-        },
-        onLaunch: (Map<String, dynamic> message) {
-          print(message);
-          return;
-        },
-        onResume: (Map<String, dynamic> message) {
-          print(message);
-          return;
-        },
-      );
+      _unregisterNotification();
       _initialized = false;
     }
   }
@@ -117,15 +107,31 @@ class PushNotificationsManager {
         onSelectNotification: onSelectNotification);
   }
 
-  Future<void> _registerNotification() async {
-    // For iOS request permission first.
-    await _firebaseMessaging.requestNotificationPermissions();
+  void _registerNotification() {
     _firebaseMessaging.configure(
         onMessage: _onMessage,
         onBackgroundMessage: myBackgroundMessageHandler,
         onResume: _onResume,
         onLaunch: _onLaunch);
     //saveFcmToken();
+  }
+
+  void _unregisterNotification() {
+    _firebaseMessaging.configure(
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onMessage: (Map<String, dynamic> message) {
+        print(message);
+        return;
+      },
+      onLaunch: (Map<String, dynamic> message) {
+        print(message);
+        return;
+      },
+      onResume: (Map<String, dynamic> message) {
+        print(message);
+        return;
+      },
+    );
   }
 
   static Future<dynamic> myBackgroundMessageHandler(

@@ -4,6 +4,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
+import 'package:moonblink/singletons/user_wallet.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
 // save user login name to let them get their last name after logout
@@ -106,6 +107,7 @@ class LoginModel extends ViewStateModel {
     setBusy();
     try {
       //await PushNotificationsManager().removeFcmToken();
+      //UserWallet().dispose();
       PushNotificationsManager().dispose();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
