@@ -77,6 +77,8 @@ dependencies:
   flutter_swiper: ^1.1.6
   # ADs
   firebase_admob: ^0.9.3+4
+  # Firebase Auth - // Phone OTP
+  firebase_auth: ^0.16.1
 
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.

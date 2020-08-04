@@ -283,10 +283,10 @@ class MoonBlinkRepository {
   }
 
   // Sign As Partner
-  static Future signAsPartner(String otp) async {
+  static Future signAsPartner(String phone) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().post(Api.VerifyAsPartner + '$userid/verify',
-        queryParameters: {'otp': otp});
+    var response = await DioUtils().postwithData(Api.VerifyAsPartner + '$userid/verify',
+        data: FormData.fromMap({'phone': phone}));
     return User.fromJsonMap(response.data);
   }
 

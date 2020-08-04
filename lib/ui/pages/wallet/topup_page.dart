@@ -11,10 +11,11 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-///Emulator are always treated as test devices
+///Emulators are always treated as test devices
+
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-  keywords: <String>['game', 'mobile game'],
-  contentUrl: 'https://moonblinkunivser.com',
+  keywords: <String>['game', 'entertainment'],
+  contentUrl: 'https://moonblinkunivsere.com',
   childDirected: true,
   nonPersonalizedAds: true,
 );
@@ -57,12 +58,12 @@ class _TopUpPageState extends State<TopUpPage>
   List<PurchasedItem> _purchasedHistories = [];
 
   bool isLoading = false;
+  bool isAdLoading = false;
 
   Wallet wallet = Wallet(value: 0);
 
   @override
   void initState() {
-    //async is not allowed on initState() directly;
     asyncInitState();
     super.initState();
   }
@@ -86,7 +87,29 @@ class _TopUpPageState extends State<TopUpPage>
         setState(() {
           //userWallet.topUp('coin_200');
           userTopUp('coin_200');
-          print('Completed. You will get some coins');
+        });
+      }
+      if (event == RewardedVideoAdEvent.loaded) {
+        RewardedVideoAd.instance.show();
+      }
+      if (event == RewardedVideoAdEvent.failedToLoad) {
+        setState(() {
+          isAdLoading = false;
+        });
+      }
+      if (event == RewardedVideoAdEvent.closed) {
+        setState(() {
+          isAdLoading = false;
+        });
+      }
+      if (event == RewardedVideoAdEvent.leftApplication) {
+        setState(() {
+          isAdLoading = false;
+        });
+      }
+      if (event == RewardedVideoAdEvent.completed) {
+        setState(() {
+          isAdLoading = false;
         });
       }
     };
@@ -299,12 +322,16 @@ class _TopUpPageState extends State<TopUpPage>
 
   Widget _buildAds() {
     return InkResponse(
-      onTap: () async {
-        await RewardedVideoAd.instance.load(
-            adUnitId: /*RewardedVideoAd.testAdUnitId*/ AdMobRewardedAdUnitId,
-            targetingInfo: targetingInfo);
-        await RewardedVideoAd.instance.show();
-      },
+
+      onTap: _showRewardedAds,
+
+//       onTap: () async {
+//         await RewardedVideoAd.instance.load(
+//             adUnitId: /*RewardedVideoAd.testAdUnitId*/ AdMobRewardedAdUnitId,
+//             targetingInfo: targetingInfo);
+//         await RewardedVideoAd.instance.show();
+//       },
+
       child: Container(
           alignment: Alignment.center,
           // // color: Colors.grey,
@@ -320,6 +347,7 @@ class _TopUpPageState extends State<TopUpPage>
               color: Theme.of(context).iconTheme.color,
             ),
             title: Text('Watch an Ad to get free coins.'),
+            trailing: isAdLoading ? CircularProgressIndicator() : null,
           )),
     );
   }
@@ -374,5 +402,12 @@ class _TopUpPageState extends State<TopUpPage>
     } catch (e) {
       await launch(pageUrl, forceSafariVC: false);
     }
+  }
+
+  void _showRewardedAds() async {
+    setState(() {
+      isAdLoading = true;
+    });
+    await RewardedVideoAd.instance.load(adUnitId: AdMobRewardedAdUnitId, targetingInfo: targetingInfo);
   }
 }

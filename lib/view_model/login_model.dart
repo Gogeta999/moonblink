@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -20,6 +21,11 @@ class LoginModel extends ViewStateModel {
   final UserModel userModel;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
   final FacebookLogin _facebookLogin = FacebookLogin();
+  ///Firebase OTP
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  String _verificationId;
+  int _forceResendingToken;
+  String _phone;
 
   LoginModel(this.userModel) : assert(userModel != null);
 
@@ -151,10 +157,10 @@ class LoginModel extends ViewStateModel {
     }
   }
 
-  Future<bool> signAsPartner(otp) async {
+  Future<bool> signAsPartner(String phone) async {
     setBusy();
     try {
-      await MoonBlinkRepository.signAsPartner(otp);
+      await MoonBlinkRepository.signAsPartner(phone);
       setIdle();
       return true;
     } catch (e, s) {
@@ -167,6 +173,61 @@ class LoginModel extends ViewStateModel {
     setBusy();
     try {
       await MoonBlinkRepository.getOtpCode(mail);
+      setIdle();
+      return true;
+    } catch (e, s) {
+      setError(e, s);
+      return false;
+    }
+  }
+
+  Future<bool> getFirebaseOtp(String phone) async {
+    setBusy();
+    this._phone = phone;
+    try {
+      ///automatically call when verification is auto completed.
+      void verificationCompleted(AuthCredential authCredential) async {
+       AuthResult authResult =  await _firebaseAuth.signInWithCredential(authCredential);
+       if(authResult.user != null) {
+         await signAsPartner(phone);
+       }
+      }
+
+      void verificationFailed(AuthException authException) async {
+        throw authException;
+      }
+
+      void codeSent(String verificationId, [int forceResendingToken]) {
+        this._verificationId = verificationId;
+        this._forceResendingToken = forceResendingToken;
+      }
+
+      await _firebaseAuth.verifyPhoneNumber(
+          forceResendingToken: _forceResendingToken,
+          phoneNumber: phone,
+          timeout: const Duration(seconds: 60),
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout: (verificationId) => print('Code: $verificationId'));
+      setIdle();
+      return true;
+    } catch (e, s) {
+      setError(e, s);
+      return false;
+    }
+  }
+
+  Future<bool> signInWithCredential(String smsCode) async {
+    setBusy();
+    try {
+      AuthCredential authCredential = PhoneAuthProvider.getCredential(
+          verificationId: _verificationId, smsCode: smsCode
+      );
+      AuthResult authResult =  await _firebaseAuth.signInWithCredential(authCredential);
+      if(authResult.user != null) {
+        await signAsPartner(_phone);
+      }
       setIdle();
       return true;
     } catch (e, s) {

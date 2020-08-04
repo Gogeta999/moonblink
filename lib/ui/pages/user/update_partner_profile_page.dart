@@ -17,19 +17,20 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
+
   final PartnerUser partnerUser;
   UpdatePartnerProfilePage({Key key, @required this.partnerUser})
       : super(key: key);
   // final String cover;
   // final String profile;
 
-  // UpdatePartnerProfilePage ({this.cover, this.profile});
   @override
   _UpdatePartnerProfilePageState createState() =>
       _UpdatePartnerProfilePageState();
@@ -217,6 +218,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           child: Text("Update"),
                                           color: Theme.of(context).buttonColor,
                                           onPressed: () async {
+                                            if (_cover == null || _profile == null) {
+                                              showToast('You need to choose cover and profile images');
+                                              return false;
+                                            }
                                             var userid = StorageManager
                                                 .sharedPreferences
                                                 .getInt(mUserId);

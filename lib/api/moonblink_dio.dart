@@ -147,7 +147,7 @@ class DioUtils {
   /*
    * Post request
    */
-  post(url, {queryParameters, options}) async {
+  post(url, {queryParameters, options,}) async {
     print('post request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.post(url,
