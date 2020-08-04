@@ -89,6 +89,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
 }
 
 class GetOtpWordsWidget extends StatelessWidget {
+  ///phoneController
   final mailController;
   GetOtpWordsWidget(this.mailController);
   @override
@@ -108,7 +109,8 @@ class GetOtpWordsWidget extends StatelessWidget {
                       var formState = Form.of(context);
                       if (formState.validate()) {
                         model
-                            .getOtpCodeAgain(mailController.text)
+                            //getOtpCodeAgain(mailController.text)
+                            .getFirebaseOtp(mailController.text)
                             .then((value) {
                           if (value) {
                             print('success');

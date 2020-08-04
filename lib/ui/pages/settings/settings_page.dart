@@ -55,12 +55,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         setState(() {
                           isSigning = !isSigning;
                         });
-                        var response = await DioUtils().post(
+                        /*var response = await DioUtils().post(
                             Api.RegisterAsPartner + '$userid/register',
                             queryParameters: {
                               'Authorization': 'Bearer' + usertoken.toString()
                             });
-                        print(response);
+                        print(response);*/
                         Navigator.of(context)
                             .pushNamed(RouteName.registerAsPartner);
                         setState(() {

@@ -34,18 +34,18 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   String _genderController;
   List<String> genderList = ["Male", "Female", "Rather Not Say"];
   final _sexController = TextEditingController();
-  final _phController = TextEditingController();
+  //final _phController = TextEditingController();
   final _nrcController = TextEditingController();
   final _biosController = TextEditingController();
   final _addressController = TextEditingController();
-  final _mailController = TextEditingController();
+  //final _mailController = TextEditingController();
   final _dobController = TextEditingController();
 
   @override
   void dispose() {
     _sexController.dispose();
-    _phController.dispose();
-    _mailController.dispose();
+    //_phController.dispose();
+    //_mailController.dispose();
     _nrcController.dispose();
     _biosController.dispose();
     _addressController.dispose();
@@ -197,7 +197,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           ),
                                           _space,
                                           //email
-                                          LoginTextField(
+                                          /*LoginTextField(
                                             validator: (value) => value.isEmpty
                                                 ? 'Please enter email'
                                                 : null,
@@ -209,16 +209,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType:
                                                 TextInputType.emailAddress,
                                           ),
-                                          _space,
-                                          //gender
-                                          // LoginTextField(
-                                          //   validator: (value) => value.isEmpty ? 'Please enter Gender': null,
-                                          //   label:"Enter Gender",
-                                          //   icon: Icons.perm_identity,
-                                          //   controller: _sexController,
-                                          //   textInputAction: TextInputAction.next,
-                                          //   keyboardType: TextInputType.text,
-                                          // ),
+                                          _space,*/
                                           DropdownButtonFormField<String>(
                                             decoration: InputDecoration(
                                                 prefixIcon: Icon(
@@ -249,7 +240,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           BasicDateField(_dobController),
                                           _space,
                                           //phone
-                                          LoginTextField(
+                                          /*LoginTextField(
                                             validator: (value) => value.isEmpty
                                                 ? 'Please enter Phno'
                                                 : null,
@@ -260,7 +251,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                 TextInputAction.next,
                                             keyboardType: TextInputType.phone,
                                           ),
-                                          _space,
+                                          _space,*/
                                           //bios
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
@@ -320,10 +311,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                             filename:
                                                                 'profile.jpg'),
                                                 'nrc': _nrcController.text.toString(),
-                                                'mail': _mailController.text.toString(),
+                                                //'mail': _mailController.text.toString(),
                                                 'gender': _genderController.toString(),
                                                 'dob': _dobController.text.toString(),
-                                                'phone': _phController.text.toString(),
+                                                //'phone': _phController.text.toString(),
                                                 'bios': _biosController.text.toString(),
                                                 'address':
                                                     _addressController.text.toString()

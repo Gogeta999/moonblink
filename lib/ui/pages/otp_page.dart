@@ -32,7 +32,7 @@ class _OtpPageState extends State<OtpPage> {
     super.initState();
   }
 
-  final _mailController = TextEditingController();
+  final _mailController = TextEditingController(text: '+959');
   final _otpCodeController = TextEditingController();
 
   @override
@@ -88,15 +88,17 @@ class _OtpPageState extends State<OtpPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: 'Please put your email',
-                                icon: FontAwesomeIcons.mailBulk,
+                                label: 'Please put your phone number',
+                                icon: FontAwesomeIcons.phone,
                                 controller: _mailController,
+                                keyboardType: TextInputType.phone,
                               ),
                               OtpTextField(
                                 _mailController,
                                 label: 'Please enter OTP Code',
-                                icon: FontAwesomeIcons.phone,
+                                icon: FontAwesomeIcons.sms,
                                 controller: _otpCodeController,
+                                keyboardType: TextInputType.number,
                               ),
                               // SizedBox( height: 30),
                               SignAsPartnerButton(_otpCodeController),
@@ -137,7 +139,8 @@ class SignAsPartnerButton extends StatelessWidget {
           : () {
               var formState = Form.of(context);
               if (formState.validate()) {
-                model.signAsPartner(otpController.text).then((value) {
+                /*model.signAsPartner(otpController.text).then((value) */
+                model.signInWithCredential(otpController.text).then((value){
                   if (value) {
                     Navigator.of(context).pushNamed(RouteName.setprofile);
                   } else {
