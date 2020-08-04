@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/cachedImage.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -16,11 +17,15 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
+  final PartnerUser partnerUser;
+  UpdatePartnerProfilePage({Key key, @required this.partnerUser})
+      : super(key: key);
   // final String cover;
   // final String profile;
 
@@ -31,12 +36,24 @@ class UpdatePartnerProfilePage extends StatefulWidget {
 }
 
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
+  final _nameController = TextEditingController();
   final _biosController = TextEditingController();
   final _picker = ImagePicker();
   String _filePath;
   PartnerUser partnerData;
   @override
+  void initState() {
+    super.initState();
+    _nameController.value = _nameController.value.copyWith(
+      text: widget.partnerUser.partnerName,
+    );
+    _biosController.value = _biosController.value
+        .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
+  }
+
+  @override
   void dispose() {
+    _nameController.dispose();
     _biosController.dispose();
     super.dispose();
   }
@@ -49,7 +66,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     File image = File(cover.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-    await _compressAndGetFile(image, temporaryImage.absolute.path);
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _cover = compressedImage;
     });
@@ -61,7 +78,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     File image = File(profile.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-    await _compressAndGetFile(image, temporaryImage.absolute.path);
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _profile = compressedImage;
     });
@@ -173,6 +190,17 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           CrossAxisAlignment.stretch,
                                       // mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
+                                        //Name
+                                        LoginTextField(
+                                          validator: (value) => value.isEmpty
+                                              ? 'Please enter your name'
+                                              : null,
+                                          label: "Please enter your Name",
+                                          icon: FontAwesomeIcons.book,
+                                          controller: _nameController,
+                                          textInputAction: TextInputAction.next,
+                                          keyboardType: TextInputType.text,
+                                        ),
                                         //bios
                                         LoginTextField(
                                           validator: (value) => value.isEmpty
@@ -204,6 +232,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                                   await MultipartFile.fromFile(
                                                       profilePath,
                                                       filename: 'profile.jpg'),
+                                              'name': _nameController.text,
                                               'bios': _biosController.text
                                                   .toString(),
                                             });

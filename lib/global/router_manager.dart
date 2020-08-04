@@ -99,7 +99,11 @@ class Router {
         return CupertinoPageRoute(builder: (_) => SetPartnerProfilePage());
 
       case RouteName.updateprofile:
-        return CupertinoPageRoute(builder: (_) => UpdatePartnerProfilePage());
+        return CupertinoPageRoute(
+            builder: (_) => UpdatePartnerProfilePage(
+                partnerUser: settings.arguments != null
+                    ? settings.arguments
+                    : 'Unknown Data'));
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:

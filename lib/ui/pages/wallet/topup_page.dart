@@ -11,7 +11,6 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 ///Emulator are always treated as test devices
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['game', 'mobile game'],
@@ -60,7 +59,7 @@ class _TopUpPageState extends State<TopUpPage>
   bool isLoading = false;
 
   Wallet wallet = Wallet(value: 0);
-  
+
   @override
   void initState() {
     //async is not allowed on initState() directly;
@@ -90,7 +89,6 @@ class _TopUpPageState extends State<TopUpPage>
           print('Completed. You will get some coins');
         });
       }
-
     };
 
     _connectionSubscription =
@@ -100,21 +98,21 @@ class _TopUpPageState extends State<TopUpPage>
 
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-          print('purchase-updated: $productItem');
-          try {
-            //consume after purchase success so user buy the product again.
-            //need to connect with backend to process purchase.
-            //userTopUp(productItem.productId);
-            setState(() {
-              //userWallet.topUp(productItem.productId);
-              userTopUp(productItem.productId);
-            });
-            var msg = FlutterInappPurchase.instance.consumeAllItems;
-            print('consumeAllItems: $msg');
-          } catch (err) {
-            print('consumeAllItems error: $err');
-          }
+      print('purchase-updated: $productItem');
+      try {
+        //consume after purchase success so user buy the product again.
+        //need to connect with backend to process purchase.
+        //userTopUp(productItem.productId);
+        setState(() {
+          //userWallet.topUp(productItem.productId);
+          userTopUp(productItem.productId);
         });
+        var msg = FlutterInappPurchase.instance.consumeAllItems;
+        print('consumeAllItems: $msg');
+      } catch (err) {
+        print('consumeAllItems error: $err');
+      }
+    });
 
     _purchaseErrorSubscription =
         FlutterInappPurchase.purchaseError.listen((purchaseError) {
@@ -302,7 +300,9 @@ class _TopUpPageState extends State<TopUpPage>
   Widget _buildAds() {
     return InkResponse(
       onTap: () async {
-        await RewardedVideoAd.instance.load(adUnitId: /*RewardedVideoAd.testAdUnitId*/AdMobRewardedAdUnitId, targetingInfo: targetingInfo);
+        await RewardedVideoAd.instance.load(
+            adUnitId: /*RewardedVideoAd.testAdUnitId*/ AdMobRewardedAdUnitId,
+            targetingInfo: targetingInfo);
         await RewardedVideoAd.instance.show();
       },
       child: Container(
@@ -328,7 +328,7 @@ class _TopUpPageState extends State<TopUpPage>
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(), getUserWallet()/*userWallet.refresh()*/},
+        onPressed: () => {getItems(), getUserWallet() /*userWallet.refresh()*/},
       );
     } else {
       return Column(
@@ -350,7 +350,6 @@ class _TopUpPageState extends State<TopUpPage>
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

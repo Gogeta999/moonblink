@@ -53,7 +53,8 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                           'Update Your Profile',
                         )),
                     onTap: () {
-                      Navigator.of(context).pushNamed(RouteName.updateprofile);
+                      Navigator.of(context).pushNamed(RouteName.updateprofile,
+                          arguments: partnerModel.partnerData);
                     },
                   )
                 ],
