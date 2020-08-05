@@ -79,6 +79,8 @@ dependencies:
   flutter_swiper: ^1.1.6
   # ADs
   firebase_admob: ^0.9.3+4
+  # native Ads
+  flutter_native_admob: ^2.1.0
   # Firebase Auth - // Phone OTP
   firebase_auth: ^0.16.1
 

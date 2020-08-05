@@ -145,6 +145,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(S.of(context).bookingRequest),
           // noramlUserCancel(msg, bookingid),

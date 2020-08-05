@@ -34,6 +34,9 @@ class Api {
   static const String TopUp =
       '/moonblink/api/v1/user/'; //full endpoint = '/moonblink/api/v1/user/10/coin/topup'
 
+  //ad reward
+  static const String AdReward = 'moonblink/api/v1/user/'; // eg - moonblink/api/v1/user/{user_id}/ads/view
+
   // register
   static const String REGISTER = "moonblink/api/v1/register";
 
