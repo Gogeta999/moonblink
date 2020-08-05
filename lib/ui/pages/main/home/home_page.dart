@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -143,11 +144,20 @@ class HomePostList extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
+          if (index != 0 && index % 10 == 0) {
+            return AdPostWidget();
+          }
           Post item = homeModel.list[index];
           return PostItemWidget(item);
         },
         childCount: homeModel.list?.length ?? 0,
-      ),
+        semanticIndexCallback: (Widget widget, int index) {
+          if(index != 0 && index % 10 == 0) {
+            return index ~/ 10;
+          }
+          return null;
+        }
+      )
     );
   }
 }

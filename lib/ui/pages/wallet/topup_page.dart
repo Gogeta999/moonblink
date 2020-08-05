@@ -4,6 +4,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
@@ -12,7 +13,6 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Emulators are always treated as test devices
-
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['game', 'entertainment'],
   contentUrl: 'https://moonblinkunivsere.com',
@@ -22,6 +22,7 @@ const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
 
 const String AdMobAppId = 'ca-app-pub-2553224590005557~4621580830';
 const String AdMobRewardedAdUnitId = 'ca-app-pub-2553224590005557/6918896522';
+const String AdMobNativeAdUnitId = 'ca-app-pub-2553224590005557/4636348112';
 
 class TopUpPage extends StatefulWidget {
   @override
@@ -86,7 +87,7 @@ class _TopUpPageState extends State<TopUpPage>
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
           //userWallet.topUp('coin_200');
-          userTopUp('coin_200');
+          userReward();
         });
       }
       if (event == RewardedVideoAdEvent.loaded) {
@@ -148,7 +149,7 @@ class _TopUpPageState extends State<TopUpPage>
   /// We recommend to use this feature in dispose().
   void asyncDisposeState() async {
     //remove all Listeners and Streams
-    //await FlutterInappPurchase.instance.endConnection;
+    await FlutterInappPurchase.instance.endConnection;
     if (_connectionSubscription != null) {
       _connectionSubscription.cancel();
       _connectionSubscription = null;
@@ -160,6 +161,9 @@ class _TopUpPageState extends State<TopUpPage>
     if (_purchaseErrorSubscription != null) {
       _purchaseErrorSubscription.cancel();
       _purchaseErrorSubscription = null;
+    }
+    if(RewardedVideoAd.instance.listener != null) {
+      RewardedVideoAd.instance.listener = null;
     }
   }
 
@@ -241,6 +245,22 @@ class _TopUpPageState extends State<TopUpPage>
       print(msg);
       await getUserWallet();
     } catch (err) {
+      print(err);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  userReward() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var msg = await MoonBlinkRepository.adReward();
+      print(msg);
+      await getUserWallet();
+    }catch (err) {
       print(err);
     }
     setState(() {
@@ -382,7 +402,13 @@ class _TopUpPageState extends State<TopUpPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _buildWalletList();
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
+        return false;
+      },
+      child: _buildWalletList()
+    );
   }
 
   void _openFacebookPage() async {

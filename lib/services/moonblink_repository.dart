@@ -273,6 +273,13 @@ class MoonBlinkRepository {
     return response.data;
   }
 
+  //ad reward
+  static Future adReward() async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().post(Api.AdReward + '$userId/ads/view');
+    return response.data;
+  }
+
   // Set Status
   static Future setstatus(int status) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
