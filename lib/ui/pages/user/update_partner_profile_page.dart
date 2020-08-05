@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/base_widget/cachedImage.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -18,13 +17,11 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:moonblink/view_model/user_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
-
   final PartnerUser partnerUser;
   UpdatePartnerProfilePage({Key key, @required this.partnerUser})
       : super(key: key);
@@ -218,8 +215,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           child: Text("Update"),
                                           color: Theme.of(context).buttonColor,
                                           onPressed: () async {
-                                            if (_cover == null || _profile == null) {
-                                              showToast('You need to choose cover and profile images');
+                                            if (_cover == null ||
+                                                _profile == null) {
+                                              showToast(
+                                                  'You need to choose cover and profile images');
                                               return false;
                                             }
                                             var userid = StorageManager

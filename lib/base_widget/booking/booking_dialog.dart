@@ -23,7 +23,6 @@ class BookingDialog extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text(S.of(context).bookingDialog),
-      //TODO: change someone to customer name late
       content: Text('$bookingUserName ' +
           S.of(context).bookingDialogSomeoneBook +
           '\n\n' +

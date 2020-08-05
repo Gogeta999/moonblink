@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/api/moonblink_api.dart';
-import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -47,8 +44,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? CupertinoActivityIndicator()
                         : Text(S.of(context).settingsSignAsPartner),
                     onTap: () async {
-                      var userid =
-                          StorageManager.sharedPreferences.getInt(mUserId);
+                      // var userid =
+                      //     StorageManager.sharedPreferences.getInt(mUserId);
                       var usertoken =
                           StorageManager.sharedPreferences.getString(token);
                       if (usertoken != null) {

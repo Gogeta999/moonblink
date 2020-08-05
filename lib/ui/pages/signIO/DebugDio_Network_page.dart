@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';

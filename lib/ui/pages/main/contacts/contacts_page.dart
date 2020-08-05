@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/base_widget/azlist.dart';
 import 'package:moonblink/base_widget/skeleton.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -78,8 +79,15 @@ class _ContactsPageState extends State<ContactsPage> {
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
               if (contactModel.isBusy) {
-                return SkeletonList(
-                    builder: (context, index) => PostSkeletonItem());
+                // return SkeletonList(
+                //     builder: (context, index) => PostSkeletonItem());
+                return Container(
+                  height: double.infinity,
+                  child: Image.asset(
+                    ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
+                    fit: BoxFit.fill,
+                  ),
+                );
               }
               if (contactModel.isError && contactModel.list.isEmpty) {
                 return AnnotatedRegion<SystemUiOverlayStyle>(

@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
-import 'package:moonblink/view_model/splahAd_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'new_user_swiper_page.dart';
 
