@@ -141,7 +141,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                           width: double.infinity,
                           child: CachedNetworkImage(
                             fit: BoxFit.cover,
-                            imageUrl: widget.posts.profileImage,
+                            imageUrl: widget.posts.coverImage,
                             placeholder: _loader,
                             errorWidget: _error,
                           ),

@@ -158,9 +158,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //Partner Only
   partneronly(msg, bookingid) {
     if (msg.senderID == widget.detailPageId) {
-      return Flex(
+      return Row(
         mainAxisSize: MainAxisSize.min,
-        direction: Axis.horizontal,
         children: <Widget>[
           rejectbtn(bookingid, msg),
           acceptbtn(bookingid, msg),
@@ -245,39 +244,30 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //accept button
   acceptbtn(bookingid, msg) {
     return ButtonTheme(
-        minWidth: 70,
-        child: ProviderWidget(
-          model: CallModel(),
-          builder: (context, model, child) {
-            return FlatButton(
-              child: Text(S.of(context).accept,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-              onPressed: () {
-                MoonBlinkRepository.bookingAcceptOrDecline(
-                    selfId, bookingid, bookingAccept);
-                msg.type = 0;
-              },
-            );
-          },
-        ));
+      minWidth: 70,
+      child: FlatButton(
+        child: Text(S.of(context).accept,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        onPressed: () {
+          MoonBlinkRepository.bookingAcceptOrDecline(
+              selfId, bookingid, bookingAccept);
+          msg.type = 0;
+        },
+      ),
+    );
   }
 
   //reject button
   rejectbtn(bookingid, msg) {
     return ButtonTheme(
         minWidth: 70,
-        child: ProviderWidget(
-          model: CallModel(),
-          builder: (context, model, child) {
-            return FlatButton(
-              child: Text(S.of(context).reject,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-              onPressed: () {
-                MoonBlinkRepository.bookingAcceptOrDecline(
-                    selfId, bookingid, bookingReject);
-                msg.type = 0;
-              },
-            );
+        child: FlatButton(
+          child: Text(S.of(context).reject,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          onPressed: () {
+            MoonBlinkRepository.bookingAcceptOrDecline(
+                selfId, bookingid, bookingReject);
+            msg.type = 0;
           },
         ));
   }

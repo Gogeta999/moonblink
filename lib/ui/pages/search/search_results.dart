@@ -81,7 +81,7 @@ class SearchUserWidget extends StatelessWidget {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     backgroundImage: NetworkImage(user.partnerProfileImage)),
               ),
-              Text(user.name + user.id.toString()),
+              Text(user.name),
             ],
           ),
           Container(

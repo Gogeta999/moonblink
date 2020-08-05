@@ -111,11 +111,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
             /// can't get max duration at start
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${((_position.inSeconds / 60) % 60).floor().toString().padLeft(1, '0')}:${(_position.inSeconds % 60).floor().toString().padLeft(2, '0')}',
-                style: TextStyle(fontSize: 14.0),
-              ),
+              padding: const EdgeInsets.all(10.0),
             ),
           ],
         ));
