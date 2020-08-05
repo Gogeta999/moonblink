@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:moonblink/base_widget/cachedImage.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -79,18 +79,13 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   if (widget.posts.isReacted == 0)
                     InkWell(
                       child: Container(
-                        // width: 100,
-                        // child: Image.network(
-                        //   widget.posts.coverImage,
-                        //   fit: BoxFit.fitWidth,
-                        //   height: 200,
-                        // ),
                         height: 200,
-                        child: CachedImage(
-                          boxFit: BoxFit.cover,
-                          imageProvider: NetworkImage(
-                            widget.posts.coverImage,
-                          ),
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fill,
+                          imageUrl: widget.posts.coverImage,
+                          placeholder: _loader,
+                          errorWidget: _error,
                         ),
                       ),
                       onDoubleTap: isLiked
@@ -135,17 +130,20 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   if (widget.posts.isReacted == 1)
                     InkWell(
                         child: Container(
-                          // child: Image.network(
-                          //   widget.posts.coverImage,
-                          //   fit: BoxFit.contain,
+                          // child: CachedNetworkImage(
                           //   height: 200,
+                          //   fit: BoxFit.cover,
+                          //   imageUrl: widget.posts.profileImage,
+                          //   placeholder: _loader,
+                          //   errorWidget: _error,
                           // ),
                           height: 200,
-                          child: CachedImage(
-                            boxFit: BoxFit.contain,
-                            imageProvider: NetworkImage(
-                              widget.posts.coverImage,
-                            ),
+                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            imageUrl: widget.posts.profileImage,
+                            placeholder: _loader,
+                            errorWidget: _error,
                           ),
                         ),
                         onDoubleTap: isLiked
@@ -311,5 +309,30 @@ class _PostItemWidgetState extends State<PostItemWidget> {
         ],
       ),
     );
+  }
+
+  //For cached network
+  Widget _loader(BuildContext context, String url) {
+    return Container(
+        height: 200,
+        child: Stack(
+          children: <Widget>[
+            BlurHash(hash: 'L07-Zwofj[oft7fQj[fQayfQfQfQ'),
+            Center(
+              child: const Center(
+                child: CircularProgressIndicator(
+                    // valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                    ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _error(BuildContext context, String url, dynamic error) {
+    print(error);
+    return Container(
+        height: 200,
+        child: InkWell(child: const Center(child: Icon(Icons.error))));
   }
 }

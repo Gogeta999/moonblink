@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moonblink/global/router_manager.dart';
 
 import 'topup_page.dart';
 import 'user_transaction_page.dart';
@@ -10,7 +9,6 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

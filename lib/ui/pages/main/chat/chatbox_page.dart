@@ -58,8 +58,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   String now = DateTime.now().toString();
   String filename;
   File _file;
-  int booking_accept = 1;
-  int booking_reject = 2;
+  int bookingAccept = 1;
+  int bookingReject = 2;
 
   // ByteData _byteData;
   final usertype = StorageManager.sharedPreferences.getInt(mUserType);
@@ -253,7 +253,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
               onPressed: () {
                 MoonBlinkRepository.bookingAcceptOrDecline(
-                    selfId, bookingid, booking_accept);
+                    selfId, bookingid, bookingAccept);
                 msg.type = 0;
               },
             );
@@ -273,7 +273,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
               onPressed: () {
                 MoonBlinkRepository.bookingAcceptOrDecline(
-                    selfId, bookingid, booking_reject);
+                    selfId, bookingid, bookingReject);
                 msg.type = 0;
               },
             );

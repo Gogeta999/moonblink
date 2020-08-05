@@ -5,7 +5,6 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
-import 'package:moonblink/singletons/user_wallet.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
 // save user login name to let them get their last name after logout
@@ -21,6 +20,7 @@ class LoginModel extends ViewStateModel {
   final UserModel userModel;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
   final FacebookLogin _facebookLogin = FacebookLogin();
+
   ///Firebase OTP
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String _verificationId;
@@ -187,10 +187,11 @@ class LoginModel extends ViewStateModel {
     try {
       ///automatically call when verification is auto completed.
       void verificationCompleted(AuthCredential authCredential) async {
-       AuthResult authResult =  await _firebaseAuth.signInWithCredential(authCredential);
-       if(authResult.user != null) {
-         await signAsPartner(phone);
-       }
+        AuthResult authResult =
+            await _firebaseAuth.signInWithCredential(authCredential);
+        if (authResult.user != null) {
+          await signAsPartner(phone);
+        }
       }
 
       void verificationFailed(AuthException authException) async {
@@ -209,7 +210,8 @@ class LoginModel extends ViewStateModel {
           verificationCompleted: verificationCompleted,
           verificationFailed: verificationFailed,
           codeSent: codeSent,
-          codeAutoRetrievalTimeout: (verificationId) => print('Code: $verificationId'));
+          codeAutoRetrievalTimeout: (verificationId) =>
+              print('Code: $verificationId'));
       setIdle();
       return true;
     } catch (e, s) {
@@ -222,10 +224,10 @@ class LoginModel extends ViewStateModel {
     setBusy();
     try {
       AuthCredential authCredential = PhoneAuthProvider.getCredential(
-          verificationId: _verificationId, smsCode: smsCode
-      );
-      AuthResult authResult =  await _firebaseAuth.signInWithCredential(authCredential);
-      if(authResult.user != null) {
+          verificationId: _verificationId, smsCode: smsCode);
+      AuthResult authResult =
+          await _firebaseAuth.signInWithCredential(authCredential);
+      if (authResult.user != null) {
         await signAsPartner(_phone);
       }
       setIdle();

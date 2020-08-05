@@ -15,7 +15,6 @@ const List<String> images = [
 const String isNewUser = 'isNewUser';
 
 class NewUserSwiperPage extends StatefulWidget {
-
   @override
   _NewUserSwiperPageState createState() => _NewUserSwiperPageState();
 }
@@ -41,33 +40,34 @@ class _NewUserSwiperPageState extends State<NewUserSwiperPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-          top: false,
-          child: Swiper(
-            itemBuilder: (BuildContext context, int index) {
-              return Image.asset(
-                images[index],
-                fit: BoxFit.fill,
-              );
-            },
-            controller: _swiperController,
-            onIndexChanged: (index){
-              setState(() {
-                this.index = index;
-              });
-            },
-            loop: false,
-            autoplay: false,
-            itemCount: images.length,
-            pagination: SwiperPagination(),
-            control: CustomSwiperControl(),
-          ),
-        ));
+      top: false,
+      child: Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          return Image.asset(
+            images[index],
+            fit: BoxFit.fill,
+          );
+        },
+        controller: _swiperController,
+        onIndexChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+        },
+        loop: false,
+        autoplay: false,
+        itemCount: images.length,
+        pagination: SwiperPagination(),
+        control: CustomSwiperControl(),
+      ),
+    ));
   }
 
   void onSwipe() {
-    if(this.index + 1 == images.length) {
+    if (this.index + 1 == images.length) {
       StorageManager.sharedPreferences.setBool(isNewUser, false);
-      Navigator.pushNamedAndRemoveUntil(context, RouteName.termsAndConditionsPage, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, RouteName.termsAndConditionsPage, (route) => false);
     }
   }
 }
@@ -95,22 +95,22 @@ class CustomSwiperControl extends SwiperPlugin {
 
   const CustomSwiperControl(
       {this.iconPrevious: Icons.arrow_back_ios,
-        this.iconNext: Icons.arrow_forward_ios,
-        this.color,
-        this.disableColor,
-        this.key,
-        this.size: 30.0,
-        this.padding: const EdgeInsets.all(5.0)});
+      this.iconNext: Icons.arrow_forward_ios,
+      this.color,
+      this.disableColor,
+      this.key,
+      this.size: 30.0,
+      this.padding: const EdgeInsets.all(5.0)});
 
   Widget buildButton(SwiperPluginConfig config, Color color, IconData iconDaga,
       int quarterTurns, bool previous) {
     return new GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if(!previous) {
+        if (!previous) {
           config.controller.next(animation: true);
         }
-        if(previous && config.activeIndex != 0){
+        if (previous && config.activeIndex != 0) {
           config.controller.previous(animation: true);
         }
       },
@@ -138,6 +138,7 @@ class CustomSwiperControl extends SwiperPlugin {
     if (config.loop) {
       prevColor = nextColor = color;
     } else {
+      // ignore: unused_local_variable
       bool next = config.activeIndex < config.itemCount - 1;
       bool prev = config.activeIndex > 0;
       prevColor = prev ? color : disableColor;
