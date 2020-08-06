@@ -73,6 +73,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
+            // int followerCount = partnerModel.partnerData.followerCount;
             if (partnerModel.isBusy) {
               return ViewStateBusyWidget();
             } else if (partnerModel.isError) {
@@ -169,118 +170,66 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                         BookingButton(),
 
                         /// [Follow Button] different statement to show different button
-                        /// Gonna get little confused, but try to think followbuton is true or false and statement
-                        if (partnerModel.partnerData.isFollow == 0)
-                          RaisedButton(
-                            color: Theme.of(context).accentColor,
-                            highlightColor: Theme.of(context).accentColor,
-                            colorBrightness: Theme.of(context).brightness,
-                            splashColor: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: followButtonClicked
-                                ? Text(S.of(context).following,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button)
-                                : Text(S.of(context).follow,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button),
-                            onPressed: followButtonClicked
-                                ? () async {
-                                    print('status is 1 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 0');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '0'},
-                                    );
+                        RaisedButton(
+                          color: Theme.of(context).accentColor,
+                          highlightColor: Theme.of(context).accentColor,
+                          colorBrightness: Theme.of(context).brightness,
+                          splashColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: partnerModel.partnerData.isFollow == 0
+                              ? Text(S.of(context).follow,
+                                  style:
+                                      Theme.of(context).accentTextTheme.button)
+                              : Text(S.of(context).following,
+                                  style:
+                                      Theme.of(context).accentTextTheme.button),
+                          onPressed: partnerModel.partnerData.isFollow == 0
+                              ? () async {
+                                  print('status is 0 so bool is' +
+                                      followButtonClicked.toString() +
+                                      'to false');
+                                  await DioUtils().post(
+                                    Api.SocialRequest +
+                                        partnerModel.partnerData.partnerId
+                                            .toString() +
+                                        '/follow',
+                                    queryParameters: {'status': '1'},
+                                  );
+                                  print(
+                                      'stauts now is 1 and switch to following button');
+                                  setState(() {
                                     print(
-                                        'stauts now is 0 and switch to follow button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  }
-                                : () async {
-                                    print('status is 0 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 1');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '1'},
-                                    );
+                                        '${partnerModel.partnerData.followerCount} is plus 1 follower');
+                                    partnerModel.partnerData.followerCount += 1;
                                     print(
-                                        'stauts now is 1 and switch to following button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  },
-                          ),
-
-                        if (partnerModel.partnerData.isFollow == 1)
-                          RaisedButton(
-                            color: Theme.of(context).accentColor,
-                            highlightColor: Theme.of(context).accentColor,
-                            colorBrightness: Theme.of(context).brightness,
-                            splashColor: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: followButtonClicked
-                                ? Text(S.of(context).follow,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button)
-                                : Text(S.of(context).following,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button),
-                            onPressed: followButtonClicked
-                                ? () async {
-                                    print('status is 0 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 1');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '1'},
-                                    );
+                                        'so now is ${partnerModel.partnerData.followerCount}');
+                                    partnerModel.partnerData.isFollow = 1;
+                                  });
+                                }
+                              : () async {
+                                  print('status is 1 so bool is' +
+                                      followButtonClicked.toString() +
+                                      'to false');
+                                  await DioUtils().post(
+                                    Api.SocialRequest +
+                                        partnerModel.partnerData.partnerId
+                                            .toString() +
+                                        '/follow',
+                                    queryParameters: {'status': '0'},
+                                  );
+                                  print(
+                                      'stauts now is 0 and switch to follow button');
+                                  setState(() {
                                     print(
-                                        'stauts now is 1 and switch to following button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  }
-                                : () async {
-                                    print('status is 1 so bool is' +
-                                        followButtonClicked.toString() +
-                                        'to 0');
-                                    await DioUtils().post(
-                                      Api.SocialRequest +
-                                          partnerModel.partnerData.partnerId
-                                              .toString() +
-                                          '/follow',
-                                      queryParameters: {'status': '0'},
-                                    );
+                                        '${partnerModel.partnerData.followerCount} is minus 1 follower');
+                                    partnerModel.partnerData.followerCount -= 1;
                                     print(
-                                        'stauts now is 0 and switch to follow button');
-                                    setState(() {
-                                      followButtonClicked =
-                                          !followButtonClicked;
-                                    });
-                                  },
-                          ),
+                                        'so now is ${partnerModel.partnerData.followerCount}');
+                                    partnerModel.partnerData.isFollow = 0;
+                                  });
+                                },
+                        ),
                       ],
                     ),
                   ),
@@ -295,8 +244,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           Center(
                             child: Text(partnerModel.partnerData.partnerName +
                                 ' have ' +
-                                partnerModel.partnerData.followerCount
-                                    .toString() +
+                                '${partnerModel.partnerData.followerCount}' +
                                 ' followers'),
                           )
                         ],
@@ -323,47 +271,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
               ),
             );
           }),
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class FollowButton extends StatelessWidget {
-  // FollowButton(this.isFollow, this.model);
-  // final isFollow;
-  // final PartnerDetailModel model;
-  bool isFollow = true;
-  // FollowButton(this.isFollow) : assert(isFollow!= null);
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: isFollow
-          ? () {
-              print('0');
-              isFollow = !isFollow;
-            }
-          : () {
-              print('1');
-              isFollow = !isFollow;
-            },
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(5),
-        // constraints: BoxConstraints(),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          border: Border.all(width: 0.1),
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
-          ),
-        ),
-        height: 30,
-        width: 80,
-        // color: Colors.red,
-        child: isFollow
-            ? Text(S.of(context).follow)
-            : Text(S.of(context).following),
-      ),
     );
   }
 }

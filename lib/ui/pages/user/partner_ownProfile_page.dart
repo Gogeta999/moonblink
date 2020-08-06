@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:moonblink/base_widget/userfeed.dart';
@@ -84,10 +85,14 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                           child: SizedBox(
                               width: 100.0,
                               height: 100.0,
-                              child: Image.network(
-                                partnerModel.partnerData.prfoileFromPartner
-                                    .profileImage,
+                              child: CachedNetworkImage(
+                                imageUrl: partnerModel.partnerData
+                                    .prfoileFromPartner.profileImage,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ))),
                     )),
               ),
@@ -102,44 +107,28 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    //TODO:
                     // RaisedButton(
                     //   color: Theme.of(context).accentColor,
                     //   highlightColor: Theme.of(context).highlightColor,
                     //   colorBrightness: Theme.of(context).brightness,
                     //   splashColor: Theme.of(context).splashColor,
+                    //   shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(20.0)),
                     //   child: Text(
-                    //     'Following List',
+                    //     'Follower List',
                     //     style: Theme.of(context)
                     //         .accentTextTheme
                     //         .button
                     //         .copyWith(wordSpacing: 6),
                     //   ),
-                    //   shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(20.0)),
-                    //   onPressed: () {},
+                    //   onPressed: () async {
+                    //     // await DioUtils().post(Api.PARTNERDETAIL+ partnerModel.partnerData.partnerId.toString()+ '/follow',queryParameters: {
+                    //     //   'status': '0',
+
+                    //     // });
+                    //   },
                     // ),
-
-                    RaisedButton(
-                      color: Theme.of(context).accentColor,
-                      highlightColor: Theme.of(context).highlightColor,
-                      colorBrightness: Theme.of(context).brightness,
-                      splashColor: Theme.of(context).splashColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      child: Text(
-                        'Follower List',
-                        style: Theme.of(context)
-                            .accentTextTheme
-                            .button
-                            .copyWith(wordSpacing: 6),
-                      ),
-                      onPressed: () async {
-                        // await DioUtils().post(Api.PARTNERDETAIL+ partnerModel.partnerData.partnerId.toString()+ '/follow',queryParameters: {
-                        //   'status': '0',
-
-                        // });
-                      },
-                    ),
                   ],
                 ),
               ),

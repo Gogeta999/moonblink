@@ -41,8 +41,8 @@ class _ContactsPageState extends State<ContactsPage> {
     }
     users.forEach((user) {
       items.add(Column(children: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(top: 8.0),
+        Material(
+          color: Theme.of(context).cardColor,
           child: ListTile(
             leading: CircleAvatar(
               radius: 28,
@@ -60,9 +60,9 @@ class _ContactsPageState extends State<ContactsPage> {
             },
           ),
         ),
-        Divider(
-          color: Colors.grey,
-        )
+        // Divider(
+        //   color: Colors.grey,
+        // )
       ]));
       strList.add(user.contactUser.contactUserName.toUpperCase());
     });
@@ -79,8 +79,6 @@ class _ContactsPageState extends State<ContactsPage> {
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
               if (contactModel.isBusy) {
-                // return SkeletonList(
-                //     builder: (context, index) => PostSkeletonItem());
                 return Container(
                   height: double.infinity,
                   child: Image.asset(
@@ -124,7 +122,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   return items[index];
                 },
                 indexedHeight: (i) {
-                  return 100;
+                  return 58;
                 },
               );
             }));

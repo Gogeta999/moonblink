@@ -24,9 +24,6 @@ class UserStatusPage extends StatefulWidget {
 }
 
 class _UserStatusPageState extends State<UserStatusPage> {
-  @override
-  // bool get wantKeepAlive => true;
-
   Wallet wallet = Wallet(value: 0);
   bool hasUser = false;
 
@@ -223,67 +220,67 @@ class UserListWidget extends StatelessWidget {
     // var iconColor = Theme.of(context).accentColor;
     // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return SliverGrid(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3 / 2,
-            mainAxisSpacing: 15.0,
-          ),
-          delegate: SliverChildListDelegate.fixed([
-            ///wallet
-            PageCard(
-                pageTitle: S.of(context).userStatusWallet,
-                iconData: FontAwesomeIcons.wallet,
-                onTap: hasUser == null
-                    ? () {
-                  showToast(S.of(context).loginFirst);
-                }
-                    : () {
-                  Navigator.of(context).pushNamed(RouteName.wallet);
-                }),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        mainAxisSpacing: 15.0,
+      ),
+      delegate: SliverChildListDelegate.fixed([
+        ///wallet
+        PageCard(
+            pageTitle: S.of(context).userStatusWallet,
+            iconData: FontAwesomeIcons.wallet,
+            onTap: hasUser == null
+                ? () {
+                    showToast(S.of(context).loginFirst);
+                  }
+                : () {
+                    Navigator.of(context).pushNamed(RouteName.wallet);
+                  }),
 
-            ///switch dark mode
-            PageCard(
-                pageTitle: S.of(context).userStatusDarkMode,
-                iconData: Theme.of(context).brightness == Brightness.light
+        ///switch dark mode
+        PageCard(
+            pageTitle: S.of(context).userStatusDarkMode,
+            iconData: Theme.of(context).brightness == Brightness.light
                 // ? IconFonts.dayModeIcon
-                    ? IconFonts.dayModeIcon
-                    : FontAwesomeIcons.moon,
-                onTap: () => _switchDarkMode(context)),
+                ? IconFonts.dayModeIcon
+                : FontAwesomeIcons.moon,
+            onTap: () => _switchDarkMode(context)),
 
-            ///theme
-            PageCard(
-                pageTitle: S.of(context).userStatusTheme,
-                iconData: FontAwesomeIcons.palette,
-                onTap: () => _showPaletteDialog(context)),
+        ///theme
+        PageCard(
+            pageTitle: S.of(context).userStatusTheme,
+            iconData: FontAwesomeIcons.palette,
+            onTap: () => _showPaletteDialog(context)),
 
-            ///favorites
-            PageCard(
-                pageTitle: S.of(context).userStatusCustomerService,
-                iconData: FontAwesomeIcons.handsHelping,
-                onTap: hasUser == null
-                    ? () {
-                  showToast(S.of(context).loginFirst);
-                }
+        ///favorites
+        PageCard(
+            pageTitle: S.of(context).userStatusCustomerService,
+            iconData: FontAwesomeIcons.handsHelping,
+            onTap: hasUser == null
+                ? () {
+                    showToast(S.of(context).loginFirst);
+                  }
                 // : () {
                 //     Navigator.of(context).pushNamed(RouteName.network);
                 //   }),
-                    : _openFacebookPage),
+                : _openFacebookPage),
 
-            ///settings
-            PageCard(
-                pageTitle: S.of(context).userStatusSettings,
-                iconData: FontAwesomeIcons.cog,
-                onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+        ///settings
+        PageCard(
+            pageTitle: S.of(context).userStatusSettings,
+            iconData: FontAwesomeIcons.cog,
+            onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
 
-            ///check app update
-            PageCard(
-                pageTitle: S.of(context).userStatusCheckAppUpdate,
-                iconData: Platform.isAndroid
-                    ? FontAwesomeIcons.android
-                    : FontAwesomeIcons.appStoreIos,
-                onTap: _openStore),
-          ]),
-        );
+        ///check app update
+        PageCard(
+            pageTitle: S.of(context).userStatusCheckAppUpdate,
+            iconData: Platform.isAndroid
+                ? FontAwesomeIcons.android
+                : FontAwesomeIcons.appStoreIos,
+            onTap: _openStore),
+      ]),
+    );
   }
 
   void _openStore() async {

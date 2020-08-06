@@ -44,20 +44,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? CupertinoActivityIndicator()
                         : Text(S.of(context).settingsSignAsPartner),
                     onTap: () async {
-                      // var userid =
-                      //     StorageManager.sharedPreferences.getInt(mUserId);
                       var usertoken =
                           StorageManager.sharedPreferences.getString(token);
                       if (usertoken != null) {
                         setState(() {
                           isSigning = !isSigning;
                         });
-                        /*var response = await DioUtils().post(
-                            Api.RegisterAsPartner + '$userid/register',
-                            queryParameters: {
-                              'Authorization': 'Bearer' + usertoken.toString()
-                            });
-                        print(response);*/
                         Navigator.of(context)
                             .pushNamed(RouteName.registerAsPartner);
                         setState(() {
@@ -66,12 +58,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       } else {
                         showToast(S.of(context).showToastSignInFirst);
                       }
-
-                      // if (response.errorcode == 1) {
-                      //   setState(() {
-                      //     isSigning = !isSigning;
-                      //   });
-                      // }
                     },
                     leading: Icon(
                       FontAwesomeIcons.user,

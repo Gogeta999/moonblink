@@ -38,7 +38,7 @@ class _StoriesPageState extends State<StoriesPage> {
       children: <Widget>[
         Padding(
           padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-          child: Row(children: <Widget>[
+          child: Column(children: <Widget>[
             CircleAvatar(
               radius: 25,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -84,15 +84,6 @@ class _StoriesPageState extends State<StoriesPage> {
                   print(story.id);
                   if (story.type == 2) {
                     return GestureDetector(
-                      // onTap: () {
-                      //   _currentPageNotifier.value == widget.stories.length - 1
-                      //       ? Navigator.pop(context)
-                      //       : (index) {
-                      //           _currentPageNotifier.value += 1;
-                      //           pageController
-                      //               .jumpToPage(_currentPageNotifier.value);
-                      //         };
-                      // },
                       onTap: _currentPageNotifier.value ==
                               widget.stories.length - 1
                           ? () {
@@ -110,15 +101,6 @@ class _StoriesPageState extends State<StoriesPage> {
                     );
                   }
                   return GestureDetector(
-                    // onTap: () {
-                    //   _currentPageNotifier.value == widget.stories.length - 1
-                    //       ? Navigator.pop(context)
-                    //       : (index) {
-                    //           _currentPageNotifier.value += 1;
-                    //           pageController
-                    //               .jumpToPage(_currentPageNotifier.value);
-                    //         };
-                    // },
                     onTap:
                         _currentPageNotifier.value == widget.stories.length - 1
                             ? () {

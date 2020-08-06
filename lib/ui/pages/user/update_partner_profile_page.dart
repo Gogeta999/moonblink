@@ -194,7 +194,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               ? 'Please enter your name'
                                               : null,
                                           label: "Please enter your Name",
-                                          icon: FontAwesomeIcons.book,
+                                          icon: Icons.person,
                                           controller: _nameController,
                                           textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.text,

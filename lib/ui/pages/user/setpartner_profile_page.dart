@@ -19,6 +19,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -32,8 +33,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   final _picker = ImagePicker();
   String _filePath;
   String _genderController;
-  List<String> genderList = ["Male", "Female", "Rather Not Say"];
-  final _sexController = TextEditingController();
+  List<String> genderList = ["Male", "Female"];
   //final _phController = TextEditingController();
   final _nrcController = TextEditingController();
   final _biosController = TextEditingController();
@@ -43,9 +43,6 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
 
   @override
   void dispose() {
-    _sexController.dispose();
-    //_phController.dispose();
-    //_mailController.dispose();
     _nrcController.dispose();
     _biosController.dispose();
     _addressController.dispose();
@@ -61,7 +58,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     File image = File(cover.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-    await _compressAndGetFile(image, temporaryImage.absolute.path);
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _cover = compressedImage;
     });
@@ -73,7 +70,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     File image = File(profile.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-    await _compressAndGetFile(image, temporaryImage.absolute.path);
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _profile = compressedImage;
     });
@@ -138,7 +135,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                               onTap: () {
                                 _pickCoverFromGallery();
                               },
-                              child: PartnerCoverWidget(_cover),
+                              child: AspectRatio(
+                                  aspectRatio: 100 / 100,
+                                  child: PartnerCoverWidget(_cover)),
                             ),
 
                             /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
@@ -196,20 +195,6 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
-                                          //email
-                                          /*LoginTextField(
-                                            validator: (value) => value.isEmpty
-                                                ? 'Please enter email'
-                                                : null,
-                                            label: "Please enter email",
-                                            icon: FontAwesomeIcons.mailBulk,
-                                            controller: _mailController,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            keyboardType:
-                                                TextInputType.emailAddress,
-                                          ),
-                                          _space,*/
                                           DropdownButtonFormField<String>(
                                             decoration: InputDecoration(
                                                 prefixIcon: Icon(
@@ -236,22 +221,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             }).toList(),
                                           ),
                                           _space,
+                                          // DatePicker(),
                                           //date
                                           BasicDateField(_dobController),
                                           _space,
-                                          //phone
-                                          /*LoginTextField(
-                                            validator: (value) => value.isEmpty
-                                                ? 'Please enter Phno'
-                                                : null,
-                                            label: "Please enter Phone",
-                                            icon: FontAwesomeIcons.phone,
-                                            controller: _phController,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            keyboardType: TextInputType.phone,
-                                          ),
-                                          _space,*/
                                           //bios
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
@@ -291,59 +264,71 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                         .copyWith(
                                                             wordSpacing: 6)),
                                             onPressed: () async {
-                                              var userid = StorageManager
-                                                  .sharedPreferences
-                                                  .getInt(mUserId);
-                                              var coverPath = _cover.absolute.path;
-                                              var profilePath = _profile.absolute.path;
-                                              FormData formData =
-                                                  FormData.fromMap({
-                                                'cover_image':
-                                                    await MultipartFile
-                                                        .fromFile(coverPath,
-                                                            filename:
-                                                                'cover.jpg',
-                                                    ),
-                                                'profile_image':
-                                                    await MultipartFile
-                                                        .fromFile(
-                                                            profilePath,
-                                                            filename:
-                                                                'profile.jpg'),
-                                                'nrc': _nrcController.text.toString(),
-                                                //'mail': _mailController.text.toString(),
-                                                'gender': _genderController.toString(),
-                                                'dob': _dobController.text.toString(),
-                                                //'phone': _phController.text.toString(),
-                                                'bios': _biosController.text.toString(),
-                                                'address':
-                                                    _addressController.text.toString()
-                                              });
-                                              var response = await DioUtils()
-                                                  .postwithData(
-                                                      Api.SetProfile +
-                                                          '$userid/profile',
-                                                      data: formData);
-                                              print('PRINTED $response');
-                                              model.logout();
-                                              Navigator.of(context)
-                                                  .pushNamedAndRemoveUntil(
-                                                      RouteName.splash,
-                                                      (route) => false);
-                                              return User.fromJsonMap(
-                                                  response.data);
+                                              if (_cover == null ||
+                                                  _profile == null) {
+                                                showToast(
+                                                    'You need to choose cover and profile images');
+                                                return false;
+                                              } else if (_nrcController ==
+                                                      null ||
+                                                  _genderController == null ||
+                                                  _dobController == null ||
+                                                  _addressController == null) {
+                                                showToast(
+                                                    "You forget to fill some information");
+                                                return false;
+                                              } else {
+                                                var userid = StorageManager
+                                                    .sharedPreferences
+                                                    .getInt(mUserId);
+                                                var coverPath =
+                                                    _cover.absolute.path;
+                                                var profilePath =
+                                                    _profile.absolute.path;
+                                                FormData formData =
+                                                    FormData.fromMap({
+                                                  'cover_image':
+                                                      await MultipartFile
+                                                          .fromFile(
+                                                    coverPath,
+                                                    filename: 'cover.jpg',
+                                                  ),
+                                                  'profile_image':
+                                                      await MultipartFile
+                                                          .fromFile(profilePath,
+                                                              filename:
+                                                                  'profile.jpg'),
+                                                  'nrc': _nrcController.text
+                                                      .toString(),
+                                                  //'mail': _mailController.text.toString(),
+                                                  'gender': _genderController
+                                                      .toString(),
+                                                  'dob': _dobController.text
+                                                      .toString(),
+                                                  //'phone': _phController.text.toString(),
+                                                  'bios': _biosController.text
+                                                      .toString(),
+                                                  'address': _addressController
+                                                      .text
+                                                      .toString()
+                                                });
+
+                                                var response = await DioUtils()
+                                                    .postwithData(
+                                                        Api.SetProfile +
+                                                            '$userid/profile',
+                                                        data: formData);
+                                                print('PRINTED $response');
+                                                model.logout();
+                                                Navigator.of(context)
+                                                    .pushNamedAndRemoveUntil(
+                                                        RouteName.splash,
+                                                        (route) => false);
+                                                return User.fromJsonMap(
+                                                    response.data);
+                                              }
                                             },
                                           ),
-                                          // SetProfileButton(
-                                          //     _cover,
-                                          //     _profile,
-                                          //     _nrcController.text,
-                                          //     _mailController.text,
-                                          //     _genderController,
-                                          //     _dobController.text,
-                                          //     _phController.text,
-                                          //     _biosController.text,
-                                          //     _addressController.text),
                                         ]),
                                   ),
                                 ],
@@ -367,12 +352,12 @@ class PartnerCoverWidget extends StatelessWidget {
     if (this.cover == null) {
       return Image.asset(
         ImageHelper.wrapAssetsImage('defaultBackground.jpg'),
-        fit: BoxFit.contain,
+        fit: BoxFit.cover,
       );
     } else {
       return Image.file(
         cover,
-        filterQuality: FilterQuality.medium,
+        filterQuality: FilterQuality.high,
         fit: BoxFit.cover,
       );
     }
@@ -387,7 +372,7 @@ class PartnerProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.profile == null) {
       return Image.asset(
-        ImageHelper.wrapAssetsLogo('person.png'),
+        ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg'),
         fit: BoxFit.fill,
       );
     } else {

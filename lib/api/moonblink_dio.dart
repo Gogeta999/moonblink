@@ -147,7 +147,11 @@ class DioUtils {
   /*
    * Post request
    */
-  post(url, {queryParameters, options,}) async {
+  post(
+    url, {
+    queryParameters,
+    options,
+  }) async {
     print('post request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.post(url,
@@ -208,7 +212,9 @@ class DioUtils {
         onSendProgress: (int count, int total) {
       print('Uploading progress----->${count / total}----count/total process');
     });
-    print(response.statusCode); ///remove later
+    print(response.statusCode);
+
+    ///remove later
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
@@ -412,7 +418,7 @@ class NotSuccessException implements Exception {
   @override
   String toString() {
     // return 'NotExpectedException{respData: $message}';
-    return 'Sorry,Please $message';
+    return 'Sorry, $message';
   }
 }
 
@@ -430,7 +436,9 @@ class ResponseData extends BaseResponseData {
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     errorCode = json['error_code'];
-    print(errorCode); ///remove later
+    print(errorCode);
+
+    ///remove later
     errorMessage = json['error_message'];
     getMessage = json['message'];
     data = json['data'];
