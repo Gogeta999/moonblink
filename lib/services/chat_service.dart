@@ -9,6 +9,12 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import '../models/message.dart';
+import '../models/message.dart';
+import '../models/message.dart';
+import '../models/message.dart';
+import '../models/message.dart';
+
 String url = 'https://chat.moonblinkuniverse.com';
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
@@ -20,6 +26,7 @@ int userid = StorageManager.sharedPreferences.getInt(mUserId);
 // List<Message> messages = List<Message>();
 List<Files> files = List<Files>();
 List<Chatlist> chatlist = List<Chatlist>();
+Bookingstatus bookingdata;
 
 class ChatModel extends Model {
   //connect
@@ -135,6 +142,29 @@ class ChatModel extends Model {
       notifyListeners();
     });
     return chatlist;
+  }
+
+  Bookingstatus chatupdated() {
+    print("Chat Updated");
+    socket.on("chat-updated", (data) {
+      bookingdata = Bookingstatus(data["booking_id"], data["user_id"],
+          data["booking_user_id"], data["status"]);
+      print(data.toString());
+      print(bookingdata.bookingid);
+      print(bookingdata.id);
+      print(bookingdata.bookinguserid);
+      print(bookingdata.status);
+      notifyListeners();
+    });
+
+    return bookingdata;
+  }
+
+  void chatupdating(otherid) {
+    print("Chat Updating");
+    socket.emit("chat-updating", [
+      {"sender_id": userid, "receiver_id": otherid}
+    ]);
   }
 
   ///[For receiving message]

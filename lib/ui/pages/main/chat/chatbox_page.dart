@@ -34,6 +34,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
+import '../../../../models/message.dart';
+import '../../../../services/chat_service.dart';
+
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
   final int detailPageId;
@@ -54,7 +57,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   List<Contact> contacts = [];
   List<Chatlist> chatlist = [];
   List<Contact> users = [];
-  Chatlist user = Chatlist();
+  // Chatlist user = Chatlist();
+  Bookingstatus bookingdata;
   String now = DateTime.now().toString();
   String filename;
   File _file;
@@ -84,6 +88,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   void initState() {
     super.initState();
     got = false;
+    ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
+    ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -476,8 +482,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         });
   }
 
-  bookingcancel(bookingid) {
-    if (usertype == 0) {
+  bookingcancel(bookingid, bookinguserid) {
+    if (selfId == bookinguserid) {
       return ProviderWidget(
           model: CallModel(),
           builder: (context, model, child) {
@@ -489,24 +495,25 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             );
           });
     } else {
-      return Center(child: Text(S.of(context).cancel));
+      return Container();
     }
   }
 
   //action 1
-  action1(id, status, bookingid) {
-    switch (status) {
+  action1(model) {
+    bookingdata = model.chatupdated();
+    switch (bookingdata.status) {
       //normal
       case (-1):
         return Container();
         break;
       //cancel booking
       case (0):
-        return bookingcancel(bookingid);
+        return bookingcancel(bookingdata.bookingid, bookingdata.bookinguserid);
         break;
       //in booking
       case (1):
-        return callbtn(id);
+        return callbtn(widget.detailPageId);
         break;
       //reject
       case (2):
@@ -535,9 +542,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //action2
-  action2(status, bookingid) {
-    if (usertype == 1) {
-      switch (status) {
+  action2(model) {
+    bookingdata = model.chatupdated();
+    if (selfId != bookingdata.bookinguserid) {
+      switch (bookingdata.status) {
         //normal
         case (-1):
           return Container();
@@ -548,7 +556,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           break;
         //end booking
         case (1):
-          return endbtn(bookingid);
+          return endbtn(bookingdata.bookingid);
           break;
         //reject
         case (2):
@@ -579,15 +587,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Conversation List
-  Widget buildChatList(status, bookingid, id, model) {
+  Widget buildChatList(id, model) {
     model.receiver(messages);
+    bookingdata = model.chatupdated();
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
         reverse: true,
         itemCount: messages.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildSingleMessage(status, bookingid, messages[index]);
+          return buildSingleMessage(
+              bookingdata.status, bookingdata.bookingid, messages[index]);
         },
       ),
     );
@@ -595,55 +605,58 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(got);
-    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
-        autoDispose: false,
-        model1: PartnerDetailModel(partnerdata, widget.detailPageId),
-        model2: GetmsgModel(widget.detailPageId),
-        onModelReady: (partnerModel, msgModel) {
-          partnerModel.initData();
-          msgModel.initData();
-        },
-        builder: (context, partnermodel, msgmodel, child) {
-          if (partnermodel.isBusy) {
-            return ViewStateBusyWidget();
-          } else if (partnermodel.isError) {
-            return ViewStateErrorWidget(
-                error: partnermodel.viewStateError,
-                onPressed: () {
-                  partnermodel.initData();
-                  msgmodel.initData();
-                });
-          }
-          if (got == false && msgmodel.list.isNotEmpty) {
-            for (var i = 0; i < msgmodel.list.length; i++) {
-              Lastmsg msgs = msgmodel.list[i];
-              messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
-                  msgs.attach, msgs.type));
+    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      // bookingdata = model.chatupdated();
+      // print("booking status is ${bookingdata.status}");
+      return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+          autoDispose: false,
+          model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+          model2: GetmsgModel(widget.detailPageId),
+          onModelReady: (partnerModel, msgModel) {
+            partnerModel.initData();
+            msgModel.initData();
+          },
+          builder: (context, partnermodel, msgmodel, child) {
+            if (partnermodel.isBusy) {
+              return ViewStateBusyWidget();
+            } else if (partnermodel.isError) {
+              return ViewStateErrorWidget(
+                  error: partnermodel.viewStateError,
+                  onPressed: () {
+                    partnermodel.initData();
+                    msgmodel.initData();
+                  });
             }
-            got = true;
-          }
-          // print(messages);
-          return ScopedModelDescendant<ChatModel>(
-              builder: (context, child, model) {
-            chatlist = model.conversationlist();
-            if (chatlist.isNotEmpty) {
-              print("is working chatlist");
-              var status =
-                  chatlist.where((user) => user.userid == widget.detailPageId);
-              print(status.toList());
-              List chat = status.toList();
-              if (chat.isNotEmpty) {
-                user = chat[0];
-              } else {
-                user.bookingStatus = -1;
+            if (got == false && msgmodel.list.isNotEmpty) {
+              for (var i = 0; i < msgmodel.list.length; i++) {
+                Lastmsg msgs = msgmodel.list[i];
+                messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                    msgs.attach, msgs.type));
               }
-            } else {
-              print("Chatlist is empty");
-              user.bookingStatus = -1;
+              got = true;
             }
-            if (user.bookingStatus == 3 && msgmodel.isBusy) {
-              Future.delayed(Duration.zero, () => rating(user.bookingid));
+            // print(messages);
+
+            // bookingdata = model.chatupdated();
+            // chatlist = model.conversationlist();
+            // if (chatlist.isNotEmpty) {
+            //   print("is working chatlist");
+            //   var status =
+            //       chatlist.where((user) => user.userid == widget.detailPageId);
+            //   print(status.toList());
+            //   List chat = status.toList();
+            //   if (chat.isNotEmpty) {
+            //     user = chat[0];
+            //   } else {
+            //     user.bookingStatus = -1;
+            //   }
+            // } else {
+            //   print("Chatlist is empty");
+            //   user.bookingStatus = -1;
+            // }
+            if (bookingdata.status == 3 && msgmodel.isBusy) {
+              Future.delayed(
+                  Duration.zero, () => rating(bookingdata.bookingid));
             }
             return Scaffold(
               // resizeToAvoidBottomInset: false,
@@ -661,21 +674,22 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           }
                         : null),
                 actions: <Widget>[
-                  action2(user.bookingStatus, user.bookingid),
-                  action1(
-                      widget.detailPageId, user.bookingStatus, user.bookingid),
+                  action2(model),
+                  action1(model),
+                  // action2(bookingdata.status, bookingdata.bookingid),
+                  // action1(widget.detailPageId, bookingdata.status,
+                  //     bookingdata.bookingid),
                 ],
               ),
               body: ListView(
                 children: <Widget>[
-                  buildChatList(user.bookingStatus, user.bookingid,
-                      partnermodel.partnerData.partnerId, model),
+                  buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                 ],
               ),
             );
           });
-        });
+    });
   }
 
   ///[CallFunction]

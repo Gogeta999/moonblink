@@ -91,7 +91,8 @@ class _MainTabPageState extends State<MainTabPage>
                 iconData: IconFonts.followingPageIcon,
                 title: S.of(context).tabFollowing),
             TabData(
-                iconData: IconFonts.statusPageIcon, title: S.of(context).tabUser),
+                iconData: IconFonts.statusPageIcon,
+                title: S.of(context).tabUser),
           ],
           initialSelection: initPage,
           // inactiveIconSize: 30,

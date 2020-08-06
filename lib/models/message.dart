@@ -1,14 +1,15 @@
 import 'dart:typed_data';
 
-class Files{
+class Files {
   final String name;
   final Uint8List file;
   final int senderID;
   final int receiverID;
 
-  Files(this.name,this.file,this.senderID,this.receiverID);
+  Files(this.name, this.file, this.senderID, this.receiverID);
 }
-class Message{
+
+class Message {
   final String text;
   final int senderID;
   final int receiverID;
@@ -16,10 +17,11 @@ class Message{
   final String attach;
   final int type;
 
-  Message(this.text,this.senderID,this.receiverID, this.now, this.attach, this.type);
+  Message(this.text, this.senderID, this.receiverID, this.now, this.attach,
+      this.type);
 }
 
-class Lastmsg{
+class Lastmsg {
   int id;
   int roomid;
   int sender;
@@ -31,7 +33,7 @@ class Lastmsg{
   String updated;
   String booking;
 
-  static Lastmsg fromMap(Map<String, dynamic> map){
+  static Lastmsg fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     Lastmsg chat = Lastmsg();
     chat.id = map['id'];
@@ -46,5 +48,13 @@ class Lastmsg{
     chat.booking = map['booking'];
     return chat;
   }
+}
 
+class Bookingstatus {
+  int bookingid;
+  int id;
+  int bookinguserid;
+  int status;
+
+  Bookingstatus(this.bookingid, this.id, this.bookinguserid, this.status);
 }
