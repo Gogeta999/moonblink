@@ -211,7 +211,7 @@ class LoginModel extends ViewStateModel {
           verificationFailed: verificationFailed,
           codeSent: codeSent,
           codeAutoRetrievalTimeout: (verificationId) =>
-              print('Code: $verificationId'));
+              this._verificationId = verificationId);
       setIdle();
       return true;
     } catch (e, s) {

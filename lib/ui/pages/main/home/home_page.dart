@@ -153,8 +153,8 @@ class HomePostList extends StatelessWidget {
             },
             childCount: homeModel.list?.length ?? 0,
             semanticIndexCallback: (Widget widget, int index) {
-              if (index != 0 && index % 10 == 0) {
-                return index ~/ 10;
+              if (index != 0 && index % 6 == 0) {
+                return index ~/ 6;
               }
               return null;
             }));
