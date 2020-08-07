@@ -21,23 +21,11 @@ class LoginModel extends ViewStateModel {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
   final FacebookLogin _facebookLogin = FacebookLogin();
 
-  ///Firebase OTP
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  String _verificationId;
-  int _forceResendingToken;
-  String _phone;
-
   LoginModel(this.userModel) : assert(userModel != null);
 
   String getLoginName() {
     return StorageManager.sharedPreferences.getString(mLoginName);
   }
-  // String getUserId(){
-  //   return StorageManager.sharedPreferences.getString(mUserId);
-  // }
-  // String getMPassword(){
-  //   return StorageManager.sharedPreferences.getString(mPassWord);
-  // }
 
   Future<bool> login(String mail, String password, String type) async {
     setBusy();
@@ -157,84 +145,19 @@ class LoginModel extends ViewStateModel {
     }
   }
 
-  Future<bool> signAsPartner(String phone) async {
-    setBusy();
-    try {
-      await MoonBlinkRepository.signAsPartner(phone);
-      setIdle();
-      return true;
-    } catch (e, s) {
-      setError(e, s);
-      return false;
-    }
-  }
+  // signInWithCredential(text) {}
 
-  Future<bool> getOtpCodeAgain(mail) async {
-    setBusy();
-    try {
-      await MoonBlinkRepository.getOtpCode(mail);
-      setIdle();
-      return true;
-    } catch (e, s) {
-      setError(e, s);
-      return false;
-    }
-  }
+  // getOtpCodeAgain(text) {}
 
-  Future<bool> getFirebaseOtp(String phone) async {
-    setBusy();
-    this._phone = phone;
-    try {
-      ///automatically call when verification is auto completed.
-      void verificationCompleted(AuthCredential authCredential) async {
-        AuthResult authResult =
-            await _firebaseAuth.signInWithCredential(authCredential);
-        if (authResult.user != null) {
-          await signAsPartner(phone);
-        }
-      }
-
-      void verificationFailed(AuthException authException) async {
-        throw authException;
-      }
-
-      void codeSent(String verificationId, [int forceResendingToken]) {
-        this._verificationId = verificationId;
-        this._forceResendingToken = forceResendingToken;
-      }
-
-      await _firebaseAuth.verifyPhoneNumber(
-          forceResendingToken: _forceResendingToken,
-          phoneNumber: phone,
-          timeout: const Duration(seconds: 60),
-          verificationCompleted: verificationCompleted,
-          verificationFailed: verificationFailed,
-          codeSent: codeSent,
-          codeAutoRetrievalTimeout: (verificationId) =>
-              print('Code: $verificationId'));
-      setIdle();
-      return true;
-    } catch (e, s) {
-      setError(e, s);
-      return false;
-    }
-  }
-
-  Future<bool> signInWithCredential(String smsCode) async {
-    setBusy();
-    try {
-      AuthCredential authCredential = PhoneAuthProvider.getCredential(
-          verificationId: _verificationId, smsCode: smsCode);
-      AuthResult authResult =
-          await _firebaseAuth.signInWithCredential(authCredential);
-      if (authResult.user != null) {
-        await signAsPartner(_phone);
-      }
-      setIdle();
-      return true;
-    } catch (e, s) {
-      setError(e, s);
-      return false;
-    }
-  }
+  // Future<bool> getOtpCodeAgain(mail) async {
+  //   setBusy();
+  //   try {
+  //     await MoonBlinkRepository.getOtpCode(mail);
+  //     setIdle();
+  //     return true;
+  //   } catch (e, s) {
+  //     setError(e, s);
+  //     return false;
+  //   }
+  // }
 }

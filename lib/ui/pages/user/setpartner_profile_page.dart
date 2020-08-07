@@ -254,7 +254,8 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           Container(
                                             height: 180,
                                             width: 60,
-                                            child: Icon(Icons.perm_identity),
+                                            child: Icon(FontAwesomeIcons
+                                                .solidAddressCard),
                                             color: Colors.blue,
                                           ),
                                           RaisedButton(

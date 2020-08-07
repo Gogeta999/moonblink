@@ -217,8 +217,6 @@ class UserListWidget extends StatelessWidget {
   final hasUser = StorageManager.localStorage.getItem(mUser);
   @override
   Widget build(BuildContext context) {
-    // var iconColor = Theme.of(context).accentColor;
-    // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
