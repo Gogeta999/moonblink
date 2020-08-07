@@ -12,8 +12,6 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
-import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_skeleton.dart';
-import 'package:moonblink/base_widget/skeleton.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
@@ -145,23 +143,21 @@ class HomePostList extends StatelessWidget {
       ));
     }
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          if (index != 0 && index % 10 == 0) {
-            return AdPostWidget();
-          }
-          Post item = homeModel.list[index];
-          return PostItemWidget(item);
-        },
-        childCount: homeModel.list?.length ?? 0,
-        semanticIndexCallback: (Widget widget, int index) {
-          if(index != 0 && index % 10 == 0) {
-            return index ~/ 10;
-          }
-          return null;
-        }
-      )
-    );
+        delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index != 0 && index % 6 == 0) {
+                return AdPostWidget();
+              }
+              Post item = homeModel.list[index];
+              return PostItemWidget(item);
+            },
+            childCount: homeModel.list?.length ?? 0,
+            semanticIndexCallback: (Widget widget, int index) {
+              if (index != 0 && index % 10 == 0) {
+                return index ~/ 10;
+              }
+              return null;
+            }));
   }
 }
 

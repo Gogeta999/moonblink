@@ -99,6 +99,7 @@ class _MainTabPageState extends State<MainTabPage>
           circleHeight: 50,
           arcHeight: 55,
           arcWidth: 80,
+          activeIconColor: Colors.white,
           barHeight: 55,
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {

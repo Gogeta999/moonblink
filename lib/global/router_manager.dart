@@ -71,6 +71,8 @@ class Router {
       //   return CupertinoPageRoute(builder: (_) => SearchPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
+      case RouteName.otp:
+        return CupertinoPageRoute(builder: (_) => OtpPage());
       // case RouteName.story:
       //   return CupertinoPageRoute(builder: (_) => StoriesPage());
       case RouteName.login:

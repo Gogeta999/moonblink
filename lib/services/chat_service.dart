@@ -10,10 +10,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../models/message.dart';
-import '../models/message.dart';
-import '../models/message.dart';
-import '../models/message.dart';
-import '../models/message.dart';
 
 String url = 'https://chat.moonblinkuniverse.com';
 String now = DateTime.now().toString();

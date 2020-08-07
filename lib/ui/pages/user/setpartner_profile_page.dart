@@ -251,6 +251,12 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
+                                          Container(
+                                            height: 180,
+                                            width: 60,
+                                            child: Icon(Icons.perm_identity),
+                                            color: Colors.blue,
+                                          ),
                                           RaisedButton(
                                             child: finished
                                                 ? ButtonProgressIndicator()
