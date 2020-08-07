@@ -89,7 +89,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    ScopedModel.of<ChatModel>(context).chatupdated();
+    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -102,7 +102,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
         child: builds(status, bookingid, message));
-    // child: img ? buildimage(message) : buildmsg(message));
   }
 
   //build msg
@@ -606,8 +605,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      // bookingdata = model.chatupdated();
-      // print("booking status is ${bookingdata.status}");
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
@@ -676,9 +673,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 actions: <Widget>[
                   action2(model),
                   action1(model),
-                  // action2(bookingdata.status, bookingdata.bookingid),
-                  // action1(widget.detailPageId, bookingdata.status,
-                  //     bookingdata.bookingid),
                 ],
               ),
               body: ListView(
