@@ -145,10 +145,6 @@ class LoginModel extends ViewStateModel {
     }
   }
 
-  // signInWithCredential(text) {}
-
-  // getOtpCodeAgain(text) {}
-
   // Future<bool> getOtpCodeAgain(mail) async {
   //   setBusy();
   //   try {
