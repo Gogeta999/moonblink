@@ -47,6 +47,7 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
+  bool preview = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
@@ -78,6 +79,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       _file = File(pickedFile.path);
       filename = _file.path;
       bytes = _file.readAsBytesSync();
+      preview = true;
       print(bytes);
       // _byteData = ByteData.view(bytes.buffer);
       // print(_byteData);
@@ -89,7 +91,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
+    ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -437,6 +439,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               } else {
                 model.sendfile(filename, bytes, id, type, messages);
                 textEditingController.text = '';
+                preview = false;
               }
             },
           ),
@@ -499,8 +502,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //action 1
-  action1(model) {
-    bookingdata = model.chatupdated();
+  action1(bookingdata) {
+    // bookingdata = model.chatupdated();
     switch (bookingdata.status) {
       //normal
       case (-1):
@@ -541,8 +544,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //action2
-  action2(model) {
-    bookingdata = model.chatupdated();
+  action2(bookingdata) {
+    // bookingdata = model.chatupdated();
     if (selfId != bookingdata.bookinguserid) {
       switch (bookingdata.status) {
         //normal
@@ -586,9 +589,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Conversation List
-  Widget buildChatList(id, model) {
+  Widget buildChatList(bookingdata, id, model) {
     model.receiver(messages);
-    bookingdata = model.chatupdated();
+    // bookingdata = model.chatupdated();
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
@@ -602,9 +605,41 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  buildpreview() {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              height: 70,
+              child: Stack(children: <Widget>[
+                Image.memory(bytes),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      setState(() {
+                        preview = false;
+                        bytes = null;
+                      });
+                    },
+                  ),
+                )
+              ]))
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      bookingdata = model.chatupdated();
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
@@ -614,7 +649,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             msgModel.initData();
           },
           builder: (context, partnermodel, msgmodel, child) {
-            if (partnermodel.isBusy) {
+            if (partnermodel.isBusy || bookingdata.status == null) {
               return ViewStateBusyWidget();
             } else if (partnermodel.isError) {
               return ViewStateErrorWidget(
@@ -656,9 +691,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   Duration.zero, () => rating(bookingdata.bookingid));
             }
             return Scaffold(
-              // resizeToAvoidBottomInset: false,
-              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                  AppBar(
+              appBar: AppBar(
                 title: GestureDetector(
                     child: Text(partnermodel.partnerData.partnerName),
                     onTap: partnermodel.partnerData.type == 1
@@ -671,13 +704,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           }
                         : null),
                 actions: <Widget>[
-                  action2(model),
-                  action1(model),
+                  action2(bookingdata),
+                  action1(bookingdata),
                 ],
               ),
               body: ListView(
                 children: <Widget>[
-                  buildChatList(partnermodel.partnerData.partnerId, model),
+                  buildChatList(
+                      bookingdata, partnermodel.partnerData.partnerId, model),
+                  preview ? buildpreview() : Container(),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                 ],
               ),
