@@ -66,16 +66,21 @@ class _AdPostWidgetState extends State<AdPostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 338.0,
-      alignment: Alignment.centerLeft,
-      child: NativeAdmob(
-        // Your ad unit id
-        options: _nativeAdmobOptions,
-        adUnitID: AdMobNativeAdUnitId,
-        controller: _nativeAdController,
-        type: NativeAdmobType.full,
-      ),
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 330,
+          child: NativeAdmob(
+            options: _nativeAdmobOptions,
+            adUnitID: AdMobNativeAdUnitId,
+            controller: _nativeAdController,
+            type: NativeAdmobType.full,
+          ),
+        ),
+        Divider(
+          height: 0.5,
+        )
+      ],
     );
   }
 }
