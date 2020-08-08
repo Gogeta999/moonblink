@@ -89,7 +89,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
+    ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -499,8 +499,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //action 1
-  action1(model) {
-    bookingdata = model.chatupdated();
+  action1(bookingdata) {
+    // bookingdata = model.chatupdated();
     switch (bookingdata.status) {
       //normal
       case (-1):
@@ -541,8 +541,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //action2
-  action2(model) {
-    bookingdata = model.chatupdated();
+  action2(bookingdata) {
+    // bookingdata = model.chatupdated();
     if (selfId != bookingdata.bookinguserid) {
       switch (bookingdata.status) {
         //normal
@@ -586,9 +586,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Conversation List
-  Widget buildChatList(id, model) {
+  Widget buildChatList(bookingdata, id, model) {
     model.receiver(messages);
-    bookingdata = model.chatupdated();
+    // bookingdata = model.chatupdated();
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
@@ -605,6 +605,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      bookingdata = model.chatupdated();
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
@@ -614,7 +615,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             msgModel.initData();
           },
           builder: (context, partnermodel, msgmodel, child) {
-            if (partnermodel.isBusy) {
+            if (partnermodel.isBusy || bookingdata.status == null) {
               return ViewStateBusyWidget();
             } else if (partnermodel.isError) {
               return ViewStateErrorWidget(
@@ -671,13 +672,14 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           }
                         : null),
                 actions: <Widget>[
-                  action2(model),
-                  action1(model),
+                  action2(bookingdata),
+                  action1(bookingdata),
                 ],
               ),
               body: ListView(
                 children: <Widget>[
-                  buildChatList(partnermodel.partnerData.partnerId, model),
+                  buildChatList(
+                      bookingdata, partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                 ],
               ),
