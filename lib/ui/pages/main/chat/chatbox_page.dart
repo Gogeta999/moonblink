@@ -47,6 +47,7 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
+  bool preview = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
@@ -78,6 +79,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       _file = File(pickedFile.path);
       filename = _file.path;
       bytes = _file.readAsBytesSync();
+      preview = true;
       print(bytes);
       // _byteData = ByteData.view(bytes.buffer);
       // print(_byteData);
@@ -437,6 +439,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               } else {
                 model.sendfile(filename, bytes, id, type, messages);
                 textEditingController.text = '';
+                preview = false;
               }
             },
           ),
@@ -602,6 +605,37 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  buildpreview() {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              height: 70,
+              child: Stack(children: <Widget>[
+                Image.memory(bytes),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      setState(() {
+                        preview = false;
+                        bytes = null;
+                      });
+                    },
+                  ),
+                )
+              ]))
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -657,9 +691,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   Duration.zero, () => rating(bookingdata.bookingid));
             }
             return Scaffold(
-              // resizeToAvoidBottomInset: false,
-              appBar: //buildappbar(model.partnerData.partnerId, model.partnerData.partnerName),
-                  AppBar(
+              appBar: AppBar(
                 title: GestureDetector(
                     child: Text(partnermodel.partnerData.partnerName),
                     onTap: partnermodel.partnerData.type == 1
@@ -680,6 +712,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 children: <Widget>[
                   buildChatList(
                       bookingdata, partnermodel.partnerData.partnerId, model),
+                  preview ? buildpreview() : Container(),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                 ],
               ),
