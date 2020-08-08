@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,6 +31,7 @@ import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -71,18 +73,43 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   final selfId = StorageManager.sharedPreferences.getInt(mUserId);
   final picker = ImagePicker();
   final TextEditingController textEditingController = TextEditingController();
+  String _filePath;
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 80,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
   //File formatting
+  Future<File> _getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    _filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(_filePath);
+  }
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    PickedFile pickedFile = await picker.getImage(
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
+    File _file = File(pickedFile.path);
+    File temporaryImage = await _getLocalFile();
+    File _compressedImage =
+        await _compressAndGetFile(_file, temporaryImage.absolute.path);
     setState(() {
-      _file = File(pickedFile.path);
-      filename = _file.path;
+      _file = _compressedImage;
+      filename = 'ChatboxFile';
       bytes = _file.readAsBytesSync();
       preview = true;
       print(bytes);
-      // _byteData = ByteData.view(bytes.buffer);
-      // print(_byteData);
     });
   }
 
@@ -667,25 +694,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               }
               got = true;
             }
-            // print(messages);
-
-            // bookingdata = model.chatupdated();
-            // chatlist = model.conversationlist();
-            // if (chatlist.isNotEmpty) {
-            //   print("is working chatlist");
-            //   var status =
-            //       chatlist.where((user) => user.userid == widget.detailPageId);
-            //   print(status.toList());
-            //   List chat = status.toList();
-            //   if (chat.isNotEmpty) {
-            //     user = chat[0];
-            //   } else {
-            //     user.bookingStatus = -1;
-            //   }
-            // } else {
-            //   print("Chatlist is empty");
-            //   user.bookingStatus = -1;
-            // }
             if (bookingdata.status == 3 && msgmodel.isBusy) {
               Future.delayed(
                   Duration.zero, () => rating(bookingdata.bookingid));

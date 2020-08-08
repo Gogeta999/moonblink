@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
@@ -79,6 +80,7 @@ class _ContactsPageState extends State<ContactsPage> {
               if (contactModel.isBusy) {
                 return Container(
                   height: double.infinity,
+                  width: double.infinity,
                   child: Image.asset(
                     ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
                     fit: BoxFit.fill,
@@ -88,9 +90,25 @@ class _ContactsPageState extends State<ContactsPage> {
               if (contactModel.isError && contactModel.list.isEmpty) {
                 return AnnotatedRegion<SystemUiOverlayStyle>(
                     value: StatusBarUtils.systemUiOverlayStyle(context),
-                    child: ViewStateErrorWidget(
-                        error: contactModel.viewStateError,
-                        onPressed: contactModel.initData));
+                    child: Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+                              ),
+                              fit: BoxFit.fill)),
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: CupertinoButton(
+                          color: Theme.of(context).accentColor,
+                          child: Text(
+                              "${contactModel.viewStateError.errorMessage}"),
+                          onPressed: contactModel.initData,
+                        ),
+                      ),
+                    ));
               }
               print(contactModel.list.length);
               // print(model.list);
