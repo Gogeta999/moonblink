@@ -1,16 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/base_widget/indicator/button_indicator.dart';
-import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/otp_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 /// OtpTextField
 class OtpTextField extends StatefulWidget {
-  final mailController;
+  final phoneController; // pass phone number to firebase
   final String label;
   final IconData icon;
-  final bool obscureText;
   final TextEditingController controller;
   final FormFieldValidator<String> validator;
   final FocusNode focusNode;
@@ -18,11 +18,10 @@ class OtpTextField extends StatefulWidget {
   final ValueChanged<String> onFieldSubmitted;
   final TextInputType keyboardType;
 
-  OtpTextField(this.mailController,
+  OtpTextField(this.phoneController,
       {this.label,
       this.icon,
       this.controller,
-      this.obscureText: false,
       this.validator,
       this.focusNode,
       this.textInputAction,
@@ -34,22 +33,17 @@ class OtpTextField extends StatefulWidget {
 }
 
 class _OtpTextFieldState extends State<OtpTextField> {
+  //Input otp for sign as partner
   TextEditingController controller;
-
-  /// obscureNotifier
-  ValueNotifier<bool> obscureNotifier;
 
   @override
   void initState() {
     controller = widget.controller ?? TextEditingController();
-    obscureNotifier = ValueNotifier(widget.obscureText);
     super.initState();
   }
 
   @override
   void dispose() {
-    obscureNotifier.dispose();
-    // 默认没有传入controller,需要内部释放
     if (widget.controller == null) {
       controller.dispose();
     }
@@ -61,65 +55,108 @@ class _OtpTextFieldState extends State<OtpTextField> {
     var theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ValueListenableBuilder(
-        valueListenable: obscureNotifier,
-        builder: (context, value, child) => TextFormField(
-          controller: controller,
-          obscureText: value,
-          // validator: (text) {
-          //   var validator = widget.validator ?? (_) => null;
-          //   return text.trim().length > 0
-          //       ? validator(text)
-          //       : S.of(context).fieldNotEmpty;
-          // },
-          focusNode: widget.focusNode,
-          textInputAction: widget.textInputAction,
-          keyboardType: widget.keyboardType,
-          onFieldSubmitted: widget.onFieldSubmitted,
-          decoration: InputDecoration(
-            prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
-            hintText: widget.label,
-            hintStyle: TextStyle(fontSize: 16),
-            suffix: GetOtpWordsWidget(widget.mailController),
+      child: TextFormField(
+        controller: controller,
+        obscureText: false,
+        focusNode: widget.focusNode,
+        textInputAction: widget.textInputAction,
+        keyboardType: widget.keyboardType,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        decoration: InputDecoration(
+          prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
+          hintText: widget.label,
+          hintStyle: TextStyle(fontSize: 16),
+          suffix: OtpCountDownWidget(
+            color: theme.accentColor,
+            phoneNumber: widget.phoneController,
           ),
         ),
       ),
+      // ),
     );
   }
 }
 
-class GetOtpWordsWidget extends StatelessWidget {
-  ///phoneController
-  final mailController;
-  GetOtpWordsWidget(this.mailController);
+class OtpCountDownWidget extends StatefulWidget {
+  final phoneNumber;
+  final color;
+  final Function onTimerFinish;
+  OtpCountDownWidget({this.phoneNumber, this.color, this.onTimerFinish})
+      : super();
+
+  @override
+  State<StatefulWidget> createState() => TimerCountDownWidgetState();
+}
+
+class TimerCountDownWidgetState extends State<OtpCountDownWidget> {
+  Timer _timer;
+  int _countdownTime = 0;
+
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<LoginModel>(context);
-    return Container(
-      child: model.isBusy
-          ? ButtonProgressIndicator()
-          : InkWell(
-              child: Text(
-                S.of(context).otpGetCode,
-                style: TextStyle(color: Colors.blue),
-              ),
-              onTap: model.isBusy
-                  ? null
-                  : () {
-                      var formState = Form.of(context);
-                      if (formState.validate()) {
-                        model
-                            //getOtpCodeAgain(mailController.text)
-                            .getFirebaseOtp(mailController.text)
-                            .then((value) {
-                          if (value) {
-                            print('success');
-                          } else {
-                            model.showErrorMessage(context);
-                          }
-                        });
-                      }
-                    }),
+    var model = Provider.of<OtpModel>(context);
+    return ButtonTheme(
+      minWidth: 16,
+      height: 30,
+      child: RaisedButton(
+        padding: const EdgeInsets.all(5),
+        onPressed: () {
+          if (_countdownTime == 0) {
+            setState(() {
+              _countdownTime = 60;
+            });
+            //Start Count
+            startCountdownTimer();
+            var formState = Form.of(context);
+            if (formState.validate()) {
+              print(
+                  '------------------------------------------\n=\n${widget.phoneNumber.text}');
+              model
+                  //getOtpCodeAgain(phoneController.text)
+                  .getFirebaseOtp(widget.phoneNumber.text)
+                  .then((value) {
+                if (value) {
+                  print('success');
+                  showToast('Please wait, we are sending SMS to you');
+                } else {
+                  model.showErrorMessage(context);
+                }
+              });
+            }
+          }
+        },
+        color: widget.color,
+        child: Text(
+          _countdownTime > 0 ? '$_countdownTime' : 'Get Otp',
+          style: Theme.of(context)
+              .accentTextTheme
+              .headline6
+              .copyWith(wordSpacing: 3),
+        ),
+      ),
     );
+  }
+
+  void startCountdownTimer() {
+    _timer = Timer.periodic(
+        Duration(seconds: 1),
+        (Timer timer) => {
+              setState(() {
+                if (_countdownTime < 1) {
+                  widget.onTimerFinish();
+                  _timer.cancel();
+                } else {
+                  _countdownTime = _countdownTime - 1;
+                }
+              })
+            });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_timer != null) {
+      _timer.cancel();
+    }
   }
 }

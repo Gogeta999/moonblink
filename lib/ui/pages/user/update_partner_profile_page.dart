@@ -1,10 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:local_image_provider/device_image.dart';
+import 'package:local_image_provider/local_album.dart';
+import 'package:local_image_provider/local_image.dart';
+import 'package:local_image_provider/local_image_provider.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -104,6 +112,20 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     return File(_filePath);
   }
 
+  show() {
+    showBarModalBottomSheet(
+        context: context,
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        backgroundColor: Colors.black12,
+        barrierColor: Colors.black12,
+        isDismissible: true,
+        duration: Duration(milliseconds: 700),
+        builder: (context, scrollController) {
+          return PhotoBottomSheet(scrollController: scrollController);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<PartnerOwnProfileModel>(
@@ -133,18 +155,17 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                         /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
                         child: Stack(
                           children: <Widget>[
-                            GestureDetector(
-
-                                /// [You need to put before OnTap]
+                             GestureDetector(
+                              /// [You need to put before OnTap]
                                 onTap: () {
                                   _pickCoverFromGallery();
+                                  //show();
                                 },
                                 child: AspectRatio(
                                   aspectRatio: 100 / 60,
                                   child:
-                                      PartnerCoverWidget(_cover, partnermodel),
+                                  PartnerCoverWidget(_cover, partnermodel),
                                 )),
-
                             /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
                             Padding(
                               padding: const EdgeInsets.only(
@@ -156,6 +177,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       /// [You need to put before OnTap]
                                       onTap: () {
                                         _pickprofileFromGallery();
+                                        //show();
                                       },
                                       child: CircleAvatar(
                                         radius: 75,
@@ -318,53 +340,3 @@ class PartnerProfileWidget extends StatelessWidget {
     }
   }
 }
-
-// class UpdateProfileButton extends StatelessWidget {
-//   final cover;
-//   final profile;
-//   final bios;
-//   // final LoginModel model;
-//   // final cover;
-
-//   UpdateProfileButton({this.cover, this.profile, this.bios});
-//   @override
-//   Widget build(BuildContext context) {
-//     var model = Provider.of<LoginModel>(context);
-//     return LoginButtonWidget(
-//       //controller: _btnController,
-//       child: model.isBusy
-//           ? ButtonProgressIndicator()
-//           : Text(S.of(context).updatePartnerButton,
-//               style: Theme.of(context)
-//                   .accentTextTheme
-//                   .button
-//                   .copyWith(wordSpacing: 6)),
-//       onPressed: model.isBusy
-//           ? null
-//           : () async {
-//               var userid = StorageManager.sharedPreferences.getInt(mUserId);
-//               var coverPath = cover.path;
-//               var profilePath = profile.path;
-//               FormData formData = FormData.fromMap({
-//                 'cover_image': await MultipartFile.fromFile(coverPath,
-//                     filename: 'cover.jpg'),
-//                 'profile_image': await MultipartFile.fromFile(profilePath,
-//                     filename: 'profile.jpg'),
-//                 // 'nrc': nrc,
-//                 // 'mail': mail,
-//                 // 'gender': gender.toString(),
-//                 // 'dob': dob,
-//                 // 'phone': phone,
-//                 'bios': bios.toString(),
-//                 // 'address': address
-//               });
-//               var response = await DioUtils().postwithData(
-//                   Api.SetProfile + '$userid/profile',
-//                   data: formData);
-//               print(response);
-//               Navigator.of(context).pop();
-//               return User.fromJsonMap(response.data);
-//             },
-//     );
-//   }
-// }

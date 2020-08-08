@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "155573283200-co5tucbo04i5pu8ea733khcvp7pkos5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonuniverse.moonblink",
+            "certificate_hash": "30e1dc304364d9446b0f63760ec255560fd7b975"
+          }
+        },
+        {
+          "client_id": "155573283200-vvjep1kgpa3fr95i1pck3slrgni9rngj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonuniverse.moonblink",
+            "certificate_hash": "be624846ef9bc57b21574fb2d610d2bf42b9baac"
+          }
+        },
+        {
           "client_id": "155573283200-7jcli68vkqvr2ku9er13edejqla7dr9j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -48,7 +64,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-2553224590005557~4621580830"
     }
   ],
   "configuration_version": "1"

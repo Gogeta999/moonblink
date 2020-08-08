@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -25,10 +26,16 @@ class PostItemWidget extends StatefulWidget {
 class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 330.0,
+      //height: 330.0,
       child: Column(
         children: <Widget>[
           /// [user_Profile]
@@ -82,9 +89,13 @@ class _PostItemWidgetState extends State<PostItemWidget> {
               return Column(
                 children: <Widget>[
                   InkWell(
-                      child: Container(
-                        height: 200,
-                        width: double.infinity,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height / 2.5,
+                          maxHeight: MediaQuery.of(context).size.height / 1.5,
+                          minWidth: double.infinity,
+                          maxWidth: double.infinity
+                        ),
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           imageUrl: widget.posts.coverImage,
@@ -214,6 +225,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           Divider(
             height: 0.5,
           ),
+          if(widget.index != 0 && widget.index % 6 == 0) AdPostWidget()
         ],
       ),
     );

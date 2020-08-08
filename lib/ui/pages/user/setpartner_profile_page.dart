@@ -23,6 +23,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+enum NrcType {
+  front,
+  back
+}
+
 class SetPartnerProfilePage extends StatefulWidget {
   @override
   _SetPartnerProfilePageState createState() => _SetPartnerProfilePageState();
@@ -52,6 +57,8 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
 
   File _cover;
   File _profile;
+  File _nrcFront;
+  File _nrcBack;
   //pick Cover
   _pickCoverFromGallery() async {
     PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
@@ -74,6 +81,27 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     setState(() {
       _profile = compressedImage;
     });
+  }
+
+  _pickNrcFromGallery(NrcType type) async {
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
+    switch(type){
+      case NrcType.front:
+        setState(() {
+          _nrcFront = compressedImage;
+        });
+        return;
+      case NrcType.back:
+        setState(() {
+          _nrcBack = compressedImage;
+        });
+        return;
+      default:
+        showToast('Developer\'s error');
+    }
   }
 
   // 2. compress file and get file.
@@ -117,14 +145,16 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                   model: LoginModel(Provider.of(context)),
                   builder: (context, model, child) => Form(
                         onWillPop: () async {
-                          showDialog(
+                          /*showDialog(
                               context: context,
                               builder: (context) => CupertinoAlertDialog(
                                     title: Text(S
                                         .of(context)
                                         .setPartnerFillInformations),
                                   ));
-                          return !model.isBusy;
+                          return !model.isBusy;*/
+                          Navigator.pop(context);
+                          return false;
                         },
 
                         /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
@@ -251,12 +281,49 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
-                                          Container(
-                                            height: 180,
-                                            width: 60,
-                                            child: Icon(Icons.perm_identity),
-                                            color: Colors.blue,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkResponse(
+                                                  onTap: () => _pickNrcFromGallery(NrcType.front),
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        height: 120,
+                                                        child: _nrcFront == null
+                                                            ? Icon(FontAwesomeIcons.addressCard, size: 120, color: Theme.of(context).accentColor)
+                                                            : Image.file(_nrcFront),
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text('NRC front', style: Theme.of(context).textTheme.bodyText1),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: InkResponse(
+                                                  onTap: () => _pickNrcFromGallery(NrcType.back),
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        height: 120,
+                                                        child: _nrcBack == null
+                                                            ? Icon(FontAwesomeIcons.solidAddressCard, size: 120, color: Theme.of(context).accentColor)
+                                                            : Image.file(_nrcBack),
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text('NRC back', style: Theme.of(context).textTheme.bodyText1),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
+                                          _space,
                                           RaisedButton(
                                             child: finished
                                                 ? ButtonProgressIndicator()
@@ -275,7 +342,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                 showToast(
                                                     'You need to choose cover and profile images');
                                                 return false;
-                                              } else if (_nrcController ==
+                                              } else if (_nrcFront == null || _nrcBack == null){
+                                                showToast('NRC front and back photos are requied');
+                                                return false;
+                                              }else if (_nrcController ==
                                                       null ||
                                                   _genderController == null ||
                                                   _dobController == null ||
@@ -304,6 +374,14 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                           .fromFile(profilePath,
                                                               filename:
                                                                   'profile.jpg'),
+                                                  'nrc_front_image': await MultipartFile
+                                                      .fromFile(
+                                                      _nrcFront.absolute.path,
+                                                      filename: 'nrc_front_image.jpg'),
+                                                  'nrc_back_image': await MultipartFile
+                                                      .fromFile(
+                                                  _nrcBack.absolute.path,
+                                                      filename: 'nrc_back_image.jpg'),
                                                   'nrc': _nrcController.text
                                                       .toString(),
                                                   //'mail': _mailController.text.toString(),

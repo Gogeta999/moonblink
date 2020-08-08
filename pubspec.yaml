@@ -1,7 +1,7 @@
 name: moonblink
 description: MoonBlink Universe's app
 
-version: 1.0.0+8
+version: 1.0.0+9
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -84,6 +84,12 @@ dependencies:
   flutter_native_admob: ^2.1.0
   # Firebase Auth - // Phone OTP
   firebase_auth: ^0.16.1
+  # Bottom Sheet
+  modal_bottom_sheet: ^0.2.0+1
+  # loading images from local -- gallery or photos
+  local_image_provider: ^2.1.0
+  # loading image from local -- new libraries
+  photo_manager: ^0.5.7
 
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.

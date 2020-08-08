@@ -24,6 +24,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:moonblink/ui/pages/main/stories/story_item.dart';
 
 class HomePage extends StatefulWidget {
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -145,19 +146,12 @@ class HomePostList extends StatelessWidget {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (context, index) {
-              if (index != 0 && index % 6 == 0) {
-                return AdPostWidget();
-              }
               Post item = homeModel.list[index];
-              return PostItemWidget(item);
+              return PostItemWidget(item, index: index);
             },
             childCount: homeModel.list?.length ?? 0,
-            semanticIndexCallback: (Widget widget, int index) {
-              if (index != 0 && index % 10 == 0) {
-                return index ~/ 10;
-              }
-              return null;
-            }));
+            )
+    );
   }
 }
 
