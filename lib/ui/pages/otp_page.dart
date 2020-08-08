@@ -12,6 +12,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/otp_model.dart';
 import 'package:provider/provider.dart';
 
 class OtpPage extends StatefulWidget {
@@ -20,24 +21,17 @@ class OtpPage extends StatefulWidget {
 }
 
 class _OtpPageState extends State<OtpPage> {
-  TextEditingController textController;
-
-  /// obscureNotifier
-  ValueNotifier<bool> obscureNotifier;
-
   @override
   void initState() {
-    textController = TextEditingController();
-    obscureNotifier = ValueNotifier(false);
     super.initState();
   }
 
-  final _mailController = TextEditingController(text: '+959');
+  final _phoneController = TextEditingController(text: '+959');
   final _otpCodeController = TextEditingController();
 
   @override
   void dispose() {
-    _mailController.dispose();
+    _phoneController.dispose();
     _otpCodeController.dispose();
     super.dispose();
   }
@@ -74,8 +68,8 @@ class _OtpPageState extends State<OtpPage> {
                         ),
                       ),
                       LoginFormContainer(
-                        child: ProviderWidget<LoginModel>(
-                          model: LoginModel(Provider.of(context)),
+                        child: ProviderWidget<OtpModel>(
+                          model: OtpModel(Provider.of(context)),
                           builder: (context, model, child) {
                             return Form(
                               onWillPop: () async {
@@ -90,11 +84,11 @@ class _OtpPageState extends State<OtpPage> {
                               LoginTextField(
                                 label: 'Please put your phone number',
                                 icon: FontAwesomeIcons.phone,
-                                controller: _mailController,
+                                controller: _phoneController,
                                 keyboardType: TextInputType.phone,
                               ),
                               OtpTextField(
-                                _mailController,
+                                _phoneController,
                                 label: 'Please enter OTP Code',
                                 icon: FontAwesomeIcons.sms,
                                 controller: _otpCodeController,
@@ -123,7 +117,7 @@ class SignAsPartnerButton extends StatelessWidget {
   final otpController;
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<LoginModel>(context);
+    var model = Provider.of<OtpModel>(context);
     return LoginButtonWidget(
       child: model.isBusy
           ? ButtonProgressIndicator()
@@ -140,7 +134,7 @@ class SignAsPartnerButton extends StatelessWidget {
               var formState = Form.of(context);
               if (formState.validate()) {
                 /*model.signAsPartner(otpController.text).then((value) */
-                model.signInWithCredential(otpController.text).then((value){
+                model.signInWithCredential(otpController.text).then((value) {
                   if (value) {
                     Navigator.of(context).pushNamed(RouteName.setprofile);
                   } else {
@@ -149,40 +143,6 @@ class SignAsPartnerButton extends StatelessWidget {
                 });
               }
             },
-    );
-  }
-}
-
-class GetOtpWordsWidget extends StatelessWidget {
-  final mailController;
-  GetOtpWordsWidget(this.mailController);
-  @override
-  Widget build(BuildContext context) {
-    var model = Provider.of<LoginModel>(context);
-    return Container(
-      child: model.isBusy
-          ? ButtonProgressIndicator()
-          : InkWell(
-              child: Text(
-                S.of(context).otpGetCode,
-                style: TextStyle(color: Colors.blue),
-              ),
-              onTap: model.isBusy
-                  ? null
-                  : () {
-                      var formState = Form.of(context);
-                      if (formState.validate()) {
-                        model
-                            .getOtpCodeAgain(mailController.text)
-                            .then((value) {
-                          if (value) {
-                            print('success');
-                          } else {
-                            model.showErrorMessage(context);
-                          }
-                        });
-                      }
-                    }),
     );
   }
 }
