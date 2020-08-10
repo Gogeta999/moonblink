@@ -212,11 +212,19 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
   }
 }
 
-class UserListWidget extends StatelessWidget {
+class UserListWidget extends StatefulWidget {
   // var statusModel = Provider.of < (context);
+  @override
+  _UserListWidgetState createState() => _UserListWidgetState();
+}
+
+class _UserListWidgetState extends State<UserListWidget> {
   final hasUser = StorageManager.localStorage.getItem(mUser);
+  int status;
   @override
   Widget build(BuildContext context) {
+    int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -224,6 +232,31 @@ class UserListWidget extends StatelessWidget {
         mainAxisSpacing: 15.0,
       ),
       delegate: SliverChildListDelegate.fixed([
+        if (usertype == 1)
+          PageCard(
+              pageTitle: status != 1 ? "Online" : "Offline",
+              iconData:
+                  status != 1 ? FontAwesomeIcons.wifi : Icons.portable_wifi_off,
+              onTap: status != 1
+                  ? () {
+                      setState(() {
+                        status = 1;
+                      });
+                      print(status);
+                      print("+++++++++++++++++++++++++++");
+                      MoonBlinkRepository.changestatus(1);
+                      showToast("You are Offline now");
+                    }
+                  : () {
+                      setState(() {
+                        status = 0;
+                      });
+                      print(status);
+                      print("----------------------------");
+                      MoonBlinkRepository.changestatus(0);
+                      showToast("You are Online");
+                    }),
+
         ///wallet
         PageCard(
             pageTitle: S.of(context).userStatusWallet,

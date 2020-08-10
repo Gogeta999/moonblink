@@ -41,13 +41,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _picker = ImagePicker();
   String _filePath;
   PartnerUser partnerData;
-  var tempDir;
   @override
   void initState() {
     super.initState();
-    setState(() async {
-      tempDir = await getTemporaryDirectory();
-    });
     _nameController.value = _nameController.value.copyWith(
       text: widget.partnerUser.partnerName,
     );
@@ -162,8 +158,8 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                 },
                                 child: AspectRatio(
                                   aspectRatio: 100 / 60,
-                                  child: PartnerCoverWidget(
-                                      _cover, partnermodel, tempDir),
+                                  child:
+                                      PartnerCoverWidget(_cover, partnermodel),
                                 )),
 
                             /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
@@ -188,9 +184,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                             width: 150.0,
                                             height: 150.0,
                                             child: PartnerProfileWidget(
-                                                _profile,
-                                                partnermodel,
-                                                tempDir),
+                                              _profile,
+                                              partnermodel,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -302,20 +298,22 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerCoverWidget extends StatelessWidget {
-  PartnerCoverWidget(this.cover, this.partnermodel, this.tempDir);
+  PartnerCoverWidget(this.cover, this.partnermodel);
   final cover;
   final partnermodel;
-  final tempDir;
 
   @override
   Widget build(BuildContext context) {
     if (this.cover == null) {
+      var tempDir = StorageManager.temporaryDirectory;
+      print(tempDir.path);
+      print("+++++++++++++++++++++++++++++++++++++++++++++++++");
       String fullPath = tempDir.path + "/cover.png'";
       DioUtils().downloadFile(
           partnermodel.partnerData.prfoileFromPartner.coverImage, fullPath);
-      File cover = File(fullPath);
-      return Image.file(
-        cover,
+      // File covers = File(fullPath)
+      return Image.network(
+        partnermodel.partnerData.prfoileFromPartner.coverImage,
         fit: BoxFit.cover,
       );
     } else {
@@ -330,17 +328,17 @@ class PartnerCoverWidget extends StatelessWidget {
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerProfileWidget extends StatelessWidget {
-  PartnerProfileWidget(this.profile, this.partnermodel, this.tempDir);
+  PartnerProfileWidget(this.profile, this.partnermodel);
   final profile;
   final partnermodel;
-  final tempDir;
   @override
   Widget build(BuildContext context) {
     if (this.profile == null) {
-      String fullPath = tempDir.path + "/cover.png'";
-      DioUtils().downloadFile(
-          partnermodel.partnerData.prfoileFromPartner.coverImage, fullPath);
-      File profile = File(fullPath);
+      // var tempDir = StorageManager.temporaryDirectory;
+      // String fullPath = tempDir.path + "/cover.png'";
+      // DioUtils().downloadFile(
+      //     partnermodel.partnerData.prfoileFromPartner.coverImage, fullPath);
+      // File profile = File(fullPath);
       return Image.network(
         partnermodel.partnerData.prfoileFromPartner.profileImage,
         fit: BoxFit.cover,
