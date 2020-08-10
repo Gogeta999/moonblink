@@ -1,10 +1,10 @@
 {
     "accept":"接受",
     "appName":"MoonBlink",
-    "autoBySystem":"与系统一起自动",
+    "autoBySystem":"随系统",
     "averageRatingIs":"的平均评分为",
     "bookingRequest":"预订请求",
-    "bookingBook":"Book",
+    "bookingBook":"预约",
     "bookingChooseGameType":"选择与我们的合作伙伴一起玩的游戏类型",
     "bookingCancel":"取消",
     "bookingEnded":"预订结束",

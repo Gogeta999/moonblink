@@ -745,7 +745,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (voiceChannelName.isNotEmpty) {
       await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
-      showToast('Developer error');
+      showToast('Developer error,Contact us on Facebook');
     }
   }
 

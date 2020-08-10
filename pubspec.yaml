@@ -53,6 +53,7 @@ dependencies:
   # local storage
   image_picker: ^0.6.7 #need to edit at android and ios
   localstorage: ^3.0.2+5
+  flutter_cache_manager: ^1.4.1
   story_view: ^0.12.3
   vibration: ^1.4.0
   # signIn helper

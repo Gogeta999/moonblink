@@ -214,11 +214,13 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
 
 class UserListWidget extends StatefulWidget {
   // var statusModel = Provider.of < (context);
+
   @override
   _UserListWidgetState createState() => _UserListWidgetState();
 }
 
 class _UserListWidgetState extends State<UserListWidget> {
+
   final hasUser = StorageManager.localStorage.getItem(mUser);
   int status;
   @override
