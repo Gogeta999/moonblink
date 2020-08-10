@@ -3,6 +3,7 @@ class User {
   String profile;
   int id;
   int type;
+  int status;
   String tokenType;
   String token;
   String expiry;
@@ -38,6 +39,7 @@ class User {
         profile = map['profile'],
         id = map['id'],
         type = map['type'],
+        status = map['status'],
         tokenType = map['token_type'],
         token = map['token'],
         expiry = map['expiry'],
@@ -71,6 +73,7 @@ class User {
     data['profile'] = profile;
     data['id'] = id;
     data['type'] = type;
+    data['status'] = status;
     data['token_type'] = tokenType;
     data['token'] = token;
     data['expiry'] = expiry;

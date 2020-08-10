@@ -38,6 +38,7 @@ class UserModel extends ChangeNotifier {
     StorageManager.sharedPreferences.remove(mLoginName);
     StorageManager.sharedPreferences.remove(mUserId);
     StorageManager.sharedPreferences.remove(mUserType);
+    StorageManager.sharedPreferences.remove(mstatus);
     //StorageManager.sharedPreferences.clear();
   }
 }

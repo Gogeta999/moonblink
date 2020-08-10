@@ -166,7 +166,8 @@ class MoonBlinkRepository {
   ///user transaction list
   static Future getUserTransaction({int limit, int page}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().get(Api.UserTransaction + '$userId/transaction', queryParameters: {
+    var response = await DioUtils()
+        .get(Api.UserTransaction + '$userId/transaction', queryParameters: {
       'limit': limit,
       'page': page,
     });
@@ -289,10 +290,20 @@ class MoonBlinkRepository {
     return response.data;
   }
 
+  //change Status
+  static Future changestatus(int status) async {
+    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+      Api.SetStatus + '$userid/status?status=$status',
+    );
+    return response.data;
+  }
+
   // Sign As Partner
   static Future signAsPartner(String phone) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().postwithData(Api.VerifyAsPartner + '$userid/verify',
+    var response = await DioUtils().postwithData(
+        Api.VerifyAsPartner + '$userid/verify',
         data: FormData.fromMap({'phone': phone}));
     return User.fromJsonMap(response.data);
   }
