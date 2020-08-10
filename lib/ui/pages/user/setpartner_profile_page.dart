@@ -23,10 +23,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-enum NrcType {
-  front,
-  back
-}
+enum NrcType { front, back }
 
 class SetPartnerProfilePage extends StatefulWidget {
   @override
@@ -87,8 +84,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(image, temporaryImage.absolute.path);
-    switch(type){
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    switch (type) {
       case NrcType.front:
         setState(() {
           _nrcFront = compressedImage;
@@ -282,21 +280,35 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           ),
                                           _space,
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Expanded(
                                                 child: InkResponse(
-                                                  onTap: () => _pickNrcFromGallery(NrcType.front),
+                                                  onTap: () =>
+                                                      _pickNrcFromGallery(
+                                                          NrcType.front),
                                                   child: Column(
                                                     children: <Widget>[
                                                       Container(
                                                         height: 120,
                                                         child: _nrcFront == null
-                                                            ? Icon(FontAwesomeIcons.addressCard, size: 120, color: Theme.of(context).accentColor)
-                                                            : Image.file(_nrcFront),
+                                                            ? Icon(
+                                                                FontAwesomeIcons
+                                                                    .addressCard,
+                                                                size: 120,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .accentColor)
+                                                            : Image.file(
+                                                                _nrcFront),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      Text('NRC front', style: Theme.of(context).textTheme.bodyText1),
+                                                      Text('NRC front',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText1),
                                                     ],
                                                   ),
                                                 ),
@@ -306,17 +318,30 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                               ),
                                               Expanded(
                                                 child: InkResponse(
-                                                  onTap: () => _pickNrcFromGallery(NrcType.back),
+                                                  onTap: () =>
+                                                      _pickNrcFromGallery(
+                                                          NrcType.back),
                                                   child: Column(
                                                     children: <Widget>[
                                                       Container(
                                                         height: 120,
                                                         child: _nrcBack == null
-                                                            ? Icon(FontAwesomeIcons.solidAddressCard, size: 120, color: Theme.of(context).accentColor)
-                                                            : Image.file(_nrcBack),
+                                                            ? Icon(
+                                                                FontAwesomeIcons
+                                                                    .solidAddressCard,
+                                                                size: 120,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .accentColor)
+                                                            : Image.file(
+                                                                _nrcBack),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      Text('NRC back', style: Theme.of(context).textTheme.bodyText1),
+                                                      Text('NRC back',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText1),
                                                     ],
                                                   ),
                                                 ),
@@ -342,10 +367,12 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                 showToast(
                                                     'You need to choose cover and profile images');
                                                 return false;
-                                              } else if (_nrcFront == null || _nrcBack == null){
-                                                showToast('NRC front and back photos are requied');
+                                              } else if (_nrcFront == null ||
+                                                  _nrcBack == null) {
+                                                showToast(
+                                                    'NRC front and back photos are requied');
                                                 return false;
-                                              }else if (_nrcController ==
+                                              } else if (_nrcController ==
                                                       null ||
                                                   _genderController == null ||
                                                   _dobController == null ||
@@ -354,6 +381,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                     "You forget to fill some information");
                                                 return false;
                                               } else {
+                                                setState(() {
+                                                  finished = !finished;
+                                                });
                                                 var userid = StorageManager
                                                     .sharedPreferences
                                                     .getInt(mUserId);
@@ -374,14 +404,18 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                           .fromFile(profilePath,
                                                               filename:
                                                                   'profile.jpg'),
-                                                  'nrc_front_image': await MultipartFile
-                                                      .fromFile(
-                                                      _nrcFront.absolute.path,
-                                                      filename: 'nrc_front_image.jpg'),
-                                                  'nrc_back_image': await MultipartFile
-                                                      .fromFile(
-                                                  _nrcBack.absolute.path,
-                                                      filename: 'nrc_back_image.jpg'),
+                                                  'nrc_front_image':
+                                                      await MultipartFile.fromFile(
+                                                          _nrcFront
+                                                              .absolute.path,
+                                                          filename:
+                                                              'nrc_front_image.jpg'),
+                                                  'nrc_back_image':
+                                                      await MultipartFile.fromFile(
+                                                          _nrcBack
+                                                              .absolute.path,
+                                                          filename:
+                                                              'nrc_back_image.jpg'),
                                                   'nrc': _nrcController.text
                                                       .toString(),
                                                   //'mail': _mailController.text.toString(),
@@ -403,6 +437,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                             '$userid/profile',
                                                         data: formData);
                                                 print('PRINTED $response');
+                                                setState(() {
+                                                  finished = !finished;
+                                                });
                                                 model.logout();
                                                 Navigator.of(context)
                                                     .pushNamedAndRemoveUntil(

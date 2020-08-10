@@ -100,7 +100,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Future getImage() async {
     PickedFile pickedFile = await picker.getImage(
         source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    File _file = File(pickedFile.path);
+    _file = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File _compressedImage =
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
