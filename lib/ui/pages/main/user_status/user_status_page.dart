@@ -214,6 +214,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
 
 class UserListWidget extends StatelessWidget {
   // var statusModel = Provider.of < (context);
+  final userType = StorageManager.sharedPreferences.getInt(mUserType);
   final hasUser = StorageManager.localStorage.getItem(mUser);
   @override
   Widget build(BuildContext context) {
@@ -224,6 +225,14 @@ class UserListWidget extends StatelessWidget {
         mainAxisSpacing: 15.0,
       ),
       delegate: SliverChildListDelegate.fixed([
+        if (hasUser == true)
+          PageCard(
+              pageTitle: 'hi',
+              iconData: FontAwesomeIcons.accessibleIcon,
+              onTap: () {
+                print('1');
+              }),
+
         ///wallet
         PageCard(
             pageTitle: S.of(context).userStatusWallet,

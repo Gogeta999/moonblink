@@ -1,15 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
+import 'package:moonblink/base_widget/videotrimmer/storage_dir.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -66,6 +71,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ownId = StorageManager.sharedPreferences.getInt(mUserId);
     return Scaffold(
       body: ProviderWidget<PartnerDetailModel>(
           model: PartnerDetailModel(partnerData, widget.detailPageId),
@@ -113,23 +119,28 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             IconFonts.messageIcon,
                             size: 40,
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChatBoxPage(widget.detailPageId)));
-                          }),
+                          onPressed: widget.detailPageId == ownId
+                              ? null
+                              : () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChatBoxPage(
+                                              widget.detailPageId)));
+                                }),
                     ],
 
                     /// [background image to show here]
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,
                       // background: Image.network(partnerModel.data.partnerCover),
-                      background: Image.network(
-                          partnerModel
-                              .partnerData.prfoileFromPartner.coverImage,
-                          fit: BoxFit.cover),
+                      background: CachedNetworkImage(
+                        imageUrl: partnerModel
+                            .partnerData.prfoileFromPartner.coverImage,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => CachedLoader(),
+                        errorWidget: (context, url, error) => CachedError(),
+                      ),
                     ),
                   ),
 
@@ -146,13 +157,17 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                         child: Align(
                           child: ClipOval(
                               child: SizedBox(
-                                  width: 100.0,
-                                  height: 100.0,
-                                  child: Image.network(
-                                    partnerModel.partnerData.prfoileFromPartner
-                                        .profileImage,
-                                    fit: BoxFit.cover,
-                                  ))),
+                            width: 100.0,
+                            height: 100.0,
+                            child: CachedNetworkImage(
+                              imageUrl: partnerModel
+                                  .partnerData.prfoileFromPartner.profileImage,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => CachedLoader(),
+                              errorWidget: (context, url, error) =>
+                                  CachedError(),
+                            ),
+                          )),
                         )),
                   ),
 

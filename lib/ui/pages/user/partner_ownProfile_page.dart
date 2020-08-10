@@ -6,6 +6,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 
 class PartnerOwnProfilePage extends StatefulWidget {
@@ -64,9 +65,13 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
                   // background: Image.asset(ImageHelper.wrapAssetsImage('images.jpg'), fit: BoxFit.cover,),
-                  background: Image.network(
-                      partnerModel.partnerData.prfoileFromPartner.coverImage,
-                      fit: BoxFit.cover),
+                  background: CachedNetworkImage(
+                    imageUrl:
+                        partnerModel.partnerData.prfoileFromPartner.coverImage,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => CachedLoader(),
+                    errorWidget: (context, url, error) => CachedError(),
+                  ),
                 ),
               ),
 
@@ -83,17 +88,16 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                     child: Align(
                       child: ClipOval(
                           child: SizedBox(
-                              width: 100.0,
-                              height: 100.0,
-                              child: CachedNetworkImage(
-                                imageUrl: partnerModel.partnerData
-                                    .prfoileFromPartner.profileImage,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ))),
+                        width: 100.0,
+                        height: 100.0,
+                        child: CachedNetworkImage(
+                          imageUrl: partnerModel
+                              .partnerData.prfoileFromPartner.profileImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => CachedLoader(),
+                          errorWidget: (context, url, error) => CachedError(),
+                        ),
+                      )),
                     )),
               ),
 
@@ -142,7 +146,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                     children: <Widget>[
                       Text('You have ' +
                           partnerModel.partnerData.followerCount.toString() +
-                          'followers now')
+                          ' followers now')
                     ],
                   ),
                 ),
