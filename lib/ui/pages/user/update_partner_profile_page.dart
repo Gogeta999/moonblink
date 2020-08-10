@@ -1,14 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:local_image_provider/device_image.dart';
-import 'package:local_image_provider/local_album.dart';
-import 'package:local_image_provider/local_image.dart';
-import 'package:local_image_provider/local_image_provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -47,9 +41,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _picker = ImagePicker();
   String _filePath;
   PartnerUser partnerData;
+  var tempDir;
   @override
   void initState() {
     super.initState();
+    setState(() async {
+      tempDir = await getTemporaryDirectory();
+    });
     _nameController.value = _nameController.value.copyWith(
       text: widget.partnerUser.partnerName,
     );
@@ -116,7 +114,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     showBarModalBottomSheet(
         context: context,
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         backgroundColor: Colors.black12,
         barrierColor: Colors.black12,
         isDismissible: true,
@@ -155,17 +153,19 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                         /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
                         child: Stack(
                           children: <Widget>[
-                             GestureDetector(
-                              /// [You need to put before OnTap]
+                            GestureDetector(
+
+                                /// [You need to put before OnTap]
                                 onTap: () {
                                   _pickCoverFromGallery();
                                   //show();
                                 },
                                 child: AspectRatio(
                                   aspectRatio: 100 / 60,
-                                  child:
-                                  PartnerCoverWidget(_cover, partnermodel),
+                                  child: PartnerCoverWidget(
+                                      _cover, partnermodel, tempDir),
                                 )),
+
                             /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
                             Padding(
                               padding: const EdgeInsets.only(
@@ -188,7 +188,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                             width: 150.0,
                                             height: 150.0,
                                             child: PartnerProfileWidget(
-                                                _profile, partnermodel),
+                                                _profile,
+                                                partnermodel,
+                                                tempDir),
                                           ),
                                         ),
                                       ),
@@ -300,14 +302,20 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerCoverWidget extends StatelessWidget {
-  PartnerCoverWidget(this.cover, this.partnermodel);
+  PartnerCoverWidget(this.cover, this.partnermodel, this.tempDir);
   final cover;
   final partnermodel;
+  final tempDir;
+
   @override
   Widget build(BuildContext context) {
     if (this.cover == null) {
-      return Image.network(
-        partnermodel.partnerData.prfoileFromPartner.coverImage,
+      String fullPath = tempDir.path + "/cover.png'";
+      DioUtils().downloadFile(
+          partnermodel.partnerData.prfoileFromPartner.coverImage, fullPath);
+      File cover = File(fullPath);
+      return Image.file(
+        cover,
         fit: BoxFit.cover,
       );
     } else {
@@ -322,12 +330,17 @@ class PartnerCoverWidget extends StatelessWidget {
 
 ///[Change Image.file (ImagePicker get File format)]
 class PartnerProfileWidget extends StatelessWidget {
-  PartnerProfileWidget(this.profile, this.partnermodel);
+  PartnerProfileWidget(this.profile, this.partnermodel, this.tempDir);
   final profile;
   final partnermodel;
+  final tempDir;
   @override
   Widget build(BuildContext context) {
     if (this.profile == null) {
+      String fullPath = tempDir.path + "/cover.png'";
+      DioUtils().downloadFile(
+          partnermodel.partnerData.prfoileFromPartner.coverImage, fullPath);
+      File profile = File(fullPath);
       return Image.network(
         partnermodel.partnerData.prfoileFromPartner.profileImage,
         fit: BoxFit.cover,

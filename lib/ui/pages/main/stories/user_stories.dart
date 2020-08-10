@@ -94,6 +94,9 @@ class _StoriesPageState extends State<StoriesPage> {
                               pageController
                                   .jumpToPage(_currentPageNotifier.value);
                             },
+                      onVerticalDragUpdate: (dragUpdateDetails) {
+                        Navigator.of(context).pop();
+                      },
                       child: Container(
                         child: StoryVideo.url(story.media,
                             controller: storyController),
@@ -111,6 +114,9 @@ class _StoriesPageState extends State<StoriesPage> {
                                 pageController
                                     .jumpToPage(_currentPageNotifier.value);
                               },
+                    onVerticalDragUpdate: (dragUpdateDetails) {
+                      Navigator.of(context).pop();
+                    },
                     child: Container(
                       child: StoryImage.url(
                         story.media,
