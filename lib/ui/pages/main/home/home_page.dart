@@ -141,20 +141,6 @@ class HomePostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeModel homeModel = Provider.of(context);
-
-    // if (homeModel.isBusy) {
-    //   return SliverToBoxAdapter(
-    //       // child: SkeletonList(builder: (context, index) => PostSkeletonItem()),
-    //       child: Container(
-    //     height: double.infinity,
-    //     decoration: BoxDecoration(
-    //         image: DecorationImage(
-    //             image: AssetImage(
-    //               ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
-    //             ),
-    //             fit: BoxFit.fill)),
-    //   ));
-    // }
     return SliverList(
         delegate: SliverChildBuilderDelegate(
       (context, index) {

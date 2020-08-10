@@ -8,6 +8,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
+import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,13 +17,8 @@ import 'package:url_launcher/url_launcher.dart';
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['game', 'entertainment'],
   contentUrl: 'https://moonblinkunivsere.com',
-  childDirected: true,
   nonPersonalizedAds: true,
 );
-
-const String AdMobAppId = 'ca-app-pub-2553224590005557~4621580830';
-const String AdMobRewardedAdUnitId = 'ca-app-pub-2553224590005557/6918896522';
-const String AdMobNativeAdUnitId = 'ca-app-pub-2553224590005557/4636348112';
 
 class TopUpPage extends StatefulWidget {
   @override
@@ -79,14 +75,12 @@ class _TopUpPageState extends State<TopUpPage>
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
     await getUserWallet();
-    await FirebaseAdMob.instance.initialize(appId: AdMobAppId);
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
-          //userWallet.topUp('coin_200');
           userReward();
         });
       }
@@ -342,16 +336,7 @@ class _TopUpPageState extends State<TopUpPage>
 
   Widget _buildAds() {
     return InkResponse(
-
       onTap: _showRewardedAds,
-
-//       onTap: () async {
-//         await RewardedVideoAd.instance.load(
-//             adUnitId: /*RewardedVideoAd.testAdUnitId*/ AdMobRewardedAdUnitId,
-//             targetingInfo: targetingInfo);
-//         await RewardedVideoAd.instance.show();
-//       },
-
       child: Container(
           alignment: Alignment.center,
           // // color: Colors.grey,
@@ -434,6 +419,6 @@ class _TopUpPageState extends State<TopUpPage>
     setState(() {
       isAdLoading = true;
     });
-    await RewardedVideoAd.instance.load(adUnitId: AdMobRewardedAdUnitId, targetingInfo: targetingInfo);
+    await RewardedVideoAd.instance.load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
   }
 }

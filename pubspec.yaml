@@ -87,8 +87,6 @@ dependencies:
   firebase_auth: ^0.16.1
   # Bottom Sheet
   modal_bottom_sheet: ^0.2.0+1
-  # loading images from local -- gallery or photos
-  local_image_provider: ^2.1.0
   # loading image from local -- new libraries
   photo_manager: ^0.5.7
 
