@@ -33,11 +33,7 @@ class BookingManager {
   }
 
   void bookingReject() {
-    MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_REJECT);/*.then((value) =>
-    value != null
-        ? locator<NavigationService>()
-        .navigateTo(RouteName.chatBox, arguments: _bookingUserId)
-        : null);*/
+    MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_REJECT);
   }
 
   void showBookingDialog() {

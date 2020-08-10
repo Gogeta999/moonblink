@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -49,6 +51,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _initAdMob();
+  }
+
+  Future<void> _initAdMob() {
+    return FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }
 
   @override

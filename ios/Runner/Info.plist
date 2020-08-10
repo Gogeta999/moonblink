@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.155573283200-bo8f6agv919bv4es3aoappoghc7abb0c</string>
+				<string>com.googleusercontent.apps.155573283200-8rp4mbkkeg1igd83saeqbjicikbjv7gp</string>
 			</array>
 		</dict>
 		<dict>
@@ -42,7 +42,9 @@
 	<key>FacebookDisplayName</key>
 	<string>moonblink</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-2553224590005557~4621580830</string>
+	<string>ca-app-pub-2553224590005557~4787287702</string>
+	<key>io.flutter.embedded_views_preview</key>
+    <true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -52,12 +54,17 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access permission request</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Record audio for playback</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library Access Warning</string>
-	<key>NSCameraUsageDescription</key>
-    <string>Camera access permission request</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

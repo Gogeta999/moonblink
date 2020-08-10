@@ -137,9 +137,9 @@ class HomePostList extends StatelessWidget {
       return SliverToBoxAdapter(
           // child: SkeletonList(builder: (context, index) => PostSkeletonItem()),
           child: Container(
-        height: double.infinity,
+        height: MediaQuery.of(context).size.height,
         child: Image.asset(
-          ImageHelper.wrapAssetsImage('bookingWating.gif'),
+          ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
         ),
       ));
     }

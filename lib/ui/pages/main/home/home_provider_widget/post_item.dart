@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -218,7 +219,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
             margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
             alignment: Alignment.topLeft,
             child: Text(
-              widget.posts.creatdAt,
+              DateFormat.jm().format(DateTime.parse(widget.posts.creatdAt)),
               style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
           ),

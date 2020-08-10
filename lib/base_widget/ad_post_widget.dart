@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
-import 'package:moonblink/ui/pages/wallet/topup_page.dart';
+import 'package:moonblink/services/ad_manager.dart';
 
 class AdPostWidget extends StatefulWidget {
   @override
@@ -12,6 +12,12 @@ class AdPostWidget extends StatefulWidget {
 class _AdPostWidgetState extends State<AdPostWidget> {
   final _nativeAdController = NativeAdmobController();
   NativeAdmobOptions _nativeAdmobOptions;
+
+  @override
+  void dispose() {
+    _nativeAdController.dispose();
+    super.dispose();
+  }
 
   Color ratingColor;
   Color color;
@@ -69,10 +75,9 @@ class _AdPostWidgetState extends State<AdPostWidget> {
     return Column(
       children: <Widget>[
         Container(
-          height: 330,
           child: NativeAdmob(
             options: _nativeAdmobOptions,
-            adUnitID: AdMobNativeAdUnitId,
+            adUnitID: AdManager.nativeAdId,
             controller: _nativeAdController,
             type: NativeAdmobType.full,
           ),

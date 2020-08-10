@@ -184,8 +184,6 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - local_image_provider (0.0.1):
-    - Flutter
   - Mantle (2.1.1):
     - Mantle/extobjc (= 2.1.1)
   - Mantle/extobjc (2.1.1)
@@ -266,7 +264,6 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - google_sign_in_web (from `.symlinks/plugins/google_sign_in_web/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
-  - local_image_provider (from `.symlinks/plugins/local_image_provider/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
@@ -365,8 +362,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_web/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
-  local_image_provider:
-    :path: ".symlinks/plugins/local_image_provider/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -451,7 +446,6 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   image_picker: 66aa71bc96850a90590a35d4c4a2907b0d823109
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
-  local_image_provider: 05b1af32561482c0ca5a440fbc7f489ad818c962
   Mantle: 35238ae6f2e2b2d474fa7b67fee82a59fea71915
   mobile-ffmpeg-full: 5e504695b68a720df94a60cd0ffe390924cf96d6
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
