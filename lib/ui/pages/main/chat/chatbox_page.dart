@@ -534,6 +534,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
+    if (bookingdata.status == 3) {
+      Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
+    }
     switch (bookingdata.status) {
       //normal
       case (-1):
@@ -576,6 +579,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action2
   action2(model) {
     bookingdata = model.chatupdated();
+
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
@@ -702,10 +706,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     msgs.attach, msgs.type));
               }
               got = true;
-            }
-            if (bookingdata.status == 3 && msgmodel.isBusy) {
-              Future.delayed(
-                  Duration.zero, () => rating(bookingdata.bookingid));
             }
             return Scaffold(
               appBar: AppBar(
