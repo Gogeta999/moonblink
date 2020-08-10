@@ -36,32 +36,32 @@ class _AdPostWidgetState extends State<AdPostWidget> {
         color: color,
         backgroundColor: backgroundColor,
       ),
-      headlineTextStyle:  NativeTextStyle(
+      headlineTextStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
       ),
-      advertiserTextStyle:  NativeTextStyle(
+      advertiserTextStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
       ),
-      bodyTextStyle:  NativeTextStyle(
+      bodyTextStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
       ),
-      storeTextStyle:  NativeTextStyle(
+      storeTextStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
       ),
-      priceTextStyle:  NativeTextStyle(
+      priceTextStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
       ),
-      callToActionStyle:  NativeTextStyle(
+      callToActionStyle: NativeTextStyle(
         fontSize: 14,
         color: color,
         backgroundColor: backgroundColor,
@@ -75,6 +75,7 @@ class _AdPostWidgetState extends State<AdPostWidget> {
     return Column(
       children: <Widget>[
         Container(
+          height: 330,
           child: NativeAdmob(
             options: _nativeAdmobOptions,
             adUnitID: AdManager.nativeAdId,
