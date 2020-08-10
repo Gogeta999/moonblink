@@ -24,7 +24,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:moonblink/ui/pages/main/stories/story_item.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -64,7 +63,17 @@ class _HomePageState extends State<HomePage>
                           error: homeModel.viewStateError,
                           onPressed: homeModel.initData));
                 }
-
+                if (homeModel.isBusy) {
+                  return Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
+                            ),
+                            fit: BoxFit.fill)),
+                  );
+                }
                 return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
@@ -132,26 +141,14 @@ class HomePostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeModel homeModel = Provider.of(context);
-
-    if (homeModel.isBusy) {
-      return SliverToBoxAdapter(
-          // child: SkeletonList(builder: (context, index) => PostSkeletonItem()),
-          child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Image.asset(
-          ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
-        ),
-      ));
-    }
     return SliverList(
         delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              Post item = homeModel.list[index];
-              return PostItemWidget(item, index: index);
-            },
-            childCount: homeModel.list?.length ?? 0,
-            )
-    );
+      (context, index) {
+        Post item = homeModel.list[index];
+        return PostItemWidget(item, index: index);
+      },
+      childCount: homeModel.list?.length ?? 0,
+    ));
   }
 }
 

@@ -23,9 +23,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("接受"),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
-    "autoBySystem" : MessageLookupByLibrary.simpleMessage("与系统一起自动"),
+    "autoBySystem" : MessageLookupByLibrary.simpleMessage("随系统"),
     "averageRatingIs" : MessageLookupByLibrary.simpleMessage("的平均评分为"),
-    "bookingBook" : MessageLookupByLibrary.simpleMessage("Book"),
+    "bookingBook" : MessageLookupByLibrary.simpleMessage("预约"),
     "bookingCancel" : MessageLookupByLibrary.simpleMessage("取消"),
     "bookingChooseGameType" : MessageLookupByLibrary.simpleMessage("选择与我们的合作伙伴一起玩的游戏类型"),
     "bookingDialog" : MessageLookupByLibrary.simpleMessage("预订对话框"),

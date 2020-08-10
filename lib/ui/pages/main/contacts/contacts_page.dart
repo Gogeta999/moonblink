@@ -81,10 +81,12 @@ class _ContactsPageState extends State<ContactsPage> {
                 return Container(
                   height: double.infinity,
                   width: double.infinity,
-                  child: Image.asset(
-                    ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
-                    fit: BoxFit.fill,
-                  ),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                            ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
+                          ),
+                          fit: BoxFit.fill)),
                 );
               }
               if (contactModel.isError && contactModel.list.isEmpty) {
@@ -99,14 +101,21 @@ class _ContactsPageState extends State<ContactsPage> {
                               fit: BoxFit.fill)),
                       width: double.infinity,
                       height: double.infinity,
-                      child: Align(
+                      child: Stack(
                         alignment: Alignment.center,
-                        child: CupertinoButton(
-                          color: Theme.of(context).accentColor,
-                          child: Text(
-                              "${contactModel.viewStateError.errorMessage}"),
-                          onPressed: contactModel.initData,
-                        ),
+                        children: [
+                          Positioned(
+                            top: 200,
+                            child: CupertinoButton(
+                              child: Text(
+                                "${contactModel.viewStateError.errorMessage}",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                              onPressed: contactModel.initData,
+                            ),
+                          ),
+                        ],
                       ),
                     ));
               }

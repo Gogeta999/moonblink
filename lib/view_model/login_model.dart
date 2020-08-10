@@ -15,6 +15,7 @@ const String FCMToken = 'FCM Token';
 const String mUserType = 'mUserType';
 const String mUserId = 'mUserId';
 const String mLoginMail = 'mLoginMail';
+const String mstatus = 'status';
 
 class LoginModel extends ViewStateModel {
   final UserModel userModel;
@@ -79,6 +80,7 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences
             .setString(mLoginName, userModel.user.name);
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
+        StorageManager.sharedPreferences.setInt(mstatus, userModel.user.status);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
         PushNotificationsManager().reInit();
         setIdle();
@@ -137,6 +139,19 @@ class LoginModel extends ViewStateModel {
       var user = await MoonBlinkRepository.setprofle(
           cover, profile, nrc, mail, gender, dob, phone, bios, address);
       userModel.saveUser(user);
+      setIdle();
+      return true;
+    } catch (e, s) {
+      setError(e, s);
+      return false;
+    }
+  }
+
+  //change status
+  Future<bool> changestatus(int status) async {
+    setBusy();
+    try {
+      await MoonBlinkRepository.changestatus(status);
       setIdle();
       return true;
     } catch (e, s) {

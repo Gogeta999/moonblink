@@ -106,7 +106,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
     setState(() {
       _file = _compressedImage;
-      filename = 'ChatboxFile';
+      filename = selfId.toString() + now + ".png";
       bytes = _file.readAsBytesSync();
       preview = true;
       print(bytes);
@@ -534,9 +534,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
-    if (bookingdata.status == 3) {
-      Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
-    }
+
     switch (bookingdata.status) {
       //normal
       case (-1):
@@ -707,6 +705,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               }
               got = true;
             }
+            // if (bookingdata.status == 3) {
+            //   Future.delayed(
+            //       Duration.zero, () => rating(bookingdata.bookingid));
+            // }
             return Scaffold(
               appBar: AppBar(
                 title: GestureDetector(
@@ -743,7 +745,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (voiceChannelName.isNotEmpty) {
       await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
-      showToast('Developer error');
+      showToast('Developer error,Contact us on Facebook');
     }
   }
 
