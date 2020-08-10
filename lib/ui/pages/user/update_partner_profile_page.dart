@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
@@ -39,43 +40,14 @@ class UpdatePartnerProfilePage extends StatefulWidget {
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _nameController = TextEditingController();
   final _biosController = TextEditingController();
+  final _mlIdController = TextEditingController();
+  final _pubgIdController = TextEditingController();
   final _picker = ImagePicker();
   String _filePath;
-  // var tempDir;
   PartnerUser partnerData;
-  // Future<void> getTempDir() async {
-  //   tempDir = await getTemporaryDirectory();
-  // }
-  String cachedCoverFile;
-  String cachedProfileFile;
-  Future<void> getCachedFile() async {
-    final cachedCoverFile = await DefaultCacheManager()
-        .getFileFromCache(widget.partnerUser.prfoileFromPartner.coverImage);
-    final cachedProfileFile = await DefaultCacheManager().getFileFromCache(
-      widget.partnerUser.prfoileFromPartner.profileImage,
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCachedFile();
-    _nameController.value = _nameController.value.copyWith(
-      text: widget.partnerUser.partnerName,
-    );
-    _biosController.value = _biosController.value
-        .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _biosController.dispose();
-    super.dispose();
-  }
-
   File _cover;
   File _profile;
+  bool finish = false;
   //pick Cover
   _pickCoverFromGallery() async {
     PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
@@ -97,6 +69,19 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
         await _compressAndGetFile(image, temporaryImage.absolute.path);
     setState(() {
       _profile = compressedImage;
+    });
+  }
+
+  //Get File from Cached
+  Future getCachedFile() async {
+    var cachedCoverFile = await DefaultCacheManager()
+        .getFileFromCache(widget.partnerUser.prfoileFromPartner.coverImage);
+    var cachedProfileFile = await DefaultCacheManager().getFileFromCache(
+      widget.partnerUser.prfoileFromPartner.profileImage,
+    );
+    setState(() {
+      _profile = cachedProfileFile.file;
+      _cover = cachedCoverFile.file;
     });
   }
 
@@ -122,19 +107,38 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     return File(_filePath);
   }
 
-  show() {
-    showBarModalBottomSheet(
-        context: context,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        backgroundColor: Colors.black12,
-        barrierColor: Colors.black12,
-        isDismissible: true,
-        duration: Duration(milliseconds: 700),
-        builder: (context, scrollController) {
-          return PhotoBottomSheet(scrollController: scrollController);
-        });
+  @override
+  void initState() {
+    super.initState();
+    getCachedFile();
+    _nameController.value = _nameController.value.copyWith(
+      text: widget.partnerUser.partnerName,
+    );
+    _biosController.value = _biosController.value
+        .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
   }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _biosController.dispose();
+    super.dispose();
+  }
+
+//TODO: not sure what is it?
+  // show() {
+  //   showBarModalBottomSheet(
+  //       context: context,
+  //       shape:
+  //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+  //       backgroundColor: Colors.black12,
+  //       barrierColor: Colors.black12,
+  //       isDismissible: true,
+  //       duration: Duration(milliseconds: 700),
+  //       builder: (context, scrollController) {
+  //         return PhotoBottomSheet(scrollController: scrollController);
+  //       });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -155,156 +159,165 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
               physics: ClampingScrollPhysics(),
               slivers: <Widget>[
                 SliverToBoxAdapter(
-                  child: ProviderWidget<LoginModel>(
-                    model: LoginModel(Provider.of(context)),
-                    builder: (context, model, child) => Form(
-                        onWillPop: () async {
-                          return !model.isBusy;
+
+                    /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
+                    child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+
+                        /// [You need to put before OnTap]
+                        onTap: () {
+                          _pickCoverFromGallery();
+                          //show();
                         },
-
-                        /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
-                        child: Stack(
-                          children: <Widget>[
-                            GestureDetector(
-
-                                /// [You need to put before OnTap]
-                                onTap: () {
-                                  _pickCoverFromGallery();
-                                  //show();
-                                },
-                                child: AspectRatio(
-                                  aspectRatio: 100 / 60,
-                                  child: PartnerCoverWidget(
-                                      _cover, partnermodel, cachedCoverFile),
-                                )),
-
-                            /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, right: 20.0, top: 140.0),
-                              child: Container(
-                                child: Align(
-                                    alignment: Alignment.center,
-                                    child: GestureDetector(
-                                      /// [You need to put before OnTap]
-                                      onTap: () {
-                                        _pickprofileFromGallery();
-                                        //show();
-                                      },
-                                      child: CircleAvatar(
-                                        radius: 75,
-                                        backgroundColor:
-                                            Theme.of(context).primaryColor,
-                                        child: ClipOval(
-                                          child: new SizedBox(
-                                            width: 150.0,
-                                            height: 150.0,
-                                            child: PartnerProfileWidget(
-                                                _profile,
-                                                partnermodel,
-                                                cachedProfileFile),
-                                          ),
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                            ),
-
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 270,
-                                  ),
-                                  LoginFormContainer(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      // mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        //Name
-                                        LoginTextField(
-                                          validator: (value) => value.isEmpty
-                                              ? 'Please enter your name'
-                                              : null,
-                                          label: "Please enter your Name",
-                                          icon: Icons.person,
-                                          controller: _nameController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                        ),
-                                        //bios
-                                        LoginTextField(
-                                          validator: (value) => value.isEmpty
-                                              ? 'Please enter Bios'
-                                              : null,
-                                          label: "Please enter Bios",
-                                          icon: FontAwesomeIcons.book,
-                                          controller: _biosController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                        ),
-                                        // _space,
-                                        FlatButton(
-                                          child: Text("Update"),
-                                          color: Theme.of(context).buttonColor,
-                                          onPressed: () async {
-                                            if (_cover == null ||
-                                                _profile == null) {
-                                              showToast(
-                                                  'You need to choose cover and profile images');
-                                              return false;
-                                            }
-                                            var userid = StorageManager
-                                                .sharedPreferences
-                                                .getInt(mUserId);
-                                            var coverPath = _cover.path;
-                                            var profilePath = _profile.path;
-                                            FormData formData =
-                                                FormData.fromMap({
-                                              'cover_image':
-                                                  await MultipartFile.fromFile(
-                                                      coverPath,
-                                                      filename: 'cover.jpg'),
-                                              'profile_image':
-                                                  await MultipartFile.fromFile(
-                                                      profilePath,
-                                                      filename: 'profile.jpg'),
-                                              'name': _nameController.text,
-                                              'bios': _biosController.text
-                                                  .toString(),
-                                            });
-                                            var response = await DioUtils()
-                                                .postwithData(
-                                                    Api.SetProfile +
-                                                        '$userid/profile',
-                                                    data: formData);
-                                            print(response);
-                                            Navigator.of(context)
-                                                .pushNamedAndRemoveUntil(
-                                                    RouteName.main,
-                                                    (route) => false);
-                                            return User.fromJsonMap(
-                                                response.data);
-                                          },
-                                        )
-                                        // UpdateProfileButton(
-                                        //   cover: _cover,
-                                        //   profile: _profile,
-                                        //   bios: _biosController.text,
-                                        // )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                        child: AspectRatio(
+                          aspectRatio: 100 / 60,
+                          child: PartnerCoverWidget(_cover, partnermodel,
+                              widget.partnerUser.prfoileFromPartner.coverImage),
                         )),
-                  ),
+
+                    /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 140.0),
+                      child: Container(
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              /// [You need to put before OnTap]
+                              onTap: () {
+                                _pickprofileFromGallery();
+                                //show();
+                              },
+                              child: CircleAvatar(
+                                radius: 75,
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: ClipOval(
+                                  child: new SizedBox(
+                                    width: 150.0,
+                                    height: 150.0,
+                                    child: PartnerProfileWidget(
+                                        _profile,
+                                        partnermodel,
+                                        widget.partnerUser.prfoileFromPartner
+                                            .profileImage),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ),
+                    ),
+
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 270,
+                          ),
+                          LoginFormContainer(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                //Name
+                                LoginTextField(
+                                  validator: (value) => value.isEmpty
+                                      ? 'Please enter your name'
+                                      : null,
+                                  label: "Please enter your Name",
+                                  icon: Icons.person,
+                                  controller: _nameController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                //bios
+                                LoginTextField(
+                                  label: "Please enter Bios",
+                                  icon: FontAwesomeIcons.book,
+                                  controller: _biosController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                //ML id
+                                LoginTextField(
+                                  label: "Please enter your ML ID",
+                                  icon: FontAwesomeIcons.gamepad,
+                                  controller: _mlIdController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                //bios
+                                LoginTextField(
+                                  icon: FontAwesomeIcons.gamepad,
+                                  controller: _pubgIdController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                // _space,
+                                FlatButton(
+                                  child: finish
+                                      ? ButtonProgressIndicator()
+                                      : Text("Update"),
+                                  color: Theme.of(context).buttonColor,
+                                  onPressed: () async {
+                                    if (_cover == null || _profile == null) {
+                                      showToast(
+                                          'You need to choose cover and profile images');
+                                      return false;
+                                    }
+                                    setState(() {
+                                      finish = !finish;
+                                    });
+                                    var userid = StorageManager
+                                        .sharedPreferences
+                                        .getInt(mUserId);
+                                    var coverPath = _cover.path;
+                                    var profilePath = _profile.path;
+                                    FormData formData = FormData.fromMap({
+                                      'cover_image':
+                                          await MultipartFile.fromFile(
+                                              coverPath,
+                                              filename: 'cover.jpg'),
+                                      'profile_image':
+                                          await MultipartFile.fromFile(
+                                              profilePath,
+                                              filename: 'profile.jpg'),
+                                      'name': _nameController.text,
+                                      'bios': _biosController.text.toString(),
+                                    });
+                                    var response = await DioUtils()
+                                        .postwithData(
+                                            Api.SetProfile + '$userid/profile',
+                                            data: formData);
+                                    print(response);
+                                    setState(() {
+                                      finish = !finish;
+                                    });
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            RouteName.main, (route) => false);
+                                    return User.fromJsonMap(response.data);
+                                  },
+                                )
+                                // UpdateProfileButton(
+                                //   cover: _cover,
+                                //   profile: _profile,
+                                //   bios: _biosController.text,
+                                // )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 )
+                    //       ),
+                    // ),
+
+                    )
               ],
             ),
           );
