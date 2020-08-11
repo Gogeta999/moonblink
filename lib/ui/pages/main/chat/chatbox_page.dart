@@ -50,13 +50,11 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
-  //bool preview = false;
+  bool imagepick = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
   Uint8List bytes;
-  bool img = false;
-  bool file = false;
   List<Message> messages = [];
   List<Contact> contacts = [];
   List<Chatlist> chatlist = [];
@@ -99,9 +97,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   Future getImage() async {
-   /* PickedFile pickedFile = await picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    _file = File(pickedFile.path);*/
+    // PickedFile pickedFile = await picker.getImage(
+    //     source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
+    // _file = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File _compressedImage =
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
@@ -446,18 +444,26 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             color: Theme.of(context).accentColor,
             onPressed: () {
               //getImage();
+              setState(() {
+                imagepick = true;
+              });
               CustomBottomSheet.show(
-                popAfterBtnPressed: true,
-                buttonText: 'Send',
-                buildContext: context,
-                limit: 1,
-                body: 'Select image',
-                fn: (File file) {
-                  setState(() {
-                    _file = file;
+                  popAfterBtnPressed: true,
+                  buttonText: 'Send',
+                  buildContext: context,
+                  limit: 1,
+                  body: 'Select image',
+                  fn: (File file) async {
+                    setState(() {
+                      _file = file;
+                    });
+                    await getImage();
+                    model.sendfile(filename, bytes, id, type, messages);
+                    setState(() {
+                      textEditingController.text = '';
+                      bytes = null;
+                    });
                   });
-                  getImage();
-                });
             },
           ),
           //Voice record
@@ -670,37 +676,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  buildpreview() {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 40),
-      height: 100,
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              height: 70,
-              child: Stack(children: <Widget>[
-                Image.memory(bytes),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: () {
-                      setState(() {
-                        //preview = false;
-                        bytes = null;
-                      });
-                    },
-                  ),
-                )
-              ]))
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -755,9 +730,15 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 ],
               ),
               body: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
+                  // imagepick == true
+                  //     ? Container(
+                  //         height: 200,
+                  //       )
+                  //     : Container()
                 ],
               ),
             );
