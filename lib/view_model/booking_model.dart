@@ -3,21 +3,21 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
-class BookingModel extends ViewStateModel{
+class BookingModel extends ViewStateModel {
   int selectedIndex = 0;
 
-  Wallet wallet = Wallet();
+  Wallet wallet = Wallet(value: 0);
   //List<String> dropdownGameList = [];
   //List<String> dropdownGamePrice = [];
   List<String> dropdownGameListAndPrice = [];
 
   Future<bool> booking(int partnerId) async {
     setBusy();
-    try{
+    try {
       await MoonBlinkRepository.booking(partnerId, selectedIndex);
       setIdle();
       return true;
-    } catch (e,s){
+    } catch (e, s) {
       setError(e, s);
       return false;
     }
@@ -26,24 +26,23 @@ class BookingModel extends ViewStateModel{
   Future<void> initData() async {
     setBusy();
     List<Future> futures = [_getUserWallet(), _getGameList()];
-    try{
+    try {
       Future.wait(futures);
       setIdle();
-    }catch(e,s){
+    } catch (e, s) {
       setIdle();
       setError(e, s);
     }
   }
 
-
   ///get user wallet
   Future<void> _getUserWallet() async {
     setBusy();
-    try{
+    try {
       Wallet wallet = await MoonBlinkRepository.getUserWallet();
       this.wallet = wallet;
       setIdle();
-    }catch(e,s){
+    } catch (e, s) {
       setIdle();
       setError(e, s);
     }
@@ -52,16 +51,16 @@ class BookingModel extends ViewStateModel{
   ///get game list
   Future<void> _getGameList() async {
     setBusy();
-    try{
+    try {
       GameList gameList = await MoonBlinkRepository.getGameList();
-      gameList.gameList.forEach((game){
+      gameList.gameList.forEach((game) {
         //dropdownGameList.add(game.gameType);
         //dropdownGamePrice.add(game.price);
         dropdownGameListAndPrice.add('${game.gameType}.${game.price}');
       });
       print(gameList);
       setIdle();
-    }catch(e,s){
+    } catch (e, s) {
       setIdle();
       setError(e, s);
     }

@@ -107,6 +107,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           Positioned(
                             top: 200,
                             child: CupertinoButton(
+                              color: Colors.transparent,
                               child: Text(
                                 "${contactModel.viewStateError.errorMessage}",
                                 style: TextStyle(

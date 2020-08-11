@@ -118,7 +118,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
+    ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -466,6 +466,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               } else {
                 model.sendfile(filename, bytes, id, type, messages);
                 textEditingController.text = '';
+                bytes = null;
                 preview = false;
               }
             },
@@ -531,6 +532,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action 1
   action1(model) {
     bookingdata = model.chatupdated();
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
@@ -577,7 +579,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action2
   action2(model) {
     bookingdata = model.chatupdated();
-
+    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
@@ -627,6 +629,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget buildChatList(id, model) {
     model.receiver(messages);
     bookingdata = model.chatupdated();
+    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
     if (bookingdata.status == null) {
       return ViewStateBusyWidget();
     }
@@ -730,8 +733,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               body: ListView(
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
-                  preview ? buildpreview() : Container(),
                   buildmessage(partnermodel.partnerData.partnerId, model),
+                  preview ? buildpreview() : Container(),
                 ],
               ),
             );
