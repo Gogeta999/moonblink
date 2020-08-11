@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
@@ -41,10 +42,18 @@ class _ChatListPageState extends State<ChatListPage> {
   buildtile(Chatlist chat) {
     return Column(children: <Widget>[
       ListTile(
-        leading: CircleAvatar(
-          radius: 28,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          backgroundImage: NetworkImage(chat.profile),
+        // leading: CircleAvatar(
+        //   radius: 28,
+        //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        //   backgroundImage: NetworkImage(chat.profile),
+        // ),
+        leading: CachedNetworkImage(
+          imageUrl: chat.profile,
+          imageBuilder: (context, imageProvider) => CircleAvatar(
+            radius: 28,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundImage: imageProvider,
+          ),
         ),
         title: Text(chat.name),
 
