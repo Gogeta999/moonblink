@@ -181,7 +181,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(S.of(context).bookingRequest),
+          SelectableText(
+            S.of(context).bookingRequest,
+            autofocus: true,
+            cursorRadius: Radius.circular(50),
+            cursorColor: Colors.white,
+            toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+          ),
           // noramlUserCancel(msg, bookingid),
           partneronly(msg, bookingid)
         ],
@@ -360,7 +366,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           Radius.circular(15.0),
         ),
       ),
-      child: Text(msg.text),
+      child: SelectableText(
+        msg.text,
+        autofocus: true,
+        cursorRadius: Radius.circular(50),
+        cursorColor: Colors.white,
+        toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+      ),
     );
   }
 
@@ -533,7 +545,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   action1(model) {
     bookingdata = model.chatupdated();
     print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    if (bookingdata.status == null) {
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
 
@@ -580,7 +592,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   action2(model) {
     bookingdata = model.chatupdated();
     print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-    if (bookingdata.status == null) {
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
     if (selfId != bookingdata.bookinguserid) {
@@ -630,7 +642,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     model.receiver(messages);
     bookingdata = model.chatupdated();
     print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-    if (bookingdata.status == null) {
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
     return Container(
