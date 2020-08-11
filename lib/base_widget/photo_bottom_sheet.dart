@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/models/selected_image_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class CustomBottomSheet {
@@ -15,6 +17,8 @@ class CustomBottomSheet {
       @required Function onPressed,
       @required String buttonText,
       @required bool popAfterBtnPressed,
+      int minWidth = 1080,
+      int minHeight = 1080,
       Function onDismiss}) async {
     var result = await PhotoManager.requestPermission();
     if (result) {
@@ -29,12 +33,15 @@ class CustomBottomSheet {
             maxChildSize: 0.90,
             builder: (context, scrollController) {
               return PhotoBottomSheet(
-                  sheetScrollController: scrollController,
-                  popAfterBtnPressed: popAfterBtnPressed,
-                  limit: limit,
-                  onPressed: onPressed,
-                  body: body,
-                  buttonText: buttonText);
+                sheetScrollController: scrollController,
+                popAfterBtnPressed: popAfterBtnPressed,
+                limit: limit,
+                onPressed: onPressed,
+                body: body,
+                buttonText: buttonText,
+                minWidth: minWidth,
+                minHeight: minHeight,
+              );
             },
           )).whenComplete(() {
         try {
@@ -122,6 +129,8 @@ class PhotoBottomSheet extends StatefulWidget {
   final String body;
   final String buttonText;
   final bool popAfterBtnPressed;
+  final int minWidth;
+  final int minHeight;
 
   const PhotoBottomSheet(
       {Key key,
@@ -130,7 +139,9 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.onPressed,
       @required this.body,
       @required this.buttonText,
-      @required this.popAfterBtnPressed})
+      @required this.popAfterBtnPressed,
+      @required this.minWidth,
+      @required this.minHeight})
       : super(key: key);
 
   @override
@@ -360,11 +371,44 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     });
   }
 
+  Future<File> _compressAndGetFile(File file, String targetPath,
+      int minWidth, int minHeight) async {
+    ///compress to jpeg and change aspect ratio to 1:1
+    ///minWidth and minHeight default to 1080
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      minWidth: minWidth,
+      minHeight: minHeight,
+      quality: 90,
+      format: CompressFormat.jpeg
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<File> _getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    return File(
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg');
+  }
+
   _choose() async {
-    widget.onPressed(await _photoList[_selectedIndices.first].file);
+    ///can improve with Navigator.pop with result.
     if (widget.popAfterBtnPressed) {
       Navigator.pop(context);
     }
+    File image = await _photoList[_selectedIndices.first].file;
+    File temporaryImage = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(
+      image, temporaryImage.absolute.path,
+      widget.minWidth, widget.minHeight
+    );
+    widget.onPressed(compressedImage);
   }
 
   _fetchNewMedia() async {
