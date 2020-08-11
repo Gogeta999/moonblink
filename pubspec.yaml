@@ -85,8 +85,6 @@ dependencies:
   flutter_native_admob: ^2.1.0
   # Firebase Auth - // Phone OTP
   firebase_auth: ^0.16.1
-  # Bottom Sheet
-  modal_bottom_sheet: ^0.2.0+1
   # loading image from local -- new libraries
   photo_manager: ^0.5.7
 

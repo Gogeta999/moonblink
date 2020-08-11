@@ -99,9 +99,9 @@ class _BookingButtonState extends State<BookingButton> {
     int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
-        onModelReady: (model) => model.initData(),
+        onModelReady: (model) async => await model.initData(),
         builder: (context, model, child) {
-          if (model.isBusy) {
+          if(model.isBusy) {
             return ViewStateBusyWidget();
           }
           return RaisedButton(
@@ -115,7 +115,7 @@ class _BookingButtonState extends State<BookingButton> {
                 borderRadius: BorderRadius.circular(20.0)),
 
             ///[to add pop up]
-            onPressed: userId == partnerDetailModel.partnerId
+            onPressed: userId == partnerDetailModel.partnerId || model.isBusy
                 ? null
                 : () => available(context, model, partnerDetailModel),
           );
@@ -138,6 +138,7 @@ class _BookingDropdownState extends State<BookingDropdown> {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
         value: widget.bookingModel
+            .dropdownGameListAndPrice.isEmpty ? 'Loading...' : widget.bookingModel
             .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,
@@ -152,7 +153,8 @@ class _BookingDropdownState extends State<BookingDropdown> {
           });
         },
         elevation: 0,
-        items: widget.bookingModel.dropdownGameListAndPrice
+        items: widget.bookingModel
+            .dropdownGameListAndPrice.isEmpty ? null : widget.bookingModel.dropdownGameListAndPrice
             .map<DropdownMenuItem<String>>((String value) {
           List<String> splitValue = value.split('.');
           return DropdownMenuItem<String>(

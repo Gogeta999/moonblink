@@ -4,7 +4,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
@@ -29,8 +28,6 @@ class UpdatePartnerProfilePage extends StatefulWidget {
   final PartnerUser partnerUser;
   UpdatePartnerProfilePage({Key key, @required this.partnerUser})
       : super(key: key);
-  // final String cover;
-  // final String profile;
 
   @override
   _UpdatePartnerProfilePageState createState() =>
@@ -119,28 +116,6 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _biosController.dispose();
-    super.dispose();
-  }
-
-//TODO: not sure what is it?
-  // show() {
-  //   showBarModalBottomSheet(
-  //       context: context,
-  //       shape:
-  //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-  //       backgroundColor: Colors.black12,
-  //       barrierColor: Colors.black12,
-  //       isDismissible: true,
-  //       duration: Duration(milliseconds: 700),
-  //       builder: (context, scrollController) {
-  //         return PhotoBottomSheet(scrollController: scrollController);
-  //       });
-  // }
-
-  @override
   Widget build(BuildContext context) {
     return ProviderWidget<PartnerOwnProfileModel>(
         model: PartnerOwnProfileModel(partnerData),
@@ -152,175 +127,210 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
             return ViewStateBusyWidget();
           }
           return Scaffold(
-            appBar: AppBar(
-              title: Text(S.of(context).updatePartnerProfile),
-            ),
-            body: CustomScrollView(
-              physics: ClampingScrollPhysics(),
-              slivers: <Widget>[
+              appBar: AppBar(
+                title: Text(S.of(context).updatePartnerProfile),
+              ),
+              body:
+                  CustomScrollView(physics: ClampingScrollPhysics(), slivers: <
+                      Widget>[
                 SliverToBoxAdapter(
+                    child: ProviderWidget<LoginModel>(
+                  model: LoginModel(Provider.of(context)),
+                  builder: (context, model, child) => Form(
+                      onWillPop: () async {
+                        return !model.isBusy;
+                      },
 
-                    /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
-                    child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
+                      /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
+                      child: Stack(
+                        children: <Widget>[
+                          GestureDetector(
 
-                        /// [You need to put before OnTap]
-                        onTap: () {
-                          _pickCoverFromGallery();
-                          //show();
-                        },
-                        child: AspectRatio(
-                          aspectRatio: 100 / 60,
-                          child: PartnerCoverWidget(_cover, partnermodel,
-                              widget.partnerUser.prfoileFromPartner.coverImage),
-                        )),
-
-                    /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 140.0),
-                      child: Container(
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: GestureDetector(
                               /// [You need to put before OnTap]
                               onTap: () {
-                                _pickprofileFromGallery();
-                                //show();
+                                //_pickCoverFromGallery();
+                                CustomBottomSheet.show(
+                                    popAfterBtnPressed: false,
+                                    buttonText: 'Choose',
+                                    buildContext: context,
+                                    limit: 1,
+                                    fn: (File file) {
+                                      setState(() {
+                                        _cover = file;
+                                      });
+                                    },
+                                    body: 'Choose Cover'
+                                );
                               },
-                              child: CircleAvatar(
-                                radius: 75,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: ClipOval(
-                                  child: new SizedBox(
-                                    width: 150.0,
-                                    height: 150.0,
-                                    child: PartnerProfileWidget(
-                                        _profile,
-                                        partnermodel,
-                                        widget.partnerUser.prfoileFromPartner
-                                            .profileImage),
-                                  ),
-                                ),
-                              ),
-                            )),
-                      ),
-                    ),
+                              child: AspectRatio(
+                                aspectRatio: 100 / 60,
+                                child: PartnerCoverWidget(
+                                    _cover,
+                                    partnermodel,
+                                    widget.partnerUser.prfoileFromPartner
+                                        .coverImage),
+                              )),
 
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 270,
+                          /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, right: 20.0, top: 140.0),
+                            child: Container(
+                              child: Align(
+                                  alignment: Alignment.center,
+                                  child: GestureDetector(
+                                    /// [You need to put before OnTap]
+                                    onTap: () {
+                                      //_pickprofileFromGallery();
+                                      CustomBottomSheet.show(
+                                        popAfterBtnPressed: false,
+                                        buttonText: 'Choose',
+                                        buildContext: context,
+                                        limit: 1,
+                                        fn: (File file) {
+                                          setState(() {
+                                            _profile = file;
+                                          });
+                                        },
+                                        body: 'Choose Profile'
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 75,
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      child: ClipOval(
+                                        child: new SizedBox(
+                                          width: 150.0,
+                                          height: 150.0,
+                                          child: PartnerProfileWidget(
+                                              _profile,
+                                              partnermodel,
+                                              widget
+                                                  .partnerUser
+                                                  .prfoileFromPartner
+                                                  .profileImage),
+                                        ),
+                                      ),
+                                    ),
+                                  )),
+                            ),
                           ),
-                          LoginFormContainer(
+
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 20),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              // mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                //Name
-                                LoginTextField(
-                                  validator: (value) => value.isEmpty
-                                      ? 'Please enter your name'
-                                      : null,
-                                  label: "Please enter your Name",
-                                  icon: Icons.person,
-                                  controller: _nameController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.text,
+                                SizedBox(
+                                  height: 270,
                                 ),
-                                //bios
-                                LoginTextField(
-                                  label: "Please enter Bios",
-                                  icon: FontAwesomeIcons.book,
-                                  controller: _biosController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                //ML id
-                                LoginTextField(
-                                  label: "Please enter your ML ID",
-                                  icon: FontAwesomeIcons.gamepad,
-                                  controller: _mlIdController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.number,
-                                ),
-                                //bios
-                                LoginTextField(
-                                  icon: FontAwesomeIcons.gamepad,
-                                  controller: _pubgIdController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.number,
-                                ),
-                                // _space,
-                                FlatButton(
-                                  child: finish
-                                      ? ButtonProgressIndicator()
-                                      : Text("Update"),
-                                  color: Theme.of(context).buttonColor,
-                                  onPressed: () async {
-                                    if (_cover == null || _profile == null) {
-                                      showToast(
-                                          'You need to choose cover and profile images');
-                                      return false;
-                                    }
-                                    setState(() {
-                                      finish = !finish;
-                                    });
-                                    var userid = StorageManager
-                                        .sharedPreferences
-                                        .getInt(mUserId);
-                                    var coverPath = _cover.path;
-                                    var profilePath = _profile.path;
-                                    FormData formData = FormData.fromMap({
-                                      'cover_image':
-                                          await MultipartFile.fromFile(
-                                              coverPath,
-                                              filename: 'cover.jpg'),
-                                      'profile_image':
-                                          await MultipartFile.fromFile(
-                                              profilePath,
-                                              filename: 'profile.jpg'),
-                                      'name': _nameController.text,
-                                      'bios': _biosController.text.toString(),
-                                    });
-                                    var response = await DioUtils()
-                                        .postwithData(
-                                            Api.SetProfile + '$userid/profile',
-                                            data: formData);
-                                    print(response);
-                                    setState(() {
-                                      finish = !finish;
-                                    });
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                            RouteName.main, (route) => false);
-                                    return User.fromJsonMap(response.data);
-                                  },
+                                LoginFormContainer(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    // mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      //Name
+                                      LoginTextField(
+                                        validator: (value) => value.isEmpty
+                                            ? 'Please enter your name'
+                                            : null,
+                                        label: "Please enter your Name",
+                                        icon: Icons.person,
+                                        controller: _nameController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.text,
+                                      ),
+                                      //bios
+                                      LoginTextField(
+                                        label: "Please enter Bios",
+                                        icon: FontAwesomeIcons.book,
+                                        controller: _biosController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.text,
+                                      ),
+                                      //ML id
+                                      LoginTextField(
+                                        label: "Please enter your ML ID",
+                                        icon: FontAwesomeIcons.gamepad,
+                                        controller: _mlIdController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                      //bios
+                                      LoginTextField(
+                                        icon: FontAwesomeIcons.gamepad,
+                                        controller: _pubgIdController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                      // _space,
+                                      FlatButton(
+                                        child: finish
+                                            ? ButtonProgressIndicator()
+                                            : Text("Update"),
+                                        color: Theme.of(context).buttonColor,
+                                        onPressed: () async {
+                                          if (_cover == null ||
+                                              _profile == null) {
+                                            showToast(
+                                                'You need to choose cover and profile images');
+                                            return false;
+                                          }
+                                          setState(() {
+                                            finish = !finish;
+                                          });
+                                          var userid = StorageManager
+                                              .sharedPreferences
+                                              .getInt(mUserId);
+                                          var coverPath = _cover.path;
+                                          var profilePath = _profile.path;
+                                          FormData formData = FormData.fromMap({
+                                            'cover_image':
+                                                await MultipartFile.fromFile(
+                                                    coverPath,
+                                                    filename: 'cover.jpg'),
+                                            'profile_image':
+                                                await MultipartFile.fromFile(
+                                                    profilePath,
+                                                    filename: 'profile.jpg'),
+                                            'name': _nameController.text,
+                                            'bios':
+                                                _biosController.text.toString(),
+                                          });
+                                          var response = await DioUtils()
+                                              .postwithData(
+                                                  Api.SetProfile +
+                                                      '$userid/profile',
+                                                  data: formData);
+                                          print(response);
+                                          setState(() {
+                                            finish = !finish;
+                                          });
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  RouteName.main,
+                                                  (route) => false);
+                                          return User.fromJsonMap(
+                                              response.data);
+                                        },
+                                      )
+                                      // UpdateProfileButton(
+                                      //   cover: _cover,
+                                      //   profile: _profile,
+                                      //   bios: _biosController.text,
+                                      // )
+                                    ],
+                                  ),
                                 )
-                                // UpdateProfileButton(
-                                //   cover: _cover,
-                                //   profile: _profile,
-                                //   bios: _biosController.text,
-                                // )
                               ],
                             ),
                           )
                         ],
-                      ),
-                    )
-                  ],
-                )
-                    //       ),
-                    // ),
-
-                    )
-              ],
-            ),
-          );
+                      )),
+                ))
+              ]));
         });
   }
 }

@@ -8,6 +8,7 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
@@ -49,7 +50,7 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
-  bool preview = false;
+  //bool preview = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
@@ -98,9 +99,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   Future getImage() async {
-    PickedFile pickedFile = await picker.getImage(
+   /* PickedFile pickedFile = await picker.getImage(
         source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    _file = File(pickedFile.path);
+    _file = File(pickedFile.path);*/
     File temporaryImage = await _getLocalFile();
     File _compressedImage =
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
@@ -108,7 +109,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       _file = _compressedImage;
       filename = selfId.toString() + now + ".png";
       bytes = _file.readAsBytesSync();
-      preview = true;
+      //preview = true;
       print(bytes);
     });
   }
@@ -444,7 +445,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             iconSize: 30.0,
             color: Theme.of(context).accentColor,
             onPressed: () {
-              getImage();
+              //getImage();
+              CustomBottomSheet.show(
+                popAfterBtnPressed: true,
+                buttonText: 'Send',
+                buildContext: context,
+                limit: 1,
+                body: 'Select image',
+                fn: (File file) {
+                  setState(() {
+                    _file = file;
+                  });
+                  getImage();
+                });
             },
           ),
           //Voice record
@@ -479,7 +492,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 model.sendfile(filename, bytes, id, type, messages);
                 textEditingController.text = '';
                 bytes = null;
-                preview = false;
               }
             },
           ),
@@ -677,7 +689,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     icon: Icon(Icons.cancel),
                     onPressed: () {
                       setState(() {
-                        preview = false;
+                        //preview = false;
                         bytes = null;
                       });
                     },
@@ -746,7 +758,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
-                  preview ? buildpreview() : Container(),
                 ],
               ),
             );
