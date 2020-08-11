@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/user.dart';
@@ -63,26 +64,29 @@ class SearchUserWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  int detailPageId = user.id;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              PartnerDetailPage(detailPageId)));
-                },
-                child: CircleAvatar(
+          InkWell(
+            onTap: () {
+              int detailPageId = user.id;
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PartnerDetailPage(detailPageId)));
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                CachedNetworkImage(
+                  imageUrl: user.partnerProfileImage,
+                  imageBuilder: (context, imageProvider) => CircleAvatar(
                     radius: 45,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    backgroundImage: NetworkImage(user.partnerProfileImage)),
-              ),
-              Text(user.name),
-            ],
+                    backgroundImage: imageProvider,
+                  ),
+                ),
+                Text(user.name),
+              ],
+            ),
           ),
           Container(
             height: 0.5,

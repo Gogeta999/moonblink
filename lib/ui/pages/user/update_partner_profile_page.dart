@@ -46,26 +46,35 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   File _profile;
   bool finish = false;
   //pick Cover
-  _pickCoverFromGallery() async {
-    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(cover.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _cover = compressedImage;
-    });
-  }
+  // _pickCoverFromGallery() async {
+  //   PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(cover.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _cover = compressedImage;
+  //   });
+  // }
 
-  //pick profile
-  _pickprofileFromGallery() async {
-    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(profile.path);
+  // //pick profile
+  // _pickprofileFromGallery() async {
+  //   PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(profile.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _profile = compressedImage;
+  //   });
+  // }
+
+  _compressFileBeforeUpload(file) async {
     File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    File compressedFile =
+        await _compressAndGetFile(file, temporaryImage.absolute.path);
     setState(() {
-      _profile = compressedImage;
+      file = compressedFile;
     });
   }
 
@@ -87,11 +96,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
+      minHeight: 1280,
+      minWidth: 720,
       quality: 80,
     );
 
-    print(file.lengthSync());
-    print(result.lengthSync());
+    print('Before File Size ' + '${file.lengthSync()}');
+    print('After File Size ' + '${result.lengthSync()}');
 
     return result;
   }
@@ -156,11 +167,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     limit: 1,
                                     onPressed: (File file) {
                                       setState(() {
+                                        _compressFileBeforeUpload(file);
                                         _cover = file;
                                       });
                                     },
-                                    body: 'Choose Cover'
-                                );
+                                    body: 'Choose Cover');
                               },
                               child: AspectRatio(
                                 aspectRatio: 100 / 60,
@@ -260,6 +271,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
+                                        label: "Please enter your PUBG ID",
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _pubgIdController,
                                         textInputAction: TextInputAction.next,

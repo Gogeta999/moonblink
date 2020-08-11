@@ -50,13 +50,11 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
-  //bool preview = false;
+  bool imagepick = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
   Uint8List bytes;
-  bool img = false;
-  bool file = false;
   List<Message> messages = [];
   List<Contact> contacts = [];
   List<Chatlist> chatlist = [];
@@ -99,9 +97,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   Future getImage() async {
-   /* PickedFile pickedFile = await picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    _file = File(pickedFile.path);*/
+    // PickedFile pickedFile = await picker.getImage(
+    //     source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
+    // _file = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File _compressedImage =
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
@@ -713,7 +711,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   bool isShowing = false;
   final controller = ScrollController();
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
