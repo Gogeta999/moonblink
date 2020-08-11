@@ -1,251 +1,257 @@
-// import 'dart:io';
-// import 'dart:typed_data';
+import 'dart:typed_data';
 
-// import 'package:flutter/material.dart';
-// import 'package:local_image_provider/device_image.dart';
-// import 'package:local_image_provider/local_album.dart';
-// import 'package:local_image_provider/local_image.dart';
-// import 'package:local_image_provider/local_image_provider.dart';
-// import 'package:moonblink/models/selected_image_model.dart';
-// import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:moonblink/models/selected_image_model.dart';
+import 'package:photo_manager/photo_manager.dart';
 
-// class PhotoBottomSheet extends StatefulWidget {
+class CustomBottomSheet {
+  static show(
+      {@required BuildContext buildContext,
+      @required int limit,
+      @required String body,
+      @required Function fn,
+      @required String buttonText,
+      @required bool popAfterBtnPressed}) {
+    showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.white.withOpacity(0.0),
+        isDismissible: true,
+        isScrollControlled: true,
+        builder: (context) => DraggableScrollableSheet(
+              expand: false,
+              maxChildSize: 0.90,
+              builder: (context, scrollController) {
+                return PhotoBottomSheet(
+                  sheetScrollController: scrollController,
+                  popAfterBtnPressed: popAfterBtnPressed,
+                  limit: limit,
+                  fn: fn,
+                  body: body,
+                  buttonText: buttonText
+                );
+              },
+            ));
+  }
+}
 
-//   final ScrollController scrollController;
+class PhotoBottomSheet extends StatefulWidget {
+  final ScrollController sheetScrollController;
+  final int limit;
+  final Function fn;
+  final String body;
+  final String buttonText;
+  final bool popAfterBtnPressed;
 
-//   const PhotoBottomSheet({Key key, this.scrollController}) : super(key: key);
+  const PhotoBottomSheet(
+      {Key key,
+      @required this.sheetScrollController,
+      @required this.limit,
+      @required this.fn,
+      @required this.body,
+      @required this.buttonText,
+      @required this.popAfterBtnPressed})
+      : super(key: key);
 
-//   @override
-//   _PhotoBottomSheetState createState() => _PhotoBottomSheetState();
-// }
+  @override
+  _PhotoBottomSheetState createState() => _PhotoBottomSheetState();
+}
 
-// class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
-//   final _scrollThreshold = 400.0;
-//   int _currentPage = 0;
-//   int _pageSize = 100;
-//   bool _hasReachedMax = false;
-//   bool _isFetching = false;
+class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 400.0;
+  int _currentPage = 0;
+  int _pageSize = 50;
+  bool _hasReachedMax = false;
+  bool _isFetching = false;
 
-//   List<AssetPathEntity> _albums = [];
-//   List<AssetEntity> _photoList = [];
-//   List<Uint8List> _thumbnailList = [];
-//   List<SelectedImageModel> _selectedImages = [];
+  List<AssetPathEntity> _albums = [];
+  List<AssetEntity> _photoList = [];
+  //List<Uint8List> _thumbnailList = [];
+  List<SelectedImageModel> _selectedImages = [];
+  Set<int> _selectedIndices = Set();
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     widget.scrollController.addListener(_onScroll);
-//     _fetchNewMedia();
-//   }
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _fetchNewMedia();
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return CustomScrollView(
-//       controller: widget.scrollController,
-//       slivers: <Widget>[
-//         SliverToBoxAdapter(
-//           child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               children: <Widget>[
-//                 Text('Selected ${_selectedImages.length}',
-//                     style: Theme.of(context).textTheme.bodyText1),
-//                 FlatButton(
-//                   onPressed: () async {
-//                     //send images
-//                     if(_selectedImages.isNotEmpty) {
-//                       Set<Uint8List> toSend = Set();
-//                       for (var image in _selectedImages) {
-//                         toSend.add(await image.getImageBytes());
-//                       }
-//                       File file = File.fromRawPath(toSend.first);
-//                       print('Successfully Sent');
-//                       Navigator.pop(context);
-//                     }
-//                   },
-//                   child: Text('Send', style: Theme.of(context).textTheme.bodyText1),
-//                 )
-//               ]
-//           ),
-//         ),
-//         SliverGrid(
-//           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//               crossAxisCount: 3
-//           ),
-//           delegate: SliverChildBuilderDelegate(
-//                 (context, index) {
-//               return Image.memory(
-//                 _thumbnailList[index],
-//                 fit: BoxFit.cover,
-//               );
-//             },
-//             childCount: _photoList.length,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-//   _fetchNewMedia() async {
-//     var result = await PhotoManager.requestPermission();
-//     if (result) {
-//       // success
-//       //load the album list
-//       _albums =
-//       await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
-//       await _addNewPhotos();
-//     } else {
-//       // fail
-//       /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
-//     }
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        SingleChildScrollView(
+          controller: widget.sheetScrollController,
+          child: Container(
+            margin: EdgeInsets.all(5),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: FlatButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cancel',
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (_albums.isNotEmpty)
+                        Text('${_albums.first.name}',
+                            style: Theme.of(context).textTheme.bodyText1),
+                      SizedBox(height: 5),
+                      Text('${widget.body}',
+                          style: Theme.of(context).textTheme.bodyText1)
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: FlatButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Albums',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        SizedBox(width: 5),
+                        Icon(Icons.keyboard_arrow_down)
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              GridView.builder(
+                  controller: _scrollController,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  itemCount: _selectedImages.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => _onTapImage(index),
+                      child: Stack(
+                        children: <Widget>[
+                          Image.memory(
+                            _selectedImages[index].thumbnail,
+                            fit: BoxFit.cover,
+                            color: _selectedImages[index].isSelected
+                                ? Colors.white70
+                                : Colors.transparent,
+                            colorBlendMode: BlendMode.lighten,
+                          ),
+                          if (_selectedImages[index].isSelected)
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child:
+                                  Icon(Icons.check_circle, color: Colors.blue),
+                            ),
+                        ],
+                      ),
+                    );
+                  }),
+              if (_selectedIndices.isNotEmpty)
+                Positioned(
+                  bottom: 20,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: RaisedButton(
+                      onPressed: _choose,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text('${widget.buttonText}'),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                    ),
+                  ),
+                )
+            ],
+          ),
+        )
+      ],
+    );
+  }
 
-//   _addNewPhotos() async {
-//     setState(() {
-//       _isFetching = true;
-//     });
-//     List<AssetEntity> photos = await _albums.first.getAssetListPaged(_currentPage, _pageSize);
-//     if(photos.length < _pageSize) {
-//       setState(() {
-//         _hasReachedMax = true;
-//       });
-//     }
-//     List<Uint8List> thumbnails = [];
-//     for(var photo in photos){
-//       thumbnails.add(await photo.thumbDataWithSize(150, 150));
-//     }
-//     print(_photoList);
-//     print(_albums);
-//     setState(() {
-//       _photoList.addAll(photos);
-//       _thumbnailList.addAll(thumbnails);
-//       _currentPage++;
-//     });
-//     setState(() {
-//       _isFetching = false;
-//     });
-//   }
+  _onTapImage(int index) async {
+    setState(() {
+      _selectedImages[index].isSelected = !_selectedImages[index].isSelected;
+      _selectedImages[index].isSelected
+          ? _selectedIndices.add(index)
+          : _selectedIndices.remove(index);
+      if (_selectedIndices.length >= widget.limit + 1) {
+        _selectedImages[_selectedIndices.first].isSelected = false;
+        _selectedIndices.remove(_selectedIndices.first);
+      }
+    });
+  }
 
-//   void _onScroll() {
-//     if(_isFetching) {
-//       return;
-//     }
-//     if (!_hasReachedMax) {
-//       final maxScroll = widget.scrollController.position.maxScrollExtent;
-//       final currentScroll = widget.scrollController.position.pixels;
-//       if (maxScroll - currentScroll <= _scrollThreshold) {
-//         _addNewPhotos();
-//       }
-//     }
-//   }
-// }
+  _choose() async {
+    widget.fn(await _photoList[_selectedIndices.first].file);
+    if(widget.popAfterBtnPressed) {
+      Navigator.pop(context);
+    }
+  }
 
-// /*
-// * final LocalImageProvider _localImageProvider = LocalImageProvider();
-//   bool _hasPermission = false;
-//   Set<SelectedImageModel> _localDeviceImages = Set();
-//   Set<SelectedImageModel> _selectedImages = Set();
+  _fetchNewMedia() async {
+    var result = await PhotoManager.requestPermission();
+    if (result) {
+      // success
+      //load the album list
+      _albums = await PhotoManager.getAssetPathList(
+          onlyAll: true, type: RequestType.image);
+      await _addNewPhotos();
+    } else {
+      // fail
+      /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
+    }
+  }
 
-//   Future<void> _requestPermission() async {
-//     bool permission = await _localImageProvider.initialize();
-//     setState(() {
-//       _hasPermission = permission;
-//     });
-//   }
+  _addNewPhotos() async {
+    _isFetching = true;
+    List<AssetEntity> photos =
+        await _albums.first.getAssetListPaged(_currentPage, _pageSize);
+    if (photos.length < _pageSize) {
+      _hasReachedMax = true;
+    }
+    for (var photo in photos) {
+      Uint8List thumbnail = await photo.thumbDataWithSize(150, 150);
+      setState(() {
+        _selectedImages.add(SelectedImageModel(thumbnail: thumbnail));
+      });
+    }
+    print(_photoList);
+    print(_albums);
+    setState(() {
+      _photoList.addAll(photos);
+      _currentPage++;
+      _isFetching = false;
+    });
+  }
 
-//   void _addLocalImages(List<LocalImage> localImages) {
-//     setState(() {
-//       _localDeviceImages.addAll(Iterable.generate(localImages.length, (index) {
-//         return SelectedImageModel(deviceImage: DeviceImage(localImages[index]));
-//       }));
-//       _localDeviceImages.forEach((element) {element.isSelected = false;});
-//     });
-
-//   }
-
-//   void loadImages() async {
-//     await _requestPermission();
-//     if (_hasPermission) {
-//       List<LocalAlbum> localAlbums = await _localImageProvider.findAlbums(LocalAlbumType.all);
-//       for (var album in localAlbums) {
-//         print(album.title);
-//         List<LocalImage> localImages = await _localImageProvider.findImagesInAlbum(album.id, album.imageCount);
-//         _addLocalImages(localImages);
-//       }
-//     } else {
-//       print("The user has denied access to images on their device.");
-//     }
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     loadImages();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CustomScrollView(
-//       controller: widget.scrollController,
-//       slivers: <Widget>[
-//         SliverToBoxAdapter(
-//           child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               children: <Widget>[
-//                 Text('Selected ${_selectedImages.length}',
-//                     style: Theme.of(context).textTheme.bodyText1),
-//                 FlatButton(
-//                   onPressed: () async {
-//                     //send images
-//                     if(_selectedImages.isNotEmpty) {
-//                       Set<Uint8List> toSend = Set();
-//                       for (var image in _selectedImages) {
-//                         toSend.add(await image.getImageBytes());
-//                       }
-//                       File file = File.fromRawPath(toSend.first);
-//                       print('Successfully Sent');
-//                       Navigator.pop(context);
-//                     }
-//                   },
-//                   child: Text('Send', style: Theme.of(context).textTheme.bodyText1),
-//                 )
-//               ]
-//           ),
-//         ),
-//         SliverGrid(
-//           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//               crossAxisCount: 3
-//           ),
-//           delegate: SliverChildBuilderDelegate(
-//                 (context, index) {
-//               return Material(
-//                 child: InkResponse(
-//                   onTap: () {
-//                     if (_localDeviceImages.elementAt(index).isSelected) {
-//                       setState(() {
-//                         _localDeviceImages.elementAt(index).isSelected = false;
-//                         _selectedImages.remove(_localDeviceImages.elementAt(index));
-//                       });
-//                       print('DeSelected');
-//                     }else {
-//                       setState(() {
-//                         _localDeviceImages.elementAt(index).isSelected = true;
-//                         _selectedImages.add(_localDeviceImages.elementAt(index));
-//                       });
-//                       print('Selected');
-//                     }
-//                     print(_selectedImages.length);
-//                   },
-//                   child: Image(
-//                     image: _localDeviceImages.elementAt(index).deviceImage,
-//                     color: _localDeviceImages.elementAt(index).isSelected ? Colors.white70 : Colors.transparent,
-//                     colorBlendMode: BlendMode.lighten,
-//                   ),
-//                 ),
-//               );
-//             },
-//             childCount: _localDeviceImages.length,
-//           ),
-//         ),
-//       ],
-//     );
-//   }*/
+  void _onScroll() {
+    if (_isFetching) {
+      return;
+    }
+    if (!_hasReachedMax) {
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      if (maxScroll - currentScroll <= _scrollThreshold) {
+        _addNewPhotos();
+      }
+    }
+  }
+}

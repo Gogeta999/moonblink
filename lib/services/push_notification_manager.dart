@@ -230,13 +230,13 @@ class PushNotificationsManager {
       userId = json.decode(message['data']['user_id']);
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
-      gameType = json.decode(message['data']['game_fcm_type']);
+      gameType = json.decode(message['data']['game_type']);
       bookingUserName = message['data']['name'];
     } else if (Platform.isIOS) {
       userId = json.decode(message['user_id']);
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
-      gameType = json.decode(message['game_fcm_type']);
+      gameType = json.decode(message['game_type']);
       bookingUserName = message['name'];
     } else {
       showToast('This platform is not supported');
@@ -272,7 +272,7 @@ class PushNotificationsManager {
       userId = json.decode(message['data']['user_id']);
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
-      gameType = json.decode(message['data']['game_fcm_type']);
+      gameType = json.decode(message['data']['game_type']);
       bookingUserName = message['data']['name'];
 
       title = message['notification']['title'].toString();
@@ -282,7 +282,7 @@ class PushNotificationsManager {
       userId = json.decode(message['user_id']);
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
-      gameType = json.decode(message['game_fcm_type']);
+      gameType = json.decode(message['game_type']);
       bookingUserName = message['name'];
 
       title = message['aps']['alert']['title'].toString();
