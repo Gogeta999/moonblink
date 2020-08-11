@@ -220,12 +220,15 @@ class UserListWidget extends StatefulWidget {
 }
 
 class _UserListWidgetState extends State<UserListWidget> {
-
   final hasUser = StorageManager.localStorage.getItem(mUser);
-  int status;
+
+  int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+
   @override
   Widget build(BuildContext context) {
-    int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+    int status = StorageManager.sharedPreferences.getInt(mstatus);
+    print("user type is ${usertype.toString()}");
+    print("user status is ${status.toString()}");
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -242,7 +245,7 @@ class _UserListWidgetState extends State<UserListWidget> {
               onTap: status != 1
                   ? () {
                       setState(() {
-                        status = 1;
+                        StorageManager.sharedPreferences.setInt(mstatus, 1);
                       });
                       print(status);
                       print("+++++++++++++++++++++++++++");
@@ -251,7 +254,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                     }
                   : () {
                       setState(() {
-                        status = 0;
+                        StorageManager.sharedPreferences.setInt(mstatus, 0);
+                        // status = 0;
                       });
                       print(status);
                       print("----------------------------");

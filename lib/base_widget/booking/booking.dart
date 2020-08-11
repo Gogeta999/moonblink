@@ -5,6 +5,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -100,6 +101,9 @@ class _BookingButtonState extends State<BookingButton> {
         model: BookingModel(),
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
+          if (model.isBusy) {
+            return ViewStateBusyWidget();
+          }
           return RaisedButton(
             color: Theme.of(context).accentColor,
             highlightColor: Theme.of(context).accentColor,
