@@ -161,11 +161,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                               onTap: () {
                                 //_pickCoverFromGallery();
                                 CustomBottomSheet.show(
-                                    popAfterBtnPressed: false,
+                                    popAfterBtnPressed: true,
                                     buttonText: 'Choose',
                                     buildContext: context,
                                     limit: 1,
-                                    fn: (File file) {
+                                    onPressed: (File file) {
                                       setState(() {
                                         _compressFileBeforeUpload(file);
                                         _cover = file;
@@ -194,17 +194,17 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     onTap: () {
                                       //_pickprofileFromGallery();
                                       CustomBottomSheet.show(
-                                          popAfterBtnPressed: false,
-                                          buttonText: 'Choose',
-                                          buildContext: context,
-                                          limit: 1,
-                                          fn: (File file) {
-                                            setState(() {
-                                              _compressFileBeforeUpload(file);
-                                              _profile = file;
-                                            });
-                                          },
-                                          body: 'Choose Profile');
+                                        popAfterBtnPressed: true,
+                                        buttonText: 'Choose',
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _profile = file;
+                                          });
+                                        },
+                                        body: 'Choose Profile'
+                                      );
                                     },
                                     child: CircleAvatar(
                                       radius: 75,

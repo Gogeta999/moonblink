@@ -445,25 +445,27 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             onPressed: () {
               //getImage();
               setState(() {
-                imagepick = true;
+                isShowing = true;
+                controller.animateTo(MediaQuery.of(context).size.height / 2, duration: Duration(milliseconds: 100), curve: Curves.ease);
               });
               CustomBottomSheet.show(
-                  popAfterBtnPressed: true,
-                  buttonText: 'Send',
-                  buildContext: context,
-                  limit: 1,
-                  body: 'Select image',
-                  fn: (File file) async {
-                    setState(() {
-                      _file = file;
-                    });
-                    await getImage();
-                    model.sendfile(filename, bytes, id, type, messages);
-                    setState(() {
-                      textEditingController.text = '';
-                      bytes = null;
-                    });
+                popAfterBtnPressed: true,
+                buttonText: 'Send',
+                buildContext: context,
+                limit: 1,
+                body: 'Select image',
+                onPressed: (File file) {
+                  setState(() {
+                    _file = file;
                   });
+                  getImage();
+                },
+                onDismiss: () => {
+                  setState(() {
+                    isShowing = false;
+                  })
+                }
+                );
             },
           ),
           //Voice record
@@ -676,6 +678,39 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  buildpreview() {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              height: 70,
+              child: Stack(children: <Widget>[
+                Image.memory(bytes),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      setState(() {
+                        //preview = false;
+                        bytes = null;
+                      });
+                    },
+                  ),
+                )
+              ]))
+        ],
+      ),
+    );
+  }
+
+  bool isShowing = false;
+  final controller = ScrollController();
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -730,15 +765,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 ],
               ),
               body: ListView(
-                shrinkWrap: true,
+                controller: controller,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
-                  // imagepick == true
-                  //     ? Container(
-                  //         height: 200,
-                  //       )
-                  //     : Container()
+                  if (isShowing)
+                  SizedBox(height: MediaQuery.of(context).size.height / 2)
                 ],
               ),
             );
