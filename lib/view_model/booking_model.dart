@@ -3,7 +3,7 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
-class BookingModel extends ViewStateModel{
+class BookingModel extends ViewStateModel {
   int selectedIndex = 0;
 
   Wallet wallet = Wallet(value: 0);
@@ -13,11 +13,11 @@ class BookingModel extends ViewStateModel{
 
   Future<bool> booking(int partnerId) async {
     setBusy();
-    try{
+    try {
       await MoonBlinkRepository.booking(partnerId, selectedIndex);
       setIdle();
       return true;
-    } catch (e,s){
+    } catch (e, s) {
       setError(e, s);
       return false;
     }
@@ -30,12 +30,11 @@ class BookingModel extends ViewStateModel{
       await _getGameList();
       notifyListeners();
       setIdle();
-    }catch(e,s){
+    } catch (e, s) {
       setIdle();
       setError(e, s);
     }
   }
-
 
   ///get user wallet
   Future<void> _getUserWallet() async {
@@ -51,7 +50,7 @@ class BookingModel extends ViewStateModel{
   Future<void> _getGameList() async {
     try{
       GameList gameList = await MoonBlinkRepository.getGameList();
-      gameList.gameList.forEach((game){
+      gameList.gameList.forEach((game) {
         //dropdownGameList.add(game.gameType);
         //dropdownGamePrice.add(game.price);
         dropdownGameListAndPrice.add('${game.gameType}.${game.price}');

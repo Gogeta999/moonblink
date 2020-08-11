@@ -119,7 +119,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
+    ScopedModel.of<ChatModel>(context).chatupdated();
   }
 
   //build messages
@@ -182,7 +182,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(S.of(context).bookingRequest),
+          SelectableText(
+            S.of(context).bookingRequest,
+            autofocus: true,
+            cursorRadius: Radius.circular(50),
+            cursorColor: Colors.white,
+            toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+          ),
           // noramlUserCancel(msg, bookingid),
           partneronly(msg, bookingid)
         ],
@@ -361,7 +367,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           Radius.circular(15.0),
         ),
       ),
-      child: Text(msg.text),
+      child: SelectableText(
+        msg.text,
+        autofocus: true,
+        cursorRadius: Radius.circular(50),
+        cursorColor: Colors.white,
+        toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+      ),
     );
   }
 
@@ -490,7 +502,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 model.sendfile(filename, bytes, id, type, messages);
                 textEditingController.text = '';
                 bytes = null;
-                //preview = false;
               }
             },
           ),
@@ -555,7 +566,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action 1
   action1(model) {
     bookingdata = model.chatupdated();
-    if (bookingdata.status == null) {
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
 
@@ -601,8 +613,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action2
   action2(model) {
     bookingdata = model.chatupdated();
-
-    if (bookingdata.status == null) {
+    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
     if (selfId != bookingdata.bookinguserid) {
@@ -651,7 +663,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget buildChatList(id, model) {
     model.receiver(messages);
     bookingdata = model.chatupdated();
-    if (bookingdata.status == null) {
+    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+    if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
     return Container(
@@ -758,7 +771,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 controller: controller,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
-                  //preview ? buildpreview() : Container(),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                   if (isShowing)
                   SizedBox(height: MediaQuery.of(context).size.height / 2)

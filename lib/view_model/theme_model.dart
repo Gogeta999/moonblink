@@ -96,14 +96,14 @@ class ThemeModel with ChangeNotifier {
       splashColor: themeColor.withAlpha(50),
       hintColor: themeData.hintColor.withAlpha(90),
       errorColor: Colors.red,
-      cursorColor: accentColor,
+      cursorColor: Colors.grey,
       textTheme: themeData.textTheme.copyWith(
 
           /// 解决中文hint不居中的问题 https://github.com/flutter/flutter/issues/40248
           subtitle2: themeData.textTheme.subtitle2
               .copyWith(textBaseline: TextBaseline.alphabetic)),
-      textSelectionColor: accentColor.withAlpha(60),
-      textSelectionHandleColor: accentColor.withAlpha(60),
+      textSelectionColor: Colors.grey,
+      textSelectionHandleColor: accentColor.withAlpha(200),
       toggleableActiveColor: accentColor,
       chipTheme: themeData.chipTheme.copyWith(
         pressElevation: 0,

@@ -4,7 +4,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 
 const List<String> images = [
-  'images/0.jpeg',
+  'images/0.jpg',
   'images/1.jpeg',
   'images/2.jpeg',
   'images/3.jpeg',
