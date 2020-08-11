@@ -150,7 +150,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   List<AssetEntity> _photoList = [];
   List<SelectedImageModel> _selectedImages = [];
   List<Uint8List> _albumFirstThumbnailList = [];
-  Set<int> _selectedIndices = Set();
+  List<int> _selectedIndices = [];
 
   @override
   void initState() {
@@ -309,8 +309,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                             Positioned(
                               top: 10,
                               right: 10,
-                              child:
-                                  Icon(Icons.check_circle, color: Colors.blue),
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                child: Center(
+                                    child: Text('${_selectedIndices.indexOf(index) + 1}', style: Theme.of(context).textTheme.bodyText1)),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).backgroundColor,
+                                ),
+                              )
                             ),
                         ],
                       ),
