@@ -150,11 +150,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                               onTap: () {
                                 //_pickCoverFromGallery();
                                 CustomBottomSheet.show(
-                                    popAfterBtnPressed: false,
+                                    popAfterBtnPressed: true,
                                     buttonText: 'Choose',
                                     buildContext: context,
                                     limit: 1,
-                                    fn: (File file) {
+                                    onPressed: (File file) {
                                       setState(() {
                                         _cover = file;
                                       });
@@ -183,11 +183,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     onTap: () {
                                       //_pickprofileFromGallery();
                                       CustomBottomSheet.show(
-                                        popAfterBtnPressed: false,
+                                        popAfterBtnPressed: true,
                                         buttonText: 'Choose',
                                         buildContext: context,
                                         limit: 1,
-                                        fn: (File file) {
+                                        onPressed: (File file) {
                                           setState(() {
                                             _profile = file;
                                           });

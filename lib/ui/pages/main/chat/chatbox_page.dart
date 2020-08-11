@@ -434,18 +434,28 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             color: Theme.of(context).accentColor,
             onPressed: () {
               //getImage();
+              setState(() {
+                isShowing = true;
+                controller.animateTo(MediaQuery.of(context).size.height / 2, duration: Duration(milliseconds: 100), curve: Curves.ease);
+              });
               CustomBottomSheet.show(
                 popAfterBtnPressed: true,
                 buttonText: 'Send',
                 buildContext: context,
                 limit: 1,
                 body: 'Select image',
-                fn: (File file) {
+                onPressed: (File file) {
                   setState(() {
                     _file = file;
                   });
                   getImage();
-                });
+                },
+                onDismiss: () => {
+                  setState(() {
+                    isShowing = false;
+                  })
+                }
+                );
             },
           ),
           //Voice record
@@ -688,6 +698,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  bool isShowing = false;
+  final controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -742,10 +755,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 ],
               ),
               body: ListView(
+                controller: controller,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   //preview ? buildpreview() : Container(),
                   buildmessage(partnermodel.partnerData.partnerId, model),
+                  if (isShowing)
+                  SizedBox(height: MediaQuery.of(context).size.height / 2)
                 ],
               ),
             );

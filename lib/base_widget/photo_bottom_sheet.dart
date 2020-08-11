@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -9,9 +10,10 @@ class CustomBottomSheet {
       {@required BuildContext buildContext,
       @required int limit,
       @required String body,
-      @required Function fn,
+      @required Function onPressed,
       @required String buttonText,
-      @required bool popAfterBtnPressed}) {
+      @required bool popAfterBtnPressed,
+      Function onDismiss}) {
     showModalBottomSheet(
         context: buildContext,
         barrierColor: Colors.white.withOpacity(0.0),
@@ -25,19 +27,19 @@ class CustomBottomSheet {
                   sheetScrollController: scrollController,
                   popAfterBtnPressed: popAfterBtnPressed,
                   limit: limit,
-                  fn: fn,
+                  onPressed: onPressed,
                   body: body,
                   buttonText: buttonText
                 );
               },
-            ));
+            )).whenComplete(onDismiss);
   }
 }
 
 class PhotoBottomSheet extends StatefulWidget {
   final ScrollController sheetScrollController;
   final int limit;
-  final Function fn;
+  final Function onPressed;
   final String body;
   final String buttonText;
   final bool popAfterBtnPressed;
@@ -46,7 +48,7 @@ class PhotoBottomSheet extends StatefulWidget {
       {Key key,
       @required this.sheetScrollController,
       @required this.limit,
-      @required this.fn,
+      @required this.onPressed,
       @required this.body,
       @required this.buttonText,
       @required this.popAfterBtnPressed})
@@ -86,6 +88,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         SingleChildScrollView(
           controller: widget.sheetScrollController,
@@ -95,7 +98,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
               children: <Widget>[
                 Expanded(
                   child: FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.pop(context),
                     child: Text('Cancel',
                         style: Theme.of(context).textTheme.bodyText1),
                   ),
@@ -136,34 +139,36 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
             alignment: Alignment.center,
             children: <Widget>[
               GridView.builder(
-                  controller: _scrollController,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
-                  itemCount: _selectedImages.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => _onTapImage(index),
-                      child: Stack(
-                        children: <Widget>[
-                          Image.memory(
-                            _selectedImages[index].thumbnail,
-                            fit: BoxFit.cover,
-                            color: _selectedImages[index].isSelected
-                                ? Colors.white70
-                                : Colors.transparent,
-                            colorBlendMode: BlendMode.lighten,
+                addAutomaticKeepAlives: true,
+                controller: _scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemCount: _selectedImages.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => _onTapImage(index),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Image.memory(
+                          _selectedImages[index].thumbnail,
+                          fit: BoxFit.cover,
+                          color: _selectedImages[index].isSelected
+                              ? Colors.white70
+                              : Colors.transparent,
+                          colorBlendMode: BlendMode.lighten,
+                        ),
+                        if (_selectedImages[index].isSelected)
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child:
+                                Icon(Icons.check_circle, color: Colors.blue),
                           ),
-                          if (_selectedImages[index].isSelected)
-                            Positioned(
-                              top: 10,
-                              right: 10,
-                              child:
-                                  Icon(Icons.check_circle, color: Colors.blue),
-                            ),
-                        ],
-                      ),
-                    );
-                  }),
+                      ],
+                    ),
+                  );
+                }),
               if (_selectedIndices.isNotEmpty)
                 Positioned(
                   bottom: 20,
@@ -200,7 +205,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   }
 
   _choose() async {
-    widget.fn(await _photoList[_selectedIndices.first].file);
+    widget.onPressed(await _photoList[_selectedIndices.first].file);
     if(widget.popAfterBtnPressed) {
       Navigator.pop(context);
     }
@@ -228,7 +233,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       _hasReachedMax = true;
     }
     for (var photo in photos) {
-      Uint8List thumbnail = await photo.thumbDataWithSize(150, 150);
+      Uint8List thumbnail = await photo.thumbDataWithSize(120, 150);
       setState(() {
         _selectedImages.add(SelectedImageModel(thumbnail: thumbnail));
       });
