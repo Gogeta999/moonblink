@@ -13,3 +13,9 @@
 -keep class com.android.vending.billing.**
 -dontwarn com.amazon.**
 -keepattributes *Annotation*
+#flutter-ffmpeg
+-keep class com.arthenica.mobileffmpeg.Config {
+  native <methods>;
+  void log(int, byte[]);
+  void statistics(int, float, float, long , int, double, double);
+}
