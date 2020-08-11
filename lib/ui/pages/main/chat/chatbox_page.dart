@@ -448,7 +448,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               //getImage();
               setState(() {
                 isShowing = true;
-                controller.animateTo(MediaQuery.of(context).size.height / 2, duration: Duration(milliseconds: 100), curve: Curves.ease);
+                controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
               });
               CustomBottomSheet.show(
                 popAfterBtnPressed: true,
@@ -773,7 +773,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                   if (isShowing)
-                  SizedBox(height: MediaQuery.of(context).size.height / 2)
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.4)
                 ],
               ),
             );

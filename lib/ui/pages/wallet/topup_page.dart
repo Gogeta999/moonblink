@@ -416,6 +416,7 @@ class _TopUpPageState extends State<TopUpPage>
   }
 
   void _showRewardedAds() async {
+    if (isAdLoading) return;
     setState(() {
       isAdLoading = true;
     });

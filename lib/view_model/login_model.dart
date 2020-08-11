@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -82,6 +83,7 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
         StorageManager.sharedPreferences.setInt(mstatus, userModel.user.status);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
+        DioUtils().initWithAuthorization();
         PushNotificationsManager().reInit();
         setIdle();
         return true;
@@ -105,6 +107,7 @@ class LoginModel extends ViewStateModel {
       //await PushNotificationsManager().removeFcmToken();
       //UserWallet().dispose();
       PushNotificationsManager().dispose();
+      DioUtils().initWithoutAuthorization();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

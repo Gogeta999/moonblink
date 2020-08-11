@@ -30,6 +30,7 @@ class CustomBottomSheet {
           isScrollControlled: true,
           builder: (context) => DraggableScrollableSheet(
             expand: false,
+            initialChildSize: 0.4,
             maxChildSize: 0.90,
             builder: (context, scrollController) {
               return PhotoBottomSheet(
@@ -117,7 +118,6 @@ class CustomBottomSheet {
             }
           }
         );
-      /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
     }
   }
 }
