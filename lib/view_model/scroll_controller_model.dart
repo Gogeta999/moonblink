@@ -4,6 +4,8 @@ class TapToTopModel with ChangeNotifier{
   ScrollController _scrollController;
   double _height;
   bool _showTopBtn = false;
+  final _scrollThreshold = 1000.0;
+  bool _isFetching = false;
 
   ScrollController get scrollController => _scrollController;
 
@@ -13,7 +15,7 @@ class TapToTopModel with ChangeNotifier{
     _height = height;
   }
 
-  init() {
+  init(Function loadMore) {
     _scrollController.addListener(() {
       if (_scrollController.offset > _height && !_showTopBtn) {
         _showTopBtn = true;
@@ -22,7 +24,20 @@ class TapToTopModel with ChangeNotifier{
         _showTopBtn = false;
         notifyListeners();
       }
+      onScroll(loadMore);
     });
+  }
+
+  onScroll(Function loadMore) async {
+    if (_isFetching) return;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      print('IsFetching');
+      _isFetching = true;
+      await loadMore();
+      _isFetching = false;
+    }
   }
 
   scrollToTop() {
