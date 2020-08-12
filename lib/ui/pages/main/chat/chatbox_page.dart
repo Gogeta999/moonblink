@@ -446,26 +446,32 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               //getImage();
               setState(() {
                 isShowing = true;
-                controller.animateTo(MediaQuery.of(context).size.height / 2, duration: Duration(milliseconds: 100), curve: Curves.ease);
+                controller.animateTo(MediaQuery.of(context).size.height / 2,
+                    duration: Duration(milliseconds: 100), curve: Curves.ease);
               });
               CustomBottomSheet.show(
-                popAfterBtnPressed: true,
-                buttonText: 'Send',
-                buildContext: context,
-                limit: 1,
-                body: 'Select image',
-                onPressed: (File file) {
-                  setState(() {
-                    _file = file;
-                  });
-                  getImage();
-                },
-                onDismiss: () => {
-                  setState(() {
-                    isShowing = false;
-                  })
-                }
-                );
+                  popAfterBtnPressed: true,
+                  buttonText: 'Send',
+                  buildContext: context,
+                  limit: 1,
+                  body: 'Select image',
+                  onPressed: (File file) async {
+                    setState(() {
+                      _file = file;
+                    });
+
+                    await getImage();
+                    model.sendfile(filename, bytes, id, type, messages);
+                    setState(() {
+                      textEditingController.text = '';
+                      bytes = null;
+                    });
+                  },
+                  onDismiss: () => {
+                        setState(() {
+                          isShowing = false;
+                        })
+                      });
             },
           ),
           //Voice record
@@ -770,7 +776,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                   if (isShowing)
-                  SizedBox(height: MediaQuery.of(context).size.height / 2)
+                    SizedBox(height: MediaQuery.of(context).size.height / 2)
                 ],
               ),
             );

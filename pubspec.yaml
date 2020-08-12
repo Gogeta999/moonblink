@@ -1,7 +1,7 @@
 name: moonblink
 description: MoonBlink Universe's app
 
-version: 1.0.0+10
+version: 1.0.0+11
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,7 +23,7 @@ dependencies:
   shimmer: ^1.1.1
   flutter_holo_date_picker: ^0.1.4
   datetime_picker_formfield: ^1.0.0
-  cached_network_image: ^2.2.0+1
+  cached_network_image: ^2.0+1
   flutter_blurhash: ^0.5.0
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.0
@@ -103,7 +103,7 @@ flutter:
   assets:
     - assets/images/
     - assets/logos/
-    - images/0.jpeg
+    - images/0.jpg
     - images/1.jpeg
     - images/2.jpeg
     - images/3.jpeg
