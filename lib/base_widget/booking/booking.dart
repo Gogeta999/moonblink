@@ -99,8 +99,7 @@ class _BookingButtonState extends State<BookingButton> {
     int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
-        onModelReady: (model) async =>
-            await model.initData(partnerDetailModel.partnerId),
+        onModelReady: (model) async => await model.initData(partnerDetailModel.partnerId),
         builder: (context, model, child) {
           if (model.isBusy) {
             return ViewStateBusyWidget();

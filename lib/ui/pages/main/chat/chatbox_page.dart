@@ -34,6 +34,7 @@ import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -450,6 +451,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               });
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
+                  requestType: RequestType.image,
                   buttonText: 'Send',
                   buildContext: context,
                   limit: 1,
@@ -475,8 +477,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ),
           //Voice record
           Voicemsg(
+            onInit: () => setState((){
+              isShowing = true;
+              controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
+            }),
             id: id,
             messages: messages,
+            onDismiss: () => setState(() {isShowing = false;}),
           ),
           //Text Input
           Expanded(

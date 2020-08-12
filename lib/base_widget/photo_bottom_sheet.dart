@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -17,6 +18,7 @@ class CustomBottomSheet {
       @required Function onPressed,
       @required String buttonText,
       @required bool popAfterBtnPressed,
+      @required RequestType requestType,
       int minWidth = 1080,
       int minHeight = 1080,
       Function onDismiss}) async {
@@ -36,6 +38,7 @@ class CustomBottomSheet {
               return PhotoBottomSheet(
                 sheetScrollController: scrollController,
                 popAfterBtnPressed: popAfterBtnPressed,
+                requestType: requestType,
                 limit: limit,
                 onPressed: onPressed,
                 body: body,
@@ -120,12 +123,49 @@ class CustomBottomSheet {
         );
     }
   }
+
+  static showVoiceSheet(
+      {
+        @required BuildContext buildContext,
+        @required Function send,
+        @required Function cancel,
+        @required Function start,
+      Function onDismiss}
+      ) async {
+    ///request permission with async
+    showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.white.withOpacity(0.0),
+        isDismissible: true,
+        isScrollControlled: true,
+        builder: (context) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.4,
+          maxChildSize: 0.90,
+          builder: (context, scrollController) {
+            return VoiceBottomSheet(
+              send: send,
+              cancel: cancel,
+              start: start
+            );
+          },
+        )).whenComplete(() {
+      try {
+        onDismiss();
+      } catch (e) {
+        if (e is NoSuchMethodError) {
+          print('NoSuchMethodError');
+        }
+      }
+    });
+  }
 }
 
 class PhotoBottomSheet extends StatefulWidget {
   final ScrollController sheetScrollController;
   final int limit;
   final Function onPressed;
+  final RequestType requestType;
   final String body;
   final String buttonText;
   final bool popAfterBtnPressed;
@@ -137,6 +177,7 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.sheetScrollController,
       @required this.limit,
       @required this.onPressed,
+      @required this.requestType,
       @required this.body,
       @required this.buttonText,
       @required this.popAfterBtnPressed,
@@ -339,14 +380,14 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                 Positioned(
                   bottom: 20,
                   child: Container(
-                    width: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.of(context).size.width * 0.6,
                     child: RaisedButton(
                       onPressed: _choose,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text('${widget.buttonText}'),
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text('${widget.buttonText}', style: TextStyle(fontSize: 16)),
+                      padding: EdgeInsets.symmetric(vertical: 15),
                       color: Theme.of(context).accentColor,
                     ),
                   ),
@@ -413,7 +454,10 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
 
   _fetchNewMedia() async {
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
-        hasAll: true, type: RequestType.image);
+        hasAll: true, type: widget.requestType);
+    if (albums.isEmpty) {
+      return;
+    }
     albums.sort((a, b) => a.assetCount > b.assetCount ? 0 : 1);
     albums.forEach((album)  {
       setState(() {

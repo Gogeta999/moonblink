@@ -39,25 +39,18 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
     _init();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     print('Disposing main appp');
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state = $state');
   }
 
   Future<void> _init() async {
