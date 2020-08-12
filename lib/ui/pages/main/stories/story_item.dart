@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/ui/pages/main/stories/user_stories.dart';
@@ -20,10 +21,13 @@ class StoryItemWidget extends StatelessWidget {
                         stories.storys, stories.profile, stories.name)));
           },
           child: Align(
-            child: CircleAvatar(
-              radius: 33,
-              backgroundColor: Colors.grey[300],
-              backgroundImage: NetworkImage(stories.profile),
+            child: CachedNetworkImage(
+              imageUrl: stories.profile,
+              imageBuilder: (context, imageProvider) => CircleAvatar(
+                radius: 33,
+                backgroundColor: Colors.grey[300],
+                backgroundImage: imageProvider,
+              ),
             ),
           )),
     );

@@ -62,7 +62,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     //     Theme.of(context).brightness == Brightness.light
                     //         ? 0
                     //         : 0.65),
-                    fit: BoxFit.fill);
+                    fit: BoxFit.cover);
               } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 if (snapshot.data.status == '1') {
@@ -70,7 +70,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     // onTap: ,
                     child: Image.network(
                       snapshot.data.adUrl,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
                     ),
                   );
@@ -82,7 +82,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                       //     Theme.of(context).brightness == Brightness.light
                       //         ? 0
                       //         : 0.65),
-                      fit: BoxFit.fill);
+                      fit: BoxFit.cover);
                 }
               } else if (snapshot.hasError) {
                 return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
@@ -92,7 +92,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     //     Theme.of(context).brightness == Brightness.light
                     //         ? 0
                     //         : 0.65),
-                    fit: BoxFit.fill);
+                    fit: BoxFit.cover);
               }
               return Center(child: CircularProgressIndicator());
             },
