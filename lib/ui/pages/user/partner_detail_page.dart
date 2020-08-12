@@ -249,6 +249,22 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
 
+                  ///[Test]
+                  // SliverToBoxAdapter(
+                  //   child: Column(
+                  //     children: [
+                  //       Container(
+                  //         color: Colors.red,
+                  //         height: 15,
+                  //       ),
+                  //       Container(
+                  //         color: Colors.green,
+                  //         height: 15,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
                   /// [info]
                   SliverToBoxAdapter(
                     child: Padding(
@@ -261,7 +277,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                 ' have ' +
                                 '${partnerModel.partnerData.followerCount}' +
                                 ' followers'),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -273,6 +289,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       padding: EdgeInsets.all(25),
                       child: Text(
                           partnerModel.partnerData.prfoileFromPartner.bios),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(30),
+                      child: Text('Total count' +
+                          partnerModel.partnerData.reactionCount.toString()),
                     ),
                   ),
 
