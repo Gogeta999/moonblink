@@ -173,7 +173,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 25,
+                      height: 20,
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 15,
                     ),
                   ),
 
@@ -296,6 +302,15 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       padding: EdgeInsets.all(30),
                       child: Text('Total count' +
                           partnerModel.partnerData.reactionCount.toString()),
+                    ),
+                  ),
+
+                  ///[Reaction Count]
+                  SliverToBoxAdapter(
+                    child: ListTile(
+                      title: Text("This user has "),
+                      trailing: Text(
+                          "👍 ${partnerModel.partnerData.likecount.toString()} 👍"),
                     ),
                   ),
 

@@ -4,12 +4,13 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/ui/pages/main/stories/user_stories.dart';
 
 class StoryItemWidget extends StatelessWidget {
-  final Story stories;
+  final List<Story> stories;
   final int index;
   StoryItemWidget(this.stories, {this.index}) : super(key: ValueKey(stories));
 
   @override
   Widget build(BuildContext context) {
+    Story story = stories[index];
     return Padding(
       padding: const EdgeInsets.only(left: 15),
       child: InkWell(
@@ -17,8 +18,8 @@ class StoryItemWidget extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoriesPage(
-                        stories.storys, stories.profile, stories.name)));
+                    builder: (context) =>
+                        StoriesPage(story: stories, index: index)));
           },
           child: Align(
             child: CachedNetworkImage(

@@ -23,6 +23,7 @@ class BookingModel extends ViewStateModel {
     }
   }
 
+
   Future<void> initData(partnerId) async {
     setBusy();
     try {
