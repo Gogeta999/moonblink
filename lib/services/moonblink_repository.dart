@@ -247,8 +247,10 @@ class MoonBlinkRepository {
   }
 
   //Game List
-  static Future getGameList() async {
-    var response = await DioUtils().get(Api.GameList);
+  static Future getGameList(partnerId) async {
+    var response = await DioUtils().get(Api.GameList, queryParameters: {
+      'user_id': partnerId.toString(),
+    });
     return GameList.fromJson(response.data);
   }
 

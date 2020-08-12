@@ -23,11 +23,12 @@ class BookingModel extends ViewStateModel {
     }
   }
 
-  Future<void> initData() async {
+
+  Future<void> initData(partnerId) async {
     setBusy();
-    try{
+    try {
       await _getUserWallet();
-      await _getGameList();
+      await _getGameList(partnerId);
       notifyListeners();
       setIdle();
     } catch (e, s) {
@@ -38,25 +39,25 @@ class BookingModel extends ViewStateModel {
 
   ///get user wallet
   Future<void> _getUserWallet() async {
-    try{
+    try {
       Wallet wallet = await MoonBlinkRepository.getUserWallet();
       this.wallet = wallet;
-    }catch(e,s){
+    } catch (e, s) {
       setError(e, s);
     }
   }
 
   ///get game list
-  Future<void> _getGameList() async {
-    try{
-      GameList gameList = await MoonBlinkRepository.getGameList();
+  Future<void> _getGameList(partnerId) async {
+    try {
+      GameList gameList = await MoonBlinkRepository.getGameList(partnerId);
       gameList.gameList.forEach((game) {
         //dropdownGameList.add(game.gameType);
         //dropdownGamePrice.add(game.price);
         dropdownGameListAndPrice.add('${game.gameType}.${game.price}');
       });
       print(gameList);
-    }catch(e,s){
+    } catch (e, s) {
       setError(e, s);
     }
   }

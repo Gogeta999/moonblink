@@ -18,6 +18,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+///Recreating Dio connection when api call - Fix
 _parseAndDecode(String response) {
   return jsonDecode(response);
 }
@@ -26,59 +27,71 @@ parseJson(String text) {
   return compute(_parseAndDecode, text);
 }
 
-// DioUtils http = DioUtils();
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
-  var usertoken = StorageManager.sharedPreferences.getString(token);
-  static DioUtils _instance;
+  static final DioUtils _instance = DioUtils._();
+  factory DioUtils() => _instance;
+  BaseOptions _baseOptions = BaseOptions(
+    baseUrl: baseUrl,
+    connectTimeout: 5000,
+    receiveTimeout: 5000,
+    headers: {
+      //Default necessary header
+      //appkey will remain old key unless we generate  key on server
+      'app-key': 'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=',
+    },
+    contentType: Headers.formUrlEncodedContentType,
+    responseType: ResponseType.json,
+  );
+
   Dio _dio;
-  BaseOptions _baseOptions;
 
   Map<String, dynamic> emptyData;
-
-  static DioUtils getInstance() {
-    if (_instance == null) {
-      _instance = DioUtils();
-    }
-    return _instance;
-  }
 
   /*
    * Init dio
    */
-  DioUtils() {
-    //request parametrs
-    _baseOptions = BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: 5000,
-      receiveTimeout: 5000,
-      headers: {
-        //Default necessary header
-        //appkey will remain old key unless we generate  key on server
-        'app-key': 'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=',
-      },
-      contentType: Headers.formUrlEncodedContentType,
-      responseType: ResponseType.json,
-    );
-
-    //create dio instance
+  DioUtils._() {
+    var usertoken = StorageManager.sharedPreferences.getString(token);
     _dio = Dio(_baseOptions);
+    if (usertoken != null) {
+      initWithAuthorization();
+    } else {
+      initWithoutAuthorization();
+    }
+  }
 
-    //Adding necessary interceptor for our app
-    _dio.interceptors.add(
-      InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
-        if (usertoken == null) {
-          var appVersion = await PlatformUtils.getAppVersion();
-          requestions.headers['app-version'] = appVersion;
-          // debugPrint('Base Requestions--->' + requestions.headers.toString());
-          return requestions;
-        } else {
+  initWithAuthorization() {
+    var usertoken = StorageManager.sharedPreferences.getString(token);
+    if (usertoken != null) {
+      _dio.interceptors.clear();
+      _dio.interceptors.add(
+        InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
           var appVersion = await PlatformUtils.getAppVersion();
           requestions.headers['app-version'] = appVersion;
           requestions.headers['Authorization'] = 'Bearer' + usertoken;
           // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
           return requestions;
-        }
+        }, onResponse: (Response response) {
+          //maybe add something here
+          return response;
+        }, onError: (DioError error) {
+          //handle error
+          return error;
+        }),
+      );
+      print('Creating Dio connection to server with Authorization');
+    }
+  }
+
+  initWithoutAuthorization() {
+    _dio.interceptors.clear();
+    _dio.interceptors.add(
+      InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
+        var appVersion = await PlatformUtils.getAppVersion();
+        requestions.headers['app-version'] = appVersion;
+        // debugPrint('Base Requestions--->' + requestions.headers.toString());
+        return requestions;
       }, onResponse: (Response response) {
         //maybe add something here
         return response;
@@ -87,17 +100,14 @@ class DioUtils {
         return error;
       }),
     );
+    print('Creating Dio connection to server without Authorization');
   }
 
   /*
    * get request
    */
   get(url, {queryParameters, options}) async {
-    // var appVersion = await PlatformUtils.getAppVersion();
-    // var appPlatorm = Platform.operatingSystem;
     print('get---request---from--->$url');
-    // print('requestParameter---is--->$queryParameters');
-    // print('Test ah--platform is- {$appVersion}-verions-in-$appPlatorm----');
     Response response;
     response =
         await _dio.get(url, queryParameters: queryParameters, options: options);
@@ -110,6 +120,7 @@ class DioUtils {
       return response;
     } else {
       // or if(usertoken = null)
+      // 101 is token expired
       if (respData.errorCode == 101) {
         StorageManager.localStorage.deleteItem(mUser);
         StorageManager.sharedPreferences.remove(token);
@@ -119,26 +130,20 @@ class DioUtils {
         throw forceLoginDialog();
       }
       // Platform and version Control
+      // 102 is version late
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
         //TODO: navigate to ios store
       }
-      //Tell toe hlaing win to solve normal user problem
+      // Request null data when no story
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
         debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
-        // debugPrint('assetJson-->result---<$emptyData');
-        // return emptyData;
         return response;
-      }
-      // 111 status is for est user to see home page
-      // else if (respData.errorCode == 111) {
-      //   var setStory = {};
-      // }
-      else {
+      } else {
         throw NotSuccessException.fromRespData(respData);
       }
     }
@@ -170,6 +175,20 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
+      } // Platform and version Control
+      // 102 is version late
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
+        throw forceUpdateAndroidDialog();
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+        //TODO: navigate to ios store
+      }
+      // Request null data when no story
+      else if (respData.errorCode == 123) {
+        response.data = respData.data;
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        debugPrint(
+            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
@@ -196,6 +215,20 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
+      } // Platform and version Control
+      // 102 is version late
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
+        throw forceUpdateAndroidDialog();
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+        //TODO: navigate to ios store
+      }
+      // Request null data when no story
+      else if (respData.errorCode == 123) {
+        response.data = respData.data;
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        debugPrint(
+            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
       }
@@ -213,8 +246,6 @@ class DioUtils {
       print('Uploading progress----->${count / total}----count/total process');
     });
     print(response.statusCode);
-
-    ///remove later
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
@@ -230,6 +261,20 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
+      } // Platform and version Control
+      // 102 is version late
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
+        throw forceUpdateAndroidDialog();
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+        //TODO: navigate to ios store
+      }
+      // Request null data when no story
+      else if (respData.errorCode == 123) {
+        response.data = respData.data;
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        debugPrint(
+            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
       }

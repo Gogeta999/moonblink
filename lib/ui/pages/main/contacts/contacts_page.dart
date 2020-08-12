@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,12 +44,20 @@ class _ContactsPageState extends State<ContactsPage> {
         Material(
           color: Theme.of(context).cardColor,
           child: ListTile(
-            leading: CircleAvatar(
-              radius: 28,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              backgroundImage:
-                  NetworkImage(user.contactUser.contactUserProfile),
+            leading: CachedNetworkImage(
+              imageUrl: user.contactUser.contactUserProfile,
+              imageBuilder: (context, imageProvider) => CircleAvatar(
+                radius: 28,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundImage: imageProvider,
+              ),
             ),
+            // leading: CircleAvatar(
+            //   radius: 28,
+            //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            //   backgroundImage:
+            //       NetworkImage(user.contactUser.contactUserProfile),
+            // ),
             title: Text(user.contactUser.contactUserName),
             onTap: () {
               int detailPageId = user.contactUser.contactUserId;
@@ -98,7 +107,7 @@ class _ContactsPageState extends State<ContactsPage> {
                               image: AssetImage(
                                 ImageHelper.wrapAssetsImage('noFollowing.jpg'),
                               ),
-                              fit: BoxFit.fill)),
+                              fit: BoxFit.cover)),
                       width: double.infinity,
                       height: double.infinity,
                       child: Stack(

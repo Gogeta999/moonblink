@@ -11,6 +11,7 @@ import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/provider/view_state_list_refresh_model.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage>
           height: kToolbarHeight),
       onModelReady: (homeModel, tapToTopModel) {
         homeModel.initData();
-        tapToTopModel.init();
+        tapToTopModel.init(() => homeModel.loadMore());
       },
       builder: (context, homeModel, tapToTopModel, child) {
         return Scaffold(

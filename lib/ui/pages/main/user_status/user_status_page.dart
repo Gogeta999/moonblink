@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             expandedHeight: 200 + MediaQuery.of(context).padding.top,
             flexibleSpace: UserHeaderWidget(),
-            pinned: false,
+            pinned: true,
           ),
           if (hasUser)
             SliverToBoxAdapter(
@@ -167,16 +168,22 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               tag: 'loginLogo',
                               child: ClipOval(
                                 child: model.hasUser
-                                    ? Image.network(
-                                        model.user.profileUrl,
+                                    ? CachedNetworkImage(
+                                        imageUrl: model.user.profileUrl,
                                         fit: BoxFit.cover,
                                         width: 120,
                                         height: 120,
-                                        // color: Theme.of(context)
-                                        //     .accentColor
-                                        //     .withAlpha(100),
-                                        // colorBlendMode: BlendMode.colorDodge
                                       )
+                                    // ? Image.network(
+                                    //     model.user.profileUrl,
+                                    //     fit: BoxFit.cover,
+                                    //     width: 120,
+                                    //     height: 120,
+                                    //     // color: Theme.of(context)
+                                    //     //     .accentColor
+                                    //     //     .withAlpha(100),
+                                    //     // colorBlendMode: BlendMode.colorDodge
+                                    //   )
                                     : Image.asset(
                                         ImageHelper.wrapAssetsImage(
                                             'MoonBlinkProfile.jpg'),
@@ -194,7 +201,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(children: <Widget>[
+                          Column(
+                            children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()

@@ -99,9 +99,9 @@ class _BookingButtonState extends State<BookingButton> {
     int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
-        onModelReady: (model) async => await model.initData(),
+        onModelReady: (model) async => await model.initData(partnerDetailModel.partnerId),
         builder: (context, model, child) {
-          if(model.isBusy) {
+          if (model.isBusy) {
             return ViewStateBusyWidget();
           }
           return RaisedButton(
@@ -137,9 +137,10 @@ class _BookingDropdownState extends State<BookingDropdown> {
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        value: widget.bookingModel
-            .dropdownGameListAndPrice.isEmpty ? 'Loading...' : widget.bookingModel
-            .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
+        value: widget.bookingModel.dropdownGameListAndPrice.isEmpty
+            ? null
+            : widget.bookingModel
+                .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,
         iconEnabledColor: Theme.of(context).accentColor,
@@ -153,21 +154,22 @@ class _BookingDropdownState extends State<BookingDropdown> {
           });
         },
         elevation: 0,
-        items: widget.bookingModel
-            .dropdownGameListAndPrice.isEmpty ? null : widget.bookingModel.dropdownGameListAndPrice
-            .map<DropdownMenuItem<String>>((String value) {
-          List<String> splitValue = value.split('.');
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(splitValue[0], softWrap: true),
-                Text('    ${splitValue[1]}', softWrap: true)
-              ],
-            ),
-          );
-        }).toList(),
+        items: widget.bookingModel.dropdownGameListAndPrice.isEmpty
+            ? null
+            : widget.bookingModel.dropdownGameListAndPrice
+                .map<DropdownMenuItem<String>>((String value) {
+                List<String> splitValue = value.split('.');
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(splitValue[0], softWrap: true),
+                      Text('    ${splitValue[1]}', softWrap: true)
+                    ],
+                  ),
+                );
+              }).toList(),
       ),
     );
   }

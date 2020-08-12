@@ -20,7 +20,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
@@ -39,35 +39,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _biosController = TextEditingController();
   final _mlIdController = TextEditingController();
   final _pubgIdController = TextEditingController();
-  final _picker = ImagePicker();
-  String _filePath;
   PartnerUser partnerData;
   File _cover;
   File _profile;
   bool finish = false;
-  //pick Cover
-  _pickCoverFromGallery() async {
-    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(cover.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _cover = compressedImage;
-    });
-  }
-
-  //pick profile
-  _pickprofileFromGallery() async {
-    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(profile.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _profile = compressedImage;
-    });
-  }
 
   //Get File from Cached
   Future getCachedFile() async {
@@ -82,27 +57,6 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     });
   }
 
-  // 2. compress file and get file.
-  Future<File> _compressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 80,
-    );
-
-    print(file.lengthSync());
-    print(result.lengthSync());
-
-    return result;
-  }
-
-  Future<File> _getLocalFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    _filePath =
-        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
-    return File(_filePath);
-  }
 
   @override
   void initState() {
@@ -148,19 +102,19 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
 
                               /// [You need to put before OnTap]
                               onTap: () {
-                                //_pickCoverFromGallery();
+
                                 CustomBottomSheet.show(
-                                    popAfterBtnPressed: false,
+                                    requestType: RequestType.image,
+                                    popAfterBtnPressed: true,
                                     buttonText: 'Choose',
                                     buildContext: context,
                                     limit: 1,
-                                    fn: (File file) {
+                                    onPressed: (File file) {
                                       setState(() {
                                         _cover = file;
                                       });
                                     },
-                                    body: 'Choose Cover'
-                                );
+                                    body: 'Choose Cover');
                               },
                               child: AspectRatio(
                                 aspectRatio: 100 / 60,
@@ -181,13 +135,17 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   child: GestureDetector(
                                     /// [You need to put before OnTap]
                                     onTap: () {
-                                      //_pickprofileFromGallery();
+
                                       CustomBottomSheet.show(
-                                        popAfterBtnPressed: false,
+                                        ///profile is small
+                                        popAfterBtnPressed: true,
+                                        requestType: RequestType.image,
+                                        minWidth: 480,
+                                        minHeight: 480,
                                         buttonText: 'Choose',
                                         buildContext: context,
                                         limit: 1,
-                                        fn: (File file) {
+                                        onPressed: (File file) {
                                           setState(() {
                                             _profile = file;
                                           });
@@ -260,6 +218,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
+                                        label: "Please enter your PUBG ID",
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _pubgIdController,
                                         textInputAction: TextInputAction.next,

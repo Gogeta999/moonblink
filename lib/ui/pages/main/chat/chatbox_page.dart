@@ -34,6 +34,7 @@ import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -448,31 +449,44 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             onPressed: () {
               //getImage();
               setState(() {
-                imagepick = true;
+                isShowing = true;
+                controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
               });
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
+                  requestType: RequestType.image,
                   buttonText: 'Send',
                   buildContext: context,
                   limit: 1,
                   body: 'Select image',
-                  fn: (File file) async {
+                  onPressed: (File file) async {
                     setState(() {
                       _file = file;
                     });
+
                     await getImage();
                     model.sendfile(filename, bytes, id, type, messages);
                     setState(() {
                       textEditingController.text = '';
                       bytes = null;
                     });
-                  });
+                  },
+                  onDismiss: () => {
+                        setState(() {
+                          isShowing = false;
+                        })
+                      });
             },
           ),
           //Voice record
           Voicemsg(
+            onInit: () => setState((){
+              isShowing = true;
+              controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
+            }),
             id: id,
             messages: messages,
+            onDismiss: () => setState(() {isShowing = false;}),
           ),
           //Text Input
           Expanded(
@@ -679,6 +693,39 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
+  buildpreview() {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              height: 70,
+              child: Stack(children: <Widget>[
+                Image.memory(bytes),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      setState(() {
+                        //preview = false;
+                        bytes = null;
+                      });
+                    },
+                  ),
+                )
+              ]))
+        ],
+      ),
+    );
+  }
+
+  bool isShowing = false;
+  final controller = ScrollController();
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
@@ -733,15 +780,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 ],
               ),
               body: ListView(
-                shrinkWrap: true,
+                controller: controller,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
-                  // imagepick == true
-                  //     ? Container(
-                  //         height: 200,
-                  //       )
-                  //     : Container()
+                  if (isShowing)
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.4)
                 ],
               ),
             );

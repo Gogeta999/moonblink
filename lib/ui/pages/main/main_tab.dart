@@ -100,7 +100,7 @@ class _MainTabPageState extends State<MainTabPage>
           arcHeight: 55,
           arcWidth: 80,
           activeIconColor: Colors.white,
-          barHeight: 55,
+          barHeight: 80,
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
             _pageController.jumpToPage(index);

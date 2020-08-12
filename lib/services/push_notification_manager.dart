@@ -20,7 +20,7 @@ class PushNotificationsManager {
 
   factory PushNotificationsManager() => _instance;
 
-  static PushNotificationsManager _instance = PushNotificationsManager._();
+  static final PushNotificationsManager _instance = PushNotificationsManager._();
 
   bool _initialized = false;
 
