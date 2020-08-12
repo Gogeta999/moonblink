@@ -46,10 +46,10 @@ class _VideoTrimmer extends State<VideoTrimmer> {
           .then((value) async {
         //upload video
         setState(() {
-          _progressVisibility = false;
           _value = value;
           video = File(_value);
           print(value);
+          print(DateTime.now().toString());
           print("111111111111111111111111111111");
         });
         var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
@@ -67,6 +67,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
             .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
         if (response.errorCode == 1) {
           setState(() {
+            _progressVisibility = false;
             _uploadDone = !_uploadDone;
           });
           Navigator.of(context)
@@ -90,7 +91,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          if (_uploadDone == false) {
+          if (_progressVisibility == false) {
             return true;
           } else {
             return false;
