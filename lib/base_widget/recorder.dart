@@ -6,21 +6,23 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
   final messages;
-  // final file;
-  // final bytes;
+  @required final Function onDismiss;
+  @required final Function onInit;
 
-  Voicemsg({localFileSystem, this.id, this.messages})
+  Voicemsg({localFileSystem, this.id, this.messages, this.onDismiss, this.onInit})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -34,10 +36,17 @@ class _VoicemsgState extends State<Voicemsg> {
   String filename;
   File _file;
   Uint8List bytes;
+  ChatModel chatModel;
+
   @override
   void initState() {
     super.initState();
-    _init();
+  }
+
+  @override
+  void dispose() {
+    if (_recorder != null) _recorder.stop();
+    super.dispose();
   }
 
   _init() async {
@@ -74,6 +83,16 @@ class _VoicemsgState extends State<Voicemsg> {
           _currentStatus = current.status;
           print(_currentStatus);
         });
+        CustomBottomSheet.showVoiceSheet(
+            buildContext: context,
+            send: () => _send(),
+            cancel: () => {
+              if (_recorder != null) {
+                _recorder.stop()
+              }
+            },
+            start: () => _start(),
+            onDismiss: widget.onDismiss);
       } else {
         Scaffold.of(context).showSnackBar(new SnackBar(
             content: new Text(S.of(context).youMustAcceptPermission)));
@@ -90,26 +109,12 @@ class _VoicemsgState extends State<Voicemsg> {
       setState(() {
         _current = recording;
       });
-
-      const tick = const Duration(milliseconds: 50);
-      new Timer.periodic(tick, (Timer t) async {
-        if (_currentStatus == RecordingStatus.Stopped) {
-          t.cancel();
-        }
-
-        var current = await _recorder.current(channel: 0);
-        // print(current.status);
-        setState(() {
-          _current = current;
-          _currentStatus = _current.status;
-        });
-      });
     } catch (e) {
       print(e);
     }
   }
 
-  _stop(String filename, File file, Uint8List bytes, model) async {
+  _send() async {
     var result = await _recorder.stop();
     print("Stop recording: ${result.path}");
     print(result.path);
@@ -117,22 +122,17 @@ class _VoicemsgState extends State<Voicemsg> {
         DateTime.now().millisecondsSinceEpoch.toString() +
         ".wav";
     print("Stop recording: ${result.duration}");
-    file = widget.localFileSystem.file(result.path);
-    print("File length: ${await file.length()}");
-    bytes = file.readAsBytesSync();
+    _file = widget.localFileSystem.file(result.path);
+    print("File length: ${await _file.length()}");
+    bytes = _file.readAsBytesSync();
     print(filename);
-    // print(files.runtimeType);
-    model.sendaudio(filename, bytes, widget.id, 3, widget.messages);
-    // setState(() {
-    //   file = widget.localFileSystem.file(result.path);
-    //   _current = result;
-    //   _currentStatus = _current.status;
-    // });
+    chatModel.sendaudio(filename, bytes, widget.id, 3, widget.messages);
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      this.chatModel = model;
       return Container(
           height: 30,
           width: 30,
@@ -141,13 +141,9 @@ class _VoicemsgState extends State<Voicemsg> {
               IconFonts.voieMsgIcon,
               color: Theme.of(context).accentColor,
             ),
-            onLongPressStart: (LongPressStartDetails details) {
-              showToast('Start Recording. Press to hold');
-              _start();
-            },
-            onLongPressUp: () {
-              _stop(filename, _file, bytes, model);
-              showToast('Stop Recording', dismissOtherToast: true);
+            onTap: () async {
+              widget.onInit();
+              await _init();
             },
           ));
     });

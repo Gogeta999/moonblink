@@ -30,7 +30,7 @@ parseJson(String text) {
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
   static final DioUtils _instance = DioUtils._();
-  factory DioUtils() => _instance != null ? _instance : DioUtils._();
+  factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
     baseUrl: baseUrl,
     connectTimeout: 5000,

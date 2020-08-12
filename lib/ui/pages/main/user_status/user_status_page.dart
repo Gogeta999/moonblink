@@ -98,7 +98,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             expandedHeight: 200 + MediaQuery.of(context).padding.top,
             flexibleSpace: UserHeaderWidget(),
-            pinned: false,
+            pinned: true,
           ),
           if (hasUser)
             SliverToBoxAdapter(
@@ -201,7 +201,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(children: <Widget>[
+                          Column(
+                            children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()
