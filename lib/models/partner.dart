@@ -16,6 +16,7 @@ class PartnerUser {
   int followerCount;
   int followingCount; // own Profile
   int isFollow;
+  int likecount;
   double rating;
   PartnerProfile prfoileFromPartner;
 
@@ -36,6 +37,7 @@ class PartnerUser {
       this.followerCount,
       this.followingCount,
       this.isFollow,
+      this.likecount,
       this.rating,
       this.prfoileFromPartner});
 
@@ -51,6 +53,7 @@ class PartnerUser {
         followerCount: map['follower_count'],
         followingCount: map['following_count'],
         isFollow: map['is_follow'],
+        likecount: map['reaction_count'],
         rating: map['rating'],
         verified: map['verified'],
         verifiedAt: map['verified_at'],
@@ -73,6 +76,7 @@ class PartnerUser {
     data['status'] = status;
     data['follower_count'] = followerCount;
     data['is_follow'] = isFollow;
+    data['reaction_count'] = likecount;
     data['rating'] = rating;
     // data['profile'] = profileFromPartner;
     // 'profile'] =partnerProfileImage;

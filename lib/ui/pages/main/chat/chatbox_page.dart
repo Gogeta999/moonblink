@@ -117,7 +117,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    ScopedModel.of<ChatModel>(context).chatupdated();
+    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
+    if (bookingdata.status == 3) {
+      rating(bookingdata.bookingid);
+    }
   }
 
   //build messages
@@ -181,7 +184,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SelectableText(
-            S.of(context).bookingRequest,
+            msg.text,
             autofocus: true,
             cursorRadius: Radius.circular(50),
             cursorColor: Colors.white,
