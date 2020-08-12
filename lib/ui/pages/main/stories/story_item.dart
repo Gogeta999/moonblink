@@ -23,7 +23,7 @@ class StoryItemWidget extends StatelessWidget {
           },
           child: Align(
             child: CachedNetworkImage(
-              imageUrl: stories.profile,
+              imageUrl: story.profile,
               imageBuilder: (context, imageProvider) => CircleAvatar(
                 radius: 33,
                 backgroundColor: Colors.grey[300],
