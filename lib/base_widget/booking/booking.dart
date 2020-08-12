@@ -138,7 +138,7 @@ class _BookingDropdownState extends State<BookingDropdown> {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
         value: widget.bookingModel
-            .dropdownGameListAndPrice.isEmpty ? 'Loading...' : widget.bookingModel
+            .dropdownGameListAndPrice.isEmpty ? null : widget.bookingModel
             .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
         isExpanded: false,
         isDense: true,

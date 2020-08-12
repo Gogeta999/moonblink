@@ -194,7 +194,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     onTap: () {
                                       //_pickprofileFromGallery();
                                       CustomBottomSheet.show(
+                                        ///profile is small
                                         popAfterBtnPressed: true,
+                                        minWidth: 480,
+                                        minHeight: 480,
                                         buttonText: 'Choose',
                                         buildContext: context,
                                         limit: 1,

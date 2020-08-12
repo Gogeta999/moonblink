@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -28,18 +29,9 @@ main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
-  // if (usertoken != null) {
-  // BackgroundFetch.registerHeadlessTask(chatinits);
-
-  // }
-  Bloc.observer = SimpleBlocObserver();
-  setupLocator();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
+  runApp(MyApp());
+  //Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light));
 }
 
 class MyApp extends StatefulWidget {
@@ -47,15 +39,35 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
-    _initAdMob();
+    _init();
   }
 
-  Future<void> _initAdMob() {
-    return FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    print('Disposing main appp');
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state = $state');
+  }
+
+  Future<void> _init() async {
+    Bloc.observer = SimpleBlocObserver();
+    setupLocator();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light));
+    FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }
 
   @override
