@@ -107,7 +107,7 @@ class _ContactsPageState extends State<ContactsPage> {
                               image: AssetImage(
                                 ImageHelper.wrapAssetsImage('noFollowing.jpg'),
                               ),
-                              fit: BoxFit.fill)),
+                              fit: BoxFit.cover)),
                       width: double.infinity,
                       height: double.infinity,
                       child: Stack(
