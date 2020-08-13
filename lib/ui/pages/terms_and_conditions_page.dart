@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 const TextStyle titleTextStyle =
     TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
@@ -10,6 +13,7 @@ const TextStyle contentTextStyle = TextStyle(fontWeight: FontWeight.w300);
 class TermsAndConditions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
       appBar: AppBar(
           title: Center(
@@ -101,18 +105,24 @@ class TermsAndConditions extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                width: double.infinity,
-                child: RaisedButton(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  child: Text('Accept'),
-                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                      context, RouteName.login, (route) => false),
+              // if (newUser != false)
+              // RaisedButton(
+              //   onPressed: null,
+              //   child: Text(hasUser.toString()),
+              // ),
+              if (hasUser == null)
+                Container(
+                  margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  width: double.infinity,
+                  child: RaisedButton(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: Text('Accept'),
+                    onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                        context, RouteName.login, (route) => false),
+                  ),
                 ),
-              )
             ],
           ),
         ),

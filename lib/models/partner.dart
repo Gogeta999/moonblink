@@ -15,7 +15,9 @@ class PartnerUser {
   String password; // own Profile
   int followerCount;
   int followingCount; // own Profile
+  int reactionCount;
   int isFollow;
+  int likecount;
   double rating;
   PartnerProfile prfoileFromPartner;
 
@@ -35,7 +37,9 @@ class PartnerUser {
       this.password,
       this.followerCount,
       this.followingCount,
+      this.reactionCount,
       this.isFollow,
+      this.likecount,
       this.rating,
       this.prfoileFromPartner});
 
@@ -50,7 +54,9 @@ class PartnerUser {
         status: map['status'],
         followerCount: map['follower_count'],
         followingCount: map['following_count'],
+        reactionCount: map['reaction_count'],
         isFollow: map['is_follow'],
+        likecount: map['reaction_count'],
         rating: map['rating'],
         verified: map['verified'],
         verifiedAt: map['verified_at'],
@@ -72,7 +78,9 @@ class PartnerUser {
     data['type'] = type;
     data['status'] = status;
     data['follower_count'] = followerCount;
+    data['reaction_count'] = reactionCount;
     data['is_follow'] = isFollow;
+    data['reaction_count'] = likecount;
     data['rating'] = rating;
     // data['profile'] = profileFromPartner;
     // 'profile'] =partnerProfileImage;
