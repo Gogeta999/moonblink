@@ -6,8 +6,9 @@ class VoiceBottomSheet extends StatefulWidget {
   @required final Function send;
   @required final Function cancel;
   @required final Function start;
+  @required final Function restart;
 
-  const VoiceBottomSheet({Key key, this.send, this.cancel, this.start}) : super(key: key);
+  const VoiceBottomSheet({Key key, this.send, this.cancel, this.start, this.restart}) : super(key: key);
 
   @override
   _VoiceBottomSheetState createState() => _VoiceBottomSheetState();
@@ -31,7 +32,7 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet> with WidgetsBinding
     if(_tickerSubscription != null) {
       _tickerSubscription.cancel();
     }
-    widget.cancel();
+    if (_isRecording) widget.cancel();
     super.dispose();
   }
 
@@ -93,11 +94,11 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet> with WidgetsBinding
                   left: 20,
                   width: MediaQuery.of(context).size.width * 0.425,
                   child: RaisedButton(
-                    onPressed: _cancel,
+                    onPressed: _restart,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text('Cancel', style: TextStyle(fontSize: 16)),
+                    child: Text('Restart', style: TextStyle(fontSize: 16)),
                     padding: EdgeInsets.symmetric(vertical: 15),
                     color: Theme.of(context).accentColor,
                   ),
@@ -163,9 +164,19 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet> with WidgetsBinding
     });
   }
 
+  _restart() {
+    widget.restart();
+    _tickerSubscription.cancel();
+    setState(() {
+      _isRecording = false;
+      minutesStr = '0';
+      secondsStr = '00';
+    });
+  }
+
   _cancel() {
     Navigator.pop(context);
-    widget.cancel();
+    if (_isRecording) widget.cancel();
   }
 
   _send() {

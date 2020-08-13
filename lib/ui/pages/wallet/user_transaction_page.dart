@@ -60,7 +60,16 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
             }
             if (state is UserTransactionFailure) {
               return Center(
-                child: Text('Error: ${state.error}.'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('Error: ${state.error}.'),
+                    RaisedButton(
+                      onPressed: _onRefresh,
+                      child: Text('Retry'),
+                    )
+                  ],
+                ),
               );
             }
             if (state is UserTransactionNoData) {

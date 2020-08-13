@@ -90,12 +90,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
               return Column(
                 children: <Widget>[
                   InkWell(
-                      child: ConstrainedBox(
+                      child: Container(
                         constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height / 2.5,
-                          maxHeight: MediaQuery.of(context).size.height / 1.5,
-                          minWidth: double.infinity,
-                          maxWidth: double.infinity
+                            minHeight: MediaQuery.of(context).size.height / 2.5,
+                            maxHeight: MediaQuery.of(context).size.height / 1.5,
+                            minWidth: double.infinity,
+                            maxWidth: double.infinity
                         ),
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,

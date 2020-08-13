@@ -45,61 +45,45 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   void dispose() {
-    if (_recorder != null) _recorder.stop();
+    if (_currentStatus == RecordingStatus.Recording) _recorder.stop();
     super.dispose();
   }
 
   _init() async {
-    try {
-      if (await FlutterAudioRecorder.hasPermissions) {
-        String customPath = '';
-        io.Directory appDocDirectory;
+    String customPath = '';
+    io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-        if (io.Platform.isIOS) {
-          appDocDirectory = await getApplicationDocumentsDirectory();
-        } else {
-          appDocDirectory = await getExternalStorageDirectory();
-        }
-
-        // can add extension like ".mp4" ".wav" ".m4a" ".aac"
-        customPath = appDocDirectory.path +
-            customPath +
-            DateTime.now().millisecondsSinceEpoch.toString();
-
-        // .wav <---> AudioFormat.WAV
-        // .mp4 .m4a .aac <---> AudioFormat.AAC
-        // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-        _recorder =
-            FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
-        print(_recorder);
-
-        await _recorder.initialized;
-        // after initialization
-        var current = await _recorder.current(channel: 0);
-        print(current);
-        // should be "Initialized", if all working fine
-        setState(() {
-          _current = current;
-          _currentStatus = current.status;
-          print(_currentStatus);
-        });
-        CustomBottomSheet.showVoiceSheet(
-            buildContext: context,
-            send: () => _send(),
-            cancel: () => {
-              if (_recorder != null) {
-                _recorder.stop()
-              }
-            },
-            start: () => _start(),
-            onDismiss: widget.onDismiss);
-      } else {
-        Scaffold.of(context).showSnackBar(new SnackBar(
-            content: new Text(S.of(context).youMustAcceptPermission)));
-      }
-    } catch (e) {
-      print(e);
+    if (io.Platform.isIOS) {
+      appDocDirectory = await getApplicationDocumentsDirectory();
+    } else {
+      appDocDirectory = await getExternalStorageDirectory();
     }
+
+    // can add extension like ".mp4" ".wav" ".m4a" ".aac"
+    customPath = appDocDirectory.path +
+        customPath +
+        DateTime
+            .now()
+            .millisecondsSinceEpoch
+            .toString();
+
+    // .wav <---> AudioFormat.WAV
+    // .mp4 .m4a .aac <---> AudioFormat.AAC
+    // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
+    _recorder =
+        FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+    print(_recorder);
+
+    await _recorder.initialized;
+    // after initialization
+    var current = await _recorder.current(channel: 0);
+    print(current);
+    // should be "Initialized", if all working fine
+    setState(() {
+      _current = current;
+      _currentStatus = current.status;
+      print(_currentStatus);
+    });
   }
 
   _start() async {
@@ -111,6 +95,14 @@ class _VoicemsgState extends State<Voicemsg> {
       });
     } catch (e) {
       print(e);
+    }
+  }
+
+  _restart() async {
+    var result = await _recorder.stop();
+    if (result.path != null) {
+      ///stop success
+      await _init();
     }
   }
 
@@ -142,8 +134,17 @@ class _VoicemsgState extends State<Voicemsg> {
               color: Theme.of(context).accentColor,
             ),
             onTap: () async {
-              widget.onInit();
               await _init();
+              CustomBottomSheet.showVoiceSheet(
+                  buildContext: context,
+                  send: () => _send(),
+                  cancel: () {
+                    _recorder.stop();
+                  },
+                  start: () => _start(),
+                  restart: () => _restart(),
+                  onInit: widget.onInit,
+                  onDismiss: widget.onDismiss);
             },
           ));
     });

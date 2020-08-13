@@ -173,7 +173,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build request
   buildrequest(msg, bookingid) {
     return Container(
-      width: 160,
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.4,
+      ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Theme.of(context).accentColor,
@@ -361,8 +363,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build msg template
   buildmsg(Message msg) {
     return Container(
-      width: 150,
-      padding: EdgeInsets.all(10.0),
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.4,
+      ),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
@@ -437,7 +441,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget buildmessage(id, model) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      height: 70.0,
+      height: MediaQuery.of(context).size.height * 0.1,
       //color: Theme.of(context).backgroundColor,
       child: Row(
         children: <Widget>[
@@ -448,10 +452,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             color: Theme.of(context).accentColor,
             onPressed: () {
               //getImage();
-              setState(() {
-                isShowing = true;
-                controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
-              });
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
                   requestType: RequestType.image,
@@ -471,23 +471,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                       bytes = null;
                     });
                   },
-                  onDismiss: () => {
-                        setState(() {
-                          isShowing = false;
-                        })
-                      });
+                  onInit: _sendMessageWidgetUp,
+                  onDismiss: _sendMessageWidgetDown);
             },
           ),
           //Voice record
           Voicemsg(
-            onInit: () => setState((){
-              isShowing = true;
-              controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
-            }),
+            onInit: _sendMessageWidgetUp,
             id: id,
             messages: messages,
-            onDismiss: () => setState(() {isShowing = false;}),
+            onDismiss: _sendMessageWidgetDown,
           ),
+          SizedBox(width: 10),
           //Text Input
           Expanded(
             child: TextField(
@@ -781,15 +776,32 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               ),
               body: ListView(
                 controller: controller,
+                addAutomaticKeepAlives: true,
                 children: <Widget>[
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
-                  if (isShowing)
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.4)
+                  if (isShowing && Platform.isAndroid)
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.5),
+                  if(isShowing && Platform.isIOS)
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.45)
                 ],
               ),
             );
           });
+    });
+  }
+
+  _sendMessageWidgetUp() {
+    setState((){
+      isShowing = true;
+      controller.animateTo(MediaQuery.of(context).size.height * 0.4, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    });
+  }
+
+  _sendMessageWidgetDown() {
+    setState((){
+      isShowing = false;
+      controller.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.ease);
     });
   }
 
