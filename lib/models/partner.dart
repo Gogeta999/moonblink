@@ -12,6 +12,8 @@ class PartnerUser {
   String updatedAt;
   int status;
   int type;
+  String mlplayerid;
+  String pubgplayerid;
   String password; // own Profile
   int followerCount;
   int followingCount; // own Profile
@@ -34,6 +36,8 @@ class PartnerUser {
       this.updatedAt,
       this.type,
       this.status,
+      this.mlplayerid,
+      this.pubgplayerid,
       this.password,
       this.followerCount,
       this.followingCount,
@@ -56,6 +60,8 @@ class PartnerUser {
         followingCount: map['following_count'],
         reactionCount: map['reaction_count'],
         isFollow: map['is_follow'],
+        mlplayerid: map['ml_player_id'],
+        pubgplayerid: map['pubg_player_id'],
         likecount: map['reaction_count'],
         rating: map['rating'],
         verified: map['verified'],
@@ -80,6 +86,8 @@ class PartnerUser {
     data['follower_count'] = followerCount;
     data['reaction_count'] = reactionCount;
     data['is_follow'] = isFollow;
+    data['ml_player_id'] = mlplayerid;
+    data['pubg_player_id'] = pubgplayerid;
     data['reaction_count'] = likecount;
     data['rating'] = rating;
     // data['profile'] = profileFromPartner;

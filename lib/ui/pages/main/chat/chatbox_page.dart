@@ -118,10 +118,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
+    // setState(() {
     bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
-    if (bookingdata.status == 3) {
-      rating(bookingdata.bookingid);
-    }
+    // });
+
+    // Future.delayed(Duration.zero, () => rating(1));
   }
 
   //build messages
@@ -361,7 +362,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build msg template
   buildmsg(Message msg) {
     return Container(
-      width: 150,
+      constraints: BoxConstraints(maxWidth: 150),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Theme.of(context).accentColor,
@@ -450,7 +451,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               //getImage();
               setState(() {
                 isShowing = true;
-                controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
+                controller.animateTo(MediaQuery.of(context).size.height * 0.5,
+                    duration: Duration(milliseconds: 100), curve: Curves.ease);
               });
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
@@ -480,23 +482,30 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ),
           //Voice record
           Voicemsg(
-            onInit: () => setState((){
+            onInit: () => setState(() {
               isShowing = true;
-              controller.animateTo(MediaQuery.of(context).size.height * 0.5, duration: Duration(milliseconds: 100), curve: Curves.ease);
+              controller.animateTo(MediaQuery.of(context).size.height * 0.5,
+                  duration: Duration(milliseconds: 100), curve: Curves.ease);
             }),
             id: id,
             messages: messages,
-            onDismiss: () => setState(() {isShowing = false;}),
+            onDismiss: () => setState(() {
+              isShowing = false;
+            }),
           ),
           //Text Input
           Expanded(
             child: TextField(
-              maxLines: null,
+              minLines: 1,
+              maxLines: 5,
+              maxLength: 150,
+              keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.send,
+              textInputAction: TextInputAction.newline,
               controller: textEditingController,
-              decoration: InputDecoration.collapsed(
+              decoration: InputDecoration(
                 hintText: 'Input message',
+                counterText: "",
               ),
             ),
           ),
@@ -693,41 +702,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  buildpreview() {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 40),
-      height: 100,
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              height: 70,
-              child: Stack(children: <Widget>[
-                Image.memory(bytes),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: () {
-                      setState(() {
-                        //preview = false;
-                        bytes = null;
-                      });
-                    },
-                  ),
-                )
-              ]))
-        ],
-      ),
-    );
-  }
-
   bool isShowing = false;
   final controller = ScrollController();
   @override
   Widget build(BuildContext context) {
+    print("User Id is ${selfId.toString()}");
+    print("++++++++++++++++++++++++++++++++++++++");
+    // if (bookingdata == null) {
+    //   return ViewStateBusyWidget();
+    // }
+    // if (bookingdata.status == 3) {
+    //   Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
+    // }
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       // bookingdata = model.chatupdated();
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
@@ -757,10 +743,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               }
               got = true;
             }
-            // if (bookingdata.status == 3) {
-            //   Future.delayed(
-            //       Duration.zero, () => rating(bookingdata.bookingid));
-            // }
             return Scaffold(
               appBar: AppBar(
                 title: GestureDetector(
@@ -785,7 +767,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                   if (isShowing)
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.4)
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.4)
                 ],
               ),
             );

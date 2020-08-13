@@ -18,7 +18,6 @@ IO.Socket socket = IO.io(url, <String, dynamic>{
   'autoConnect': false,
 });
 
-int userid = StorageManager.sharedPreferences.getInt(mUserId);
 // List<Message> messages = List<Message>();
 List<Files> files = List<Files>();
 List<Chatlist> chatlist = List<Chatlist>();
@@ -53,6 +52,7 @@ class ChatModel extends Model {
   ///[Chating Text]
   //send messages
   void sendMessage(String text, int receiverChatID, List<Message> msg) {
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
     msg.insert(0, Message(text, userid, receiverChatID, now, '', 0));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
@@ -72,6 +72,7 @@ class ChatModel extends Model {
   //file message
   void sendfile(String name, Uint8List file, int receiverChatID, int type,
       List<Message> msg) {
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
     String local = new String.fromCharCodes(file);
     msg.insert(0, Message(name, userid, receiverChatID, now, local, 5));
     print("User ID : $userid");
@@ -93,6 +94,7 @@ class ChatModel extends Model {
   //file message
   void sendaudio(String name, Uint8List file, int receiverChatID, int type,
       List<Message> msg) {
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
     String local = new String.fromCharCodes(file);
     msg.insert(0, Message(name, userid, receiverChatID, now, local, 6));
     print("User ID : $userid");
@@ -157,6 +159,7 @@ class ChatModel extends Model {
   }
 
   void chatupdating(otherid) {
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
     print("Chat Updating");
     socket.emit("chat-updating", [
       {"sender_id": userid, "receiver_id": otherid}

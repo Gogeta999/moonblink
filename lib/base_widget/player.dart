@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }
@@ -22,6 +23,7 @@ class PlayerWidget extends StatefulWidget {
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
+  final FlutterFFprobe detail = new FlutterFFprobe();
   String url;
   PlayerMode mode;
 
@@ -58,6 +60,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   void initState() {
     super.initState();
     _initAudioPlayer();
+    detail.getMediaInformation(url).then((value) => print(value));
   }
 
   @override
