@@ -57,7 +57,6 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -67,6 +66,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     );
     _biosController.value = _biosController.value
         .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
+    _mlIdController.value =
+        _mlIdController.value.copyWith(text: widget.partnerUser.mlplayerid);
+    _pubgIdController.value =
+        _pubgIdController.value.copyWith(text: widget.partnerUser.pubgplayerid);
   }
 
   @override
@@ -102,7 +105,6 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
 
                               /// [You need to put before OnTap]
                               onTap: () {
-
                                 CustomBottomSheet.show(
                                     requestType: RequestType.image,
                                     popAfterBtnPressed: true,
@@ -135,23 +137,22 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   child: GestureDetector(
                                     /// [You need to put before OnTap]
                                     onTap: () {
-
                                       CustomBottomSheet.show(
-                                        ///profile is small
-                                        popAfterBtnPressed: true,
-                                        requestType: RequestType.image,
-                                        minWidth: 480,
-                                        minHeight: 480,
-                                        buttonText: 'Choose',
-                                        buildContext: context,
-                                        limit: 1,
-                                        onPressed: (File file) {
-                                          setState(() {
-                                            _profile = file;
-                                          });
-                                        },
-                                        body: 'Choose Profile'
-                                      );
+
+                                          ///profile is small
+                                          popAfterBtnPressed: true,
+                                          requestType: RequestType.image,
+                                          minWidth: 480,
+                                          minHeight: 480,
+                                          buttonText: 'Choose',
+                                          buildContext: context,
+                                          limit: 1,
+                                          onPressed: (File file) {
+                                            setState(() {
+                                              _profile = file;
+                                            });
+                                          },
+                                          body: 'Choose Profile');
                                     },
                                     child: CircleAvatar(
                                       radius: 75,
@@ -257,6 +258,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                             'name': _nameController.text,
                                             'bios':
                                                 _biosController.text.toString(),
+                                            'ml_player_id':
+                                                _mlIdController.text.toString(),
+                                            'pubg_player_id': _pubgIdController
+                                                .text
+                                                .toString()
                                           });
                                           var response = await DioUtils()
                                               .postwithData(
