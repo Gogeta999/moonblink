@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/models/selected_image_model.dart';
@@ -21,10 +22,16 @@ class CustomBottomSheet {
       @required RequestType requestType,
       int minWidth = 1080,
       int minHeight = 1080,
+      Function onInit,
       Function onDismiss}) async {
     var result = await PhotoManager.requestPermission();
     if (result) {
       //allow
+      try {
+        onInit();
+      } catch (e){
+        if (e is NoSuchMethodError) print('NoSuchMethodError');
+      }
       showModalBottomSheet(
           context: buildContext,
           barrierColor: Colors.white.withOpacity(0.0),
@@ -58,69 +65,7 @@ class CustomBottomSheet {
       });
     }else {
       // fail
-      showDialog(
-          context: buildContext,
-          builder: (context) {
-            if (Platform.isIOS) {
-              return CupertinoAlertDialog(
-                title: Text('Permission denied', style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline6),
-                content: Text(
-                    'Allow phots permission in settings to continue', style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel', style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyText1),
-                  ),
-                  FlatButton(
-                    onPressed: () => PhotoManager.openSetting(),
-                    child: Text('Open Settings', style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyText1),
-                  )
-                ],
-              );
-            } else {
-              return AlertDialog(
-                title: Text('Permission denied'),
-                titleTextStyle: Theme
-                    .of(context)
-                    .textTheme
-                    .headline6,
-                content: Text(
-                    'Allow photos permission in settings to continue', style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel', style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyText1),
-                  ),
-                  FlatButton(
-                    onPressed: () => PhotoManager.openSetting(),
-                    child: Text('Open Settings', style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyText1),
-                  )
-                ],
-              );
-            }
-          }
-        );
+      _permissionFail(buildContext, 'Photo');
     }
   }
 
@@ -130,34 +75,114 @@ class CustomBottomSheet {
         @required Function send,
         @required Function cancel,
         @required Function start,
-      Function onDismiss}
+        @required Function restart,
+        Function onInit,
+        Function onDismiss}
       ) async {
     ///request permission with async
-    showModalBottomSheet(
-        context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.0),
-        isDismissible: true,
-        isScrollControlled: true,
-        builder: (context) => DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.4,
-          maxChildSize: 0.90,
-          builder: (context, scrollController) {
-            return VoiceBottomSheet(
-              send: send,
-              cancel: cancel,
-              start: start
-            );
-          },
-        )).whenComplete(() {
+    bool permission = await FlutterAudioRecorder.hasPermissions;
+    if (permission) {
       try {
-        onDismiss();
+        onInit();
       } catch (e) {
-        if (e is NoSuchMethodError) {
-          print('NoSuchMethodError');
-        }
+        if (e is NoSuchMethodError) print('NoSuchMethodError');
       }
-    });
+      showModalBottomSheet(
+          context: buildContext,
+          barrierColor: Colors.white.withOpacity(0.0),
+          isDismissible: true,
+          isScrollControlled: true,
+          builder: (context) =>
+              DraggableScrollableSheet(
+                expand: false,
+                initialChildSize: 0.4,
+                maxChildSize: 0.90,
+                builder: (context, scrollController) {
+                  return VoiceBottomSheet(
+                    send: send,
+                    cancel: cancel,
+                    start: start,
+                    restart: restart
+                  );
+                },
+              )).whenComplete(() {
+        try {
+          onDismiss();
+        } catch (e) {
+          if (e is NoSuchMethodError) {
+            print('NoSuchMethodError');
+          }
+        }
+      });
+    } else {
+      _permissionFail(buildContext, 'Microphone');
+    }
+  }
+
+  static _permissionFail(BuildContext buildContext, String permissionName) {
+    showDialog(
+        context: buildContext,
+        builder: (context) {
+          if (Platform.isIOS) {
+            return CupertinoAlertDialog(
+              title: Text('Permission denied', style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6),
+              content: Text(
+                  'Allow $permissionName permission in settings to continue', style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1),
+                ),
+                FlatButton(
+                  onPressed: () => PhotoManager.openSetting(),
+                  child: Text('Open Settings', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1),
+                )
+              ],
+            );
+          } else {
+            return AlertDialog(
+              title: Text('Permission denied'),
+              titleTextStyle: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6,
+              content: Text(
+                  'Allow $permissionName permission in settings to continue', style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1),
+                ),
+                FlatButton(
+                  onPressed: () => PhotoManager.openSetting(),
+                  child: Text('Open Settings', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1),
+                )
+              ],
+            );
+          }
+        }
+    );
   }
 }
 

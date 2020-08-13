@@ -169,14 +169,12 @@ class PushNotificationsManager {
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
     }
-    showToast('onMessage');
     return;
   }
 
   Future<dynamic> _onResume(Map<String, dynamic> message) async {
     //on background and click it
     print('onResume: $message');
-    showToast('onResume');
     var fcmType = Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
@@ -201,7 +199,6 @@ class PushNotificationsManager {
     print('onLaunch: $message');
     var fcmType = Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
-    showToast('onLaunch');
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
