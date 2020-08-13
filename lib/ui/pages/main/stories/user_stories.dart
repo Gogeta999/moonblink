@@ -12,11 +12,13 @@ class StoriesPage extends StatefulWidget {
 }
 
 class _StoriesPageState extends State<StoriesPage> {
-  final storyController = StoryController();
+  // final storyController = StoryController();
   List<Stories> storys = [];
   // List<Story> userstories = [];
   // Story userstory;
   // List users = [];
+  final StoryController storyController = StoryController();
+
   int current;
   @override
   void initState() {
@@ -34,34 +36,18 @@ class _StoriesPageState extends State<StoriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    // current = widget.index;
-    // print("Current is $current");
-    // userstories = widget.story;
-    // print("userstories length ${userstories.length}");
-    // userstory = userstories[current];
-    // print("current story ${userstory.toString()}");
-    // users = userstory.storys;
-    // print("Stories ${users.length}");
-    // print("Current index is $current");
-    final PageController pageController = PageController();
-    final PageController pageController1 = PageController();
+    final PageController userController = PageController();
     final currentPageNotifier1 = ValueNotifier<int>(current);
     final _currentPageNotifier = ValueNotifier<int>(0);
-    final StoryController storyController = StoryController();
-    // print(storys.length);
-    // for (var i = 0; i < users.length; i++) {
-    //   Stories stories = Stories.fromJson(users[i]);
-    //   storys.add(stories);
-    // }
-    // print(storys);
 
     return PageView.builder(
         onPageChanged: (int index) {
           currentPageNotifier1.value = index;
         },
-        controller: pageController1,
-        itemCount: 6,
+        controller: userController,
+        itemCount: widget.story.length,
         itemBuilder: (context, index) {
+          final PageController storypageController = PageController();
           // current = index + 1;
           print("Current is $current");
           List<Story> userstories = widget.story;
@@ -71,31 +57,13 @@ class _StoriesPageState extends State<StoriesPage> {
           List users = userstory.storys;
           // print("Stories ${users.length.toString()}");
           // print("Current index is $current");
+          storys.clear();
           for (var i = 0; i < users.length; i++) {
-            storys.clear();
             Stories stories = Stories.fromJson(users[i]);
             storys.add(stories);
           }
           return Stack(
             children: <Widget>[
-              Padding(
-                padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                child: Column(children: <Widget>[
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    backgroundImage: NetworkImage(userstory.profile),
-                  ),
-                  Text(
-                    userstory.name,
-                    style: TextStyle(
-                      decoration: TextDecoration.none,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  )
-                ]),
-              ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -106,7 +74,7 @@ class _StoriesPageState extends State<StoriesPage> {
                     itemCount: storys.length,
                     onPageSelected: (int pageIndex) {
                       if (_currentPageNotifier.value > pageIndex)
-                        pageController.jumpToPage(pageIndex);
+                        storypageController.jumpToPage(pageIndex);
                     },
                   ),
                 ),
@@ -119,7 +87,7 @@ class _StoriesPageState extends State<StoriesPage> {
                       onPageChanged: (int pageIndex) {
                         _currentPageNotifier.value = pageIndex;
                       },
-                      controller: pageController,
+                      controller: storypageController,
                       itemCount: storys.length,
                       itemBuilder: (context, pageindex) {
                         Stories story = storys[pageindex];
@@ -134,7 +102,7 @@ class _StoriesPageState extends State<StoriesPage> {
                                         index = current++;
                                       });
                                       currentPageNotifier1.value += 1;
-                                      pageController1.jumpToPage(
+                                      userController.jumpToPage(
                                           currentPageNotifier1.value);
                                     } else {
                                       Navigator.pop(context);
@@ -142,7 +110,7 @@ class _StoriesPageState extends State<StoriesPage> {
                                   }
                                 : () {
                                     _currentPageNotifier.value += 1;
-                                    pageController
+                                    storypageController
                                         .jumpToPage(_currentPageNotifier.value);
                                   },
                             onVerticalDragUpdate: (dragUpdateDetails) {
@@ -164,7 +132,7 @@ class _StoriesPageState extends State<StoriesPage> {
                                     // Navigator.pop(context);
 
                                     currentPageNotifier1.value += 1;
-                                    pageController1
+                                    userController
                                         .jumpToPage(currentPageNotifier1.value);
                                   } else {
                                     Navigator.pop(context);
@@ -172,7 +140,7 @@ class _StoriesPageState extends State<StoriesPage> {
                                 }
                               : () {
                                   _currentPageNotifier.value += 1;
-                                  pageController
+                                  storypageController
                                       .jumpToPage(_currentPageNotifier.value);
                                 },
                           onVerticalDragUpdate: (dragUpdateDetails) {
@@ -187,6 +155,24 @@ class _StoriesPageState extends State<StoriesPage> {
                         );
                       }),
                 ),
+              ),
+              Padding(
+                padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                child: Column(children: <Widget>[
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    backgroundImage: NetworkImage(userstory.profile),
+                  ),
+                  Text(
+                    userstory.name,
+                    style: TextStyle(
+                      decoration: TextDecoration.none,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  )
+                ]),
               ),
             ],
           );
