@@ -56,7 +56,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     _userSessions.clear();
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
-    PushNotificationsManager().cancelVoiceCallNotification();
     super.dispose();
   }
 
@@ -191,7 +190,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   //Exit Channel
   void _onExit(BuildContext context) {
     AgoraRtcEngine.leaveChannel();
-
+    PushNotificationsManager().cancelVoiceCallNotification();
     Navigator.pop(context);
   }
 

@@ -33,7 +33,7 @@ class DioUtils {
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
     baseUrl: baseUrl,
-    connectTimeout: 5000,
+    connectTimeout: 10000,
     receiveTimeout: 5000,
     headers: {
       //Default necessary header

@@ -75,6 +75,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   Widget build(BuildContext context) {
     return Container(
         width: 200,
+        height: 40,
         decoration: BoxDecoration(
           color: Theme.of(context).accentColor,
           borderRadius: BorderRadius.all(
@@ -99,15 +100,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   ),
             Flexible(
                 child: LinearProgressIndicator(
-              backgroundColor: Colors.white,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-              value: (_position != null &&
-                      _duration != null &&
-                      _position.inMilliseconds > 0 &&
-                      _position.inMilliseconds < _duration.inMilliseconds)
-                  ? _position.inMilliseconds / _duration.inMilliseconds
-                  : 0.0,
-            )),
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                value: (_position != null &&
+                        _duration != null &&
+                        _position.inMilliseconds > 0 &&
+                        _position.inMilliseconds < _duration.inMilliseconds)
+                    ? _position.inMilliseconds / _duration.inMilliseconds
+                    : 0.0,
+              )),
 
             /// can't get max duration at start
             Padding(

@@ -277,7 +277,7 @@ class _TopUpPageState extends State<TopUpPage>
             FontAwesomeIcons.coins,
             color: Colors.amber[500],
           ),
-          title: Text('${iapItem.description}'),
+          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title}'),
           subtitle: Text('${iapItem.price} ${iapItem.currency}'),
           trailing: RaisedButton(
               color: Theme.of(context).accentColor,
@@ -369,8 +369,8 @@ class _TopUpPageState extends State<TopUpPage>
           Flexible(
             child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
               itemCount: _items.length,
+              shrinkWrap: true,
               itemBuilder: (context, index) {
                 return _buildProductListTile(_items[index]);
               },
@@ -378,7 +378,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           _buildCurrentCoinAmount(),
           _buildAds(),
-          _buildTopUpWithCustomerService()
+          _buildTopUpWithCustomerService(),
         ],
       );
     }

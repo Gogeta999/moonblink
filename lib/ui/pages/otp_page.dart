@@ -11,7 +11,6 @@ import 'package:moonblink/base_widget/sign_IO_widgets/otp_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/otp_model.dart';
 import 'package:provider/provider.dart';
 
