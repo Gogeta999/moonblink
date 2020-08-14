@@ -87,6 +87,10 @@ dependencies:
   firebase_auth: ^0.16.1
   # loading image from local -- new libraries
   photo_manager: ^0.5.7
+  # Apple Sign in - android, ios and mac support
+  sign_in_with_apple: ^2.5.2
+  # Apple Sign in 2 - only iOS support
+  apple_sign_in: ^0.1.0
 
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.

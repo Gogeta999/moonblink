@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
@@ -47,6 +48,7 @@ class RouteName {
   static const String callScreen = 'callScreen';
   static const String newUserSwiperPage = 'newUserSwiperPage';
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
+  static const String licenseAgreement = 'licenseAgreement';
 }
 
 class Router {
@@ -58,6 +60,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
         return CupertinoPageRoute(builder: (_) => TermsAndConditions());
+      case RouteName.licenseAgreement:
+        return CupertinoPageRoute(builder: (_) => LicenseAgreement());
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));

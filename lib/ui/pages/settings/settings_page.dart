@@ -127,6 +127,21 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
+                  title: Text('License Agreement'),
+                  onTap: () async {
+                    Navigator.of(context)
+                        .pushNamed(RouteName.licenseAgreement);
+                  },
+                  leading: Icon(Icons.book, color: iconColor),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Material(
+                color: Theme.of(context).cardColor,
+                child: ListTile(
                   title: Text(S.of(context).ratingApp),
                   onTap: _openStore,
                   leading: Icon(Icons.tag_faces, color: iconColor),

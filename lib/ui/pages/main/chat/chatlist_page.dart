@@ -17,7 +17,11 @@ class ChatListPage extends StatefulWidget {
   _ChatListPageState createState() => _ChatListPageState();
 }
 
-class _ChatListPageState extends State<ChatListPage> {
+class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
   String usertoken = StorageManager.sharedPreferences.getString(token);

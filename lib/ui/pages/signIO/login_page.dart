@@ -181,7 +181,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text.rich(TextSpan(text: S.of(context).noAccount, children: [
+      child: Text.rich(TextSpan(text: S.of(context).noAccount+ '. ', children: [
         TextSpan(
             text: S.of(context).toSignUp,
             recognizer: _recognizerRegister,
