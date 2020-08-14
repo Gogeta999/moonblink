@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,6 +10,7 @@ import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';
@@ -69,6 +73,28 @@ class LoginModel extends ViewStateModel {
             /*setIdle();
             return false;*/
             break;
+        }
+      } else if (type == 'apple' && fcmToken != null) {
+        if (await AppleSignIn.isAvailable()) {
+          final AuthorizationResult result = await AppleSignIn.performRequests([
+            AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+          ]);
+          switch (result.status) {
+            case AuthorizationStatus.authorized:
+              String identityTokenString =
+                  String.fromCharCodes(result.credential.identityToken);
+              user = await MoonBlinkRepository.loginWithApple(
+                  identityTokenString, fcmToken);
+              break;
+            case AuthorizationStatus.error:
+              print("Sign in failed: ${result.error.localizedDescription}");
+              break;
+            case AuthorizationStatus.cancelled:
+              print('User cancelled');
+              break;
+          }
+        } else {
+          print('Apple SignIn is not available for your device');
         }
       } else {
         setIdle();

@@ -96,7 +96,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
                 controller: _scrollController,
               );
             }
-            return null;
+            return Text('Oops!. Something went wrong.');
           },
         ),
       ),
