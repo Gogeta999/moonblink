@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
 const TextStyle titleTextStyle =
@@ -16,18 +15,16 @@ class TermsAndConditions extends StatelessWidget {
     var hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
       appBar: AppBar(
-          title: Center(
-        child: Column(
-          children: <Widget>[
-            Text('MoonBlink\'s'),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child:
-                  Text('Terms and Conditions', style: TextStyle(fontSize: 16)),
-            )
-          ],
-        ),
-      )),
+          title: Column(
+            children: <Widget>[
+              Text('MoonBlink\'s'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child:
+                    Text('Terms and Conditions', style: TextStyle(fontSize: 16)),
+              )
+            ],
+          )),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.fromLTRB(10, 10, 10, 0),

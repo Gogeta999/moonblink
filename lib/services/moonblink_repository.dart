@@ -202,6 +202,15 @@ class MoonBlinkRepository {
     });
     return User.fromJsonMap(response.data);
   }
+  ///token means IdentityToken
+  static Future loginWithApple(String token, String fcmToken) async {
+    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
+      'access_token': token,
+      'type': 'apple',
+      'fcm_token': fcmToken
+    });
+    return User.fromJsonMap(response.data);
+  }
 
   /// [lout api]
   static logout() async {

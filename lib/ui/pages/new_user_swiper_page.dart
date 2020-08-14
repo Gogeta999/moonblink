@@ -141,7 +141,7 @@ class CustomSwiperControl extends SwiperPlugin {
       // ignore: unused_local_variable
       bool next = config.activeIndex < config.itemCount - 1;
       bool prev = config.activeIndex > 0;
-      prevColor = prev ? color : disableColor;
+      prevColor = color;
       nextColor = color;
     }
 
