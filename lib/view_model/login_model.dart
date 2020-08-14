@@ -1,7 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:apple_sign_in/apple_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -10,7 +7,6 @@ import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
-import 'package:oktoast/oktoast.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';

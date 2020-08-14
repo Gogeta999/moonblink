@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -40,7 +39,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();

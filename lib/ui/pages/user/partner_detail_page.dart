@@ -4,7 +4,6 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
-import 'package:moonblink/base_widget/videotrimmer/storage_dir.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -178,12 +177,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   ),
 
                   SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 15,
-                    ),
-                  ),
-
-                  SliverToBoxAdapter(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -255,62 +248,35 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
 
-                  ///[Test]
-                  // SliverToBoxAdapter(
-                  //   child: Column(
-                  //     children: [
-                  //       Container(
-                  //         color: Colors.red,
-                  //         height: 15,
-                  //       ),
-                  //       Container(
-                  //         color: Colors.green,
-                  //         height: 15,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
                   /// [info]
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Center(
-                            child: Text(partnerModel.partnerData.partnerName +
-                                ' have ' +
-                                '${partnerModel.partnerData.followerCount}' +
-                                ' followers'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
 
                   /// [user bio]
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(25),
+                      padding: EdgeInsets.fromLTRB(10, 15, 0, 15),
                       child: Text(
                           partnerModel.partnerData.prfoileFromPartner.bios),
                     ),
                   ),
+                  // SliverToBoxAdapter(child: SizedBox(height: 1)),
                   SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(30),
-                      child: Text('Total count' +
-                          partnerModel.partnerData.reactionCount.toString()),
-                    ),
-                  ),
-
-                  ///[Reaction Count]
-                  SliverToBoxAdapter(
-                    child: ListTile(
-                      title: Text("This user has "),
-                      trailing: Text(
-                          "👍 ${partnerModel.partnerData.likecount.toString()} 👍"),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Text(partnerModel.partnerData.reactionCount
+                                  .toString() +
+                              '  Likes'),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Text(partnerModel.partnerData.followerCount
+                                  .toString() +
+                              '  Followers'),
+                        ),
+                      ],
                     ),
                   ),
 

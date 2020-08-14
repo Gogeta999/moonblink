@@ -107,35 +107,12 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 ),
               ),
 
-              SliverToBoxAdapter(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    //TODO:
-                    // RaisedButton(
-                    //   color: Theme.of(context).accentColor,
-                    //   highlightColor: Theme.of(context).highlightColor,
-                    //   colorBrightness: Theme.of(context).brightness,
-                    //   splashColor: Theme.of(context).splashColor,
-                    //   shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(20.0)),
-                    //   child: Text(
-                    //     'Follower List',
-                    //     style: Theme.of(context)
-                    //         .accentTextTheme
-                    //         .button
-                    //         .copyWith(wordSpacing: 6),
-                    //   ),
-                    //   onPressed: () async {
-                    //     // await DioUtils().post(Api.PARTNERDETAIL+ partnerModel.partnerData.partnerId.toString()+ '/follow',queryParameters: {
-                    //     //   'status': '0',
-
-                    //     // });
-                    //   },
-                    // ),
-                  ],
-                ),
-              ),
+              // SliverToBoxAdapter(
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: <Widget>[],
+              //   ),
+              // ),
 
               /// [info]
               SliverToBoxAdapter(

@@ -17,8 +17,8 @@ class ChatListPage extends StatefulWidget {
   _ChatListPageState createState() => _ChatListPageState();
 }
 
-class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClientMixin{
-
+class _ChatListPageState extends State<ChatListPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -79,6 +79,8 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
+    //
+    super.build(context);
     // final hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
         appBar: AppBar(title: AppbarLogo()),

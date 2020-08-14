@@ -173,7 +173,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   buildrequest(msg, bookingid) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.4,
+        maxWidth: MediaQuery.of(context).size.width * 0.44,
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(

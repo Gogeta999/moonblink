@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
