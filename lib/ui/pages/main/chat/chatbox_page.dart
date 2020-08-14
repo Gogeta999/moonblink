@@ -52,6 +52,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //for Rating
   bool got = false;
   bool imagepick = false;
+  bool rated = false;
   TextEditingController comment = TextEditingController();
   PartnerUser partnerdata;
   int type = 1;
@@ -118,11 +119,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     super.initState();
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    // setState(() {
     bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
-    // });
-
-    // Future.delayed(Duration.zero, () => rating(1));
+    print(bookingdata);
   }
 
   //build messages
@@ -247,6 +245,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           print("rating value -> $value");
                           setState(() {
                             rate = value;
+                            rated = false;
                           });
                         },
                       ),
@@ -297,7 +296,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         onPressed: () {
           MoonBlinkRepository.bookingAcceptOrDecline(
               selfId, bookingid, bookingAccept);
-          msg.type = 0;
+          // msg.type = 0;
         },
       ),
     );
@@ -406,10 +405,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //build temporary audio file
   buildlocalaudio(Message msg) {
-    var file = new Uint8List.fromList(msg.attach.codeUnits);
-    File audio = File.fromRawPath(file);
+    print("audio File path is ${msg.attach}");
     //need to fix path
-    return PlayerWidget(url: audio.path);
+    return LocalPlayerWidget(path: msg.attach);
   }
 
   //build image
@@ -578,12 +576,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //action 1
   action1(model) {
-    bookingdata = model.chatupdated();
     print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
-
     switch (bookingdata.status) {
       //normal
       case (-1):
@@ -625,7 +621,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //action2
   action2(model) {
-    bookingdata = model.chatupdated();
     print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
@@ -673,12 +668,16 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Conversation List
-  Widget buildChatList(id, model) {
+  Widget buildChatList(id, ChatModel model) {
     model.receiver(messages);
     bookingdata = model.chatupdated();
     print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
+    }
+    if (bookingdata.status == 3 && rated == false) {
+      rated = true;
+      Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
     }
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
@@ -699,14 +698,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget build(BuildContext context) {
     print("User Id is ${selfId.toString()}");
     print("++++++++++++++++++++++++++++++++++++++");
-    // if (bookingdata == null) {
-    //   return ViewStateBusyWidget();
-    // }
-    // if (bookingdata.status == 3) {
-    //   Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
-    // }
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      // bookingdata = model.chatupdated();
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
@@ -759,9 +751,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   buildChatList(partnermodel.partnerData.partnerId, model),
                   buildmessage(partnermodel.partnerData.partnerId, model),
                   if (isShowing && Platform.isAndroid)
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-                  if(isShowing && Platform.isIOS)
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.45)
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.5),
+                  if (isShowing && Platform.isIOS)
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.45)
                 ],
               ),
             );
@@ -770,16 +762,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   _sendMessageWidgetUp() {
-    setState((){
+    setState(() {
       isShowing = true;
-      controller.animateTo(MediaQuery.of(context).size.height * 0.4, duration: Duration(milliseconds: 300), curve: Curves.ease);
+      controller.animateTo(MediaQuery.of(context).size.height * 0.4,
+          duration: Duration(milliseconds: 300), curve: Curves.ease);
     });
   }
 
   _sendMessageWidgetDown() {
-    setState((){
+    setState(() {
       isShowing = false;
-      controller.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.ease);
+      controller.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.ease);
     });
   }
 
