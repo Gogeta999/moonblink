@@ -33,12 +33,12 @@ class ChatModel extends Model {
     if (socket.connect() != null) {
       print("Connected Socket");
     }
-    //call made
-    socket.once("call-made", (data) => null);
-    //answer-made
-    socket.once("made-answer", (data) => null);
-    //call rejected
-    socket.once("call-rejected", (data) => null);
+    // //call made
+    // socket.once("call-made", (data) => null);
+    // //answer-made
+    // socket.once("made-answer", (data) => null);
+    // //call rejected
+    // socket.once("call-rejected", (data) => null);
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -93,13 +93,14 @@ class ChatModel extends Model {
 
   //file message
   void sendaudio(String name, Uint8List file, int receiverChatID, int type,
-      List<Message> msg) {
+      List<Message> msg, String path) {
     int userid = StorageManager.sharedPreferences.getInt(mUserId);
-    String local = new String.fromCharCodes(file);
-    msg.insert(0, Message(name, userid, receiverChatID, now, local, 6));
+    // String local = new String.fromCharCodes(file);
+    msg.insert(0, Message(name, userid, receiverChatID, now, path, 6));
     print("User ID : $userid");
     print("Receiver ID : $receiverChatID");
     print("Name : $name");
+    print("File Path : $path");
     //print("File : ${file.toString()}");
     socket.emit('upload-attach', [
       {

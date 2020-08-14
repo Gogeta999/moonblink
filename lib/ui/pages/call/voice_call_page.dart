@@ -21,6 +21,7 @@ class VoiceCallWidget extends StatefulWidget {
 
 class AudioCallPageState extends State<VoiceCallWidget> {
   Timer _timer;
+  Timer startcount;
   int _countdownTime = 30;
   bool _closeAgora = true;
 
@@ -51,15 +52,38 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   //After this page Close
   @override
   void dispose() {
-    _timer.cancel();
-    // _countdownController.dispose();
-    _userSessions.clear();
-    AgoraRtcEngine.leaveChannel();
-    AgoraRtcEngine.destroy();
+    try {
+      _timer.cancel();
+      // _countdownController.dispose();
+      _userSessions.clear();
+      // AgoraRtcEngine.leaveChannel();
+      AgoraRtcEngine.destroy();
+    } catch (e) {
+      print(e);
+    }
     super.dispose();
   }
 
   Future<void> timerCountDown() async {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          if (_countdownTime < 1 && _closeAgora == true) {
+            timer.cancel();
+            _onExit(context);
+          } else if (_closeAgora == false) {
+            timer.cancel();
+          } else {
+            _countdownTime = _countdownTime - 1;
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> starttime() async {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,

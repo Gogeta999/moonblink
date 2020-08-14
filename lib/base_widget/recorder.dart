@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -7,22 +6,22 @@ import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
   final messages;
-  @required final Function onDismiss;
-  @required final Function onInit;
+  @required
+  final Function onDismiss;
+  @required
+  final Function onInit;
 
-  Voicemsg({localFileSystem, this.id, this.messages, this.onDismiss, this.onInit})
+  Voicemsg(
+      {localFileSystem, this.id, this.messages, this.onDismiss, this.onInit})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -62,16 +61,12 @@ class _VoicemsgState extends State<Voicemsg> {
     // can add extension like ".mp4" ".wav" ".m4a" ".aac"
     customPath = appDocDirectory.path +
         customPath +
-        DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString();
+        DateTime.now().millisecondsSinceEpoch.toString();
 
     // .wav <---> AudioFormat.WAV
     // .mp4 .m4a .aac <---> AudioFormat.AAC
     // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-    _recorder =
-        FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+    _recorder = FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
     print(_recorder);
 
     await _recorder.initialized;
@@ -118,7 +113,8 @@ class _VoicemsgState extends State<Voicemsg> {
     print("File length: ${await _file.length()}");
     bytes = _file.readAsBytesSync();
     print(filename);
-    chatModel.sendaudio(filename, bytes, widget.id, 3, widget.messages);
+    chatModel.sendaudio(
+        filename, bytes, widget.id, 3, widget.messages, result.path);
   }
 
   @override
