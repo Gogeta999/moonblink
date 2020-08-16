@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -65,12 +66,22 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
                   // background: Image.asset(ImageHelper.wrapAssetsImage('images.jpg'), fit: BoxFit.cover,),
-                  background: CachedNetworkImage(
-                    imageUrl:
-                        partnerModel.partnerData.prfoileFromPartner.coverImage,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CachedLoader(),
-                    errorWidget: (context, url, error) => CachedError(),
+                  background: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageView(partnerModel
+                                .partnerData.prfoileFromPartner.coverImage),
+                          ));
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: partnerModel
+                          .partnerData.prfoileFromPartner.coverImage,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => CachedLoader(),
+                      errorWidget: (context, url, error) => CachedError(),
+                    ),
                   ),
                 ),
               ),
@@ -90,12 +101,24 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                           child: SizedBox(
                         width: 100.0,
                         height: 100.0,
-                        child: CachedNetworkImage(
-                          imageUrl: partnerModel
-                              .partnerData.prfoileFromPartner.profileImage,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => CachedLoader(),
-                          errorWidget: (context, url, error) => CachedError(),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImageView(partnerModel
+                                      .partnerData
+                                      .prfoileFromPartner
+                                      .profileImage),
+                                ));
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: partnerModel
+                                .partnerData.prfoileFromPartner.profileImage,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => CachedLoader(),
+                            errorWidget: (context, url, error) => CachedError(),
+                          ),
                         ),
                       )),
                     )),

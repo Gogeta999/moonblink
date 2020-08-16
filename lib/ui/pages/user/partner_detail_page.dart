@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -132,12 +133,22 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,
                       // background: Image.network(partnerModel.data.partnerCover),
-                      background: CachedNetworkImage(
-                        imageUrl: partnerModel
-                            .partnerData.prfoileFromPartner.coverImage,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => CachedLoader(),
-                        errorWidget: (context, url, error) => CachedError(),
+                      background: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: partnerModel
+                              .partnerData.prfoileFromPartner.coverImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => CachedLoader(),
+                          errorWidget: (context, url, error) => CachedError(),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageView(partnerModel
+                                    .partnerData.prfoileFromPartner.coverImage),
+                              ));
+                        },
                       ),
                     ),
                   ),
@@ -157,13 +168,24 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                               child: SizedBox(
                             width: 100.0,
                             height: 100.0,
-                            child: CachedNetworkImage(
-                              imageUrl: partnerModel
-                                  .partnerData.prfoileFromPartner.profileImage,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => CachedLoader(),
-                              errorWidget: (context, url, error) =>
-                                  CachedError(),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageView(
+                                          partnerModel.partnerData
+                                              .prfoileFromPartner.profileImage),
+                                    ));
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: partnerModel.partnerData
+                                    .prfoileFromPartner.profileImage,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => CachedLoader(),
+                                errorWidget: (context, url, error) =>
+                                    CachedError(),
+                              ),
                             ),
                           )),
                         )),

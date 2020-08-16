@@ -201,8 +201,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(
-                            children: <Widget>[
+                          Column(children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()
@@ -415,10 +414,12 @@ class PageCard extends StatelessWidget {
               color: Colors.white,
               size: 26.0,
             ),
-            Text(pageTitle,
-                style:
-                    TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
-                softWrap: true)
+            Center(
+              child: Text(pageTitle,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, color: Colors.white),
+                  softWrap: true),
+            )
           ],
         ),
       ),
