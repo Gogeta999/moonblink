@@ -50,6 +50,13 @@ class _VoicemsgState extends State<Voicemsg> {
 
   _init() async {
     String customPath = '';
+//     // io.Directory appDocDirectory;
+//     io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+//     // if (io.Platform.isIOS) {
+//     //   appDocDirectory = await getApplicationDocumentsDirectory();
+//     // } else {
+//     //   appDocDirectory = await getExternalStorageDirectory();
+//     // }
     io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
     if (io.Platform.isAndroid) {
