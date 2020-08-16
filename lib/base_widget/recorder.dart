@@ -30,7 +30,6 @@ class Voicemsg extends StatefulWidget {
 
 class _VoicemsgState extends State<Voicemsg> {
   FlutterAudioRecorder _recorder;
-  // ignore: unused_field
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
   String filename;
@@ -53,10 +52,12 @@ class _VoicemsgState extends State<Voicemsg> {
     String customPath = '';
     io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-    if (io.Platform.isIOS) {
+    if (io.Platform.isAndroid) {
+      appDocDirectory = await getExternalStorageDirectory();
+    } else if (io.Platform.isIOS) {
       appDocDirectory = await getApplicationDocumentsDirectory();
     } else {
-      appDocDirectory = await getExternalStorageDirectory();
+      appDocDirectory = await getApplicationDocumentsDirectory();
     }
 
     // can add extension like ".mp4" ".wav" ".m4a" ".aac"
