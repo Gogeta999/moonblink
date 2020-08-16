@@ -68,11 +68,11 @@ class _BookingButtonState extends State<BookingButton> {
                   onPressed: () {
                     if (bookingModel.isError) {
                       print("Error Booking");
-                      showToast("Error");
+                      showToast(
+                          bookingModel.viewStateError.errorMessage.toString());
                     } else {
-                      bookingModel
-                          .booking(partnerDetailModel.partnerId)
-                          .then((value) => value
+                      bookingModel.booking(partnerDetailModel.partnerId).then(
+                          (value) => value
                               ? {
                                   Navigator.pop(context,
                                       'Cancel'), //remove booking dialog and open another
@@ -84,7 +84,8 @@ class _BookingButtonState extends State<BookingButton> {
                                                 .partnerData.partnerId),
                                       ))
                                 }
-                              : showToast("The partner cannot be booked"));
+                              : showToast(bookingModel.viewStateError.message
+                                  .toString()));
                     }
                     //api call
                   })
@@ -99,7 +100,8 @@ class _BookingButtonState extends State<BookingButton> {
     int userId = StorageManager.sharedPreferences.getInt(mUserId);
     return ProviderWidget<BookingModel>(
         model: BookingModel(),
-        onModelReady: (model) async => await model.initData(partnerDetailModel.partnerId),
+        onModelReady: (model) async =>
+            await model.initData(partnerDetailModel.partnerId),
         builder: (context, model, child) {
           if (model.isBusy) {
             return ViewStateBusyWidget();

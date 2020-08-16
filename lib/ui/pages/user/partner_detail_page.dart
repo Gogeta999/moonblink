@@ -6,6 +6,7 @@ import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -121,11 +122,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           onPressed: widget.detailPageId == ownId
                               ? null
                               : () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChatBoxPage(
-                                              widget.detailPageId)));
+                                  Navigator.pushReplacementNamed(
+                                      context, RouteName.chatBox,
+                                      arguments: widget.detailPageId);
                                 }),
                     ],
 

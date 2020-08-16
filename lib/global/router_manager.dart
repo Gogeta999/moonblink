@@ -15,6 +15,7 @@ import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
+import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
@@ -89,6 +90,9 @@ class Router {
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
+      case RouteName.partnerDetail:
+        return CupertinoPageRoute(
+            builder: (_) => PartnerDetailPage(settings.arguments));
       case RouteName.chatBox:
         return CupertinoPageRoute(
             builder: (_) => ChatBoxPage(settings.arguments));

@@ -15,6 +15,7 @@ import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
@@ -732,11 +733,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     child: Text(partnermodel.partnerData.partnerName),
                     onTap: partnermodel.partnerData.type == 1
                         ? () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PartnerDetailPage(
-                                        widget.detailPageId)));
+                            Navigator.pushReplacementNamed(
+                                context, RouteName.partnerDetail,
+                                arguments: widget.detailPageId);
                           }
                         : null),
                 actions: <Widget>[
