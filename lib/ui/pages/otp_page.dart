@@ -81,14 +81,14 @@ class _OtpPageState extends State<OtpPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: 'Please put your phone number',
+                                label: S.of(context).labelphno,
                                 icon: FontAwesomeIcons.phone,
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
                               ),
                               OtpTextField(
                                 _phoneController,
-                                label: 'Please enter OTP Code',
+                                label: S.of(context).labelotp,
                                 icon: FontAwesomeIcons.sms,
                                 controller: _otpCodeController,
                                 keyboardType: TextInputType.number,

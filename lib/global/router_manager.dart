@@ -27,7 +27,7 @@ class RouteName {
   static const String splash = 'splash';
   static const String main = '/';
   static const String userStatus = '/userStatus';
-  static const String comment = 'comment';
+  // static const String comment = 'comment';
   static const String network = 'network';
   // static const String error = 'error';
   static const String imagepick = 'imagepick';
@@ -70,8 +70,8 @@ class Router {
         return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
-      case RouteName.comment:
-        return CupertinoPageRoute(builder: (_) => CommentsPage());
+      // case RouteName.comment:
+      //   return CupertinoPageRoute(builder: (_) => CommentsPage());
       // case RouteName.search:
       //   return CupertinoPageRoute(builder: (_) => SearchPage());
       case RouteName.imagepick:

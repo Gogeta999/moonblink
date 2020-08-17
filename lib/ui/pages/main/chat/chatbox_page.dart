@@ -165,7 +165,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         return buildrequest(msg, bookingid);
         break;
       default:
-        return Text("Error");
+        return Text(S.of(context).error);
         break;
     }
   }
@@ -265,7 +265,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                             controller: comment,
                             textInputAction: TextInputAction.done,
                             decoration: InputDecoration(
-                              labelText: "Please give some comments",
+                              labelText: S.of(context).labelcomment,
                             ),
                           ))
                     ],
@@ -279,7 +279,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                                   comment.text)
                               .then((value) => value
                                   ? Navigator.pop(context)
-                                  : showToast("Rating Failed"));
+                                  : showToast(S.of(context).toastratingfail));
                         })
                   ],
                 );
@@ -455,10 +455,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
                   requestType: RequestType.image,
-                  buttonText: 'Send',
+                  buttonText: S.of(context).sendbutton,
                   buildContext: context,
                   limit: 1,
-                  body: 'Select image',
+                  body: S.of(context).labelimageselect,
                   onPressed: (File file) async {
                     setState(() {
                       _file = file;
@@ -494,7 +494,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               textInputAction: TextInputAction.newline,
               controller: textEditingController,
               decoration: InputDecoration(
-                hintText: 'Input message',
+                hintText: S.of(context).labelmsg,
                 counterText: "",
               ),
             ),
@@ -782,7 +782,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (voiceChannelName.isNotEmpty) {
       await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
-      showToast('Developer error,Contact us on Facebook');
+      showToast(S.of(context).toasterror);
     }
   }
 

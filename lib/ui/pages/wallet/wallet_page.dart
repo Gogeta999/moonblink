@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'topup_page.dart';
 import 'user_transaction_page.dart';
 
@@ -14,9 +15,12 @@ class _WalletPageState extends State<WalletPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Wallet'),
+          title: Text(S.of(context).userStatusWallet),
           bottom: TabBar(
-            tabs: <Widget>[Tab(text: 'Top Up'), Tab(text: 'Transaction')],
+            tabs: <Widget>[
+              Tab(text: S.of(context).topup),
+              Tab(text: S.of(context).transaction)
+            ],
           ),
         ),
         body: TabBarView(

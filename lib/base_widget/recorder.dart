@@ -60,11 +60,11 @@ class _VoicemsgState extends State<Voicemsg> {
     io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
     if (io.Platform.isAndroid) {
-      appDocDirectory = await getExternalStorageDirectory();
+      appDocDirectory = await getTemporaryDirectory();
     } else if (io.Platform.isIOS) {
-      appDocDirectory = await getApplicationDocumentsDirectory();
+      appDocDirectory = await getTemporaryDirectory();
     } else {
-      appDocDirectory = await getApplicationDocumentsDirectory();
+      appDocDirectory = await getTemporaryDirectory();
     }
 
     // can add extension like ".mp4" ".wav" ".m4a" ".aac"

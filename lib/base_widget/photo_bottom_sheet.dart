@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -29,7 +30,7 @@ class CustomBottomSheet {
       //allow
       try {
         onInit();
-      } catch (e){
+      } catch (e) {
         if (e is NoSuchMethodError) print('NoSuchMethodError');
       }
       showModalBottomSheet(
@@ -38,23 +39,23 @@ class CustomBottomSheet {
           isDismissible: true,
           isScrollControlled: true,
           builder: (context) => DraggableScrollableSheet(
-            expand: false,
-            initialChildSize: 0.4,
-            maxChildSize: 0.90,
-            builder: (context, scrollController) {
-              return PhotoBottomSheet(
-                sheetScrollController: scrollController,
-                popAfterBtnPressed: popAfterBtnPressed,
-                requestType: requestType,
-                limit: limit,
-                onPressed: onPressed,
-                body: body,
-                buttonText: buttonText,
-                minWidth: minWidth,
-                minHeight: minHeight,
-              );
-            },
-          )).whenComplete(() {
+                expand: false,
+                initialChildSize: 0.4,
+                maxChildSize: 0.90,
+                builder: (context, scrollController) {
+                  return PhotoBottomSheet(
+                    sheetScrollController: scrollController,
+                    popAfterBtnPressed: popAfterBtnPressed,
+                    requestType: requestType,
+                    limit: limit,
+                    onPressed: onPressed,
+                    body: body,
+                    buttonText: buttonText,
+                    minWidth: minWidth,
+                    minHeight: minHeight,
+                  );
+                },
+              )).whenComplete(() {
         try {
           onDismiss();
         } catch (e) {
@@ -63,22 +64,20 @@ class CustomBottomSheet {
           }
         }
       });
-    }else {
+    } else {
       // fail
       _permissionFail(buildContext, 'Photo');
     }
   }
 
   static showVoiceSheet(
-      {
-        @required BuildContext buildContext,
-        @required Function send,
-        @required Function cancel,
-        @required Function start,
-        @required Function restart,
-        Function onInit,
-        Function onDismiss}
-      ) async {
+      {@required BuildContext buildContext,
+      @required Function send,
+      @required Function cancel,
+      @required Function start,
+      @required Function restart,
+      Function onInit,
+      Function onDismiss}) async {
     ///request permission with async
     bool permission = await FlutterAudioRecorder.hasPermissions;
     if (permission) {
@@ -92,18 +91,16 @@ class CustomBottomSheet {
           barrierColor: Colors.white.withOpacity(0.0),
           isDismissible: true,
           isScrollControlled: true,
-          builder: (context) =>
-              DraggableScrollableSheet(
+          builder: (context) => DraggableScrollableSheet(
                 expand: false,
                 initialChildSize: 0.4,
                 maxChildSize: 0.90,
                 builder: (context, scrollController) {
                   return VoiceBottomSheet(
-                    send: send,
-                    cancel: cancel,
-                    start: start,
-                    restart: restart
-                  );
+                      send: send,
+                      cancel: cancel,
+                      start: start,
+                      restart: restart);
                 },
               )).whenComplete(() {
         try {
@@ -125,64 +122,46 @@ class CustomBottomSheet {
         builder: (context) {
           if (Platform.isIOS) {
             return CupertinoAlertDialog(
-              title: Text('Permission denied', style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline6),
+              title: Text(S.of(context).permissiondenied,
+                  style: Theme.of(context).textTheme.headline6),
               content: Text(
-                  'Allow $permissionName permission in settings to continue', style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1),
+                  'Allow $permissionName permission in settings to continue',
+                  style: Theme.of(context).textTheme.bodyText1),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel', style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyText1),
+                  child: Text(S.of(context).cancel,
+                      style: Theme.of(context).textTheme.bodyText1),
                 ),
                 FlatButton(
                   onPressed: () => PhotoManager.openSetting(),
-                  child: Text('Open Settings', style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyText1),
+                  child: Text('Open Settings',
+                      style: Theme.of(context).textTheme.bodyText1),
                 )
               ],
             );
           } else {
             return AlertDialog(
-              title: Text('Permission denied'),
-              titleTextStyle: Theme
-                  .of(context)
-                  .textTheme
-                  .headline6,
+              title: Text(S.of(context).permissiondenied),
+              titleTextStyle: Theme.of(context).textTheme.headline6,
               content: Text(
-                  'Allow $permissionName permission in settings to continue', style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1),
+                  'Allow $permissionName permission in settings to continue',
+                  style: Theme.of(context).textTheme.bodyText1),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel', style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyText1),
+                  child: Text(S.of(context).cancel,
+                      style: Theme.of(context).textTheme.bodyText1),
                 ),
                 FlatButton(
                   onPressed: () => PhotoManager.openSetting(),
-                  child: Text('Open Settings', style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyText1),
+                  child: Text('Open Settings',
+                      style: Theme.of(context).textTheme.bodyText1),
                 )
               ],
             );
           }
-        }
-    );
+        });
   }
 }
 
@@ -257,7 +236,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                 Expanded(
                   child: FlatButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel',
+                    child: Text(S.of(context).cancel,
                         style: Theme.of(context).textTheme.bodyText1),
                   ),
                 ),
@@ -296,13 +275,21 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           child: FlatButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            child: Text('Cancel', style: Theme.of(context).textTheme.bodyText1),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text(S.of(context).cancel,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1),
                                           ),
                                         ),
                                         Container(
-                                          alignment: Alignment.center,
-                                          child: Text('Select Album', style: Theme.of(context).textTheme.bodyText1))
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                                S.of(context).labelalbumselect,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1))
                                       ],
                                     ),
                                   ),
@@ -311,23 +298,26 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                       itemCount: _albums.length,
                                       itemBuilder: (context, index) {
                                         return ListTile(
-                                          onTap: () => Navigator.pop(context, index),
-                                          selected: index == _currentAlbum,
-                                          leading: Container(
-                                            width: 60,
-                                            height: 64,
-                                            child: Image.memory(
-                                              _albumFirstThumbnailList[index],
-                                              fit: BoxFit.cover
-                                            )
-                                          ),
-                                          title: Text('${_albums[index].name}'),
-                                          subtitle: Text('${_albums[index].assetCount}'),
-                                          trailing: Icon(
-                                            Icons.check,
-                                            color: index == _currentAlbum ? Colors.blue : Colors.transparent,
-                                          )
-                                        );
+                                            onTap: () =>
+                                                Navigator.pop(context, index),
+                                            selected: index == _currentAlbum,
+                                            leading: Container(
+                                                width: 60,
+                                                height: 64,
+                                                child: Image.memory(
+                                                    _albumFirstThumbnailList[
+                                                        index],
+                                                    fit: BoxFit.cover)),
+                                            title:
+                                                Text('${_albums[index].name}'),
+                                            subtitle: Text(
+                                                '${_albums[index].assetCount}'),
+                                            trailing: Icon(
+                                              Icons.check,
+                                              color: index == _currentAlbum
+                                                  ? Colors.blue
+                                                  : Colors.transparent,
+                                            ));
                                       },
                                     ),
                                   )
@@ -335,16 +325,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                               ),
                             );
                           }).then((value) {
-                            if (value != null && value != _currentAlbum) {
-                              print(value);
-                              _switchAlbum(value);
-                            }
+                        if (value != null && value != _currentAlbum) {
+                          print(value);
+                          _switchAlbum(value);
+                        }
                       });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Albums',
+                        Text(S.of(context).albums,
                             style: Theme.of(context).textTheme.bodyText1),
                         SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_down)
@@ -384,19 +374,22 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                           ),
                           if (_selectedImages[index].isSelected)
                             Positioned(
-                              top: 10,
-                              right: 10,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                child: Center(
-                                    child: Text('${_selectedIndices.indexOf(index) + 1}', style: Theme.of(context).textTheme.bodyText1)),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).backgroundColor,
-                                ),
-                              )
-                            ),
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: Center(
+                                      child: Text(
+                                          '${_selectedIndices.indexOf(index) + 1}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1)),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).backgroundColor,
+                                  ),
+                                )),
                         ],
                       ),
                     );
@@ -411,7 +404,8 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text('${widget.buttonText}', style: TextStyle(fontSize: 16)),
+                      child: Text('${widget.buttonText}',
+                          style: TextStyle(fontSize: 16)),
                       padding: EdgeInsets.symmetric(vertical: 15),
                       color: Theme.of(context).accentColor,
                     ),
@@ -437,18 +431,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     });
   }
 
-  Future<File> _compressAndGetFile(File file, String targetPath,
-      int minWidth, int minHeight) async {
+  Future<File> _compressAndGetFile(
+      File file, String targetPath, int minWidth, int minHeight) async {
     ///compress to jpeg and change aspect ratio to 1:1
     ///minWidth and minHeight default to 1080
     var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      minWidth: minWidth,
-      minHeight: minHeight,
-      quality: 90,
-      format: CompressFormat.jpeg
-    );
+        file.absolute.path, targetPath,
+        minWidth: minWidth,
+        minHeight: minHeight,
+        quality: 90,
+        format: CompressFormat.jpeg);
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -471,9 +463,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     File image = await _photoList[_selectedIndices.first].file;
     File temporaryImage = await _getLocalFile();
     File compressedImage = await _compressAndGetFile(
-      image, temporaryImage.absolute.path,
-      widget.minWidth, widget.minHeight
-    );
+        image, temporaryImage.absolute.path, widget.minWidth, widget.minHeight);
     widget.onPressed(compressedImage);
   }
 
@@ -484,12 +474,12 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       return;
     }
     albums.sort((a, b) => a.assetCount > b.assetCount ? 0 : 1);
-    albums.forEach((album)  {
+    albums.forEach((album) {
       setState(() {
         _albums.add(album);
         album.getAssetListRange(start: 0, end: 1).then((value) async =>
-            _albumFirstThumbnailList.add(
-                await value.first.thumbDataWithSize(60, 64)));
+            _albumFirstThumbnailList
+                .add(await value.first.thumbDataWithSize(60, 64)));
       });
     });
     await _addNewPhotos();
@@ -498,8 +488,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   _addNewPhotos() async {
     _isFetching = true;
     List<AssetEntity> photos =
-        await _albums[_currentAlbum].getAssetListPaged(
-            _currentPage, _pageSize);
+        await _albums[_currentAlbum].getAssetListPaged(_currentPage, _pageSize);
     if (photos.length < _pageSize) {
       _hasReachedMax = true;
     }

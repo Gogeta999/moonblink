@@ -95,8 +95,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                             minHeight: MediaQuery.of(context).size.height / 2.5,
                             maxHeight: MediaQuery.of(context).size.height / 1.5,
                             minWidth: double.infinity,
-                            maxWidth: double.infinity
-                        ),
+                            maxWidth: double.infinity),
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           imageUrl: widget.posts.coverImage,
@@ -110,7 +109,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   .reactProfile(widget.posts.userID, 1)
                                   .then((value) {
                                 if (value) {
-                                  showToast('Like Successful');
+                                  showToast(S.of(context).toastlikesuccess);
                                   setState(() {
                                     widget.posts.isReacted = 1;
                                     widget.posts.reactionCount += 1;
@@ -125,7 +124,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   .reactProfile(widget.posts.userID, 0)
                                   .then((value) {
                                 if (value) {
-                                  showToast('Unlike Successful');
+                                  showToast(S.of(context).toastunlikesuccess);
                                   setState(() {
                                     widget.posts.isReacted = 0;
                                     widget.posts.reactionCount -= 1;
@@ -160,7 +159,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         .reactProfile(widget.posts.userID, 1)
                                         .then((value) {
                                       if (value) {
-                                        showToast('Like Successful');
+                                        showToast(
+                                            S.of(context).toastlikesuccess);
                                         setState(() {
                                           widget.posts.isReacted = 1;
                                           widget.posts.reactionCount += 1;
@@ -175,7 +175,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         .reactProfile(widget.posts.userID, 0)
                                         .then((value) {
                                       if (value) {
-                                        showToast('Unlike Successful');
+                                        showToast(
+                                            S.of(context).toastunlikesuccess);
                                         setState(() {
                                           widget.posts.isReacted = 0;
                                           widget.posts.reactionCount -= 1;
@@ -190,7 +191,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                         Positioned(
                             left: 40,
                             bottom: 5,
-                            child: Text('${widget.posts.reactionCount} Likes')),
+                            child: Text(
+                                '${widget.posts.reactionCount} ${S.of(context).likes}')),
                         Align(
                           alignment: Alignment.centerRight,
                           child: IconButton(
@@ -226,7 +228,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           Divider(
             height: 0.5,
           ),
-          if(widget.index != 0 && widget.index % 6 == 0) AdPostWidget()
+          if (widget.index != 0 && widget.index % 6 == 0) AdPostWidget()
         ],
       ),
     );
