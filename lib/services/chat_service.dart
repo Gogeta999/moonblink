@@ -15,7 +15,7 @@ String url = 'https://chat.moonblinkuniverse.com';
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],
-  'autoConnect': false,
+  'autoConnect': true,
 });
 
 // List<Message> messages = List<Message>();
@@ -28,7 +28,6 @@ class ChatModel extends Model {
   void init() {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
-    socket.connect();
     socket.once("booking_status", (data) => print(data));
     if (socket.connect() != null) {
       print("Connected Socket");

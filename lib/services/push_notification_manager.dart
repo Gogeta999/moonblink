@@ -63,20 +63,6 @@ class PushNotificationsManager {
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
 
-  /*Future<void> removeFcmToken() async {
-    //actually it's just storing new fcm token
-    await _firebaseMessaging.deleteInstanceID();
-    saveFcmToken();
-  }*/
-
-  /*Future<void> saveFcmToken() async {
-    _firebaseMessaging
-        .getToken()
-        .then((token) async =>
-            await StorageManager.sharedPreferences.setString(FCMToken, token))
-        .then((value) =>
-            print(StorageManager.sharedPreferences.getString(FCMToken)));
-  }*/
 
   Future<String> getFcmToken() async {
     return _firebaseMessaging.getToken();
@@ -423,7 +409,7 @@ class _Message {
 
   void navigateToChatBox() {
     locator<NavigationService>()
-        .navigateTo(RouteName.chatBox, arguments: _partnerId);
+        .navigateToAndReplace(RouteName.chatBox, arguments: _partnerId);
   }
 }
 
@@ -437,6 +423,6 @@ class _VoiceCall {
 
   void navigateToCallScreen() {
     locator<NavigationService>()
-        .navigateTo(RouteName.callScreen, arguments: _callChannel);
+        .navigateToAndReplace(RouteName.callScreen, arguments: _callChannel);
   }
 }
