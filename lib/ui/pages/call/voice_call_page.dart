@@ -251,7 +251,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                   ),
                 ),
                 Text(
-                  'Waiting.........$_countdownTime',
+                  '${S.of(context).waiting}.........$_countdownTime',
                   style: TextStyle(color: Colors.white),
                 )
               ],

@@ -50,15 +50,23 @@ class _VoicemsgState extends State<Voicemsg> {
   }
 
   _init() async {
-    try{
-      String customPath = '';
-      io.Directory appDocDirectory;
-  //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-      if (io.Platform.isIOS) {
-        appDocDirectory = await getApplicationDocumentsDirectory();
-      } else {
-        appDocDirectory = await getExternalStorageDirectory();
-      }
+    String customPath = '';
+//     // io.Directory appDocDirectory;
+//     io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+//     // if (io.Platform.isIOS) {
+//     //   appDocDirectory = await getApplicationDocumentsDirectory();
+//     // } else {
+//     //   appDocDirectory = await getExternalStorageDirectory();
+//     // }
+    io.Directory appDocDirectory;
+//        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    if (io.Platform.isAndroid) {
+      appDocDirectory = await getTemporaryDirectory();
+    } else if (io.Platform.isIOS) {
+      appDocDirectory = await getTemporaryDirectory();
+    } else {
+      appDocDirectory = await getTemporaryDirectory();
+    }
 
       // can add extension like ".mp4" ".wav" ".m4a" ".aac"
       String currentTime = DateTime.now().millisecondsSinceEpoch.toString();

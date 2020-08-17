@@ -17,6 +17,7 @@ class ImageView extends StatelessWidget {
         right: 10,
         top: 30,
         child: IconButton(
+            color: Colors.grey,
             iconSize: 40,
             icon: Icon(Icons.close),
             onPressed: () {

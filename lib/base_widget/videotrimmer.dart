@@ -118,7 +118,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                         : () async {
                             _saveVideo().then((outputPath) {
                               if (outputPath == null) {
-                                showToast("The video must be maximum 10 sec");
+                                showToast(S.of(context).toastvideooverlimit);
                                 _progressVisibility = false;
                               } else {
                                 print('OUTPUT PATH: $outputPath');

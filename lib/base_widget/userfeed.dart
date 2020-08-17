@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
+import 'package:moonblink/generated/l10n.dart';
 
 class Feed extends StatefulWidget {
   final String partnerName;
@@ -16,11 +17,10 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
   TabController _controller;
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     _tabs = [
-      Tab(text: 'Rating'),
-      Tab(text: 'History'),
+      Tab(text: S.of(context).rating),
+      Tab(text: S.of(context).history),
     ];
     _pages = [
       PartnerRatingWidget(widget.partnerName, widget.partnerRating),
@@ -30,10 +30,6 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
       length: _tabs.length,
       vsync: this,
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return new Padding(
       padding: const EdgeInsets.all(16.0),
       child: new Column(

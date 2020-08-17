@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -44,25 +45,25 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     switch (status) {
       case (0):
         return Center(
-            child: Text("Available",
+            child: Text(S.of(context).statusavailable,
                 style: TextStyle(
                     color: Colors.green, fontWeight: FontWeight.bold)));
         break;
       case (1):
         return Center(
-            child: Text("Busy",
+            child: Text(S.of(context).statusbusy,
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
         break;
       case (2):
         return Center(
-            child: Text("Connection Error",
+            child: Text(S.of(context).statuserror,
                 style: TextStyle(
                     color: Colors.orange, fontWeight: FontWeight.bold)));
         break;
       case (3):
         return Center(
-            child: Text("In Game",
+            child: Text(S.of(context).statusingame,
                 style: TextStyle(
                     color: Colors.blue, fontWeight: FontWeight.bold)));
         break;
@@ -132,12 +133,22 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,
                       // background: Image.network(partnerModel.data.partnerCover),
-                      background: CachedNetworkImage(
-                        imageUrl: partnerModel
-                            .partnerData.prfoileFromPartner.coverImage,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => CachedLoader(),
-                        errorWidget: (context, url, error) => CachedError(),
+                      background: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: partnerModel
+                              .partnerData.prfoileFromPartner.coverImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => CachedLoader(),
+                          errorWidget: (context, url, error) => CachedError(),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageView(partnerModel
+                                    .partnerData.prfoileFromPartner.coverImage),
+                              ));
+                        },
                       ),
                     ),
                   ),
@@ -157,13 +168,24 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                               child: SizedBox(
                             width: 100.0,
                             height: 100.0,
-                            child: CachedNetworkImage(
-                              imageUrl: partnerModel
-                                  .partnerData.prfoileFromPartner.profileImage,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => CachedLoader(),
-                              errorWidget: (context, url, error) =>
-                                  CachedError(),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageView(
+                                          partnerModel.partnerData
+                                              .prfoileFromPartner.profileImage),
+                                    ));
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: partnerModel.partnerData
+                                    .prfoileFromPartner.profileImage,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => CachedLoader(),
+                                errorWidget: (context, url, error) =>
+                                    CachedError(),
+                              ),
                             ),
                           )),
                         )),
@@ -266,14 +288,16 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                               horizontal: 10, vertical: 10),
                           child: Text(partnerModel.partnerData.reactionCount
                                   .toString() +
-                              '  Likes'),
+                              '  ' +
+                              S.of(context).likes),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                           child: Text(partnerModel.partnerData.followerCount
                                   .toString() +
-                              '  Followers'),
+                              '  ' +
+                              S.of(context).follower),
                         ),
                       ],
                     ),

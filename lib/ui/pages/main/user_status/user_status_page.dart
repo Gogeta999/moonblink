@@ -112,7 +112,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   ),
                   SizedBox(width: 5.0),
                   Text(
-                      'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                      '${S.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
                       style: TextStyle(fontSize: 16))
                 ],
               ),
@@ -201,8 +201,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                             height: 20,
                           ),
                           //Show user name here
-                          Column(
-                            children: <Widget>[
+                          Column(children: <Widget>[
                             Text(
                                 model.hasUser
                                     ? model.user.name.toString()
@@ -247,7 +246,8 @@ class _UserListWidgetState extends State<UserListWidget> {
       delegate: SliverChildListDelegate.fixed([
         if (usertype == 1)
           PageCard(
-              pageTitle: status != 1 ? "Online" : "Offline",
+              pageTitle:
+                  status != 1 ? S.of(context).online : S.of(context).offline,
               iconData:
                   status != 1 ? FontAwesomeIcons.wifi : Icons.portable_wifi_off,
               onTap: status != 1
@@ -258,7 +258,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("+++++++++++++++++++++++++++");
                       MoonBlinkRepository.changestatus(1);
-                      showToast("You are Offline now");
+                      showToast(S.of(context).toastoffline);
                     }
                   : () {
                       setState(() {
@@ -268,7 +268,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("----------------------------");
                       MoonBlinkRepository.changestatus(0);
-                      showToast("You are Online");
+                      showToast(S.of(context).toastonline);
                     }),
 
         ///wallet
@@ -415,10 +415,12 @@ class PageCard extends StatelessWidget {
               color: Colors.white,
               size: 26.0,
             ),
-            Text(pageTitle,
-                style:
-                    TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
-                softWrap: true)
+            Center(
+              child: Text(pageTitle,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, color: Colors.white),
+                  softWrap: true),
+            )
           ],
         ),
       ),

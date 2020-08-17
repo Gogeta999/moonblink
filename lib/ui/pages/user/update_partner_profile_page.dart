@@ -106,7 +106,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                 CustomBottomSheet.show(
                                     requestType: RequestType.image,
                                     popAfterBtnPressed: true,
-                                    buttonText: 'Choose',
+                                    buttonText: S.of(context).choose,
                                     buildContext: context,
                                     limit: 1,
                                     onPressed: (File file) {
@@ -114,7 +114,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         _cover = file;
                                       });
                                     },
-                                    body: 'Choose Cover');
+                                    body: S.of(context).partnercover);
                               },
                               child: AspectRatio(
                                 aspectRatio: 100 / 60,
@@ -142,7 +142,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           requestType: RequestType.image,
                                           minWidth: 480,
                                           minHeight: 480,
-                                          buttonText: 'Choose',
+                                          buttonText: S.of(context).choose,
                                           buildContext: context,
                                           limit: 1,
                                           onPressed: (File file) {
@@ -150,7 +150,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               _profile = file;
                                             });
                                           },
-                                          body: 'Choose Profile');
+                                          body: S.of(context).partnerprofile);
                                     },
                                     child: CircleAvatar(
                                       radius: 75,
@@ -191,9 +191,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       //Name
                                       LoginTextField(
                                         validator: (value) => value.isEmpty
-                                            ? 'Please enter your name'
+                                            ? S.of(context).labelname
                                             : null,
-                                        label: "Please enter your Name",
+                                        label: S.of(context).labelname,
                                         icon: Icons.person,
                                         controller: _nameController,
                                         textInputAction: TextInputAction.next,
@@ -201,7 +201,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
-                                        label: "Please enter Bios",
+                                        label: S.of(context).labelbios,
                                         icon: FontAwesomeIcons.book,
                                         controller: _biosController,
                                         textInputAction: TextInputAction.next,
@@ -209,7 +209,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //ML id
                                       LoginTextField(
-                                        label: "Please enter your ML ID",
+                                        label: S.of(context).labelmlid,
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _mlIdController,
                                         textInputAction: TextInputAction.next,
@@ -217,7 +217,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
-                                        label: "Please enter your PUBG ID",
+                                        label: S.of(context).labelpubgid,
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _pubgIdController,
                                         textInputAction: TextInputAction.next,
@@ -227,13 +227,15 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       FlatButton(
                                         child: finish
                                             ? ButtonProgressIndicator()
-                                            : Text("Update"),
+                                            : Text(S
+                                                .of(context)
+                                                .updatePartnerButton),
                                         color: Theme.of(context).buttonColor,
                                         onPressed: () async {
                                           if (_cover == null ||
                                               _profile == null) {
                                             showToast(
-                                                'You need to choose cover and profile images');
+                                                S.of(context).toastimagenull);
                                             return false;
                                           }
                                           setState(() {

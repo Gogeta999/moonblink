@@ -213,9 +213,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //NRC
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? 'Please enter NRC'
+                                                ? S.of(context).labelnrc
                                                 : null,
-                                            label: "Please enter NRC",
+                                            label: S.of(context).labelnrc,
                                             icon: FontAwesomeIcons.idCard,
                                             controller: _nrcController,
                                             textInputAction:
@@ -230,14 +230,15 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                     color: Theme.of(context)
                                                         .accentColor,
                                                     size: 22),
-                                                hintText: "Enter Gender",
+                                                hintText:
+                                                    S.of(context).labelgender,
                                                 hintStyle:
                                                     TextStyle(fontSize: 16)),
                                             value: _genderController,
                                             onChanged: (value) => setState(() =>
                                                 _genderController = value),
                                             validator: (value) => value == null
-                                                ? 'field required'
+                                                ? S.of(context).validator
                                                 : null,
                                             items: genderList
                                                 .map<DropdownMenuItem<String>>(
@@ -256,9 +257,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //bios
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? 'Please enter Bios'
+                                                ? S.of(context).labelbios
                                                 : null,
-                                            label: "Please enter Bios",
+                                            label: S.of(context).labelbios,
                                             icon: FontAwesomeIcons.book,
                                             controller: _biosController,
                                             textInputAction:
@@ -269,9 +270,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //address
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? 'Please enter Address'
+                                                ? S.of(context).labeladdress
                                                 : null,
-                                            label: "Please enter Address",
+                                            label: S.of(context).labeladdress,
                                             icon: FontAwesomeIcons.addressBook,
                                             controller: _addressController,
                                             textInputAction:
@@ -304,7 +305,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                                 _nrcFront),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      Text('NRC front',
+                                                      Text(
+                                                          S
+                                                              .of(context)
+                                                              .labelnrcfront,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -337,7 +341,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                                 _nrcBack),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      Text('NRC back',
+                                                      Text(
+                                                          S
+                                                              .of(context)
+                                                              .labelnrcback,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -364,21 +371,23 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             onPressed: () async {
                                               if (_cover == null ||
                                                   _profile == null) {
-                                                showToast(
-                                                    'You need to choose cover and profile images');
+                                                showToast(S
+                                                    .of(context)
+                                                    .toastimagenull);
                                                 return false;
                                               } else if (_nrcFront == null ||
                                                   _nrcBack == null) {
                                                 showToast(
-                                                    'NRC front and back photos are requied');
+                                                    S.of(context).toastnrcnull);
                                                 return false;
                                               } else if (_nrcController ==
                                                       null ||
                                                   _genderController == null ||
                                                   _dobController == null ||
                                                   _addressController == null) {
-                                                showToast(
-                                                    "You forget to fill some information");
+                                                showToast(S
+                                                    .of(context)
+                                                    .toastlackfield);
                                                 return false;
                                               } else {
                                                 setState(() {
