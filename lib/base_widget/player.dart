@@ -39,6 +39,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   StreamSubscription _playerErrorSubscription;
   StreamSubscription _playerStateSubscription;
 
+  bool _isLoading = false;
+  bool _isFirstTime = true;
+  bool _isFailed = false;
+
   get _isPlaying => _playerState == PlayerState.playing;
   // ignore: unused_element
   get _isPaused => _playerState == PlayerState.paused;
@@ -68,13 +72,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     _playerCompleteSubscription?.cancel();
     _playerErrorSubscription?.cancel();
     _playerStateSubscription?.cancel();
+    if (_playerState == PlayerState.playing) {
+      _stop();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 200,
         height: 40,
         decoration: BoxDecoration(
           color: Theme.of(context).accentColor,
@@ -85,31 +91,59 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _isPlaying
-                ? IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => _pause(),
-                    icon: Icon(Icons.pause),
-                    iconSize: 20.0,
-                  )
-                : IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => _play(),
-                    icon: Icon(Icons.play_arrow),
-                    iconSize: 20.0,
+            (() {
+              if (_isPlaying == true && _isLoading == false) {
+                return IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => _pause(),
+                  icon: Icon(Icons.pause),
+                  iconSize: 20.0,
+                );
+              }
+              else if (_isLoading == true) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'loading',
+                    style: TextStyle(
+                      fontSize: 10
+                    ),
                   ),
-            Flexible(
-                child: LinearProgressIndicator(
-              backgroundColor: Colors.white,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-              value: (_position != null &&
-                      _duration != null &&
-                      _position.inMilliseconds > 0 &&
-                      _position.inMilliseconds < _duration.inMilliseconds)
-                  ? _position.inMilliseconds / _duration.inMilliseconds
-                  : 0.0,
-            )),
-
+                );
+              }
+              else if (_isFailed) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'failed',
+                    style: TextStyle(
+                        fontSize: 10
+                    ),
+                  ),
+                );
+              }
+              else if (_isPlaying == false) {
+                return IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => _play(),
+                  icon: Icon(Icons.play_arrow),
+                  iconSize: 20.0,
+                );
+              }
+            }()),
+            Container(
+              width: 100,
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
+                value: (_position != null &&
+                    _duration != null &&
+                    _position.inMilliseconds > 0 &&
+                    _position.inMilliseconds < _duration.inMilliseconds)
+                ? _position.inMilliseconds / _duration.inMilliseconds
+                : 0.0,
+              ),
+            ),
             /// can't get max duration at start
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -121,7 +155,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   void _initAudioPlayer() async {
     _audioPlayer = AudioPlayer(mode: mode);
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() => _duration = duration);
+      setState(() {
+        _duration = duration;
+        _isLoading = false;
+      });
     });
 
     _positionSubscription =
@@ -141,6 +178,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       print('audioPlayer error : $msg');
       setState(() {
         _playerState = PlayerState.stopped;
+        _isFailed = true;
         _duration = Duration(seconds: 0);
         _position = Duration(seconds: 0);
       });
@@ -162,14 +200,24 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   }
 
   Future<int> _play() async {
+    if (_isFirstTime) {
+      setState(() {
+        _isLoading = true;
+        _isFirstTime = false;
+      });
+    }
+
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&
             _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
+
     final result = await _audioPlayer.play(url, position: playPosition);
-    if (result == 1) setState(() => _playerState = PlayerState.playing);
+    if (result == 1) {
+      _playerState = PlayerState.playing;
+    }
 
     // default playback rate is 1.0
     // this should be called after _audioPlayer.play() or _audioPlayer.resume()

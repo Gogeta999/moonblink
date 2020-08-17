@@ -21,22 +21,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    init();
-    // showAd();
     _countdownController =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
     super.initState();
   }
-
-  init() async {
-    await PushNotificationsManager().init();
-  }
-
-  // showAd() async {
-  //   var response = await DioUtils().get(Api.ShowAds);
-  //   return SplashAds.fromJson(response);
-  // }
 
   @override
   void dispose() {
