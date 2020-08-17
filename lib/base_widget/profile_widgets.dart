@@ -49,7 +49,7 @@ class PartnerRatingWidget extends StatelessWidget {
                 // },
               )),
           Positioned(
-              bottom: 60,
+              bottom: 50,
               child: Text(
                 partnerName +
                     S.of(context).averageRatingIs +
@@ -106,18 +106,18 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
           }
           if (state is PartnerGameHistoryFailure) {
             return Center(
-              child: Text('Error: ${state.error}.'),
+              child: Text('${S.of(context).error}: ${state.error}.'),
             );
           }
           if (state is PartnerGameHistoryNoData) {
             return Center(
-              child: Text('This user has no history.'),
+              child: Text(S.of(context).textnohistory),
             );
           }
           if (state is PartnerGameHistorySuccess) {
             if (state.data.isEmpty) {
               return Center(
-                child: Text('This user has no history.'),
+                child: Text(S.of(context).textnohistory),
               );
             }
             return HistoryListView(state: state);

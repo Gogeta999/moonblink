@@ -127,10 +127,9 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text('License Agreement'),
+                  title: Text(S.of(context).licenseagreement),
                   onTap: () async {
-                    Navigator.of(context)
-                        .pushNamed(RouteName.licenseAgreement);
+                    Navigator.of(context).pushNamed(RouteName.licenseAgreement);
                   },
                   leading: Icon(Icons.book, color: iconColor),
                   trailing: Icon(Icons.chevron_right),

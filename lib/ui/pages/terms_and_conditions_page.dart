@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -16,15 +17,15 @@ class TermsAndConditions extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: Column(
-            children: <Widget>[
-              Text('MoonBlink\'s'),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child:
-                    Text('Terms and Conditions', style: TextStyle(fontSize: 16)),
-              )
-            ],
-          )),
+        children: <Widget>[
+          Text('MoonBlink\'s'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Text(S.of(context).termAndConditions,
+                style: TextStyle(fontSize: 16)),
+          )
+        ],
+      )),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -35,7 +36,7 @@ class TermsAndConditions extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('MoonBlink > Terms and Conditions',
+                      Text('MoonBlink > ${S.of(context).termAndConditions}',
                           style: titleTextStyle),
                       Divider(thickness: 2.0),
                       Text('Account registration', style: subtitleTextStyle),
@@ -115,7 +116,7 @@ class TermsAndConditions extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    child: Text('Accept'),
+                    child: Text(S.of(context).accept),
                     onPressed: () => Navigator.pushNamedAndRemoveUntil(
                         context, RouteName.login, (route) => false),
                   ),
