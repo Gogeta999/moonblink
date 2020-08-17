@@ -16,7 +16,7 @@ class _ThirdLoginState extends State<ThirdLogin> {
   @override
   void initState() {
     super.initState();
-    if(Platform.isIOS){                                                      //check for ios if developing for both android & ios
+    if(Platform.isIOS){
       AppleSignIn.onCredentialRevoked.listen((_) {
         print("Credentials revoked");
       });

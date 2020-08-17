@@ -45,25 +45,25 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     switch (status) {
       case (0):
         return Center(
-            child: Text("Available",
+            child: Text(S.of(context).statusavailable,
                 style: TextStyle(
                     color: Colors.green, fontWeight: FontWeight.bold)));
         break;
       case (1):
         return Center(
-            child: Text("Busy",
+            child: Text(S.of(context).statusbusy,
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
         break;
       case (2):
         return Center(
-            child: Text("Connection Error",
+            child: Text(S.of(context).statuserror,
                 style: TextStyle(
                     color: Colors.orange, fontWeight: FontWeight.bold)));
         break;
       case (3):
         return Center(
-            child: Text("In Game",
+            child: Text(S.of(context).statusingame,
                 style: TextStyle(
                     color: Colors.blue, fontWeight: FontWeight.bold)));
         break;
@@ -288,14 +288,16 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                               horizontal: 10, vertical: 10),
                           child: Text(partnerModel.partnerData.reactionCount
                                   .toString() +
-                              '  Likes'),
+                              '  ' +
+                              S.of(context).likes),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                           child: Text(partnerModel.partnerData.followerCount
                                   .toString() +
-                              '  Followers'),
+                              '  ' +
+                              S.of(context).follower),
                         ),
                       ],
                     ),

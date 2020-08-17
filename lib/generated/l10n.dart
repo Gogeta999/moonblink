@@ -53,6 +53,16 @@ class S {
     );
   }
 
+  /// `Albums`
+  String get albums {
+    return Intl.message(
+      'Albums',
+      name: 'albums',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto with system`
   String get autoBySystem {
     return Intl.message(
@@ -173,6 +183,26 @@ class S {
     );
   }
 
+  /// `Restart`
+  String get buttonrestart {
+    return Intl.message(
+      'Restart',
+      name: 'buttonrestart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Record`
+  String get buttonstartrecord {
+    return Intl.message(
+      'Start Record',
+      name: 'buttonstartrecord',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Burmese`
   String get burmese {
     return Intl.message(
@@ -213,11 +243,41 @@ class S {
     );
   }
 
+  /// `Current coin`
+  String get currentcoin {
+    return Intl.message(
+      'Current coin',
+      name: 'currentcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get choose {
+    return Intl.message(
+      'Choose',
+      name: 'choose',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `End`
   String get end {
     return Intl.message(
       'End',
       name: 'end',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
       desc: '',
       args: [],
     );
@@ -293,6 +353,16 @@ class S {
     );
   }
 
+  /// `Followers`
+  String get follower {
+    return Intl.message(
+      'Followers',
+      name: 'follower',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Following`
   String get following {
     return Intl.message(
@@ -318,6 +388,16 @@ class S {
     return Intl.message(
       'Can\'t be empty',
       name: 'fieldNotEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History`
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
       desc: '',
       args: [],
     );
@@ -383,6 +463,16 @@ class S {
     );
   }
 
+  /// `License Agreement`
+  String get licenseagreement {
+    return Intl.message(
+      'License Agreement',
+      name: 'licenseagreement',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Login First`
   String get loginFirst {
     return Intl.message(
@@ -423,11 +513,191 @@ class S {
     );
   }
 
+  /// ` Likes`
+  String get likes {
+    return Intl.message(
+      ' Likes',
+      name: 'likes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your name`
+  String get labelname {
+    return Intl.message(
+      'Please enter your name',
+      name: 'labelname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your phone no`
+  String get labelphno {
+    return Intl.message(
+      'Please enter your phone no',
+      name: 'labelphno',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter bios`
+  String get labelbios {
+    return Intl.message(
+      'Please enter bios',
+      name: 'labelbios',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter ML id`
+  String get labelmlid {
+    return Intl.message(
+      'Please enter ML id',
+      name: 'labelmlid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter Pubg id`
+  String get labelpubgid {
+    return Intl.message(
+      'Please enter Pubg id',
+      name: 'labelpubgid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter OTP code`
+  String get labelotp {
+    return Intl.message(
+      'Please enter OTP code',
+      name: 'labelotp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter NRC`
+  String get labelnrc {
+    return Intl.message(
+      'Please enter NRC',
+      name: 'labelnrc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Gender`
+  String get labelgender {
+    return Intl.message(
+      'Enter Gender',
+      name: 'labelgender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter Address`
+  String get labeladdress {
+    return Intl.message(
+      'Please enter Address',
+      name: 'labeladdress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NRC Front`
+  String get labelnrcfront {
+    return Intl.message(
+      'NRC Front',
+      name: 'labelnrcfront',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NRC Back`
+  String get labelnrcback {
+    return Intl.message(
+      'NRC Back',
+      name: 'labelnrcback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please give some comments`
+  String get labelcomment {
+    return Intl.message(
+      'Please give some comments',
+      name: 'labelcomment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input Message`
+  String get labelmsg {
+    return Intl.message(
+      'Input Message',
+      name: 'labelmsg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Image`
+  String get labelimageselect {
+    return Intl.message(
+      'Select Image',
+      name: 'labelimageselect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Album`
+  String get labelalbumselect {
+    return Intl.message(
+      'Select Album',
+      name: 'labelalbumselect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voice Message`
+  String get labelvoicemsg {
+    return Intl.message(
+      'Voice Message',
+      name: 'labelvoicemsg',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Myanmar`
   String get myanmar {
     return Intl.message(
       'Myanmar',
       name: 'myanmar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum one minute`
+  String get maxtime {
+    return Intl.message(
+      'Maximum one minute',
+      name: 'maxtime',
       desc: '',
       args: [],
     );
@@ -453,6 +723,16 @@ class S {
     );
   }
 
+  /// `Rating`
+  String get rating {
+    return Intl.message(
+      'Rating',
+      name: 'rating',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Release to enter user setting page`
   String get refreshTwoLevel {
     return Intl.message(
@@ -468,6 +748,26 @@ class S {
     return Intl.message(
       'Reject',
       name: 'reject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online`
+  String get online {
+    return Intl.message(
+      'Online',
+      name: 'online',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline`
+  String get offline {
+    return Intl.message(
+      'Offline',
+      name: 'offline',
       desc: '',
       args: [],
     );
@@ -498,6 +798,16 @@ class S {
     return Intl.message(
       'Sign As Partner',
       name: 'otpSignAsPartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission denied`
+  String get permissiondenied {
+    return Intl.message(
+      'Permission denied',
+      name: 'permissiondenied',
       desc: '',
       args: [],
     );
@@ -543,11 +853,71 @@ class S {
     );
   }
 
+  /// `Choose cover`
+  String get partnercover {
+    return Intl.message(
+      'Choose cover',
+      name: 'partnercover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose profile`
+  String get partnerprofile {
+    return Intl.message(
+      'Choose profile',
+      name: 'partnerprofile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update your profile`
+  String get partnerupdatebutton {
+    return Intl.message(
+      'Update your profile',
+      name: 'partnerupdatebutton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have`
+  String get profiletext {
+    return Intl.message(
+      'You have',
+      name: 'profiletext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` followers now`
+  String get profilefollowernow {
+    return Intl.message(
+      ' followers now',
+      name: 'profilefollowernow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Search`
   String get search {
     return Intl.message(
       'Search',
       name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get sendbutton {
+    return Intl.message(
+      'Send',
+      name: 'sendbutton',
       desc: '',
       args: [],
     );
@@ -763,6 +1133,66 @@ class S {
     );
   }
 
+  /// `Available`
+  String get statusavailable {
+    return Intl.message(
+      'Available',
+      name: 'statusavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Busy`
+  String get statusbusy {
+    return Intl.message(
+      'Busy',
+      name: 'statusbusy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection Error`
+  String get statuserror {
+    return Intl.message(
+      'Connection Error',
+      name: 'statuserror',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Game`
+  String get statusingame {
+    return Intl.message(
+      'In Game',
+      name: 'statusingame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Top up`
+  String get topup {
+    return Intl.message(
+      'Top up',
+      name: 'topup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction`
+  String get transaction {
+    return Intl.message(
+      'Transaction',
+      name: 'transaction',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get tabHome {
     return Intl.message(
@@ -848,6 +1278,116 @@ class S {
     return Intl.message(
       'Trim your video',
       name: 'trimYourVideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This user has no history.`
+  String get textnohistory {
+    return Intl.message(
+      'This user has no history.',
+      name: 'textnohistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need to choose cover and profile images`
+  String get toastimagenull {
+    return Intl.message(
+      'You need to choose cover and profile images',
+      name: 'toastimagenull',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NRC front and back photos are requied`
+  String get toastnrcnull {
+    return Intl.message(
+      'NRC front and back photos are requied',
+      name: 'toastnrcnull',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You forget to fill some information`
+  String get toastlackfield {
+    return Intl.message(
+      'You forget to fill some information',
+      name: 'toastlackfield',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are Offline now`
+  String get toastonline {
+    return Intl.message(
+      'You are Offline now',
+      name: 'toastonline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are Online now`
+  String get toastoffline {
+    return Intl.message(
+      'You are Online now',
+      name: 'toastoffline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Like Successful`
+  String get toastlikesuccess {
+    return Intl.message(
+      'Like Successful',
+      name: 'toastlikesuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlike Successful`
+  String get toastunlikesuccess {
+    return Intl.message(
+      'Unlike Successful',
+      name: 'toastunlikesuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Developer error,Contact us on Facebook`
+  String get toasterror {
+    return Intl.message(
+      'Developer error,Contact us on Facebook',
+      name: 'toasterror',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rating Failed`
+  String get toastratingfail {
+    return Intl.message(
+      'Rating Failed',
+      name: 'toastratingfail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The video must be maximum 10 sec`
+  String get toastvideooverlimit {
+    return Intl.message(
+      'The video must be maximum 10 sec',
+      name: 'toastvideooverlimit',
       desc: '',
       args: [],
     );
@@ -943,6 +1483,16 @@ class S {
     );
   }
 
+  /// `Field Requied`
+  String get validator {
+    return Intl.message(
+      'Field Requied',
+      name: 'validator',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Waiting another to join`
   String get voiceCallWaitAnotherToJoin {
     return Intl.message(
@@ -1018,6 +1568,16 @@ class S {
     return Intl.message(
       'Load Failed',
       name: 'viewStateMessageError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting`
+  String get waiting {
+    return Intl.message(
+      'Waiting',
+      name: 'waiting',
       desc: '',
       args: [],
     );
