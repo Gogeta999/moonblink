@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light));
-    await PushNotificationsManager().init();
+    PushNotificationsManager().init();
     FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }
 

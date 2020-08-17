@@ -28,8 +28,8 @@ class ChatModel extends Model {
   //connect
   void init() {
     String usertoken = StorageManager.sharedPreferences.getString(token);
-    socket.connect();
     socket.emit('connect-user', usertoken);
+    socket.connect();
     socket.once("booking_status", (data) => print(data));
     if (socket.connect() != null) {
       print("Connected Socket");
