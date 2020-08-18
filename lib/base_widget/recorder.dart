@@ -50,7 +50,8 @@ class _VoicemsgState extends State<Voicemsg> {
   }
 
   _init() async {
-    String customPath = '';
+    try {
+      String customPath = '';
 //     // io.Directory appDocDirectory;
 //     io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
 //     // if (io.Platform.isIOS) {
@@ -58,15 +59,15 @@ class _VoicemsgState extends State<Voicemsg> {
 //     // } else {
 //     //   appDocDirectory = await getExternalStorageDirectory();
 //     // }
-    io.Directory appDocDirectory;
+      io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-    if (io.Platform.isAndroid) {
-      appDocDirectory = await getTemporaryDirectory();
-    } else if (io.Platform.isIOS) {
-      appDocDirectory = await getTemporaryDirectory();
-    } else {
-      appDocDirectory = await getTemporaryDirectory();
-    }
+      if (io.Platform.isAndroid) {
+        appDocDirectory = await getTemporaryDirectory();
+      } else if (io.Platform.isIOS) {
+        appDocDirectory = await getTemporaryDirectory();
+      } else {
+        appDocDirectory = await getTemporaryDirectory();
+      }
 
       // can add extension like ".mp4" ".wav" ".m4a" ".aac"
       String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
@@ -76,20 +77,21 @@ class _VoicemsgState extends State<Voicemsg> {
       // .wav <---> AudioFormat.WAV
       // .mp4 .m4a .aac <---> AudioFormat.AAC
       // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-      _recorder = FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+      _recorder =
+          FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
       print(_recorder);
 
-        await _recorder.initialized;
-        // after initialization
-        var current = await _recorder.current(channel: 0);
-        print(current);
-        // should be "Initialized", if all working fine
-        setState(() {
-          _current = current;
-          _currentStatus = current.status;
-          print(_currentStatus);
+      await _recorder.initialized;
+      // after initialization
+      var current = await _recorder.current(channel: 0);
+      print(current);
+      // should be "Initialized", if all working fine
+      setState(() {
+        _current = current;
+        _currentStatus = current.status;
+        print(_currentStatus);
       });
-    }catch(e){
+    } catch (e) {
       print('Error ------ $e');
     }
   }
