@@ -313,10 +313,10 @@ class S {
     );
   }
 
-  /// `You need to login and contiue to use our  app`
+  /// `You need to login to right account`
   String get forceLoginContent {
     return Intl.message(
-      'You need to login and contiue to use our  app',
+      'You need to login to right account',
       name: 'forceLoginContent',
       desc: '',
       args: [],

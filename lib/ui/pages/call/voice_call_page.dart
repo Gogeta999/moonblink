@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/videoUserSession.dart';
 import 'dart:async';
 
 import 'package:moonblink/services/push_notification_manager.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:moonblink/utils/constants.dart';
 
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
@@ -22,7 +23,6 @@ class VoiceCallWidget extends StatefulWidget {
 
 class AudioCallPageState extends State<VoiceCallWidget> {
   Timer _timer;
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
   String minutesStr = '00';
   String secondsStr = '00';
   StreamSubscription<int> _tickerSubscription;
@@ -44,8 +44,9 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
   @override
   void initState() {
-    PushNotificationsManager().showVoiceCallNotification(widget.channelName);
+    PushNotificationsManager().showVoiceCallNotification();
     super.initState();
+    StorageManager.sharedPreferences.setBool(isUserAtVoiceCallPage, true);
     timerCountDown();
     //animation false
     // _countdownController =
@@ -85,6 +86,8 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     } catch (e) {
       print(e);
     }
+    PushNotificationsManager().cancelVoiceCallNotification();
+    StorageManager.sharedPreferences.setBool(isUserAtVoiceCallPage, false);
     super.dispose();
   }
 

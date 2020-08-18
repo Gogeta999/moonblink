@@ -126,8 +126,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      //await PushNotificationsManager().removeFcmToken();
-      //UserWallet().dispose();
+      await MoonBlinkRepository.logout();
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
       _facebookLogin.isLoggedIn
@@ -135,7 +134,6 @@ class LoginModel extends ViewStateModel {
       _googleSignIn
           .isSignedIn()
           .then((value) async => value ? await _googleSignIn.signOut() : null);
-      // await MoonBlinkRepository.logout();
       userModel.clearUser();
       setIdle();
       return true;

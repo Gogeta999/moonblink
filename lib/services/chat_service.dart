@@ -18,6 +18,22 @@ IO.Socket socket = IO.io(url, <String, dynamic>{
   'autoConnect': false,
 });
 
+const List EVENTS = [
+  'connect',
+  'connect_error',
+  'connect_timeout',
+  'connecting',
+  'disconnect',
+  'error',
+  'reconnect',
+  'reconnect_attempt',
+  'reconnect_failed',
+  'reconnect_error',
+  'reconnecting',
+  'ping',
+  'pong'
+];
+
 // List<Message> messages = List<Message>();
 List<Files> files = List<Files>();
 List<Chatlist> chatlist = List<Chatlist>();
@@ -29,6 +45,9 @@ class ChatModel extends Model {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
+    for(var event in EVENTS) {
+      socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
+    }
     socket.once("booking_status", (data) => print(data));
     if (socket.connect() != null) {
       print("Connected Socket");
