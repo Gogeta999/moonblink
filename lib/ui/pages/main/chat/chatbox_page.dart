@@ -120,7 +120,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   void initState() {
     super.initState();
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
-    print('isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
+    print(
+        'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
     bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
@@ -130,7 +131,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   void dispose() {
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, false);
-    print('isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
+    print(
+        'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     super.dispose();
   }
 
@@ -256,7 +258,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           print("rating value -> $value");
                           setState(() {
                             rate = value;
-                            //rated = false;
                           });
                         },
                       ),
@@ -680,7 +681,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //Conversation List
   Widget buildChatList(id, ChatModel model) {
-    model.receiver(messages);
+    model.receiver(messages, widget.detailPageId);
     bookingdata = model.chatupdated();
     print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
     if (bookingdata == null) {
@@ -705,6 +706,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget build(BuildContext context) {
     print("User Id is ${selfId.toString()}");
     print("++++++++++++++++++++++++++++++++++++++");
+    if (bookingdata != null) {
+      if (bookingdata.status == 3 && rated == false) {
+        rated = true;
+        Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
+      }
+    }
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
@@ -736,7 +743,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             if (bookingdata != null) {
               if (bookingdata.status == 3 && rated == false) {
                 rated = true;
-                Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
+                Future.delayed(
+                    Duration.zero, () => rating(bookingdata.bookingid));
               }
             }
             return Scaffold(

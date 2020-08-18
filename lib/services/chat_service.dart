@@ -187,23 +187,26 @@ class ChatModel extends Model {
   }
 
   ///[For receiving message]
-  void receiver(List<Message> message) {
+  void receiver(List<Message> message, int id) {
     print("Received Messages");
     socket.clearListeners();
     socket.on("receiver-peer", (data) {
-      message.insert(
-          0,
-          Message(data['message'], data['sender_id'], data['receiver_id'],
-              data['time'], '', data["type"]));
+      if (data['sender_id'] == id) {
+        message.insert(
+            0,
+            Message(data['message'], data['sender_id'], data['receiver_id'],
+                data['time'], '', data["type"]));
+      }
       print("msg added");
       notifyListeners();
     });
     socket.on("receiver-attach", (data) {
-      print(data);
-      message.insert(
-          0,
-          Message("", data['sender_id'], data['receiver_id'], data["time"],
-              data['attach'], data['type']));
+      if (data["sender_id"] == id) {
+        message.insert(
+            0,
+            Message("", data['sender_id'], data['receiver_id'], data["time"],
+                data['attach'], data['type']));
+      }
       notifyListeners();
     });
   }

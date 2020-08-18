@@ -19,10 +19,10 @@ const String FcmTypeVoiceCall = 'voice_call';
 class PushNotificationsManager {
   PushNotificationsManager._();
 
-
   factory PushNotificationsManager() => _instance;
 
-  static final PushNotificationsManager _instance = PushNotificationsManager._();
+  static final PushNotificationsManager _instance =
+      PushNotificationsManager._();
 
   bool _initialized = false;
 
@@ -65,7 +65,6 @@ class PushNotificationsManager {
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
 
-
   Future<String> getFcmToken() async {
     return _firebaseMessaging.getToken();
   }
@@ -86,8 +85,8 @@ class PushNotificationsManager {
     }
 
     ///iOS
-    Future<dynamic> onDidReceiveLocalNotification(int id, String title,
-        String body, String payload) async {
+    Future<dynamic> onDidReceiveLocalNotification(
+        int id, String title, String body, String payload) async {
       if (payload == FcmTypeBooking) {
         print('payload: $payload');
         _bookingManager.showBookingDialog();
@@ -103,8 +102,7 @@ class PushNotificationsManager {
     var initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification
-    );
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -145,10 +143,12 @@ class PushNotificationsManager {
     //do something
     return;
   }
+
   Future<dynamic> _onMessage(Map<String, dynamic> message) async {
     //work on foreground and background. on background it automatically show notification
     print('onMessage: $message');
-    var fcmType = Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
+    var fcmType =
+        Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     print('$fcmType');
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
@@ -164,7 +164,8 @@ class PushNotificationsManager {
   Future<dynamic> _onResume(Map<String, dynamic> message) async {
     //on background and click it
     print('onResume: $message');
-    var fcmType = Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
+    var fcmType =
+        Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
@@ -186,7 +187,8 @@ class PushNotificationsManager {
   Future<dynamic> _onLaunch(Map<String, dynamic> message) async {
     //onTerminated
     print('onLaunch: $message');
-    var fcmType = Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
+    var fcmType =
+        Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
@@ -291,17 +293,13 @@ class PushNotificationsManager {
     );
 
     await _flutterLocalNotificationsPlugin.show(
-        0,
-        title.toString(),
-        body.toString(),
-        platformChannelSpecifics,
-        payload:  payload);
+        0, title.toString(), body.toString(), platformChannelSpecifics,
+        payload: payload);
   }
 
   //For message Fcm
   Future<void> _showMessageNotification(message) async {
     NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('message', 'Messaging');
-
     int partnerId = 0;
     String title = '';
     String body = '';
@@ -309,7 +307,7 @@ class PushNotificationsManager {
 
     if (Platform.isAndroid) {
       partnerId = json.decode(message['data']['sender_id']);
-      title =  message['notification']['title'].toString();
+      title = message['notification']['title'].toString();
       body = message['notification']['body'].toString();
       payload = message['data']['fcm_type'];
     } else if (Platform.isIOS) {
@@ -324,8 +322,8 @@ class PushNotificationsManager {
 
     _message.prepare(partnerId: partnerId);
 
-    await _flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpecifics, payload: payload);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
   Future<void> _showVoiceCallNotification(message) async {
@@ -346,15 +344,15 @@ class PushNotificationsManager {
       title = message['aps']['alert']['title'].toString();
       body = message['aps']['alert']['body'].toString();
       payload = message['fcm_type'];
-    } else{
+    } else {
       showToast('This platform is not supported');
       return;
     }
 
     _voiceCall.prepare(callChannel: callChannel);
 
-    await _flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpecifics, payload: payload);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
   //local voice call notification
@@ -386,6 +384,8 @@ class PushNotificationsManager {
       'Moon Blink $channelName',
       'Moon Blink',
       playSound: true,
+      // sound:
+      enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
       sound: RawResourceAndroidNotificationSound('moonblinkNoti'),
