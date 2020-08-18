@@ -53,7 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "follow" : MessageLookupByLibrary.simpleMessage("Follow"),
     "follower" : MessageLookupByLibrary.simpleMessage("Followers"),
     "following" : MessageLookupByLibrary.simpleMessage("Following"),
-    "forceLoginContent" : MessageLookupByLibrary.simpleMessage("You need to login and contiue to use our  app"),
+    "forceLoginContent" : MessageLookupByLibrary.simpleMessage("You need to login to right account"),
     "forceLoginTitle" : MessageLookupByLibrary.simpleMessage("You need to login first"),
     "forceUpdateContent" : MessageLookupByLibrary.simpleMessage("Please download our app on AppStore"),
     "forceUpdateTitle" : MessageLookupByLibrary.simpleMessage("Sorry we don\'t support this version"),

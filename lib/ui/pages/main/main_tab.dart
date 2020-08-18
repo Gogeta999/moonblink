@@ -96,11 +96,15 @@ class _MainTabPageState extends State<MainTabPage>
           ],
           initialSelection: initPage,
           // inactiveIconSize: 30,
+          // circleOutline: 10,
           circleHeight: 50,
           arcHeight: 55,
           arcWidth: 80,
+          // activeIconSize: 00,
+          shadowAllowance: 18,
           activeIconColor: Colors.white,
-          barHeight: 60,
+          barHeight: 53,
+
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
             _pageController.jumpToPage(index);
