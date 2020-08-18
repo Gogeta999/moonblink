@@ -23,13 +23,18 @@ class VoiceCallWidget extends StatefulWidget {
 
 class AudioCallPageState extends State<VoiceCallWidget> {
   Timer _timer;
-  Timer startcount;
+  String minutesStr = '00';
+  String secondsStr = '00';
+  StreamSubscription<int> _tickerSubscription;
   int _countdownTime = 30;
   bool _closeAgora = true;
 
   static final _userSessions = List<VideoUserSession>();
   //muted or Not
   bool muted = false;
+
+  //started
+  bool started = false;
 
   //open Speaker or Not
   bool speakPhone = false;
@@ -52,6 +57,23 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     initAgoraSdk();
   }
 
+  _start() {
+    _tickerSubscription =
+        Stream.periodic(Duration(seconds: 1), (x) => x + 1).listen((duration) {
+      print(duration);
+      setState(() {
+        if (duration >= 60) {
+          minutesStr = (duration / 60).floor().toString().padLeft(1, '0');
+          secondsStr = '00';
+        }
+        secondsStr = (duration <= 59 ? duration : duration % 60)
+            .floor()
+            .toString()
+            .padLeft(2, '0');
+      });
+    });
+  }
+
   //After this page Close
   @override
   void dispose() {
@@ -70,25 +92,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   }
 
   Future<void> timerCountDown() async {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) => setState(
-        () {
-          if (_countdownTime < 1 && _closeAgora == true) {
-            timer.cancel();
-            _onExit(context);
-          } else if (_closeAgora == false) {
-            timer.cancel();
-          } else {
-            _countdownTime = _countdownTime - 1;
-          }
-        },
-      ),
-    );
-  }
-
-  Future<void> starttime() async {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
@@ -219,6 +222,9 @@ class AudioCallPageState extends State<VoiceCallWidget> {
   //Exit Channel
   void _onExit(BuildContext context) {
     AgoraRtcEngine.leaveChannel();
+    if (_tickerSubscription != null) {
+      _tickerSubscription.cancel();
+    }
     PushNotificationsManager().cancelVoiceCallNotification();
     Navigator.pop(context);
   }
@@ -268,6 +274,10 @@ class AudioCallPageState extends State<VoiceCallWidget> {
         setState(() {
           _closeAgora = !_closeAgora;
         });
+        if (started == false) {
+          started = true;
+          _start();
+        }
         return Positioned(
           //Show User Name in Container
           top: 80,
@@ -280,7 +290,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 ClipRRect(
-                  borderRadius:  BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10),
                   child: Container(
                     alignment: Alignment.center,
                     width: 140,
@@ -290,10 +300,10 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                         ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg')),
                   ),
                 ),
-                // Text(
-                //   '$_countdownTime',
-                //   style: TextStyle(color: Colors.white),
-                // )
+                Text(
+                  '$minutesStr:$secondsStr',
+                  style: TextStyle(color: Colors.white),
+                )
               ],
             ),
           ),
@@ -364,17 +374,20 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.channelName),
-      // ),
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Stack(
-          children: <Widget>[
-            _viewAudio(),
-            _bottomToolBar(),
-          ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: Text(widget.channelName),
+        // ),
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Stack(
+            children: <Widget>[
+              _viewAudio(),
+              _bottomToolBar(),
+            ],
+          ),
         ),
       ),
     );

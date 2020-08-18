@@ -21,8 +21,7 @@ class TermsAndConditions extends StatelessWidget {
           Text('MoonBlink\'s'),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(S.of(context).termAndConditions,
-                style: TextStyle(fontSize: 16)),
+            child: Text("Terms and Conditions", style: TextStyle(fontSize: 16)),
           )
         ],
       )),
@@ -36,7 +35,7 @@ class TermsAndConditions extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('MoonBlink > ${S.of(context).termAndConditions}',
+                      Text('MoonBlink > Terms and Conditions',
                           style: titleTextStyle),
                       Divider(thickness: 2.0),
                       Text('Account registration', style: subtitleTextStyle),
