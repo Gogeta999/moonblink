@@ -27,6 +27,7 @@ import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
@@ -118,10 +119,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   @override
   void initState() {
     super.initState();
+    StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
+    print('isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     got = false;
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
     bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
     print(bookingdata);
+  }
+
+  @override
+  void dispose() {
+    StorageManager.sharedPreferences.setBool(isUserAtChatBox, false);
+    print('isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
+    super.dispose();
   }
 
   //build messages
@@ -246,7 +256,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           print("rating value -> $value");
                           setState(() {
                             rate = value;
-                            rated = false;
+                            //rated = false;
                           });
                         },
                       ),
@@ -278,7 +288,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                               .rate(widget.detailPageId, bookingid, rate,
                                   comment.text)
                               .then((value) => value
-                                  ? Navigator.pop(context)
+                                  ? {Navigator.pop(context), rated = false}
                                   : showToast(S.of(context).toastratingfail));
                         })
                   ],
@@ -676,10 +686,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
-    if (bookingdata.status == 3 && rated == false) {
-      rated = true;
-      Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
-    }
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
@@ -726,6 +732,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     msgs.attach, msgs.type));
               }
               got = true;
+            }
+            if (bookingdata != null) {
+              if (bookingdata.status == 3 && rated == false) {
+                rated = true;
+                Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
+              }
             }
             return Scaffold(
               appBar: AppBar(
