@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/videoUserSession.dart';
 import 'dart:async';
 
 import 'package:moonblink/services/push_notification_manager.dart';
+import 'package:moonblink/utils/constants.dart';
 
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
@@ -37,8 +39,9 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
   @override
   void initState() {
-    PushNotificationsManager().showVoiceCallNotification(widget.channelName);
+    PushNotificationsManager().showVoiceCallNotification();
     super.initState();
+    StorageManager.sharedPreferences.setBool(isUserAtVoiceCallPage, true);
     timerCountDown();
     //animation false
     // _countdownController =
@@ -61,6 +64,8 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     } catch (e) {
       print(e);
     }
+    PushNotificationsManager().cancelVoiceCallNotification();
+    StorageManager.sharedPreferences.setBool(isUserAtVoiceCallPage, false);
     super.dispose();
   }
 
@@ -275,7 +280,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius:  BorderRadius.circular(10),
                   child: Container(
                     alignment: Alignment.center,
                     width: 140,

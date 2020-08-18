@@ -4,7 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/main.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'locator.dart';
@@ -151,7 +153,8 @@ class PushNotificationsManager {
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      _showMessageNotification(message);
+      //_showMessageNotification(message);
+      print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
     }
@@ -240,8 +243,7 @@ class PushNotificationsManager {
 
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
-    NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('booking');
+    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('booking', 'Booking');
 
     int userId = 0;
     int bookingId = 0;
@@ -297,9 +299,7 @@ class PushNotificationsManager {
 
   //For message Fcm
   Future<void> _showMessageNotification(message) async {
-    NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('message');
-
+    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('message', 'Messaging');
     int partnerId = 0;
     String title = '';
     String body = '';
@@ -327,8 +327,7 @@ class PushNotificationsManager {
   }
 
   Future<void> _showVoiceCallNotification(message) async {
-    NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('voicecall');
+    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('voicecall', 'Voice Call');
 
     String callChannel = '';
     String title = '';
@@ -357,14 +356,13 @@ class PushNotificationsManager {
   }
 
   //local voice call notification
-  Future<void> showVoiceCallNotification(String channelName) async {
+  Future<void> showVoiceCallNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'com.moonuniverse.moonblink', //same package name for both platform
-        channelName,
+        'Moon Blink Voice Call',
         'Moon Blink',
         largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
         playSound: true,
-        enableVibration: true,
         importance: Importance.Max,
         priority: Priority.High,
         ongoing: true,
@@ -379,10 +377,10 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
-  NotificationDetails setUpPlatformSpecifics(name) {
+  NotificationDetails setUpPlatformSpecifics(name, channelName) {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'com.moonuniverse.moonblink.$name', //same package name for both platform
-      'Moon Blink',
+      'Moon Blink $channelName',
       'Moon Blink',
       playSound: true,
       // sound:
@@ -411,8 +409,10 @@ class _Message {
   }
 
   void navigateToChatBox() {
-    locator<NavigationService>()
-        .navigateToAndReplace(RouteName.chatBox, arguments: _partnerId);
+    bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    if (!atChatBox)
+      locator<NavigationService>()
+        .navigateTo(RouteName.chatBox, arguments: _partnerId);
   }
 }
 
@@ -425,7 +425,9 @@ class _VoiceCall {
   }
 
   void navigateToCallScreen() {
+    bool atVoiceCallPage = StorageManager.sharedPreferences.get(isUserAtVoiceCallPage);
+    if (!atVoiceCallPage)
     locator<NavigationService>()
-        .navigateToAndReplace(RouteName.callScreen, arguments: _callChannel);
+        .navigateTo(RouteName.callScreen, arguments: _callChannel);
   }
 }
