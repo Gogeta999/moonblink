@@ -123,8 +123,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     print(
         'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     got = false;
+    ScopedModel.of<ChatModel>(context).clear();
+    ScopedModel.of<ChatModel>(context).chatupdated();
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    bookingdata = ScopedModel.of<ChatModel>(context).chatupdated();
     print(bookingdata);
   }
 
@@ -186,7 +187,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   buildrequest(msg, bookingid) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.44,
+        maxWidth: MediaQuery.of(context).size.width * 0.46,
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
@@ -376,7 +377,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   buildmsg(Message msg) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.4,
+        maxWidth: MediaQuery.of(context).size.width * 0.46,
       ),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -633,6 +634,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //action2
   action2(model) {
+    bookingdata = model.chatupdated();
     print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
@@ -706,12 +708,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   Widget build(BuildContext context) {
     print("User Id is ${selfId.toString()}");
     print("++++++++++++++++++++++++++++++++++++++");
-    if (bookingdata != null) {
-      if (bookingdata.status == 3 && rated == false) {
-        rated = true;
-        Future.delayed(Duration.zero, () => rating(bookingdata.bookingid));
-      }
-    }
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
@@ -740,13 +736,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               }
               got = true;
             }
-            // if (bookingdata != null) {
-            //   if (bookingdata.status == 3 && rated == false) {
-            //     rated = true;
-            //     Future.delayed(
-            //         Duration.zero, () => rating(bookingdata.bookingid));
-            //   }
-            // }
+            if (bookingdata != null) {
+              if (bookingdata.status == 3 && rated == false) {
+                rated = true;
+                Future.delayed(
+                    Duration.zero, () => rating(bookingdata.bookingid));
+              }
+            }
             return Scaffold(
               appBar: AppBar(
                 title: GestureDetector(

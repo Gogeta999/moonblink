@@ -40,12 +40,18 @@ List<Chatlist> chatlist = List<Chatlist>();
 Bookingstatus bookingdata;
 
 class ChatModel extends Model {
+  void clear() {
+    if (bookingdata != null) {
+      bookingdata = null;
+    }
+  }
+
   //connect
   void init() {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-    for(var event in EVENTS) {
+    for (var event in EVENTS) {
       socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
     }
     socket.once("booking_status", (data) => print(data));
