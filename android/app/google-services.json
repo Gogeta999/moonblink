@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "155573283200-60v5m1gtlr22u2hkno3sgg0jovfgelvq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonuniverse.moonblink",
+            "certificate_hash": "730b676b84cf370ef525f595b6ff00abadc94856"
+          }
+        },
+        {
           "client_id": "155573283200-co5tucbo04i5pu8ea733khcvp7pkos5v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -56,10 +64,10 @@
               "client_type": 3
             },
             {
-              "client_id": "155573283200-bo8f6agv919bv4es3aoappoghc7abb0c.apps.googleusercontent.com",
+              "client_id": "155573283200-8rp4mbkkeg1igd83saeqbjicikbjv7gp.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.moonuniverse.moonblink"
+                "bundle_id": "com.moonuniverse.moonblink.ios"
               }
             }
           ]

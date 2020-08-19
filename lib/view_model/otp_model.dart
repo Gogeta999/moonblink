@@ -13,11 +13,11 @@ class OtpModel extends ViewStateModel {
   int _forceResendingToken;
   String _phone;
   OtpModel(this.userModel) : assert(userModel != null);
-  Future<bool> getFirebaseOtp(String phone) async {
+  Future<bool> getFirebaseOtp({String phone, bool retry = false}) async {
     setBusy();
     this._phone = phone;
     try {
-      ///automatically call when verification is auto completed.
+      ///automatically call when verification is auto completed. Android only
       void verificationCompleted(AuthCredential authCredential) async {
         // AuthResult authResult =
         //     await _firebaseAuth.signInWithCredential(authCredential);
@@ -29,15 +29,15 @@ class OtpModel extends ViewStateModel {
       }
 
       void verificationFailed(AuthException authException) async {
-        throw authException;
+        print(authException.message);
       }
 
       void codeSent(String verificationId, [int forceResendingToken]) {
         this._verificationId = verificationId;
         this._forceResendingToken = forceResendingToken;
       }
-
-      await _firebaseAuth.verifyPhoneNumber(
+      if (retry) {
+        await _firebaseAuth.verifyPhoneNumber(
           forceResendingToken: _forceResendingToken,
           phoneNumber: phone,
           timeout: const Duration(seconds: 60),
@@ -46,6 +46,16 @@ class OtpModel extends ViewStateModel {
           codeSent: codeSent,
           codeAutoRetrievalTimeout: (verificationId) =>
               print('Code: $verificationId'));
+      } else {
+        await _firebaseAuth.verifyPhoneNumber(
+            phoneNumber: phone,
+            timeout: const Duration(seconds: 60),
+            verificationCompleted: verificationCompleted,
+            verificationFailed: verificationFailed,
+            codeSent: codeSent,
+            codeAutoRetrievalTimeout: (verificationId) =>
+                print('Code: $verificationId'));
+      }
       setIdle();
       return true;
     } catch (e, s) {

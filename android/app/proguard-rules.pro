@@ -19,3 +19,5 @@
   void log(int, byte[]);
   void statistics(int, float, float, long , int, double, double);
 }
+#local notification
+-keep class com.dexterous.** { *; }
