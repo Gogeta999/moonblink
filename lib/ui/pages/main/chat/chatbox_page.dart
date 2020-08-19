@@ -633,6 +633,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //action2
   action2(model) {
+    bookingdata = model.chatupdated();
     print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (bookingdata == null) {
       return ViewStateBusyWidget();

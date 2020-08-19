@@ -18,7 +18,7 @@ const String FcmTypeVoiceCall = 'voice_call';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
-
+  // AndroidNotificationChannel
   factory PushNotificationsManager() => _instance;
 
   static final PushNotificationsManager _instance =
@@ -36,6 +36,7 @@ class PushNotificationsManager {
       _firebaseMessaging.onTokenRefresh.listen((event) {
         print('onTokenRefresh: $event');
       });
+      // _createNotificationChannel('0', 'MoonGO Noti', 'For Server FCM');
       _initialized = true;
     }
   }
@@ -55,6 +56,20 @@ class PushNotificationsManager {
       _initialized = false;
     }
   }
+
+  // Future<void> _createNotificationChannel(
+  //     String id, String name, String description) async {
+  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //   var androidNotificationChannel = AndroidNotificationChannel(
+  //     id,
+  //     name,
+  //     description,
+  //   );
+  //   await flutterLocalNotificationsPlugin
+  //       .resolvePlatformSpecificImplementation<
+  //           AndroidFlutterLocalNotificationsPlugin>()
+  //       ?.createNotificationChannel(androidNotificationChannel);
+  // }
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
     ..autoInitEnabled();
@@ -153,7 +168,7 @@ class PushNotificationsManager {
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      _showMessageNotification(message);
+      // _showMessageNotification(message);
       print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);

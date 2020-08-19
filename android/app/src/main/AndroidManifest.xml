@@ -38,6 +38,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2553224590005557~4621580830"/>
+            <!-- TODO: -->
+        <!-- <meta-data android:name="com.google.firebase.messaging.moon_go_noti" 
+            android:value="@string/moon_go_noti"/> -->
         <!--FCM noti color-->
         <!--<meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
