@@ -392,7 +392,6 @@ class PushNotificationsManager {
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
-      sound: RawResourceAndroidNotificationSound('moonblinkNoti'),
     );
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(

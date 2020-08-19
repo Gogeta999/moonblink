@@ -93,8 +93,8 @@ class _OtpPageState extends State<OtpPage> {
                                 controller: _otpCodeController,
                                 keyboardType: TextInputType.number,
                               ),
-                              ResendTokenButton(phone: _phoneController.text)
-                              ,
+                              // ResendTokenButton(phone: _phoneController.text)
+                              // ,
                               // SizedBox( height: 30),
                               SignAsPartnerButton(_otpCodeController),
                             ],
@@ -159,17 +159,17 @@ class ResendTokenButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-        'Resend Token Testing',
-        style: Theme.of(context)
-            .accentTextTheme
-            .headline6
-            .copyWith(wordSpacing: 6),
-      ),
+              'Resend Token Testing',
+              style: Theme.of(context)
+                  .accentTextTheme
+                  .headline6
+                  .copyWith(wordSpacing: 6),
+            ),
       onPressed: model.isBusy
           ? null
           : () {
-        model.getFirebaseOtp(phone: phone, retry: true);
-      },
+              model.getFirebaseOtp(phone: phone, retry: true);
+            },
     );
   }
 }
