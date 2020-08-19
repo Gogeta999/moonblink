@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
@@ -11,6 +10,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 
 class ChatListPage extends StatefulWidget {
   @override
@@ -63,7 +63,7 @@ class _ChatListPageState extends State<ChatListPage>
 
         ///[Last Message]
         subtitle: Text(chat.lastmsg, maxLines: 1),
-        trailing: Text(DateFormat.jm().format(DateTime.parse(chat.updated))),
+        trailing: Text(timeAgo.format(DateTime.parse(chat.updated), allowFromNow: true)),
         onTap: () {
           Navigator.push(
               context,

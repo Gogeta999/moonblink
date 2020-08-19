@@ -149,7 +149,6 @@ class PushNotificationsManager {
     print('onMessage: $message');
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
-    print('$fcmType');
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
@@ -300,32 +299,35 @@ class PushNotificationsManager {
 
   //For message Fcm
   Future<void> _showMessageNotification(message) async {
-    NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('message', 'Messaging');
-    int partnerId = 0;
-    String title = '';
-    String body = '';
-    String payload = '';
+    bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    if (!atChatBox) {
+      NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics(
+        'message', 'Messaging');
+      int partnerId = 0;
+      String title = '';
+      String body = '';
+      String payload = '';
 
-    if (Platform.isAndroid) {
-      partnerId = json.decode(message['data']['sender_id']);
-      title = message['notification']['title'].toString();
-      body = message['notification']['body'].toString();
-      payload = message['data']['fcm_type'];
-    } else if (Platform.isIOS) {
-      partnerId = json.decode(message['sender_id']);
-      title = message['aps']['alert']['title'].toString();
-      body = message['aps']['alert']['body'].toString();
-      payload = message['fcm_type'];
-    } else {
-      showToast('This platform is not supported');
-      return;
+      if (Platform.isAndroid) {
+        partnerId = json.decode(message['data']['sender_id']);
+        title = message['notification']['title'].toString();
+        body = message['notification']['body'].toString();
+        payload = message['data']['fcm_type'];
+      } else if (Platform.isIOS) {
+        partnerId = json.decode(message['sender_id']);
+        title = message['aps']['alert']['title'].toString();
+        body = message['aps']['alert']['body'].toString();
+        payload = message['fcm_type'];
+      } else {
+        showToast('This platform is not supported');
+        return;
+      }
+
+      _message.prepare(partnerId: partnerId);
+
+      await _flutterLocalNotificationsPlugin
+          .show(0, title, body, platformChannelSpecifics, payload: payload);
     }
-
-    _message.prepare(partnerId: partnerId);
-
-    await _flutterLocalNotificationsPlugin
-        .show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
   Future<void> _showVoiceCallNotification(message) async {

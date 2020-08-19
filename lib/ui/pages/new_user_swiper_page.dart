@@ -39,9 +39,19 @@ class _NewUserSwiperPageState extends State<NewUserSwiperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      top: false,
-      child: Swiper(
+      appBar: AppBar(
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Skip', style: Theme.of(context).textTheme.bodyText1),
+            onPressed: () {
+              StorageManager.sharedPreferences.setBool(isNewUser, false);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RouteName.termsAndConditionsPage, (route) => false);
+            },
+          ),
+        ],
+      ),
+      body: Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Image.asset(
             images[index],
@@ -59,8 +69,7 @@ class _NewUserSwiperPageState extends State<NewUserSwiperPage> {
         itemCount: images.length,
         pagination: SwiperPagination(),
         control: CustomSwiperControl(),
-      ),
-    ));
+      ));
   }
 
   void onSwipe() {

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
+import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -13,6 +13,9 @@ import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/home_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
+
+const List<String> menu = ['Report User', 'Block User'];
 
 class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.userID));
@@ -36,50 +39,62 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //height: 330.0,
       child: Column(
         children: <Widget>[
           /// [user_Profile]
-          Material(
-            child: InkWell(
-              onTap: usertoken == null
-                  ? () {
-                      showToast(S.of(context).loginFirst);
-                    }
-                  : () {
-                      int detailPageId = widget.posts.userID;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PartnerDetailPage(detailPageId)));
-                    },
-              child: Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
-                child: Row(
-                  children: <Widget>[
-                    CachedNetworkImage(
-                      imageUrl: widget.posts.profileImage,
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: 46.0,
-                        height: 46.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
+          Container(
+            margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Material(
+                    child: InkWell(
+                      onTap: usertoken == null
+                          ? () {
+                        showToast(S.of(context).loginFirst);
+                      }
+                          : () {
+                        int detailPageId = widget.posts.userID;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PartnerDetailPage(detailPageId)));
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: widget.posts.profileImage,
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: 46.0,
+                              height: 46.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Text(widget.posts.userName),
+                          ),
+                        ],
                       ),
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Text(widget.posts.userName),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                IconButton(
+                  icon: Icon(Icons.expand_more),
+                  onPressed: () => CustomBottomSheet.showUserManageContent(
+                    buildContext: context,
+                    onDismiss: () => print('Dismissing BottomSheet')
+                  ),
+                )
+              ],
             ),
           ),
 
@@ -221,7 +236,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
             margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
             alignment: Alignment.topLeft,
             child: Text(
-              DateFormat.jm().format(DateTime.parse(widget.posts.creatdAt)),
+              //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
+              timeAgo.format(DateTime.parse(widget.posts.createdAt), allowFromNow: true),
               style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
           ),
