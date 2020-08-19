@@ -153,7 +153,7 @@ class PushNotificationsManager {
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      //_showMessageNotification(message);
+      _showMessageNotification(message);
       print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
@@ -369,7 +369,7 @@ class PushNotificationsManager {
         importance: Importance.Max,
         priority: Priority.High,
         ongoing: true,
-        sound: RawResourceAndroidNotificationSound('moonblinkNoti'),
+        sound: RawResourceAndroidNotificationSound('moonblink_noti'),
         autoCancel: false);
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(

@@ -289,7 +289,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                               .rate(widget.detailPageId, bookingid, rate,
                                   comment.text)
                               .then((value) => value
-                                  ? {Navigator.pop(context), rated = false}
+                                  ? Navigator.pop(context)
                                   : showToast(S.of(context).toastratingfail));
                         })
                   ],
@@ -740,13 +740,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               }
               got = true;
             }
-            if (bookingdata != null) {
-              if (bookingdata.status == 3 && rated == false) {
-                rated = true;
-                Future.delayed(
-                    Duration.zero, () => rating(bookingdata.bookingid));
-              }
-            }
+            // if (bookingdata != null) {
+            //   if (bookingdata.status == 3 && rated == false) {
+            //     rated = true;
+            //     Future.delayed(
+            //         Duration.zero, () => rating(bookingdata.bookingid));
+            //   }
+            // }
             return Scaffold(
               appBar: AppBar(
                 title: GestureDetector(
