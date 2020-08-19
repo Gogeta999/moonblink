@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 
-
 /// LoginTextField
 class LoginTextField extends StatefulWidget {
   final String label;
@@ -15,17 +14,16 @@ class LoginTextField extends StatefulWidget {
   final ValueChanged<String> onFieldSubmitted;
   final TextInputType keyboardType;
 
-  LoginTextField({
-    this.label,
-    this.icon,
-    this.controller,
-    this.obscureText: false,
-    this.validator,
-    this.focusNode,
-    this.textInputAction,
-    this.onFieldSubmitted,
-    this.keyboardType
-  });
+  LoginTextField(
+      {this.label,
+      this.icon,
+      this.controller,
+      this.obscureText: false,
+      this.validator,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted,
+      this.keyboardType});
 
   @override
   _LoginTextFieldState createState() => _LoginTextFieldState();
@@ -62,6 +60,8 @@ class _LoginTextFieldState extends State<LoginTextField> {
       child: ValueListenableBuilder(
         valueListenable: obscureNotifier,
         builder: (context, value, child) => TextFormField(
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
           controller: controller,
           obscureText: value,
           validator: (text) {
@@ -77,7 +77,16 @@ class _LoginTextFieldState extends State<LoginTextField> {
           decoration: InputDecoration(
             prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
             hintText: widget.label,
-            hintStyle: TextStyle(fontSize: 16),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: theme.accentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
+            hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
             suffixIcon: LoginTextFieldSuffixIcon(
               controller: controller,
               obscureText: widget.obscureText,
@@ -120,7 +129,7 @@ class LoginTextFieldSuffixIcon extends StatelessWidget {
               builder: (context, value, child) => Icon(
                 CupertinoIcons.eye,
                 size: 30,
-                color: value ? theme.hintColor : theme.accentColor,
+                color: value ? Colors.white : theme.accentColor,
               ),
             ),
           ),
@@ -148,7 +157,7 @@ class _LoginTextFieldClearIconState extends State<LoginTextFieldClearIcon> {
   void initState() {
     notifier = ValueNotifier(widget.controller.text.isEmpty);
     widget.controller.addListener(() {
-      if(mounted) notifier.value = widget.controller.text.isEmpty;
+      if (mounted) notifier.value = widget.controller.text.isEmpty;
     });
     super.initState();
   }
