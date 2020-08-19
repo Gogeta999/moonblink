@@ -243,7 +243,8 @@ class PushNotificationsManager {
 
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
-    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('booking', 'Booking');
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('booking', 'Booking');
 
     int userId = 0;
     int bookingId = 0;
@@ -299,7 +300,8 @@ class PushNotificationsManager {
 
   //For message Fcm
   Future<void> _showMessageNotification(message) async {
-    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('message', 'Messaging');
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('message', 'Messaging');
     int partnerId = 0;
     String title = '';
     String body = '';
@@ -327,7 +329,8 @@ class PushNotificationsManager {
   }
 
   Future<void> _showVoiceCallNotification(message) async {
-    NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics('voicecall', 'Voice Call');
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('voicecall', 'Voice Call');
 
     String callChannel = '';
     String title = '';
@@ -366,6 +369,7 @@ class PushNotificationsManager {
         importance: Importance.Max,
         priority: Priority.High,
         ongoing: true,
+        sound: RawResourceAndroidNotificationSound('moonblinkNoti'),
         autoCancel: false);
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
@@ -383,7 +387,8 @@ class PushNotificationsManager {
       'Moon Blink $channelName',
       'Moon Blink',
       playSound: true,
-      // sound:
+      sound: RawResourceAndroidNotificationSound('moonblink_noti'),
+
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
@@ -412,7 +417,7 @@ class _Message {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
     if (!atChatBox)
       locator<NavigationService>()
-        .navigateTo(RouteName.chatBox, arguments: _partnerId);
+          .navigateTo(RouteName.chatBox, arguments: _partnerId);
   }
 }
 
@@ -425,9 +430,10 @@ class _VoiceCall {
   }
 
   void navigateToCallScreen() {
-    bool atVoiceCallPage = StorageManager.sharedPreferences.get(isUserAtVoiceCallPage);
+    bool atVoiceCallPage =
+        StorageManager.sharedPreferences.get(isUserAtVoiceCallPage);
     if (!atVoiceCallPage)
-    locator<NavigationService>()
-        .navigateTo(RouteName.callScreen, arguments: _callChannel);
+      locator<NavigationService>()
+          .navigateTo(RouteName.callScreen, arguments: _callChannel);
   }
 }

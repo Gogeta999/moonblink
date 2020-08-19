@@ -113,7 +113,7 @@ class TimerCountDownWidgetState extends State<OtpCountDownWidget> {
                   '------------------------------------------\n=\n${widget.phoneNumber.text}');
               model
                   //getOtpCodeAgain(phoneController.text)
-                  .getFirebaseOtp(widget.phoneNumber.text)
+                  .getFirebaseOtp(phone: widget.phoneNumber.text)
                   .then((value) {
                 if (value) {
                   print('success');
@@ -143,7 +143,7 @@ class TimerCountDownWidgetState extends State<OtpCountDownWidget> {
         (Timer timer) => {
               setState(() {
                 if (_countdownTime < 1) {
-                  widget.onTimerFinish();
+                  //widget.onTimerFinish();
                   _timer.cancel();
                 } else {
                   _countdownTime = _countdownTime - 1;
