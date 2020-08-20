@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:oktoast/oktoast.dart';
 
 class UserManageContentBottomSheet extends StatefulWidget {
   final Function onReport;
   final Function onBlock;
 
-  const UserManageContentBottomSheet({Key key, @required this.onReport, @required this.onBlock}) : super(key: key);
+  const UserManageContentBottomSheet(
+      {Key key, @required this.onReport, @required this.onBlock})
+      : super(key: key);
   @override
   _UserManageContentBottomSheetState createState() =>
       _UserManageContentBottomSheetState();
@@ -34,57 +37,34 @@ class _UserManageContentBottomSheetState
         ListTile(
           leading: Icon(Icons.report),
           title: Text(
-            'Report User',
+            S.of(context).report,
             style: _textStyle,
           ),
-          subtitle: Text('Report user for posting objectionable content.'),
-          onTap: (){
-            showToast('Reporting');
+          subtitle: Text(S.of(context).reportContent),
+          onTap: () {
+            showToast('Report Success');
             widget.onReport();
+
             ///Reporting api call.
           },
         ),
-        ListTile(
-          leading: Icon(Icons.block),
-          title: Text('Block User',
-            style: _textStyle,
-          ),
-          subtitle: Text('This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
-          onTap: (){
-            showToast('Blocking');
-            widget.onBlock();
-            ///Blocking api call.
-          },
-        ),
-//           onTap: () {
-//             showToast('Report success');
+        //TODO: Add on IOS
+        // ListTile(
+        //   leading: Icon(Icons.block),
+        //   title: Text(
+        //     'Block User',
+        //     style: _textStyle,
+        //   ),
+        //   subtitle: Text(
+        //       'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
+        //   onTap: () {
+        //     showToast('Blocking');
+        //     widget.onBlock();
 
-//             ///Reporting api call.
-//           },
-//         ),
-//         // ListTile(
-//         //   leading: Icon(Icons.block),
-//         //   title: Text('Block User',
-//         //     style: _textStyle,
-//         //   ),
-//         //   subtitle: Text('This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
-//         //   onTap: (){
-//         //     showToast('Blocking');
-//         //     ///Blocking api call.
-//         //   },
-//         // ),
-        /*ListTile(///Testing State
-          leading: Icon(Icons.remove_circle),
-          title: Text('Unfollow User',
-            style: _textStyle,
-          ),
-          subtitle: Text('Remove user from your following list. You won\'t see his/her stories anymore.'),
-          onTap: (){
-            showToast('Unfollowing');
-            ///Unfollowing api call.
-          },
-        ),*/
-        SizedBox(height: 40)
+        //     ///Blocking api call.
+        //   },
+        // ),
+        SizedBox(height: 10)
       ],
     );
   }

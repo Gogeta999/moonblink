@@ -97,16 +97,18 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 IconButton(
                   icon: Icon(Icons.more_vert),
                   onPressed: () => CustomBottomSheet.showUserManageContent(
-                    buildContext: context,
-                    onReport: () => print('Reporting User'),
-                    onBlock: () {
-                      print('Blocking User');
-                      ///Blocking user
-                      homeModel.removeItem(index: widget.index, blockUserId: widget.posts.userID);
-                      Navigator.pop(context);
-                    },
-                    onDismiss: () => print('Dismissing BottomSheet')
-                  ),
+                      buildContext: context,
+                      onReport: () => print('Report Success'),
+                      onBlock: () {
+                        print('Blocking User');
+
+                        ///Blocking user
+                        homeModel.removeItem(
+                            index: widget.index,
+                            blockUserId: widget.posts.userID);
+                        Navigator.pop(context);
+                      },
+                      onDismiss: () => print('Dismissing BottomSheet')),
                 )
               ],
             ),
@@ -250,9 +252,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
             margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
             alignment: Alignment.topLeft,
             child: Text(
-              //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
-              timeAgo.format(DateTime.parse(widget.posts.createdAt),
-                  allowFromNow: true),
+              S.of(context).becomePartnerAt +
+                  //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
+                  timeAgo.format(DateTime.parse(widget.posts.createdAt),
+                      allowFromNow: true),
               style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
           ),

@@ -25,7 +25,6 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   double _endValue = 0.0;
   var duration = 0.0;
   File video;
-  bool _uploadDone = false;
   bool _isPlaying = false;
   bool _progressVisibility = false;
 
@@ -36,7 +35,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
     });
 
     String _value;
-    if (duration < 10500) {
+    if (duration < 11000) {
       await widget._trimmer
           .saveTrimmedVideo(
               startValue: _startValue,
@@ -68,13 +67,10 @@ class _VideoTrimmer extends State<VideoTrimmer> {
         if (response.errorCode == 1) {
           setState(() {
             _progressVisibility = false;
-            _uploadDone = !_uploadDone;
           });
           Navigator.of(context)
               .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
-          // Navigator.of(context).pushNamed(RouteName.network);
         }
-        // return Story.fromMap(response.data);
         return response.data;
       });
       return _value;
@@ -91,11 +87,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          if (_progressVisibility == false) {
-            return true;
-          } else {
-            return false;
-          }
+          return !_progressVisibility;
         },
         child: Builder(
           builder: (context) => Center(

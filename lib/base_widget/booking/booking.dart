@@ -50,8 +50,8 @@ class _BookingButtonState extends State<BookingButton> {
                       size: 16,
                     ),
                     SizedBox(width: 10.0),
-                    Text(
-                        'Current coin : ${bookingModel.wallet.value} ${bookingModel.wallet.value > 1 ? 'coins' : 'coin'}')
+                    Text(S.of(context).currentcoin +
+                        ': ${bookingModel.wallet.value} ${bookingModel.wallet.value > 1 ? 'coins' : 'coin'}')
                   ],
                 ),
               ],

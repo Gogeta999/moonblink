@@ -174,25 +174,12 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                         width: 120,
                                         height: 120,
                                       )
-                                    // ? Image.network(
-                                    //     model.user.profileUrl,
-                                    //     fit: BoxFit.cover,
-                                    //     width: 120,
-                                    //     height: 120,
-                                    //     // color: Theme.of(context)
-                                    //     //     .accentColor
-                                    //     //     .withAlpha(100),
-                                    //     // colorBlendMode: BlendMode.colorDodge
-                                    //   )
                                     : Image.asset(
                                         ImageHelper.wrapAssetsImage(
                                             'MoonBlinkProfile.jpg'),
                                         fit: BoxFit.fill,
                                         width: 120,
                                         height: 120,
-                                        // color: Theme.of(context).accentColor,
-                                        // // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
-                                        // colorBlendMode: BlendMode.colorDodge
                                       ),
                               ),
                             ),
@@ -285,7 +272,9 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///switch dark mode
         PageCard(
-            pageTitle: S.of(context).userStatusDarkMode,
+            pageTitle: Theme.of(context).brightness == Brightness.light
+                ? S.of(context).userStatusDayMode
+                : S.of(context).userStatusDarkMode,
             iconData: Theme.of(context).brightness == Brightness.light
                 // ? IconFonts.dayModeIcon
                 ? IconFonts.dayModeIcon

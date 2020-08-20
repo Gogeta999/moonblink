@@ -83,6 +83,16 @@ class S {
     );
   }
 
+  /// `Joined `
+  String get becomePartnerAt {
+    return Intl.message(
+      'Joined ',
+      name: 'becomePartnerAt',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Booking request`
   String get bookingRequest {
     return Intl.message(
@@ -748,6 +758,26 @@ class S {
     return Intl.message(
       'Reject',
       name: 'reject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report User`
+  String get report {
+    return Intl.message(
+      'Report User',
+      name: 'report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report user for posting inappropriate content.`
+  String get reportContent {
+    return Intl.message(
+      'Report user for posting inappropriate content.',
+      name: 'reportContent',
       desc: '',
       args: [],
     );
@@ -1438,6 +1468,16 @@ class S {
     return Intl.message(
       'Dark Mode',
       name: 'userStatusDarkMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day Mode`
+  String get userStatusDayMode {
+    return Intl.message(
+      'Day Mode',
+      name: 'userStatusDayMode',
       desc: '',
       args: [],
     );
