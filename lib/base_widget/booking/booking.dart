@@ -81,8 +81,9 @@ class _BookingButtonState extends State<BookingButton> {
                               }
                             : showToast(bookingModel.viewStateError.message
                                 .toString()));
-                    //api call
-                  })
+                  }
+                  //api call
+                  )
             ],
           );
         });
