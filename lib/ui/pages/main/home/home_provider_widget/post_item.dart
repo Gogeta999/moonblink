@@ -116,7 +116,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                             minWidth: double.infinity,
                             maxWidth: double.infinity),
                         child: CachedNetworkImage(
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           imageUrl: widget.posts.coverImage,
                           placeholder: (context, url) => CachedLoader(),
                           errorWidget: (context, url, error) => CachedError(),
