@@ -210,8 +210,7 @@ class MoonBlinkRepository {
   }
 
   //Registerwith dio_moonblink another method
-  static Future register(
-      String mail, String name, String lastname, String password) async {
+  static Future register(String mail, String name, String password) async {
     FormData formData = FormData.fromMap({
       'mail': mail,
       'name': name,
