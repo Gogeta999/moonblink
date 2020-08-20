@@ -423,7 +423,7 @@ class PushNotificationsManager {
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
-    } else {
+    } else if (song == null) {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'com.moonuniverse.moonblink.$name', //same package name for both platform
         'Moon Blink $channelName',

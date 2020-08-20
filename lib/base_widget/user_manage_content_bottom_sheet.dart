@@ -3,10 +3,12 @@ import 'package:oktoast/oktoast.dart';
 
 class UserManageContentBottomSheet extends StatefulWidget {
   @override
-  _UserManageContentBottomSheetState createState() => _UserManageContentBottomSheetState();
+  _UserManageContentBottomSheetState createState() =>
+      _UserManageContentBottomSheetState();
 }
 
-class _UserManageContentBottomSheetState extends State<UserManageContentBottomSheet> {
+class _UserManageContentBottomSheetState
+    extends State<UserManageContentBottomSheet> {
   TextStyle _textStyle;
 
   @override
@@ -27,26 +29,28 @@ class _UserManageContentBottomSheetState extends State<UserManageContentBottomSh
       children: <Widget>[
         ListTile(
           leading: Icon(Icons.report),
-          title: Text('Report User',
+          title: Text(
+            'Report User',
             style: _textStyle,
           ),
           subtitle: Text('Report user for posting objectionable content.'),
-          onTap: (){
-            showToast('Reporting');
+          onTap: () {
+            showToast('Report success');
+
             ///Reporting api call.
           },
         ),
-        ListTile(
-          leading: Icon(Icons.block),
-          title: Text('Block User',
-            style: _textStyle,
-          ),
-          subtitle: Text('This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
-          onTap: (){
-            showToast('Blocking');
-            ///Blocking api call.
-          },
-        ),
+        // ListTile(
+        //   leading: Icon(Icons.block),
+        //   title: Text('Block User',
+        //     style: _textStyle,
+        //   ),
+        //   subtitle: Text('This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
+        //   onTap: (){
+        //     showToast('Blocking');
+        //     ///Blocking api call.
+        //   },
+        // ),
         /*ListTile(///Testing State
           leading: Icon(Icons.remove_circle),
           title: Text('Unfollow User',
