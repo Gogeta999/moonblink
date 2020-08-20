@@ -12,11 +12,7 @@ class StoriesPage extends StatefulWidget {
 }
 
 class _StoriesPageState extends State<StoriesPage> {
-  // final storyController = StoryController();
   List<Stories> storys = [];
-  // List<Story> userstories = [];
-  // Story userstory;
-  // List users = [];
   final StoryController storyController = StoryController();
 
   int current;
@@ -41,26 +37,21 @@ class _StoriesPageState extends State<StoriesPage> {
     final _currentPageNotifier = ValueNotifier<int>(0);
 
     return PageView.builder(
-        onPageChanged: (int index) {
-          currentPageNotifier1.value = index;
-        },
+        onPageChanged: (int index) {},
         controller: userController,
         itemCount: widget.story.length,
         itemBuilder: (context, index) {
           final PageController storypageController = PageController();
-          // current = index + 1;
           print("Current is $current");
           List<Story> userstories = widget.story;
           print("userstories length ${userstories.length}");
           Story userstory = userstories[current];
           print("current story ${userstory.toString()}");
           List users = userstory.storys;
-          // print("Stories ${users.length.toString()}");
-          // print("Current index is $current");
           storys.clear();
           for (var i = 0; i < users.length; i++) {
             Stories stories = Stories.fromJson(users[i]);
-            storys.add(stories);
+            storys.insert(0, stories);
           }
           return Stack(
             children: <Widget>[
@@ -80,7 +71,6 @@ class _StoriesPageState extends State<StoriesPage> {
                 ),
               ),
               Center(
-                // height: 500,
                 child: SizedBox(
                   height: 400,
                   child: PageView.builder(
@@ -91,31 +81,84 @@ class _StoriesPageState extends State<StoriesPage> {
                       itemCount: storys.length,
                       itemBuilder: (context, pageindex) {
                         Stories story = storys[pageindex];
-                        // print(story.id);
                         if (story.type == 2) {
                           return GestureDetector(
-                            onTap: _currentPageNotifier.value ==
-                                    storys.length - 1
-                                ? () {
-                                    if (current < userstories.length - 1) {
-                                      setState(() {
-                                        index = current++;
-                                      });
-                                      currentPageNotifier1.value += 1;
-                                      userController.jumpToPage(
-                                          currentPageNotifier1.value);
-                                    } else {
-                                      Navigator.pop(context);
-                                    }
+                            //Tap
+                            onTapUp: (TapUpDetails details) {
+                              //Tap on Right
+                              if (details.globalPosition.dx > 200) {
+                                if (_currentPageNotifier.value ==
+                                    storys.length - 1) {
+                                  if (current < userstories.length - 1) {
+                                    setState(() {
+                                      index = current++;
+                                    });
+                                    currentPageNotifier1.value += 1;
+                                    userController
+                                        .jumpToPage(currentPageNotifier1.value);
+                                  } else {
+                                    Navigator.pop(context);
                                   }
-                                : () {
-                                    _currentPageNotifier.value += 1;
-                                    storypageController
-                                        .jumpToPage(_currentPageNotifier.value);
-                                  },
+                                } else {
+                                  _currentPageNotifier.value += 1;
+                                  storypageController
+                                      .jumpToPage(_currentPageNotifier.value);
+                                }
+                              }
+                              //Tap on Left
+                              else {
+                                if (_currentPageNotifier.value != 0) {
+                                  _currentPageNotifier.value -= 1;
+                                  storypageController
+                                      .jumpToPage(_currentPageNotifier.value);
+                                } else {
+                                  if (current > 1) {
+                                    setState(() {
+                                      index = current--;
+                                    });
+                                    currentPageNotifier1.value -= 1;
+                                    userController
+                                        .jumpToPage(currentPageNotifier1.value);
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              }
+                            },
+                            //Horizontal Swipe
+                            onHorizontalDragEnd: (details) {
+                              //Swipe left
+                              if (details.primaryVelocity < 0) {
+                                if (current < userstories.length - 1) {
+                                  setState(() {
+                                    index = current++;
+                                  });
+                                  currentPageNotifier1.value += 1;
+                                  userController
+                                      .jumpToPage(currentPageNotifier1.value);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                              //Swipe Right
+                              else if (details.primaryVelocity > 0) {
+                                if (current > 1) {
+                                  setState(() {
+                                    index = current--;
+                                  });
+                                  currentPageNotifier1.value -= 1;
+                                  userController
+                                      .jumpToPage(currentPageNotifier1.value);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            },
+                            //Vertical Swipe
                             onVerticalDragUpdate: (dragUpdateDetails) {
                               Navigator.of(context).pop();
                             },
+                            //Story Video View
                             child: Container(
                               child: StoryVideo.url(story.media,
                                   controller: storyController),
@@ -123,29 +166,82 @@ class _StoriesPageState extends State<StoriesPage> {
                           );
                         }
                         return GestureDetector(
-                          onTap: _currentPageNotifier.value == storys.length - 1
-                              ? () {
-                                  if (current < userstories.length - 1) {
-                                    setState(() {
-                                      index = current++;
-                                    });
-                                    // Navigator.pop(context);
-
-                                    currentPageNotifier1.value += 1;
-                                    userController
-                                        .jumpToPage(currentPageNotifier1.value);
-                                  } else {
-                                    Navigator.pop(context);
-                                  }
+                          //Tap
+                          onTapUp: (TapUpDetails details) {
+                            //Tap on Right
+                            if (details.globalPosition.dx > 200) {
+                              if (_currentPageNotifier.value ==
+                                  storys.length - 1) {
+                                if (current < userstories.length - 1) {
+                                  setState(() {
+                                    index = current++;
+                                  });
+                                  currentPageNotifier1.value += 1;
+                                  userController
+                                      .jumpToPage(currentPageNotifier1.value);
+                                } else {
+                                  Navigator.pop(context);
                                 }
-                              : () {
-                                  _currentPageNotifier.value += 1;
-                                  storypageController
-                                      .jumpToPage(_currentPageNotifier.value);
-                                },
+                              } else {
+                                _currentPageNotifier.value += 1;
+                                storypageController
+                                    .jumpToPage(_currentPageNotifier.value);
+                              }
+                            }
+                            //Tap on Left
+                            else {
+                              if (_currentPageNotifier.value != 0) {
+                                _currentPageNotifier.value -= 1;
+                                storypageController
+                                    .jumpToPage(_currentPageNotifier.value);
+                              } else {
+                                if (current > 1) {
+                                  setState(() {
+                                    index = current--;
+                                  });
+                                  currentPageNotifier1.value -= 1;
+                                  userController
+                                      .jumpToPage(currentPageNotifier1.value);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            }
+                          },
+                          //Horizontal Swipe
+                          onHorizontalDragEnd: (details) {
+                            //Swipe left
+                            if (details.primaryVelocity < 0) {
+                              if (current < userstories.length - 1) {
+                                setState(() {
+                                  index = current++;
+                                });
+                                currentPageNotifier1.value += 1;
+                                userController
+                                    .jumpToPage(currentPageNotifier1.value);
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            }
+                            //Swipe Right
+                            else if (details.primaryVelocity > 0) {
+                              if (current > 1) {
+                                setState(() {
+                                  index = current--;
+                                });
+                                currentPageNotifier1.value -= 1;
+                                userController
+                                    .jumpToPage(currentPageNotifier1.value);
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          //Vertical Swipe
                           onVerticalDragUpdate: (dragUpdateDetails) {
                             Navigator.of(context).pop();
                           },
+                          //Story Image View
                           child: Container(
                             child: StoryImage.url(
                               story.media,
@@ -156,6 +252,7 @@ class _StoriesPageState extends State<StoriesPage> {
                       }),
                 ),
               ),
+              //User tile
               Padding(
                 padding: new EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 child: Column(children: <Widget>[

@@ -46,6 +46,7 @@ class _MainTabPageState extends State<MainTabPage>
     //PushNotificationsManager().init();
     if (usertoken != null) {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+      ScopedModel.of<ChatModel>(context).conversationlist();
     }
     setState(() {
       _pageController = PageController(initialPage: initPage);

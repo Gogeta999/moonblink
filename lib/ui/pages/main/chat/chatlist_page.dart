@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbarlogo.dart';
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
@@ -24,33 +23,11 @@ class _ChatListPageState extends State<ChatListPage>
 
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
-  String usertoken = StorageManager.sharedPreferences.getString(token);
-  @override
-  void initState() {
-    super.initState();
-    // chatlist.clear();
-    if (usertoken != null) {
-      ScopedModel.of<ChatModel>(context).init();
-    } else {
-      showToast("Login First");
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    chatlist.clear();
-  }
 
   //Chat Tile
   buildtile(Chatlist chat) {
     return Column(children: <Widget>[
       ListTile(
-        // leading: CircleAvatar(
-        //   radius: 28,
-        //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        //   backgroundImage: NetworkImage(chat.profile),
-        // ),
         leading: CachedNetworkImage(
           imageUrl: chat.profile,
           imageBuilder: (context, imageProvider) => CircleAvatar(
@@ -63,7 +40,19 @@ class _ChatListPageState extends State<ChatListPage>
 
         ///[Last Message]
         subtitle: Text(chat.lastmsg, maxLines: 1),
-        trailing: Text(timeAgo.format(DateTime.parse(chat.updated), allowFromNow: true)),
+        trailing:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text(timeAgo.format(DateTime.parse(chat.updated), allowFromNow: true)),
+          if (chat.unread != 0)
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Theme.of(context).accentColor,
+              child: Text(
+                chat.unread.toString(),
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            )
+        ]),
         onTap: () {
           Navigator.push(
               context,
@@ -79,9 +68,7 @@ class _ChatListPageState extends State<ChatListPage>
 
   @override
   Widget build(BuildContext context) {
-    //
     super.build(context);
-    // final hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
         appBar: AppBar(title: AppbarLogo()),
         body: ScopedModelDescendant<ChatModel>(

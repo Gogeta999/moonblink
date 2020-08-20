@@ -18,7 +18,7 @@ const String FcmTypeVoiceCall = 'voice_call';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
-
+  // AndroidNotificationChannel
   factory PushNotificationsManager() => _instance;
 
   static final PushNotificationsManager _instance =
@@ -36,6 +36,7 @@ class PushNotificationsManager {
       _firebaseMessaging.onTokenRefresh.listen((event) {
         print('onTokenRefresh: $event');
       });
+      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
       _initialized = true;
     }
   }
@@ -54,6 +55,20 @@ class PushNotificationsManager {
       _unregisterNotification();
       _initialized = false;
     }
+  }
+
+  Future<void> _createLocalNotiChannel(
+      String id, String name, String description) async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var androidNotificationChannel = AndroidNotificationChannel(
+      id,
+      name,
+      description,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidNotificationChannel);
   }
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
@@ -152,7 +167,7 @@ class PushNotificationsManager {
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      _showMessageNotification(message);
+      // _showMessageNotification(message);
       print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
@@ -166,8 +181,12 @@ class PushNotificationsManager {
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
+      print(
+          'Background---Booking-----------$message\n------------------------');
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
+      print(
+          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);
@@ -191,7 +210,11 @@ class PushNotificationsManager {
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
+      print(
+          'Background---Booking-----------$message\n------------------------');
     } else if (fcmType == FcmTypeMessage) {
+      print(
+          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);

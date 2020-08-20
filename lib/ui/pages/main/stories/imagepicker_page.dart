@@ -196,9 +196,8 @@ class _ImagePickerState extends State<ImagePickerPage> {
   _pickVideo() async {
     PickedFile video = await _picker.getVideo(
         source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
-    // var video = await _picker.getVideo(
-    //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
     await trimv.loadVideo(videoFile: File(video.path));
+    //Getting info of video
     detail.getMediaInformation(video.path).then((info) {
       print("Getting info of video");
       print(info["duration"]);
