@@ -40,27 +40,31 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           /// [user_Profile]
           Container(
             margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
                   child: Material(
                     child: InkWell(
                       onTap: usertoken == null
                           ? () {
-                        showToast(S.of(context).loginFirst);
-                      }
+                              showToast(S.of(context).loginFirst);
+                            }
                           : () {
-                        int detailPageId = widget.posts.userID;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PartnerDetailPage(detailPageId)));
-                      },
+                              int detailPageId = widget.posts.userID;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PartnerDetailPage(detailPageId)));
+                            },
                       child: Row(
                         children: <Widget>[
                           CachedNetworkImage(
@@ -76,7 +80,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                             ),
                             placeholder: (context, url) =>
                                 CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Icon(Icons.error),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 10.0),
@@ -88,11 +93,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.expand_more),
+                  icon: Icon(Icons.more_vert),
                   onPressed: () => CustomBottomSheet.showUserManageContent(
-                    buildContext: context,
-                    onDismiss: () => print('Dismissing BottomSheet')
-                  ),
+                      buildContext: context,
+                      onDismiss: () => print('Dismissing BottomSheet')),
                 )
               ],
             ),
@@ -237,7 +241,8 @@ class _PostItemWidgetState extends State<PostItemWidget> {
             alignment: Alignment.topLeft,
             child: Text(
               //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
-              timeAgo.format(DateTime.parse(widget.posts.createdAt), allowFromNow: true),
+              timeAgo.format(DateTime.parse(widget.posts.createdAt),
+                  allowFromNow: true),
               style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
           ),

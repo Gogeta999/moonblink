@@ -54,8 +54,8 @@ class MoonBlinkRepository {
   // get Messages
   static Future message(int id) async {
     var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().get(
-        Api.Messages + '$id/messages?limit=20&page=1');
+    var response =
+        await DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1');
     return response.data['data']
         .map<Lastmsg>((item) => Lastmsg.fromMap(item))
         .toList();
@@ -201,6 +201,7 @@ class MoonBlinkRepository {
     });
     return User.fromJsonMap(response.data);
   }
+
   ///token means IdentityToken
   static Future loginWithApple(String token, String fcmToken) async {
     var response = await DioUtils().post(Api.LOGIN, queryParameters: {
@@ -218,12 +219,11 @@ class MoonBlinkRepository {
   }
 
   //Registerwith dio_moonblink another method
-  static Future register(
-      String mail, String name, String lastname, String password) async {
+  static Future register(String mail, String name, String password) async {
     var response = await DioUtils().post(Api.REGISTER, queryParameters: {
       'mail': mail,
       'name': name,
-      'last_name': lastname,
+      // 'last_name': lastname,
       'password': password,
     });
     // print(response);

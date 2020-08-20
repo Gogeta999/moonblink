@@ -7,8 +7,6 @@ import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
-import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class ChatListPage extends StatefulWidget {
@@ -35,6 +33,12 @@ class _ChatListPageState extends State<ChatListPage>
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             backgroundImage: imageProvider,
           ),
+          placeholder: (context, url) => CircleAvatar(
+            radius: 28,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            // backgroundImage: ,
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
         title: Text(chat.name),
 
@@ -42,7 +46,8 @@ class _ChatListPageState extends State<ChatListPage>
         subtitle: Text(chat.lastmsg, maxLines: 1),
         trailing:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Text(timeAgo.format(DateTime.parse(chat.updated), allowFromNow: true)),
+          Text(
+              timeAgo.format(DateTime.parse(chat.updated), allowFromNow: true)),
           if (chat.unread != 0)
             CircleAvatar(
               radius: 10,
