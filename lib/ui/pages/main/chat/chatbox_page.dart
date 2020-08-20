@@ -7,7 +7,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
@@ -17,16 +16,13 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
-import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
-import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -51,33 +47,33 @@ class ChatBoxPage extends StatefulWidget {
 }
 
 class _ChatBoxPageState extends State<ChatBoxPage> {
-  //for Rating
+  //Message
   bool got = false;
-  bool imagepick = false;
+  //Rating
   bool rated = false;
   TextEditingController comment = TextEditingController();
-  PartnerUser partnerdata;
-  int type = 1;
-  Uint8List bytes;
-  List<Message> messages = [];
-  List<Contact> contacts = [];
-  List<Chatlist> chatlist = [];
-  List<Contact> users = [];
-  // Chatlist user = Chatlist();
-  Bookingstatus bookingdata;
-  String now = DateTime.now().toString();
+  //Messaging
   String filename;
   File _file;
-  int bookingAccept = 1;
-  int bookingReject = 2;
-
-  // ByteData _byteData;
-  final usertype = StorageManager.sharedPreferences.getInt(mUserType);
-  final selfId = StorageManager.sharedPreferences.getInt(mUserId);
-  final picker = ImagePicker();
+  String now = DateTime.now().toString();
+  Uint8List bytes;
   final TextEditingController textEditingController = TextEditingController();
   String _filePath;
-  // 2. compress file and get file.
+  List<Message> messages = [];
+  //Status
+  Bookingstatus bookingdata;
+  //Booking
+  int bookingAccept = 1;
+  int bookingReject = 2;
+  //Userdata
+  PartnerUser partnerdata;
+  final usertype = StorageManager.sharedPreferences.getInt(mUserType);
+  final selfId = StorageManager.sharedPreferences.getInt(mUserId);
+  //bottom box
+  bool isShowing = false;
+  final controller = ScrollController();
+
+  //compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
@@ -100,10 +96,8 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return File(_filePath);
   }
 
+  //Image formatting
   Future getImage() async {
-    // PickedFile pickedFile = await picker.getImage(
-    //     source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    // _file = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File _compressedImage =
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
@@ -111,7 +105,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       _file = _compressedImage;
       filename = selfId.toString() + now + ".png";
       bytes = _file.readAsBytesSync();
-      //preview = true;
       print(bytes);
     });
   }
@@ -126,7 +119,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     ScopedModel.of<ChatModel>(context).clear();
     ScopedModel.of<ChatModel>(context).chatupdated();
     ScopedModel.of<ChatModel>(context).chatupdating(widget.detailPageId);
-    print(bookingdata);
   }
 
   @override
@@ -143,8 +135,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         alignment: message.senderID == widget.detailPageId
             ? Alignment.centerLeft
             : Alignment.centerRight,
-        // padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-        // padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.all(10.0),
         child: builds(status, bookingid, message));
   }
@@ -206,14 +196,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             cursorColor: Colors.white,
             toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
           ),
-          // noramlUserCancel(msg, bookingid),
           partneronly(msg, bookingid)
         ],
       ),
     );
   }
 
-  //Partner Only
+  //Request Button
   partneronly(msg, bookingid) {
     if (msg.senderID == widget.detailPageId) {
       return Row(
@@ -255,6 +244,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                         defaultIconData: Icons.star_border,
                         allowHalfRating: true,
                         spacing: 2.0,
+                        //star value
                         onRated: (value) {
                           print("rating value -> $value");
                           setState(() {
@@ -265,6 +255,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                       SizedBox(
                         height: 30,
                       ),
+                      //Comment for Rating
                       Container(
                           margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
                           padding: EdgeInsets.all(8.0),
@@ -282,6 +273,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                           ))
                     ],
                   ),
+                  //Summit Rating
                   actions: [
                     FlatButton(
                         child: Text(S.of(context).submit),
@@ -419,7 +411,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build temporary audio file
   buildlocalaudio(Message msg) {
     print("audio File path is ${msg.attach}");
-    //need to fix path
     return LocalPlayerWidget(path: msg.attach);
   }
 
@@ -463,7 +454,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             iconSize: 30.0,
             color: Theme.of(context).accentColor,
             onPressed: () {
-              //getImage();
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
                   requestType: RequestType.image,
@@ -477,7 +467,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     });
 
                     await getImage();
-                    model.sendfile(filename, bytes, id, type, messages);
+                    model.sendfile(filename, bytes, id, 1, messages);
                     setState(() {
                       textEditingController.text = '';
                       bytes = null;
@@ -523,7 +513,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   textEditingController.text = '';
                 }
               } else {
-                model.sendfile(filename, bytes, id, type, messages);
+                model.sendfile(filename, bytes, id, 1, messages);
                 textEditingController.text = '';
                 bytes = null;
               }
@@ -570,6 +560,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         });
   }
 
+  // Booking Cancel
   bookingcancel(bookingid, bookinguserid) {
     if (selfId == bookinguserid) {
       return ProviderWidget(
@@ -589,7 +580,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //action 1
   action1(model) {
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
@@ -635,7 +625,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //action2
   action2(model) {
     bookingdata = model.chatupdated();
-    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
@@ -681,11 +670,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return Container();
   }
 
-  //Conversation List
+  //Chat List
   Widget buildChatList(id, ChatModel model) {
     model.receiver(messages, widget.detailPageId);
     bookingdata = model.chatupdated();
-    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
@@ -702,12 +690,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     );
   }
 
-  bool isShowing = false;
-  final controller = ScrollController();
+  //Widget build
   @override
   Widget build(BuildContext context) {
-    print("User Id is ${selfId.toString()}");
-    print("++++++++++++++++++++++++++++++++++++++");
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
@@ -763,8 +748,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                 controller: controller,
                 addAutomaticKeepAlives: true,
                 children: <Widget>[
+                  //chat list
                   buildChatList(partnermodel.partnerData.partnerId, model),
+                  //Message input box
                   buildmessage(partnermodel.partnerData.partnerId, model),
+                  //Bottom Box
                   if (isShowing && Platform.isAndroid)
                     SizedBox(height: MediaQuery.of(context).size.height * 0.5),
                   if (isShowing && Platform.isIOS)
@@ -776,6 +764,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  //bottom widget up
   _sendMessageWidgetUp() {
     setState(() {
       isShowing = true;
@@ -784,6 +773,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  //bottom widget down
   _sendMessageWidgetDown() {
     setState(() {
       isShowing = false;
@@ -793,7 +783,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   ///[CallFunction]
-  ///Here is for voicCall
+  ///Here is for voiceCall
   Future<void> joinChannel(voiceChannelName) async {
     if (voiceChannelName.isNotEmpty) {
       await _handleVoiceCall(voiceChannelName);
