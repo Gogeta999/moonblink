@@ -197,7 +197,7 @@ class ChatModel extends Model {
     print("Received Messages");
     socket.clearListeners();
     socket.on("receiver-peer", (data) {
-      if (data['sender_id'] == id) {
+      if (data['sender_id'] == id || data['receiver_id'] == id) {
         message.insert(
             0,
             Message(data['message'], data['sender_id'], data['receiver_id'],
@@ -207,7 +207,7 @@ class ChatModel extends Model {
       notifyListeners();
     });
     socket.on("receiver-attach", (data) {
-      if (data["sender_id"] == id) {
+      if (data["sender_id"] == id || data['receiver_id'] == id) {
         message.insert(
             0,
             Message("", data['sender_id'], data['receiver_id'], data["time"],

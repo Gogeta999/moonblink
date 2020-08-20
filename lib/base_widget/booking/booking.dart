@@ -66,29 +66,24 @@ class _BookingButtonState extends State<BookingButton> {
               FlatButton(
                   child: Text(S.of(context).bookingBook),
                   onPressed: () {
-                    if (bookingModel.isError) {
-                      print("Error Booking");
-                      showToast(
-                          bookingModel.viewStateError.errorMessage.toString());
-                    } else {
-                      bookingModel.booking(partnerDetailModel.partnerId).then(
-                          (value) => value
-                              ? {
-                                  Navigator.pop(context,
-                                      'Cancel'), //remove booking dialog and open another
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ChatBoxPage(
-                                            partnerDetailModel
-                                                .partnerData.partnerId),
-                                      ))
-                                }
-                              : showToast(bookingModel.viewStateError.message
-                                  .toString()));
-                    }
-                    //api call
-                  })
+                    bookingModel.booking(partnerDetailModel.partnerId).then(
+                        (value) => value
+                            ? {
+                                Navigator.pop(context,
+                                    'Cancel'), //remove booking dialog and open another
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ChatBoxPage(
+                                          partnerDetailModel
+                                              .partnerData.partnerId),
+                                    ))
+                              }
+                            : showToast(bookingModel.viewStateError.message
+                                .toString()));
+                  }
+                  //api call
+                  )
             ],
           );
         });

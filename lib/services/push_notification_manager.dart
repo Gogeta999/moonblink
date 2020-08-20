@@ -168,6 +168,7 @@ class PushNotificationsManager {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
       _showMessageNotification(message);
+      print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
     }
@@ -257,8 +258,7 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     NotificationDetails platformChannelSpecifics =
-      setUpPlatformSpecifics('booking', 'Booking');
-
+        setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
     int bookingId = 0;
     int bookingUserId = 0;
@@ -315,8 +315,8 @@ class PushNotificationsManager {
   Future<void> _showMessageNotification(message) async {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
     if (!atChatBox) {
-      NotificationDetails platformChannelSpecifics = setUpPlatformSpecifics(
-        'message', 'Messaging');
+      NotificationDetails platformChannelSpecifics =
+          setUpPlatformSpecifics('message', 'Messaging');
       int partnerId = 0;
       String title = '';
       String body = '';
@@ -397,25 +397,41 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
-  NotificationDetails setUpPlatformSpecifics(name, channelName) {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'com.moonuniverse.moonblink.$name', //same package name for both platform
-      'Moon Blink $channelName',
-      'Moon Blink',
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('moonblink_noti.mp3'),
-      enableVibration: true,
-      importance: Importance.Max,
-      priority: Priority.High,
-    );
+  NotificationDetails setUpPlatformSpecifics(name, channelName, {song}) {
+    if (song != null) {
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'com.moonuniverse.moonblink.$name', //same package name for both platform
+        'Moon Blink $channelName',
+        'Moon Blink',
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('$song'),
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High,
+      );
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+          presentAlert: true, presentBadge: true, presentSound: true);
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      return platformChannelSpecifics;
+    } else if (song == null) {
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'com.moonuniverse.moonblink.$name', //same package name for both platform
+        'Moon Blink $channelName',
+        'Moon Blink',
+        playSound: true,
+        // sound: RawResourceAndroidNotificationSound('moonblink_noti'),
 
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true, presentBadge: true, presentSound: true,
-      sound: 'moonblink_noti.m4r'
-    );
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    return platformChannelSpecifics;
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High,
+      );
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+          presentAlert: true, presentBadge: true, presentSound: true);
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      return platformChannelSpecifics;
+    }
   }
 
   Future<void> cancelVoiceCallNotification() async {
