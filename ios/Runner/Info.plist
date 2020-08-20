@@ -55,25 +55,23 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Moon Go wants to access Apple Music</string>
+	<string>This app uses the media libray to load photos, audios and videos.</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Moon Go wants to access your calendars</string>
+	<string>This app uses the calendars to show current date and time.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera access permission request</string>
+	<string>This app uses the camera to take photos and videos.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Moon Go wants to access your contacts</string>
+	<string>This allows us to track people you know. So we can notify you that your friends or family is using the same app.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Moon Go wants to access your location for always</string>
+	<string>This allows us to track your location even when the app is in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Moon Go wants to access your location while using</string>
+	<string>This allows us to track your location when the app is using.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Moon Go wants to access your microphone</string>
+	<string>This app uses the microphone to record your voice message.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Moon Go wants to use motion</string>
+	<string>This app uses the devices&apos;s acclerometer to measure performance.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library Access Warning</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Moon Go wants to use Speech Recognition</string>
+	<string>This app uses the photo library to load photo albums, audios and videos.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -100,6 +98,6 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>kTCCServiceMediaLibrary</key>
-	<string>Moon Go wants to access your music</string>
+	<string>This allows us to play voice message which is used in chat.</string>
 </dict>
 </plist>

@@ -378,6 +378,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           _buildCurrentCoinAmount(),
           _buildAds(),
+          if (Platform.isAndroid)
           _buildTopUpWithCustomerService(),
         ],
       );
