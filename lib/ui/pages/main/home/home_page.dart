@@ -140,13 +140,14 @@ class HomePostList extends StatelessWidget {
   Widget build(BuildContext context) {
     HomeModel homeModel = Provider.of(context);
     return SliverList(
-        delegate: SliverChildBuilderDelegate(
-      (context, index) {
-        Post item = homeModel.list[index];
-        return PostItemWidget(item, index: index);
-      },
-      childCount: homeModel.list?.length ?? 0,
-    ));
+      delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            Post item = homeModel.list[index];
+            return PostItemWidget(item, index: index);
+          },
+        childCount: homeModel.list?.length ?? 0
+      ),
+    );
   }
 }
 

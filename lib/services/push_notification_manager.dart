@@ -181,12 +181,8 @@ class PushNotificationsManager {
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
-      print(
-          'Background---Booking-----------$message\n------------------------');
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
-      print(
-          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);
@@ -210,11 +206,7 @@ class PushNotificationsManager {
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
-      print(
-          'Background---Booking-----------$message\n------------------------');
     } else if (fcmType == FcmTypeMessage) {
-      print(
-          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);
@@ -267,7 +259,6 @@ class PushNotificationsManager {
   Future<void> _showBookingNotification(message) async {
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
-
     int userId = 0;
     int bookingId = 0;
     int bookingUserId = 0;
@@ -441,12 +432,6 @@ class PushNotificationsManager {
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
     }
-
-    // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-    //     presentAlert: true, presentBadge: true, presentSound: true);
-    // var platformChannelSpecifics = NotificationDetails(
-    //     androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    // return platformChannelSpecifics;
   }
 
   Future<void> cancelVoiceCallNotification() async {

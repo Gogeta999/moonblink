@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:moonblink/provider/view_state_model.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/utils/constants.dart';
 
 //Base
 abstract class ViewStateListModel<T> extends ViewStateModel {
@@ -28,6 +31,15 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
       if (init) list.clear();
       setError(e, s);
     }
+  }
+
+  ///only for home posts
+  void removeItem({@required int index, @required int blockUserId}) {
+    list.removeAt(index);
+    MoonBlinkRepository.blockOrUnblock(blockUserId, BLOCK).then((value) =>
+      print(value)
+    );
+    notifyListeners();
   }
 
   // Load data

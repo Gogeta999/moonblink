@@ -36,6 +36,9 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/app_icon" />
         <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="moon_go_noti"/>
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2553224590005557~4621580830"/>
             <!-- TODO: -->
