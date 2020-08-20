@@ -53,9 +53,8 @@ class MoonBlinkRepository {
 
   // get Messages
   static Future message(int id) async {
-    var usertoken = StorageManager.sharedPreferences.getString(token);
     var response =
-        await DioUtils().get(Api.Messages + '$id/messages?limit=20&page=1');
+        await DioUtils().get(Api.Messages + '$id/messages?limit=40&page=1');
     return response.data['data']
         .map<Lastmsg>((item) => Lastmsg.fromMap(item))
         .toList();
@@ -176,39 +175,31 @@ class MoonBlinkRepository {
   /// [login api]
   //login with email & password
   static Future login(String mail, String password, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'mail': mail,
-      'password': password,
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'mail': mail, 'password': password, 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
   static Future loginWithFacebook(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'facebook',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'facebook', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
   static Future loginWithGoogle(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'google',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'google', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
   ///token means IdentityToken
   static Future loginWithApple(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'apple',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'apple', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
@@ -219,13 +210,15 @@ class MoonBlinkRepository {
   }
 
   //Registerwith dio_moonblink another method
-  static Future register(String mail, String name, String password) async {
-    var response = await DioUtils().post(Api.REGISTER, queryParameters: {
+  static Future register(
+      String mail, String name, String lastname, String password) async {
+    FormData formData = FormData.fromMap({
       'mail': mail,
       'name': name,
       // 'last_name': lastname,
       'password': password,
     });
+    var response = await DioUtils().postwithData(Api.REGISTER, data: formData);
     // print(response);
     return response.data;
   }
@@ -234,9 +227,11 @@ class MoonBlinkRepository {
   static Future registAsPartner() async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().post(
+    FormData formData =
+        FormData.fromMap({'Authorization': 'Bearer' + usertoken.toString()});
+    var response = await DioUtils().postwithData(
         Api.RegisterAsPartner + '$userid/register',
-        queryParameters: {'Authorization': 'Bearer' + usertoken.toString()});
+        data: formData);
     return response.data;
   }
 
@@ -279,8 +274,9 @@ class MoonBlinkRepository {
   // top up
   static Future topUp(String productId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().post(Api.TopUp + '$userId/coin/topup',
-        queryParameters: {'product_id': productId});
+    FormData formData = FormData.fromMap({'product_id': productId});
+    var response = await DioUtils()
+        .postwithData(Api.TopUp + '$userId/coin/topup', data: formData);
     return response.data;
   }
 
