@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
 class UserManageContentBottomSheet extends StatefulWidget {
+  final Function onReport;
+  final Function onBlock;
+
+  const UserManageContentBottomSheet({Key key, @required this.onReport, @required this.onBlock}) : super(key: key);
   @override
   _UserManageContentBottomSheetState createState() => _UserManageContentBottomSheetState();
 }
@@ -33,6 +37,7 @@ class _UserManageContentBottomSheetState extends State<UserManageContentBottomSh
           subtitle: Text('Report user for posting objectionable content.'),
           onTap: (){
             showToast('Reporting');
+            widget.onReport();
             ///Reporting api call.
           },
         ),
@@ -44,6 +49,7 @@ class _UserManageContentBottomSheetState extends State<UserManageContentBottomSh
           subtitle: Text('This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
           onTap: (){
             showToast('Blocking');
+            widget.onBlock();
             ///Blocking api call.
           },
         ),

@@ -167,8 +167,7 @@ class PushNotificationsManager {
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      // _showMessageNotification(message);
-      print('$fcmType');
+      _showMessageNotification(message);
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
     }
@@ -181,12 +180,8 @@ class PushNotificationsManager {
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
-      print(
-          'Background---Booking-----------$message\n------------------------');
       _showBookingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
-      print(
-          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);
@@ -210,11 +205,7 @@ class PushNotificationsManager {
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
-      print(
-          'Background---Booking-----------$message\n------------------------');
     } else if (fcmType == FcmTypeMessage) {
-      print(
-          'Background---Message-----------$message\n------------------------');
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
           : json.decode(message['sender_id']);
@@ -266,7 +257,7 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('booking', 'Booking');
+      setUpPlatformSpecifics('booking', 'Booking');
 
     int userId = 0;
     int bookingId = 0;
@@ -412,15 +403,16 @@ class PushNotificationsManager {
       'Moon Blink $channelName',
       'Moon Blink',
       playSound: true,
-      sound: RawResourceAndroidNotificationSound('moonblink_noti'),
-
+      sound: RawResourceAndroidNotificationSound('moonblink_noti.mp3'),
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
     );
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true);
+      presentAlert: true, presentBadge: true, presentSound: true,
+      sound: 'moonblink_noti.m4r'
+    );
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     return platformChannelSpecifics;

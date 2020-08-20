@@ -172,6 +172,17 @@ class MoonBlinkRepository {
     return UserTransaction.fromJson(response.data);
   }
 
+  /// need to remove from database
+  static Future blockOrUnblock(int blockUserId, int status) async {
+    FormData formData = FormData.fromMap(
+      {'block_user_id': blockUserId, 'status': status}
+    );
+    var response = await DioUtils().postwithData(Api.BlockOrUnblock + '$blockUserId/block',
+      data: formData
+    );
+    return response.data;
+  }
+
   /// [login api]
   //login with email & password
   static Future login(String mail, String password, String fcmToken) async {

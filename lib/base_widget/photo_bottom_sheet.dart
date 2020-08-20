@@ -119,12 +119,17 @@ class CustomBottomSheet {
 
   static showUserManageContent(
       {@required BuildContext buildContext,
+        @required Function onReport,
+        @required Function onBlock,
         Function onDismiss}) async {
       showModalBottomSheet(
           context: buildContext,
           barrierColor: Colors.white.withOpacity(0.0),
           isDismissible: true,
-          builder: (context) => UserManageContentBottomSheet()
+          builder: (context) => UserManageContentBottomSheet(
+            onReport: onReport,
+            onBlock: onBlock,
+          )
           ).whenComplete(() {
         try {
           onDismiss();

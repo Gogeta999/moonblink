@@ -12,6 +12,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/home_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -38,6 +39,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    HomeModel homeModel = Provider.of<HomeModel>(context);
     return Container(
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.start,
@@ -95,8 +97,16 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 IconButton(
                   icon: Icon(Icons.more_vert),
                   onPressed: () => CustomBottomSheet.showUserManageContent(
-                      buildContext: context,
-                      onDismiss: () => print('Dismissing BottomSheet')),
+                    buildContext: context,
+                    onReport: () => print('Reporting User'),
+                    onBlock: () {
+                      print('Blocking User');
+                      ///Blocking user
+                      homeModel.removeItem(index: widget.index, blockUserId: widget.posts.userID);
+                      Navigator.pop(context);
+                    },
+                    onDismiss: () => print('Dismissing BottomSheet')
+                  ),
                 )
               ],
             ),
