@@ -53,7 +53,6 @@ class MoonBlinkRepository {
 
   // get Messages
   static Future message(int id) async {
-    // var usertoken = StorageManager.sharedPreferences.getString(token);
     var response =
         await DioUtils().get(Api.Messages + '$id/messages?limit=40&page=1');
     return response.data['data']
@@ -216,7 +215,7 @@ class MoonBlinkRepository {
     FormData formData = FormData.fromMap({
       'mail': mail,
       'name': name,
-      'last_name': lastname,
+      // 'last_name': lastname,
       'password': password,
     });
     var response = await DioUtils().postwithData(Api.REGISTER, data: formData);

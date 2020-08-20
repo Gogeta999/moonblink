@@ -51,6 +51,12 @@ class _ContactsPageState extends State<ContactsPage> {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 backgroundImage: imageProvider,
               ),
+              placeholder: (context, url) => CircleAvatar(
+                radius: 28,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                // backgroundImage: ,
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             // leading: CircleAvatar(
             //   radius: 28,

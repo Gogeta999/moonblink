@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
@@ -114,6 +115,25 @@ class CustomBottomSheet {
     } else {
       _permissionFail(buildContext, 'Microphone');
     }
+  }
+
+  static showUserManageContent(
+      {@required BuildContext buildContext,
+        Function onDismiss}) async {
+      showModalBottomSheet(
+          context: buildContext,
+          barrierColor: Colors.white.withOpacity(0.0),
+          isDismissible: true,
+          builder: (context) => UserManageContentBottomSheet()
+          ).whenComplete(() {
+        try {
+          onDismiss();
+        } catch (e) {
+          if (e is NoSuchMethodError) {
+            print('NoSuchMethodError');
+          }
+        }
+      });
   }
 
   static _permissionFail(BuildContext buildContext, String permissionName) {
@@ -353,6 +373,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
               GridView.builder(
                   addAutomaticKeepAlives: true,
                   controller: _scrollController,
+                  physics: ClampingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3),
                   itemCount: _selectedImages.length,
