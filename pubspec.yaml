@@ -18,6 +18,7 @@ dependencies:
   path_provider: ^1.6.11
   #Base Component
   device_info: ^0.4.2+4
+  clipboard_manager: ^0.0.1
   package_info: ^0.4.1
   #Base UI
   shimmer: ^1.1.1
@@ -93,6 +94,8 @@ dependencies:
   sign_in_with_apple: ^2.5.2
   # Apple Sign in 2 - only iOS support
   apple_sign_in: ^0.1.0
+  #encrypt
+  encrypt: ^4.0.2
 
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.

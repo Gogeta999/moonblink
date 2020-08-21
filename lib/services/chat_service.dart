@@ -6,6 +6,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -16,6 +17,7 @@ String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
+  'timeout': 2000
 });
 
 const List EVENTS = [
@@ -23,9 +25,9 @@ const List EVENTS = [
   'connect_error',
   'connect_timeout',
   'connecting',
-  'disconnect',
+  // 'disconnect',
   'error',
-  'reconnect',
+  // 'reconnect',
   'reconnect_attempt',
   'reconnect_failed',
   'reconnect_error',
@@ -51,19 +53,15 @@ class ChatModel extends Model {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-    for (var event in EVENTS) {
-      socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
-    }
-    socket.once("booking_status", (data) => print(data));
-    if (socket.connect() != null) {
-      print("Connected Socket");
-    }
-    // //call made
-    // socket.once("call-made", (data) => null);
-    // //answer-made
-    // socket.once("made-answer", (data) => null);
-    // //call rejected
-    // socket.once("call-rejected", (data) => null);
+    // for (var event in EVENTS) {
+    //   print("Checking");
+    //   socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
+    // }
+    // socket.on("reconnect", (data) {
+    //   print("reconnecting");
+    //   socket.emit('connect-user', usertoken);
+    //   notifyListeners();
+    // });
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -71,6 +69,23 @@ class ChatModel extends Model {
       var userId = jsonData.map((m) => m['user_id']);
       print(connectionId);
       print(userId);
+    });
+  }
+
+  // //Connection Check
+  void connection() {
+    String usertoken = StorageManager.sharedPreferences.getString(token);
+    for (var event in EVENTS) {
+      print("Checking");
+      socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
+    }
+    socket.on("disconnect", (data) => showToast("Disconnected"));
+    socket.on("reconnect", (data) {
+      // showToast("Reconnecting");
+      print("reconnecting");
+      socket.emit('connect-user', usertoken);
+      showToast("Connected");
+      notifyListeners();
     });
   }
 
@@ -154,10 +169,10 @@ class ChatModel extends Model {
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
-    socket.once("conversation", (data) {
-      print(data);
+    socket.on("conversation", (data) {
+      print("----------------------------------------------------");
+      print(data.toString());
       chatlist.clear();
-      // LocalNotifications().notification(1,"new", "message");
       var response = ResponseData.fromJson(data);
       for (var i = 0; i < response.data.length; i++) {
         Chatlist chat = Chatlist.fromMap(response.data[i]);
