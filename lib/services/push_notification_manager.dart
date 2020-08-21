@@ -316,7 +316,7 @@ class PushNotificationsManager {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
     if (!atChatBox) {
       NotificationDetails platformChannelSpecifics =
-          setUpPlatformSpecifics('message', 'Messaging');
+          setUpPlatformSpecifics('message', 'Messaging', song: null);
       int partnerId = 0;
       String title = '';
       String body = '';
@@ -346,7 +346,7 @@ class PushNotificationsManager {
 
   Future<void> _showVoiceCallNotification(message) async {
     NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('voicecall', 'Voice Call');
+        setUpPlatformSpecifics('voicecall', 'Voice Call', song: null);
 
     String callChannel = '';
     String title = '';
@@ -397,7 +397,7 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
-  NotificationDetails setUpPlatformSpecifics(name, channelName, {song}) {
+  NotificationDetails setUpPlatformSpecifics(name, channelName, {String song}) {
     if (song != null) {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'com.moonuniverse.moonblink.$name', //same package name for both platform
@@ -410,24 +410,26 @@ class PushNotificationsManager {
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-          presentAlert: true, presentBadge: true, presentSound: true);
+        presentAlert: true, presentBadge: true, presentSound: true,
+        sound: 'moonblink_noti.m4r'
+      );
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
-    } else if (song == null) {
+    } else {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'com.moonuniverse.moonblink.$name', //same package name for both platform
         'Moon Blink $channelName',
         'Moon Blink',
         playSound: true,
-        // sound: RawResourceAndroidNotificationSound('moonblink_noti'),
 
         enableVibration: true,
         importance: Importance.Max,
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-          presentAlert: true, presentBadge: true, presentSound: true);
+        presentAlert: true, presentBadge: true, presentSound: true,
+      );
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
