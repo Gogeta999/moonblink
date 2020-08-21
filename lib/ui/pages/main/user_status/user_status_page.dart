@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/BottomClipper.dart';
 import 'package:moonblink/base_widget/indicator/appbar_indicator.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -18,6 +19,45 @@ import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:encrypt/encrypt.dart' as encryptLib;
+
+encrypt(int id) {
+  List confuseList = [
+    '7',
+    'm',
+    '8',
+    'o',
+    '2',
+    'o',
+    '2',
+    'n',
+    '8',
+    'g',
+    '4',
+    'o'
+  ];
+  confuseList.insert(3, id);
+  // print(id.split(''));
+  // List secondList = id.split('');
+  // confuseList.insert(3, secondList[0]);
+  // confuseList.insert(6, secondList[1]);
+  // confuseList.insert(9, secondList[2]);
+
+  final inputText = confuseList.toString();
+  final key = encryptLib.Key.fromUtf8('32lengthSecretKeyFormoongoAESsys');
+  final iv = encryptLib.IV.fromUtf8('16IVforMoonGo782');
+
+  final encrypter =
+      encryptLib.Encrypter(encryptLib.AES(key, mode: encryptLib.AESMode.cbc));
+
+  final encrypted = encrypter.encrypt(inputText, iv: iv);
+  final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+  print('Encrypted Code:' + encrypted.base64);
+  print('Decrypted Code: ' + decrypted);
+  print('Compare the layer of multiple 4: ' + confuseList.toString());
+  return encrypted.base64;
+}
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -113,7 +153,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   SizedBox(width: 5.0),
                   Text(
                       '${S.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
-                      style: TextStyle(fontSize: 16))
+                      style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
@@ -135,6 +175,8 @@ class UserHeaderWidget extends StatefulWidget {
 class _UserHeaderWidgetState extends State<UserHeaderWidget> {
   @override
   Widget build(BuildContext context) {
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
+    String id = encrypt(userid);
     return ClipPath(
         // in widget
         clipper: BottomClipper(),
@@ -184,24 +226,43 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               ),
                             ),
                           ),
+                          //Show user name here
+                          Row(
+                            children: [
+                              Spacer(
+                                flex: 4,
+                              ),
+                              Center(
+                                child: Text(
+                                    model.hasUser
+                                        ? model.user.name.toString()
+                                        : S.of(context).toSignIn,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .apply(
+                                            color:
+                                                Colors.white.withAlpha(200))),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.content_copy),
+                                iconSize: 18,
+                                onPressed: () {
+                                  ClipboardManager.copyToClipBoard(id)
+                                      .then((result) {
+                                    showToast("Copy to Your Clipboard");
+                                  });
+                                },
+                              ),
+                              Spacer(
+                                flex: 3,
+                              )
+                            ],
+                          ),
+
                           SizedBox(
                             height: 20,
-                          ),
-                          //Show user name here
-                          Column(children: <Widget>[
-                            Text(
-                                model.hasUser
-                                    ? model.user.name.toString()
-                                    : S.of(context).toSignIn,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .apply(color: Colors.white.withAlpha(200))),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // if (model.hasUser) UserCoin()
-                          ])
+                          )
                         ])))));
   }
 }

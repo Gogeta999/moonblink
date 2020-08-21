@@ -22,6 +22,12 @@ class _ChatListPageState extends State<ChatListPage>
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   ScopedModel.of<ChatModel>(context).connection();
+  // }
+
   //Chat Tile
   buildtile(Chatlist chat) {
     return Column(children: <Widget>[
@@ -78,7 +84,10 @@ class _ChatListPageState extends State<ChatListPage>
         appBar: AppBar(title: AppbarLogo()),
         body: ScopedModelDescendant<ChatModel>(
           builder: (context, child, model) {
+            model.connection();
             chatlist = model.conversationlist();
+            print(
+                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             print(chatlist.length);
 
             return CustomScrollView(slivers: <Widget>[
