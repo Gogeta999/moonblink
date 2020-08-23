@@ -15,6 +15,7 @@ import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
+import 'package:moonblink/ui/pages/user/blocked_user_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
@@ -50,6 +51,7 @@ class RouteName {
   static const String newUserSwiperPage = 'newUserSwiperPage';
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
   static const String licenseAgreement = 'licenseAgreement';
+  static const String blockedUsers = 'blockedUsers';
 }
 
 class Router {
@@ -96,7 +98,9 @@ class Router {
       case RouteName.chatBox:
         return CupertinoPageRoute(
             builder: (_) => ChatBoxPage(settings.arguments));
-
+      case RouteName.blockedUsers:
+        return CupertinoPageRoute(
+          builder: (_) => BlockedUserPage());
       /// [get some error to pass params in route name method, using simple push method first]
       // case RouteName.partnerDetail:
       //   // var posts = settings.arguments as PartnerUser;

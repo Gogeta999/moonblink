@@ -25,8 +25,6 @@ class _WalletPageState extends State<WalletPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            //TopUpPage(),
-            //TestNativeAds(),
             TopUpPage(),
             UserTransactionPage(),
           ],

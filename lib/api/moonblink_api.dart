@@ -49,6 +49,9 @@ class Api {
   // Get otp again
   static const String GetOtpCode = "moonblink/api/v1/user/";
 
+  //get blocked List
+  static const String getUserBlockedList = 'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block/list
+
   // Block or unblock user
   static const String BlockOrUnblock = 'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block
 

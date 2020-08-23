@@ -1633,6 +1633,16 @@ class S {
     );
   }
 
+  /// `You must accept permissions`
+  String get blockedUsers {
+    return Intl.message(
+      'Blocked Users',
+      name: 'blockedUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You need to allow Microphone permission to enable voice call`
   String get youNeedToAllowMicroPermission {
     return Intl.message(

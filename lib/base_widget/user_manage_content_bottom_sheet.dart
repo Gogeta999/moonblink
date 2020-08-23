@@ -48,23 +48,20 @@ class _UserManageContentBottomSheetState
             ///Reporting api call.
           },
         ),
-        //TODO: Add on IOS
-        // ListTile(
-        //   leading: Icon(Icons.block),
-        //   title: Text(
-        //     'Block User',
-        //     style: _textStyle,
-        //   ),
-        //   subtitle: Text(
-        //       'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
-        //   onTap: () {
-        //     showToast('Blocking');
-        //     widget.onBlock();
-
-        //     ///Blocking api call.
-        //   },
-        // ),
-        SizedBox(height: 10)
+        ListTile(
+         leading: Icon(Icons.block),
+         title: Text(
+           'Block User',
+           style: _textStyle,
+         ),
+         subtitle: Text(
+             'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
+         onTap: () {
+           widget.onBlock();
+           ///Blocking api call.
+         },
+        ),
+        SizedBox(height: 30)
       ],
     );
   }

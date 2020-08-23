@@ -438,13 +438,14 @@ class DioUtils {
 abstract class BaseResponseData {
   int errorCode = 1;
   String errorMessage;
+  int statusCode;
   dynamic data;
   String getMessage;
 
   bool get success;
 
   BaseResponseData(
-      {this.errorCode, this.errorMessage, this.data, this.getMessage});
+      {this.errorCode, this.errorMessage, this.data, this.getMessage, this.statusCode});
 
   @override
   String toString() {
@@ -481,6 +482,8 @@ class ResponseData extends BaseResponseData {
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     errorCode = json['error_code'];
+    statusCode = json['status_code'];
+    print(statusCode);
     print(errorCode);
 
     ///remove later

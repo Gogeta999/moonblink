@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/adModel.dart';
+import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
@@ -17,6 +18,7 @@ import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -174,13 +176,24 @@ class MoonBlinkRepository {
 
   /// need to remove from database
   static Future blockOrUnblock(int blockUserId, int status) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
     FormData formData = FormData.fromMap(
       {'block_user_id': blockUserId, 'status': status}
     );
-    var response = await DioUtils().postwithData(Api.BlockOrUnblock + '$blockUserId/block',
+    var response = await DioUtils().postwithData(Api.BlockOrUnblock + '$userId/block',
       data: formData
     );
-    return response.data;
+    return response;
+  }
+
+  ///get blocked list
+  static Future getUserBlockedList({int limit, int page}) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(Api.getUserBlockedList + '$userId/block/list', queryParameters: {
+      'limit': limit,
+      'page': page
+    });
+    return BlockedUsersList.fromJson(response.data);
   }
 
   /// [login api]

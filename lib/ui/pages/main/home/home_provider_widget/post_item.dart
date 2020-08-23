@@ -100,12 +100,13 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       buildContext: context,
                       onReport: () => print('Report Success'),
                       onBlock: () {
-                        print('Blocking User');
-
                         ///Blocking user
                         homeModel.removeItem(
                             index: widget.index,
-                            blockUserId: widget.posts.userID);
+                            blockUserId: widget.posts.userID).then((value) {
+                              value ? showToast('Successfully Blocked')
+                              : showToast('Error Blocking User');
+                        });
                         Navigator.pop(context);
                       },
                       onDismiss: () => print('Dismissing BottomSheet')),

@@ -56,8 +56,9 @@ class _TopUpPageState extends State<TopUpPage>
 
   bool isLoading = false;
   bool isAdLoading = false;
+  bool isPageLoading = false;
 
-  Wallet wallet = Wallet(value: 0);
+  Wallet wallet;
 
   @override
   void initState() {
@@ -72,9 +73,15 @@ class _TopUpPageState extends State<TopUpPage>
   }
 
   void asyncInitState() async {
+    setState(() {
+      isPageLoading = true;
+    });
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
     await getUserWallet();
+    setState(() {
+      isPageLoading = false;
+    });
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
@@ -361,7 +368,12 @@ class _TopUpPageState extends State<TopUpPage>
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(), getUserWallet() /*userWallet.refresh()*/},
+        onPressed: () async {
+          setState((){isPageLoading = true;});
+          await getItems();
+          await getUserWallet();
+          setState((){isPageLoading = false;});
+        },
       );
     } else {
       return Column(
@@ -393,7 +405,7 @@ class _TopUpPageState extends State<TopUpPage>
         Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
         return false;
       },
-      child: _buildWalletList()
+      child: isPageLoading ? Center(child: CircularProgressIndicator()) : _buildWalletList()
     );
   }
 

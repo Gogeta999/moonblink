@@ -162,10 +162,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   trailing: Icon(Icons.chevron_right),
                 ),
               ),
-
-              ///newUser on/off Test
               SizedBox(
                 height: 20,
+              ),
+              Material(
+                color: Theme.of(context).cardColor,
+                child: ListTile(
+                  title: Text(S.of(context).blockedUsers),
+                  onTap: () {
+                    Navigator.pushNamed(context, RouteName.blockedUsers);
+                  },
+                  leading: Icon(
+                    Icons.block,
+                    color: iconColor,
+                  ),
+                  trailing: Icon(Icons.chevron_right),
+                ),
               ),
             ],
           ),
