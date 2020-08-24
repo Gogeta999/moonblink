@@ -59,7 +59,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     // onTap: ,
                     child: Image.network(
                       snapshot.data.adUrl,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       filterQuality: FilterQuality.high,
                     ),
                   );

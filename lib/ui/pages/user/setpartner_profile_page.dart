@@ -10,6 +10,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/Datetime.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -21,6 +22,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 enum NrcType { front, back }
@@ -161,7 +163,19 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                             GestureDetector(
                               /// [You need to put before OnTap]
                               onTap: () {
-                                _pickCoverFromGallery();
+                                // _pickCoverFromGallery();
+                                CustomBottomSheet.show(
+                                    requestType: RequestType.image,
+                                    popAfterBtnPressed: true,
+                                    buttonText: S.of(context).choose,
+                                    buildContext: context,
+                                    limit: 1,
+                                    onPressed: (File file) {
+                                      setState(() {
+                                        _cover = file;
+                                      });
+                                    },
+                                    body: S.of(context).partnercover);
                               },
                               child: AspectRatio(
                                   aspectRatio: 100 / 100,
@@ -178,7 +192,22 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                     child: GestureDetector(
                                       /// [You need to put before OnTap]
                                       onTap: () {
-                                        _pickprofileFromGallery();
+                                        CustomBottomSheet.show(
+
+                                            ///profile is small
+                                            popAfterBtnPressed: true,
+                                            requestType: RequestType.image,
+                                            minWidth: 480,
+                                            minHeight: 480,
+                                            buttonText: S.of(context).choose,
+                                            buildContext: context,
+                                            limit: 1,
+                                            onPressed: (File file) {
+                                              setState(() {
+                                                _profile = file;
+                                              });
+                                            },
+                                            body: S.of(context).partnerprofile);
                                       },
                                       child: CircleAvatar(
                                         radius: 75,
