@@ -168,7 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).blockedUsers),
+                  title: Text(S.of(context).blockList),
                   onTap: () {
                     Navigator.pushNamed(context, RouteName.blockedUsers);
                   },

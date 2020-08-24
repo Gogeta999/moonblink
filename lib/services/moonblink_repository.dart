@@ -177,12 +177,10 @@ class MoonBlinkRepository {
   /// need to remove from database
   static Future blockOrUnblock(int blockUserId, int status) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    FormData formData = FormData.fromMap(
-      {'block_user_id': blockUserId, 'status': status}
-    );
-    var response = await DioUtils().postwithData(Api.BlockOrUnblock + '$userId/block',
-      data: formData
-    );
+    FormData formData =
+        FormData.fromMap({'block_user_id': blockUserId, 'status': status});
+    var response = await DioUtils()
+        .postwithData(Api.BlockOrUnblock + '$userId/block', data: formData);
     return response;
   }
 
@@ -195,10 +193,9 @@ class MoonBlinkRepository {
   ///get blocked list
   static Future getUserBlockedList({int limit, int page}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().get(Api.getUserBlockedList + '$userId/block/list', queryParameters: {
-      'limit': limit,
-      'page': page
-    });
+    var response = await DioUtils().get(
+        Api.getUserBlockedList + '$userId/block/list',
+        queryParameters: {'limit': limit, 'page': page});
     return BlockedUsersList.fromJson(response.data);
   }
 

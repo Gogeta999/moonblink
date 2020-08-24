@@ -93,6 +93,36 @@ class S {
     );
   }
 
+  /// `Block User`
+  String get block {
+    return Intl.message(
+      'Block User',
+      name: 'block',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You won't see this user or able to communicate anymore until you unblcok this user at settings`
+  String get blockContent {
+    return Intl.message(
+      'You won\'t see this user or able to communicate anymore until you unblcok this user at settings',
+      name: 'blockContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block List`
+  String get blockList {
+    return Intl.message(
+      'Block List',
+      name: 'blockList',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Booking request`
   String get bookingRequest {
     return Intl.message(
@@ -1628,16 +1658,6 @@ class S {
     return Intl.message(
       'You must accept permissions',
       name: 'youMustAcceptPermission',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You must accept permissions`
-  String get blockedUsers {
-    return Intl.message(
-      'Blocked Users',
-      name: 'blockedUsers',
       desc: '',
       args: [],
     );

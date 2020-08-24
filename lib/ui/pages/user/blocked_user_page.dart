@@ -73,7 +73,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).blockedUsers),
+        title: Text(S.of(context).block),
       ),
       body: BlocProvider<BlockedUsersBloc>(
         create: (_) => _blockedUsersBloc..add(BlockedUsersFetched()),
@@ -194,7 +194,10 @@ class BlockedUserListTile extends StatelessWidget {
   final bool isUnblocking;
 
   const BlockedUserListTile({Key key, this.data, this.index, this.isUnblocking})
-      : assert(isUnblocking != null && data != null && index != null && index >= 0),
+      : assert(isUnblocking != null &&
+            data != null &&
+            index != null &&
+            index >= 0),
         super(key: key);
 
   @override

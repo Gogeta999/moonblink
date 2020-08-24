@@ -53,18 +53,20 @@ class _UserManageContentBottomSheetState
             setState(() {
               isReporting = false;
             });
+
             ///Reporting api call.
           },
-          trailing: isReporting ? CupertinoActivityIndicator() : Container(height: 0, width: 0),
+          trailing: isReporting
+              ? CupertinoActivityIndicator()
+              : Container(height: 0, width: 0),
         ),
         ListTile(
           leading: Icon(Icons.block),
           title: Text(
-            'Block User',
+            S.of(context).block,
             style: _textStyle,
           ),
-          subtitle: Text(
-              'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
+          subtitle: Text(S.of(context).blockContent),
           onTap: () async {
             setState(() {
               isBlocking = true;
@@ -73,9 +75,12 @@ class _UserManageContentBottomSheetState
             setState(() {
               isBlocking = false;
             });
+
             ///Blocking api call.
           },
-          trailing: isBlocking ? CupertinoActivityIndicator() : Container(height: 0, width: 0),
+          trailing: isBlocking
+              ? CupertinoActivityIndicator()
+              : Container(height: 0, width: 0),
         ),
         SizedBox(height: 30)
       ],
