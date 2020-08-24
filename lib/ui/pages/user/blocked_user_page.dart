@@ -52,6 +52,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
         child: BlockedUserListTile(
           data: data,
           index: index,
+          isUnblocking: false,
         ));
   }
 
@@ -63,6 +64,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
       child: BlockedUserListTile(
         data: data,
         index: index,
+        isUnblocking: true,
       ),
     );
   }
@@ -91,7 +93,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
             builder: (context, state) {
               if (state is BlockedUsersInitial) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CupertinoActivityIndicator(),
                 );
               }
               if (state is BlockedUsersFailure) {
@@ -129,8 +131,9 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                         _buildItem(
                             context, index, animation, state.data[index]),
                         Divider(),
-                        if (state.hasReachedMax == false && index >= state.data.length - 1)
-                        BottomLoader()
+                        if (state.hasReachedMax == false &&
+                            index >= state.data.length - 1)
+                          Center(child: CupertinoActivityIndicator())
                       ],
                     );
                     return index >= state.data.length
@@ -188,8 +191,11 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
 class BlockedUserListTile extends StatelessWidget {
   final BlockedUser data;
   final int index;
+  final bool isUnblocking;
 
-  const BlockedUserListTile({Key key, this.data, this.index}) : super(key: key);
+  const BlockedUserListTile({Key key, this.data, this.index, this.isUnblocking})
+      : assert(isUnblocking != null && data != null && index != null && index >= 0),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,30 +221,32 @@ class BlockedUserListTile extends StatelessWidget {
           subtitle: Text('Blocked ' +
               timeAgo.format(DateTime.parse(data.createdAt),
                   allowFromNow: true)),
-          trailing: BlocConsumer<UnblockButtonBloc, UnblockButtonState>(
-              listener: (context, buttonState) {
-            if (buttonState is Failed) {
-              showToast('Sorry, ${buttonState.error}');
-            }
-          }, builder: (context, buttonState) {
-            if (buttonState is Initial) {
-              return UnblockButton(blockUserId: data.blockUserId);
-            }
-            if (buttonState is Loading) {
-              return CupertinoActivityIndicator();
-            }
-            if (buttonState is Failed) {
-              return UnblockButton(blockUserId: data.blockUserId);
-            }
-            if (buttonState is Success) {
-              context.watch<UnblockButtonBloc>().add(Reset());
-              context
-                  .watch<BlockedUsersBloc>()
-                  .add(BlockedUsersRemoved(index: index));
-              return CupertinoActivityIndicator();
-            }
-            return Text('Something went wrong!');
-          }),
+          trailing: isUnblocking
+              ? CupertinoButton(onPressed: () {}, child: Text('Unblocking'))
+              : BlocConsumer<UnblockButtonBloc, UnblockButtonState>(
+                  listener: (context, buttonState) {
+                  if (buttonState is Failed) {
+                    showToast('Sorry, ${buttonState.error}');
+                  }
+                }, builder: (context, buttonState) {
+                  if (buttonState is Initial) {
+                    return UnblockButton(blockUserId: data.blockUserId);
+                  }
+                  if (buttonState is Loading) {
+                    return CupertinoActivityIndicator();
+                  }
+                  if (buttonState is Failed) {
+                    return UnblockButton(blockUserId: data.blockUserId);
+                  }
+                  if (buttonState is Success) {
+                    context.watch<UnblockButtonBloc>().add(Reset());
+                    context
+                        .watch<BlockedUsersBloc>()
+                        .add(BlockedUsersRemoved(index: index));
+                    return CupertinoActivityIndicator();
+                  }
+                  return Text('Something went wrong!');
+                }),
         ),
       ),
     );

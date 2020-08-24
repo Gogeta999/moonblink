@@ -55,6 +55,9 @@ class Api {
   // Block or unblock user
   static const String BlockOrUnblock = 'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block
 
+  // report user
+  static const String ReportUser = 'moonblink/api/v1/social/user/'; //moonblink/api/v1/user/{partner_user_id}/report
+
   // login
   static const String LOGIN = 'moonblink/api/v1/login';
 

@@ -186,6 +186,12 @@ class MoonBlinkRepository {
     return response;
   }
 
+  /// report user
+  static Future reportUser(int partnerId) async {
+    var response = await DioUtils().post(Api.ReportUser + '$partnerId/report');
+    return response;
+  }
+
   ///get blocked list
   static Future getUserBlockedList({int limit, int page}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -311,7 +312,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           title: Text(
               'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-          trailing: isLoading ? CircularProgressIndicator() : null,
+          trailing: isLoading ? CupertinoActivityIndicator() : null,
         ));
   }
 
@@ -359,7 +360,7 @@ class _TopUpPageState extends State<TopUpPage>
               color: Theme.of(context).iconTheme.color,
             ),
             title: Text('Watch an Ad to get free coins.'),
-            trailing: isAdLoading ? CircularProgressIndicator() : null,
+            trailing: isAdLoading ? CupertinoActivityIndicator() : null,
           )),
     );
   }
@@ -405,7 +406,7 @@ class _TopUpPageState extends State<TopUpPage>
         Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
         return false;
       },
-      child: isPageLoading ? Center(child: CircularProgressIndicator()) : _buildWalletList()
+      child: isPageLoading ? Center(child: CupertinoActivityIndicator()) : _buildWalletList()
     );
   }
 
