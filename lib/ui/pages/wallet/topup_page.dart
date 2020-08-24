@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -56,8 +57,9 @@ class _TopUpPageState extends State<TopUpPage>
 
   bool isLoading = false;
   bool isAdLoading = false;
+  bool isPageLoading = false;
 
-  Wallet wallet = Wallet(value: 0);
+  Wallet wallet;
 
   @override
   void initState() {
@@ -72,9 +74,15 @@ class _TopUpPageState extends State<TopUpPage>
   }
 
   void asyncInitState() async {
+    setState(() {
+      isPageLoading = true;
+    });
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
     await getUserWallet();
+    setState(() {
+      isPageLoading = false;
+    });
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
@@ -304,7 +312,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           title: Text(
               'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-          trailing: isLoading ? CircularProgressIndicator() : null,
+          trailing: isLoading ? CupertinoActivityIndicator() : null,
         ));
   }
 
@@ -352,7 +360,7 @@ class _TopUpPageState extends State<TopUpPage>
               color: Theme.of(context).iconTheme.color,
             ),
             title: Text('Watch an Ad to get free coins.'),
-            trailing: isAdLoading ? CircularProgressIndicator() : null,
+            trailing: isAdLoading ? CupertinoActivityIndicator() : null,
           )),
     );
   }
@@ -361,7 +369,12 @@ class _TopUpPageState extends State<TopUpPage>
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(), getUserWallet() /*userWallet.refresh()*/},
+        onPressed: () async {
+          setState((){isPageLoading = true;});
+          await getItems();
+          await getUserWallet();
+          setState((){isPageLoading = false;});
+        },
       );
     } else {
       return Column(
@@ -393,7 +406,7 @@ class _TopUpPageState extends State<TopUpPage>
         Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
         return false;
       },
-      child: _buildWalletList()
+      child: isPageLoading ? Center(child: CupertinoActivityIndicator()) : _buildWalletList()
     );
   }
 

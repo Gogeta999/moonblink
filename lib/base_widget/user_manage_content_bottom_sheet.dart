@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:oktoast/oktoast.dart';
@@ -17,6 +18,9 @@ class UserManageContentBottomSheet extends StatefulWidget {
 class _UserManageContentBottomSheetState
     extends State<UserManageContentBottomSheet> {
   TextStyle _textStyle;
+
+  bool isBlocking = false;
+  bool isReporting = false;
 
   @override
   void initState() {
@@ -41,30 +45,39 @@ class _UserManageContentBottomSheetState
             style: _textStyle,
           ),
           subtitle: Text(S.of(context).reportContent),
-          onTap: () {
-            showToast('Report Success');
-            widget.onReport();
-
+          onTap: () async {
+            setState(() {
+              isReporting = true;
+            });
+            await widget.onReport();
+            setState(() {
+              isReporting = false;
+            });
             ///Reporting api call.
           },
+          trailing: isReporting ? CupertinoActivityIndicator() : Container(height: 0, width: 0),
         ),
-        //TODO: Add on IOS
-        // ListTile(
-        //   leading: Icon(Icons.block),
-        //   title: Text(
-        //     'Block User',
-        //     style: _textStyle,
-        //   ),
-        //   subtitle: Text(
-        //       'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
-        //   onTap: () {
-        //     showToast('Blocking');
-        //     widget.onBlock();
-
-        //     ///Blocking api call.
-        //   },
-        // ),
-        SizedBox(height: 10)
+        ListTile(
+          leading: Icon(Icons.block),
+          title: Text(
+            'Block User',
+            style: _textStyle,
+          ),
+          subtitle: Text(
+              'This user won\'t see you or communicate with you anymore untill you remove him/her from your blocked list.'),
+          onTap: () async {
+            setState(() {
+              isBlocking = true;
+            });
+            await widget.onBlock();
+            setState(() {
+              isBlocking = false;
+            });
+            ///Blocking api call.
+          },
+          trailing: isBlocking ? CupertinoActivityIndicator() : Container(height: 0, width: 0),
+        ),
+        SizedBox(height: 30)
       ],
     );
   }
