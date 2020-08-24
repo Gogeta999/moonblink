@@ -6,6 +6,7 @@ import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -15,8 +16,6 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
-
-const List<String> menu = ['Report User', 'Block User'];
 
 class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.userID));
@@ -98,14 +97,25 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                   icon: Icon(Icons.more_vert),
                   onPressed: () => CustomBottomSheet.showUserManageContent(
                       buildContext: context,
-                      onReport: () => print('Report Success'),
-                      onBlock: () {
-                        print('Blocking User');
-
+                      onReport: () async {
+                        ///Reporting user
+                        try {
+                          await MoonBlinkRepository.reportUser(widget.posts.userID);
+                          ///Api call success
+                          showToast('Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                          Navigator.pop(context);
+                        } catch (e) {
+                          showToast('Sorry, $e');
+                        }
+                      },
+                      onBlock: () async {
                         ///Blocking user
-                        homeModel.removeItem(
+                        await homeModel.removeItem(
                             index: widget.index,
-                            blockUserId: widget.posts.userID);
+                            blockUserId: widget.posts.userID).then((value) {
+                              value ? showToast('Successfully Blocked')
+                              : showToast('Error Blocking User');
+                        });
                         Navigator.pop(context);
                       },
                       onDismiss: () => print('Dismissing BottomSheet')),

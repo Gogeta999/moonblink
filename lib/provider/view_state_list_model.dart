@@ -34,12 +34,15 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
   }
 
   ///only for home posts
-  void removeItem({@required int index, @required int blockUserId}) {
-    list.removeAt(index);
-    MoonBlinkRepository.blockOrUnblock(blockUserId, BLOCK).then((value) =>
-      print(value)
-    );
-    notifyListeners();
+  Future<bool> removeItem({@required int index, @required int blockUserId}) async {
+    try {
+      await MoonBlinkRepository.blockOrUnblock(blockUserId, BLOCK);
+      list.removeAt(index);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   // Load data

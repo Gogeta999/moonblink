@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -103,12 +104,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               else if (_isLoading == true) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    'loading',
-                    style: TextStyle(
-                      fontSize: 10
-                    ),
-                  ),
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  )
                 );
               }
               else if (_isFailed) {
@@ -129,6 +127,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   icon: Icon(Icons.play_arrow),
                   iconSize: 20.0,
                 );
+              }
+              else {
+                return Container(height: 0, width: 0);
               }
             }()),
             Container(
