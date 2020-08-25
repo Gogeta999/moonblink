@@ -58,29 +58,29 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   File _profile;
   File _nrcFront;
   File _nrcBack;
-  //pick Cover
-  _pickCoverFromGallery() async {
-    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(cover.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _cover = compressedImage;
-    });
-  }
+  // //pick Cover
+  // _pickCoverFromGallery() async {
+  //   PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(cover.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _cover = compressedImage;
+  //   });
+  // }
 
-  //pick profile
-  _pickprofileFromGallery() async {
-    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(profile.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _profile = compressedImage;
-    });
-  }
+  // //pick profile
+  // _pickprofileFromGallery() async {
+  //   PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(profile.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _profile = compressedImage;
+  //   });
+  // }
 
   _pickNrcFromGallery(NrcType type) async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
@@ -473,7 +473,13 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                     .postwithData(
                                                         Api.SetProfile +
                                                             '$userid/profile',
-                                                        data: formData);
+                                                        data: formData,
+                                                        options: Options(
+                                                          sendTimeout:
+                                                              25 * 1000,
+                                                          receiveTimeout:
+                                                              25 * 1000,
+                                                        ));
                                                 print('PRINTED $response');
                                                 print(
                                                     "+++++++++++++++++++++++++++++++++++++");
