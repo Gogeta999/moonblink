@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/imageview.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -12,11 +13,13 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PartnerDetailPage extends StatefulWidget {
@@ -108,7 +111,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     /// [showing partner name]
                     title: Text(partnerModel.partnerData.partnerName),
                     pinned: true,
-                    expandedHeight: 220,
+                    expandedHeight: Platform.isAndroid ? 220 : 0,
                     brightness: Theme.of(context).brightness == Brightness.light
                         ? Brightness.light
                         : Brightness.dark,
@@ -127,6 +130,29 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                       context, RouteName.chatBox,
                                       arguments: widget.detailPageId);
                                 }),
+                      if (ownId != widget.detailPageId)
+                      IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () => CustomBottomSheet.showUserManageContent(
+                            buildContext: context,
+                            onReport: () async {
+                              ///Reporting user
+                              try {
+                                await MoonBlinkRepository.reportUser(widget.detailPageId);
+                                ///Api call success
+                                showToast('Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                                Navigator.pop(context);
+                              } catch (e) {
+                                showToast('Sorry, $e');
+                              }
+                            },
+                            onBlock: () async {
+                              ///Blocking user
+                              Navigator.pop(context);
+                              Navigator.pop(context, widget.detailPageId);//result != null will block
+                            },
+                            onDismiss: () => print('Dismissing BottomSheet')),
+                      )
                     ],
 
                     /// [background image to show here]
@@ -134,6 +160,29 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       collapseMode: CollapseMode.parallax,
                       // background: Image.network(partnerModel.data.partnerCover),
                       background: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: partnerModel
+                              .partnerData.prfoileFromPartner.coverImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => CachedLoader(),
+                          errorWidget: (context, url, error) => CachedError(),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageView(partnerModel
+                                    .partnerData.prfoileFromPartner.coverImage),
+                              ));
+                        },
+                      ),
+                    ),
+                  ),
+                  if (Platform.isIOS)
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: GestureDetector(
                         child: CachedNetworkImage(
                           imageUrl: partnerModel
                               .partnerData.prfoileFromPartner.coverImage,

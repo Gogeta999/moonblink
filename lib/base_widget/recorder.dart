@@ -5,7 +5,7 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
-import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';

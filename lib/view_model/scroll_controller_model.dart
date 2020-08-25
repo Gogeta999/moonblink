@@ -15,7 +15,7 @@ class TapToTopModel with ChangeNotifier{
     _height = height;
   }
 
-  init(Function loadMore) {
+  init(Future<List<dynamic>> Function() loadMore) {
     _scrollController.addListener(() {
       if (_scrollController.offset > _height && !_showTopBtn) {
         _showTopBtn = true;
@@ -28,13 +28,13 @@ class TapToTopModel with ChangeNotifier{
     });
   }
 
-  onScroll(Function loadMore) async {
+  onScroll(Future<List<dynamic>> Function() loadMore) async {
     if (_isFetching) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      print('IsFetching');
       _isFetching = true;
+      print('IsFetching');
       await loadMore();
       _isFetching = false;
     }

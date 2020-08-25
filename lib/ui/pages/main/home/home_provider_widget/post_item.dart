@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
-import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -31,6 +32,7 @@ class PostItemWidget extends StatefulWidget {
 class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
+  bool isBlocking = false;
 
   @override
   void initState() {
@@ -65,7 +67,23 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          PartnerDetailPage(detailPageId)));
+                                          PartnerDetailPage(detailPageId))).then((value) async {
+                                            if (value != null) {
+                                              setState(() {
+                                                isBlocking = true;
+                                              });
+                                              ///Blocking user
+                                              await homeModel.removeItem(
+                                                  index: widget.index,
+                                                  blockUserId: widget.posts.userID).then((value) {
+                                                value ? showToast('Successfully Blocked')
+                                                    : showToast('Error Blocking User');
+                                              });
+                                              setState(() {
+                                                isBlocking = false;
+                                              });
+                                            }
+                              });
                             },
                       child: Row(
                         children: <Widget>[
@@ -132,6 +150,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
 
           /// [User_Image]
+          isBlocking ? CupertinoActivityIndicator() :
           ProviderWidget(
             model: HomeModel(),
             builder: (context, reactModel, child) {
