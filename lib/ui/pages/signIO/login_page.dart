@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/base_widget/Datetime.dart';
 import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
 import 'package:moonblink/base_widget/TopCurvePanel_widget.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
@@ -23,6 +24,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _dobController = TextEditingController();
   final _pwdFocus = FocusNode();
   @override
   void dispose() {
@@ -181,7 +183,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text.rich(TextSpan(text: S.of(context).noAccount+ '. ', children: [
+      child:
+          Text.rich(TextSpan(text: S.of(context).noAccount + '. ', children: [
         TextSpan(
             text: S.of(context).toSignUp,
             recognizer: _recognizerRegister,
