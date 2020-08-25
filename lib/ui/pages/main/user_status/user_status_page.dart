@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/BottomClipper.dart';
 import 'package:moonblink/base_widget/indicator/appbar_indicator.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
+// import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -248,10 +249,14 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                 icon: Icon(Icons.content_copy),
                                 iconSize: 18,
                                 onPressed: () {
-                                  ClipboardManager.copyToClipBoard(id)
-                                      .then((result) {
-                                    showToast("Copy to Your Clipboard");
+                                  FlutterClipboard.copy(id).then((value) {
+                                    showToast('Copy To Your Clipboard');
+                                    print('copied');
                                   });
+                                  // ClipboardManager.copyToClipBoard(id)
+                                  //     .then((result) {
+                                  //   showToast("Copy to Your Clipboard");
+                                  // });
                                 },
                               ),
                               Spacer(

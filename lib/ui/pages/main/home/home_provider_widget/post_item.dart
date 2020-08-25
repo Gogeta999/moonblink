@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -118,9 +119,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       onReport: () async {
                         ///Reporting user
                         try {
-                          await MoonBlinkRepository.reportUser(widget.posts.userID);
+                          await MoonBlinkRepository.reportUser(
+                              widget.posts.userID);
+
                           ///Api call success
-                          showToast('Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                          showToast(
+                              'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
                           Navigator.pop(context);
                         } catch (e) {
                           showToast('Sorry, $e');
@@ -128,10 +132,13 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       },
                       onBlock: () async {
                         ///Blocking user
-                        await homeModel.removeItem(
-                            index: widget.index,
-                            blockUserId: widget.posts.userID).then((value) {
-                              value ? showToast('Successfully Blocked')
+                        await homeModel
+                            .removeItem(
+                                index: widget.index,
+                                blockUserId: widget.posts.userID)
+                            .then((value) {
+                          value
+                              ? showToast('Successfully Blocked')
                               : showToast('Error Blocking User');
                         });
                         Navigator.pop(context);
@@ -163,6 +170,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                           errorWidget: (context, url, error) => CachedError(),
                         ),
                       ),
+                      onTap: () => ImageView(widget.posts.coverImage),
                       onDoubleTap: widget.posts.isReacted == 0
                           ? () {
                               reactModel

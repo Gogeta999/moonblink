@@ -1383,20 +1383,20 @@ class S {
     );
   }
 
-  /// `You are Offline now`
+  /// `You are Online now`
   String get toastonline {
     return Intl.message(
-      'You are Offline now',
+      'You are Online now',
       name: 'toastonline',
       desc: '',
       args: [],
     );
   }
 
-  /// `You are Online now`
+  /// `You are Offline now`
   String get toastoffline {
     return Intl.message(
-      'You are Online now',
+      'You are Offline now',
       name: 'toastoffline',
       desc: '',
       args: [],

@@ -38,7 +38,7 @@ android {
     // compileSdkVersion rootProject.ext.compileSdkVersion
     //  here is for background fetch
     compileSdkVersion 29
-
+    // buildToolsVersion "30.0.0"
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -46,7 +46,7 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-
+    
     defaultConfig {
         // change minSdkVersion to from 16 to 18 to support webrtc and 21 for background fetch
         applicationId "com.moonuniverse.moonblink"
@@ -54,6 +54,11 @@ android {
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // ndk {
+        //     abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86'
+        // }
         //multiDex
         multiDexEnabled true
         // Here is for background fetch
@@ -78,7 +83,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             useProguard true
-
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -95,6 +100,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     /// Solve My duplicate problem not sure about on your guys' environment
     implementation 'com.google.guava:guava:27.0.1-android'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // here is for background fetch
     // testImplementation 'junit:junit:4.12'
     // // androidTestImplementation 'com.android.support.test:runner:1.0.2'
