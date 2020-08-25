@@ -279,7 +279,6 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             }).toList(),
                                           ),
                                           _space,
-                                          // DatePicker(),
                                           //date
                                           BasicDateField(_dobController),
                                           _space,
@@ -309,6 +308,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
+                                          //NRC
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -486,6 +486,8 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                 setState(() {
                                                   finished = !finished;
                                                 });
+                                                print(
+                                                    "----------------------------------------------------");
                                                 model.logout();
                                                 Navigator.of(context)
                                                     .pushNamedAndRemoveUntil(

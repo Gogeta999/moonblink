@@ -11,6 +11,7 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/videotrimmer.dart';
 import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
+import 'package:moonblink/base_widget/videotrimmer/video_viewer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -101,9 +102,12 @@ class _ImagePickerState extends State<ImagePickerPage> {
               padding: EdgeInsets.only(left: 50, right: 50),
               height: 80,
               child: Text(S.of(context).imagePickerChooseSome)),
+          if (_fileType == 1) ShowImageWidget(file: _chossingItem),
 
-          ShowImageWidget(file: _chossingItem),
-
+          if (_fileType == 2)
+            VideoPlayBack(
+              trimv: trimv,
+            ),
           RaisedButton(
             color: Theme.of(context).accentColor,
             onPressed: () async {
@@ -209,8 +213,13 @@ class _ImagePickerState extends State<ImagePickerPage> {
               builder: (context) => VideoTrimmer(trimv),
             ));
       } else {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => VideoTrimmer(trimv),
+        //     ));
         setState(() {
-          _chossingItem = File(video.path);
+          // _chossingItem = File(video.path);
           _fileType = 2;
         });
       }
@@ -225,10 +234,44 @@ class ShowImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.file != null) {
       return Container(
-        height: 300,
+        height: 400,
         child: Image.file(file),
       );
     }
     return Container();
+  }
+}
+
+class VideoPlayBack extends StatefulWidget {
+  VideoPlayBack({this.trimv});
+  final trimv;
+
+  @override
+  _VideoPlayBackState createState() => _VideoPlayBackState();
+}
+
+class _VideoPlayBackState extends State<VideoPlayBack> {
+  bool _isPlaying = true;
+  double _startValue = 0.0;
+  double _endValue = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 400,
+      child: GestureDetector(
+        child: VideoViewer(),
+        onTap: () async {
+          bool playbackState = await widget.trimv.videPlaybackControl(
+            startValue: _startValue,
+            endValue: _endValue,
+          );
+          setState(() {
+            print("-------------------------------------------");
+            _isPlaying = playbackState;
+          });
+        },
+      ),
+    );
   }
 }
