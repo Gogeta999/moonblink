@@ -16,6 +16,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 //user token will change with data at login model
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Recreating Dio connection when api call - Fix
@@ -34,7 +35,7 @@ class DioUtils {
   BaseOptions _baseOptions = BaseOptions(
     baseUrl: baseUrl,
     connectTimeout: 10000,
-    receiveTimeout: 5000,
+    receiveTimeout: 8000,
     headers: {
       //Default necessary header
       //appkey will remain old key unless we generate  key on server
@@ -67,9 +68,11 @@ class DioUtils {
       _dio.interceptors.clear();
       _dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
+          String deviceId = await PlatformDeviceId.getDeviceId;
           var appVersion = await PlatformUtils.getAppVersion();
           requestions.headers['app-version'] = appVersion;
           requestions.headers['Authorization'] = 'Bearer' + usertoken;
+          requestions.headers['device-id'] = deviceId;
           // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
           return requestions;
         }, onResponse: (Response response) {
@@ -85,12 +88,16 @@ class DioUtils {
   }
 
   initWithoutAuthorization() {
+    // var usertoken = StorageManager.sharedPreferences.getString(token);
     _dio.interceptors.clear();
     _dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
+        String deviceId = await PlatformDeviceId.getDeviceId;
         var appVersion = await PlatformUtils.getAppVersion();
         requestions.headers['app-version'] = appVersion;
-        // debugPrint('Base Requestions--->' + requestions.headers.toString());
+        // requestions.headers['Authorization'] = 'Bearer' + usertokr
+        requestions.headers['device-id'] = deviceId;
+        debugPrint('Base Requestions--->' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
         //maybe add something here
@@ -445,7 +452,11 @@ abstract class BaseResponseData {
   bool get success;
 
   BaseResponseData(
-      {this.errorCode, this.errorMessage, this.data, this.getMessage, this.statusCode});
+      {this.errorCode,
+      this.errorMessage,
+      this.data,
+      this.getMessage,
+      this.statusCode});
 
   @override
   String toString() {

@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "maxtime" : MessageLookupByLibrary.simpleMessage("အများဆုံးတစ်မိနစ်"),
     "myanmar" : MessageLookupByLibrary.simpleMessage("မြန်မာ"),
     "noAccount" : MessageLookupByLibrary.simpleMessage("အကောင့်မရှိ "),
+    "noChatHistory" : MessageLookupByLibrary.simpleMessage("စကားဝိုင်းမရှိပါ"),
     "offline" : MessageLookupByLibrary.simpleMessage("အော့ဖ်လိုင်း"),
     "online" : MessageLookupByLibrary.simpleMessage("အွန်လိုင်း"),
     "otpGetCode" : MessageLookupByLibrary.simpleMessage("Otp codeရယူရန်"),
