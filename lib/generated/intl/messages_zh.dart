@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "maxtime" : MessageLookupByLibrary.simpleMessage("最多60秒"),
     "myanmar" : MessageLookupByLibrary.simpleMessage("缅甸"),
     "noAccount" : MessageLookupByLibrary.simpleMessage("没有此帐户"),
+    "noChatHistory" : MessageLookupByLibrary.simpleMessage("您还没有聊天记录"),
     "offline" : MessageLookupByLibrary.simpleMessage("下线"),
     "online" : MessageLookupByLibrary.simpleMessage("在线"),
     "otpGetCode" : MessageLookupByLibrary.simpleMessage("获取您的otp代码"),

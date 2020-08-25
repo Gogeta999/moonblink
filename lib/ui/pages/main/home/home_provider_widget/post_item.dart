@@ -170,7 +170,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                           errorWidget: (context, url, error) => CachedError(),
                         ),
                       ),
-                      onTap: () => ImageView(widget.posts.coverImage),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                ImageView(widget.posts.coverImage)));
+                        print('object');
+                      },
                       onDoubleTap: widget.posts.isReacted == 0
                           ? () {
                               reactModel
