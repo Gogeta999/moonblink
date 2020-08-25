@@ -12,6 +12,8 @@ class ImageView extends StatelessWidget {
         body: Stack(children: [
       PhotoView(
         imageProvider: NetworkImage(img),
+        maxScale: PhotoViewComputedScale.covered * 5,
+        minScale: PhotoViewComputedScale.contained * 0.5,
       ),
       Positioned(
         right: 10,
@@ -37,6 +39,8 @@ class LocalImageView extends StatelessWidget {
       body: Stack(children: [
         PhotoView(
           imageProvider: MemoryImage(img),
+          maxScale: PhotoViewComputedScale.covered * 5,
+          minScale: PhotoViewComputedScale.contained * 0.5,
         ),
         Positioned(
           right: 10,

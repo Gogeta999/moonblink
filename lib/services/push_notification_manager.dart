@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
+import 'package:moonblink/base_widget/update_profile_dialog.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/main.dart';
+import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
@@ -15,6 +18,7 @@ import 'navigation_service.dart';
 const String FcmTypeMessage = 'message';
 const String FcmTypeBooking = 'booking';
 const String FcmTypeVoiceCall = 'voice_call';
+const String FcmTypeGameIdUpdate = 'game_id_update';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -36,6 +40,7 @@ class PushNotificationsManager {
       _firebaseMessaging.onTokenRefresh.listen((event) {
         print('onTokenRefresh: $event');
       });
+      print('FCM_Token: ${await getFcmToken()}');
       _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
       _initialized = true;
     }
@@ -79,6 +84,7 @@ class PushNotificationsManager {
   final BookingManager _bookingManager = BookingManager();
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
+  final _UpdateProfile _updateProfile = _UpdateProfile();
 
   Future<String> getFcmToken() async {
     return _firebaseMessaging.getToken();
@@ -168,9 +174,10 @@ class PushNotificationsManager {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
       _showMessageNotification(message);
-      print('$fcmType');
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
+    } else if (fcmType == FcmTypeGameIdUpdate) {
+      _showGameIdUpdateDialog(message);
     }
     return;
   }
@@ -219,6 +226,43 @@ class PushNotificationsManager {
       _voiceCall.prepare(callChannel: callChannel);
       _voiceCall.navigateToCallScreen();
     }
+  }
+
+  _showGameIdUpdateDialog(message) async {
+    String name = '';
+    String profileImage = '';
+    String coverImage = '';
+    String bios = '';
+
+    if (Platform.isAndroid) {
+      name = message['data']['name'];
+      profileImage = message['data']['profile_image'];
+      coverImage = message['data']['cover_image'];
+      bios = message['data']['bios'];
+    } else if (Platform.isIOS) {
+      name = message['name'];
+      profileImage = message['profile_image'];
+      coverImage = message['cover_image'];
+      bios = message['bios'];
+    } else {
+      showToast('This platform is not supported');
+      return;
+    }
+
+    print(name);
+
+    final PartnerProfile  partnerProfile = PartnerProfile(
+      profileImage: profileImage, coverImage: coverImage,
+      bios: bios,
+    );
+
+    final PartnerUser partnerUser = PartnerUser(
+      partnerName: name, prfoileFromPartner: partnerProfile
+    );
+
+    _updateProfile.prepare(partnerUser: partnerUser);
+
+    _updateProfile.showUpdateProfileDialog();
   }
 
   _showBookingDialog(message) async {
@@ -470,5 +514,28 @@ class _VoiceCall {
     if (!atVoiceCallPage)
       locator<NavigationService>()
           .navigateTo(RouteName.callScreen, arguments: _callChannel);
+  }
+}
+
+class _UpdateProfile {
+  PartnerUser partnerUser;
+
+  void prepare({PartnerUser partnerUser}) {
+    this.partnerUser = partnerUser;
+  }
+
+  void navigateToUpdateProfile() {
+    locator<NavigationService>()
+        .navigateTo(RouteName.updateprofile, arguments: partnerUser);
+  }
+
+  void showUpdateProfileDialog() {
+    showDialog(
+        context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
+        builder: (context) => UpdateProfileDialog(
+          partnerUser: this.partnerUser,
+          navigateToProfilePage: () => this.navigateToUpdateProfile(),
+        )
+    );
   }
 }

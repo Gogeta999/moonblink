@@ -9,6 +9,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 
 class PartnerOwnProfilePage extends StatefulWidget {
@@ -44,7 +45,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 /// [showing partner name]
                 title: Text(partnerModel.partnerData.partnerName),
                 pinned: true,
-                expandedHeight: 220,
+                expandedHeight: Platform.isAndroid ? 220 : 0,
                 brightness: Theme.of(context).brightness == Brightness.light
                     ? Brightness.light
                     : Brightness.dark,
@@ -86,6 +87,30 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                   ),
                 ),
               ),
+
+              if (Platform.isIOS)
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: GestureDetector(
+                      child: CachedNetworkImage(
+                        imageUrl: partnerModel
+                            .partnerData.prfoileFromPartner.coverImage,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => CachedLoader(),
+                        errorWidget: (context, url, error) => CachedError(),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ImageView(partnerModel
+                                  .partnerData.prfoileFromPartner.coverImage),
+                            ));
+                      },
+                    ),
+                  ),
+                ),
 
               SliverToBoxAdapter(
                 child: SizedBox(
