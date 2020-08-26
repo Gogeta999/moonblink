@@ -743,6 +743,16 @@ class S {
     );
   }
 
+  /// `No Chat History`
+  String get noChatHistory {
+    return Intl.message(
+      'No Chat History',
+      name: 'noChatHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No this account`
   String get noAccount {
     return Intl.message(

@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "maxtime" : MessageLookupByLibrary.simpleMessage("Maximum one minute"),
     "myanmar" : MessageLookupByLibrary.simpleMessage("Myanmar"),
     "noAccount" : MessageLookupByLibrary.simpleMessage("No this account"),
+    "noChatHistory" : MessageLookupByLibrary.simpleMessage("No Chat History"),
     "offline" : MessageLookupByLibrary.simpleMessage("Offline"),
     "online" : MessageLookupByLibrary.simpleMessage("Online"),
     "otpGetCode" : MessageLookupByLibrary.simpleMessage("Get your otp code"),

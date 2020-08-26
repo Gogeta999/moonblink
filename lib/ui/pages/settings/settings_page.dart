@@ -50,8 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         setState(() {
                           isSigning = !isSigning;
                         });
-                        Navigator.of(context)
-                            .pushNamed(RouteName.registerAsPartner);
+                        Navigator.of(context).pushNamed(RouteName.otp);
                         setState(() {
                           isSigning = !isSigning;
                         });
