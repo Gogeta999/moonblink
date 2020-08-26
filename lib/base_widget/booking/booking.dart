@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/base_widget/booking/booking_dialog.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -20,7 +22,7 @@ class BookingButton extends StatefulWidget {
 
 class _BookingButtonState extends State<BookingButton> {
   ///[Partner idle]
-  void available(context, BookingModel bookingModel,
+  /*void available(context, BookingModel bookingModel,
       PartnerDetailModel partnerDetailModel) {
     showDialog(
         context: context,
@@ -87,7 +89,7 @@ class _BookingButtonState extends State<BookingButton> {
             ],
           );
         });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +101,7 @@ class _BookingButtonState extends State<BookingButton> {
             await model.initData(partnerDetailModel.partnerId),
         builder: (context, model, child) {
           if (model.isBusy) {
-            return ViewStateBusyWidget();
+            return CupertinoActivityIndicator();
           }
           return RaisedButton(
             color: Theme.of(context).accentColor,
@@ -114,12 +116,13 @@ class _BookingButtonState extends State<BookingButton> {
             ///[to add pop up]
             onPressed: userId == partnerDetailModel.partnerId || model.isBusy
                 ? null
-                : () => available(context, model, partnerDetailModel),
+                : () => CustomBottomSheet.showBookingSheet(buildContext: context, model: model, partnerId: partnerDetailModel.partnerId)
           );
         });
   }
 }
 
+/*
 class BookingDropdown extends StatefulWidget {
   final BookingModel bookingModel;
 
@@ -171,3 +174,4 @@ class _BookingDropdownState extends State<BookingDropdown> {
     );
   }
 }
+*/

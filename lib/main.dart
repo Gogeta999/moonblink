@@ -30,6 +30,7 @@ main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
+  //InAppPurchaseConnection.enablePendingPurchases();
   runApp(MyApp());
   //Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
