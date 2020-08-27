@@ -73,7 +73,37 @@ class _MainTabPageState extends State<MainTabPage>
         },
         child: PageView.builder(
           // this ctx is also context, but avoid to affect from PageState's context
-          itemBuilder: (ctx, index) => pages[index],
+          itemBuilder: (ctx, index) {
+            // pages[index];
+            return GestureDetector(
+              //Horizontal Swipe
+              onHorizontalDragEnd: (details) {
+                //Swipe left
+                if (details.primaryVelocity < 0) {
+                  print("Swiping left");
+                  if (index >= 0) {
+                    index++;
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                    _pageController.jumpToPage(index);
+                  }
+                }
+                //Swipe Right
+                else if (details.primaryVelocity > 0) {
+                  print("Swiping Right");
+                  if (index < pages.length) {
+                    index--;
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                    _pageController.jumpToPage(index);
+                  }
+                }
+              },
+              child: pages[index],
+            );
+          },
           itemCount: pages.length,
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
@@ -119,7 +149,7 @@ class _MainTabPageState extends State<MainTabPage>
           shadowAllowance: 18,
           activeIconColor: Colors.white,
           barHeight: 53,
-
+          pageController: _pageController,
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
             // print("Jumto page Call");
