@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 
@@ -20,9 +21,13 @@ class BookingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      title: Text(G.of(context).bookingDialog),
+    return CupertinoAlertDialog(
+      title: Text(S.of(context).bookingDialog),
+// =======
+//     return AlertDialog(
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+//       title: Text(G.of(context).bookingDialog),
+// >>>>>>> develop-master
       content: Text('$bookingUserName ' +
           G.of(context).bookingDialogSomeoneBook +
           '\n\n' +

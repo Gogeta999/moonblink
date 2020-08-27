@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:moonblink/base_widget/booking/booking_bottom_sheet.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/view_model/booking_model.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:provider/provider.dart';
 
 class CustomBottomSheet {
   static show(
@@ -135,6 +138,31 @@ class CustomBottomSheet {
         }
       }
     });
+  }
+
+  static showBookingSheet(
+      {@required BuildContext buildContext,
+       @required BookingModel model,
+       @required int partnerId,
+        Function onDismiss}) {
+      showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.white.withOpacity(0.0),
+        isDismissible: true,
+        builder: (context) => Provider.value(
+          value: model,
+          child: BookingBottomSheet(
+            partnerId: partnerId
+          ),
+        )).whenComplete(() {
+          try {
+            onDismiss();
+          } catch (e) {
+            if (e is NoSuchMethodError) {
+              print('NoSuchMethodError');
+            }
+          }
+      });
   }
 
   static _permissionFail(BuildContext buildContext, String permissionName) {

@@ -14,8 +14,6 @@ PODS:
     - Flutter
   - camera (0.0.1):
     - Flutter
-  - clipboard_manager (0.0.3):
-    - Flutter
   - device_info (0.0.1):
     - Flutter
   - FBSDKCoreKit (5.15.1):
@@ -209,6 +207,8 @@ PODS:
     - Flutter
   - photo_manager (0.0.1):
     - Flutter
+  - platform_device_id (0.0.1):
+    - Flutter
   - PromisesObjC (1.2.9)
   - Protobuf (3.12.0)
   - PureLayout (3.1.6)
@@ -252,7 +252,6 @@ DEPENDENCIES:
   - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - camera (from `.symlinks/plugins/camera/ios`)
-  - clipboard_manager (from `.symlinks/plugins/clipboard_manager/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -278,6 +277,7 @@ DEPENDENCIES:
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
+  - platform_device_id (from `.symlinks/plugins/platform_device_id/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
@@ -335,8 +335,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audioplayers/ios"
   camera:
     :path: ".symlinks/plugins/camera/ios"
-  clipboard_manager:
-    :path: ".symlinks/plugins/clipboard_manager/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   firebase_admob:
@@ -387,6 +385,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
+  platform_device_id:
+    :path: ".symlinks/plugins/platform_device_id/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -423,7 +423,6 @@ SPEC CHECKSUMS:
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   camera: 38cc83ae9a5667bb5a71c7d9edaf60a91920fd4e
-  clipboard_manager: f4800834e62cc26b1cc4e0a92a35cd452dd8b827
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
   FBSDKLoginKit: f1ea8026a58b52d30c9f2e6a58ca7d813619fb83
@@ -472,6 +471,7 @@ SPEC CHECKSUMS:
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
+  platform_device_id: 81b3e2993881f87d0c82ef151dc274df4869aef5
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
   PureLayout: bd3c4ec3a3819ad387c99ebb72c6b129c3ed4d2d

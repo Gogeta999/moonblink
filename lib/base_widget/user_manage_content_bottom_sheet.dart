@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:oktoast/oktoast.dart';
 
 class UserManageContentBottomSheet extends StatefulWidget {
   final Function onReport;
