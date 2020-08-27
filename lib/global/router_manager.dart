@@ -63,9 +63,9 @@ class Router {
       case RouteName.newUserSwiperPage:
         return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
-        return CupertinoPageRoute(builder: (_) => TermsAndConditions());
+        return CupertinoPageRoute(builder: (_) => TermsAndConditions(showAccept: settings.arguments ?? true));
       case RouteName.licenseAgreement:
-        return CupertinoPageRoute(builder: (_) => LicenseAgreement());
+        return CupertinoPageRoute(builder: (_) => LicenseAgreement(showAccept: settings.arguments ?? true));
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));

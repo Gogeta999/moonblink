@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/view_model/register_model.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -95,7 +96,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
               ],
             ),
-          )
+          ),
+          SliverToBoxAdapter(child: SignInOutAgree(isSignIn: false))
         ],
       ),
     );
