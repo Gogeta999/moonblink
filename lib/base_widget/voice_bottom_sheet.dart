@@ -69,7 +69,7 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
                 alignment: Alignment.centerRight,
                 child: FlatButton(
                   onPressed: _cancel,
-                  child: Text(S.of(context).cancel,
+                  child: Text(G.of(context).cancel,
                       style: Theme.of(context).textTheme.bodyText1),
                 ),
               ),
@@ -77,10 +77,10 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
                   alignment: Alignment.center,
                   child: Column(
                     children: <Widget>[
-                      Text(S.of(context).labelvoicemsg,
+                      Text(G.of(context).labelvoicemsg,
                           style: Theme.of(context).textTheme.bodyText1),
                       SizedBox(height: 5),
-                      Text(S.of(context).maxtime)
+                      Text(G.of(context).maxtime)
                     ],
                   ))
             ],
@@ -109,7 +109,7 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(S.of(context).buttonrestart,
+                    child: Text(G.of(context).buttonrestart,
                         style: TextStyle(fontSize: 16)),
                     padding: EdgeInsets.symmetric(vertical: 15),
                     color: Theme.of(context).accentColor,
@@ -125,7 +125,7 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(S.of(context).sendbutton,
+                    child: Text(G.of(context).sendbutton,
                         style: TextStyle(fontSize: 16)),
                     padding: EdgeInsets.symmetric(vertical: 15),
                     color: Theme.of(context).accentColor,
@@ -141,7 +141,7 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(S.of(context).buttonstartrecord,
+                      child: Text(G.of(context).buttonstartrecord,
                           style: TextStyle(fontSize: 16)),
                       padding: EdgeInsets.symmetric(vertical: 15),
                       color: Theme.of(context).accentColor,

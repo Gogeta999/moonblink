@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).settingsSettings),
+        title: Text(G.of(context).settingsSettings),
       ),
       body: SingleChildScrollView(
         child: ListTileTheme(
@@ -42,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: ListTile(
                     title: isSigning
                         ? CupertinoActivityIndicator()
-                        : Text(S.of(context).settingsSignAsPartner),
+                        : Text(G.of(context).settingsSignAsPartner),
                     onTap: () async {
                       var usertoken =
                           StorageManager.sharedPreferences.getString(token);
@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           isSigning = !isSigning;
                         });
                       } else {
-                        showToast(S.of(context).showToastSignInFirst);
+                        showToast(G.of(context).showToastSignInFirst);
                       }
                     },
                     leading: Icon(
@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(S.of(context).settingLanguage
+                      Text(G.of(context).settingLanguage
                           // style: TextStyle(),
                           ),
                       Text(LocaleModel.localeName(
@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).termAndConditions),
+                  title: Text(G.of(context).termAndConditions),
                   onTap: () async {
                     Navigator.of(context)
                         .pushNamed(RouteName.termsAndConditionsPage);
@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).licenseagreement),
+                  title: Text(G.of(context).licenseagreement),
                   onTap: () async {
                     Navigator.of(context).pushNamed(RouteName.licenseAgreement);
                   },
@@ -140,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).ratingApp),
+                  title: Text(G.of(context).ratingApp),
                   onTap: _openStore,
                   leading: Icon(Icons.tag_faces, color: iconColor),
                   trailing: Icon(Icons.chevron_right),
@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).feedback),
+                  title: Text(G.of(context).feedback),
                   onTap: _openFacebookPage,
                   leading: Icon(
                     Icons.feedback,
@@ -167,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Material(
                 color: Theme.of(context).cardColor,
                 child: ListTile(
-                  title: Text(S.of(context).blockList),
+                  title: Text(G.of(context).blockList),
                   onTap: () {
                     Navigator.pushNamed(context, RouteName.blockedUsers);
                   },

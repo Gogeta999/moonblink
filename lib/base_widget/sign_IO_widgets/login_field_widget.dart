@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 
-
 /// LoginTextField
 class LoginTextField extends StatefulWidget {
   final String label;
@@ -15,17 +14,16 @@ class LoginTextField extends StatefulWidget {
   final ValueChanged<String> onFieldSubmitted;
   final TextInputType keyboardType;
 
-  LoginTextField({
-    this.label,
-    this.icon,
-    this.controller,
-    this.obscureText: false,
-    this.validator,
-    this.focusNode,
-    this.textInputAction,
-    this.onFieldSubmitted,
-    this.keyboardType
-  });
+  LoginTextField(
+      {this.label,
+      this.icon,
+      this.controller,
+      this.obscureText: false,
+      this.validator,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted,
+      this.keyboardType});
 
   @override
   _LoginTextFieldState createState() => _LoginTextFieldState();
@@ -68,7 +66,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
             var validator = widget.validator ?? (_) => null;
             return text.trim().length > 0
                 ? validator(text)
-                : S.of(context).fieldNotEmpty;
+                : G.of(context).fieldNotEmpty;
           },
           focusNode: widget.focusNode,
           textInputAction: widget.textInputAction,
@@ -148,7 +146,7 @@ class _LoginTextFieldClearIconState extends State<LoginTextFieldClearIcon> {
   void initState() {
     notifier = ValueNotifier(widget.controller.text.isEmpty);
     widget.controller.addListener(() {
-      if(mounted) notifier.value = widget.controller.text.isEmpty;
+      if (mounted) notifier.value = widget.controller.text.isEmpty;
     });
     super.initState();
   }

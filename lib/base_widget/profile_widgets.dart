@@ -52,7 +52,7 @@ class PartnerRatingWidget extends StatelessWidget {
               bottom: 50,
               child: Text(
                 partnerName +
-                    S.of(context).averageRatingIs +
+                    G.of(context).averageRatingIs +
                     averageRating.roundToDouble().toString(),
                 style: TextStyle(color: Colors.black),
               ))
@@ -106,18 +106,18 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
           }
           if (state is PartnerGameHistoryFailure) {
             return Center(
-              child: Text('${S.of(context).error}: ${state.error}.'),
+              child: Text('${G.of(context).error}: ${state.error}.'),
             );
           }
           if (state is PartnerGameHistoryNoData) {
             return Center(
-              child: Text(S.of(context).textnohistory),
+              child: Text(G.of(context).textnohistory),
             );
           }
           if (state is PartnerGameHistorySuccess) {
             if (state.data.isEmpty) {
               return Center(
-                child: Text(S.of(context).textnohistory),
+                child: Text(G.of(context).textnohistory),
               );
             }
             return HistoryListView(state: state);

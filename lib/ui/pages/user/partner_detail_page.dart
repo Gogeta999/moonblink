@@ -48,25 +48,25 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     switch (status) {
       case (0):
         return Center(
-            child: Text(S.of(context).statusavailable,
+            child: Text(G.of(context).statusavailable,
                 style: TextStyle(
                     color: Colors.green, fontWeight: FontWeight.bold)));
         break;
       case (1):
         return Center(
-            child: Text(S.of(context).statusbusy,
+            child: Text(G.of(context).statusbusy,
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
         break;
       case (2):
         return Center(
-            child: Text(S.of(context).statuserror,
+            child: Text(G.of(context).statuserror,
                 style: TextStyle(
                     color: Colors.orange, fontWeight: FontWeight.bold)));
         break;
       case (3):
         return Center(
-            child: Text(S.of(context).statusingame,
+            child: Text(G.of(context).statusingame,
                 style: TextStyle(
                     color: Colors.blue, fontWeight: FontWeight.bold)));
         break;
@@ -95,7 +95,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
               enablePullUp: false,
               controller: _refreshController,
               header: ShimmerHeader(
-                  text: Text(S.of(context).pullDownToRefresh,
+                  text: Text(G.of(context).pullDownToRefresh,
                       style: TextStyle(color: Colors.grey, fontSize: 22))),
               enablePullDown: false,
               onRefresh: () async {
@@ -131,28 +131,36 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                       arguments: widget.detailPageId);
                                 }),
                       if (ownId != widget.detailPageId)
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () => CustomBottomSheet.showUserManageContent(
-                            buildContext: context,
-                            onReport: () async {
-                              ///Reporting user
-                              try {
-                                await MoonBlinkRepository.reportUser(widget.detailPageId);
-                                ///Api call success
-                                showToast('Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
-                                Navigator.pop(context);
-                              } catch (e) {
-                                showToast('Sorry, $e');
-                              }
-                            },
-                            onBlock: () async {
-                              ///Blocking user
-                              Navigator.pop(context);
-                              Navigator.pop(context, widget.detailPageId);//result != null will block
-                            },
-                            onDismiss: () => print('Dismissing BottomSheet')),
-                      )
+                        IconButton(
+                          icon: Icon(Icons.more_vert),
+                          onPressed: () =>
+                              CustomBottomSheet.showUserManageContent(
+                                  buildContext: context,
+                                  onReport: () async {
+                                    ///Reporting user
+                                    try {
+                                      await MoonBlinkRepository.reportUser(
+                                          widget.detailPageId);
+
+                                      ///Api call success
+                                      showToast(
+                                          'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                                      Navigator.pop(context);
+                                    } catch (e) {
+                                      showToast('Sorry, $e');
+                                    }
+                                  },
+                                  onBlock: () async {
+                                    ///Blocking user
+                                    Navigator.pop(context);
+                                    Navigator.pop(
+                                        context,
+                                        widget
+                                            .detailPageId); //result != null will block
+                                  },
+                                  onDismiss: () =>
+                                      print('Dismissing BottomSheet')),
+                        )
                     ],
 
                     /// [background image to show here]
@@ -179,28 +187,30 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     ),
                   ),
                   if (Platform.isIOS)
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      child: GestureDetector(
-                        child: CachedNetworkImage(
-                          imageUrl: partnerModel
-                              .partnerData.prfoileFromPartner.coverImage,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => CachedLoader(),
-                          errorWidget: (context, url, error) => CachedError(),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: GestureDetector(
+                          child: CachedNetworkImage(
+                            imageUrl: partnerModel
+                                .partnerData.prfoileFromPartner.coverImage,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => CachedLoader(),
+                            errorWidget: (context, url, error) => CachedError(),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImageView(partnerModel
+                                      .partnerData
+                                      .prfoileFromPartner
+                                      .coverImage),
+                                ));
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ImageView(partnerModel
-                                    .partnerData.prfoileFromPartner.coverImage),
-                              ));
-                        },
                       ),
                     ),
-                  ),
 
                   SliverToBoxAdapter(
                     child: SizedBox(
@@ -262,10 +272,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0)),
                           child: partnerModel.partnerData.isFollow == 0
-                              ? Text(S.of(context).follow,
+                              ? Text(G.of(context).follow,
                                   style:
                                       Theme.of(context).accentTextTheme.button)
-                              : Text(S.of(context).following,
+                              : Text(G.of(context).following,
                                   style:
                                       Theme.of(context).accentTextTheme.button),
                           onPressed: partnerModel.partnerData.isFollow == 0
@@ -338,7 +348,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           child: Text(partnerModel.partnerData.reactionCount
                                   .toString() +
                               '  ' +
-                              S.of(context).likes),
+                              G.of(context).likes),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -346,7 +356,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           child: Text(partnerModel.partnerData.followerCount
                                   .toString() +
                               '  ' +
-                              S.of(context).follower),
+                              G.of(context).follower),
                         ),
                       ],
                     ),

@@ -55,7 +55,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                     child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          S.of(context).updatePartnerProfile,
+                          G.of(context).updatePartnerProfile,
                         )),
                     onTap: () {
                       Navigator.of(context).pushNamed(RouteName.updateprofile,
@@ -170,9 +170,9 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text(S.of(context).profiletext +
+                      Text(G.of(context).profiletext +
                           partnerModel.partnerData.followerCount.toString() +
-                          S.of(context).profilefollowernow)
+                          G.of(context).profilefollowernow)
                     ],
                   ),
                 ),

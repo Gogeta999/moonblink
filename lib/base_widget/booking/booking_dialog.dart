@@ -22,21 +22,21 @@ class BookingDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      title: Text(S.of(context).bookingDialog),
+      title: Text(G.of(context).bookingDialog),
       content: Text('$bookingUserName ' +
-          S.of(context).bookingDialogSomeoneBook +
+          G.of(context).bookingDialogSomeoneBook +
           '\n\n' +
           'Game : ${gameList[gameType]}'),
       actions: <Widget>[
         FlatButton(
-            child: Text(S.of(context).bookingDialogReject),
+            child: Text(G.of(context).bookingDialogReject),
             onPressed: () {
               print('Rejected');
               reject();
               Navigator.pop(context, 'Reject');
             }),
         FlatButton(
-          child: Text(S.of(context).bookingDialogAccept),
+          child: Text(G.of(context).bookingDialogAccept),
           onPressed: () {
             print('Accepted');
             accept();

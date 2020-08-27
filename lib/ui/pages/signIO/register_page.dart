@@ -60,25 +60,25 @@ class _RegisterPageState extends State<RegisterPage> {
                                         CrossAxisAlignment.stretch,
                                     children: <Widget>[
                                       LoginTextField(
-                                        label: S.of(context).signUpMail,
+                                        label: G.of(context).signUpMail,
                                         icon: Icons.mail_outline,
                                         controller: _mailCtrl,
                                         textInputAction: TextInputAction.next,
                                       ),
                                       LoginTextField(
-                                        label: S.of(context).signUpName,
+                                        label: G.of(context).signUpName,
                                         icon: Icons.person_outline,
                                         controller: _nameCtrl,
                                         textInputAction: TextInputAction.next,
                                       ),
                                       // LoginTextField(
-                                      //   label: S.of(context).signUpLastName,
+                                      //   label: G.of(context).signUpLastName,
                                       //   icon: Icons.person_outline,
                                       //   controller: _lastnameCtrl,
                                       //   textInputAction: TextInputAction.next,
                                       // ),
                                       LoginTextField(
-                                        label: S.of(context).signUpPassword,
+                                        label: G.of(context).signUpPassword,
                                         icon: Icons.lock_outline,
                                         obscureText: true,
                                         controller: _passwordCtrl,
@@ -116,7 +116,7 @@ class RegisterButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              S.of(context).signUp,
+              G.of(context).signUp,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6

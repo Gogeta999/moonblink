@@ -130,3 +130,4 @@ flutter:
 
 flutter_intl:
   enabled: true
+  class_name: G 

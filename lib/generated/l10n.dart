@@ -10,27 +10,28 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 
-class S {
-  S();
-  
-  static S current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+class G {
+  G();
 
-  static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+  static G current;
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
+
+  static Future<G> load(Locale locale) {
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
-      
-      return S.current;
-    });
-  } 
+      G.current = G();
 
-  static S of(BuildContext context) {
-    return Localizations.of<S>(context, S);
+      return G.current;
+    });
+  }
+
+  static G of(BuildContext context) {
+    return Localizations.of<G>(context, G);
   }
 
   /// `Accept`
@@ -1684,7 +1685,7 @@ class S {
   }
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<S> {
+class AppLocalizationDelegate extends LocalizationsDelegate<G> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
@@ -1698,7 +1699,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
   @override
-  Future<S> load(Locale locale) => S.load(locale);
+  Future<G> load(Locale locale) => G.load(locale);
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

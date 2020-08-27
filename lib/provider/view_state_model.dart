@@ -67,7 +67,7 @@ class ViewStateModel with ChangeNotifier {
   void setError(e, s, {String message}) {
     ViewStateErrorType errorType = ViewStateErrorType.defaultError;
 
-    /// copy past from 
+    /// copy past from
     /// https://github.com/flutterchina/dio/blob/master/README-ZH.md#dioerrortype
     if (e is DioError) {
       if (e.type == DioErrorType.CONNECT_TIMEOUT ||
@@ -115,13 +115,14 @@ class ViewStateModel with ChangeNotifier {
   showErrorMessage(context, {String message}) {
     if (viewStateError != null || message != null) {
       if (viewStateError.isNetworkTimeOut) {
-        message ??= S.of(context).viewStateMessageNetworkError;
+        message ??= G.of(context).viewStateMessageNetworkError;
       } else {
         message ??= viewStateError.message;
       }
-      Future.microtask(() {
-        showToast(message, context: context);
-      });
+      // Future.microtask(() {
+      //   showToast(message, context: context);
+      // },
+      // );
     }
   }
 

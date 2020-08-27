@@ -19,8 +19,8 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     _tabs = [
-      Tab(text: S.of(context).rating),
-      Tab(text: S.of(context).history),
+      Tab(text: G.of(context).rating),
+      Tab(text: G.of(context).history),
     ];
     _pages = [
       PartnerRatingWidget(widget.partnerName, widget.partnerRating),
