@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:moonblink/generated/l10n.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   final int partnerId;
@@ -47,6 +47,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
             child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
               itemCount: bookingModel.gamesList.length,
               itemBuilder: (context, index) {
                 return ListTile(
@@ -150,12 +151,8 @@ class _BookingButtonState extends State<BookingButton> {
                 await context
                     .read<BookingModel>()
                     .booking(widget.partnerId, widget.gameType);
-                // .whenComplete(() {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, RouteName.chatBox,
-                    arguments: widget.partnerId);
-                // }
-                // );
+                Navigator.pushNamed(context, RouteName.chatBox, arguments: widget.partnerId);
               } catch (e) {
                 showToast(e.toString());
                 _buttonSubject.add(BookingButtonState.initial);

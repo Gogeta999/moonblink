@@ -4,7 +4,7 @@ class Api {
   //Dev Server Address in IP
   static const String DEV = "http://157.230.35.18/";
   // Production Address in IP
-  // static const String BASE = "https://128.199.254.89/";
+  //static const String BASE = "https://128.199.254.89/";
 
   /// Story for normal user
   static const String STORY = 'moonblink/api/v1/social/stories';

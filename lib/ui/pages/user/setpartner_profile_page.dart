@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -85,45 +84,20 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   _pickNrcFromGallery(NrcType type) async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
     switch (type) {
       case NrcType.front:
         setState(() {
-          _nrcFront = compressedImage;
+          _nrcFront = image;
         });
         return;
       case NrcType.back:
         setState(() {
-          _nrcBack = compressedImage;
+          _nrcBack = image;
         });
         return;
       default:
         showToast('Developer\'s error');
     }
-  }
-
-  // 2. compress file and get file.
-  Future<File> _compressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 80,
-    );
-
-    print(file.lengthSync());
-    print(result.lengthSync());
-
-    return result;
-  }
-
-  Future<File> _getLocalFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    _filePath =
-        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
-    return File(_filePath);
   }
 
   //get Space

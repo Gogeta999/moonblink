@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -276,16 +277,13 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     });
   }
 
-  Future<File> _compressAndGetFile(
-      File file, String targetPath, int minWidth, int minHeight) async {
-    ///compress to jpeg and change aspect ratio to 1:1
-    ///minWidth and minHeight default to 1080
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path, targetPath,
-        minWidth: minWidth,
-        minHeight: minHeight,
-        quality: 90,
-        format: CompressFormat.jpeg);
+      file.absolute.path,
+      targetPath,
+      quality: 80,
+    );
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -296,8 +294,48 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
-    return File(
-        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg');
+    final filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(filePath);
+  }
+
+  Future<File> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 90,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ]
+            : [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio5x3,
+          CropAspectRatioPreset.ratio5x4,
+          CropAspectRatioPreset.ratio7x5,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          showCancelConfirmationDialog: true
+        ));
+    if (croppedFile != null) {
+      return croppedFile;
+    } else {
+      return null;
+    }
   }
 
   _choose() async {
@@ -306,10 +344,14 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       Navigator.pop(context);
     }
     File image = await _photoList[_selectedIndices.first].file;
-    File temporaryImage = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(
-        image, temporaryImage.absolute.path, widget.minWidth, widget.minHeight);
-    widget.onPressed(compressedImage);
+    File croppedImage = await _cropImage(image);
+    File tempFile = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(croppedImage, tempFile.path);
+    print(image.lengthSync());
+    print(compressedImage.lengthSync());
+    if (compressedImage != null) {
+      widget.onPressed(compressedImage);
+    }
   }
 
   _fetchNewMedia() async {

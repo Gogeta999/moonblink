@@ -12,7 +12,7 @@ class BookingModel extends ViewStateModel {
   List<String> dropdownGameListAndPrice = [];
   List<Game> gamesList = [];
 
-  Future<void> booking(int partnerId, int gameType) async {
+  Future<bool> booking(int partnerId, int gameType) async {
     await MoonBlinkRepository.booking(partnerId, gameType);
   }
 
