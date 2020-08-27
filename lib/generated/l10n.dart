@@ -136,7 +136,7 @@ class S {
   /// `Book`
   String get bookingBook {
     return Intl.message(
-      'Book',
+      'Booking',
       name: 'bookingBook',
       desc: '',
       args: [],

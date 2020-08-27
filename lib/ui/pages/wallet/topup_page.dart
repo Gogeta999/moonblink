@@ -46,7 +46,7 @@ class _TopUpPageState extends State<TopUpPage>
 
   final List<String> _productLists = Platform.isAndroid
       ? ['coin_200', 'coin_500', 'coin_1000']
-      : [/*'coin_100', */'coin_500', 'coin_1000'];//for now only android
+      : ['coin_200_ios', 'coin_500', 'coin_1000'];//for now only android
   List<IAPItem> _items = [];
   // ignore: unused_field
   List<PurchasedItem> _purchases = [];
