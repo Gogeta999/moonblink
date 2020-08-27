@@ -61,7 +61,8 @@ class _VideoTrimmer extends State<VideoTrimmer> {
               await MultipartFile.fromFile(storyPath, filename: 'video.mp4'),
           'media_type': 2
         });
-
+        print(
+            "===============================================================");
         var response = await DioUtils()
             .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
         if (response.errorCode == 1) {
