@@ -85,15 +85,15 @@ class _MainTabPageState extends State<MainTabPage>
         child: FancyBottomNavigation(
           tabs: [
             TabData(
-                iconData: IconFonts.homePageIcon, title: S.of(context).tabHome),
+                iconData: IconFonts.homePageIcon, title: G.of(context).tabHome),
             TabData(
-                iconData: IconFonts.chatPageIcon, title: S.of(context).tabChat),
+                iconData: IconFonts.chatPageIcon, title: G.of(context).tabChat),
             TabData(
                 iconData: IconFonts.followingPageIcon,
-                title: S.of(context).tabFollowing),
+                title: G.of(context).tabFollowing),
             TabData(
                 iconData: IconFonts.statusPageIcon,
-                title: S.of(context).tabUser),
+                title: G.of(context).tabUser),
           ],
           initialSelection: initPage,
           // inactiveIconSize: 30,

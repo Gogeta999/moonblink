@@ -59,30 +59,35 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                     child: InkWell(
                       onTap: usertoken == null
                           ? () {
-                              showToast(S.of(context).loginFirst);
+                              showToast(G.of(context).loginFirst);
                             }
                           : () {
                               int detailPageId = widget.posts.userID;
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PartnerDetailPage(detailPageId))).then((value) async {
-                                            if (value != null) {
-                                              setState(() {
-                                                isBlocking = true;
-                                              });
-                                              ///Blocking user
-                                              await homeModel.removeItem(
-                                                  index: widget.index,
-                                                  blockUserId: widget.posts.userID).then((value) {
-                                                value ? showToast('Successfully Blocked')
-                                                    : showToast('Error Blocking User');
-                                              });
-                                              setState(() {
-                                                isBlocking = false;
-                                              });
-                                            }
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PartnerDetailPage(detailPageId)))
+                                  .then((value) async {
+                                if (value != null) {
+                                  setState(() {
+                                    isBlocking = true;
+                                  });
+
+                                  ///Blocking user
+                                  await homeModel
+                                      .removeItem(
+                                          index: widget.index,
+                                          blockUserId: widget.posts.userID)
+                                      .then((value) {
+                                    value
+                                        ? showToast('Successfully Blocked')
+                                        : showToast('Error Blocking User');
+                                  });
+                                  setState(() {
+                                    isBlocking = false;
+                                  });
+                                }
                               });
                             },
                       child: Row(
@@ -150,90 +155,44 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
 
           /// [User_Image]
-          isBlocking ? CupertinoActivityIndicator() :
-          ProviderWidget(
-            model: HomeModel(),
-            builder: (context, reactModel, child) {
-              return Column(
-                children: <Widget>[
-                  InkWell(
-                      child: Container(
-                        constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height / 2.5,
-                            maxHeight: MediaQuery.of(context).size.height / 1.5,
-                            minWidth: double.infinity,
-                            maxWidth: double.infinity),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.fill,
-                          imageUrl: widget.posts.coverImage,
-                          placeholder: (context, url) => CachedLoader(),
-                          errorWidget: (context, url, error) => CachedError(),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                ImageView(widget.posts.coverImage)));
-                        print('object');
-                      },
-                      onDoubleTap: widget.posts.isReacted == 0
-                          ? () {
-                              reactModel
-                                  .reactProfile(widget.posts.userID, 1)
-                                  .then((value) {
-                                if (value) {
-                                  showToast(S.of(context).toastlikesuccess);
-                                  setState(() {
-                                    widget.posts.isReacted = 1;
-                                    widget.posts.reactionCount += 1;
-                                  });
-                                } else {
-                                  reactModel.showErrorMessage(context);
-                                }
-                              });
-                            }
-                          : () {
-                              reactModel
-                                  .reactProfile(widget.posts.userID, 0)
-                                  .then((value) {
-                                if (value) {
-                                  showToast(S.of(context).toastunlikesuccess);
-                                  setState(() {
-                                    widget.posts.isReacted = 0;
-                                    widget.posts.reactionCount -= 1;
-                                  });
-                                } else {
-                                  reactModel.showErrorMessage(context);
-                                }
-                              });
-                            }),
-
-                  /// [User_bottom data]
-                  Container(
-                    height: 30,
-                    width: double.infinity,
-                    margin: EdgeInsets.all(8.0),
-                    child: Stack(
+          isBlocking
+              ? CupertinoActivityIndicator()
+              : ProviderWidget(
+                  model: HomeModel(),
+                  builder: (context, reactModel, child) {
+                    return Column(
                       children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: InkWell(
-                            child: Icon(
-                                widget.posts.isReacted == 0
-                                    ? FontAwesomeIcons.heart
-                                    : FontAwesomeIcons.solidHeart,
-                                size: 30,
-                                color: widget.posts.isReacted == 0
-                                    ? Theme.of(context).iconTheme.color
-                                    : Colors.red[400]),
-                            onTap: widget.posts.isReacted == 0
+                        InkWell(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  minHeight:
+                                      MediaQuery.of(context).size.height / 2.5,
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height / 1.5,
+                                  minWidth: double.infinity,
+                                  maxWidth: double.infinity),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.fill,
+                                imageUrl: widget.posts.coverImage,
+                                placeholder: (context, url) => CachedLoader(),
+                                errorWidget: (context, url, error) =>
+                                    CachedError(),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ImageView(widget.posts.coverImage)));
+                              print('object');
+                            },
+                            onDoubleTap: widget.posts.isReacted == 0
                                 ? () {
                                     reactModel
                                         .reactProfile(widget.posts.userID, 1)
                                         .then((value) {
                                       if (value) {
                                         showToast(
-                                            S.of(context).toastlikesuccess);
+                                            G.of(context).toastlikesuccess);
                                         setState(() {
                                           widget.posts.isReacted = 1;
                                           widget.posts.reactionCount += 1;
@@ -249,7 +208,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         .then((value) {
                                       if (value) {
                                         showToast(
-                                            S.of(context).toastunlikesuccess);
+                                            G.of(context).toastunlikesuccess);
                                         setState(() {
                                           widget.posts.isReacted = 0;
                                           widget.posts.reactionCount -= 1;
@@ -258,43 +217,102 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         reactModel.showErrorMessage(context);
                                       }
                                     });
+                                  }),
+
+                        /// [User_bottom data]
+                        Container(
+                          height: 30,
+                          width: double.infinity,
+                          margin: EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: InkWell(
+                                  child: Icon(
+                                      widget.posts.isReacted == 0
+                                          ? FontAwesomeIcons.heart
+                                          : FontAwesomeIcons.solidHeart,
+                                      size: 30,
+                                      color: widget.posts.isReacted == 0
+                                          ? Theme.of(context).iconTheme.color
+                                          : Colors.red[400]),
+                                  onTap: widget.posts.isReacted == 0
+                                      ? () {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 1)
+                                              .then((value) {
+                                            if (value) {
+                                              showToast(G
+                                                  .of(context)
+                                                  .toastlikesuccess);
+                                              setState(() {
+                                                widget.posts.isReacted = 1;
+                                                widget.posts.reactionCount += 1;
+                                              });
+                                            } else {
+                                              reactModel
+                                                  .showErrorMessage(context);
+                                            }
+                                          });
+                                        }
+                                      : () {
+                                          reactModel
+                                              .reactProfile(
+                                                  widget.posts.userID, 0)
+                                              .then((value) {
+                                            if (value) {
+                                              showToast(G
+                                                  .of(context)
+                                                  .toastunlikesuccess);
+                                              setState(() {
+                                                widget.posts.isReacted = 0;
+                                                widget.posts.reactionCount -= 1;
+                                              });
+                                            } else {
+                                              reactModel
+                                                  .showErrorMessage(context);
+                                            }
+                                          });
+                                        },
+                                ),
+                              ),
+                              Positioned(
+                                  left: 40,
+                                  bottom: 5,
+                                  child: Text(
+                                      '${widget.posts.reactionCount} ${G.of(context).likes}')),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  icon: Icon(FontAwesomeIcons.share),
+                                  onPressed: () {
+                                    final RenderBox box =
+                                        context.findRenderObject();
+                                    Share.share(
+                                        'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
+                                        subject: 'Please download our app',
+                                        sharePositionOrigin:
+                                            box.localToGlobal(Offset.zero) &
+                                                box.size);
                                   },
-                          ),
-                        ),
-                        Positioned(
-                            left: 40,
-                            bottom: 5,
-                            child: Text(
-                                '${widget.posts.reactionCount} ${S.of(context).likes}')),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            icon: Icon(FontAwesomeIcons.share),
-                            onPressed: () {
-                              final RenderBox box = context.findRenderObject();
-                              Share.share(
-                                  'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
-                                  subject: 'Please download our app',
-                                  sharePositionOrigin:
-                                      box.localToGlobal(Offset.zero) &
-                                          box.size);
-                            },
+                                ),
+                              )
+                            ],
                           ),
                         )
                       ],
-                    ),
-                  )
-                ],
-              );
-            },
-          ),
+                    );
+                  },
+                ),
 
           /// [bottom date]
           Container(
             margin: EdgeInsets.only(left: 8.0, top: 0.5, bottom: 5),
             alignment: Alignment.topLeft,
             child: Text(
-              S.of(context).becomePartnerAt +
+              G.of(context).becomePartnerAt +
                   //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
                   timeAgo.format(DateTime.parse(widget.posts.createdAt),
                       allowFromNow: true),

@@ -119,26 +119,25 @@ class CustomBottomSheet {
 
   static showUserManageContent(
       {@required BuildContext buildContext,
-        @required Function onReport,
-        @required Function onBlock,
-        Function onDismiss}) async {
-      showModalBottomSheet(
-          context: buildContext,
-          barrierColor: Colors.white.withOpacity(0.0),
-          isDismissible: true,
-          builder: (context) => UserManageContentBottomSheet(
-            onReport: onReport,
-            onBlock: onBlock,
-          )
-          ).whenComplete(() {
-        try {
-          onDismiss();
-        } catch (e) {
-          if (e is NoSuchMethodError) {
-            print('NoSuchMethodError');
-          }
+      @required Function onReport,
+      @required Function onBlock,
+      Function onDismiss}) async {
+    showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.white.withOpacity(0.0),
+        isDismissible: true,
+        builder: (context) => UserManageContentBottomSheet(
+              onReport: onReport,
+              onBlock: onBlock,
+            )).whenComplete(() {
+      try {
+        onDismiss();
+      } catch (e) {
+        if (e is NoSuchMethodError) {
+          print('NoSuchMethodError');
         }
-      });
+      }
+    });
   }
 
   static showBookingSheet(
@@ -172,7 +171,7 @@ class CustomBottomSheet {
         builder: (context) {
           if (Platform.isIOS) {
             return CupertinoAlertDialog(
-              title: Text(S.of(context).permissiondenied,
+              title: Text(G.of(context).permissiondenied,
                   style: Theme.of(context).textTheme.headline6),
               content: Text(
                   'Allow $permissionName permission in settings to continue',
@@ -180,7 +179,7 @@ class CustomBottomSheet {
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(S.of(context).cancel,
+                  child: Text(G.of(context).cancel,
                       style: Theme.of(context).textTheme.bodyText1),
                 ),
                 FlatButton(
@@ -192,7 +191,7 @@ class CustomBottomSheet {
             );
           } else {
             return AlertDialog(
-              title: Text(S.of(context).permissiondenied),
+              title: Text(G.of(context).permissiondenied),
               titleTextStyle: Theme.of(context).textTheme.headline6,
               content: Text(
                   'Allow $permissionName permission in settings to continue',
@@ -200,7 +199,7 @@ class CustomBottomSheet {
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(S.of(context).cancel,
+                  child: Text(G.of(context).cancel,
                       style: Theme.of(context).textTheme.bodyText1),
                 ),
                 FlatButton(
@@ -214,4 +213,3 @@ class CustomBottomSheet {
         });
   }
 }
-

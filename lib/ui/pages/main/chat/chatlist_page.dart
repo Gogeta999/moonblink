@@ -110,7 +110,7 @@ class _ChatListPageState extends State<ChatListPage>
                         Positioned(
                           top: 200,
                           child: Text(
-                            S.of(context).noChatHistory,
+                            G.of(context).noChatHistory,
                             style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
                         ),

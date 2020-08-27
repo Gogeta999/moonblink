@@ -83,7 +83,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
           }
           return Scaffold(
               appBar: AppBar(
-                title: Text(S.of(context).updatePartnerProfile),
+                title: Text(G.of(context).updatePartnerProfile),
               ),
               body:
                   CustomScrollView(physics: ClampingScrollPhysics(), slivers: <
@@ -106,7 +106,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                 CustomBottomSheet.show(
                                     requestType: RequestType.image,
                                     popAfterBtnPressed: true,
-                                    buttonText: S.of(context).choose,
+                                    buttonText: G.of(context).choose,
                                     buildContext: context,
                                     limit: 1,
                                     onPressed: (File file) {
@@ -114,7 +114,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         _cover = file;
                                       });
                                     },
-                                    body: S.of(context).partnercover);
+                                    body: G.of(context).partnercover);
                               },
                               child: AspectRatio(
                                 aspectRatio: 100 / 60,
@@ -142,7 +142,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           requestType: RequestType.image,
                                           minWidth: 480,
                                           minHeight: 480,
-                                          buttonText: S.of(context).choose,
+                                          buttonText: G.of(context).choose,
                                           buildContext: context,
                                           limit: 1,
                                           onPressed: (File file) {
@@ -150,7 +150,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               _profile = file;
                                             });
                                           },
-                                          body: S.of(context).partnerprofile);
+                                          body: G.of(context).partnerprofile);
                                     },
                                     child: CircleAvatar(
                                       radius: 75,
@@ -191,9 +191,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       //Name
                                       LoginTextField(
                                         validator: (value) => value.isEmpty
-                                            ? S.of(context).labelname
+                                            ? G.of(context).labelname
                                             : null,
-                                        label: S.of(context).labelname,
+                                        label: G.of(context).labelname,
                                         icon: Icons.person,
                                         controller: _nameController,
                                         textInputAction: TextInputAction.next,
@@ -201,7 +201,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
-                                        label: S.of(context).labelbios,
+                                        label: G.of(context).labelbios,
                                         icon: FontAwesomeIcons.book,
                                         controller: _biosController,
                                         textInputAction: TextInputAction.next,
@@ -209,7 +209,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //ML id
                                       LoginTextField(
-                                        label: S.of(context).labelmlid,
+                                        label: G.of(context).labelmlid,
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _mlIdController,
                                         textInputAction: TextInputAction.next,
@@ -217,7 +217,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       ),
                                       //bios
                                       LoginTextField(
-                                        label: S.of(context).labelpubgid,
+                                        label: G.of(context).labelpubgid,
                                         icon: FontAwesomeIcons.gamepad,
                                         controller: _pubgIdController,
                                         textInputAction: TextInputAction.next,
@@ -227,7 +227,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       FlatButton(
                                         child: finish
                                             ? ButtonProgressIndicator()
-                                            : Text(S
+                                            : Text(G
                                                 .of(context)
                                                 .updatePartnerButton),
                                         color: Theme.of(context).buttonColor,
@@ -235,7 +235,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           if (_cover == null ||
                                               _profile == null) {
                                             showToast(
-                                                S.of(context).toastimagenull);
+                                                G.of(context).toastimagenull);
                                             return false;
                                           }
                                           setState(() {
@@ -272,6 +272,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                           print(response);
                                           setState(() {
                                             finish = !finish;
+                                            StorageManager.sharedPreferences
+                                                .setString(mLoginName,
+                                                    _nameController.text);
                                           });
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(

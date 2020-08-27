@@ -35,13 +35,13 @@ class LocaleModel extends ChangeNotifier {
   static String localeName(index, context) {
     switch (index) {
       case 0:
-        return S.of(context).autoBySystem;
+        return G.of(context).autoBySystem;
       case 1:
-        return S.of(context).english;
+        return G.of(context).english;
       case 2:
-        return S.of(context).burmese;
+        return G.of(context).burmese;
       case 3:
-        return S.of(context).china;
+        return G.of(context).china;
       default:
         return '';
     }

@@ -22,7 +22,7 @@ class _BookingButtonState extends State<BookingButton> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(S.of(context).bookingChooseGameType),
+            title: Text(G.of(context).bookingChooseGameType),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Column(
@@ -46,7 +46,7 @@ class _BookingButtonState extends State<BookingButton> {
                       size: 16,
                     ),
                     SizedBox(width: 10.0),
-                    Text(S.of(context).currentcoin +
+                    Text(G.of(context).currentcoin +
                         ': ${bookingModel.wallet.value} ${bookingModel.wallet.value > 1 ? 'coins' : 'coin'}')
                   ],
                 ),
@@ -55,12 +55,12 @@ class _BookingButtonState extends State<BookingButton> {
             contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
             actions: <Widget>[
               FlatButton(
-                  child: Text(S.of(context).bookingCancel),
+                  child: Text(G.of(context).bookingCancel),
                   onPressed: () {
                     Navigator.pop(context, 'Cancel');
                   }),
               FlatButton(
-                  child: Text(S.of(context).bookingBook),
+                  child: Text(G.of(context).bookingBook),
                   onPressed: () {
                     bookingModel.booking(partnerDetailModel.partnerId).then(
                         (value) => value
@@ -102,7 +102,7 @@ class _BookingButtonState extends State<BookingButton> {
             highlightColor: Theme.of(context).accentColor,
             colorBrightness: Theme.of(context).brightness,
             splashColor: Colors.grey,
-            child: Text(S.of(context).bookingBook,
+            child: Text(G.of(context).bookingBook,
                 style: Theme.of(context).accentTextTheme.button),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),

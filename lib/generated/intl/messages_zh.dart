@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "blockList" : MessageLookupByLibrary.simpleMessage("黑名单"),
     "bookingBook" : MessageLookupByLibrary.simpleMessage("预约"),
     "bookingCancel" : MessageLookupByLibrary.simpleMessage("取消"),
-    "bookingChooseGameType" : MessageLookupByLibrary.simpleMessage("请选择要与主播一起玩的游戏类型"),
+    "bookingChooseGameType" : MessageLookupByLibrary.simpleMessage("请选择要与玩伴一起玩的游戏类型"),
     "bookingDialog" : MessageLookupByLibrary.simpleMessage("预约框"),
     "bookingDialogAccept" : MessageLookupByLibrary.simpleMessage("接受"),
     "bookingDialogReject" : MessageLookupByLibrary.simpleMessage("拒绝"),
