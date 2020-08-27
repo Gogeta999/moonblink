@@ -11,6 +11,7 @@ import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 List<Widget> pages = <Widget>[
@@ -52,6 +53,7 @@ class _MainTabPageState extends State<MainTabPage>
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
+
     super.initState();
   }
 
@@ -64,6 +66,7 @@ class _MainTabPageState extends State<MainTabPage>
               DateTime.now().difference(_lastPressed) > Duration(seconds: 1)) {
             // if time is separate more than 1 second, then continue to count
             _lastPressed = DateTime.now();
+            // showToast("You Really want to out?");
             return false;
           }
           return true;
@@ -74,9 +77,20 @@ class _MainTabPageState extends State<MainTabPage>
           itemCount: pages.length,
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
           onPageChanged: (index) {
             setState(() {
               _selectedIndex = index;
+              print('index num is: $_selectedIndex');
+              // _pageController.addListener(() {
+              //   // double offset = _pageController.offset;
+              //   // _selectedIndex = index;
+              //   // _pageController.animateTo(MediaQuery.of(context).size.width*currentSelectIndex, duration: Duration(milliseconds: 200), curve: Curves.linear);
+
+              //   // _pageController.nextPage(
+              //   //     duration: Duration(seconds: 1), curve: null);
+              //   print('Page Controller $index');
+              // });
             });
           },
         ),
@@ -108,10 +122,13 @@ class _MainTabPageState extends State<MainTabPage>
 
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
+            // print("Jumto page Call");
             _pageController.jumpToPage(index);
-            setState(() {
-              _selectedIndex = index;
-            });
+
+            // setState(() {
+            //   print('Botttom Call---index is $_selectedIndex');
+            //   _selectedIndex = index;
+            // });
           },
         ),
       ),

@@ -119,10 +119,11 @@ class ViewStateModel with ChangeNotifier {
       } else {
         message ??= viewStateError.message;
       }
-      // Future.microtask(() {
-      //   showToast(message, context: context);
-      // },
-      // );
+      Future.microtask(
+        () {
+          showToast(message, context: context);
+        },
+      );
     }
   }
 

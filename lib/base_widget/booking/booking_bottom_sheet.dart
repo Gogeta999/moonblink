@@ -39,12 +39,13 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 10),
-          Text(S.of(context).bookingChooseGameType,
+          Text(G.of(context).bookingChooseGameType,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
           Container(
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView.builder(
+              physics: ClampingScrollPhysics(),
               shrinkWrap: true,
               itemCount: bookingModel.gamesList.length,
               itemBuilder: (context, index) {
@@ -148,15 +149,13 @@ class _BookingButtonState extends State<BookingButton> {
               try {
                 await context
                     .read<BookingModel>()
-                    .booking(widget.partnerId, widget.gameType)
-                    .whenComplete(() {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(
-                    context,
-                    RouteName.chatBox,
-                    arguments: widget.partnerId
-                  );
-                });
+                    .booking(widget.partnerId, widget.gameType);
+                // .whenComplete(() {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, RouteName.chatBox,
+                    arguments: widget.partnerId);
+                // }
+                // );
               } catch (e) {
                 showToast(e.toString());
                 _buttonSubject.add(BookingButtonState.initial);

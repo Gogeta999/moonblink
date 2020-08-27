@@ -13,6 +13,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../models/message.dart';
 
 String url = 'https://chat.moonblinkuniverse.com';
+String devSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],
