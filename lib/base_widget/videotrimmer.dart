@@ -84,7 +84,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).trimYourVideo),
+        title: Text(G.of(context).trimYourVideo),
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -111,14 +111,14 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                         : () async {
                             _saveVideo().then((outputPath) {
                               if (outputPath == null) {
-                                showToast(S.of(context).toastvideooverlimit);
+                                showToast(G.of(context).toastvideooverlimit);
                                 _progressVisibility = false;
                               } else {
                                 print('OUTPUT PATH: $outputPath');
                               }
                             });
                           },
-                    child: Text(S.of(context).upload),
+                    child: Text(G.of(context).upload),
                   ),
                   Expanded(
                     child: VideoViewer(),

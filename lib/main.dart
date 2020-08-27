@@ -30,6 +30,7 @@ main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
+  //InAppPurchaseConnection.enablePendingPurchases();
   runApp(MyApp());
   //Future.delayed(Duration(milliseconds: 100), () => runApp(MyApp()));
   // android's statusbar will change with theme
@@ -85,12 +86,12 @@ class _MyAppState extends State<MyApp> {
                 darkTheme: themeModel.themeData(platformDarkMode: true),
                 locale: localModel.locale,
                 localizationsDelegates: const [
-                  S.delegate,
+                  G.delegate,
                   GlobalCupertinoLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate
                 ],
-                supportedLocales: S.delegate.supportedLocales,
+                supportedLocales: G.delegate.supportedLocales,
                 onGenerateRoute: Router.generateRoute,
                 initialRoute: RouteName.splash,
                 navigatorKey: locator<NavigationService>().navigatorKey,

@@ -168,7 +168,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         return buildrequest(msg, bookingid);
         break;
       default:
-        return Text(S.of(context).error);
+        return Text(G.of(context).error);
         break;
     }
   }
@@ -226,7 +226,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               model: RateModel(),
               builder: (context, model, child) {
                 return new AlertDialog(
-                  title: Text(S.of(context).pleaseRatingForThisGame),
+                  title: Text(G.of(context).pleaseRatingForThisGame),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                   content: Column(
@@ -268,7 +268,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                             controller: comment,
                             textInputAction: TextInputAction.done,
                             decoration: InputDecoration(
-                              labelText: S.of(context).labelcomment,
+                              labelText: G.of(context).labelcomment,
                             ),
                           ))
                     ],
@@ -276,14 +276,14 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   //Summit Rating
                   actions: [
                     FlatButton(
-                        child: Text(S.of(context).submit),
+                        child: Text(G.of(context).submit),
                         onPressed: () {
                           model
                               .rate(widget.detailPageId, bookingid, rate,
                                   comment.text)
                               .then((value) => value
                                   ? Navigator.pop(context)
-                                  : showToast(S.of(context).toastratingfail));
+                                  : showToast(G.of(context).toastratingfail));
                         })
                   ],
                 );
@@ -296,7 +296,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return ButtonTheme(
       minWidth: 70,
       child: FlatButton(
-        child: Text(S.of(context).accept,
+        child: Text(G.of(context).accept,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         onPressed: () {
           MoonBlinkRepository.bookingAcceptOrDecline(
@@ -312,7 +312,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return ButtonTheme(
         minWidth: 70,
         child: FlatButton(
-          child: Text(S.of(context).reject,
+          child: Text(G.of(context).reject,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
@@ -340,7 +340,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       child: Column(
         children: <Widget>[
-          Text(S.of(context).someoneCallingYou),
+          Text(G.of(context).someoneCallingYou),
           buttoncheck(status, msg)
         ],
       ),
@@ -352,7 +352,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (status == 1) {
       return MaterialButton(
         child: Text(
-          S.of(context).enterCall,
+          G.of(context).enterCall,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         onPressed: () {
@@ -360,7 +360,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         },
       );
     } else {
-      return Text(S.of(context).bookingEnded,
+      return Text(G.of(context).bookingEnded,
           style: TextStyle(fontWeight: FontWeight.bold));
     }
   }
@@ -457,10 +457,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               CustomBottomSheet.show(
                   popAfterBtnPressed: true,
                   requestType: RequestType.image,
-                  buttonText: S.of(context).sendbutton,
+                  buttonText: G.of(context).sendbutton,
                   buildContext: context,
                   limit: 1,
-                  body: S.of(context).labelimageselect,
+                  body: G.of(context).labelimageselect,
                   onPressed: (File file) async {
                     setState(() {
                       _file = file;
@@ -496,7 +496,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               textInputAction: TextInputAction.newline,
               controller: textEditingController,
               decoration: InputDecoration(
-                hintText: S.of(context).labelmsg,
+                hintText: G.of(context).labelmsg,
                 counterText: "",
               ),
             ),
@@ -530,7 +530,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         model: CallModel(),
         builder: (context, model, child) {
           return FlatButton(
-            child: Text(S.of(context).end),
+            child: Text(G.of(context).end),
             onPressed: () {
               model.endbooking(selfId, bookingid, 3);
             },
@@ -567,7 +567,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           model: CallModel(),
           builder: (context, model, child) {
             return FlatButton(
-              child: Text(S.of(context).cancel),
+              child: Text(G.of(context).cancel),
               onPressed: () {
                 model.endbooking(selfId, bookingid, 6);
               },
@@ -788,7 +788,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (voiceChannelName.isNotEmpty) {
       await _handleVoiceCall(voiceChannelName);
     } else if (voiceChannelName.isEmpty) {
-      showToast(S.of(context).toasterror);
+      showToast(G.of(context).toasterror);
     }
   }
 
@@ -808,19 +808,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(
-                S.of(context).pleaseAllowMicroPhone,
+                G.of(context).pleaseAllowMicroPhone,
                 textAlign: TextAlign.center,
               ),
-              content: Text(S.of(context).youNeedToAllowMicroPermission),
+              content: Text(G.of(context).youNeedToAllowMicroPermission),
               actions: <Widget>[
                 FlatButton(
-                  child: Text(S.of(context).cancel),
+                  child: Text(G.of(context).cancel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text(S.of(context).confirm),
+                  child: Text(G.of(context).confirm),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -836,19 +836,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(
-                S.of(context).pleaseAllowMicroPhone,
+                G.of(context).pleaseAllowMicroPhone,
                 textAlign: TextAlign.center,
               ),
-              content: Text(S.of(context).youNeedToAllowMicroPermission),
+              content: Text(G.of(context).youNeedToAllowMicroPermission),
               actions: <Widget>[
                 FlatButton(
-                  child: Text(S.of(context).cancel),
+                  child: Text(G.of(context).cancel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text(S.of(context).confirm),
+                  child: Text(G.of(context).confirm),
                   onPressed: () {
                     openAppSettings();
                     Navigator.of(context).pop();

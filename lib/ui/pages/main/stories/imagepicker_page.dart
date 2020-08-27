@@ -40,7 +40,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).imagePickerAppBar,
+        title: Text(G.of(context).imagePickerAppBar,
             style: Theme.of(context).accentTextTheme.headline6),
       ),
       body: Column(
@@ -56,7 +56,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerCamera,
+                          G.of(context).imagePickerCamera,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -70,7 +70,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerGallery,
+                          G.of(context).imagePickerGallery,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -84,7 +84,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerVideo,
+                          G.of(context).imagePickerVideo,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -101,7 +101,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
           Container(
               padding: EdgeInsets.only(left: 50, right: 50),
               height: 80,
-              child: Text(S.of(context).imagePickerChooseSome)),
+              child: Text(G.of(context).imagePickerChooseSome)),
           if (_fileType == 1) ShowImageWidget(file: _chossingItem),
 
           if (_fileType == 2)
@@ -140,7 +140,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
             child: _uploadDone
                 ? ButtonProgressIndicator()
                 : Text(
-                    S.of(context).imagePickerUploadButton,
+                    G.of(context).imagePickerUploadButton,
                     style: Theme.of(context).accentTextTheme.button,
                   ),
           ),

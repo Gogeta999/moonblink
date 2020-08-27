@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:oktoast/oktoast.dart';
 
 class UserManageContentBottomSheet extends StatefulWidget {
   final Function onReport;
@@ -41,10 +40,10 @@ class _UserManageContentBottomSheetState
         ListTile(
           leading: Icon(Icons.report),
           title: Text(
-            S.of(context).report,
+            G.of(context).report,
             style: _textStyle,
           ),
-          subtitle: Text(S.of(context).reportContent),
+          subtitle: Text(G.of(context).reportContent),
           onTap: () async {
             setState(() {
               isReporting = true;
@@ -63,10 +62,10 @@ class _UserManageContentBottomSheetState
         ListTile(
           leading: Icon(Icons.block),
           title: Text(
-            S.of(context).block,
+            G.of(context).block,
             style: _textStyle,
           ),
-          subtitle: Text(S.of(context).blockContent),
+          subtitle: Text(G.of(context).blockContent),
           onTap: () async {
             setState(() {
               isBlocking = true;

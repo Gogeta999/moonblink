@@ -15,17 +15,17 @@ class _WalletPageState extends State<WalletPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(S.of(context).userStatusWallet),
+          title: Text(G.of(context).userStatusWallet),
           bottom: TabBar(
             tabs: <Widget>[
-              Tab(text: S.of(context).topup),
-              Tab(text: S.of(context).transaction)
+              Tab(text: G.of(context).topup),
+              Tab(text: G.of(context).transaction)
             ],
           ),
         ),
         body: TabBarView(
           children: <Widget>[
-            TopUpPage(),
+            /*MyApp(),*/TopUpPage(),
             UserTransactionPage(),
           ],
         ),

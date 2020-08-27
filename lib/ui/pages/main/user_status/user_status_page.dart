@@ -124,7 +124,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                     }
                     if (model.userModel.hasUser) {
                       return IconButton(
-                        tooltip: S.of(context).logout,
+                        tooltip: G.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
                           model.logout();
@@ -153,7 +153,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   ),
                   SizedBox(width: 5.0),
                   Text(
-                      '${S.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                      '${G.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
                       style: TextStyle(fontSize: 16)),
                 ],
               ),
@@ -176,6 +176,7 @@ class UserHeaderWidget extends StatefulWidget {
 class _UserHeaderWidgetState extends State<UserHeaderWidget> {
   @override
   Widget build(BuildContext context) {
+    var userName = StorageManager.sharedPreferences.getString(mLoginName);
     int userid = StorageManager.sharedPreferences.getInt(mUserId);
     String id = encrypt(userid);
     return ClipPath(
@@ -236,8 +237,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               Center(
                                 child: Text(
                                     model.hasUser
-                                        ? model.user.name.toString()
-                                        : S.of(context).toSignIn,
+                                        ? userName
+                                        : G.of(context).toSignIn,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline6
@@ -300,7 +301,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         if (usertype == 1)
           PageCard(
               pageTitle:
-                  status != 1 ? S.of(context).online : S.of(context).offline,
+                  status != 1 ? G.of(context).online : G.of(context).offline,
               iconData:
                   status != 1 ? FontAwesomeIcons.wifi : Icons.portable_wifi_off,
               onTap: status != 1
@@ -311,7 +312,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("+++++++++++++++++++++++++++");
                       MoonBlinkRepository.changestatus(1);
-                      showToast(S.of(context).toastoffline);
+                      showToast(G.of(context).toastoffline);
                     }
                   : () {
                       setState(() {
@@ -321,16 +322,16 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("----------------------------");
                       MoonBlinkRepository.changestatus(0);
-                      showToast(S.of(context).toastonline);
+                      showToast(G.of(context).toastonline);
                     }),
 
         ///wallet
         PageCard(
-            pageTitle: S.of(context).userStatusWallet,
+            pageTitle: G.of(context).userStatusWallet,
             iconData: FontAwesomeIcons.wallet,
             onTap: hasUser == null
                 ? () {
-                    showToast(S.of(context).loginFirst);
+                    showToast(G.of(context).loginFirst);
                   }
                 : () {
                     Navigator.of(context).pushNamed(RouteName.wallet);
@@ -339,8 +340,8 @@ class _UserListWidgetState extends State<UserListWidget> {
         ///switch dark mode
         PageCard(
             pageTitle: Theme.of(context).brightness == Brightness.light
-                ? S.of(context).userStatusDayMode
-                : S.of(context).userStatusDarkMode,
+                ? G.of(context).userStatusDayMode
+                : G.of(context).userStatusDarkMode,
             iconData: Theme.of(context).brightness == Brightness.light
                 // ? IconFonts.dayModeIcon
                 ? IconFonts.dayModeIcon
@@ -349,17 +350,17 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///theme
         PageCard(
-            pageTitle: S.of(context).userStatusTheme,
+            pageTitle: G.of(context).userStatusTheme,
             iconData: FontAwesomeIcons.palette,
             onTap: () => _showPaletteDialog(context)),
 
         ///favorites
         PageCard(
-            pageTitle: S.of(context).userStatusCustomerService,
+            pageTitle: G.of(context).userStatusCustomerService,
             iconData: FontAwesomeIcons.handsHelping,
             onTap: hasUser == null
                 ? () {
-                    showToast(S.of(context).loginFirst);
+                    showToast(G.of(context).loginFirst);
                   }
                 // : () {
                 //     Navigator.of(context).pushNamed(RouteName.network);
@@ -368,13 +369,13 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///settings
         PageCard(
-            pageTitle: S.of(context).userStatusSettings,
+            pageTitle: G.of(context).userStatusSettings,
             iconData: FontAwesomeIcons.cog,
             onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
 
         ///check app update
         PageCard(
-            pageTitle: S.of(context).userStatusCheckAppUpdate,
+            pageTitle: G.of(context).userStatusCheckAppUpdate,
             iconData: Platform.isAndroid
                 ? FontAwesomeIcons.android
                 : FontAwesomeIcons.appStoreIos,
@@ -489,7 +490,7 @@ class SettingThemeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(S.of(context).userStatusTheme),
+      title: Text(G.of(context).userStatusTheme),
       leading: Icon(
         FontAwesomeIcons.palette,
         color: Theme.of(context).accentColor,

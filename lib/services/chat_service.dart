@@ -12,7 +12,11 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../models/message.dart';
 
+//Production URL
 String url = 'https://chat.moonblinkuniverse.com';
+//Developing URL
+// String url = "http://54.179.117.84";
+
 String now = DateTime.now().toString();
 IO.Socket socket = IO.io(url, <String, dynamic>{
   'transports': ['websocket'],

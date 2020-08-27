@@ -22,15 +22,15 @@ class PhotoBottomSheet extends StatefulWidget {
 
   const PhotoBottomSheet(
       {Key key,
-        @required this.sheetScrollController,
-        @required this.limit,
-        @required this.onPressed,
-        @required this.requestType,
-        @required this.body,
-        @required this.buttonText,
-        @required this.popAfterBtnPressed,
-        @required this.minWidth,
-        @required this.minHeight})
+      @required this.sheetScrollController,
+      @required this.limit,
+      @required this.onPressed,
+      @required this.requestType,
+      @required this.body,
+      @required this.buttonText,
+      @required this.popAfterBtnPressed,
+      @required this.minWidth,
+      @required this.minHeight})
       : super(key: key);
 
   @override
@@ -80,7 +80,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                 Expanded(
                   child: FlatButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(S.of(context).cancel,
+                    child: Text(G.of(context).cancel,
                         style: Theme.of(context).textTheme.bodyText1),
                   ),
                 ),
@@ -121,7 +121,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                           child: FlatButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child: Text(S.of(context).cancel,
+                                            child: Text(G.of(context).cancel,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1),
@@ -130,7 +130,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                         Container(
                                             alignment: Alignment.center,
                                             child: Text(
-                                                S.of(context).labelalbumselect,
+                                                G.of(context).labelalbumselect,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1))
@@ -150,10 +150,10 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                                 height: 64,
                                                 child: Image.memory(
                                                     _albumFirstThumbnailList[
-                                                    index],
+                                                        index],
                                                     fit: BoxFit.cover)),
                                             title:
-                                            Text('${_albums[index].name}'),
+                                                Text('${_albums[index].name}'),
                                             subtitle: Text(
                                                 '${_albums[index].assetCount}'),
                                             trailing: Icon(
@@ -178,7 +178,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(S.of(context).albums,
+                        Text(G.of(context).albums,
                             style: Theme.of(context).textTheme.bodyText1),
                         SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_down)
@@ -333,7 +333,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   _addNewPhotos() async {
     _isFetching = true;
     List<AssetEntity> photos =
-    await _albums[_currentAlbum].getAssetListPaged(_currentPage, _pageSize);
+        await _albums[_currentAlbum].getAssetListPaged(_currentPage, _pageSize);
     if (photos.length < _pageSize) {
       _hasReachedMax = true;
     }

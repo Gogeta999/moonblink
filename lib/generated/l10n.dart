@@ -10,27 +10,27 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 
-class S {
-  S();
+class G {
+  G();
   
-  static S current;
+  static G current;
   
   static const AppLocalizationDelegate delegate =
     AppLocalizationDelegate();
 
-  static Future<S> load(Locale locale) {
+  static Future<G> load(Locale locale) {
     final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
     final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
+      G.current = G();
       
-      return S.current;
+      return G.current;
     });
   } 
 
-  static S of(BuildContext context) {
-    return Localizations.of<S>(context, S);
+  static G of(BuildContext context) {
+    return Localizations.of<G>(context, G);
   }
 
   /// `Accept`
@@ -103,10 +103,10 @@ class S {
     );
   }
 
-  /// `You won't see this user or able to communicate anymore until you unblcok this user at settings`
+  /// `You won't see this user or able to communicate anymore until you unblock this user at settings`
   String get blockContent {
     return Intl.message(
-      'You won\'t see this user or able to communicate anymore until you unblcok this user at settings',
+      'You won\'t see this user or able to communicate anymore until you unblock this user at settings',
       name: 'blockContent',
       desc: '',
       args: [],
@@ -133,10 +133,10 @@ class S {
     );
   }
 
-  /// `Book`
+  /// `Booking`
   String get bookingBook {
     return Intl.message(
-      'Book',
+      'Booking',
       name: 'bookingBook',
       desc: '',
       args: [],
@@ -1684,7 +1684,7 @@ class S {
   }
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<S> {
+class AppLocalizationDelegate extends LocalizationsDelegate<G> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
@@ -1698,7 +1698,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
   @override
-  Future<S> load(Locale locale) => S.load(locale);
+  Future<G> load(Locale locale) => G.load(locale);
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

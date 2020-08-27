@@ -17,15 +17,18 @@ class GameList {
 class Game {
   final String gameType;
   final String price;
+  final String icon;
 
-  Game({this.gameType, this.price});
+  Game({this.gameType, this.price, this.icon});
 
   Game.fromJson(Map<String, dynamic> json)
       : gameType = json['game_type'],
-        price = json['price'];
+        price = json['price'],
+        icon = json['icon'];
 
   Map<String, dynamic> toJson() => {
     'game_type': gameType,
-    'price': price
+    'price': price,
+    'icon': icon
   };
 }

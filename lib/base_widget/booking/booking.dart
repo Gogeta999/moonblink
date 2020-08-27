@@ -1,17 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:provider/provider.dart';
-import 'package:oktoast/oktoast.dart';
 
 class BookingButton extends StatefulWidget {
   @override
@@ -20,13 +16,13 @@ class BookingButton extends StatefulWidget {
 
 class _BookingButtonState extends State<BookingButton> {
   ///[Partner idle]
-  void available(context, BookingModel bookingModel,
+  /*void available(context, BookingModel bookingModel,
       PartnerDetailModel partnerDetailModel) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(S.of(context).bookingChooseGameType),
+            title: Text(G.of(context).bookingChooseGameType),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             content: Column(
@@ -50,7 +46,7 @@ class _BookingButtonState extends State<BookingButton> {
                       size: 16,
                     ),
                     SizedBox(width: 10.0),
-                    Text(S.of(context).currentcoin +
+                    Text(G.of(context).currentcoin +
                         ': ${bookingModel.wallet.value} ${bookingModel.wallet.value > 1 ? 'coins' : 'coin'}')
                   ],
                 ),
@@ -59,12 +55,12 @@ class _BookingButtonState extends State<BookingButton> {
             contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
             actions: <Widget>[
               FlatButton(
-                  child: Text(S.of(context).bookingCancel),
+                  child: Text(G.of(context).bookingCancel),
                   onPressed: () {
                     Navigator.pop(context, 'Cancel');
                   }),
               FlatButton(
-                  child: Text(S.of(context).bookingBook),
+                  child: Text(G.of(context).bookingBook),
                   onPressed: () {
                     bookingModel.booking(partnerDetailModel.partnerId).then(
                         (value) => value
@@ -87,7 +83,7 @@ class _BookingButtonState extends State<BookingButton> {
             ],
           );
         });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +95,14 @@ class _BookingButtonState extends State<BookingButton> {
             await model.initData(partnerDetailModel.partnerId),
         builder: (context, model, child) {
           if (model.isBusy) {
-            return ViewStateBusyWidget();
+            return CupertinoActivityIndicator();
           }
           return RaisedButton(
             color: Theme.of(context).accentColor,
             highlightColor: Theme.of(context).accentColor,
             colorBrightness: Theme.of(context).brightness,
             splashColor: Colors.grey,
-            child: Text(S.of(context).bookingBook,
+            child: Text(G.of(context).bookingBook,
                 style: Theme.of(context).accentTextTheme.button),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
@@ -114,12 +110,13 @@ class _BookingButtonState extends State<BookingButton> {
             ///[to add pop up]
             onPressed: userId == partnerDetailModel.partnerId || model.isBusy
                 ? null
-                : () => available(context, model, partnerDetailModel),
+                : () => CustomBottomSheet.showBookingSheet(buildContext: context, model: model, partnerId: partnerDetailModel.partnerId)
           );
         });
   }
 }
 
+/*
 class BookingDropdown extends StatefulWidget {
   final BookingModel bookingModel;
 
@@ -171,3 +168,4 @@ class _BookingDropdownState extends State<BookingDropdown> {
     );
   }
 }
+*/

@@ -73,7 +73,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).block),
+        title: Text(G.of(context).block),
       ),
       body: BlocProvider<BlockedUsersBloc>(
         create: (_) => _blockedUsersBloc..add(BlockedUsersFetched()),

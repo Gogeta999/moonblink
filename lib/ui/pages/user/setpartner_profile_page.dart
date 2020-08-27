@@ -135,7 +135,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).setPartnerProfile),
+        title: Text(G.of(context).setPartnerProfile),
       ),
       body: CustomScrollView(
         physics: ClampingScrollPhysics(),
@@ -167,7 +167,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                 CustomBottomSheet.show(
                                     requestType: RequestType.image,
                                     popAfterBtnPressed: true,
-                                    buttonText: S.of(context).choose,
+                                    buttonText: G.of(context).choose,
                                     buildContext: context,
                                     limit: 1,
                                     onPressed: (File file) {
@@ -175,7 +175,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                         _cover = file;
                                       });
                                     },
-                                    body: S.of(context).partnercover);
+                                    body: G.of(context).partnercover);
                               },
                               child: AspectRatio(
                                   aspectRatio: 100 / 100,
@@ -199,7 +199,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             requestType: RequestType.image,
                                             minWidth: 480,
                                             minHeight: 480,
-                                            buttonText: S.of(context).choose,
+                                            buttonText: G.of(context).choose,
                                             buildContext: context,
                                             limit: 1,
                                             onPressed: (File file) {
@@ -207,7 +207,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                 _profile = file;
                                               });
                                             },
-                                            body: S.of(context).partnerprofile);
+                                            body: G.of(context).partnerprofile);
                                       },
                                       child: CircleAvatar(
                                         radius: 75,
@@ -242,9 +242,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //NRC
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labelnrc
+                                                ? G.of(context).labelnrc
                                                 : null,
-                                            label: S.of(context).labelnrc,
+                                            label: G.of(context).labelnrc,
                                             icon: FontAwesomeIcons.idCard,
                                             controller: _nrcController,
                                             textInputAction:
@@ -260,14 +260,14 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                         .accentColor,
                                                     size: 22),
                                                 hintText:
-                                                    S.of(context).labelgender,
+                                                    G.of(context).labelgender,
                                                 hintStyle:
                                                     TextStyle(fontSize: 16)),
                                             value: _genderController,
                                             onChanged: (value) => setState(() =>
                                                 _genderController = value),
                                             validator: (value) => value == null
-                                                ? S.of(context).validator
+                                                ? G.of(context).validator
                                                 : null,
                                             items: genderList
                                                 .map<DropdownMenuItem<String>>(
@@ -285,9 +285,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //bios
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labelbios
+                                                ? G.of(context).labelbios
                                                 : null,
-                                            label: S.of(context).labelbios,
+                                            label: G.of(context).labelbios,
                                             icon: FontAwesomeIcons.book,
                                             controller: _biosController,
                                             textInputAction:
@@ -298,9 +298,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //address
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labeladdress
+                                                ? G.of(context).labeladdress
                                                 : null,
-                                            label: S.of(context).labeladdress,
+                                            label: G.of(context).labeladdress,
                                             icon: FontAwesomeIcons.addressBook,
                                             controller: _addressController,
                                             textInputAction:
@@ -335,7 +335,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                       ),
                                                       SizedBox(height: 5),
                                                       Text(
-                                                          S
+                                                          G
                                                               .of(context)
                                                               .labelnrcfront,
                                                           style:
@@ -371,7 +371,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                       ),
                                                       SizedBox(height: 5),
                                                       Text(
-                                                          S
+                                                          G
                                                               .of(context)
                                                               .labelnrcback,
                                                           style:
@@ -389,7 +389,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             child: finished
                                                 ? ButtonProgressIndicator()
                                                 : Text(
-                                                    S
+                                                    G
                                                         .of(context)
                                                         .setPartnerButton,
                                                     style: Theme.of(context)
@@ -400,21 +400,21 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             onPressed: () async {
                                               if (_cover == null ||
                                                   _profile == null) {
-                                                showToast(S
+                                                showToast(G
                                                     .of(context)
                                                     .toastimagenull);
                                                 return false;
                                               } else if (_nrcFront == null ||
                                                   _nrcBack == null) {
                                                 showToast(
-                                                    S.of(context).toastnrcnull);
+                                                    G.of(context).toastnrcnull);
                                                 return false;
                                               } else if (_nrcController ==
                                                       null ||
                                                   _genderController == null ||
                                                   _dobController == null ||
                                                   _addressController == null) {
-                                                showToast(S
+                                                showToast(G
                                                     .of(context)
                                                     .toastlackfield);
                                                 return false;
@@ -575,7 +575,7 @@ class PartnerProfileWidget extends StatelessWidget {
 //       //controller: _btnController,
 //       child: model.isBusy
 //           ? ButtonProgressIndicator()
-//           : Text(S.of(context).setPartnerButton,
+//           : Text(G.of(context).setPartnerButton,
 //               style: Theme.of(context)
 //                   .accentTextTheme
 //                   .button

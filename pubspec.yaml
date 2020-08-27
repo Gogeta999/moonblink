@@ -22,7 +22,6 @@ dependencies:
   package_info: ^0.4.1
   clipboard: ^0.1.2+8
   #Base UI
-  smooth_page_indicator: ^0.2.0
   shimmer: ^1.1.1
   flutter_holo_date_picker: ^0.1.5
   datetime_picker_formfield: ^1.0.0
@@ -68,6 +67,7 @@ dependencies:
   get_it: ^4.0.2
   # in_app_purchase
   flutter_inapp_purchase: ^2.2.0
+  # in_app_purchase: ^0.3.4+4 Testing
   # image_compressing
   flutter_image_compress: ^0.7.0
   # video_player
@@ -105,6 +105,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
   # json_serializable: ^3.3.0
   # build_runner: ^1.9.0
 
@@ -131,3 +133,4 @@ flutter:
 
 flutter_intl:
   enabled: true
+  class_name: G 

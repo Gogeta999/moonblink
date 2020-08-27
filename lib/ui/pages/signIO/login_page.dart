@@ -24,7 +24,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _dobController = TextEditingController();
   final _pwdFocus = FocusNode();
   @override
   void dispose() {
@@ -58,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: ProviderWidget<LoginModel>(
                           model: LoginModel(Provider.of(context)),
                           onModelReady: (model) {
-                            _mailController.text = model.getLoginName();
+                            _mailController.text = model.getLoginMail();
                           },
                           builder: (context, model, child) {
                             return Form(
@@ -72,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: S.of(context).loginMail,
+                                label: G.of(context).loginMail,
                                 icon: Icons.perm_identity,
                                 controller: _mailController,
                                 textInputAction: TextInputAction.next,
@@ -83,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               LoginTextField(
                                 controller: _passwordController,
-                                label: S.of(context).loginPassword,
+                                label: G.of(context).loginPassword,
                                 icon: Icons.lock_outline,
                                 obscureText: true,
                                 focusNode: _pwdFocus,
@@ -120,7 +119,7 @@ class LoginButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              S.of(context).signIn,
+              G.of(context).signIn,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6
@@ -184,9 +183,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Widget build(BuildContext context) {
     return Center(
       child:
-          Text.rich(TextSpan(text: S.of(context).noAccount + '. ', children: [
+          Text.rich(TextSpan(text: G.of(context).noAccount + '. ', children: [
         TextSpan(
-            text: S.of(context).toSignUp,
+            text: G.of(context).toSignUp,
             recognizer: _recognizerRegister,
             style: TextStyle(color: Theme.of(context).accentColor))
       ])),

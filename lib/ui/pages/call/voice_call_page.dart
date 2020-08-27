@@ -255,14 +255,14 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     height: 140,
                     color: Colors.green,
                     child: Text(
-                      S.of(context).voiceCallWaitAnotherToJoin,
+                      G.of(context).voiceCallWaitAnotherToJoin,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
                 Text(
-                  '${S.of(context).waiting}.........$_countdownTime',
+                  '${G.of(context).waiting}.........$_countdownTime',
                   style: TextStyle(color: Colors.white),
                 )
               ],
