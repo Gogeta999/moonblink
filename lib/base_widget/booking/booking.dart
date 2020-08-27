@@ -102,7 +102,7 @@ class _BookingButtonState extends State<BookingButton> {
             highlightColor: Theme.of(context).accentColor,
             colorBrightness: Theme.of(context).brightness,
             splashColor: Colors.grey,
-            child: Text(G.of(context).bookingBook,
+            child: Text('Booking'/*G.of(context).bookingBook*/,
                 style: Theme.of(context).accentTextTheme.button),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),

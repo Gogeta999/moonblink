@@ -22,7 +22,7 @@ class BookingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Text(S.of(context).bookingDialog),
+      title: Text(G.of(context).bookingDialog),
 // =======
 //     return AlertDialog(
 //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),

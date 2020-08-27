@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import 'package:image_picker/image_picker.dart';
 
 import 'package:dio/dio.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/videotrimmer.dart';
 import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
@@ -18,6 +20,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -171,30 +174,84 @@ class _ImagePickerState extends State<ImagePickerPage> {
     return File(_filePath);
   }
 
+  Future<File> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 90,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ]
+            : [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio5x3,
+          CropAspectRatioPreset.ratio5x4,
+          CropAspectRatioPreset.ratio7x5,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+            showCancelConfirmationDialog: true
+        ));
+    if (croppedFile != null) {
+      return croppedFile;
+    } else {
+      return null;
+    }
+  }
+
   _takePhoto() async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
-    File image = File(pickedFile.path);
+    File croppedImage = await _cropImage(File(pickedFile.path));
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _chossingItem = compressedImage;
-      _fileType = 1;
-    });
+        await _compressAndGetFile(croppedImage, temporaryImage.absolute.path);
+    if (compressedImage != null) {
+      setState(() {
+        _chossingItem = compressedImage;
+        _fileType = 1;
+      });
+    }
   }
 
   _openGallery() async {
-    PickedFile pickedFile = await _picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    File image = File(pickedFile.path);
+/*    PickedFile pickedFile = await _picker.getImage(
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);*/
+/*    File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
+        await _compressAndGetFile(image, temporaryImage.absolute.path);*/
+    CustomBottomSheet.show(
+        buildContext: context,
+        limit: 1,
+        body: 'Pick an image',
+        onPressed: (File file) {
+          setState(() {
+            _chossingItem = file;
+            _fileType = 1;
+          });
+        },
+        buttonText: 'Pick',
+        popAfterBtnPressed: true,
+        requestType: RequestType.image);
+    /*setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;
       _fileType = 1;
-    });
+    });*/
   }
 
   _pickVideo() async {

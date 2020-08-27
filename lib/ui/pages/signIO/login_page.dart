@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/base_widget/Datetime.dart';
 import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
 import 'package:moonblink/base_widget/TopCurvePanel_widget.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
@@ -97,11 +97,60 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
+          SliverToBoxAdapter(child: SignInOutAgree(isSignIn: true))
         ],
+      ),
+    );
+  }
+}
+
+class SignInOutAgree extends StatefulWidget {
+  final bool isSignIn;
+
+  const SignInOutAgree({Key key, this.isSignIn = false}) : super(key: key);
+
+  @override
+  _SignInOutAgreeState createState() => _SignInOutAgreeState();
+}
+
+class _SignInOutAgreeState extends State<SignInOutAgree> {
+  final TapGestureRecognizer _termsAndConditions = TapGestureRecognizer();
+
+  final TapGestureRecognizer _starndardEULA = TapGestureRecognizer();
+
+  @override
+  void initState() {
+    super.initState();
+    _termsAndConditions.onTap = () => navigate(RouteName.termsAndConditionsPage);
+    _starndardEULA.onTap = () => navigate(RouteName.licenseAgreement);
+  }
+
+  void navigate(String routeName) {
+    Navigator.pushNamed(context, routeName, arguments: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Text.rich(
+          TextSpan(text: 'By Signing ${widget.isSignIn ? 'in' : 'up'}, you agree to ', children: [
+        TextSpan(
+            text: 'Terms and Conditions',
+            recognizer: _termsAndConditions,
+            style: TextStyle(color: Theme.of(context).accentColor)),
+        TextSpan(text: ' and '),
+        TextSpan(
+          text: 'End-User License Agreement.',
+          recognizer: _starndardEULA,
+          style: TextStyle(color: Theme.of(context).accentColor),
+        )
+      ]),
+        textAlign: TextAlign.center,
       ),
     );
   }

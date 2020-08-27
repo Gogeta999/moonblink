@@ -13,6 +13,9 @@ const TextStyle subtitleTextStyle =
 const TextStyle contentTextStyle = TextStyle(fontWeight: FontWeight.w300);
 
 class TermsAndConditions extends StatelessWidget {
+  final bool showAccept;
+
+  const TermsAndConditions({Key key, this.showAccept = true}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var hasUser = StorageManager.localStorage.getItem(mUser);
@@ -148,7 +151,7 @@ class TermsAndConditions extends StatelessWidget {
               //   onPressed: null,
               //   child: Text(hasUser.toString()),
               // ),
-              if (hasUser == null)
+              if (hasUser == null && showAccept)
                 Container(
                   margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
                   width: double.infinity,
