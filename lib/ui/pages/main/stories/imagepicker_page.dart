@@ -276,7 +276,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
         //       builder: (context) => VideoTrimmer(trimv),
         //     ));
         setState(() {
-          // _chossingItem = File(video.path);
+          _chossingItem = File(video.path);
           _fileType = 2;
         });
       }

@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "block" : MessageLookupByLibrary.simpleMessage("Block User"),
     "blockContent" : MessageLookupByLibrary.simpleMessage("You won\'t see this user or able to communicate anymore until you unblcok this user at settings"),
     "blockList" : MessageLookupByLibrary.simpleMessage("Block List"),
-    "bookingBook" : MessageLookupByLibrary.simpleMessage("ဘွတ်ကင်"),
+    "booking" : MessageLookupByLibrary.simpleMessage("ဘွတ်ကင်"),
     "bookingCancel" : MessageLookupByLibrary.simpleMessage("ပြန်ထွက်"),
     "bookingChooseGameType" : MessageLookupByLibrary.simpleMessage("အတူကစားရန်ဂိမ်းအမျိုးအစားကိုရွေးချယ်ပါ"),
     "bookingDialog" : MessageLookupByLibrary.simpleMessage("သင်ဆော့ချင်တဲ့ပုံစံရွေးပါ"),

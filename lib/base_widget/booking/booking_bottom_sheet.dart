@@ -45,6 +45,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
           Container(
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView.builder(
+              physics: ClampingScrollPhysics(),
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
               itemCount: bookingModel.gamesList.length,

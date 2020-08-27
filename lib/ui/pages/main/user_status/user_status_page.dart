@@ -176,6 +176,7 @@ class UserHeaderWidget extends StatefulWidget {
 class _UserHeaderWidgetState extends State<UserHeaderWidget> {
   @override
   Widget build(BuildContext context) {
+    var userProfile = StorageManager.sharedPreferences.getString(mUserProfile);
     var userName = StorageManager.sharedPreferences.getString(mLoginName);
     int userid = StorageManager.sharedPreferences.getInt(mUserId);
     String id = encrypt(userid);
@@ -213,7 +214,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               child: ClipOval(
                                 child: model.hasUser
                                     ? CachedNetworkImage(
-                                        imageUrl: model.user.profileUrl,
+                                        imageUrl: userProfile,
                                         fit: BoxFit.cover,
                                         width: 120,
                                         height: 120,
@@ -230,6 +231,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                           ),
                           //Show user name here
                           Row(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Spacer(
                                 flex: 4,
@@ -249,6 +252,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               IconButton(
                                 icon: Icon(Icons.content_copy),
                                 iconSize: 18,
+                                color: Colors.grey[300],
                                 onPressed: () {
                                   FlutterClipboard.copy(id).then((value) {
                                     showToast('Copy To Your Clipboard');
@@ -259,6 +263,13 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                   //   showToast("Copy to Your Clipboard");
                                   // });
                                 },
+                              ),
+                              Text(
+                                'id',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    .apply(color: Colors.grey[300]),
                               ),
                               Spacer(
                                 flex: 3,

@@ -18,6 +18,7 @@ const String mUserType = 'mUserType';
 const String mUserId = 'mUserId';
 const String mLoginMail = 'mLoginMail';
 const String mstatus = 'status';
+const String mUserProfile = 'mUserProfile';
 
 class LoginModel extends ViewStateModel {
   final UserModel userModel;
@@ -109,6 +110,8 @@ class LoginModel extends ViewStateModel {
             .setString(mLoginMail, userModel.user.email);
         StorageManager.sharedPreferences
             .setString(mLoginName, userModel.user.name);
+        StorageManager.sharedPreferences
+            .setString(mUserProfile, userModel.user.profileUrl);
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
         StorageManager.sharedPreferences.setInt(mstatus, userModel.user.status);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);

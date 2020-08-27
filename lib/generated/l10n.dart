@@ -134,10 +134,10 @@ class G {
   }
 
   /// `Booking`
-  String get bookingBook {
+  String get booking {
     return Intl.message(
       'Booking',
-      name: 'bookingBook',
+      name: 'booking',
       desc: '',
       args: [],
     );
@@ -753,10 +753,10 @@ class G {
     );
   }
 
-  /// `No this account`
+  /// `No account`
   String get noAccount {
     return Intl.message(
-      'No this account',
+      'No account',
       name: 'noAccount',
       desc: '',
       args: [],

@@ -271,10 +271,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                                   data: formData);
                                           print(response);
                                           setState(() {
-                                            finish = !finish;
                                             StorageManager.sharedPreferences
                                                 .setString(mLoginName,
                                                     _nameController.text);
+                                            StorageManager.sharedPreferences
+                                                .setString(
+                                                    mUserProfile, profilePath);
+                                            finish = !finish;
                                           });
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(

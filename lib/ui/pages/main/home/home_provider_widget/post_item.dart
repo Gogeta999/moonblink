@@ -33,9 +33,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
   bool isBlocking = false;
-
+  var _coverUrl;
+  var _profileUrl;
   @override
   void initState() {
+    _profileUrl = widget.posts.profileImage;
+    _coverUrl = widget.posts.coverImage;
     super.initState();
   }
 
@@ -105,8 +108,20 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                             ),
                             placeholder: (context, url) =>
                                 CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey.shade600,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _coverUrl = widget.posts.profileImage;
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.refresh,
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 10.0),
@@ -173,10 +188,29 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   maxWidth: double.infinity),
                               child: CachedNetworkImage(
                                 fit: BoxFit.fill,
-                                imageUrl: widget.posts.coverImage,
-                                placeholder: (context, url) => CachedLoader(),
+                                imageUrl: 'widget.posts.coverImage',
+                                placeholder: (context, url) => CachedLoader(
+                                  containerHeight: 200,
+                                ),
                                 errorWidget: (context, url, error) =>
-                                    CachedError(),
+                                    CachedError(
+                                  containerHeight: 200,
+                                ),
+                                // errorWidget: (context, url, error) => Container(
+                                //   color: Colors.grey.shade600,
+                                //   child: IconButton(
+                                //     onPressed: () {
+                                //       print('Reload');
+                                //       setState(() {
+                                //         _coverUrl = widget.posts.coverImage;
+                                //       });
+                                //     },
+                                //     icon: Icon(
+                                //       Icons.refresh,
+                                //       color: Colors.grey.shade300,
+                                //     ),
+                                //   ),
+                                // ),
                               ),
                             ),
                             onTap: () {

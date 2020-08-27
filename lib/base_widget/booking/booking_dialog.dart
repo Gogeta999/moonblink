@@ -5,8 +5,8 @@ import 'package:moonblink/generated/l10n.dart';
 const List<String> gameList = [
   'Mobile Legends - Classic',
   'Mobile Legends - Rank',
-  'Pubg - Classic',
-  'Pubg - Rank'
+  'PUBG - Rank',
+  'PUBG - Arcade'
 ];
 
 class BookingDialog extends StatelessWidget {
