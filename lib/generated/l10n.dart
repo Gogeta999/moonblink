@@ -12,23 +12,22 @@ import 'intl/messages_all.dart';
 
 class G {
   G();
-
+  
   static G current;
-
-  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
+  
+  static const AppLocalizationDelegate delegate =
+    AppLocalizationDelegate();
 
   static Future<G> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name);
+    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       G.current = G();
-
+      
       return G.current;
     });
-  }
+  } 
 
   static G of(BuildContext context) {
     return Localizations.of<G>(context, G);
@@ -104,10 +103,10 @@ class G {
     );
   }
 
-  /// `You won't see this user or able to communicate anymore until you unblcok this user at settings`
+  /// `You won't see this user or able to communicate anymore until you unblock this user at settings`
   String get blockContent {
     return Intl.message(
-      'You won\'t see this user or able to communicate anymore until you unblcok this user at settings',
+      'You won\'t see this user or able to communicate anymore until you unblock this user at settings',
       name: 'blockContent',
       desc: '',
       args: [],
@@ -134,7 +133,7 @@ class G {
     );
   }
 
-  /// `Book`
+  /// `Booking`
   String get bookingBook {
     return Intl.message(
       'Booking',

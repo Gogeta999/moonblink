@@ -151,11 +151,8 @@ class _BookingButtonState extends State<BookingButton> {
                     .booking(widget.partnerId, widget.gameType)
                     .whenComplete(() {
                   Navigator.pop(context);
-                  Navigator.pushNamed(
-                    context,
-                    RouteName.chatBox,
-                    arguments: widget.partnerId
-                  );
+                  Navigator.pushNamed(context, RouteName.chatBox,
+                      arguments: widget.partnerId);
                 });
               } catch (e) {
                 showToast(e.toString());
