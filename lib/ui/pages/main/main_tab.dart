@@ -125,15 +125,6 @@ class _MainTabPageState extends State<MainTabPage>
               () {
                 _selectedIndex = index;
                 print('index num is: $_selectedIndex');
-                // _pageController.addListener(() {
-                //   // double offset = _pageController.offset;
-                //   // _selectedIndex = index;
-                //   // _pageController.animateTo(MediaQuery.of(context).size.width*currentSelectIndex, duration: Duration(milliseconds: 200), curve: Curves.linear);
-
-                //   // _pageController.nextPage(
-                //   //     duration: Duration(seconds: 1), curve: null);
-                //   print('Page Controller $index');
-                // });
               },
             );
           },
