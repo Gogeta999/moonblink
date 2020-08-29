@@ -47,7 +47,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
             child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
               itemCount: bookingModel.gamesList.length,
               itemBuilder: (context, index) {
                 return ListTile(
@@ -152,7 +151,8 @@ class _BookingButtonState extends State<BookingButton> {
                     .read<BookingModel>()
                     .booking(widget.partnerId, widget.gameType);
                 Navigator.pop(context);
-                Navigator.pushNamed(context, RouteName.chatBox, arguments: widget.partnerId);
+                Navigator.pushNamed(context, RouteName.chatBox,
+                    arguments: widget.partnerId);
               } catch (e) {
                 showToast(e.toString());
                 _buttonSubject.add(BookingButtonState.initial);

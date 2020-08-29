@@ -10,7 +10,6 @@ import 'package:moonblink/models/message.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 import 'package:timeago/timeago.dart' as timeAgo;

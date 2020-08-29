@@ -31,14 +31,21 @@ class ImagePickerPage extends StatefulWidget {
 
 class _ImagePickerState extends State<ImagePickerPage> {
   final FlutterFFprobe detail = new FlutterFFprobe();
-  final FlutterFFmpeg trim = new FlutterFFmpeg();
-  final Trimmer trimv = Trimmer();
+  FlutterFFmpeg trim = new FlutterFFmpeg();
+  Trimmer trimv = Trimmer();
   final _picker = ImagePicker();
   File _chossingItem;
   String _filePath;
   int _fileType;
   bool _uploadDone = false;
   int duration;
+
+  @override
+  void dispose() {
+    _chossingItem = null;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,31 +188,29 @@ class _ImagePickerState extends State<ImagePickerPage> {
         compressQuality: 90,
         aspectRatioPresets: Platform.isAndroid
             ? [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ]
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
             : [
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio5x3,
-          CropAspectRatioPreset.ratio5x4,
-          CropAspectRatioPreset.ratio7x5,
-          CropAspectRatioPreset.ratio16x9
-        ],
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-            showCancelConfirmationDialog: true
-        ));
+        iosUiSettings: IOSUiSettings(showCancelConfirmationDialog: true));
     if (croppedFile != null) {
       return croppedFile;
     } else {
@@ -257,10 +262,10 @@ class _ImagePickerState extends State<ImagePickerPage> {
   _pickVideo() async {
     PickedFile video = await _picker.getVideo(
         source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
-    await trimv.loadVideo(videoFile: File(video.path));
     //Getting info of video
-    detail.getMediaInformation(video.path).then((info) {
+    detail.getMediaInformation(video.path).then((info) async {
       print("Getting info of video");
+      await trimv.loadVideo(videoFile: File(video.path));
       print(info["duration"]);
       duration = info['duration'];
       if (duration > 10500) {
@@ -301,16 +306,24 @@ class ShowImageWidget extends StatelessWidget {
 
 class VideoPlayBack extends StatefulWidget {
   VideoPlayBack({this.trimv});
-  final trimv;
+  final Trimmer trimv;
 
   @override
   _VideoPlayBackState createState() => _VideoPlayBackState();
 }
 
 class _VideoPlayBackState extends State<VideoPlayBack> {
-  bool _isPlaying = true;
+  bool isPlaying = false;
   double _startValue = 0.0;
   double _endValue = 0.0;
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.trimv
+        .videPlaybackControl(startValue: _startValue, endValue: _endValue);
+    print("Exit");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +338,7 @@ class _VideoPlayBackState extends State<VideoPlayBack> {
           );
           setState(() {
             print("-------------------------------------------");
-            _isPlaying = playbackState;
+            isPlaying = playbackState;
           });
         },
       ),
