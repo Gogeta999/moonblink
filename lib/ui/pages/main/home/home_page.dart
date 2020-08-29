@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -61,7 +62,8 @@ class _HomePageState extends State<HomePage>
                           error: homeModel.viewStateError,
                           onPressed: homeModel.initData));
                 }
-                if (homeModel.isBusy) {
+                if (homeModel.isBusy &&
+                    Theme.of(context).brightness == Brightness.light) {
                   return Container(
                     height: double.infinity,
                     decoration: BoxDecoration(
@@ -72,13 +74,26 @@ class _HomePageState extends State<HomePage>
                             fit: BoxFit.fill)),
                   );
                 }
+                if (homeModel.isBusy &&
+                    Theme.of(context).brightness == Brightness.dark) {
+                  return Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              ImageHelper.wrapAssetsImage(
+                                  'moonblinkWaitingDark.gif'),
+                            ),
+                            fit: BoxFit.fill)),
+                  );
+                }
                 return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
-                      text: CircularProgressIndicator(),
+                      text: CupertinoActivityIndicator(),
                     ),
                     footer: ShimmerFooter(
-                      text: CircularProgressIndicator(),
+                      text: CupertinoActivityIndicator(),
                     ),
                     enablePullDown: homeModel.list.isNotEmpty,
                     onRefresh: () async {

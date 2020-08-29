@@ -264,13 +264,13 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                   // });
                                 },
                               ),
-                              Text(
-                                'id',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .apply(color: Colors.grey[300]),
-                              ),
+                              // Text(
+                              //   'id',
+                              //   style: Theme.of(context)
+                              //       .textTheme
+                              //       .caption
+                              //       .apply(color: Colors.grey[300]),
+                              // ),
                               Spacer(
                                 flex: 3,
                               )

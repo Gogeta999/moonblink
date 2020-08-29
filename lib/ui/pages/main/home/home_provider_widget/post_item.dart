@@ -33,12 +33,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
   bool isBlocking = false;
-  var _coverUrl;
+  // var _coverUrl;
   var _profileUrl;
   @override
   void initState() {
     _profileUrl = widget.posts.profileImage;
-    _coverUrl = widget.posts.coverImage;
+    // _coverUrl = widget.posts.coverImage;
     super.initState();
   }
 
@@ -113,7 +113,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                               child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    _coverUrl = widget.posts.profileImage;
+                                    _profileUrl = widget.posts.profileImage;
                                   });
                                 },
                                 icon: Icon(
