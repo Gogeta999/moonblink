@@ -86,7 +86,9 @@ class _MainTabPageState extends State<MainTabPage>
                     setState(() {
                       _selectedIndex = index;
                     });
-                    _pageController.jumpToPage(index);
+                    _pageController.animateToPage(index,
+                        duration: Duration(milliseconds: 250),
+                        curve: Curves.easeIn);
                   }
                 }
                 //Swipe Right
@@ -97,7 +99,9 @@ class _MainTabPageState extends State<MainTabPage>
                     setState(() {
                       _selectedIndex = index;
                     });
-                    _pageController.jumpToPage(index);
+                    _pageController.animateToPage(index,
+                        duration: Duration(milliseconds: 250),
+                        curve: Curves.easeIn);
                   }
                 }
               },
@@ -111,7 +115,7 @@ class _MainTabPageState extends State<MainTabPage>
           onPageChanged: (index) {
             setState(() {
               _selectedIndex = index;
-              print('index num is: $_selectedIndex');
+              // print('index num is: $_selectedIndex');
               // _pageController.addListener(() {
               //   // double offset = _pageController.offset;
               //   // _selectedIndex = index;
@@ -153,7 +157,9 @@ class _MainTabPageState extends State<MainTabPage>
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
             // print("Jumto page Call");
-            _pageController.jumpToPage(index);
+            // _pageController.jumpToPage(index);
+            _pageController.animateToPage(index,
+                duration: Duration(milliseconds: 250), curve: Curves.easeIn);
 
             // setState(() {
             //   print('Botttom Call---index is $_selectedIndex');

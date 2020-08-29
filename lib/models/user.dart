@@ -15,6 +15,7 @@ class User {
   //verify as partner api
   // String verify;
   int verified;
+  int typestatus;
   String verifiedAt;
   String createdAt;
   String updatedAt;
@@ -50,6 +51,7 @@ class User {
         coverUrl = map['cover_image'],
         // verify = map['verify'],
         verified = map['verified'],
+        typestatus = map['type_status'],
         verifiedAt = map['verified_at'],
         createdAt = map['created_at'],
         updatedAt = map['updated_at'],
@@ -84,6 +86,7 @@ class User {
     data['cover_image'] = coverUrl;
     // data['verify'] = verify;
     data['verified'] = verified;
+    data['type_status'] = typestatus;
     data['verified_at'] = verifiedAt;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
