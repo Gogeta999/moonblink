@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Material(
                       color: Theme.of(context).cardColor,
                       child: ListTile(
-                        title: Text(G.of(context).blockList),
+                        title: Text('Game Profile Page Testing'),
                         onTap: () {
                           Navigator.pushNamed(context, RouteName.applyForQualification);
                         },
