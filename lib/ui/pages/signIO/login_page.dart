@@ -269,13 +269,18 @@ class ForgetPassword extends StatelessWidget {
                       if (mail.text == '') {
                         showToast("Please enter mail");
                       } else {
-                        model.forgetPassword(mail.text);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ResetPasswordPage(mail: mail.text),
-                            ));
+                        model.forgetPassword(mail.text).then((value) {
+                          if (value) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ResetPasswordPage(mail: mail.text),
+                                ));
+                          } else {
+                            model.showErrorMessage(context);
+                          }
+                        });
                       }
                     },
               child: Text.rich(TextSpan(
