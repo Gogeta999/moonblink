@@ -189,7 +189,7 @@ class ChatModel extends Model {
     print("Chat Updated");
     socket.on("chat-updated", (data) {
       bookingdata = Bookingstatus(data["booking_id"], data["user_id"],
-          data["booking_user_id"], data["status"]);
+          data["booking_user_id"], data["status"], data["created_at"]);
       print(data.toString());
       print(bookingdata.bookingid);
       print(bookingdata.id);

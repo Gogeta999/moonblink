@@ -13,6 +13,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -20,45 +21,6 @@ import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:encrypt/encrypt.dart' as encryptLib;
-
-encrypt(int id) {
-  List confuseList = [
-    '7',
-    'm',
-    '8',
-    'o',
-    '2',
-    'o',
-    '2',
-    'n',
-    '8',
-    'g',
-    '4',
-    'o'
-  ];
-  confuseList.insert(3, id);
-  // print(id.split(''));
-  // List secondList = id.split('');
-  // confuseList.insert(3, secondList[0]);
-  // confuseList.insert(6, secondList[1]);
-  // confuseList.insert(9, secondList[2]);
-
-  final inputText = confuseList.toString();
-  final key = encryptLib.Key.fromUtf8('32lengthSecretKeyFormoongoAESsys');
-  final iv = encryptLib.IV.fromUtf8('16IVforMoonGo782');
-
-  final encrypter =
-      encryptLib.Encrypter(encryptLib.AES(key, mode: encryptLib.AESMode.cbc));
-
-  final encrypted = encrypter.encrypt(inputText, iv: iv);
-  final decrypted = encrypter.decrypt(encrypted, iv: iv);
-
-  print('Encrypted Code:' + encrypted.base64);
-  print('Decrypted Code: ' + decrypted);
-  print('Compare the layer of multiple 4: ' + confuseList.toString());
-  return encrypted.base64;
-}
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -179,7 +141,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
     var userProfile = StorageManager.sharedPreferences.getString(mUserProfile);
     var userName = StorageManager.sharedPreferences.getString(mLoginName);
     int userid = StorageManager.sharedPreferences.getInt(mUserId);
-    String id = encrypt(userid);
+
     return ClipPath(
         // in widget
         clipper: BottomClipper(),
@@ -254,6 +216,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                 iconSize: 18,
                                 color: Colors.grey[300],
                                 onPressed: () {
+                                  String id = encrypt(userid);
                                   FlutterClipboard.copy(id).then((value) {
                                     showToast('Copy To Your Clipboard');
                                     print('copied');
@@ -264,13 +227,13 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                                   // });
                                 },
                               ),
-                              Text(
-                                'id',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .apply(color: Colors.grey[300]),
-                              ),
+                              // Text(
+                              //   'id',
+                              //   style: Theme.of(context)
+                              //       .textTheme
+                              //       .caption
+                              //       .apply(color: Colors.grey[300]),
+                              // ),
                               Spacer(
                                 flex: 3,
                               )

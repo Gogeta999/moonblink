@@ -46,7 +46,7 @@ class _TopUpPageState extends State<TopUpPage>
 
   final List<String> _productLists = Platform.isAndroid
       ? ['coin_200', 'coin_500', 'coin_1000']
-      : ['coin_200_ios', 'coin_500', 'coin_1000'];//for now only android
+      : ['coin_200_ios', 'coin_500', 'coin_1000']; //for now only android
   List<IAPItem> _items = [];
   // ignore: unused_field
   List<PurchasedItem> _purchases = [];
@@ -162,7 +162,7 @@ class _TopUpPageState extends State<TopUpPage>
       _purchaseErrorSubscription.cancel();
       _purchaseErrorSubscription = null;
     }
-    if(RewardedVideoAd.instance.listener != null) {
+    if (RewardedVideoAd.instance.listener != null) {
       RewardedVideoAd.instance.listener = null;
     }
   }
@@ -260,7 +260,7 @@ class _TopUpPageState extends State<TopUpPage>
       var msg = await MoonBlinkRepository.adReward();
       print(msg);
       await getUserWallet();
-    }catch (err) {
+    } catch (err) {
       print(err);
     }
     setState(() {
@@ -368,10 +368,14 @@ class _TopUpPageState extends State<TopUpPage>
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
         onPressed: () async {
-          setState((){isPageLoading = true;});
+          setState(() {
+            isPageLoading = true;
+          });
           await getItems();
           await getUserWallet();
-          setState((){isPageLoading = false;});
+          setState(() {
+            isPageLoading = false;
+          });
         },
       );
     } else {
@@ -397,8 +401,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           _buildCurrentCoinAmount(),
           _buildAds(),
-          if (Platform.isAndroid)
-          _buildTopUpWithCustomerService(),
+          if (Platform.isAndroid) _buildTopUpWithCustomerService(),
         ],
       );
     }
@@ -408,12 +411,15 @@ class _TopUpPageState extends State<TopUpPage>
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
-        return false;
-      },
-      child: isPageLoading ? Center(child: CupertinoActivityIndicator()) : _buildWalletList()
-    );
+        onWillPop: () async {
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.main, (route) => false,
+              arguments: 3);
+          return false;
+        },
+        child: isPageLoading
+            ? Center(child: CupertinoActivityIndicator())
+            : _buildWalletList());
   }
 
   void _openFacebookPage() async {
@@ -440,6 +446,7 @@ class _TopUpPageState extends State<TopUpPage>
     setState(() {
       isAdLoading = true;
     });
-    await RewardedVideoAd.instance.load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
+    await RewardedVideoAd.instance
+        .load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
   }
 }

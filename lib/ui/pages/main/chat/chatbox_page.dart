@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:moonblink/base_widget/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -49,6 +50,8 @@ class ChatBoxPage extends StatefulWidget {
 class _ChatBoxPageState extends State<ChatBoxPage> {
   //Message
   bool got = false;
+  //Timer
+  Timer _timer;
   //Rating
   bool rated = false;
   TextEditingController comment = TextEditingController();
@@ -590,7 +593,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         break;
       //cancel booking
       case (0):
-        return bookingcancel(bookingdata.bookingid, bookingdata.bookinguserid);
+        return bookingcancel(
+          bookingdata.bookingid,
+          bookingdata.bookinguserid,
+        );
         break;
       //in booking
       case (1):
@@ -666,8 +672,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         default:
           return Container();
       }
-    } else
-      return Container();
+    } else {
+      switch (bookingdata.status) {
+        case (0):
+          return BookingTimeLeft(
+            createat: bookingdata.created,
+          );
+          break;
+        default:
+          return Container();
+      }
+    }
   }
 
   //Chat List

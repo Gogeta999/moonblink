@@ -11,7 +11,6 @@ import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 List<Widget> pages = <Widget>[
@@ -40,6 +39,10 @@ class _MainTabPageState extends State<MainTabPage>
   DateTime _lastPressed;
 
   _MainTabPageState(this.initPage);
+  // @override
+  // void dipose() {
+  //   dipose();
+  // }
 
   @override
   void initState() {
@@ -78,26 +81,35 @@ class _MainTabPageState extends State<MainTabPage>
             return GestureDetector(
               //Horizontal Swipe
               onHorizontalDragEnd: (details) {
-                //Swipe left
+                //Swipe right
                 if (details.primaryVelocity < 0) {
-                  print("Swiping left");
+                  print("Swiping right");
                   if (index >= 0) {
                     index++;
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                    _pageController.jumpToPage(index);
+                    // setState(() {
+                    //   _selectedIndex = index;
+                    // });
+                    _pageController.animateTo(
+                        MediaQuery.of(context).size.width * index,
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.ease);
+
+                    // _pageController.jumpToPage(index);
                   }
                 }
-                //Swipe Right
+                //Swipe left
                 else if (details.primaryVelocity > 0) {
-                  print("Swiping Right");
+                  print("Swiping left");
                   if (index < pages.length) {
                     index--;
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                    _pageController.jumpToPage(index);
+                    // setState(() {
+                    //   _selectedIndex = index;
+                    // });
+                    _pageController.animateTo(
+                        MediaQuery.of(context).size.width * index,
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.ease);
+                    // _pageController.jumpToPage(index);
                   }
                 }
               },
@@ -109,19 +121,12 @@ class _MainTabPageState extends State<MainTabPage>
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
           onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-              print('index num is: $_selectedIndex');
-              // _pageController.addListener(() {
-              //   // double offset = _pageController.offset;
-              //   // _selectedIndex = index;
-              //   // _pageController.animateTo(MediaQuery.of(context).size.width*currentSelectIndex, duration: Duration(milliseconds: 200), curve: Curves.linear);
-
-              //   // _pageController.nextPage(
-              //   //     duration: Duration(seconds: 1), curve: null);
-              //   print('Page Controller $index');
-              // });
-            });
+            setState(
+              () {
+                _selectedIndex = index;
+                print('index num is: $_selectedIndex');
+              },
+            );
           },
         ),
       ),
@@ -152,13 +157,8 @@ class _MainTabPageState extends State<MainTabPage>
           pageController: _pageController,
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
-            // print("Jumto page Call");
-            _pageController.jumpToPage(index);
-
-            // setState(() {
-            //   print('Botttom Call---index is $_selectedIndex');
-            //   _selectedIndex = index;
-            // });
+            _pageController.animateTo(MediaQuery.of(context).size.width * index,
+                duration: Duration(milliseconds: 10), curve: Curves.ease);
           },
         ),
       ),

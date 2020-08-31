@@ -103,7 +103,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-      bottomNavigationBar: SignInOutAgree(isSignIn: true),
+      bottomNavigationBar: SignInOutAgree(
+        isSignIn: true,
+      ),
     );
   }
 }
@@ -125,7 +127,8 @@ class _SignInOutAgreeState extends State<SignInOutAgree> {
   @override
   void initState() {
     super.initState();
-    _termsAndConditions.onTap = () => navigate(RouteName.termsAndConditionsPage);
+    _termsAndConditions.onTap =
+        () => navigate(RouteName.termsAndConditionsPage);
     _starndardEULA.onTap = () => navigate(RouteName.licenseAgreement);
   }
 
@@ -138,18 +141,18 @@ class _SignInOutAgreeState extends State<SignInOutAgree> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Text.rich(
-          TextSpan(text: 'By Signing ${widget.isSignIn ? 'in' : 'up'}, you agree to ', children: [
-        TextSpan(
-            text: 'Terms and Conditions',
-            recognizer: _termsAndConditions,
-            style: TextStyle(color: Theme.of(context).accentColor)),
-        TextSpan(text: ' and '),
-        TextSpan(
-          text: 'End-User License Agreement.',
-          recognizer: _starndardEULA,
-          style: TextStyle(color: Theme.of(context).accentColor),
-        )
-      ]),
+        TextSpan(text: 'By Signing ${widget.isSignIn ? 'in' : 'up'}, you agree to ', children: [
+          TextSpan(
+              text: 'Terms and Conditions',
+              recognizer: _termsAndConditions,
+              style: TextStyle(color: Theme.of(context).accentColor)),
+          TextSpan(text: ' and '),
+          TextSpan(
+            text: 'End-User License Agreement.',
+            recognizer: _starndardEULA,
+            style: TextStyle(color: Theme.of(context).accentColor),
+          )
+        ]),
         textAlign: TextAlign.center,
       ),
     );
