@@ -101,9 +101,9 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-          SliverToBoxAdapter(child: SignInOutAgree(isSignIn: true))
         ],
       ),
+      bottomNavigationBar: SignInOutAgree(isSignIn: true),
     );
   }
 }

@@ -282,7 +282,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
-      quality: 80,
+      quality: 90,
     );
 
     print(file.lengthSync());
@@ -303,7 +303,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imageFile.path,
         compressFormat: ImageCompressFormat.jpg,
-        compressQuality: 90,
         aspectRatioPresets: Platform.isAndroid
             ? [
           CropAspectRatioPreset.square,

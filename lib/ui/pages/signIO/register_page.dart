@@ -97,9 +97,9 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
           ),
-          SliverToBoxAdapter(child: SignInOutAgree(isSignIn: false))
         ],
       ),
+      bottomNavigationBar: SignInOutAgree(isSignIn: false),
     );
   }
 }

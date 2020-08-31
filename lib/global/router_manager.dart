@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
+import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
 import 'package:moonblink/ui/pages/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
@@ -53,6 +55,8 @@ class RouteName {
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
   static const String licenseAgreement = 'licenseAgreement';
   static const String blockedUsers = 'blockedUsers';
+  static const String applyForQualification = 'applyForQualification';
+  static const String pubgMobile = 'pubgMobile';
 }
 
 class Router {
@@ -125,6 +129,16 @@ class Router {
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));
+      case RouteName.applyForQualification:
+        return CupertinoPageRoute(
+          builder: (_) => ApplyForQualification()
+        );
+      case RouteName.pubgMobile:
+        return CupertinoPageRoute(
+          builder: (_) => PubgMobile()
+        );
+
+
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

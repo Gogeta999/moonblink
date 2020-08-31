@@ -33,6 +33,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
   bool isBlocking = false;
+  bool isRetying = false;
   var _coverUrl;
   var _profileUrl;
   @override

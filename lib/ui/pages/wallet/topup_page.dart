@@ -268,7 +268,7 @@ class _TopUpPageState extends State<TopUpPage>
     });
   }
 
-  Widget _buildProductListTile(IAPItem iapItem) {
+  Widget _buildProductListTile(IAPItem iapItem, String productName) {
     return Container(
         alignment: Alignment.center,
         // // color: Colors.grey,
@@ -283,7 +283,7 @@ class _TopUpPageState extends State<TopUpPage>
             FontAwesomeIcons.coins,
             color: Colors.amber[500],
           ),
-          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title}'),
+          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title.isEmpty ? productName : iapItem.title}'),
           subtitle: Text('${iapItem.price} ${iapItem.currency}'),
           trailing: RaisedButton(
               color: Theme.of(context).accentColor,
@@ -383,7 +383,15 @@ class _TopUpPageState extends State<TopUpPage>
               itemCount: _items.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return _buildProductListTile(_items[index]);
+                String productName = '';
+                if (_items[index].productId == 'coin_200_ios') {
+                  productName = '200 Moon Go Coins';
+                } else if (_items[index].productId == 'coin_500') {
+                  productName = '500 Moon Go Coins';
+                } else if (_items[index].productId == 'coin_1000') {
+                  productName = '1000 Moon Go Coins';
+                }
+                return _buildProductListTile(_items[index], productName);
               },
             ),
           ),
