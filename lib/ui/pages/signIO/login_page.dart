@@ -12,7 +12,10 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
+import 'package:moonblink/view_model/forgetpassword_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -89,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                                 textInputAction: TextInputAction.done,
                               ),
                               LoginButton(_mailController, _passwordController),
+                              ForgetPassword(_mailController),
                               ThirdLogin(),
                               SignUpWidget(_mailController),
                             ],
@@ -245,5 +249,40 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             style: TextStyle(color: Theme.of(context).accentColor))
       ])),
     );
+  }
+}
+
+class ForgetPassword extends StatelessWidget {
+  ForgetPassword(this.mail);
+  final mail;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderWidget<ForgetPasswordModel>(
+        model: ForgetPasswordModel(),
+        builder: (context, model, child) {
+          return Center(
+            child: GestureDetector(
+              onTap: model.isBusy
+                  ? null
+                  : () {
+                      if (mail.text == '') {
+                        showToast("Please enter mail");
+                      } else {
+                        model.forgetPassword(mail.text);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ResetPasswordPage(mail: mail.text),
+                            ));
+                      }
+                    },
+              child: Text.rich(TextSpan(
+                  text: "Forget Password?",
+                  style: TextStyle(color: Theme.of(context).accentColor))),
+            ),
+          );
+        });
   }
 }
