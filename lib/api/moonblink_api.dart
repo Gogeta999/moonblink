@@ -113,4 +113,10 @@ class Api {
   //get user transaction
   static const String UserTransaction =
       'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/4/transaction
+
+  //ForgetPassword
+  static const String ForgetPassword = "moonblink/api/v1/password/forget";
+
+  //Reset Password
+  static const String ResetPassword = "moonblink/api/v1/password/reset";
 }
