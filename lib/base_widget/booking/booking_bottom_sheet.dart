@@ -39,7 +39,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 10),
-          Text(G.of(context).bookingChooseGameType,
+          Text(/*G.of(context).bookingChooseGameType*/'Choose game type to play',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
           Container(
@@ -158,7 +158,7 @@ class _BookingButtonState extends State<BookingButton> {
                 _buttonSubject.add(BookingButtonState.initial);
               }
             },
-            child: Text('Booking', style: TextStyle(fontSize: 16)),
+            child: Text('Request', style: TextStyle(fontSize: 16)),
           );
         } else if (snapshot.data == BookingButtonState.loading) {
           return CupertinoActivityIndicator();

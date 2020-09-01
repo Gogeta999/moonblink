@@ -98,14 +98,14 @@ class _BookingButtonState extends State<BookingButton> {
             return CupertinoActivityIndicator();
           }
           return RaisedButton(
-              color: Theme.of(context).accentColor,
-              highlightColor: Theme.of(context).accentColor,
-              colorBrightness: Theme.of(context).brightness,
-              splashColor: Colors.grey,
-              child: Text(G.of(context).booking,
-                  style: Theme.of(context).accentTextTheme.button),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
+            color: Theme.of(context).accentColor,
+            highlightColor: Theme.of(context).accentColor,
+            colorBrightness: Theme.of(context).brightness,
+            splashColor: Colors.grey,
+            child: Text('Request'/*G.of(context).bookingRequest*/,
+                style: Theme.of(context).accentTextTheme.button),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
 
               ///[to add pop up]
               onPressed: userId == partnerDetailModel.partnerId || model.isBusy
