@@ -92,9 +92,9 @@ class _LoginPageState extends State<LoginPage> {
                                 textInputAction: TextInputAction.done,
                               ),
                               LoginButton(_mailController, _passwordController),
-                              ForgetPassword(_mailController),
                               ThirdLogin(),
                               SignUpWidget(_mailController),
+                              ForgetPassword(_mailController),
                             ],
                           ),
                         ),
@@ -145,14 +145,14 @@ class _SignInOutAgreeState extends State<SignInOutAgree> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Text.rich(
-        TextSpan(text: 'By Signing ${widget.isSignIn ? 'in' : 'up'}, you agree to ', children: [
+        TextSpan(text: G.of(context).bySigning, children: [
           TextSpan(
-              text: 'Terms and Conditions',
+              text: G.of(context).termAndConditions,
               recognizer: _termsAndConditions,
               style: TextStyle(color: Theme.of(context).accentColor)),
-          TextSpan(text: ' and '),
+          TextSpan(text: G.of(context).and),
           TextSpan(
-            text: 'End-User License Agreement.',
+            text: G.of(context).licenseagreement,
             recognizer: _starndardEULA,
             style: TextStyle(color: Theme.of(context).accentColor),
           )
@@ -238,13 +238,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:
-          Text.rich(TextSpan(text: G.of(context).noAccount + '. ', children: [
-        TextSpan(
-            text: G.of(context).toSignUp,
-            recognizer: _recognizerRegister,
-            style: TextStyle(color: Theme.of(context).accentColor))
-      ])),
+      child: Text.rich(
+        TextSpan(text: G.of(context).noAccount + '. ', children: [
+          TextSpan(
+              text: G.of(context).toSignUp,
+              recognizer: _recognizerRegister,
+              style: TextStyle(color: Theme.of(context).accentColor)),
+          TextSpan(text: G.of(context).or)
+        ]),
+      ),
     );
   }
 }
@@ -281,7 +283,7 @@ class ForgetPassword extends StatelessWidget {
                       }
                     },
               child: Text.rich(TextSpan(
-                  text: "Forget Password?",
+                  text: G.of(context).forgetPassword,
                   style: TextStyle(color: Theme.of(context).accentColor))),
             ),
           );
