@@ -8,6 +8,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
@@ -113,7 +114,8 @@ class _HomePageState extends State<HomePage>
                             child: ViewStateEmptyWidget(
                                 onPressed: homeModel.initData),
                           )),
-                        if (homeModel.stories?.isNotEmpty ?? false) StoryList(),
+                        if (homeModel.stories?.isNotEmpty ?? false)
+                          StoryList(stories: homeModel.stories),
                         HomePostList(),
                       ],
                     ));
@@ -164,17 +166,19 @@ class HomePostList extends StatelessWidget {
 }
 
 class StoryList extends StatelessWidget {
+  final List<Story> stories;
+  StoryList({this.stories});
   @override
   Widget build(BuildContext context) {
-    HomeModel homeModel = Provider.of(context);
+    // HomeModel homeModel = Provider.of(context);
     return SliverToBoxAdapter(
         child: Column(
       children: <Widget>[
         Container(
-            height: 100,
+            height: 90,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: homeModel.stories.length,
+                itemCount: stories.length,
                 itemBuilder: (context, index) {
                   // Story singleUserStories = homeModel.stories[index];
                   int usertype =
@@ -196,10 +200,13 @@ class StoryList extends StatelessWidget {
                     );
                   }
                   return StoryItemWidget(
-                    homeModel.stories,
+                    stories,
                     index: index,
                   );
-                }))
+                })),
+        Divider(
+          color: Colors.grey,
+        ),
       ],
     ));
   }
