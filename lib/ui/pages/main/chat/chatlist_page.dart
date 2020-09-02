@@ -131,7 +131,7 @@ class _ChatListPageState extends State<ChatListPage>
                 model.fetchStory();
               },
               builder: (context, storymodel, child) {
-                print(storymodel.stories);
+                // print(storymodel.stories);
                 return CustomScrollView(slivers: <Widget>[
                   if (storymodel.stories.isNotEmpty)
                     StoryList(
