@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/Datetime.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -21,6 +21,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 enum NrcType { front, back }
@@ -56,72 +57,47 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   File _profile;
   File _nrcFront;
   File _nrcBack;
-  //pick Cover
-  _pickCoverFromGallery() async {
-    PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(cover.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _cover = compressedImage;
-    });
-  }
+  // //pick Cover
+  // _pickCoverFromGallery() async {
+  //   PickedFile cover = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(cover.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _cover = compressedImage;
+  //   });
+  // }
 
-  //pick profile
-  _pickprofileFromGallery() async {
-    PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
-    File image = File(profile.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _profile = compressedImage;
-    });
-  }
+  // //pick profile
+  // _pickprofileFromGallery() async {
+  //   PickedFile profile = await _picker.getImage(source: ImageSource.gallery);
+  //   File image = File(profile.path);
+  //   File temporaryImage = await _getLocalFile();
+  //   File compressedImage =
+  //       await _compressAndGetFile(image, temporaryImage.absolute.path);
+  //   setState(() {
+  //     _profile = compressedImage;
+  //   });
+  // }
 
   _pickNrcFromGallery(NrcType type) async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
-    File temporaryImage = await _getLocalFile();
-    File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
     switch (type) {
       case NrcType.front:
         setState(() {
-          _nrcFront = compressedImage;
+          _nrcFront = image;
         });
         return;
       case NrcType.back:
         setState(() {
-          _nrcBack = compressedImage;
+          _nrcBack = image;
         });
         return;
       default:
         showToast('Developer\'s error');
     }
-  }
-
-  // 2. compress file and get file.
-  Future<File> _compressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 80,
-    );
-
-    print(file.lengthSync());
-    print(result.lengthSync());
-
-    return result;
-  }
-
-  Future<File> _getLocalFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    _filePath =
-        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
-    return File(_filePath);
   }
 
   //get Space
@@ -133,7 +109,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).setPartnerProfile),
+        title: Text(G.of(context).setPartnerProfile),
       ),
       body: CustomScrollView(
         physics: ClampingScrollPhysics(),
@@ -161,7 +137,19 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                             GestureDetector(
                               /// [You need to put before OnTap]
                               onTap: () {
-                                _pickCoverFromGallery();
+                                // _pickCoverFromGallery();
+                                CustomBottomSheet.show(
+                                    requestType: RequestType.image,
+                                    popAfterBtnPressed: true,
+                                    buttonText: G.of(context).choose,
+                                    buildContext: context,
+                                    limit: 1,
+                                    onPressed: (File file) {
+                                      setState(() {
+                                        _cover = file;
+                                      });
+                                    },
+                                    body: G.of(context).partnercover);
                               },
                               child: AspectRatio(
                                   aspectRatio: 100 / 100,
@@ -178,7 +166,22 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                     child: GestureDetector(
                                       /// [You need to put before OnTap]
                                       onTap: () {
-                                        _pickprofileFromGallery();
+                                        CustomBottomSheet.show(
+
+                                            ///profile is small
+                                            popAfterBtnPressed: true,
+                                            requestType: RequestType.image,
+                                            minWidth: 480,
+                                            minHeight: 480,
+                                            buttonText: G.of(context).choose,
+                                            buildContext: context,
+                                            limit: 1,
+                                            onPressed: (File file) {
+                                              setState(() {
+                                                _profile = file;
+                                              });
+                                            },
+                                            body: G.of(context).partnerprofile);
                                       },
                                       child: CircleAvatar(
                                         radius: 75,
@@ -213,9 +216,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //NRC
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labelnrc
+                                                ? G.of(context).labelnrc
                                                 : null,
-                                            label: S.of(context).labelnrc,
+                                            label: G.of(context).labelnrc,
                                             icon: FontAwesomeIcons.idCard,
                                             controller: _nrcController,
                                             textInputAction:
@@ -231,14 +234,14 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                         .accentColor,
                                                     size: 22),
                                                 hintText:
-                                                    S.of(context).labelgender,
+                                                    G.of(context).labelgender,
                                                 hintStyle:
                                                     TextStyle(fontSize: 16)),
                                             value: _genderController,
                                             onChanged: (value) => setState(() =>
                                                 _genderController = value),
                                             validator: (value) => value == null
-                                                ? S.of(context).validator
+                                                ? G.of(context).validator
                                                 : null,
                                             items: genderList
                                                 .map<DropdownMenuItem<String>>(
@@ -250,16 +253,15 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             }).toList(),
                                           ),
                                           _space,
-                                          // DatePicker(),
                                           //date
                                           BasicDateField(_dobController),
                                           _space,
                                           //bios
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labelbios
+                                                ? G.of(context).labelbios
                                                 : null,
-                                            label: S.of(context).labelbios,
+                                            label: G.of(context).labelbios,
                                             icon: FontAwesomeIcons.book,
                                             controller: _biosController,
                                             textInputAction:
@@ -270,9 +272,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           //address
                                           LoginTextField(
                                             validator: (value) => value.isEmpty
-                                                ? S.of(context).labeladdress
+                                                ? G.of(context).labeladdress
                                                 : null,
-                                            label: S.of(context).labeladdress,
+                                            label: G.of(context).labeladdress,
                                             icon: FontAwesomeIcons.addressBook,
                                             controller: _addressController,
                                             textInputAction:
@@ -280,6 +282,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             keyboardType: TextInputType.text,
                                           ),
                                           _space,
+                                          //NRC
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -306,7 +309,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                       ),
                                                       SizedBox(height: 5),
                                                       Text(
-                                                          S
+                                                          G
                                                               .of(context)
                                                               .labelnrcfront,
                                                           style:
@@ -342,7 +345,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                       ),
                                                       SizedBox(height: 5),
                                                       Text(
-                                                          S
+                                                          G
                                                               .of(context)
                                                               .labelnrcback,
                                                           style:
@@ -360,7 +363,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             child: finished
                                                 ? ButtonProgressIndicator()
                                                 : Text(
-                                                    S
+                                                    G
                                                         .of(context)
                                                         .setPartnerButton,
                                                     style: Theme.of(context)
@@ -371,21 +374,21 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                             onPressed: () async {
                                               if (_cover == null ||
                                                   _profile == null) {
-                                                showToast(S
+                                                showToast(G
                                                     .of(context)
                                                     .toastimagenull);
                                                 return false;
                                               } else if (_nrcFront == null ||
                                                   _nrcBack == null) {
                                                 showToast(
-                                                    S.of(context).toastnrcnull);
+                                                    G.of(context).toastnrcnull);
                                                 return false;
                                               } else if (_nrcController ==
                                                       null ||
                                                   _genderController == null ||
                                                   _dobController == null ||
                                                   _addressController == null) {
-                                                showToast(S
+                                                showToast(G
                                                     .of(context)
                                                     .toastlackfield);
                                                 return false;
@@ -444,13 +447,21 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                     .postwithData(
                                                         Api.SetProfile +
                                                             '$userid/profile',
-                                                        data: formData);
+                                                        data: formData,
+                                                        options: Options(
+                                                          sendTimeout:
+                                                              25 * 1000,
+                                                          receiveTimeout:
+                                                              25 * 1000,
+                                                        ));
                                                 print('PRINTED $response');
                                                 print(
                                                     "+++++++++++++++++++++++++++++++++++++");
                                                 setState(() {
                                                   finished = !finished;
                                                 });
+                                                print(
+                                                    "----------------------------------------------------");
                                                 model.logout();
                                                 Navigator.of(context)
                                                     .pushNamedAndRemoveUntil(
@@ -538,7 +549,7 @@ class PartnerProfileWidget extends StatelessWidget {
 //       //controller: _btnController,
 //       child: model.isBusy
 //           ? ButtonProgressIndicator()
-//           : Text(S.of(context).setPartnerButton,
+//           : Text(G.of(context).setPartnerButton,
 //               style: Theme.of(context)
 //                   .accentTextTheme
 //                   .button

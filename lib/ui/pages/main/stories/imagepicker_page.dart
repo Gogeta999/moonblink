@@ -2,21 +2,24 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:dio/dio.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/videotrimmer.dart';
 import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
+import 'package:moonblink/base_widget/videotrimmer/video_viewer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -27,19 +30,26 @@ class ImagePickerPage extends StatefulWidget {
 
 class _ImagePickerState extends State<ImagePickerPage> {
   final FlutterFFprobe detail = new FlutterFFprobe();
-  final FlutterFFmpeg trim = new FlutterFFmpeg();
-  final Trimmer trimv = Trimmer();
+  FlutterFFmpeg trim = new FlutterFFmpeg();
+  Trimmer trimv = Trimmer();
   final _picker = ImagePicker();
   File _chossingItem;
   String _filePath;
   int _fileType;
   bool _uploadDone = false;
   int duration;
+
+  @override
+  void dispose() {
+    _chossingItem = null;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).imagePickerAppBar,
+        title: Text(G.of(context).imagePickerAppBar,
             style: Theme.of(context).accentTextTheme.headline6),
       ),
       body: Column(
@@ -55,7 +65,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerCamera,
+                          G.of(context).imagePickerCamera,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -69,7 +79,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerGallery,
+                          G.of(context).imagePickerGallery,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -83,7 +93,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
                     child: FlatButton(
                         color: Theme.of(context).accentColor,
                         child: Text(
-                          S.of(context).imagePickerVideo,
+                          G.of(context).imagePickerVideo,
                           style: Theme.of(context)
                               .accentTextTheme
                               .button
@@ -100,10 +110,13 @@ class _ImagePickerState extends State<ImagePickerPage> {
           Container(
               padding: EdgeInsets.only(left: 50, right: 50),
               height: 80,
-              child: Text(S.of(context).imagePickerChooseSome)),
+              child: Text(G.of(context).imagePickerChooseSome)),
+          if (_fileType == 1) ShowImageWidget(file: _chossingItem),
 
-          ShowImageWidget(file: _chossingItem),
-
+          if (_fileType == 2)
+            VideoPlayBack(
+              trimv: trimv,
+            ),
           RaisedButton(
             color: Theme.of(context).accentColor,
             onPressed: () async {
@@ -136,7 +149,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
             child: _uploadDone
                 ? ButtonProgressIndicator()
                 : Text(
-                    S.of(context).imagePickerUploadButton,
+                    G.of(context).imagePickerUploadButton,
                     style: Theme.of(context).accentTextTheme.button,
                   ),
           ),
@@ -167,40 +180,91 @@ class _ImagePickerState extends State<ImagePickerPage> {
     return File(_filePath);
   }
 
+  Future<File> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 90,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
+            : [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(showCancelConfirmationDialog: true));
+    if (croppedFile != null) {
+      return croppedFile;
+    } else {
+      return null;
+    }
+  }
+
   _takePhoto() async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
-    File image = File(pickedFile.path);
+    File croppedImage = await _cropImage(File(pickedFile.path));
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
-      _chossingItem = compressedImage;
-      _fileType = 1;
-    });
+        await _compressAndGetFile(croppedImage, temporaryImage.absolute.path);
+    if (compressedImage != null) {
+      setState(() {
+        _chossingItem = compressedImage;
+        _fileType = 1;
+      });
+    }
   }
 
   _openGallery() async {
-    PickedFile pickedFile = await _picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
-    File image = File(pickedFile.path);
+/*    PickedFile pickedFile = await _picker.getImage(
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);*/
+/*    File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);
-    setState(() {
+        await _compressAndGetFile(image, temporaryImage.absolute.path);*/
+    CustomBottomSheet.show(
+        buildContext: context,
+        limit: 1,
+        body: 'Pick an image',
+        onPressed: (File file) {
+          setState(() {
+            _chossingItem = file;
+            _fileType = 1;
+          });
+        },
+        buttonText: 'Pick',
+        popAfterBtnPressed: true,
+        requestType: RequestType.image);
+    /*setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;
       _fileType = 1;
-    });
+    });*/
   }
 
   _pickVideo() async {
     PickedFile video = await _picker.getVideo(
         source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
-    // var video = await _picker.getVideo(
-    //     source: ImageSource.gallery, maxDuration: Duration(seconds: 2));
-    await trimv.loadVideo(videoFile: File(video.path));
-    detail.getMediaInformation(video.path).then((info) {
+    //Getting info of video
+    detail.getMediaInformation(video.path).then((info) async {
       print("Getting info of video");
+      await trimv.loadVideo(videoFile: File(video.path));
       print(info["duration"]);
       duration = info['duration'];
       if (duration > 10500) {
@@ -210,6 +274,11 @@ class _ImagePickerState extends State<ImagePickerPage> {
               builder: (context) => VideoTrimmer(trimv),
             ));
       } else {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => VideoTrimmer(trimv),
+        //     ));
         setState(() {
           _chossingItem = File(video.path);
           _fileType = 2;
@@ -226,10 +295,52 @@ class ShowImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.file != null) {
       return Container(
-        height: 300,
+        height: 400,
         child: Image.file(file),
       );
     }
     return Container();
+  }
+}
+
+class VideoPlayBack extends StatefulWidget {
+  VideoPlayBack({this.trimv});
+  final Trimmer trimv;
+
+  @override
+  _VideoPlayBackState createState() => _VideoPlayBackState();
+}
+
+class _VideoPlayBackState extends State<VideoPlayBack> {
+  bool isPlaying = false;
+  double _startValue = 0.0;
+  double _endValue = 0.0;
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.trimv
+        .videPlaybackControl(startValue: _startValue, endValue: _endValue);
+    print("Exit");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 400,
+      child: GestureDetector(
+        child: VideoViewer(),
+        onTap: () async {
+          bool playbackState = await widget.trimv.videPlaybackControl(
+            startValue: _startValue,
+            endValue: _endValue,
+          );
+          setState(() {
+            print("-------------------------------------------");
+            isPlaying = playbackState;
+          });
+        },
+      ),
+    );
   }
 }

@@ -68,14 +68,14 @@ class _LoginTextFieldState extends State<LoginTextField> {
             var validator = widget.validator ?? (_) => null;
             return text.trim().length > 0
                 ? validator(text)
-                : S.of(context).fieldNotEmpty;
+                : G.of(context).fieldNotEmpty;
           },
           focusNode: widget.focusNode,
           textInputAction: widget.textInputAction,
           keyboardType: widget.keyboardType,
           onFieldSubmitted: widget.onFieldSubmitted,
           decoration: InputDecoration(
-            prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
+            prefixIcon: Icon(widget.icon, color: Colors.white, size: 22),
             hintText: widget.label,
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),

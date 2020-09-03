@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -11,7 +12,9 @@ class ImageView extends StatelessWidget {
     return Scaffold(
         body: Stack(children: [
       PhotoView(
-        imageProvider: NetworkImage(img),
+        imageProvider: CachedNetworkImageProvider(img),
+        maxScale: PhotoViewComputedScale.covered * 5,
+        minScale: PhotoViewComputedScale.contained * 0.7,
       ),
       Positioned(
         right: 10,
@@ -37,6 +40,8 @@ class LocalImageView extends StatelessWidget {
       body: Stack(children: [
         PhotoView(
           imageProvider: MemoryImage(img),
+          maxScale: PhotoViewComputedScale.covered * 5,
+          minScale: PhotoViewComputedScale.contained * 0.7,
         ),
         Positioned(
           right: 10,

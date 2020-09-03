@@ -10,27 +10,37 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 
-class S {
-  S();
+class G {
+  G();
   
-  static S current;
+  static G current;
   
   static const AppLocalizationDelegate delegate =
     AppLocalizationDelegate();
 
-  static Future<S> load(Locale locale) {
+  static Future<G> load(Locale locale) {
     final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
     final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
+      G.current = G();
       
-      return S.current;
+      return G.current;
     });
   } 
 
-  static S of(BuildContext context) {
-    return Localizations.of<S>(context, S);
+  static G of(BuildContext context) {
+    return Localizations.of<G>(context, G);
+  }
+
+  /// ` and `
+  String get and {
+    return Intl.message(
+      ' and ',
+      name: 'and',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Accept`
@@ -83,6 +93,46 @@ class S {
     );
   }
 
+  /// `Joined `
+  String get becomePartnerAt {
+    return Intl.message(
+      'Joined ',
+      name: 'becomePartnerAt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block User`
+  String get block {
+    return Intl.message(
+      'Block User',
+      name: 'block',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You won't see this user or able to communicate anymore until you unblock this user at settings`
+  String get blockContent {
+    return Intl.message(
+      'You won\'t see this user or able to communicate anymore until you unblock this user at settings',
+      name: 'blockContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block List`
+  String get blockList {
+    return Intl.message(
+      'Block List',
+      name: 'blockList',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Booking request`
   String get bookingRequest {
     return Intl.message(
@@ -93,11 +143,11 @@ class S {
     );
   }
 
-  /// `Book`
-  String get bookingBook {
+  /// `Booking`
+  String get booking {
     return Intl.message(
-      'Book',
-      name: 'bookingBook',
+      'Booking',
+      name: 'booking',
       desc: '',
       args: [],
     );
@@ -213,6 +263,16 @@ class S {
     );
   }
 
+  /// `By Signing in or up, you agree to `
+  String get bySigning {
+    return Intl.message(
+      'By Signing in or up, you agree to ',
+      name: 'bySigning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(
@@ -298,6 +358,16 @@ class S {
     return Intl.message(
       'Enter Call',
       name: 'enterCall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forget Password?`
+  String get forgetPassword {
+    return Intl.message(
+      'Forget Password?',
+      name: 'forgetPassword',
       desc: '',
       args: [],
     );
@@ -463,10 +533,10 @@ class S {
     );
   }
 
-  /// `License Agreement`
+  /// `User License Agreement`
   String get licenseagreement {
     return Intl.message(
-      'License Agreement',
+      'User License Agreement',
       name: 'licenseagreement',
       desc: '',
       args: [],
@@ -703,10 +773,20 @@ class S {
     );
   }
 
-  /// `No this account`
+  /// `No Chat History`
+  String get noChatHistory {
+    return Intl.message(
+      'No Chat History',
+      name: 'noChatHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No account`
   String get noAccount {
     return Intl.message(
-      'No this account',
+      'No account',
       name: 'noAccount',
       desc: '',
       args: [],
@@ -748,6 +828,36 @@ class S {
     return Intl.message(
       'Reject',
       name: 'reject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report User`
+  String get report {
+    return Intl.message(
+      'Report User',
+      name: 'report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report user for posting inappropriate content.`
+  String get reportContent {
+    return Intl.message(
+      'Report user for posting inappropriate content.',
+      name: 'reportContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` or `
+  String get or {
+    return Intl.message(
+      ' or ',
+      name: 'or',
       desc: '',
       args: [],
     );
@@ -1323,20 +1433,20 @@ class S {
     );
   }
 
-  /// `You are Offline now`
+  /// `You are Online now`
   String get toastonline {
     return Intl.message(
-      'You are Offline now',
+      'You are Online now',
       name: 'toastonline',
       desc: '',
       args: [],
     );
   }
 
-  /// `You are Online now`
+  /// `You are Offline now`
   String get toastoffline {
     return Intl.message(
-      'You are Online now',
+      'You are Offline now',
       name: 'toastoffline',
       desc: '',
       args: [],
@@ -1438,6 +1548,16 @@ class S {
     return Intl.message(
       'Dark Mode',
       name: 'userStatusDarkMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day Mode`
+  String get userStatusDayMode {
+    return Intl.message(
+      'Day Mode',
+      name: 'userStatusDayMode',
       desc: '',
       args: [],
     );
@@ -1604,7 +1724,7 @@ class S {
   }
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<S> {
+class AppLocalizationDelegate extends LocalizationsDelegate<G> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
@@ -1618,7 +1738,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
   @override
-  Future<S> load(Locale locale) => S.load(locale);
+  Future<G> load(Locale locale) => G.load(locale);
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

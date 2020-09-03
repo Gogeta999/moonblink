@@ -1,7 +1,7 @@
 class Post {
   int userID;
   String userName;
-  String creatdAt;
+  String createdAt;
   int reactionCount;
   String profileImage;
   String coverImage;
@@ -12,7 +12,7 @@ class Post {
     Post postBean = Post();
     postBean.userID = map['id'];
     postBean.userName = map['name'];
-    postBean.creatdAt = map['created_at'];
+    postBean.createdAt = map['created_at'];
     postBean.reactionCount = map['reaction_count'];
     postBean.profileImage = map['profile_image'];
     postBean.coverImage = map['cover_image'];
@@ -23,7 +23,7 @@ class Post {
   Map toJson() => {
         'id': userID,
         'name': userName,
-        'created_at': creatdAt,
+        'created_at': createdAt,
         'reaction_count': reactionCount,
         'profile_image': profileImage,
         'cover_image': coverImage,

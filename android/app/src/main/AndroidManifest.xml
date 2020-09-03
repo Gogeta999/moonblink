@@ -36,8 +36,14 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/app_icon" />
         <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="moon_go_noti"/>
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2553224590005557~4621580830"/>
+            <!-- TODO: -->
+        <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" 
+            android:value="moon_go_noti"/>
         <!--FCM noti color-->
         <!--<meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
@@ -98,6 +104,10 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
+        <!--need for image cropper plugin-->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

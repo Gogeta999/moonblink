@@ -3,167 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-
-class CustomBottomSheet {
-  static show(
-      {@required BuildContext buildContext,
-      @required int limit,
-      @required String body,
-      @required Function onPressed,
-      @required String buttonText,
-      @required bool popAfterBtnPressed,
-      @required RequestType requestType,
-      int minWidth = 1080,
-      int minHeight = 1080,
-      Function onInit,
-      Function onDismiss}) async {
-    var result = await PhotoManager.requestPermission();
-    if (result) {
-      //allow
-      try {
-        onInit();
-      } catch (e) {
-        if (e is NoSuchMethodError) print('NoSuchMethodError');
-      }
-      showModalBottomSheet(
-          context: buildContext,
-          barrierColor: Colors.white.withOpacity(0.0),
-          isDismissible: true,
-          isScrollControlled: true,
-          builder: (context) => DraggableScrollableSheet(
-                expand: false,
-                initialChildSize: 0.4,
-                maxChildSize: 0.90,
-                builder: (context, scrollController) {
-                  return PhotoBottomSheet(
-                    sheetScrollController: scrollController,
-                    popAfterBtnPressed: popAfterBtnPressed,
-                    requestType: requestType,
-                    limit: limit,
-                    onPressed: onPressed,
-                    body: body,
-                    buttonText: buttonText,
-                    minWidth: minWidth,
-                    minHeight: minHeight,
-                  );
-                },
-              )).whenComplete(() {
-        try {
-          onDismiss();
-        } catch (e) {
-          if (e is NoSuchMethodError) {
-            print('NoSuchMethodError');
-          }
-        }
-      });
-    } else {
-      // fail
-      _permissionFail(buildContext, 'Photo');
-    }
-  }
-
-  static showVoiceSheet(
-      {@required BuildContext buildContext,
-      @required Function send,
-      @required Function cancel,
-      @required Function start,
-      @required Function restart,
-      Function onInit,
-      Function onDismiss}) async {
-    ///request permission with async
-    bool permission = await FlutterAudioRecorder.hasPermissions;
-    if (permission) {
-      try {
-        onInit();
-      } catch (e) {
-        if (e is NoSuchMethodError) print('NoSuchMethodError');
-      }
-      showModalBottomSheet(
-          context: buildContext,
-          barrierColor: Colors.white.withOpacity(0.0),
-          isDismissible: true,
-          isScrollControlled: true,
-          builder: (context) => DraggableScrollableSheet(
-                expand: false,
-                initialChildSize: 0.4,
-                maxChildSize: 0.90,
-                builder: (context, scrollController) {
-                  return VoiceBottomSheet(
-                      send: send,
-                      cancel: cancel,
-                      start: start,
-                      restart: restart);
-                },
-              )).whenComplete(() {
-        try {
-          onDismiss();
-        } catch (e) {
-          if (e is NoSuchMethodError) {
-            print('NoSuchMethodError');
-          }
-        }
-      });
-    } else {
-      _permissionFail(buildContext, 'Microphone');
-    }
-  }
-
-  static _permissionFail(BuildContext buildContext, String permissionName) {
-    showDialog(
-        context: buildContext,
-        builder: (context) {
-          if (Platform.isIOS) {
-            return CupertinoAlertDialog(
-              title: Text(S.of(context).permissiondenied,
-                  style: Theme.of(context).textTheme.headline6),
-              content: Text(
-                  'Allow $permissionName permission in settings to continue',
-                  style: Theme.of(context).textTheme.bodyText1),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(S.of(context).cancel,
-                      style: Theme.of(context).textTheme.bodyText1),
-                ),
-                FlatButton(
-                  onPressed: () => PhotoManager.openSetting(),
-                  child: Text('Open Settings',
-                      style: Theme.of(context).textTheme.bodyText1),
-                )
-              ],
-            );
-          } else {
-            return AlertDialog(
-              title: Text(S.of(context).permissiondenied),
-              titleTextStyle: Theme.of(context).textTheme.headline6,
-              content: Text(
-                  'Allow $permissionName permission in settings to continue',
-                  style: Theme.of(context).textTheme.bodyText1),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(S.of(context).cancel,
-                      style: Theme.of(context).textTheme.bodyText1),
-                ),
-                FlatButton(
-                  onPressed: () => PhotoManager.openSetting(),
-                  child: Text('Open Settings',
-                      style: Theme.of(context).textTheme.bodyText1),
-                )
-              ],
-            );
-          }
-        });
-  }
-}
 
 class PhotoBottomSheet extends StatefulWidget {
   final ScrollController sheetScrollController;
@@ -195,7 +40,7 @@ class PhotoBottomSheet extends StatefulWidget {
 
 class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   final _scrollController = ScrollController();
-  final _scrollThreshold = 800.0;
+  final _scrollThreshold = 2000.0;
   int _currentPage = 0;
   int _pageSize = 50;
   int _currentAlbum = 0;
@@ -236,7 +81,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                 Expanded(
                   child: FlatButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(S.of(context).cancel,
+                    child: Text(G.of(context).cancel,
                         style: Theme.of(context).textTheme.bodyText1),
                   ),
                 ),
@@ -277,7 +122,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                           child: FlatButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child: Text(S.of(context).cancel,
+                                            child: Text(G.of(context).cancel,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1),
@@ -286,7 +131,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                         Container(
                                             alignment: Alignment.center,
                                             child: Text(
-                                                S.of(context).labelalbumselect,
+                                                G.of(context).labelalbumselect,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1))
@@ -334,7 +179,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(S.of(context).albums,
+                        Text(G.of(context).albums,
                             style: Theme.of(context).textTheme.bodyText1),
                         SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_down)
@@ -353,6 +198,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
               GridView.builder(
                   addAutomaticKeepAlives: true,
                   controller: _scrollController,
+                  physics: ClampingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3),
                   itemCount: _selectedImages.length,
@@ -431,16 +277,13 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     });
   }
 
-  Future<File> _compressAndGetFile(
-      File file, String targetPath, int minWidth, int minHeight) async {
-    ///compress to jpeg and change aspect ratio to 1:1
-    ///minWidth and minHeight default to 1080
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path, targetPath,
-        minWidth: minWidth,
-        minHeight: minHeight,
-        quality: 90,
-        format: CompressFormat.jpeg);
+      file.absolute.path,
+      targetPath,
+      quality: 90,
+    );
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -451,8 +294,47 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
-    return File(
-        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg');
+    final filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(filePath);
+  }
+
+  Future<File> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        compressFormat: ImageCompressFormat.jpg,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ]
+            : [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio5x3,
+          CropAspectRatioPreset.ratio5x4,
+          CropAspectRatioPreset.ratio7x5,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          showCancelConfirmationDialog: true
+        ));
+    if (croppedFile != null) {
+      return croppedFile;
+    } else {
+      return null;
+    }
   }
 
   _choose() async {
@@ -461,10 +343,14 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       Navigator.pop(context);
     }
     File image = await _photoList[_selectedIndices.first].file;
-    File temporaryImage = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(
-        image, temporaryImage.absolute.path, widget.minWidth, widget.minHeight);
-    widget.onPressed(compressedImage);
+    File croppedImage = await _cropImage(image);
+    File tempFile = await _getLocalFile();
+    File compressedImage = await _compressAndGetFile(croppedImage, tempFile.path);
+    print(image.lengthSync());
+    print(compressedImage.lengthSync());
+    if (compressedImage != null) {
+      widget.onPressed(compressedImage);
+    }
   }
 
   _fetchNewMedia() async {

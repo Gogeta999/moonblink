@@ -1,7 +1,7 @@
 name: moonblink
 description: MoonBlink Universe's app
 
-version: 1.0.0+14
+version: 1.0.0+16
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -17,11 +17,13 @@ dependencies:
   provider: ^4.0.4
   path_provider: ^1.6.11
   #Base Component
+  platform_device_id: ^0.1.1
   device_info: ^0.4.2+4
   package_info: ^0.4.1
+  clipboard: ^0.1.2+8
   #Base UI
   shimmer: ^1.1.1
-  flutter_holo_date_picker: ^0.1.4
+  flutter_holo_date_picker: ^0.1.5
   datetime_picker_formfield: ^1.0.0
   cached_network_image: ^2.0+1
   flutter_blurhash: ^0.5.0
@@ -46,7 +48,7 @@ dependencies:
   scoped_model: ^1.0.1
   url_launcher: ^5.5.0
   #voice call
-  agora_rtc_engine: ^1.0.13 #need to edit at android and ios
+  agora_rtc_engine: 1.0.13 #need to edit at android and ios
   permission_handler: ^5.0.1
   #camera
   camera: ^0.5.8+2 #need to edit at ios,andorid require 21 sdk version
@@ -65,13 +67,14 @@ dependencies:
   get_it: ^4.0.2
   # in_app_purchase
   flutter_inapp_purchase: ^2.2.0
+  # in_app_purchase: ^0.3.4+4 Testing
   # image_compressing
   flutter_image_compress: ^0.7.0
   # video_player
   video_player: ^0.10.11+2
   common_utils: ^1.2.1
   # DateFormat
-  intl: ^0.16.1
+  timeago: ^2.0.26
   # Bloc Pattern
   flutter_bloc: ^6.0.1
   # RxDart
@@ -91,12 +94,17 @@ dependencies:
   sign_in_with_apple: ^2.5.2
   # Apple Sign in 2 - only iOS support
   apple_sign_in: ^0.1.0
-
+  #encrypt
+  encrypt: ^4.0.2
+  #crop, compresss, resize image
+  image_cropper: ^1.3.0
 
   font_awesome_flutter: ^8.7.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  flutter_driver:
     sdk: flutter
   # json_serializable: ^3.3.0
   # build_runner: ^1.9.0
@@ -124,3 +132,4 @@ flutter:
 
 flutter_intl:
   enabled: true
+  class_name: G 

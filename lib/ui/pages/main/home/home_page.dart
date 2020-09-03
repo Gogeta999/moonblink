@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
@@ -61,7 +63,8 @@ class _HomePageState extends State<HomePage>
                           error: homeModel.viewStateError,
                           onPressed: homeModel.initData));
                 }
-                if (homeModel.isBusy) {
+                if (homeModel.isBusy &&
+                    Theme.of(context).brightness == Brightness.light) {
                   return Container(
                     height: double.infinity,
                     decoration: BoxDecoration(
@@ -72,13 +75,26 @@ class _HomePageState extends State<HomePage>
                             fit: BoxFit.fill)),
                   );
                 }
+                if (homeModel.isBusy &&
+                    Theme.of(context).brightness == Brightness.dark) {
+                  return Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              ImageHelper.wrapAssetsImage(
+                                  'moonblinkWaitingDark.gif'),
+                            ),
+                            fit: BoxFit.fill)),
+                  );
+                }
                 return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
-                      text: CircularProgressIndicator(),
+                      text: CupertinoActivityIndicator(),
                     ),
                     footer: ShimmerFooter(
-                      text: CircularProgressIndicator(),
+                      text: CupertinoActivityIndicator(),
                     ),
                     enablePullDown: homeModel.list.isNotEmpty,
                     onRefresh: () async {
@@ -88,7 +104,7 @@ class _HomePageState extends State<HomePage>
                     enablePullUp: homeModel.list.isNotEmpty,
                     onLoading: homeModel.loadMore,
                     child: CustomScrollView(
-                      controller: tapToTopModel.scrollController,
+                      // controller: tapToTopModel.scrollController,
                       slivers: <Widget>[
                         HomeAppBar(),
                         if (homeModel.isEmpty)
@@ -98,7 +114,8 @@ class _HomePageState extends State<HomePage>
                             child: ViewStateEmptyWidget(
                                 onPressed: homeModel.initData),
                           )),
-                        if (homeModel.stories?.isNotEmpty ?? false) StoryList(),
+                        if (homeModel.stories?.isNotEmpty ?? false)
+                          StoryList(stories: homeModel.stories),
                         HomePostList(),
                       ],
                     ));
@@ -140,28 +157,28 @@ class HomePostList extends StatelessWidget {
   Widget build(BuildContext context) {
     HomeModel homeModel = Provider.of(context);
     return SliverList(
-        delegate: SliverChildBuilderDelegate(
-      (context, index) {
+      delegate: SliverChildBuilderDelegate((context, index) {
         Post item = homeModel.list[index];
         return PostItemWidget(item, index: index);
-      },
-      childCount: homeModel.list?.length ?? 0,
-    ));
+      }, childCount: homeModel.list?.length ?? 0),
+    );
   }
 }
 
 class StoryList extends StatelessWidget {
+  final List<Story> stories;
+  StoryList({this.stories});
   @override
   Widget build(BuildContext context) {
-    HomeModel homeModel = Provider.of(context);
+    // HomeModel homeModel = Provider.of(context);
     return SliverToBoxAdapter(
         child: Column(
       children: <Widget>[
         Container(
-            height: 100,
+            height: 90,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: homeModel.stories.length,
+                itemCount: stories.length,
                 itemBuilder: (context, index) {
                   // Story singleUserStories = homeModel.stories[index];
                   int usertype =
@@ -183,10 +200,13 @@ class StoryList extends StatelessWidget {
                     );
                   }
                   return StoryItemWidget(
-                    homeModel.stories,
+                    stories,
                     index: index,
                   );
-                }))
+                })),
+        Divider(
+          color: Colors.grey,
+        ),
       ],
     ));
   }

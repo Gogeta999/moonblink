@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/base_widget/forceDialog.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -16,6 +17,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 //user token will change with data at login model
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Recreating Dio connection when api call - Fix
@@ -29,16 +31,22 @@ parseJson(String text) {
 
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
+  static final String baseAppKey =
+      'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=';
+
+  static final String devUrl = Api.DEV;
+  static final String devAppKey =
+      'base64:1CyzmcUAStrYcZ+IVkWrqwDJ52gK1naNYu68J9kQ04M=';
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
     baseUrl: baseUrl,
-    connectTimeout: 10000,
-    receiveTimeout: 5000,
+    connectTimeout: 10 * 1000,
+    receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
-      //appkey will remain old key unless we generate  key on server
-      'app-key': 'base64:c+JuepsZTyvv6MH7onjyx4/McJiumD38g3xNot/j6QA=',
+      //MoonBlink AppKey
+      'app-key': baseAppKey,
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
@@ -67,9 +75,11 @@ class DioUtils {
       _dio.interceptors.clear();
       _dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
+          String deviceId = await PlatformDeviceId.getDeviceId;
           var appVersion = await PlatformUtils.getAppVersion();
           requestions.headers['app-version'] = appVersion;
           requestions.headers['Authorization'] = 'Bearer' + usertoken;
+          requestions.headers['device-id'] = deviceId;
           // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
           return requestions;
         }, onResponse: (Response response) {
@@ -85,12 +95,16 @@ class DioUtils {
   }
 
   initWithoutAuthorization() {
+    // var usertoken = StorageManager.sharedPreferences.getString(token);
     _dio.interceptors.clear();
     _dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
+        String deviceId = await PlatformDeviceId.getDeviceId;
         var appVersion = await PlatformUtils.getAppVersion();
         requestions.headers['app-version'] = appVersion;
-        // debugPrint('Base Requestions--->' + requestions.headers.toString());
+        // requestions.headers['Authorization'] = 'Bearer' + usertokr
+        requestions.headers['device-id'] = deviceId;
+        debugPrint('Base Requestions--->' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
         //maybe add something here
@@ -215,6 +229,7 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
         throw forceLoginDialog();
+        // throw ForceLoginDialog();
       } // Platform and version Control
       // 102 is version late
       else if (respData.errorCode == 102 && Platform.isAndroid) {
@@ -337,6 +352,7 @@ class DioUtils {
 
   Future<void> forceLoginDialog() async {
     showDialog(
+      barrierDismissible: false,
       context: locator<NavigationService>()
           .navigatorKey
           .currentState
@@ -344,14 +360,14 @@ class DioUtils {
           .context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: Text(S.of(context).forceLoginTitle),
+          title: Text(G.of(context).forceLoginTitle),
           content: Column(
             children: <Widget>[
               SizedBox(
                 height: 20,
               ),
               Center(
-                child: Text(S.of(context).forceLoginContent),
+                child: Text(G.of(context).forceLoginContent),
               ),
               SizedBox(
                 height: 20,
@@ -360,7 +376,7 @@ class DioUtils {
           ),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text(S.of(context).confirm),
+              child: Text(G.of(context).confirm),
               onPressed: () {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
@@ -381,14 +397,14 @@ class DioUtils {
             .context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text(S.of(context).forceUpdateTitle),
+            title: Text(G.of(context).forceUpdateTitle),
             content: Column(
               children: <Widget>[
                 SizedBox(
                   height: 20,
                 ),
                 Center(
-                  child: Text(S.of(context).forceUpdateContent),
+                  child: Text(G.of(context).forceUpdateContent),
                 ),
                 SizedBox(
                   height: 20,
@@ -397,13 +413,13 @@ class DioUtils {
             ),
             actions: <Widget>[
               CupertinoDialogAction(
-                child: Text(S.of(context).cancel),
+                child: Text(G.of(context).cancel),
                 onPressed: () {
                   SystemNavigator.pop();
                 },
               ),
               CupertinoDialogAction(
-                child: Text(S.of(context).confirm),
+                child: Text(G.of(context).confirm),
                 onPressed: () {
                   _openStore();
                 },
@@ -438,13 +454,18 @@ class DioUtils {
 abstract class BaseResponseData {
   int errorCode = 1;
   String errorMessage;
+  int statusCode;
   dynamic data;
   String getMessage;
 
   bool get success;
 
   BaseResponseData(
-      {this.errorCode, this.errorMessage, this.data, this.getMessage});
+      {this.errorCode,
+      this.errorMessage,
+      this.data,
+      this.getMessage,
+      this.statusCode});
 
   @override
   String toString() {
@@ -481,6 +502,8 @@ class ResponseData extends BaseResponseData {
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     errorCode = json['error_code'];
+    statusCode = json['status_code'];
+    print(statusCode);
     print(errorCode);
 
     ///remove later

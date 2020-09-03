@@ -131,9 +131,9 @@ class ThemeModel with ChangeNotifier {
   static String fontName(index, context) {
     switch (index) {
       case 0:
-        return S.of(context).autoBySystem;
+        return G.of(context).autoBySystem;
       // case 1:
-      //   return S.of(context).fontKuaiLe;
+      //   return G.of(context).fontKuaiLe;
       default:
         return '';
     }

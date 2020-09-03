@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/BottomClipper.dart';
 import 'package:moonblink/base_widget/indicator/appbar_indicator.dart';
+// import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -11,6 +13,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -83,7 +86,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                     }
                     if (model.userModel.hasUser) {
                       return IconButton(
-                        tooltip: S.of(context).logout,
+                        tooltip: G.of(context).logout,
                         icon: Icon(FontAwesomeIcons.signOutAlt),
                         onPressed: () {
                           model.logout();
@@ -112,8 +115,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   ),
                   SizedBox(width: 5.0),
                   Text(
-                      '${S.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
-                      style: TextStyle(fontSize: 16))
+                      '${G.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                      style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
@@ -135,6 +138,10 @@ class UserHeaderWidget extends StatefulWidget {
 class _UserHeaderWidgetState extends State<UserHeaderWidget> {
   @override
   Widget build(BuildContext context) {
+    var userProfile = StorageManager.sharedPreferences.getString(mUserProfile);
+    var userName = StorageManager.sharedPreferences.getString(mLoginName);
+    int userid = StorageManager.sharedPreferences.getInt(mUserId);
+
     return ClipPath(
         // in widget
         clipper: BottomClipper(),
@@ -169,52 +176,73 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               child: ClipOval(
                                 child: model.hasUser
                                     ? CachedNetworkImage(
-                                        imageUrl: model.user.profileUrl,
+                                        imageUrl: userProfile,
                                         fit: BoxFit.cover,
                                         width: 120,
                                         height: 120,
                                       )
-                                    // ? Image.network(
-                                    //     model.user.profileUrl,
-                                    //     fit: BoxFit.cover,
-                                    //     width: 120,
-                                    //     height: 120,
-                                    //     // color: Theme.of(context)
-                                    //     //     .accentColor
-                                    //     //     .withAlpha(100),
-                                    //     // colorBlendMode: BlendMode.colorDodge
-                                    //   )
                                     : Image.asset(
                                         ImageHelper.wrapAssetsImage(
                                             'MoonBlinkProfile.jpg'),
                                         fit: BoxFit.fill,
                                         width: 120,
                                         height: 120,
-                                        // color: Theme.of(context).accentColor,
-                                        // // https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html
-                                        // colorBlendMode: BlendMode.colorDodge
                                       ),
                               ),
                             ),
                           ),
+                          //Show user name here
+                          Row(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Spacer(
+                                flex: 4,
+                              ),
+                              Center(
+                                child: Text(
+                                    model.hasUser
+                                        ? userName
+                                        : G.of(context).toSignIn,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .apply(
+                                            color:
+                                                Colors.white.withAlpha(200))),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.content_copy),
+                                iconSize: 18,
+                                color: Colors.grey[300],
+                                onPressed: () {
+                                  String id = encrypt(userid);
+                                  FlutterClipboard.copy(id).then((value) {
+                                    showToast('Copy To Your Clipboard');
+                                    print('copied');
+                                  });
+                                  // ClipboardManager.copyToClipBoard(id)
+                                  //     .then((result) {
+                                  //   showToast("Copy to Your Clipboard");
+                                  // });
+                                },
+                              ),
+                              // Text(
+                              //   'id',
+                              //   style: Theme.of(context)
+                              //       .textTheme
+                              //       .caption
+                              //       .apply(color: Colors.grey[300]),
+                              // ),
+                              Spacer(
+                                flex: 3,
+                              )
+                            ],
+                          ),
+
                           SizedBox(
                             height: 20,
-                          ),
-                          //Show user name here
-                          Column(children: <Widget>[
-                            Text(
-                                model.hasUser
-                                    ? model.user.name.toString()
-                                    : S.of(context).toSignIn,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .apply(color: Colors.white.withAlpha(200))),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // if (model.hasUser) UserCoin()
-                          ])
+                          )
                         ])))));
   }
 }
@@ -247,7 +275,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         if (usertype == 1)
           PageCard(
               pageTitle:
-                  status != 1 ? S.of(context).online : S.of(context).offline,
+                  status != 1 ? G.of(context).online : G.of(context).offline,
               iconData:
                   status != 1 ? FontAwesomeIcons.wifi : Icons.portable_wifi_off,
               onTap: status != 1
@@ -258,7 +286,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("+++++++++++++++++++++++++++");
                       MoonBlinkRepository.changestatus(1);
-                      showToast(S.of(context).toastoffline);
+                      showToast(G.of(context).toastoffline);
                     }
                   : () {
                       setState(() {
@@ -268,16 +296,16 @@ class _UserListWidgetState extends State<UserListWidget> {
                       print(status);
                       print("----------------------------");
                       MoonBlinkRepository.changestatus(0);
-                      showToast(S.of(context).toastonline);
+                      showToast(G.of(context).toastonline);
                     }),
 
         ///wallet
         PageCard(
-            pageTitle: S.of(context).userStatusWallet,
+            pageTitle: G.of(context).userStatusWallet,
             iconData: FontAwesomeIcons.wallet,
             onTap: hasUser == null
                 ? () {
-                    showToast(S.of(context).loginFirst);
+                    showToast(G.of(context).loginFirst);
                   }
                 : () {
                     Navigator.of(context).pushNamed(RouteName.wallet);
@@ -285,7 +313,9 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///switch dark mode
         PageCard(
-            pageTitle: S.of(context).userStatusDarkMode,
+            pageTitle: Theme.of(context).brightness == Brightness.light
+                ? G.of(context).userStatusDayMode
+                : G.of(context).userStatusDarkMode,
             iconData: Theme.of(context).brightness == Brightness.light
                 // ? IconFonts.dayModeIcon
                 ? IconFonts.dayModeIcon
@@ -294,17 +324,17 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///theme
         PageCard(
-            pageTitle: S.of(context).userStatusTheme,
+            pageTitle: G.of(context).userStatusTheme,
             iconData: FontAwesomeIcons.palette,
             onTap: () => _showPaletteDialog(context)),
 
         ///favorites
         PageCard(
-            pageTitle: S.of(context).userStatusCustomerService,
+            pageTitle: G.of(context).userStatusCustomerService,
             iconData: FontAwesomeIcons.handsHelping,
             onTap: hasUser == null
                 ? () {
-                    showToast(S.of(context).loginFirst);
+                    showToast(G.of(context).loginFirst);
                   }
                 // : () {
                 //     Navigator.of(context).pushNamed(RouteName.network);
@@ -313,13 +343,13 @@ class _UserListWidgetState extends State<UserListWidget> {
 
         ///settings
         PageCard(
-            pageTitle: S.of(context).userStatusSettings,
+            pageTitle: G.of(context).userStatusSettings,
             iconData: FontAwesomeIcons.cog,
             onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
 
         ///check app update
         PageCard(
-            pageTitle: S.of(context).userStatusCheckAppUpdate,
+            pageTitle: G.of(context).userStatusCheckAppUpdate,
             iconData: Platform.isAndroid
                 ? FontAwesomeIcons.android
                 : FontAwesomeIcons.appStoreIos,
@@ -434,7 +464,7 @@ class SettingThemeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(S.of(context).userStatusTheme),
+      title: Text(G.of(context).userStatusTheme),
       leading: Icon(
         FontAwesomeIcons.palette,
         color: Theme.of(context).accentColor,

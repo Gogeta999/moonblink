@@ -2,26 +2,25 @@ import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
 class RegisterModel extends ViewStateModel {
-
-  Future<bool> singUp(mail, name, lastname, password) async {
+  Future<bool> singUp(mail, name, password) async {
     setBusy();
     try {
-      await MoonBlinkRepository.register(mail, name, lastname, password);
+      await MoonBlinkRepository.register(mail, name, password);
       setIdle();
       return true;
     } catch (e, s) {
-      setError(e,s);
+      setError(e, s);
       return false;
     }
   }
 
   Future<bool> registerAsPartner() async {
     setBusy();
-    try{
+    try {
       await MoonBlinkRepository.registAsPartner();
       setIdle();
       return true;
-    } catch(e,s){
+    } catch (e, s) {
       setError(e, s);
       return false;
     }

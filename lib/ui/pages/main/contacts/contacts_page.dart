@@ -19,6 +19,10 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+  // with AutomaticKeepAliveClientMixin {
+  // @override
+  // bool get wantKeepAlive => true;
+
   List<Contact> contacts = [];
   List<String> strList = [];
   Contact contact;
@@ -51,6 +55,12 @@ class _ContactsPageState extends State<ContactsPage> {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 backgroundImage: imageProvider,
               ),
+              placeholder: (context, url) => CircleAvatar(
+                radius: 28,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                // backgroundImage: ,
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             // leading: CircleAvatar(
             //   radius: 28,
@@ -78,6 +88,7 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // super.build(context);
     return Scaffold(
 
         ///[Appbar]
@@ -86,7 +97,8 @@ class _ContactsPageState extends State<ContactsPage> {
             model: ContactModel(),
             onModelReady: (model) => model.initData(),
             builder: (context, contactModel, child) {
-              if (contactModel.isBusy) {
+              if (contactModel.isBusy &&
+                  Theme.of(context).brightness == Brightness.light) {
                 return Container(
                   height: double.infinity,
                   width: double.infinity,
@@ -94,6 +106,20 @@ class _ContactsPageState extends State<ContactsPage> {
                       image: DecorationImage(
                           image: AssetImage(
                             ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
+                          ),
+                          fit: BoxFit.fill)),
+                );
+              }
+              if (contactModel.isBusy &&
+                  Theme.of(context).brightness == Brightness.dark) {
+                return Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                            ImageHelper.wrapAssetsImage(
+                                'moonblinkWaitingDark.gif'),
                           ),
                           fit: BoxFit.fill)),
                 );

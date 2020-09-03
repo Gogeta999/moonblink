@@ -7,10 +7,10 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/thirdLogin.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/pages/signIO/newregisterpage.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: S.of(context).loginMail,
+                                label: "Enter Mail",
                                 icon: Icons.perm_identity,
                                 controller: _mailController,
                                 textInputAction: TextInputAction.next,
@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               LoginTextField(
                                 controller: _passwordController,
-                                label: S.of(context).loginPassword,
+                                label: "Enter password",
                                 icon: Icons.lock_outline,
                                 obscureText: true,
                                 focusNode: _pwdFocus,
@@ -107,17 +107,21 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  ChatTile(
-                      username: "hello",
-                      lastmsg: "Last Message",
-                      image: NetworkImage(
-                          "https://pbs.twimg.com/media/EeS3_XkWoAA0fct.png"),
-                      time: "1.20")
+                  // ChatTile(
+                  //     username: "hello",
+                  //     lastmsg: "Last Message",
+                  //     image: NetworkImage(
+                  //         "https://pbs.twimg.com/media/EeS3_XkWoAA0fct.png"),
+                  //     time: "1.20")
                 ],
               ),
             ),
           )
         ],
+      ),
+      bottomNavigationBar: SignInOutAgree(
+        isSignIn: false,
+        signin: true,
       ),
     );
   }
@@ -133,17 +137,19 @@ class LoginButton extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     var theme = Theme.of(context);
     return LoginButtonWidget(
-      color: theme.brightness == Brightness.dark
-          ? theme.accentColor
-          : Colors.white,
+      color: theme.accentColor,
+      // brightness == Brightness.dark
+      //     ? theme.accentColor
+      //     : Colors.white,
       child: model.isBusy
           ? ButtonProgressIndicator()
-          : Text(S.of(context).signIn, style: TextStyle(color: Colors.black)
-              // Theme.of(context)
-              //     .accentTextTheme
-              //     .headline6
-              //     .copyWith(wordSpacing: 6),
-              ),
+          : Text(
+              "Sign In",
+              style: Theme.of(context)
+                  .accentTextTheme
+                  .headline6
+                  .copyWith(wordSpacing: 6),
+            ),
       onPressed: model.isBusy
           ? null
           : () {
@@ -201,10 +207,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:
-          Text.rich(TextSpan(text: S.of(context).noAccount + '. ', children: [
+      child: Text.rich(TextSpan(text: "hello" + '. ', children: [
         TextSpan(
-            text: S.of(context).toSignUp,
+            text: "SignUp",
             recognizer: _recognizerRegister,
             style: TextStyle(color: Theme.of(context).accentColor))
       ])),

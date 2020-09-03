@@ -23,9 +23,10 @@ class MoonBlinkLogo extends StatelessWidget {
           width: 130,
           height: 100,
           fit: BoxFit.fitWidth,
-          color: theme.brightness == Brightness.dark
-              ? theme.accentColor
-              : Colors.white,
+          color: theme.accentColor,
+          // brightness == Brightness.dark
+          //     ? theme.accentColor
+          //     : Colors.white,
           colorBlendMode: BlendMode.srcIn,
         ),
       ),

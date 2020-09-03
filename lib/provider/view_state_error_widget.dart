@@ -50,7 +50,7 @@ class ViewStateWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
-                title ?? S.of(context).viewStateMessageError,
+                title ?? G.of(context).viewStateMessageError,
                 style: titleStyle,
               ),
               SizedBox(height: 20),
@@ -101,18 +101,18 @@ class ViewStateErrorWidget extends StatelessWidget {
     var defaultImage;
     var defaultTitle;
     var errorMessage = error.message;
-    String defaultTextData = S.of(context).viewStateButtonRetry;
+    String defaultTextData = G.of(context).viewStateButtonRetry;
     switch (error.errorType) {
       case ViewStateErrorType.networkTimeOutError:
         defaultImage = const Icon(IconFonts.pageNetworkError,
             size: 100, color: Colors.grey);
-        defaultTitle = S.of(context).viewStateMessageNetworkError;
+        defaultTitle = G.of(context).viewStateMessageNetworkError;
         // errorMessage = ''; // showing widggest when get network error message
         break;
       case ViewStateErrorType.defaultError:
         defaultImage =
             const Icon(IconFonts.pageError, size: 100, color: Colors.grey);
-        defaultTitle = S.of(context).viewStateMessageError;
+        defaultTitle = G.of(context).viewStateMessageError;
         break;
 
       case ViewStateErrorType.unauthorizedError:
@@ -156,9 +156,9 @@ class ViewStateEmptyWidget extends StatelessWidget {
       onPressed: this.onPressed,
       image: image ??
           const Icon(IconFonts.pageEmpty, size: 100, color: Colors.grey),
-      title: message ?? S.of(context).viewStateMessageEmpty,
+      title: message ?? G.of(context).viewStateMessageEmpty,
       buttonText: buttonText,
-      buttonTextData: S.of(context).viewStateButtonRefresh,
+      buttonTextData: G.of(context).viewStateButtonRefresh,
     );
   }
 }
@@ -183,9 +183,9 @@ class ViewStateUnAuthWidget extends StatelessWidget {
     return ViewStateWidget(
       onPressed: this.onPressed,
       image: image ?? ViewStateUnAuthImage(),
-      title: message ?? S.of(context).viewStateMessageUnAuth,
+      title: message ?? G.of(context).viewStateMessageUnAuth,
       buttonText: buttonText,
-      buttonTextData: S.of(context).viewStateButtonLogin,
+      buttonTextData: G.of(context).viewStateButtonLogin,
     );
   }
 }
@@ -223,7 +223,7 @@ class ViewStateButton extends StatelessWidget {
     return OutlineButton(
       child: child ??
           Text(
-            textData ?? S.of(context).viewStateButtonRetry,
+            textData ?? G.of(context).viewStateButtonRetry,
             style: TextStyle(wordSpacing: 5),
           ),
       textColor: Colors.grey,

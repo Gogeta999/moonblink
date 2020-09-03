@@ -6,16 +6,20 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../models/message.dart';
 
-String url = 'https://chat.moonblinkuniverse.com';
+//Production URL
+String proSocketurl = 'https://chat.moonblinkuniverse.com';
+String devSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
-IO.Socket socket = IO.io(url, <String, dynamic>{
+IO.Socket socket = IO.io(proSocketurl, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
+  'timeout': 2000
 });
 
 const List EVENTS = [
@@ -23,9 +27,9 @@ const List EVENTS = [
   'connect_error',
   'connect_timeout',
   'connecting',
-  'disconnect',
+  // 'disconnect',
   'error',
-  'reconnect',
+  // 'reconnect',
   'reconnect_attempt',
   'reconnect_failed',
   'reconnect_error',
@@ -40,24 +44,26 @@ List<Chatlist> chatlist = List<Chatlist>();
 Bookingstatus bookingdata;
 
 class ChatModel extends Model {
+  void clear() {
+    if (bookingdata != null) {
+      bookingdata = null;
+    }
+  }
+
   //connect
   void init() {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-    for(var event in EVENTS) {
-      socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
-    }
-    socket.once("booking_status", (data) => print(data));
-    if (socket.connect() != null) {
-      print("Connected Socket");
-    }
-    // //call made
-    // socket.once("call-made", (data) => null);
-    // //answer-made
-    // socket.once("made-answer", (data) => null);
-    // //call rejected
-    // socket.once("call-rejected", (data) => null);
+    // for (var event in EVENTS) {
+    //   print("Checking");
+    //   socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
+    // }
+    // socket.on("reconnect", (data) {
+    //   print("reconnecting");
+    //   socket.emit('connect-user', usertoken);
+    //   notifyListeners();
+    // });
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -65,6 +71,23 @@ class ChatModel extends Model {
       var userId = jsonData.map((m) => m['user_id']);
       print(connectionId);
       print(userId);
+    });
+  }
+
+  // //Connection Check
+  void connection() {
+    String usertoken = StorageManager.sharedPreferences.getString(token);
+    for (var event in EVENTS) {
+      print("Checking");
+      socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
+    }
+    socket.on("disconnect", (data) => showToast("Disconnected"));
+    socket.on("reconnect", (data) {
+      // showToast("Reconnecting");
+      print("reconnecting");
+      socket.emit('connect-user', usertoken);
+      showToast("Connected");
+      notifyListeners();
     });
   }
 
@@ -148,10 +171,10 @@ class ChatModel extends Model {
   ///[For Conversation List]
   List<Chatlist> conversationlist() {
     print("Getting Chat List");
-    socket.once("conversation", (data) {
-      print(data);
+    socket.on("conversation", (data) {
+      print("----------------------------------------------------");
+      print(data.toString());
       chatlist.clear();
-      // LocalNotifications().notification(1,"new", "message");
       var response = ResponseData.fromJson(data);
       for (var i = 0; i < response.data.length; i++) {
         Chatlist chat = Chatlist.fromMap(response.data[i]);
@@ -166,7 +189,7 @@ class ChatModel extends Model {
     print("Chat Updated");
     socket.on("chat-updated", (data) {
       bookingdata = Bookingstatus(data["booking_id"], data["user_id"],
-          data["booking_user_id"], data["status"]);
+          data["booking_user_id"], data["status"], data["created_at"]);
       print(data.toString());
       print(bookingdata.bookingid);
       print(bookingdata.id);
@@ -191,7 +214,7 @@ class ChatModel extends Model {
     print("Received Messages");
     socket.clearListeners();
     socket.on("receiver-peer", (data) {
-      if (data['sender_id'] == id) {
+      if (data['sender_id'] == id || data['receiver_id'] == id) {
         message.insert(
             0,
             Message(data['message'], data['sender_id'], data['receiver_id'],
@@ -201,7 +224,7 @@ class ChatModel extends Model {
       notifyListeners();
     });
     socket.on("receiver-attach", (data) {
-      if (data["sender_id"] == id) {
+      if (data["sender_id"] == id || data['receiver_id'] == id) {
         message.insert(
             0,
             Message("", data['sender_id'], data['receiver_id'], data["time"],

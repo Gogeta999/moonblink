@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
+import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
 import 'package:moonblink/ui/pages/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
@@ -12,14 +14,18 @@ import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
+import 'package:moonblink/ui/pages/signIO/newregisterpage.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/ui/pages/signIO/newloginpage.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
+import 'package:moonblink/ui/pages/user/blocked_user_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
+import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 
 import '../ui/pages/terms_and_conditions_page.dart';
@@ -38,6 +44,7 @@ class RouteName {
   static const String updateprofile = 'updateprofile';
   static const String otp = 'otp';
   static const String login = 'login';
+  static const String resetpassword = 'resetpassword';
   static const String register = 'register';
   static const String registerAsPartner = 'registerAsPartner';
   static const String search = 'search';
@@ -51,6 +58,9 @@ class RouteName {
   static const String newUserSwiperPage = 'newUserSwiperPage';
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
   static const String licenseAgreement = 'licenseAgreement';
+  static const String blockedUsers = 'blockedUsers';
+  static const String applyForQualification = 'applyForQualification';
+  static const String pubgMobile = 'pubgMobile';
 }
 
 class Router {
@@ -61,9 +71,13 @@ class Router {
       case RouteName.newUserSwiperPage:
         return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
-        return CupertinoPageRoute(builder: (_) => TermsAndConditions());
+        return CupertinoPageRoute(
+            builder: (_) =>
+                TermsAndConditions(showAccept: settings.arguments ?? true));
       case RouteName.licenseAgreement:
-        return CupertinoPageRoute(builder: (_) => LicenseAgreement());
+        return CupertinoPageRoute(
+            builder: (_) =>
+                LicenseAgreement(showAccept: settings.arguments ?? true));
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));
@@ -91,12 +105,16 @@ class Router {
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
+      case RouteName.resetpassword:
+        return CupertinoPageRoute(builder: (_) => ResetPasswordPage());
       case RouteName.partnerDetail:
         return CupertinoPageRoute(
             builder: (_) => PartnerDetailPage(settings.arguments));
       case RouteName.chatBox:
         return CupertinoPageRoute(
             builder: (_) => ChatBoxPage(settings.arguments));
+      case RouteName.blockedUsers:
+        return CupertinoPageRoute(builder: (_) => BlockedUserPage());
 
       /// [get some error to pass params in route name method, using simple push method first]
       // case RouteName.partnerDetail:
@@ -112,9 +130,7 @@ class Router {
       case RouteName.updateprofile:
         return CupertinoPageRoute(
             builder: (_) => UpdatePartnerProfilePage(
-                partnerUser: settings.arguments != null
-                    ? settings.arguments
-                    : 'Unknown Data'));
+                partnerUser: settings.arguments ?? 'Unknown data'));
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:
@@ -123,6 +139,11 @@ class Router {
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));
+      case RouteName.applyForQualification:
+        return CupertinoPageRoute(builder: (_) => ApplyForQualification());
+      case RouteName.pubgMobile:
+        return CupertinoPageRoute(builder: (_) => PubgMobile());
+
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(
