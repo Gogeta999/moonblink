@@ -59,7 +59,7 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                       Container(
                         child: Text(
-                          S.of(context).otpWelcomePartner,
+                          G.of(context).otpWelcomePartner,
                           style: Theme.of(context)
                               .accentTextTheme
                               .headline6
@@ -81,14 +81,14 @@ class _OtpPageState extends State<OtpPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: S.of(context).labelphno,
+                                label: G.of(context).labelphno,
                                 icon: FontAwesomeIcons.phone,
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
                               ),
                               OtpTextField(
                                 _phoneController,
-                                label: S.of(context).labelotp,
+                                label: G.of(context).labelotp,
                                 icon: FontAwesomeIcons.sms,
                                 controller: _otpCodeController,
                                 keyboardType: TextInputType.number,
@@ -123,7 +123,7 @@ class SignAsPartnerButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              S.of(context).otpSignAsPartnerButton,
+              G.of(context).otpSignAsPartnerButton,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6

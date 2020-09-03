@@ -34,10 +34,10 @@ class SearchResults extends StatelessWidget {
           return SmartRefresher(
               controller: model.refreshController,
               header: ShimmerHeader(
-                  text: Text(S.of(context).pullDownToRefresh,
+                  text: Text(G.of(context).pullDownToRefresh,
                       style: TextStyle(color: Colors.grey, fontSize: 22))),
               footer: ShimmerFooter(
-                  text: Text(S.of(context).pullTopToLoad,
+                  text: Text(G.of(context).pullTopToLoad,
                       style: TextStyle(color: Colors.grey, fontSize: 22))),
               onRefresh: model.refresh,
               onLoading: model.loadMore,

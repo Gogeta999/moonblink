@@ -25,7 +25,6 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   double _endValue = 0.0;
   var duration = 0.0;
   File video;
-  bool _uploadDone = false;
   bool _isPlaying = false;
   bool _progressVisibility = false;
 
@@ -36,7 +35,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
     });
 
     String _value;
-    if (duration < 10500) {
+    if (duration < 11000) {
       await widget._trimmer
           .saveTrimmedVideo(
               startValue: _startValue,
@@ -62,19 +61,17 @@ class _VideoTrimmer extends State<VideoTrimmer> {
               await MultipartFile.fromFile(storyPath, filename: 'video.mp4'),
           'media_type': 2
         });
-
+        print(
+            "===============================================================");
         var response = await DioUtils()
             .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
         if (response.errorCode == 1) {
           setState(() {
             _progressVisibility = false;
-            _uploadDone = !_uploadDone;
           });
           Navigator.of(context)
               .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
-          // Navigator.of(context).pushNamed(RouteName.network);
         }
-        // return Story.fromMap(response.data);
         return response.data;
       });
       return _value;
@@ -87,15 +84,11 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).trimYourVideo),
+        title: Text(G.of(context).trimYourVideo),
       ),
       body: WillPopScope(
         onWillPop: () async {
-          if (_progressVisibility == false) {
-            return true;
-          } else {
-            return false;
-          }
+          return !_progressVisibility;
         },
         child: Builder(
           builder: (context) => Center(
@@ -118,14 +111,14 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                         : () async {
                             _saveVideo().then((outputPath) {
                               if (outputPath == null) {
-                                showToast(S.of(context).toastvideooverlimit);
+                                showToast(G.of(context).toastvideooverlimit);
                                 _progressVisibility = false;
                               } else {
                                 print('OUTPUT PATH: $outputPath');
                               }
                             });
                           },
-                    child: Text(S.of(context).upload),
+                    child: Text(G.of(context).upload),
                   ),
                   Expanded(
                     child: VideoViewer(),

@@ -39,6 +39,10 @@ class _MainTabPageState extends State<MainTabPage>
   DateTime _lastPressed;
 
   _MainTabPageState(this.initPage);
+  // @override
+  // void dipose() {
+  //   dipose();
+  // }
 
   @override
   void initState() {
@@ -46,11 +50,13 @@ class _MainTabPageState extends State<MainTabPage>
     //PushNotificationsManager().init();
     if (usertoken != null) {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
+      ScopedModel.of<ChatModel>(context).conversationlist();
     }
     setState(() {
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
+
     super.initState();
   }
 
@@ -63,20 +69,64 @@ class _MainTabPageState extends State<MainTabPage>
               DateTime.now().difference(_lastPressed) > Duration(seconds: 1)) {
             // if time is separate more than 1 second, then continue to count
             _lastPressed = DateTime.now();
+            // showToast("You Really want to out?");
             return false;
           }
           return true;
         },
         child: PageView.builder(
           // this ctx is also context, but avoid to affect from PageState's context
-          itemBuilder: (ctx, index) => pages[index],
+          itemBuilder: (ctx, index) {
+            // pages[index];
+            return GestureDetector(
+              //Horizontal Swipe
+              onHorizontalDragEnd: (details) {
+                //Swipe right
+                if (details.primaryVelocity < 0) {
+                  print("Swiping right");
+                  if (index >= 0) {
+                    index++;
+                    // setState(() {
+                    //   _selectedIndex = index;
+                    // });
+                    _pageController.animateTo(
+                        MediaQuery.of(context).size.width * index,
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.ease);
+
+                    // _pageController.jumpToPage(index);
+                  }
+                }
+                //Swipe left
+                else if (details.primaryVelocity > 0) {
+                  print("Swiping left");
+                  if (index < pages.length) {
+                    index--;
+                    // setState(() {
+                    //   _selectedIndex = index;
+                    // });
+                    _pageController.animateTo(
+                        MediaQuery.of(context).size.width * index,
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.ease);
+                    // _pageController.jumpToPage(index);
+                  }
+                }
+              },
+              child: pages[index],
+            );
+          },
           itemCount: pages.length,
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
           onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
+            setState(
+              () {
+                _selectedIndex = index;
+                print('index num is: $_selectedIndex');
+              },
+            );
           },
         ),
       ),
@@ -84,15 +134,15 @@ class _MainTabPageState extends State<MainTabPage>
         child: FancyBottomNavigation(
           tabs: [
             TabData(
-                iconData: IconFonts.homePageIcon, title: S.of(context).tabHome),
+                iconData: IconFonts.homePageIcon, title: G.of(context).tabHome),
             TabData(
-                iconData: IconFonts.chatPageIcon, title: S.of(context).tabChat),
+                iconData: IconFonts.chatPageIcon, title: G.of(context).tabChat),
             TabData(
                 iconData: IconFonts.followingPageIcon,
-                title: S.of(context).tabFollowing),
+                title: G.of(context).tabFollowing),
             TabData(
                 iconData: IconFonts.statusPageIcon,
-                title: S.of(context).tabUser),
+                title: G.of(context).tabUser),
           ],
           initialSelection: initPage,
           // inactiveIconSize: 30,
@@ -104,13 +154,11 @@ class _MainTabPageState extends State<MainTabPage>
           shadowAllowance: 18,
           activeIconColor: Colors.white,
           barHeight: 53,
-
+          pageController: _pageController,
           circleColor: Theme.of(context).accentColor,
           onTabChangedListener: (index) {
-            _pageController.jumpToPage(index);
-            setState(() {
-              _selectedIndex = index;
-            });
+            _pageController.animateTo(MediaQuery.of(context).size.width * index,
+                duration: Duration(milliseconds: 10), curve: Curves.ease);
           },
         ),
       ),

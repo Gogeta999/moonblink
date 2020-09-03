@@ -68,7 +68,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
             var validator = widget.validator ?? (_) => null;
             return text.trim().length > 0
                 ? validator(text)
-                : S.of(context).fieldNotEmpty;
+                : G.of(context).fieldNotEmpty;
           },
           focusNode: widget.focusNode,
           textInputAction: widget.textInputAction,

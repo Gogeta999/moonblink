@@ -1,7 +1,10 @@
 class Api {
   // // BASE URL
   static const String BASE = "https://moonblinkuniverse.com/";
-  // static const String BASE = "https://128.199.254.89/";
+  //Dev Server Address in IP
+  static const String DEV = "http://157.230.35.18/";
+  // Production Address in IP
+  //static const String BASE = "https://128.199.254.89/";
 
   /// Story for normal user
   static const String STORY = 'moonblink/api/v1/social/stories';
@@ -35,7 +38,8 @@ class Api {
       '/moonblink/api/v1/user/'; //full endpoint = '/moonblink/api/v1/user/10/coin/topup'
 
   //ad reward
-  static const String AdReward = 'moonblink/api/v1/user/'; // eg - moonblink/api/v1/user/{user_id}/ads/view
+  static const String AdReward =
+      'moonblink/api/v1/user/'; // eg - moonblink/api/v1/user/{user_id}/ads/view
 
   // register
   static const String REGISTER = "moonblink/api/v1/register";
@@ -48,6 +52,19 @@ class Api {
 
   // Get otp again
   static const String GetOtpCode = "moonblink/api/v1/user/";
+
+  //get blocked List
+  static const String getUserBlockedList =
+      'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block/list
+
+  // Block or unblock user
+  static const String BlockOrUnblock =
+      'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block
+
+  // report user
+  static const String ReportUser =
+      'moonblink/api/v1/social/user/'; //moonblink/api/v1/user/{partner_user_id}/report
+
   // login
   static const String LOGIN = 'moonblink/api/v1/login';
 
@@ -94,5 +111,12 @@ class Api {
       'moonblink/api/v1/social/user/'; //eg - moonblink/api/v1/social/user/4/transaction
 
   //get user transaction
-  static const String UserTransaction = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/4/transaction
+  static const String UserTransaction =
+      'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/4/transaction
+
+  //ForgetPassword
+  static const String ForgetPassword = "moonblink/api/v1/password/forget";
+
+  //Reset Password
+  static const String ResetPassword = "moonblink/api/v1/password/reset";
 }

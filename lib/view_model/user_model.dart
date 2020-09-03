@@ -26,6 +26,7 @@ class UserModel extends ChangeNotifier {
   saveUser(User user) {
     _user = user;
     notifyListeners();
+    print('sdfwerrefsgdsg' + user.toString());
     StorageManager.localStorage.setItem(mUser, user);
   }
 

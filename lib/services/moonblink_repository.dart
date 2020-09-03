@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/adModel.dart';
+import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
@@ -17,6 +18,7 @@ import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -53,9 +55,8 @@ class MoonBlinkRepository {
 
   // get Messages
   static Future message(int id) async {
-    var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().get(
-        Api.Messages + '$id/messages?limit=20&page=1');
+    var response =
+        await DioUtils().get(Api.Messages + '$id/messages?limit=40&page=1');
     return response.data['data']
         .map<Lastmsg>((item) => Lastmsg.fromMap(item))
         .toList();
@@ -173,41 +174,59 @@ class MoonBlinkRepository {
     return UserTransaction.fromJson(response.data);
   }
 
+  /// need to remove from database
+  static Future blockOrUnblock(int blockUserId, int status) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    FormData formData =
+        FormData.fromMap({'block_user_id': blockUserId, 'status': status});
+    var response = await DioUtils()
+        .postwithData(Api.BlockOrUnblock + '$userId/block', data: formData);
+    return response;
+  }
+
+  /// report user
+  static Future reportUser(int partnerId) async {
+    var response = await DioUtils().post(Api.ReportUser + '$partnerId/report');
+    return response;
+  }
+
+  ///get blocked list
+  static Future getUserBlockedList({int limit, int page}) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+        Api.getUserBlockedList + '$userId/block/list',
+        queryParameters: {'limit': limit, 'page': page});
+    return BlockedUsersList.fromJson(response.data);
+  }
+
   /// [login api]
   //login with email & password
   static Future login(String mail, String password, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'mail': mail,
-      'password': password,
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'mail': mail, 'password': password, 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
   static Future loginWithFacebook(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'facebook',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'facebook', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
   static Future loginWithGoogle(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'google',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'google', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
+
   ///token means IdentityToken
   static Future loginWithApple(String token, String fcmToken) async {
-    var response = await DioUtils().post(Api.LOGIN, queryParameters: {
-      'access_token': token,
-      'type': 'apple',
-      'fcm_token': fcmToken
-    });
+    FormData formData = FormData.fromMap(
+        {'access_token': token, 'type': 'apple', 'fcm_token': fcmToken});
+    var response = await DioUtils().postwithData(Api.LOGIN, data: formData);
     return User.fromJsonMap(response.data);
   }
 
@@ -218,14 +237,14 @@ class MoonBlinkRepository {
   }
 
   //Registerwith dio_moonblink another method
-  static Future register(
-      String mail, String name, String lastname, String password) async {
-    var response = await DioUtils().post(Api.REGISTER, queryParameters: {
+  static Future register(String mail, String name, String password) async {
+    FormData formData = FormData.fromMap({
       'mail': mail,
       'name': name,
-      'last_name': lastname,
+      // 'last_name': lastname,
       'password': password,
     });
+    var response = await DioUtils().postwithData(Api.REGISTER, data: formData);
     // print(response);
     return response.data;
   }
@@ -234,9 +253,11 @@ class MoonBlinkRepository {
   static Future registAsPartner() async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var usertoken = StorageManager.sharedPreferences.getString(token);
-    var response = await DioUtils().post(
+    FormData formData =
+        FormData.fromMap({'Authorization': 'Bearer' + usertoken.toString()});
+    var response = await DioUtils().postwithData(
         Api.RegisterAsPartner + '$userid/register',
-        queryParameters: {'Authorization': 'Bearer' + usertoken.toString()});
+        data: formData);
     return response.data;
   }
 
@@ -279,8 +300,9 @@ class MoonBlinkRepository {
   // top up
   static Future topUp(String productId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().post(Api.TopUp + '$userId/coin/topup',
-        queryParameters: {'product_id': productId});
+    FormData formData = FormData.fromMap({'product_id': productId});
+    var response = await DioUtils()
+        .postwithData(Api.TopUp + '$userId/coin/topup', data: formData);
     return response.data;
   }
 
@@ -361,5 +383,22 @@ class MoonBlinkRepository {
       'address': address
     });
     return User.fromJsonMap(response.data);
+  }
+
+  //Forget Password
+  static Future forgetpassword(String mail) async {
+    FormData formData = FormData.fromMap({'mail': mail});
+    var response =
+        await DioUtils().postwithData(Api.ForgetPassword, data: formData);
+    return response.data;
+  }
+
+  //Reset Password
+  static Future resetpassword(String mail, int otp, String password) async {
+    FormData formData =
+        FormData.fromMap({'mail': mail, 'otp': otp, 'password': password});
+    var response =
+        await DioUtils().postwithData(Api.ResetPassword, data: formData);
+    return response.data;
   }
 }

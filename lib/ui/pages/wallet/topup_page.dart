@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,11 +44,9 @@ class _TopUpPageState extends State<TopUpPage>
   ///to monitor purchase error event.
   StreamSubscription _purchaseErrorSubscription;
 
-  final List<String> _productLists = [
-    'coin_200',
-    'coin_500',
-    'coin_1000'
-  ]; //for now only android
+  final List<String> _productLists = Platform.isAndroid
+      ? ['coin_200', 'coin_500', 'coin_1000']
+      : ['coin_200_ios', 'coin_500', 'coin_1000']; //for now only android
   List<IAPItem> _items = [];
   // ignore: unused_field
   List<PurchasedItem> _purchases = [];
@@ -56,8 +55,9 @@ class _TopUpPageState extends State<TopUpPage>
 
   bool isLoading = false;
   bool isAdLoading = false;
+  bool isPageLoading = false;
 
-  Wallet wallet = Wallet(value: 0);
+  Wallet wallet;
 
   @override
   void initState() {
@@ -72,9 +72,15 @@ class _TopUpPageState extends State<TopUpPage>
   }
 
   void asyncInitState() async {
+    setState(() {
+      isPageLoading = true;
+    });
     await FlutterInappPurchase.instance.initConnection;
     await getItems();
     await getUserWallet();
+    setState(() {
+      isPageLoading = false;
+    });
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
@@ -156,7 +162,7 @@ class _TopUpPageState extends State<TopUpPage>
       _purchaseErrorSubscription.cancel();
       _purchaseErrorSubscription = null;
     }
-    if(RewardedVideoAd.instance.listener != null) {
+    if (RewardedVideoAd.instance.listener != null) {
       RewardedVideoAd.instance.listener = null;
     }
   }
@@ -254,7 +260,7 @@ class _TopUpPageState extends State<TopUpPage>
       var msg = await MoonBlinkRepository.adReward();
       print(msg);
       await getUserWallet();
-    }catch (err) {
+    } catch (err) {
       print(err);
     }
     setState(() {
@@ -262,7 +268,7 @@ class _TopUpPageState extends State<TopUpPage>
     });
   }
 
-  Widget _buildProductListTile(IAPItem iapItem) {
+  Widget _buildProductListTile(IAPItem iapItem, String productName) {
     return Container(
         alignment: Alignment.center,
         // // color: Colors.grey,
@@ -277,7 +283,7 @@ class _TopUpPageState extends State<TopUpPage>
             FontAwesomeIcons.coins,
             color: Colors.amber[500],
           ),
-          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title}'),
+          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title.isEmpty ? productName : iapItem.title}'),
           subtitle: Text('${iapItem.price} ${iapItem.currency}'),
           trailing: RaisedButton(
               color: Theme.of(context).accentColor,
@@ -304,7 +310,7 @@ class _TopUpPageState extends State<TopUpPage>
           ),
           title: Text(
               'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-          trailing: isLoading ? CircularProgressIndicator() : null,
+          trailing: isLoading ? CupertinoActivityIndicator() : null,
         ));
   }
 
@@ -352,7 +358,7 @@ class _TopUpPageState extends State<TopUpPage>
               color: Theme.of(context).iconTheme.color,
             ),
             title: Text('Watch an Ad to get free coins.'),
-            trailing: isAdLoading ? CircularProgressIndicator() : null,
+            trailing: isAdLoading ? CupertinoActivityIndicator() : null,
           )),
     );
   }
@@ -361,7 +367,16 @@ class _TopUpPageState extends State<TopUpPage>
     if (_items.isEmpty || wallet == null) {
       return ViewStateErrorWidget(
         error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () => {getItems(), getUserWallet() /*userWallet.refresh()*/},
+        onPressed: () async {
+          setState(() {
+            isPageLoading = true;
+          });
+          await getItems();
+          await getUserWallet();
+          setState(() {
+            isPageLoading = false;
+          });
+        },
       );
     } else {
       return Column(
@@ -372,13 +387,21 @@ class _TopUpPageState extends State<TopUpPage>
               itemCount: _items.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return _buildProductListTile(_items[index]);
+                String productName = '';
+                if (_items[index].productId == 'coin_200_ios') {
+                  productName = '200 Moon Go Coins';
+                } else if (_items[index].productId == 'coin_500') {
+                  productName = '500 Moon Go Coins';
+                } else if (_items[index].productId == 'coin_1000') {
+                  productName = '1000 Moon Go Coins';
+                }
+                return _buildProductListTile(_items[index], productName);
               },
             ),
           ),
           _buildCurrentCoinAmount(),
           _buildAds(),
-          _buildTopUpWithCustomerService(),
+          if (Platform.isAndroid) _buildTopUpWithCustomerService(),
         ],
       );
     }
@@ -388,12 +411,15 @@ class _TopUpPageState extends State<TopUpPage>
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushNamedAndRemoveUntil(context, RouteName.main ,(route) => false, arguments: 3);
-        return false;
-      },
-      child: _buildWalletList()
-    );
+        onWillPop: () async {
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.main, (route) => false,
+              arguments: 3);
+          return false;
+        },
+        child: isPageLoading
+            ? Center(child: CupertinoActivityIndicator())
+            : _buildWalletList());
   }
 
   void _openFacebookPage() async {
@@ -420,6 +446,7 @@ class _TopUpPageState extends State<TopUpPage>
     setState(() {
       isAdLoading = true;
     });
-    await RewardedVideoAd.instance.load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
+    await RewardedVideoAd.instance
+        .load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
   }
 }

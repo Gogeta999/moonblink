@@ -59,7 +59,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     // onTap: ,
                     child: Image.network(
                       snapshot.data.adUrl,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       filterQuality: FilterQuality.high,
                     ),
                   );
@@ -131,7 +131,7 @@ class AnimatedCountdown extends AnimatedWidget {
   Widget build(BuildContext context) {
     var value = animation.value + 1;
     return Text(
-      (value == 0 ? '' : '$value | ') + S.of(context).splashSkip,
+      (value == 0 ? '' : '$value | ') + G.of(context).splashSkip,
       style: TextStyle(color: Colors.white),
     );
   }

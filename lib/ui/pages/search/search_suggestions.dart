@@ -83,7 +83,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
               FlatButton(
                 onPressed: null,
                 child: Text(
-                  S.of(context).searchHistory,
+                  G.of(context).searchHistory,
                   style: Provider.of<TextStyle>(context),
                 ),
               ),
@@ -95,12 +95,12 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
                             textColor: Provider.of<Color>(context),
                             onPressed: model.clearHistory,
                             icon: Icon(Icons.clear),
-                            label: Text(S.of(context).searchClear))
+                            label: Text(G.of(context).searchClear))
                         : FlatButton.icon(
                             textColor: Provider.of<Color>(context),
                             onPressed: model.initData,
                             icon: Icon(Icons.refresh),
-                            label: Text(S.of(context).searchRetry))),
+                            label: Text(G.of(context).searchRetry))),
               ),
             ],
           ),

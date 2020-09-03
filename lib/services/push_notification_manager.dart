@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
+import 'package:moonblink/base_widget/update_profile_dialog.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/main.dart';
+import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
@@ -15,10 +18,11 @@ import 'navigation_service.dart';
 const String FcmTypeMessage = 'message';
 const String FcmTypeBooking = 'booking';
 const String FcmTypeVoiceCall = 'voice_call';
+const String FcmTypeGameIdUpdate = 'game_id_update';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
-
+  // AndroidNotificationChannel
   factory PushNotificationsManager() => _instance;
 
   static final PushNotificationsManager _instance =
@@ -36,6 +40,8 @@ class PushNotificationsManager {
       _firebaseMessaging.onTokenRefresh.listen((event) {
         print('onTokenRefresh: $event');
       });
+      print('FCM_Token: ${await getFcmToken()}');
+      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
       _initialized = true;
     }
   }
@@ -56,6 +62,20 @@ class PushNotificationsManager {
     }
   }
 
+  Future<void> _createLocalNotiChannel(
+      String id, String name, String description) async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var androidNotificationChannel = AndroidNotificationChannel(
+      id,
+      name,
+      description,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidNotificationChannel);
+  }
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
     ..autoInitEnabled();
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -64,6 +84,7 @@ class PushNotificationsManager {
   final BookingManager _bookingManager = BookingManager();
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
+  final _UpdateProfile _updateProfile = _UpdateProfile();
 
   Future<String> getFcmToken() async {
     return _firebaseMessaging.getToken();
@@ -149,14 +170,14 @@ class PushNotificationsManager {
     print('onMessage: $message');
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
-    print('$fcmType');
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
-      //_showMessageNotification(message);
-      print('$fcmType');
+      _showMessageNotification(message);
     } else if (fcmType == FcmTypeVoiceCall) {
       _showVoiceCallNotification(message);
+    } else if (fcmType == FcmTypeGameIdUpdate) {
+      _showGameIdUpdateDialog(message);
     }
     return;
   }
@@ -207,6 +228,43 @@ class PushNotificationsManager {
     }
   }
 
+  _showGameIdUpdateDialog(message) async {
+    String name = '';
+    String profileImage = '';
+    String coverImage = '';
+    String bios = '';
+
+    if (Platform.isAndroid) {
+      name = message['data']['name'];
+      profileImage = message['data']['profile_image'];
+      coverImage = message['data']['cover_image'];
+      bios = message['data']['bios'];
+    } else if (Platform.isIOS) {
+      name = message['name'];
+      profileImage = message['profile_image'];
+      coverImage = message['cover_image'];
+      bios = message['bios'];
+    } else {
+      showToast('This platform is not supported');
+      return;
+    }
+
+    print(name);
+
+    final PartnerProfile  partnerProfile = PartnerProfile(
+      profileImage: profileImage, coverImage: coverImage,
+      bios: bios,
+    );
+
+    final PartnerUser partnerUser = PartnerUser(
+      partnerName: name, prfoileFromPartner: partnerProfile
+    );
+
+    _updateProfile.prepare(partnerUser: partnerUser);
+
+    _updateProfile.showUpdateProfileDialog();
+  }
+
   _showBookingDialog(message) async {
     int userId = 0;
     int bookingId = 0;
@@ -244,8 +302,7 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('booking', 'Booking');
-
+        setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
     int bookingId = 0;
     int bookingUserId = 0;
@@ -300,37 +357,40 @@ class PushNotificationsManager {
 
   //For message Fcm
   Future<void> _showMessageNotification(message) async {
-    NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('message', 'Messaging');
-    int partnerId = 0;
-    String title = '';
-    String body = '';
-    String payload = '';
+    bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    if (!atChatBox) {
+      NotificationDetails platformChannelSpecifics =
+          setUpPlatformSpecifics('message', 'Messaging', song: null);
+      int partnerId = 0;
+      String title = '';
+      String body = '';
+      String payload = '';
 
-    if (Platform.isAndroid) {
-      partnerId = json.decode(message['data']['sender_id']);
-      title = message['notification']['title'].toString();
-      body = message['notification']['body'].toString();
-      payload = message['data']['fcm_type'];
-    } else if (Platform.isIOS) {
-      partnerId = json.decode(message['sender_id']);
-      title = message['aps']['alert']['title'].toString();
-      body = message['aps']['alert']['body'].toString();
-      payload = message['fcm_type'];
-    } else {
-      showToast('This platform is not supported');
-      return;
+      if (Platform.isAndroid) {
+        partnerId = json.decode(message['data']['sender_id']);
+        title = message['notification']['title'].toString();
+        body = message['notification']['body'].toString();
+        payload = message['data']['fcm_type'];
+      } else if (Platform.isIOS) {
+        partnerId = json.decode(message['sender_id']);
+        title = message['aps']['alert']['title'].toString();
+        body = message['aps']['alert']['body'].toString();
+        payload = message['fcm_type'];
+      } else {
+        showToast('This platform is not supported');
+        return;
+      }
+
+      _message.prepare(partnerId: partnerId);
+
+      await _flutterLocalNotificationsPlugin
+          .show(0, title, body, platformChannelSpecifics, payload: payload);
     }
-
-    _message.prepare(partnerId: partnerId);
-
-    await _flutterLocalNotificationsPlugin
-        .show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
   Future<void> _showVoiceCallNotification(message) async {
     NotificationDetails platformChannelSpecifics =
-        setUpPlatformSpecifics('voicecall', 'Voice Call');
+        setUpPlatformSpecifics('voicecall', 'Voice Call', song: null);
 
     String callChannel = '';
     String title = '';
@@ -369,7 +429,7 @@ class PushNotificationsManager {
         importance: Importance.Max,
         priority: Priority.High,
         ongoing: true,
-        sound: RawResourceAndroidNotificationSound('moonblinkNoti'),
+        sound: RawResourceAndroidNotificationSound('moonblink_noti'),
         autoCancel: false);
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
@@ -381,24 +441,43 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
-  NotificationDetails setUpPlatformSpecifics(name, channelName) {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'com.moonuniverse.moonblink.$name', //same package name for both platform
-      'Moon Blink $channelName',
-      'Moon Blink',
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('moonblink_noti'),
+  NotificationDetails setUpPlatformSpecifics(name, channelName, {String song}) {
+    if (song != null) {
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'com.moonuniverse.moonblink.$name', //same package name for both platform
+        'Moon Blink $channelName',
+        'Moon Blink',
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('$song'),
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High,
+      );
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true,
+        sound: 'moonblink_noti.m4r'
+      );
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      return platformChannelSpecifics;
+    } else {
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'com.moonuniverse.moonblink.$name', //same package name for both platform
+        'Moon Blink $channelName',
+        'Moon Blink',
+        playSound: true,
 
-      enableVibration: true,
-      importance: Importance.Max,
-      priority: Priority.High,
-    );
-
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true);
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    return platformChannelSpecifics;
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High,
+      );
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true,
+      );
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      return platformChannelSpecifics;
+    }
   }
 
   Future<void> cancelVoiceCallNotification() async {
@@ -435,5 +514,28 @@ class _VoiceCall {
     if (!atVoiceCallPage)
       locator<NavigationService>()
           .navigateTo(RouteName.callScreen, arguments: _callChannel);
+  }
+}
+
+class _UpdateProfile {
+  PartnerUser partnerUser;
+
+  void prepare({PartnerUser partnerUser}) {
+    this.partnerUser = partnerUser;
+  }
+
+  void navigateToUpdateProfile() {
+    locator<NavigationService>()
+        .navigateTo(RouteName.updateprofile, arguments: partnerUser);
+  }
+
+  void showUpdateProfileDialog() {
+    showDialog(
+        context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
+        builder: (context) => UpdateProfileDialog(
+          partnerUser: this.partnerUser,
+          navigateToProfilePage: () => this.navigateToUpdateProfile(),
+        )
+    );
   }
 }
