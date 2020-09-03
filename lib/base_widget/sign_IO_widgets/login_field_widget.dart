@@ -60,6 +60,8 @@ class _LoginTextFieldState extends State<LoginTextField> {
       child: ValueListenableBuilder(
         valueListenable: obscureNotifier,
         builder: (context, value, child) => TextFormField(
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
           controller: controller,
           obscureText: value,
           validator: (text) {
@@ -75,7 +77,16 @@ class _LoginTextFieldState extends State<LoginTextField> {
           decoration: InputDecoration(
             prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
             hintText: widget.label,
-            hintStyle: TextStyle(fontSize: 16),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: theme.accentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
+            hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
             suffixIcon: LoginTextFieldSuffixIcon(
               controller: controller,
               obscureText: widget.obscureText,
@@ -118,7 +129,7 @@ class LoginTextFieldSuffixIcon extends StatelessWidget {
               builder: (context, value, child) => Icon(
                 CupertinoIcons.eye,
                 size: 30,
-                color: value ? theme.hintColor : theme.accentColor,
+                color: value ? Colors.white : theme.accentColor,
               ),
             ),
           ),

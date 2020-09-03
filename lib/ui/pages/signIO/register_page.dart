@@ -115,6 +115,7 @@ class RegisterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoginButtonWidget(
+      color: Theme.of(context).accentColor,
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
