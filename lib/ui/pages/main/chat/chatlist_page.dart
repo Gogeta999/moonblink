@@ -7,9 +7,12 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
+import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
+import 'package:moonblink/view_model/story_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -85,55 +88,68 @@ class _ChatListPageState extends State<ChatListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Scaffold(
         appBar: AppBar(title: AppbarLogo()),
-        body: ScopedModelDescendant<ChatModel>(
-          builder: (context, child, model) {
-            model.connection();
-            chatlist = model.conversationlist();
-            if (chatlist.isEmpty) {
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: StatusBarUtils.systemUiOverlayStyle(context),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                              ImageHelper.wrapAssetsImage('noFollowing.jpg'),
-                            ),
-                            fit: BoxFit.cover)),
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Positioned(
-                          top: 200,
-                          child: Text(
-                            G.of(context).noChatHistory,
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+        body:
+            ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+          model.connection();
+          chatlist = model.conversationlist();
+          if (chatlist.isEmpty) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: StatusBarUtils.systemUiOverlayStyle(context),
+                child: Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                            ImageHelper.wrapAssetsImage('noFollowing.jpg'),
                           ),
+                          fit: BoxFit.cover)),
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Positioned(
+                        top: 200,
+                        child: Text(
+                          G.of(context).noChatHistory,
+                          style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
-                      ],
-                    ),
-                  ));
-            } else {
-              print(
-                  "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-              print(chatlist.length);
-
-              return CustomScrollView(slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      Chatlist chat = chatlist[index];
-                      return buildtile(chat);
-                    },
-                    childCount: chatlist?.length ?? 0,
+                      ),
+                    ],
                   ),
-                )
-              ]);
-            }
-          },
-        ));
+                ));
+          } else {
+            print(
+                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            print(chatlist.length);
+
+            return ProviderWidget<StoryModel>(
+              model: StoryModel(),
+              onModelReady: (model) {
+                model.fetchStory();
+              },
+              builder: (context, storymodel, child) {
+                // print(storymodel.stories);
+                return CustomScrollView(slivers: <Widget>[
+                  if (storymodel.stories.isNotEmpty)
+                    StoryList(
+                      stories: storymodel.stories,
+                    ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        Chatlist chat = chatlist[index];
+                        return buildtile(chat);
+                      },
+                      childCount: chatlist?.length ?? 0,
+                    ),
+                  )
+                ]);
+              },
+            );
+          }
+        }));
   }
 }
