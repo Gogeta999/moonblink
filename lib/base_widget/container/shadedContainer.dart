@@ -18,8 +18,8 @@ class ShadedContainer extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: selected ? Theme.of(context).accentColor : Colors.grey,
-              spreadRadius: 2,
-              blurRadius: 2,
+              spreadRadius: 1,
+              // blurRadius: 2,
               offset: Offset(-5, 3), // changes position of shadow
             ),
           ],

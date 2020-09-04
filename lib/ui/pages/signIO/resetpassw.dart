@@ -8,7 +8,6 @@ import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/resetpassword_model.dart';
 

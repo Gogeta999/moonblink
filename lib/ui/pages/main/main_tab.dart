@@ -5,7 +5,9 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
+import 'package:moonblink/ui/pages/main/chat/newchatlist.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
+import 'package:moonblink/ui/pages/main/contacts/newcontactspage.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 

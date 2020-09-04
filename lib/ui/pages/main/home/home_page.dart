@@ -2,26 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/base_widget/appbarlogo.dart';
+import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
-import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/ui/pages/main/stories/storylist.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/home_model.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/scroll_controller_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import 'package:moonblink/ui/pages/main/stories/story_item.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -162,52 +157,5 @@ class HomePostList extends StatelessWidget {
         return PostItemWidget(item, index: index);
       }, childCount: homeModel.list?.length ?? 0),
     );
-  }
-}
-
-class StoryList extends StatelessWidget {
-  final List<Story> stories;
-  StoryList({this.stories});
-  @override
-  Widget build(BuildContext context) {
-    // HomeModel homeModel = Provider.of(context);
-    return SliverToBoxAdapter(
-        child: Column(
-      children: <Widget>[
-        Container(
-            height: 90,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: stories.length,
-                itemBuilder: (context, index) {
-                  // Story singleUserStories = homeModel.stories[index];
-                  int usertype =
-                      StorageManager.sharedPreferences.getInt(mUserType);
-
-                  if (usertype == 1 && index == 0) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 14),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(RouteName.imagepick);
-                        },
-                        child: CircleAvatar(
-                          radius: 33,
-                          backgroundColor: Colors.grey[300],
-                          child: Icon(Icons.add, size: 24, color: Colors.black),
-                        ),
-                      ),
-                    );
-                  }
-                  return StoryItemWidget(
-                    stories,
-                    index: index,
-                  );
-                })),
-        Divider(
-          color: Colors.grey,
-        ),
-      ],
-    ));
   }
 }
