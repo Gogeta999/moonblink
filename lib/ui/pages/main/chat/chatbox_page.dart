@@ -533,7 +533,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         model: CallModel(),
         builder: (context, model, child) {
           return FlatButton(
-            child: Text(G.of(context).end),
+            child: Text(
+              G.of(context).end,
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               model.endbooking(selfId, bookingid, 3);
             },
@@ -552,6 +555,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             icon: Icon(
               FontAwesomeIcons.phone,
               size: 20,
+              color: Colors.white,
             ),
             onPressed: () {
               // model.call(selfId, anotherPersonId, voiceChannelName);
@@ -570,7 +574,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           model: CallModel(),
           builder: (context, model, child) {
             return FlatButton(
-              child: Text(G.of(context).cancel),
+              child: Text(
+                G.of(context).cancel,
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 model.endbooking(selfId, bookingid, 6);
               },
@@ -746,7 +753,18 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             return Scaffold(
               appBar: AppBar(
                 title: GestureDetector(
-                    child: Text(partnermodel.partnerData.partnerName),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(partnermodel
+                              .partnerData.prfoileFromPartner.profileImage),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(partnermodel.partnerData.partnerName),
+                        ),
+                      ],
+                    ),
                     onTap: partnermodel.partnerData.type == 1
                         ? () {
                             Navigator.pushReplacementNamed(

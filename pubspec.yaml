@@ -35,6 +35,7 @@ dependencies:
   flutter_ffmpeg: ^0.2.10
   video_thumbnail: ^0.2.2
   # fancy_bottom_navigation: ^0.3.2
+  custom_navigation_bar: ^0.2.7
   fancy_bottom_navigation:
     git:
       url: https://github.com/skquark/fancy_bottom_navigation.git

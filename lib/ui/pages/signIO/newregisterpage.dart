@@ -1,16 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
-import 'package:moonblink/base_widget/TopCurvePanel_widget.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
-import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/view_model/register_model.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -61,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                             child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 55),
+                                  const EdgeInsets.symmetric(horizontal: 40),
                               child: Column(
                                 // crossAxisAlignment:
                                 //     CrossAxisAlignment.stretch,
