@@ -5,6 +5,7 @@ import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/search_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class ShadedContainer extends StatelessWidget {
   final Widget child;
   final Function ontap;
-  final bool selected;
-  ShadedContainer({this.child, this.ontap, this.selected});
+  ShadedContainer({this.child, this.ontap});
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +13,14 @@ class ShadedContainer extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(100),
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: selected ? Theme.of(context).accentColor : Colors.grey,
+              color: Colors.black,
               spreadRadius: 1,
               // blurRadius: 2,
-              offset: Offset(-5, 3), // changes position of shadow
+              offset: Offset(-5, 5), // changes position of shadow
             ),
           ],
         ),

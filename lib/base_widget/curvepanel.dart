@@ -26,3 +26,16 @@ class SecCurvePanel extends StatelessWidget {
     );
   }
 }
+
+class UserStatusCurve extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return ClipPath(
+      clipper: BottomClipper2(),
+      child: Container(
+          height: MediaQuery.of(context).size.height / 2.8,
+          color: theme.accentColor),
+    );
+  }
+}

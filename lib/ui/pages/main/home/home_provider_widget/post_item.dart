@@ -10,6 +10,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
@@ -198,13 +199,23 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   InkWell(
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                            width: 2,
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.grey
-                                                    : Colors.black,
+                                          border: Border(
+                                            top: BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.grey
+                                                  : Colors.black,
+                                            ),
+                                            bottom: BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.grey
+                                                  : Colors.black,
+                                            ),
                                           ),
                                         ),
                                         constraints: BoxConstraints(

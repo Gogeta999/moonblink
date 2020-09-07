@@ -9,6 +9,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/contact_model.dart';

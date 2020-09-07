@@ -95,43 +95,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     controller: _passwordCtrl,
                                     textInputAction: TextInputAction.done,
                                   ),
+
                                   SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ShadedContainer(
-                                        selected: male,
-                                        ontap: () {
-                                          setState(() {
-                                            male = !male;
-                                            female = false;
-                                          });
-                                        },
-                                        child: Text(
-                                          "Male",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      ShadedContainer(
-                                        selected: female,
-                                        ontap: () {
-                                          setState(() {
-                                            female = !female;
-                                            male = false;
-                                          });
-                                        },
-                                        child: Text(
-                                          "Female",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 20,
+                                    height: 40,
                                   ),
                                   RegisterButton(_mailCtrl, _nameCtrl,
                                       _passwordCtrl, model)
