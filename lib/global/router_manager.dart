@@ -14,6 +14,7 @@ import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
@@ -41,6 +42,7 @@ class RouteName {
   static const String updateprofile = 'updateprofile';
   static const String otp = 'otp';
   static const String login = 'login';
+  static const String resetpassword = 'resetpassword';
   static const String register = 'register';
   static const String registerAsPartner = 'registerAsPartner';
   static const String search = 'search';
@@ -67,9 +69,13 @@ class Router {
       case RouteName.newUserSwiperPage:
         return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
-        return CupertinoPageRoute(builder: (_) => TermsAndConditions(showAccept: settings.arguments ?? true));
+        return CupertinoPageRoute(
+            builder: (_) =>
+                TermsAndConditions(showAccept: settings.arguments ?? true));
       case RouteName.licenseAgreement:
-        return CupertinoPageRoute(builder: (_) => LicenseAgreement(showAccept: settings.arguments ?? true));
+        return CupertinoPageRoute(
+            builder: (_) =>
+                LicenseAgreement(showAccept: settings.arguments ?? true));
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));
@@ -97,6 +103,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
+      case RouteName.resetpassword:
+        return CupertinoPageRoute(builder: (_) => ResetPasswordPage());
       case RouteName.partnerDetail:
         return CupertinoPageRoute(
             builder: (_) => PartnerDetailPage(settings.arguments));
@@ -104,8 +112,8 @@ class Router {
         return CupertinoPageRoute(
             builder: (_) => ChatBoxPage(settings.arguments));
       case RouteName.blockedUsers:
-        return CupertinoPageRoute(
-          builder: (_) => BlockedUserPage());
+        return CupertinoPageRoute(builder: (_) => BlockedUserPage());
+
       /// [get some error to pass params in route name method, using simple push method first]
       // case RouteName.partnerDetail:
       //   // var posts = settings.arguments as PartnerUser;

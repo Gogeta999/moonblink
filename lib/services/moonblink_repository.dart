@@ -384,4 +384,21 @@ class MoonBlinkRepository {
     });
     return User.fromJsonMap(response.data);
   }
+
+  //Forget Password
+  static Future forgetpassword(String mail) async {
+    FormData formData = FormData.fromMap({'mail': mail});
+    var response =
+        await DioUtils().postwithData(Api.ForgetPassword, data: formData);
+    return response.data;
+  }
+
+  //Reset Password
+  static Future resetpassword(String mail, int otp, String password) async {
+    FormData formData =
+        FormData.fromMap({'mail': mail, 'otp': otp, 'password': password});
+    var response =
+        await DioUtils().postwithData(Api.ResetPassword, data: formData);
+    return response.data;
+  }
 }

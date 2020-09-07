@@ -33,6 +33,16 @@ class G {
     return Localizations.of<G>(context, G);
   }
 
+  /// ` and `
+  String get and {
+    return Intl.message(
+      ' and ',
+      name: 'and',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accept`
   String get accept {
     return Intl.message(
@@ -253,6 +263,16 @@ class G {
     );
   }
 
+  /// `By Signing in or up, you agree to `
+  String get bySigning {
+    return Intl.message(
+      'By Signing in or up, you agree to ',
+      name: 'bySigning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(
@@ -338,6 +358,16 @@ class G {
     return Intl.message(
       'Enter Call',
       name: 'enterCall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forget Password?`
+  String get forgetPassword {
+    return Intl.message(
+      'Forget Password?',
+      name: 'forgetPassword',
       desc: '',
       args: [],
     );
@@ -503,10 +533,10 @@ class G {
     );
   }
 
-  /// `License Agreement`
+  /// `User License Agreement`
   String get licenseagreement {
     return Intl.message(
-      'License Agreement',
+      'User License Agreement',
       name: 'licenseagreement',
       desc: '',
       args: [],
@@ -818,6 +848,16 @@ class G {
     return Intl.message(
       'Report user for posting inappropriate content.',
       name: 'reportContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` or `
+  String get or {
+    return Intl.message(
+      ' or ',
+      name: 'or',
       desc: '',
       args: [],
     );
