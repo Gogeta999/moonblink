@@ -81,6 +81,9 @@ class Api {
   //Game List
   static const String GameList = 'moonblink/api/v1/social/game/price';
 
+  //for choose_user_play_game_page
+  static const String UserPlayGame = '/moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/5/profile/game
+
   ///Booking
   static const String Booking = "moonblink/api/v1/social/user/";
 

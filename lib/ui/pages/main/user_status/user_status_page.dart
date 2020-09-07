@@ -342,10 +342,10 @@ class _UserListWidgetState extends State<UserListWidget> {
                 : _openFacebookPage),
 
         ///profile
-        /*PageCard(
+        PageCard(
             pageTitle: 'Profile',
             iconData: FontAwesomeIcons.userEdit,
-            onTap: () => Navigator.of(context).pushNamed(RouteName.pubgMobile)),*/
+            onTap: () => Navigator.of(context).pushNamed(RouteName.chooseUserPlayGames)),
 
         ///check app update
         PageCard(

@@ -212,23 +212,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     ///Testing
-                    /*SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text('Game Profile Page Testing'),
-                        onTap: () {
-                          Navigator.pushNamed(context, RouteName.applyForQualification);
-                        },
-                        leading: Icon(
-                          Icons.block,
-                          color: iconColor,
-                        ),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),*/
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // Material(
+                    //   color: Theme.of(context).cardColor,
+                    //   child: ListTile(
+                    //     title: Text('Game Profile Page Testing'),
+                    //     onTap: () {
+                    //       Navigator.pushNamed(context, RouteName.applyForQualification);
+                    //     },
+                    //     leading: Icon(
+                    //       Icons.block,
+                    //       color: iconColor,
+                    //     ),
+                    //     trailing: Icon(Icons.chevron_right),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

@@ -43,7 +43,9 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
+            constraints: BoxConstraints(
+              maxHeight:  MediaQuery.of(context).size.height * 0.3
+            ),
             child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
