@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'topup_page.dart';
+import 'package:moonblink/ui/pages/wallet/top_up_page_new.dart';
 import 'user_transaction_page.dart';
 
 class WalletPage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _WalletPageState extends State<WalletPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            /*MyApp(),*/TopUpPage(),
+            TopUpPageNew(),
             UserTransactionPage(),
           ],
         ),

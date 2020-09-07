@@ -212,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     ///Testing
-                    SizedBox(
+                    /*SizedBox(
                       height: 20,
                     ),
                     Material(
@@ -228,7 +228,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         trailing: Icon(Icons.chevron_right),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

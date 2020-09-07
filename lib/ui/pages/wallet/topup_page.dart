@@ -1,4 +1,6 @@
+/*
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +13,6 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Emulators are always treated as test devices
@@ -30,10 +31,6 @@ class _TopUpPageState extends State<TopUpPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  ///query List<IAPItem> from the store. IOS only
-  // ignore: unused_field
-  //var _iap = FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
 
   ///to monitor the connection more thoroughly from 2.0.1.
   StreamSubscription _connectionSubscription;
@@ -76,8 +73,7 @@ class _TopUpPageState extends State<TopUpPage>
       isPageLoading = true;
     });
     await FlutterInappPurchase.instance.initConnection;
-    await getItems();
-    await getUserWallet();
+    await getItemsAndWallet();
     setState(() {
       isPageLoading = false;
     });
@@ -166,6 +162,8 @@ class _TopUpPageState extends State<TopUpPage>
       RewardedVideoAd.instance.listener = null;
     }
   }
+
+
 
   ///get user wallet
   Future<void> getUserWallet() async {
@@ -371,8 +369,7 @@ class _TopUpPageState extends State<TopUpPage>
           setState(() {
             isPageLoading = true;
           });
-          await getItems();
-          await getUserWallet();
+          await getItemsAndWallet();
           setState(() {
             isPageLoading = false;
           });
@@ -450,3 +447,4 @@ class _TopUpPageState extends State<TopUpPage>
         .load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
   }
 }
+*/
