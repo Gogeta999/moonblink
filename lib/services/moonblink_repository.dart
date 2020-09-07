@@ -284,9 +284,9 @@ class MoonBlinkRepository {
   }
 
   // Booking
-  static Future booking(int partnerId, int gameType) async {
+  static Future booking(int partnerId, int gameTypeId) async {
     var response = await DioUtils().post(Api.Booking + '$partnerId/booking',
-        queryParameters: {'game_type': gameType});
+        queryParameters: {'game_type_id': gameTypeId});
     return response.data;
   }
 

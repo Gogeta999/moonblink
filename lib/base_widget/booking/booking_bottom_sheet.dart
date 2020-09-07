@@ -68,9 +68,9 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     title: Text(bookingModel.gamesList[index].gameType,
                         style: _textStyle),
                     subtitle:
-                        Text(bookingModel.gamesList[index].price + ' Coins'),
+                        Text('${bookingModel.gamesList[index].price} Coins'),
                     trailing: BookingButton(
-                        partnerId: widget.partnerId, gameType: index));
+                        partnerId: widget.partnerId, gameTypeId: bookingModel.gamesList[index].gameTypeId));
               },
             ),
           ),
@@ -113,9 +113,9 @@ enum BookingButtonState {
 
 class BookingButton extends StatefulWidget {
   final int partnerId;
-  final int gameType;
+  final int gameTypeId;
 
-  BookingButton({Key key, this.gameType, this.partnerId}) : super(key: key);
+  BookingButton({Key key, this.gameTypeId, this.partnerId}) : super(key: key);
 
   @override
   _BookingButtonState createState() => _BookingButtonState();
@@ -149,7 +149,7 @@ class _BookingButtonState extends State<BookingButton> {
               try {
                 await context
                     .read<BookingModel>()
-                    .booking(widget.partnerId, widget.gameType);
+                    .booking(widget.partnerId, widget.gameTypeId);
                 Navigator.pop(context);
                 Navigator.pushNamed(context, RouteName.chatBox,
                     arguments: widget.partnerId);

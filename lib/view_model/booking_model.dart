@@ -7,13 +7,11 @@ class BookingModel extends ViewStateModel {
   int selectedIndex = 0;
 
   Wallet wallet = Wallet(value: 0);
-  List<String> dropdownGameList = [];
-  List<String> dropdownGamePrice = [];
   List<String> dropdownGameListAndPrice = [];
   List<Game> gamesList = [];
 
-  Future<bool> booking(int partnerId, int gameType) async {
-    await MoonBlinkRepository.booking(partnerId, gameType);
+  Future<bool> booking(int partnerId, int gameTypeId) async {
+    await MoonBlinkRepository.booking(partnerId, gameTypeId);
   }
 
 
@@ -45,8 +43,6 @@ class BookingModel extends ViewStateModel {
     try {
       GameList gameList = await MoonBlinkRepository.getGameList(partnerId);
       gameList.gameList.forEach((game) {
-        dropdownGameList.add(game.gameType);
-        dropdownGamePrice.add(game.price);
         dropdownGameListAndPrice.add('${game.gameType}.${game.price}');
         gamesList.add(game);
       });
