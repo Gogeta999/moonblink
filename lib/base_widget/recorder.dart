@@ -142,7 +142,9 @@ class _VoicemsgState extends State<Voicemsg> {
           child: GestureDetector(
             child: Icon(
               IconFonts.voieMsgIcon,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.white,
             ),
             onTap: () async {
               await _init();

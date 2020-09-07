@@ -16,7 +16,7 @@ class RoundedContainer extends StatelessWidget {
         border: Border.all(
             width: 1,
             color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
+                ? Colors.grey
                 : Colors.black),
         color: color,
         borderRadius: BorderRadius.all(Radius.circular(100)),

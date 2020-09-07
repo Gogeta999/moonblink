@@ -140,7 +140,7 @@ class _MainTabPageState extends State<MainTabPage>
         child: CustomNavigationBar(
           iconSize: 30.0,
           selectedColor: Theme.of(context).accentColor,
-          strokeColor: Colors.red,
+          strokeColor: Theme.of(context).accentColor,
           unSelectedColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.white
               : Colors.black,

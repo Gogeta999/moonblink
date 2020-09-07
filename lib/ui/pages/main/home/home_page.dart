@@ -128,21 +128,28 @@ class HomeAppBar extends StatelessWidget {
     return SliverAppBar(
       // centerTitle: true,
       ///[Appbar]
-      title: GestureDetector(
-          onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
+      backgroundColor: Colors.black,
+      leading: IconButton(
+        icon: Icon(FontAwesomeIcons.search),
+        onPressed: () {
+          showSearch(context: context, delegate: SearchPage());
+        },
+      ),
       pinned: true,
-      expandedHeight: kToolbarHeight,
+      toolbarHeight: kToolbarHeight - 5,
+      // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
           : Brightness.dark,
       actions: <Widget>[
-        IconButton(
-            icon: Icon(FontAwesomeIcons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: SearchPage());
-            })
+        GestureDetector(
+            onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
       ],
       flexibleSpace: null,
+      bottom: AppBar(
+        backgroundColor: Theme.of(context).accentColor,
+        toolbarHeight: 20,
+      ),
     );
   }
 }

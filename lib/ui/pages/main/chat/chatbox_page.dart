@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -184,7 +185,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).accentColor
+            : Colors.grey,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -194,6 +197,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         children: <Widget>[
           SelectableText(
             msg.text,
+            style: TextStyle(color: Colors.white),
             autofocus: true,
             cursorRadius: Radius.circular(50),
             cursorColor: Colors.white,
@@ -376,13 +380,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).accentColor
+            // ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.grey,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
       ),
       child: SelectableText(
         msg.text,
+        style: TextStyle(color: Colors.white),
         autofocus: true,
         cursorRadius: Radius.circular(50),
         cursorColor: Colors.white,
@@ -443,85 +451,132 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return PlayerWidget(url: msg.attach);
   }
 
+  //image pick
+  Widget imagepick(model, id) {
+    return IconButton(
+      icon: Icon(FontAwesomeIcons.image),
+      iconSize: 30.0,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.white,
+      onPressed: () {
+        CustomBottomSheet.show(
+            popAfterBtnPressed: true,
+            requestType: RequestType.image,
+            buttonText: G.of(context).sendbutton,
+            buildContext: context,
+            limit: 1,
+            body: G.of(context).labelimageselect,
+            onPressed: (File file) async {
+              setState(() {
+                _file = file;
+              });
+
+              await getImage();
+              model.sendfile(filename, bytes, id, 1, messages);
+              setState(() {
+                textEditingController.text = '';
+                bytes = null;
+              });
+            },
+            onInit: _sendMessageWidgetUp,
+            onDismiss: _sendMessageWidgetDown);
+      },
+    );
+  }
+
+  //voice msg
+  Widget voicemsg(id) {
+    return Voicemsg(
+      onInit: _sendMessageWidgetUp,
+      id: id,
+      messages: messages,
+      onDismiss: _sendMessageWidgetDown,
+    );
+  }
+
+  //send Button
+  Widget sendbtn(model, id) {
+    return IconButton(
+      icon: Icon(FontAwesomeIcons.share),
+      iconSize: 30.0,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.white,
+      onPressed: () {
+        if (bytes == null) {
+          if (textEditingController.text != '') {
+            model.sendMessage(textEditingController.text, id, messages);
+            textEditingController.text = '';
+          }
+        } else {
+          model.sendfile(filename, bytes, id, 1, messages);
+          textEditingController.text = '';
+          bytes = null;
+        }
+      },
+    );
+  }
+
   //Send message
   Widget buildmessage(id, model) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       height: MediaQuery.of(context).size.height * 0.1,
       //color: Theme.of(context).backgroundColor,
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            // ? Colors.grey
+            ? Theme.of(context).accentColor
+            : Colors.black,
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Theme.of(context).brightness == Brightness.dark
+        //         ? Colors.white
+        //         : Colors.black,
+        //     offset: Offset(0.0, 1.0), //(x,y)
+        //     spreadRadius: 3,
+        //   ),
+        // ],
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
       child: Row(
         children: <Widget>[
           //Image select button
-          IconButton(
-            icon: Icon(FontAwesomeIcons.image),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              CustomBottomSheet.show(
-                  popAfterBtnPressed: true,
-                  requestType: RequestType.image,
-                  buttonText: G.of(context).sendbutton,
-                  buildContext: context,
-                  limit: 1,
-                  body: G.of(context).labelimageselect,
-                  onPressed: (File file) async {
-                    setState(() {
-                      _file = file;
-                    });
-
-                    await getImage();
-                    model.sendfile(filename, bytes, id, 1, messages);
-                    setState(() {
-                      textEditingController.text = '';
-                      bytes = null;
-                    });
-                  },
-                  onInit: _sendMessageWidgetUp,
-                  onDismiss: _sendMessageWidgetDown);
-            },
-          ),
+          imagepick(model, id),
           //Voice record
-          Voicemsg(
-            onInit: _sendMessageWidgetUp,
-            id: id,
-            messages: messages,
-            onDismiss: _sendMessageWidgetDown,
-          ),
+          voicemsg(id),
           SizedBox(width: 10),
           //Text Input
           Expanded(
-            child: TextField(
-              minLines: 1,
-              maxLines: 5,
-              maxLength: 150,
-              keyboardType: TextInputType.multiline,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.newline,
-              controller: textEditingController,
-              decoration: InputDecoration(
-                hintText: G.of(context).labelmsg,
-                counterText: "",
+            child: Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey
+                        : Colors.black),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
+              child: TextField(
+                minLines: 1,
+                maxLines: 5,
+                maxLength: 150,
+                keyboardType: TextInputType.multiline,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.newline,
+                controller: textEditingController,
+                decoration: InputDecoration(
+                  hintText: G.of(context).labelmsg,
+                  counterText: "",
+                ),
               ),
             ),
           ),
           //Send button
-          IconButton(
-            icon: Icon(IconFonts.sendIcon),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              if (bytes == null) {
-                if (textEditingController.text != '') {
-                  model.sendMessage(textEditingController.text, id, messages);
-                  textEditingController.text = '';
-                }
-              } else {
-                model.sendfile(filename, bytes, id, 1, messages);
-                textEditingController.text = '';
-                bytes = null;
-              }
-            },
-          ),
+          sendbtn(model, id),
         ],
       ),
     );
@@ -752,6 +807,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             }
             return Scaffold(
               appBar: AppBar(
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    // ? Colors.grey
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Colors.black,
                 title: GestureDetector(
                     child: Row(
                       children: [
@@ -761,7 +820,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: Text(partnermodel.partnerData.partnerName),
+                          child: Text(
+                            partnermodel.partnerData.partnerName,
+                          ),
                         ),
                       ],
                     ),

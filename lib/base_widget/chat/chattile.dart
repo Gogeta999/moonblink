@@ -29,7 +29,7 @@ class ChatTile extends StatelessWidget {
                   border: Border.all(
                     width: 1,
                     color: theme.brightness == Brightness.dark
-                        ? Colors.white
+                        ? Colors.grey
                         : Colors.black,
                   ),
                   borderRadius: BorderRadius.circular(110),
@@ -43,7 +43,7 @@ class ChatTile extends StatelessWidget {
                         name,
                         Divider(
                           height: 5,
-                          color: Colors.white,
+                          color: Colors.grey,
                         ),
                         lastmsg,
                       ],
@@ -58,7 +58,7 @@ class ChatTile extends StatelessWidget {
               child: CircleAvatar(
                 radius: 42,
                 backgroundColor: theme.brightness == Brightness.dark
-                    ? Colors.white
+                    ? Colors.grey
                     : Colors.black,
                 child: image,
               ),
