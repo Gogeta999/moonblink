@@ -341,11 +341,11 @@ class _UserListWidgetState extends State<UserListWidget> {
                 //   }),
                 : _openFacebookPage),
 
-        ///settings
-        PageCard(
-            pageTitle: G.of(context).userStatusSettings,
-            iconData: FontAwesomeIcons.cog,
-            onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+        ///profile
+        /*PageCard(
+            pageTitle: 'Profile',
+            iconData: FontAwesomeIcons.userEdit,
+            onTap: () => Navigator.of(context).pushNamed(RouteName.pubgMobile)),*/
 
         ///check app update
         PageCard(
@@ -354,6 +354,12 @@ class _UserListWidgetState extends State<UserListWidget> {
                 ? FontAwesomeIcons.android
                 : FontAwesomeIcons.appStoreIos,
             onTap: _openStore),
+
+        ///settings
+        PageCard(
+            pageTitle: G.of(context).userStatusSettings,
+            iconData: FontAwesomeIcons.cog,
+            onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
       ]),
     );
   }

@@ -194,13 +194,7 @@ class BottomLoader extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       child: Center(
-        child: SizedBox(
-          width: 33,
-          height: 33,
-          child: CircularProgressIndicator(
-            strokeWidth: 1.5,
-          ),
-        ),
+        child: CupertinoActivityIndicator(),
       ),
     );
   }
@@ -217,7 +211,7 @@ class HistoryWidget extends StatelessWidget {
     //var fo
     return Container(
       // width: 1000,
-      margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(width: 1.5, color: Colors.grey),
