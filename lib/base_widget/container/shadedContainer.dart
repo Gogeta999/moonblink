@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class ShadedContainer extends StatelessWidget {
   final Widget child;
+  final double height;
   final Function ontap;
-  ShadedContainer({this.child, this.ontap});
+  ShadedContainer({this.child, this.height, this.ontap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: ontap,
       child: Container(
+        height: height,
         padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
         decoration: BoxDecoration(
           color: Colors.white,

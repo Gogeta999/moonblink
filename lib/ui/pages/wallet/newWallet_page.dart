@@ -31,15 +31,16 @@ class _WalletPageState extends State<WalletPage> {
               children: [
                 Container(
                   color: Colors.black,
-                  height: 230,
+                  height: 200,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 150),
                   child: Container(
-                    height: MediaQuery.of(context).size.height / 2,
+                    height: 50,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(50.0)),
                     ),
                   ),
                 ),

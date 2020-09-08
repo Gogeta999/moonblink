@@ -14,6 +14,9 @@ import 'package:moonblink/ui/pages/main/user_status/newuser_status_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/otp_page.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
+import 'package:moonblink/ui/pages/settings/newsetting.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/newregisterpage.dart';
@@ -55,6 +58,7 @@ class RouteName {
   static const String registerAsPartner = 'registerAsPartner';
   static const String search = 'search';
   static const String setting = 'setting';
+  static const String language = 'language';
   static const String partnerDetail = 'parnterDetail';
   static const String partnerOwnProfile = 'parnterOwnProfile';
   static const String wallet = 'wallet';
@@ -111,6 +115,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => RegisterPage());
       case RouteName.setting:
         return CupertinoPageRoute(builder: (_) => SettingsPage());
+      case RouteName.language:
+        return CupertinoPageRoute(builder: (_) => LanguagePage());
       case RouteName.resetpassword:
         return CupertinoPageRoute(builder: (_) => ResetPasswordPage());
       case RouteName.partnerDetail:
