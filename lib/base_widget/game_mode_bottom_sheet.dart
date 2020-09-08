@@ -95,12 +95,12 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
     if (isSelected) {
       setState(() {
         widget.selectedGameModeIndex.remove(id);
-        widget.gameModeList[index].selected = 0;
+        //widget.gameModeList[index].selected = 0;
       });
     } else {
       setState(() {
         widget.selectedGameModeIndex.add(id);
-        widget.gameModeList[index].selected = 1;
+        //widget.gameModeList[index].selected = 1;
       });
     }
   }

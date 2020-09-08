@@ -57,21 +57,21 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   @override
   void dispose() {
-    _discardChanges();
+    //_discardChanges();
     super.dispose();
   }
 
   _discardChanges() {
     ///original list always got modify...
-    _gameModeList.forEach((e) {
-      if (_selectedGameModeIndex.contains(e.id)) {
-        e.selected = 0;
-      }
-    });
+    // _gameModeList.forEach((e) {
+    //   if (_selectedGameModeIndex.contains(e.id)) {
+    //     e.selected = 0;
+    //   }
+    // });
   }
 
   _initWithRemoteData() {
-    _gameModeList = List.from(widget.gameProfile.gameModeList);
+    _gameModeList = List.unmodifiable(widget.gameProfile.gameModeList);
     _gameIdController.text = widget.gameProfile.playerId;
     _level = widget.gameProfile.level;
     for (int i = 0; i < _gameModeList.length; ++i) {
@@ -100,7 +100,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   _updateGameMode() {
     _gameMode = '';
     for (int i = 0; i < _gameModeList.length; ++i) {
-      if (_gameModeList[i].selected == 1) {
+      bool isSelected = _selectedGameModeIndex.contains(_gameModeList[i].id);
+      if (isSelected) {
         _gameMode += _gameModeList[i].mode;
 
         if (i >= _selectedGameModeIndex.length - 1)
@@ -386,8 +387,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     _freezeUI();
 
     ///validation success. send data to server.
-    MultipartFile skillCoverImage =
-        await MultipartFile.fromFile(_skillCoverPhoto.path);
+    MultipartFile skillCoverImage = await MultipartFile.fromFile(_skillCoverPhoto.path);
     List<String> mapKeys = [
       'game_id',
       'player_id',

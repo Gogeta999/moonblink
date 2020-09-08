@@ -40,7 +40,7 @@ class GameProfile {
         skillCoverImage = json['skill_cover_image'],
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
-        gameModeList = json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList(),
+        gameModeList = List.unmodifiable(json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList()),
         gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
         createdAt = json['created_at'],
         updatedAt = json['updated_at'];
@@ -70,7 +70,7 @@ class GameMode {
   final int price;
   final String createdAt;
   final String updatedAt;
-  int selected;
+  final int selected;
 
   GameMode(
       {this.id,
