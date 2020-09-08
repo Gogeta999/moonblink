@@ -168,7 +168,6 @@ class CustomBottomSheet {
   static showGameModeBottomSheet(
       {@required BuildContext buildContext,
       @required List<GameMode> gameModeList,
-      @required List<GameMode> selectedGameMode,
       @required List<int> selectedGameModeIndex,
       @required Function onDone,
       Function onDismiss}) {
@@ -178,7 +177,6 @@ class CustomBottomSheet {
         isDismissible: true,
         builder: (context) => GameModeBottomSheet(
               gameModeList: gameModeList,
-              selectedGameMode: selectedGameMode,
               selectedGameModeIndex: selectedGameModeIndex,
               onDone: onDone,
             )).whenComplete(() {

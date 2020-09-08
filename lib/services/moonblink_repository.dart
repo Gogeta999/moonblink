@@ -291,6 +291,14 @@ class MoonBlinkRepository {
     return UserPlayGameList.fromJson(response.data);
   }
 
+  //update game profile
+  static Future updateGameProfile(Map<String, dynamic> gameProfile) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    FormData formData = FormData.fromMap(gameProfile);
+    var response = await DioUtils().postwithData(Api.UpdateGameProfile + '$userId/profile/game', data: formData);
+    return response.data;
+  }
+
   // Booking
   static Future booking(int partnerId, int gameTypeId) async {
     var response = await DioUtils().post(Api.Booking + '$partnerId/booking',

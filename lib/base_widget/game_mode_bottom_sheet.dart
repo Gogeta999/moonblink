@@ -5,11 +5,15 @@ import 'package:moonblink/models/game_profile.dart';
 
 class GameModeBottomSheet extends StatefulWidget {
   final List<GameMode> gameModeList;
-  final List<GameMode> selectedGameMode;
   final List<int> selectedGameModeIndex;
-  final Function onDone;
+  final Function(List<int> newSelectedGameModeIndex) onDone;
 
-  const GameModeBottomSheet({Key key, @required this.gameModeList, this.onDone, this.selectedGameModeIndex, this.selectedGameMode}) : super(key: key);
+  const GameModeBottomSheet(
+      {Key key,
+      @required this.gameModeList,
+      this.onDone,
+      this.selectedGameModeIndex})
+      : super(key: key);
 
   @override
   _GameModeBottomSheet createState() => _GameModeBottomSheet();
@@ -40,18 +44,18 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               FlatButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(G.of(context).cancel,
-                    style: _textStyle),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(G.of(context).cancel, style: _textStyle),
               ),
               FlatButton(
                 onPressed: () {
                   widget.selectedGameModeIndex.sort((a, b) => a > b ? 1 : 0);
-                  widget.onDone();
+                  widget.onDone(widget.selectedGameModeIndex);
                   Navigator.pop(context);
                 },
-                child: Text('Done',
-                    style: _textStyle),
+                child: Text('Done', style: _textStyle),
               ),
             ],
           ),
@@ -61,8 +65,7 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
         SizedBox(height: 20.0),
         Container(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.4
-          ),
+              maxHeight: MediaQuery.of(context).size.height * 0.4),
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
@@ -72,10 +75,12 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
               bool isSelected = widget.selectedGameModeIndex.contains(item.id);
               return ListTile(
                 title: Text(item.mode),
-                onTap: () => onTapGameModeListTile(item, isSelected),
+                onTap: () => onTapGameModeListTile(item.id, index, isSelected),
                 trailing: Icon(
                   Icons.check,
-                  color: isSelected ? Theme.of(context).accentColor : Colors.transparent,
+                  color: isSelected
+                      ? Theme.of(context).accentColor
+                      : Colors.transparent,
                 ),
                 selected: isSelected,
               );
@@ -86,16 +91,16 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
     );
   }
 
-  onTapGameModeListTile(GameMode item, bool isSelected) {
+  onTapGameModeListTile(int id, int index, bool isSelected) {
     if (isSelected) {
       setState(() {
-        widget.selectedGameModeIndex.remove(item.id);
-        widget.selectedGameMode.remove(item);
+        widget.selectedGameModeIndex.remove(id);
+        widget.gameModeList[index].selected = 0;
       });
     } else {
       setState(() {
-        widget.selectedGameModeIndex.add(item.id);
-        widget.selectedGameMode.add(item);
+        widget.selectedGameModeIndex.add(id);
+        widget.gameModeList[index].selected = 1;
       });
     }
   }

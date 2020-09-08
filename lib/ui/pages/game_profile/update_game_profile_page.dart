@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,7 +30,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   TextEditingController _gameIdController = TextEditingController();
   String _level = '';
   String _gameMode = '';
-  List<GameMode> _selectedGameMode = [];
+  List<GameMode> _gameModeList = [];
   List<int> _selectedGameModeIndex = [];
   File _skillCoverPhoto;
 
@@ -34,7 +38,16 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   bool _isUILocked = false;
   // ignore: close_sinks
   BehaviorSubject<UpdateOrSubmitButtonState> _submitOrUpdateSubject =
-      BehaviorSubject()..add(UpdateOrSubmitButtonState.initial);
+      BehaviorSubject(onCancel: () => print('Cancelling'))
+        ..add(UpdateOrSubmitButtonState.initial);
+  TextStyle _textStyle;
+  List<Widget> _cupertinoActionSheet = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _textStyle = Theme.of(context).textTheme.bodyText1;
+  }
 
   @override
   void initState() {
@@ -42,28 +55,59 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _discardChanges();
+    super.dispose();
+  }
+
+  _discardChanges() {
+    ///original list always got modify...
+    _gameModeList.forEach((e) {
+      if (_selectedGameModeIndex.contains(e.id)) {
+        e.selected = 0;
+      }
+    });
+  }
+
   _initWithRemoteData() {
-    _selectedGameMode.addAll(widget.gameProfile.gameModeList);
+    _gameModeList = List.from(widget.gameProfile.gameModeList);
     _gameIdController.text = widget.gameProfile.playerId;
     _level = widget.gameProfile.level;
-    for (int i = 0; i < _selectedGameMode.length; ++i) {
-      _selectedGameModeIndex.add(_selectedGameMode[i].id);
-      _gameMode += _selectedGameMode[i].mode;
-      if (i == _selectedGameMode.length - 1)
-        continue;
-      else
-        _gameMode += ', ';
+    for (int i = 0; i < _gameModeList.length; ++i) {
+      if (_gameModeList[i].selected == 1) {
+        _selectedGameModeIndex.add(_gameModeList[i].id);
+        _gameMode += _gameModeList[i].mode;
+
+        if (i >= _gameModeList.length - 1)
+          continue;
+        else
+          _gameMode += ', ';
+      }
     }
+    widget.gameProfile.gameRankList.forEach((element) {
+      _cupertinoActionSheet.add(CupertinoActionSheetAction(
+          onPressed: () {
+            setState(() {
+              _level = element;
+            });
+            Navigator.pop(context);
+          },
+          child: Text(element, style: _textStyle)));
+    });
   }
 
   _updateGameMode() {
     _gameMode = '';
-    for (int i = 0; i < _selectedGameMode.length; ++i) {
-      _gameMode += _selectedGameMode[i].mode;
-      if (i == _selectedGameMode.length - 1)
-        continue;
-      else
-        _gameMode += ', ';
+    for (int i = 0; i < _gameModeList.length; ++i) {
+      if (_gameModeList[i].selected == 1) {
+        _gameMode += _gameModeList[i].mode;
+
+        if (i >= _selectedGameModeIndex.length - 1)
+          continue;
+        else
+          _gameMode += ', ';
+      }
     }
   }
 
@@ -129,71 +173,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         builder: (context) {
           return CupertinoActionSheet(
             title: Text('Select Level'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Bronze';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Bronze',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Silver';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Silver',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Gold';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Gold',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Platinum';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Platinum',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Diamond';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Diamond',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Crown';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Crown',
-                      style: Theme.of(context).textTheme.bodyText1)),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      _level = 'Ace';
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Ace',
-                      style: Theme.of(context).textTheme.bodyText1)),
-            ],
+            actions: _cupertinoActionSheet,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'),
@@ -328,7 +308,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                           '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
                       onPressed: _onSubmitOrUpdate,
                     );
-                  } else if (snapshot.data == UpdateOrSubmitButtonState.loading) {
+                  } else if (snapshot.data ==
+                      UpdateOrSubmitButtonState.loading) {
                     return CupertinoButton(
                       child: CupertinoActivityIndicator(),
                       onPressed: null,
@@ -355,7 +336,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   iconData: Icons.edit,
                   onTap: _onTapGameID),
               _buildGameProfileCard(
-                  title: 'Level',
+                  title: 'Game Rank',
                   subtitle: _level,
                   iconData: Icons.edit,
                   onTap: _onTapLevel),
@@ -378,16 +359,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   ///update game mode
-  _onDone() {
-    _selectedGameModeIndex.forEach((element) {
-      print(element);
-    });
+  _onDone(List<int> newSelectedGameModeIndex) {
+    _selectedGameModeIndex = List.from(newSelectedGameModeIndex);
     setState(() {
       _updateGameMode();
     });
   }
 
-  _onSubmitOrUpdate() {
+  _onSubmitOrUpdate() async {
     if (_gameIdController.text.isEmpty) {
       showToast('Game ID can\'t be blanked');
       return;
@@ -405,12 +384,33 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       return;
     }
     _freezeUI();
-    ///validation success. send datat to server.
-    Future.delayed(Duration(seconds: 2), () => throw Exception('IDK')).then((value) => _unfreezeUI(), onError: (e) {
-      showToast(e.toString());
-      _unfreezeUI();
-    });///replace with real rest api.
-    print('invoke immediately');
+
+    ///validation success. send data to server.
+    MultipartFile skillCoverImage =
+        await MultipartFile.fromFile(_skillCoverPhoto.path);
+    List<String> mapKeys = [
+      'game_id',
+      'player_id',
+      'level',
+      'skill_cover_image',
+      'about_order_taking',
+      'types'
+    ];
+    List<dynamic> mapValues = [
+      widget.gameProfile.gameId,
+      _gameIdController.text,
+      _level,
+      skillCoverImage,
+      '',
+      _selectedGameModeIndex
+    ];
+    Map<String, dynamic> gameProfileMap = Map.fromIterables(mapKeys, mapValues);
+    gameProfileMap.forEach((key, value) {
+      print(key + ':' + '$value');
+    });
+    MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
+        (value) => {showToast('Update Success'), Navigator.pushNamed(context, RouteName.main, arguments: 3)},
+        onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
   _freezeUI() {
@@ -447,10 +447,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     if (_isUILocked) return;
     CustomBottomSheet.showGameModeBottomSheet(
         buildContext: context,
-        gameModeList: widget.gameProfile.gameModeList,
-        selectedGameMode: _selectedGameMode,
-        selectedGameModeIndex: _selectedGameModeIndex,
-        onDone: () => _onDone());
+        gameModeList: List.from(_gameModeList),
+        selectedGameModeIndex: List.from(_selectedGameModeIndex),
+        onDone: (newSelectedGameModeIndex) =>
+            _onDone(newSelectedGameModeIndex));
   }
 
   _onTapImage() {

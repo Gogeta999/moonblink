@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class GameProfile {
   final int id;
   final int userId;
@@ -9,6 +11,7 @@ class GameProfile {
   final String aboutOrderTaking;
   final int isPlay;
   final List<GameMode> gameModeList;
+  final List<String> gameRankList;
   final String createdAt;
   final String updatedAt;
 
@@ -23,6 +26,7 @@ class GameProfile {
       this.aboutOrderTaking,
       this.isPlay,
       this.gameModeList,
+      this.gameRankList,
       this.createdAt,
       this.updatedAt});
 
@@ -37,6 +41,7 @@ class GameProfile {
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
         gameModeList = json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList(),
+        gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
         createdAt = json['created_at'],
         updatedAt = json['updated_at'];
 
@@ -51,6 +56,7 @@ class GameProfile {
         'about_order_taking': aboutOrderTaking,
         'is_play': isPlay,
         'types' : gameModeList.map<Map<String, dynamic>>((e) => e.toJson()).toList(),
+        'levels' : gameRankList.map<String>((e) => jsonEncode(e)).toList(),
         'created_at': createdAt,
         'updated_at': updatedAt
       };
@@ -64,6 +70,7 @@ class GameMode {
   final int price;
   final String createdAt;
   final String updatedAt;
+  int selected;
 
   GameMode(
       {this.id,
@@ -71,7 +78,8 @@ class GameMode {
       this.mode,
       this.price,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.selected});
 
   GameMode.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -79,7 +87,8 @@ class GameMode {
       mode = json['type'],
       price = json['price'],
       createdAt = json['created_at'],
-      updatedAt = json['updated_at'];
+      updatedAt = json['updated_at'],
+      selected = json['selected'];
 
   Map<String, dynamic> toJson() => {
     'id' : id,
@@ -88,5 +97,6 @@ class GameMode {
     'price' : price,
     'created_at' : createdAt,
     'updated_at' : updatedAt,
+    'selected' : selected
   };
 }

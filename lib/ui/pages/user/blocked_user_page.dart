@@ -136,34 +136,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                           Center(child: CupertinoActivityIndicator())
                       ],
                     );
-                    return index >= state.data.length
-                        ? BottomLoader()
-                        : Column(
-                            children: <Widget>[
-                              _buildItem(
-                                  context, index, animation, state.data[index]),
-                              Divider(),
-                            ],
-                          );
                   },
-                );
-                return ListView.builder(
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= state.data.length
-                        ? BottomLoader()
-                        : Column(
-                            children: <Widget>[
-                              BlockedUserListTile(
-                                  data: state.data[index], index: index),
-                              Divider(),
-                            ],
-                          );
-                  },
-                  itemCount: state.hasReachedMax
-                      ? state.data.length
-                      : state.data.length + 1,
-                  controller: _scrollController,
                 );
               }
               return Text('Oops!. Something went wrong.');

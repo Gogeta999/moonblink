@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:oktoast/oktoast.dart';
@@ -30,7 +31,8 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
             return Center(child: CupertinoActivityIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data.userPlayGameList.isNotEmpty) {
+          } else if (snapshot.hasData &&
+              snapshot.data.userPlayGameList.isNotEmpty) {
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               physics: ClampingScrollPhysics(),
@@ -39,8 +41,9 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                 UserPlayGame item = snapshot.data.userPlayGameList[index];
                 return Card(
                   child: ListTile(
-                    onTap: () =>
-                        Navigator.pushNamed(context, RouteName.updateGameProfile, arguments: item.gameProfile),
+                    onTap: () => Navigator.pushNamed(
+                        context, RouteName.updateGameProfile,
+                        arguments: item.gameProfile),
                     leading: CachedNetworkImage(
                       imageUrl: item.gameIcon,
                       imageBuilder: (context, imageProvider) => Container(
@@ -52,7 +55,8 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                               image: imageProvider, fit: BoxFit.cover),
                         ),
                       ),
-                      placeholder: (context, url) => CupertinoActivityIndicator(),
+                      placeholder: (context, url) =>
+                          CupertinoActivityIndicator(),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                     title: Text(item.name),
