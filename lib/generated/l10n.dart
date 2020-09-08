@@ -993,10 +993,10 @@ class G {
     );
   }
 
-  /// `You have`
+  /// `You have `
   String get profiletext {
     return Intl.message(
-      'You have',
+      'You have ',
       name: 'profiletext',
       desc: '',
       args: [],

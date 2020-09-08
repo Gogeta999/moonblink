@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseAllowMicroPhone" : MessageLookupByLibrary.simpleMessage("Please allow Microphone"),
     "pleaseRatingForThisGame" : MessageLookupByLibrary.simpleMessage("Please rating for this game"),
     "profilefollowernow" : MessageLookupByLibrary.simpleMessage(" followers now"),
-    "profiletext" : MessageLookupByLibrary.simpleMessage("You have"),
+    "profiletext" : MessageLookupByLibrary.simpleMessage("You have "),
     "pullDownToRefresh" : MessageLookupByLibrary.simpleMessage("Refreshing"),
     "pullTopToLoad" : MessageLookupByLibrary.simpleMessage("Loading"),
     "rating" : MessageLookupByLibrary.simpleMessage("Rating"),

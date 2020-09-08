@@ -114,8 +114,8 @@ class _HomePageState extends State<HomePage>
                             child: ViewStateEmptyWidget(
                                 onPressed: homeModel.initData),
                           )),
-                        if (homeModel.stories?.isNotEmpty ?? false)
-                          StoryList(stories: homeModel.stories),
+                        // if (homeModel.stories?.isNotEmpty ?? false)
+                        //   StoryList(stories: homeModel.stories),
                         HomePostList(),
                       ],
                     ));

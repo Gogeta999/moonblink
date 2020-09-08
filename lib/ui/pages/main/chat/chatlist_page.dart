@@ -133,7 +133,7 @@ class _ChatListPageState extends State<ChatListPage>
               builder: (context, storymodel, child) {
                 // print(storymodel.stories);
                 return CustomScrollView(slivers: <Widget>[
-                  if (storymodel.stories.isNotEmpty)
+                  if (storymodel.stories.isNotEmpty ?? false)
                     StoryList(
                       stories: storymodel.stories,
                     ),

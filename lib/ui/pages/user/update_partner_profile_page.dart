@@ -269,22 +269,28 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                                   Api.SetProfile +
                                                       '$userid/profile',
                                                   data: formData);
-                                          print(response);
+                                          // print('Watchhhhh Meeeeeeeeee');
+                                          User updateProfile =
+                                              User.fromJsonMap(response.data);
+
+                                          // print(response.data);
                                           setState(() {
                                             StorageManager.sharedPreferences
                                                 .setString(mLoginName,
                                                     _nameController.text);
+                                            // TODO: Save User Return Profile tomorrow
                                             StorageManager.sharedPreferences
-                                                .setString(
-                                                    mUserProfile, profilePath);
+                                                .setString(mUserProfile,
+                                                    updateProfile.profileUrl);
                                             finish = !finish;
                                           });
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(
                                                   RouteName.main,
                                                   (route) => false);
-                                          return User.fromJsonMap(
-                                              response.data);
+                                          return updateProfile;
+                                          // return User.fromJsonMap(
+                                          //     response.data);
                                         },
                                       )
                                       // UpdateProfileButton(
