@@ -36,7 +36,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   ///UI properties
   bool _isUILocked = false;
-  // ignore: close_sinks
   BehaviorSubject<UpdateOrSubmitButtonState> _submitOrUpdateSubject =
       BehaviorSubject(onCancel: () => print('Cancelling'))
         ..add(UpdateOrSubmitButtonState.initial);
@@ -77,14 +76,17 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     for (int i = 0; i < _gameModeList.length; ++i) {
       if (_gameModeList[i].selected == 1) {
         _selectedGameModeIndex.add(_gameModeList[i].id);
-        _gameMode += _gameModeList[i].mode;
-
-        if (i >= _gameModeList.length - 1)
-          continue;
-        else
-          _gameMode += ', ';
+        // _gameMode += _gameModeList[i].mode;
+        //
+        // if (i >= _selectedGameModeIndex.length - 1)
+        //   continue;
+        // else
+        //   _gameMode += ', ';
       }
     }
+
+    _updateGameMode();
+
     widget.gameProfile.gameRankList.forEach((element) {
       _cupertinoActionSheet.add(CupertinoActionSheetAction(
           onPressed: () {
@@ -387,7 +389,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     _freezeUI();
 
     ///validation success. send data to server.
-    MultipartFile skillCoverImage = await MultipartFile.fromFile(_skillCoverPhoto.path);
+    MultipartFile skillCoverImage;
+    if (_skillCoverPhoto != null) {
+      skillCoverImage = await MultipartFile.fromFile(_skillCoverPhoto.path);
+    }
     List<String> mapKeys = [
       'game_id',
       'player_id',
@@ -409,7 +414,12 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       print(key + ':' + '$value');
     });
     MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
-        (value) => {showToast('Update Success'), Navigator.pushNamed(context, RouteName.main, arguments: 3)},
+        (value) => {
+              showToast('Update Success'),
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RouteName.main, (route) => false,
+                  arguments: 3)
+            },
         onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
