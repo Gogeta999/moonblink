@@ -4,7 +4,7 @@ import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
 import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
-import 'package:moonblink/ui/pages/license_agreement.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
@@ -13,7 +13,7 @@ import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/newuser_status_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
-import 'package:moonblink/ui/pages/otp_page.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
 import 'package:moonblink/ui/pages/settings/newsetting.dart';
@@ -28,6 +28,7 @@ import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
 import 'package:moonblink/ui/pages/user/blocked_user_page.dart';
 import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
+import 'package:moonblink/ui/pages/user/newsetuser.dart';
 import 'package:moonblink/ui/pages/user/ownprofile.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
@@ -37,7 +38,7 @@ import 'package:moonblink/ui/pages/wallet/newWallet_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 
-import '../ui/pages/terms_and_conditions_page.dart';
+import '../ui/pages/settings/allsetting/terms_and_conditions_page.dart';
 
 class RouteName {
   static const String splash = 'splash';

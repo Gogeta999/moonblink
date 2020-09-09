@@ -11,7 +11,7 @@ class BasicDateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.only(left: 6, right: 15),
       child: DateTimeField(
         validator: (DateTime dateTime) {
           if (dateTime == null) {
@@ -20,12 +20,23 @@ class BasicDateField extends StatelessWidget {
           return null;
         },
         textInputAction: TextInputAction.next,
+        style: TextStyle(color: Colors.white),
+        textAlign: TextAlign.center,
         controller: _dob,
         decoration: InputDecoration(
             prefixIcon: Icon(FontAwesomeIcons.birthdayCake,
-                color: Theme.of(context).accentColor, size: 22),
-            hintText: "Enter Dob",
-            hintStyle: TextStyle(fontSize: 16)),
+                color: Colors.white, size: 22),
+            hintText: "Enter Date of Birth",
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).accentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
+            hintStyle: TextStyle(color: Colors.white, fontSize: 16)),
         format: format,
         onShowPicker: (context, currentValue) {
           return DatePicker.showSimpleDatePicker(

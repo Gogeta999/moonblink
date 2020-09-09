@@ -149,18 +149,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: ShadedContainer(
                     height: 50,
-                    ontap: () => Navigator.pushNamed(
-                        context, RouteName.licenseAgreement),
-                    child: Center(
-                      child: Text("Change Password"),
-                    ),
-                  ),
-                ),
-                space(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: ShadedContainer(
-                    height: 50,
                     ontap: () =>
                         Navigator.pushNamed(context, RouteName.blockedUsers),
                     child: Center(
@@ -173,8 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: ShadedContainer(
                     height: 50,
-                    ontap: () => Navigator.pushNamed(
-                        context, RouteName.licenseAgreement),
+                    ontap: () => Navigator.pushNamed(context, RouteName.otp),
                     child: Center(
                       child: Text("Register as Partner"),
                     ),

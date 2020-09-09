@@ -1,0 +1,503 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/api/moonblink_api.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
+import 'package:moonblink/base_widget/sign_IO_widgets/Datetime.dart';
+import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/indicator/button_indicator.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
+import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
+import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/user.dart';
+import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:provider/provider.dart';
+
+enum NrcType { front, back }
+
+class SetPartnerProfilePage extends StatefulWidget {
+  @override
+  _SetPartnerProfilePageState createState() => _SetPartnerProfilePageState();
+}
+
+class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
+  bool finished = false;
+  final _picker = ImagePicker();
+  String _filePath;
+  String _genderController;
+  List<String> genderList = ["Male", "Female"];
+  //final _phController = TextEditingController();
+  final _nrcController = TextEditingController();
+  final _biosController = TextEditingController();
+  final _addressController = TextEditingController();
+  //final _mailController = TextEditingController();
+  final _dobController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nrcController.dispose();
+    _biosController.dispose();
+    _addressController.dispose();
+    _dobController.dispose();
+    super.dispose();
+  }
+
+  File _cover;
+  File _profile;
+  File _nrcFront;
+  File _nrcBack;
+
+  bool male = false;
+  bool female = false;
+
+  _pickNrcFromGallery(NrcType type) async {
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    switch (type) {
+      case NrcType.front:
+        setState(() {
+          _nrcFront = image;
+        });
+        return;
+      case NrcType.back:
+        setState(() {
+          _nrcBack = image;
+        });
+        return;
+      default:
+        showToast('Developer\'s error');
+    }
+  }
+
+  //get Space
+  get _space {
+    return SizedBox(height: 20);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        physics: ClampingScrollPhysics(),
+        slivers: <Widget>[
+          SliverAppBar(
+            backgroundColor: Colors.black,
+            actions: [
+              AppbarLogo(),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: ProviderWidget<LoginModel>(
+              model: LoginModel(Provider.of(context)),
+              builder: (context, model, child) => Form(
+                onWillPop: () async {
+                  /*showDialog(
+                              context: context,
+                              builder: (context) => CupertinoAlertDialog(
+                                    title: Text(S
+                                        .of(context)
+                                        .setPartnerFillInformations),
+                                  ));
+                          return !model.isBusy;*/
+                  Navigator.pop(context);
+                  return false;
+                },
+
+                /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
+                child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      /// [You need to put before OnTap]
+                      onTap: () {
+                        // _pickCoverFromGallery();
+                        CustomBottomSheet.show(
+                            requestType: RequestType.image,
+                            popAfterBtnPressed: true,
+                            buttonText: G.of(context).choose,
+                            buildContext: context,
+                            limit: 1,
+                            onPressed: (File file) {
+                              setState(() {
+                                _cover = file;
+                              });
+                            },
+                            body: G.of(context).partnercover);
+                      },
+                      child: AspectRatio(
+                          aspectRatio: 100 / 100,
+                          child: PartnerCoverWidget(_cover)),
+                    ),
+
+                    /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 140.0),
+                      child: Container(
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              /// [You need to put before OnTap]
+                              onTap: () {
+                                CustomBottomSheet.show(
+
+                                    ///profile is small
+                                    popAfterBtnPressed: true,
+                                    requestType: RequestType.image,
+                                    minWidth: 480,
+                                    minHeight: 480,
+                                    buttonText: G.of(context).choose,
+                                    buildContext: context,
+                                    limit: 1,
+                                    onPressed: (File file) {
+                                      setState(() {
+                                        _profile = file;
+                                      });
+                                    },
+                                    body: G.of(context).partnerprofile);
+                              },
+                              child: CircleAvatar(
+                                radius: 75,
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: ClipOval(
+                                  child: new SizedBox(
+                                    width: 150.0,
+                                    height: 150.0,
+                                    child: PartnerProfileWidget(_profile),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ),
+                    ),
+
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 270,
+                          ),
+                          LoginFormContainer(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                //NRC
+                                LoginTextField(
+                                  validator: (value) => value.isEmpty
+                                      ? G.of(context).labelnrc
+                                      : null,
+                                  label: G.of(context).labelnrc,
+                                  icon: FontAwesomeIcons.idCard,
+                                  controller: _nrcController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                _space,
+                                //date
+                                BasicDateField(_dobController),
+                                _space,
+                                //bios
+                                LoginTextField(
+                                  validator: (value) => value.isEmpty
+                                      ? G.of(context).labelbios
+                                      : null,
+                                  label: G.of(context).labelbios,
+                                  icon: FontAwesomeIcons.book,
+                                  controller: _biosController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                _space,
+                                //address
+                                LoginTextField(
+                                  validator: (value) => value.isEmpty
+                                      ? G.of(context).labeladdress
+                                      : null,
+                                  label: G.of(context).labeladdress,
+                                  icon: FontAwesomeIcons.addressBook,
+                                  controller: _addressController,
+                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                _space,
+
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ShadedContainer(
+                                      selected: male,
+                                      ontap: () {
+                                        setState(() {
+                                          male = true;
+                                          female = false;
+                                          _genderController = "Male";
+                                        });
+                                      },
+                                      child: Text("Male"),
+                                    ),
+                                    ShadedContainer(
+                                      selected: female,
+                                      ontap: () {
+                                        setState(() {
+                                          male = false;
+                                          female = true;
+                                          _genderController = "Female";
+                                        });
+                                      },
+                                      child: Text("Female"),
+                                    )
+                                  ],
+                                ),
+                                _space(),
+                              ],
+                            ),
+                          ),
+                          //NRC
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                              vertical: 10,
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 50),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              width: MediaQuery.of(context).size.width,
+                              height: 300,
+                              child: Column(
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        child: Text(
+                                          "Add Your Front NRC",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkResponse(
+                                          onTap: () => _pickNrcFromGallery(
+                                              NrcType.front),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 120,
+                                                child: _nrcFront == null
+                                                    ? Icon(
+                                                        FontAwesomeIcons
+                                                            .addressCard,
+                                                        size: 120,
+                                                        color: Theme.of(context)
+                                                            .accentColor)
+                                                    : Image.file(_nrcFront),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(G.of(context).labelnrcfront,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        child: Text(
+                                          "Add Your Back NRC",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkResponse(
+                                          onTap: () =>
+                                              _pickNrcFromGallery(NrcType.back),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 120,
+                                                child: _nrcBack == null
+                                                    ? Icon(
+                                                        FontAwesomeIcons
+                                                            .solidAddressCard,
+                                                        size: 120,
+                                                        color: Theme.of(context)
+                                                            .accentColor)
+                                                    : Image.file(_nrcBack),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(G.of(context).labelnrcback,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          RaisedButton(
+                            child: finished
+                                ? ButtonProgressIndicator()
+                                : Text(G.of(context).setPartnerButton,
+                                    style: Theme.of(context)
+                                        .accentTextTheme
+                                        .button
+                                        .copyWith(wordSpacing: 6)),
+                            onPressed: () async {
+                              if (_cover == null || _profile == null) {
+                                showToast(G.of(context).toastimagenull);
+                                return false;
+                              } else if (_nrcFront == null ||
+                                  _nrcBack == null) {
+                                showToast(G.of(context).toastnrcnull);
+                                return false;
+                              } else if (_nrcController == null ||
+                                  _genderController == null ||
+                                  _dobController == null ||
+                                  _addressController == null) {
+                                showToast(G.of(context).toastlackfield);
+                                return false;
+                              } else {
+                                setState(() {
+                                  finished = !finished;
+                                });
+                                var userid = StorageManager.sharedPreferences
+                                    .getInt(mUserId);
+                                var coverPath = _cover.absolute.path;
+                                var profilePath = _profile.absolute.path;
+                                FormData formData = FormData.fromMap({
+                                  'cover_image': await MultipartFile.fromFile(
+                                    coverPath,
+                                    filename: 'cover.jpg',
+                                  ),
+                                  'profile_image': await MultipartFile.fromFile(
+                                      profilePath,
+                                      filename: 'profile.jpg'),
+                                  'nrc_front_image':
+                                      await MultipartFile.fromFile(
+                                          _nrcFront.absolute.path,
+                                          filename: 'nrc_front_image.jpg'),
+                                  'nrc_back_image':
+                                      await MultipartFile.fromFile(
+                                          _nrcBack.absolute.path,
+                                          filename: 'nrc_back_image.jpg'),
+                                  'nrc': _nrcController.text.toString(),
+                                  //'mail': _mailController.text.toString(),
+                                  'gender': _genderController.toString(),
+                                  'dob': _dobController.text.toString(),
+                                  //'phone': _phController.text.toString(),
+                                  'bios': _biosController.text.toString(),
+                                  'address': _addressController.text.toString()
+                                });
+
+                                var response = await DioUtils().postwithData(
+                                    Api.SetProfile + '$userid/profile',
+                                    data: formData,
+                                    options: Options(
+                                      sendTimeout: 25 * 1000,
+                                      receiveTimeout: 25 * 1000,
+                                    ));
+                                print('PRINTED $response');
+                                print("+++++++++++++++++++++++++++++++++++++");
+                                setState(() {
+                                  finished = !finished;
+                                });
+                                print(
+                                    "----------------------------------------------------");
+                                model.logout();
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    RouteName.splash, (route) => false);
+                                return User.fromJsonMap(response.data);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+///[Change Image.file (ImagePicker get File format)]
+class PartnerCoverWidget extends StatelessWidget {
+  PartnerCoverWidget(this.cover);
+  final cover;
+  @override
+  Widget build(BuildContext context) {
+    if (this.cover == null) {
+      return Image.asset(
+        ImageHelper.wrapAssetsImage('defaultBackground.jpg'),
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.file(
+        cover,
+        filterQuality: FilterQuality.high,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+}
+
+///[Change Image.file (ImagePicker get File format)]
+class PartnerProfileWidget extends StatelessWidget {
+  PartnerProfileWidget(this.profile);
+  final profile;
+  @override
+  Widget build(BuildContext context) {
+    if (this.profile == null) {
+      return Image.asset(
+        ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg'),
+        fit: BoxFit.fill,
+      );
+    } else {
+      return Image.file(
+        this.profile,
+        fit: BoxFit.fill,
+      );
+    }
+  }
+}

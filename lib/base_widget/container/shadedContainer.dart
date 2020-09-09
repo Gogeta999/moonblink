@@ -4,7 +4,8 @@ class ShadedContainer extends StatelessWidget {
   final Widget child;
   final double height;
   final Function ontap;
-  ShadedContainer({this.child, this.height, this.ontap});
+  final bool selected;
+  ShadedContainer({this.child, this.height, this.ontap, this.selected = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ShadedContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.black,
+              color: selected ? Theme.of(context).accentColor : Colors.black,
               spreadRadius: 1,
               // blurRadius: 2,
               offset: Offset(-5, 5), // changes position of shadow
