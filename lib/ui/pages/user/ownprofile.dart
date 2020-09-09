@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 
@@ -209,18 +210,49 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 ),
               ),
 
-              /// [info]
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Text(G.of(context).profiletext +
-                          partnerModel.partnerData.followerCount.toString() +
-                          G.of(context).profilefollowernow)
-                    ],
-                  ),
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Column(
+                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ///[Booking Button move to class]
+                        // BookingButton(),
+
+                        ///[Follow Button]
+                        MBButtonWidget(
+                          title: G.of(context).updatePartnerProfile,
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                RouteName.updateprofile,
+                                arguments: partnerModel.partnerData);
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+
+                        ///[Followers total]
+                        MBBoxWidget(
+                          text: G.of(context).follower,
+                          followers:
+                              partnerModel.partnerData.followerCount.toString(),
+                        ),
+                      ],
+                    ),
+                    MBAverageWidget(
+                      title: G.of(context).averageRating,
+                      averageRating: partnerModel.partnerData.rating,
+                    )
+                  ],
                 ),
               ),
 

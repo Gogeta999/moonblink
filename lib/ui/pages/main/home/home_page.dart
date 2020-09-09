@@ -102,6 +102,11 @@ class _HomePageState extends State<HomePage>
                       // controller: tapToTopModel.scrollController,
                       slivers: <Widget>[
                         HomeAppBar(),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 10,
+                          ),
+                        ),
                         if (homeModel.isEmpty)
                           SliverToBoxAdapter(
                               child: Padding(
@@ -109,8 +114,8 @@ class _HomePageState extends State<HomePage>
                             child: ViewStateEmptyWidget(
                                 onPressed: homeModel.initData),
                           )),
-                        if (homeModel.stories?.isNotEmpty ?? false)
-                          StoryList(stories: homeModel.stories),
+                        // if (homeModel.stories?.isNotEmpty ?? false)
+                        //   StoryList(stories: homeModel.stories),
                         HomePostList(),
                       ],
                     ));

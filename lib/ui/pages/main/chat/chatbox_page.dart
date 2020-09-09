@@ -809,7 +809,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               appBar: AppBar(
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
                     // ? Colors.grey
-                    ? Theme.of(context).scaffoldBackgroundColor
+                    ? Colors.black
                     : Colors.black,
                 title: GestureDetector(
                     child: Row(

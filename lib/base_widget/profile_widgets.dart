@@ -33,26 +33,27 @@ class PartnerRatingWidget extends StatelessWidget {
             ),
           ),
           Positioned(
-              bottom: 85,
-              child: SmoothStarRating(
-                rating: averageRating.roundToDouble(),
-                isReadOnly: true,
-                filledIconData: Icons.star,
-                halfFilledIconData: Icons.star_half,
-                defaultIconData: Icons.star_border,
-                color: Theme.of(context).accentColor,
-                starCount: 5,
-                allowHalfRating: true,
-                spacing: 5,
-                // onRated: (value) {
-                //   print("rating value_ $value");
-                // },
-              )),
+            bottom: 85,
+            child: SmoothStarRating(
+              rating: averageRating.roundToDouble(),
+              isReadOnly: true,
+              filledIconData: Icons.star,
+              halfFilledIconData: Icons.star_half,
+              defaultIconData: Icons.star_border,
+              color: Theme.of(context).accentColor,
+              starCount: 5,
+              allowHalfRating: true,
+              spacing: 5,
+              // onRated: (value) {
+              //   print("rating value_ $value");
+              // },
+            ),
+          ),
           Positioned(
               bottom: 50,
               child: Text(
                 partnerName +
-                    G.of(context).averageRatingIs +
+                    G.of(context).averageRating +
                     averageRating.roundToDouble().toString(),
                 style: TextStyle(color: Colors.black),
               ))
@@ -215,35 +216,38 @@ class HistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //var fo
-    return Container(
-      // width: 1000,
-      margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.grey),
-        // color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Image.asset(
-            ImageHelper.wrapAssetsLogo('appbar.jpg'),
-            height: 50,
-            width: 45,
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              '${history.transaction}',
-              style: Theme.of(context).textTheme.bodyText2,
-              overflow: TextOverflow.visible,
+    return Padding(
+      padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
+      child: Container(
+        // width: 1000,
+        margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.5, color: Colors.black),
+          // color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Image.asset(
+              ImageHelper.wrapAssetsLogo('appbar.jpg'),
+              height: 50,
+              width: 45,
             ),
-          ),
-          SizedBox(width: 10),
-          Text(DateFormat.yMd().format(DateTime.parse(history.date)))
-        ],
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                '${history.transaction}',
+                style: Theme.of(context).textTheme.bodyText2,
+                overflow: TextOverflow.visible,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(DateFormat.yMd().format(DateTime.parse(history.date)))
+          ],
+        ),
       ),
     );
   }

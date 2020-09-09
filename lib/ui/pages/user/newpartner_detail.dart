@@ -3,6 +3,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/imageview.dart';
@@ -75,7 +76,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         break;
     }
   }
+  // void followButtonClick(){
 
+  // }
   @override
   Widget build(BuildContext context) {
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
@@ -86,6 +89,48 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
+            void followingRequest(bool newValue) async {
+              print('status is 0 so bool is' +
+                  followButtonClicked.toString() +
+                  'to false');
+              await DioUtils().post(
+                Api.SocialRequest +
+                    partnerModel.partnerData.partnerId.toString() +
+                    '/follow',
+                queryParameters: {'status': '1'},
+              );
+              print('stauts now is 1 and switch to following button');
+              setState(() {
+                print(
+                    '${partnerModel.partnerData.followerCount} is plus 1 follower');
+                partnerModel.partnerData.followerCount += 1;
+                print('so now is ${partnerModel.partnerData.followerCount}');
+                partnerModel.partnerData.isFollow = 1;
+                followButtonClicked = newValue;
+              });
+            }
+
+            void unFollowRequest(bool newValue) async {
+              print('status is 1 so bool is' +
+                  followButtonClicked.toString() +
+                  'to false');
+              await DioUtils().post(
+                Api.SocialRequest +
+                    partnerModel.partnerData.partnerId.toString() +
+                    '/follow',
+                queryParameters: {'status': '0'},
+              );
+              print('stauts now is 0 and switch to follow button');
+              setState(() {
+                print(
+                    '${partnerModel.partnerData.followerCount} is minus 1 follower');
+                partnerModel.partnerData.followerCount -= 1;
+                print('so now is ${partnerModel.partnerData.followerCount}');
+                partnerModel.partnerData.isFollow = 0;
+                followButtonClicked = newValue;
+              });
+            }
+
             // int followerCount = partnerModel.partnerData.followerCount;
             if (partnerModel.isBusy) {
               return ViewStateBusyWidget();
@@ -163,43 +208,21 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                       BorderSide(width: 2, color: Colors.black),
                                 ),
                               ),
-                              child: Column(
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                // crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 50),
+                                    padding: const EdgeInsets.only(left: 80),
                                     child: Text(
                                       partnerModel.partnerData.partnerName,
                                       style: TextStyle(fontSize: 26),
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(left: 50),
-                                  //   child: Row(
-                                  //     mainAxisAlignment: MainAxisAlignment.center,
-                                  //     children: [
-                                  //       IconButton(
-                                  //         icon: Icon(Icons.content_copy),
-                                  //         iconSize: 18,
-                                  //         color: Theme.of(context).brightness ==
-                                  //                 Brightness.dark
-                                  //             ? Colors.white
-                                  //             : Colors.black,
-                                  //         onPressed: () {
-                                  //           String id = encrypt(widget.detailPageId);
-                                  //           FlutterClipboard.copy(id).then((value) {
-                                  //             showToast('Copy To Your Clipboard');
-                                  //             print('copied');
-                                  //           });
-                                  //         },
-                                  //       ),
-                                  //       Text(":copy ID Here")
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                  userstatus(partnerModel.partnerData.status)
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                         Padding(
@@ -282,107 +305,92 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   SliverToBoxAdapter(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        ///[Booking Button move to class]
-                        BookingButton(),
+                        Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ///[Booking Button move to class]
+                            // BookingButton(),
 
-                        /// [Follow Button] different statement to show different button
-                        RaisedButton(
-                          color: Theme.of(context).accentColor,
-                          highlightColor: Theme.of(context).accentColor,
-                          colorBrightness: Theme.of(context).brightness,
-                          splashColor: Colors.grey,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)),
-                          child: partnerModel.partnerData.isFollow == 0
-                              ? Text(G.of(context).follow,
-                                  style:
-                                      Theme.of(context).accentTextTheme.button)
-                              : Text(G.of(context).following,
-                                  style:
-                                      Theme.of(context).accentTextTheme.button),
-                          onPressed: partnerModel.partnerData.isFollow == 0
-                              ? () async {
-                                  print('status is 0 so bool is' +
-                                      followButtonClicked.toString() +
-                                      'to false');
-                                  await DioUtils().post(
-                                    Api.SocialRequest +
-                                        partnerModel.partnerData.partnerId
-                                            .toString() +
-                                        '/follow',
-                                    queryParameters: {'status': '1'},
-                                  );
-                                  print(
-                                      'stauts now is 1 and switch to following button');
-                                  setState(() {
-                                    print(
-                                        '${partnerModel.partnerData.followerCount} is plus 1 follower');
-                                    partnerModel.partnerData.followerCount += 1;
-                                    print(
-                                        'so now is ${partnerModel.partnerData.followerCount}');
-                                    partnerModel.partnerData.isFollow = 1;
-                                  });
-                                }
-                              : () async {
-                                  print('status is 1 so bool is' +
-                                      followButtonClicked.toString() +
-                                      'to false');
-                                  await DioUtils().post(
-                                    Api.SocialRequest +
-                                        partnerModel.partnerData.partnerId
-                                            .toString() +
-                                        '/follow',
-                                    queryParameters: {'status': '0'},
-                                  );
-                                  print(
-                                      'stauts now is 0 and switch to follow button');
-                                  setState(() {
-                                    print(
-                                        '${partnerModel.partnerData.followerCount} is minus 1 follower');
-                                    partnerModel.partnerData.followerCount -= 1;
-                                    print(
-                                        'so now is ${partnerModel.partnerData.followerCount}');
-                                    partnerModel.partnerData.isFollow = 0;
-                                  });
-                                },
+                            ///[Follow Button]
+                            MB2StateButtonWidget(
+                              active: partnerModel.partnerData.isFollow == 0
+                                  ? true
+                                  : false,
+                              trueText: G.of(context).follow,
+                              falseText: G.of(context).following,
+                              onChanged: partnerModel.partnerData.isFollow == 0
+                                  ? followingRequest
+                                  : unFollowRequest,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+
+                            ///[Followers total]
+                            MBBoxWidget(
+                              text: G.of(context).follower,
+                              followers: partnerModel.partnerData.followerCount
+                                  .toString(),
+                            ),
+                          ],
                         ),
+                        MBAverageWidget(
+                          title: G.of(context).averageRating,
+                          averageRating: partnerModel.partnerData.rating,
+                        )
                       ],
                     ),
                   ),
-
-                  /// [info]
+                  SliverToBoxAdapter(child: SizedBox(height: 20)),
+                  SliverToBoxAdapter(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        BookingButton(),
+                        // MBButtonWidget(
+                        //   title: G.of(context).booking,
+                        //   onTap: () {
+                        //     showToast('1');
+                        //   },
+                        // ),
+                        MBButtonWidget(
+                            title: G.of(context).tabChat,
+                            onTap: widget.detailPageId == ownId
+                                ? null
+                                : () {
+                                    Navigator.pushReplacementNamed(
+                                        context, RouteName.chatBox,
+                                        arguments: widget.detailPageId);
+                                  }),
+                      ],
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 20,
+                    ),
+                  ),
 
                   /// [user bio]
                   SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(10, 15, 0, 15),
-                      child: Text(
-                          partnerModel.partnerData.prfoileFromPartner.bios),
-                    ),
-                  ),
-                  // SliverToBoxAdapter(child: SizedBox(height: 1)),
-                  SliverToBoxAdapter(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Text(partnerModel.partnerData.reactionCount
-                                  .toString() +
-                              '  ' +
-                              G.of(context).likes),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(width: 2, color: Colors.black),
+                            bottom: BorderSide(width: 2, color: Colors.black),
+                          ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Text(partnerModel.partnerData.followerCount
-                                  .toString() +
-                              '  ' +
-                              G.of(context).follower),
-                        ),
-                      ],
-                    ),
+                        child: Center(
+                          child: Text(
+                            partnerModel.partnerData.prfoileFromPartner.bios,
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        )),
                   ),
 
                   /// [user feed]

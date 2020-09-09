@@ -487,9 +487,11 @@ class PageCard extends StatelessWidget {
     return InkResponse(
       onTap: onTap,
       child: Container(
+        // height: 100,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(25),
+          color: Theme.of(context).cardColor,
+          border: Border.all(width: 1, color: Colors.black),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).brightness == Brightness.dark
@@ -508,13 +510,14 @@ class PageCard extends StatelessWidget {
           children: <Widget>[
             Icon(
               iconData,
-              color: Colors.white,
-              size: 26.0,
+              color: Theme.of(context).iconTheme.color,
+              size: 30.0,
             ),
             Center(
               child: Text(pageTitle,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700, color: Colors.white),
+                  style: Theme.of(context).textTheme.bodyText1,
+                  // TextStyle(
+                  //     fontWeight: FontWeight.w700, color: Colors.white),
                   softWrap: true),
             )
           ],

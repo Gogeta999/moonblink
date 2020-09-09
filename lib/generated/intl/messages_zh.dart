@@ -26,7 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "and" : MessageLookupByLibrary.simpleMessage(" 和 "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("跟随系统"),
-    "averageRatingIs" : MessageLookupByLibrary.simpleMessage("的平均评分为"),
+    "averageRating" : MessageLookupByLibrary.simpleMessage("平均评分"),
     "becomePartnerAt" : MessageLookupByLibrary.simpleMessage("Joined "),
     "block" : MessageLookupByLibrary.simpleMessage("拉黑用户"),
     "blockContent" : MessageLookupByLibrary.simpleMessage("你将再也看不见这位用户除非你从设置中的黑名单里解除拉黑状态"),

@@ -26,7 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "and" : MessageLookupByLibrary.simpleMessage(" နှင့် "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("အော်တိုစနစ်"),
-    "averageRatingIs" : MessageLookupByLibrary.simpleMessage("\'ပျမ်းမျှအဆင့်သတ်မှတ်ချက်"),
+    "averageRating" : MessageLookupByLibrary.simpleMessage("\'ပျမ်းမျှအမှတ်"),
     "becomePartnerAt" : MessageLookupByLibrary.simpleMessage("Joined "),
     "block" : MessageLookupByLibrary.simpleMessage("Block User"),
     "blockContent" : MessageLookupByLibrary.simpleMessage("You won\'t see this user or able to communicate anymore until you unblcok this user at settings"),

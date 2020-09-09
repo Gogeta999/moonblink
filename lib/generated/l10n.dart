@@ -83,11 +83,11 @@ class G {
     );
   }
 
-  /// `'s average rating is `
-  String get averageRatingIs {
+  /// `Average Rating`
+  String get averageRating {
     return Intl.message(
-      '\'s average rating is ',
-      name: 'averageRatingIs',
+      'Average Rating',
+      name: 'averageRating',
       desc: '',
       args: [],
     );
@@ -133,10 +133,10 @@ class G {
     );
   }
 
-  /// `Booking request`
+  /// `Request`
   String get bookingRequest {
     return Intl.message(
-      'Booking request',
+      'Request',
       name: 'bookingRequest',
       desc: '',
       args: [],
