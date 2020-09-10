@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:moonblink/api/moonblink_api.dart';
-import 'package:moonblink/base_widget/forceDialog.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -46,7 +45,7 @@ class DioUtils {
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': devAppKey,
+      'app-key': devAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
@@ -211,7 +210,7 @@ class DioUtils {
 
   //delete request
   delete(url, {queryParameters, options}) async {
-    print('delete request path ------$url-------queryParameters$queryParameters');
+    print('post request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.delete(url,
         queryParameters: queryParameters, options: options);
