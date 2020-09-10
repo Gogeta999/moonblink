@@ -270,11 +270,12 @@ class HomeAppBar extends StatelessWidget {
             onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
       ],
       flexibleSpace: null,
-      bottom: AppBar(
-        elevation: 10,
-        backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 15,
-      ),
+      bottom: PreferredSize(
+          child: Container(
+            height: 10,
+            color: Theme.of(context).accentColor,
+          ),
+          preferredSize: Size.fromHeight(10)),
     );
   }
 }

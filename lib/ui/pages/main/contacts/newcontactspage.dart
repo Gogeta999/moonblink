@@ -175,18 +175,21 @@ class _ContactsPageState extends State<ContactsPage> {
                   padding: const EdgeInsets.only(top: 50),
                   child: ViewStateEmptyWidget(onPressed: contactModel.initData),
                 ));
-              return AlphabetListScrollView(
-                strList: strList,
-                highlightTextStyle: TextStyle(
-                  color: Theme.of(context).accentColor,
+              return Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: AlphabetListScrollView(
+                  strList: strList,
+                  highlightTextStyle: TextStyle(
+                    color: Theme.of(context).accentColor,
+                  ),
+                  showPreview: true,
+                  itemBuilder: (context, index) {
+                    return items[index];
+                  },
+                  indexedHeight: (i) {
+                    return 58;
+                  },
                 ),
-                showPreview: true,
-                itemBuilder: (context, index) {
-                  return items[index];
-                },
-                indexedHeight: (i) {
-                  return 58;
-                },
               );
             }));
   }

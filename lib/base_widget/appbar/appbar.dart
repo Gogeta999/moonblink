@@ -26,12 +26,12 @@ class _AppbarWidgetState extends State<AppbarWidget> {
       actions: [
         AppbarLogo(),
       ],
-      bottom: AppBar(
-        leading: Container(),
-        backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 15,
-        elevation: 10,
-      ),
+      bottom: PreferredSize(
+          child: Container(
+            height: 10,
+            color: Theme.of(context).accentColor,
+          ),
+          preferredSize: Size.fromHeight(10)),
     );
   }
 }

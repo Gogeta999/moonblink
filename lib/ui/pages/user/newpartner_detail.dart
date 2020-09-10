@@ -349,7 +349,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        ///[Real Button]
                         // BookingButton(),
+
+                        ///StaticButton
                         MBButtonWidget(
                             title: G.of(context).booking,
                             onTap: widget.detailPageId == ownId
@@ -361,12 +364,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                         context, RouteName.booking,
                                         arguments: partnerModel.partnerData);
                                   }),
-                        // MBButtonWidget(
-                        //   title: G.of(context).booking,
-                        //   onTap: () {
-                        //     showToast('1');
-                        //   },
-                        // ),
+
                         MBButtonWidget(
                             title: G.of(context).tabChat,
                             onTap: widget.detailPageId == ownId

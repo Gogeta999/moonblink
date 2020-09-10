@@ -136,10 +136,12 @@ class _UserStatusPageState extends State<UserStatusPage> {
               AppbarLogo(),
             ],
             flexibleSpace: null,
-            bottom: AppBar(
-              backgroundColor: Theme.of(context).accentColor,
-              // toolbarHeight: 20,
-            ),
+            bottom: PreferredSize(
+                child: Container(
+                  height: 10,
+                  color: Theme.of(context).accentColor,
+                ),
+                preferredSize: Size.fromHeight(10)),
           ),
           SliverToBoxAdapter(
             child: Container(

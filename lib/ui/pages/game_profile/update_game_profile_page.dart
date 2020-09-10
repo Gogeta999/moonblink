@@ -306,15 +306,23 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           title: Text(widget.gameProfile.gameName),
+          leading: IconButton(
+              icon: Icon(CupertinoIcons.back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
           actions: <Widget>[
             StreamBuilder<UpdateOrSubmitButtonState>(
                 stream: _submitOrUpdateSubject.stream,
                 builder: (context, snapshot) {
                   if (snapshot.data == UpdateOrSubmitButtonState.initial) {
                     return CupertinoButton(
-                      child: Text(
-                          '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      child: Center(
+                        child: Text(
+                            '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      ),
                       onPressed: _onSubmitOrUpdate,
                     );
                   } else if (snapshot.data ==
@@ -332,7 +340,16 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   }
                 })
           ],
+          // elevation: 15,
+          // shadowColor: Colors.blue,
+          bottom: PreferredSize(
+              child: Container(
+                height: 10,
+                color: Theme.of(context).accentColor,
+              ),
+              preferredSize: Size.fromHeight(10)),
         ),
+        backgroundColor: Colors.grey[200],
         body: SafeArea(
           child: ListView(
             physics: ClampingScrollPhysics(),
