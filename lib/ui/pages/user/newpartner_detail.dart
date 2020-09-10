@@ -349,7 +349,18 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        BookingButton(),
+                        // BookingButton(),
+                        MBButtonWidget(
+                            title: G.of(context).booking,
+                            onTap: widget.detailPageId == ownId
+                                ? () {
+                                    showToast('Your Can\'t book yourself ');
+                                  }
+                                : () {
+                                    Navigator.pushNamed(
+                                        context, RouteName.booking,
+                                        arguments: partnerModel.partnerData);
+                                  }),
                         // MBButtonWidget(
                         //   title: G.of(context).booking,
                         //   onTap: () {
@@ -359,7 +370,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                         MBButtonWidget(
                             title: G.of(context).tabChat,
                             onTap: widget.detailPageId == ownId
-                                ? null
+                                ? () {
+                                    showToast('Your Can\'t chat yourself ');
+                                  }
                                 : () {
                                     Navigator.pushReplacementNamed(
                                         context, RouteName.chatBox,

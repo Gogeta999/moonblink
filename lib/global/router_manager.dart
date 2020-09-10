@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
 import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
@@ -35,6 +36,7 @@ import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/newWallet_page.dart';
+import 'package:moonblink/ui/pages/wallet/new_top_up_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 
@@ -43,6 +45,7 @@ import '../ui/pages/settings/allsetting/terms_and_conditions_page.dart';
 class RouteName {
   static const String splash = 'splash';
   static const String main = '/';
+  static const String booking = 'booking';
   static const String userStatus = '/userStatus';
   // static const String comment = 'comment';
   static const String network = 'network';
@@ -79,6 +82,10 @@ class Router {
     switch (settings.name) {
       case RouteName.splash:
         return NoAnimRouteBuilder(SplashPage());
+      case RouteName.booking:
+        return CupertinoPageRoute(
+            builder: (_) =>
+                BookingPage(partnerUser: settings.arguments ?? 'Unknown data'));
       case RouteName.newUserSwiperPage:
         return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
@@ -156,6 +163,9 @@ class Router {
         return CupertinoPageRoute(builder: (_) => ApplyForQualification());
       case RouteName.pubgMobile:
         return CupertinoPageRoute(builder: (_) => PubgMobile());
+
+      case RouteName.topUp:
+        return CupertinoPageRoute(builder: (_) => NewTopUpPage());
 
       default:
         return CupertinoPageRoute(
