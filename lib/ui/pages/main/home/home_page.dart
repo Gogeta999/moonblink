@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -27,6 +28,9 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  int catagories = 0;
+  int gender = 0;
 
   @override
   void initState() {
@@ -116,6 +120,22 @@ class _HomePageState extends State<HomePage>
                           )),
                         // if (homeModel.stories?.isNotEmpty ?? false)
                         //   StoryList(stories: homeModel.stories),
+                        TopTabs(
+                          catagory: catagories,
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 20,
+                          ),
+                        ),
+                        MaleFamleTabs(
+                          gender: gender,
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 20,
+                          ),
+                        ),
                         HomePostList(),
                       ],
                     ));
@@ -168,6 +188,169 @@ class HomePostList extends StatelessWidget {
         Post item = homeModel.list[index];
         return PostItemWidget(item, index: index);
       }, childCount: homeModel.list?.length ?? 0),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class TopTabs extends StatefulWidget {
+  int catagory;
+  TopTabs({this.catagory});
+
+  @override
+  _TopTabsState createState() => _TopTabsState();
+}
+
+class _TopTabsState extends State<TopTabs> {
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 40,
+        child: Stack(
+          children: [
+            Center(
+              child: Divider(
+                thickness: 2,
+                color: Colors.black,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SmallShadedContainer(
+                  selected: widget.catagory == 0 ? true : false,
+                  ontap: () {
+                    if (widget.catagory != 0) {
+                      setState(() {
+                        widget.catagory = 0;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Coplayer",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: widget.catagory == 1 ? true : false,
+                  ontap: () {
+                    if (widget.catagory != 1) {
+                      setState(() {
+                        widget.catagory = 1;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Cele",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: widget.catagory == 2 ? true : false,
+                  ontap: () {
+                    if (widget.catagory != 2) {
+                      setState(() {
+                        widget.catagory = 2;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Pro",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: widget.catagory == 3 ? true : false,
+                  ontap: () {
+                    if (widget.catagory != 3) {
+                      setState(() {
+                        widget.catagory = 3;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Streamer",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class MaleFamleTabs extends StatefulWidget {
+  int gender;
+  MaleFamleTabs({this.gender});
+  @override
+  _MaleFamleTabsState createState() => _MaleFamleTabsState();
+}
+
+class _MaleFamleTabsState extends State<MaleFamleTabs> {
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+            bottom: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(top: 10, bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SmallShadedContainer(
+                selected: widget.gender == 0 ? true : false,
+                ontap: () {
+                  if (widget.gender != 0) {
+                    setState(() {
+                      widget.gender = 0;
+                    });
+                  }
+                },
+                child: Center(
+                  child: Text("Male"),
+                ),
+              ),
+              SmallShadedContainer(
+                selected: widget.gender == 1 ? true : false,
+                ontap: () {
+                  if (widget.gender != 1) {
+                    setState(() {
+                      widget.gender = 1;
+                    });
+                  }
+                },
+                child: Center(
+                  child: Text("Female"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

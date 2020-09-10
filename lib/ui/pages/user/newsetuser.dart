@@ -262,7 +262,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                     )
                                   ],
                                 ),
-                                _space(),
+                                _space,
                               ],
                             ),
                           ),
@@ -371,7 +371,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                               ),
                             ),
                           ),
-                          RaisedButton(
+                          ShadedContainer(
+                            color: Theme.of(context).accentColor,
+                            selected: false,
                             child: finished
                                 ? ButtonProgressIndicator()
                                 : Text(G.of(context).setPartnerButton,
@@ -379,7 +381,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                         .accentTextTheme
                                         .button
                                         .copyWith(wordSpacing: 6)),
-                            onPressed: () async {
+                            ontap: () async {
                               if (_cover == null || _profile == null) {
                                 showToast(G.of(context).toastimagenull);
                                 return false;

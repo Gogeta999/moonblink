@@ -44,7 +44,7 @@ class TermsAndConditions extends StatelessWidget {
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(50.0)),
                       ),
@@ -54,7 +54,7 @@ class TermsAndConditions extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 50),
                     child: TitleContainer(
                       height: 100,
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                           child: Text(
                         "Terms and Conditions",

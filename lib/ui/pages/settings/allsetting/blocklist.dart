@@ -112,7 +112,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(50.0)),
                             ),
@@ -123,7 +123,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                               vertical: 30, horizontal: 50),
                           child: TitleContainer(
                             height: 100,
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
                               "Block List",
@@ -153,7 +153,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(50.0)),
                             ),
@@ -164,7 +164,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                               vertical: 30, horizontal: 50),
                           child: TitleContainer(
                             height: 100,
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
                               "Block List",
@@ -203,7 +203,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(50.0)),
                             ),
@@ -214,7 +214,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                               vertical: 30, horizontal: 50),
                           child: TitleContainer(
                             height: 100,
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
                               "Block List",
@@ -250,7 +250,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(50.0)),
                             ),
@@ -261,7 +261,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                               vertical: 30, horizontal: 50),
                           child: TitleContainer(
                             height: 100,
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
                               "Block List",

@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
-import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/ui/pages/wallet/newtop_up.dart';
-import 'topup_page.dart';
-import 'user_transaction_page.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -38,7 +32,7 @@ class _WalletPageState extends State<WalletPage> {
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(50.0)),
                     ),
@@ -48,7 +42,7 @@ class _WalletPageState extends State<WalletPage> {
                   padding: EdgeInsets.symmetric(vertical: 30, horizontal: 50),
                   child: TitleContainer(
                     height: 100,
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Center(
                         child: Text(
                       "My Coin",
@@ -90,7 +84,7 @@ class _WalletPageState extends State<WalletPage> {
                             vertical: 20,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             border: Border.all(color: Colors.black),
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
