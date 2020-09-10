@@ -24,7 +24,7 @@ import 'bloc_pattern/simple_bloc_observer.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
 
-String usertoken = StorageManager.sharedPreferences.getString(token);
+// String usertoken = StorageManager.sharedPreferences.getString(token);
 
 main() async {
   Provider.debugCheckInvalidValueType = null;

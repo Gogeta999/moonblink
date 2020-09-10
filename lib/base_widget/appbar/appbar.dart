@@ -23,11 +23,14 @@ class _AppbarWidgetState extends State<AppbarWidget> {
               onPressed: () => Navigator.pop(context),
             )
           : Container(),
-      actions: [AppbarLogo()],
+      actions: [
+        AppbarLogo(),
+      ],
       bottom: AppBar(
         leading: Container(),
         backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 20,
+        toolbarHeight: 15,
+        elevation: 10,
       ),
     );
   }

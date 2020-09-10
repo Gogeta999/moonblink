@@ -6,13 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/BottomClipper.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/curvepanel.dart';
-import 'package:moonblink/base_widget/indicator/appbar_indicator.dart';
-// import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -165,6 +162,11 @@ class _UserStatusPageState extends State<UserStatusPage> {
             padding: EdgeInsets.only(top: 10),
           ),
           UserListWidget(),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 20,
+            ),
+          )
         ],
       ),
     );
@@ -314,6 +316,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   @override
   Widget build(BuildContext context) {
     int status = StorageManager.sharedPreferences.getInt(mstatus);
+    String usertoken = StorageManager.sharedPreferences.getString(token);
     print("user type is ${usertype.toString()}");
     print("user status is ${status.toString()}");
 
@@ -497,9 +500,9 @@ class PageCard extends StatelessWidget {
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.black
                   : Colors.black,
-              spreadRadius: 2,
+              spreadRadius: -5,
               // blurRadius: 2,
-              offset: Offset(-8, 7), // changes position of shadow
+              offset: Offset(-15, 15), // changes position of shadow
             ),
           ],
         ),

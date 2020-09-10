@@ -58,6 +58,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
       child: TextFormField(
         controller: controller,
         obscureText: false,
+        textAlign: TextAlign.center,
         focusNode: widget.focusNode,
         textInputAction: widget.textInputAction,
         keyboardType: widget.keyboardType,

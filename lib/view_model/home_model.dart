@@ -1,15 +1,14 @@
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
-import 'package:moonblink/models/story.dart';
 import 'package:moonblink/provider/view_state_list_refresh_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/view_model/login_model.dart';
 
 class HomeModel extends ViewStateRefreshListModel {
+  HomeModel({this.type, this.gender});
   // var usertoken = StorageManager.sharedPreferences.getString(token);
   // List<Story> _stories;
   List<Post> _posts;
-
+  int type;
+  String gender;
   // List<Story> get stories => _stories;
   List<Post> get posts => _posts;
   // @override
@@ -20,12 +19,12 @@ class HomeModel extends ViewStateRefreshListModel {
   @override
   Future<List> loadData({int pageNum}) async {
     List<Future> futures = [];
-
     // if (usertoken != null &&
     //     pageNum == ViewStateRefreshListModel.pageNumFirst) {
     //   futures.add(MoonBlinkRepository.fetchStory());
     // }
-    futures.add(MoonBlinkRepository.fetchPosts(pageNum));
+    print(type);
+    futures.add(MoonBlinkRepository.fetchPosts(pageNum, type, gender));
 
     var result = await Future.wait(futures);
 

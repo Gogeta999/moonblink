@@ -40,7 +40,8 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
   }
 
   ///only for home posts
-  Future<bool> removeItem({@required int index, @required int blockUserId}) async {
+  Future<bool> removeItem(
+      {@required int index, @required int blockUserId}) async {
     try {
       await MoonBlinkRepository.blockOrUnblock(blockUserId, BLOCK);
       list.removeAt(index);

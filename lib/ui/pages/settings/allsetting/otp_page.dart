@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
-import 'package:moonblink/base_widget/TopCurvePanel_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
@@ -84,20 +83,20 @@ class _OtpPageState extends State<OtpPage> {
                   padding: const EdgeInsets.only(top: 130),
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        LoginFormContainer(
-                          child: ProviderWidget<OtpModel>(
-                            model: OtpModel(Provider.of(context)),
-                            builder: (context, model, child) {
-                              return Form(
-                                onWillPop: () async {
-                                  return !model.isBusy;
-                                },
-                                child: child,
-                              );
-                            },
+                    child: ProviderWidget<OtpModel>(
+                      model: OtpModel(Provider.of(context)),
+                      builder: (context, model, child) {
+                        return Form(
+                          onWillPop: () async {
+                            return !model.isBusy;
+                          },
+                          child: child,
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          LoginFormContainer(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
@@ -114,21 +113,19 @@ class _OtpPageState extends State<OtpPage> {
                                   controller: _otpCodeController,
                                   keyboardType: TextInputType.number,
                                 ),
-                                // ResendTokenButton(phone: _phoneController.text)
-                                // ,
-                                // SizedBox( height: 30),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),
-                        ),
-                        SignAsPartnerButton(_otpCodeController),
-                      ],
+                          SignAsPartnerButton(_otpCodeController)
+                        ],
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -141,7 +138,7 @@ class SignAsPartnerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<OtpModel>(context);
-    return LoginButtonWidget(
+    return ShadedContainer(
       color: Theme.of(context).accentColor,
       child: model.isBusy
           ? ButtonProgressIndicator()
@@ -152,20 +149,20 @@ class SignAsPartnerButton extends StatelessWidget {
                   .headline6
                   .copyWith(wordSpacing: 6),
             ),
-      onPressed: model.isBusy
+      ontap: model.isBusy
           ? null
           : () {
-              // var formState = Form.of(context);
-              // if (formState.validate()) {
-              //   /*model.signAsPartner(otpController.text).then((value) */
-              //   model.signInWithCredential(otpController.text).then((value) {
-              //     if (value) {
-              Navigator.of(context).pushNamed(RouteName.setprofile);
-              // } else {
-              //   model.showErrorMessage(context);
-              // }
-              // });
-              // }
+              var formState = Form.of(context);
+              if (formState.validate()) {
+                /*model.signAsPartner(otpController.text).then((value) */
+                model.signInWithCredential(otpController.text).then((value) {
+                  if (value) {
+                    Navigator.of(context).pushNamed(RouteName.setprofile);
+                  } else {
+                    model.showErrorMessage(context);
+                  }
+                });
+              }
             },
     );
   }

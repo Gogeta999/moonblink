@@ -53,10 +53,10 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
               SliverAppBar(
                 backgroundColor: Colors.black,
                 toolbarHeight: kToolbarHeight - 5,
-                leading: IconButton(
-                  icon: Icon(Icons.backspace),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                // leading: IconButton(
+                //   icon: Icon(Icons.backspace),
+                //   onPressed: () => Navigator.pop(context),
+                // ),
                 actions: [
                   AppbarLogo(),
                 ],

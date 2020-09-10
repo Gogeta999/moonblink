@@ -49,9 +49,9 @@ class SmallShadedContainer extends StatelessWidget {
     return GestureDetector(
       onTap: ontap,
       child: Container(
-        width: 75,
+        width: 80,
         height: height,
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           border: Border.all(color: Colors.black),
@@ -61,7 +61,42 @@ class SmallShadedContainer extends StatelessWidget {
               color: selected ? Theme.of(context).accentColor : Colors.black,
               spreadRadius: 1,
               // blurRadius: 2,
-              offset: Offset(-5, 5), // changes position of shadow
+              offset: Offset(-2, 2), // changes position of shadow
+            ),
+          ],
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+class MediumShadedContainer extends StatelessWidget {
+  final Widget child;
+  final double height;
+  final Function ontap;
+  final bool selected;
+  MediumShadedContainer(
+      {this.child, this.height, this.ontap, this.selected = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: ontap,
+      child: Container(
+        width: 130,
+        height: height,
+        padding: EdgeInsets.symmetric(vertical: 13),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: [
+            BoxShadow(
+              color: selected ? Theme.of(context).accentColor : Colors.black,
+              spreadRadius: 1,
+              // blurRadius: 2,
+              offset: Offset(-2, 2), // changes position of shadow
             ),
           ],
         ),

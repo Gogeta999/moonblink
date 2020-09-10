@@ -18,7 +18,6 @@ import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -27,9 +26,10 @@ class MoonBlinkRepository {
   }
   // home page's post data
 
-  static Future fetchPosts(int pageNum) async {
+  static Future fetchPosts(int pageNum, int type, String gender) async {
     // await Future.delayed(Duration(seconds: 1));
-    var response = await DioUtils().get(Api.HOME + '$pageNum');
+    var response = await DioUtils()
+        .get(Api.HOME + 'limit=5&type=$type&page=$pageNum&gender=$gender');
     return response.data['data']
         .map<Post>((item) => Post.fromMap(item))
         .toList();

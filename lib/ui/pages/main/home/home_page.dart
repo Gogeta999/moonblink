@@ -11,13 +11,17 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
-import 'package:moonblink/ui/pages/main/stories/storylist.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/home_model.dart';
 import 'package:moonblink/view_model/scroll_controller_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+///coplayer = 1
+///streamer = 2
+///cele = 3
+///pro = 4
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,20 +33,108 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
-  int catagories = 0;
-  int gender = 0;
+  int catagories = 1;
+  String gender = "Male";
 
   @override
   void initState() {
     super.initState();
   }
 
+  topTabs() {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 40,
+        child: Stack(
+          children: [
+            Center(
+              child: Divider(
+                thickness: 2,
+                color: Colors.black,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SmallShadedContainer(
+                  selected: catagories == 1 ? true : false,
+                  ontap: () {
+                    if (catagories != 1) {
+                      setState(() {
+                        catagories = 1;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Coplayer",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: catagories == 3 ? true : false,
+                  ontap: () {
+                    if (catagories != 3) {
+                      setState(() {
+                        catagories = 3;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Cele",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: catagories == 4 ? true : false,
+                  ontap: () {
+                    if (catagories != 4) {
+                      setState(() {
+                        catagories = 4;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Pro",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SmallShadedContainer(
+                  selected: catagories == 2 ? true : false,
+                  ontap: () {
+                    if (catagories != 2) {
+                      setState(() {
+                        catagories = 2;
+                      });
+                    } else {
+                      print("Already");
+                    }
+                  },
+                  child: Text(
+                    "Streamer",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    print(catagories);
     return ProviderWidget2<HomeModel, TapToTopModel>(
-      autoDispose: false,
-      model1: HomeModel(),
+      autoDispose: true,
+      model1: HomeModel(type: catagories, gender: gender),
       model2: TapToTopModel(PrimaryScrollController.of(context),
           height: kToolbarHeight),
       onModelReady: (homeModel, tapToTopModel) {
@@ -50,6 +142,7 @@ class _HomePageState extends State<HomePage>
         tapToTopModel.init(() => homeModel.loadMore());
       },
       builder: (context, homeModel, tapToTopModel, child) {
+        print("REbuilding");
         return Scaffold(
           body: MediaQuery.removePadding(
               context: context,
@@ -120,9 +213,15 @@ class _HomePageState extends State<HomePage>
                           )),
                         // if (homeModel.stories?.isNotEmpty ?? false)
                         //   StoryList(stories: homeModel.stories),
-                        TopTabs(
-                          catagory: catagories,
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 10,
+                          ),
                         ),
+                        topTabs(),
+                        // TopTabs(
+                        //   catagory: catagories,
+                        // ),
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height: 20,
@@ -161,7 +260,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      toolbarHeight: kToolbarHeight - 5,
+      toolbarHeight: kToolbarHeight - 10,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
@@ -172,8 +271,9 @@ class HomeAppBar extends StatelessWidget {
       ],
       flexibleSpace: null,
       bottom: AppBar(
+        elevation: 10,
         backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 20,
+        toolbarHeight: 15,
       ),
     );
   }
@@ -219,11 +319,11 @@ class _TopTabsState extends State<TopTabs> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SmallShadedContainer(
-                  selected: widget.catagory == 0 ? true : false,
+                  selected: widget.catagory == 1 ? true : false,
                   ontap: () {
-                    if (widget.catagory != 0) {
+                    if (widget.catagory != 1) {
                       setState(() {
-                        widget.catagory = 0;
+                        widget.catagory = 1;
                       });
                     } else {
                       print("Already");
@@ -251,11 +351,11 @@ class _TopTabsState extends State<TopTabs> {
                   ),
                 ),
                 SmallShadedContainer(
-                  selected: widget.catagory == 2 ? true : false,
+                  selected: widget.catagory == 4 ? true : false,
                   ontap: () {
-                    if (widget.catagory != 2) {
+                    if (widget.catagory != 4) {
                       setState(() {
-                        widget.catagory = 2;
+                        widget.catagory = 4;
                       });
                     } else {
                       print("Already");
@@ -267,11 +367,11 @@ class _TopTabsState extends State<TopTabs> {
                   ),
                 ),
                 SmallShadedContainer(
-                  selected: widget.catagory == 3 ? true : false,
+                  selected: widget.catagory == 2 ? true : false,
                   ontap: () {
-                    if (widget.catagory != 3) {
+                    if (widget.catagory != 2) {
                       setState(() {
-                        widget.catagory = 3;
+                        widget.catagory = 2;
                       });
                     } else {
                       print("Already");
@@ -293,7 +393,7 @@ class _TopTabsState extends State<TopTabs> {
 
 // ignore: must_be_immutable
 class MaleFamleTabs extends StatefulWidget {
-  int gender;
+  String gender;
   MaleFamleTabs({this.gender});
   @override
   _MaleFamleTabsState createState() => _MaleFamleTabsState();
@@ -321,12 +421,12 @@ class _MaleFamleTabsState extends State<MaleFamleTabs> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SmallShadedContainer(
-                selected: widget.gender == 0 ? true : false,
+              MediumShadedContainer(
+                selected: widget.gender == "Male" ? true : false,
                 ontap: () {
-                  if (widget.gender != 0) {
+                  if (widget.gender != "Male") {
                     setState(() {
-                      widget.gender = 0;
+                      widget.gender = "Male";
                     });
                   }
                 },
@@ -334,12 +434,12 @@ class _MaleFamleTabsState extends State<MaleFamleTabs> {
                   child: Text("Male"),
                 ),
               ),
-              SmallShadedContainer(
-                selected: widget.gender == 1 ? true : false,
+              MediumShadedContainer(
+                selected: widget.gender == "Female" ? true : false,
                 ontap: () {
-                  if (widget.gender != 1) {
+                  if (widget.gender != "Female") {
                     setState(() {
-                      widget.gender = 1;
+                      widget.gender = "Female";
                     });
                   }
                 },

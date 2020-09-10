@@ -55,7 +55,8 @@ class StoryList extends StatelessWidget {
                   })),
         ),
         Divider(
-          color: Colors.grey,
+          thickness: 1,
+          color: Colors.black,
         ),
       ],
     ));
