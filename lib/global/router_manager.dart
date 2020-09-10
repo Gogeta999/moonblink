@@ -35,6 +35,7 @@ import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/wallet/newWallet_page.dart';
+import 'package:moonblink/ui/pages/wallet/new_top_up_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 
@@ -156,6 +157,9 @@ class Router {
         return CupertinoPageRoute(builder: (_) => ApplyForQualification());
       case RouteName.pubgMobile:
         return CupertinoPageRoute(builder: (_) => PubgMobile());
+
+      case RouteName.topUp:
+        return CupertinoPageRoute(builder: (_) => NewTopUpPage());
 
       default:
         return CupertinoPageRoute(

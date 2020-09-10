@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:moonblink/base_widget/booking/booking_bottom_sheet.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
+import 'package:moonblink/base_widget/top_up_bottom_sheet.dart';
 import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -163,6 +164,31 @@ class CustomBottomSheet {
             }
           }
       });
+  }
+
+  static showTopUpBottomSheet({@required BuildContext buildContext,
+    Function onDismiss
+  }) {
+   showModalBottomSheet(
+       context: buildContext,
+       barrierColor: Colors.white.withOpacity(0.0),
+       isScrollControlled: true,
+       isDismissible: false,
+       builder: (context) => DraggableScrollableSheet(
+           expand: false,
+           initialChildSize: 0.85,
+           maxChildSize: 0.85,
+           builder: (context, scrollController) => TopUpBottomSheet()
+       )
+   ).whenComplete(() {
+     try {
+       onDismiss();
+     } catch (e) {
+       if (e is NoSuchMethodError) {
+         print('NoSuchMethodError');
+       }
+     }
+   });
   }
 
   static _permissionFail(BuildContext buildContext, String permissionName) {

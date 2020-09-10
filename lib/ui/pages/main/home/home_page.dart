@@ -161,7 +161,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      toolbarHeight: kToolbarHeight - 5,
+      //toolbarHeight: kToolbarHeight - 5,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
@@ -173,7 +173,7 @@ class HomeAppBar extends StatelessWidget {
       flexibleSpace: null,
       bottom: AppBar(
         backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 20,
+        //toolbarHeight: 20,
       ),
     );
   }

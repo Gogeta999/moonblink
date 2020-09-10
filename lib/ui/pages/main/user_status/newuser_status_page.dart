@@ -130,7 +130,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
             ///[Appbar]
             backgroundColor: Colors.black,
             pinned: true,
-            toolbarHeight: kToolbarHeight - 5,
+            // toolbarHeight: kToolbarHeight - 5,
             // expandedHeight: kToolbarHeight,
             brightness: Theme.of(context).brightness == Brightness.light
                 ? Brightness.light
@@ -141,7 +141,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
             flexibleSpace: null,
             bottom: AppBar(
               backgroundColor: Theme.of(context).accentColor,
-              toolbarHeight: 20,
+              // toolbarHeight: 20,
             ),
           ),
           SliverToBoxAdapter(
@@ -408,7 +408,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                   ? FontAwesomeIcons.android
                   : FontAwesomeIcons.appStoreIos,
               onTap: _openStore),
-          if (usertoken != null) Logout(),
+          if (StorageManager.sharedPreferences.getString(token) != null) Logout(),
         ],
       ),
     );

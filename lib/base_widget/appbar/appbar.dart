@@ -27,7 +27,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
       bottom: AppBar(
         leading: Container(),
         backgroundColor: Theme.of(context).accentColor,
-        toolbarHeight: 20,
+        //toolbarHeight: 20,
       ),
     );
   }

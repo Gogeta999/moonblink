@@ -157,7 +157,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   // SliverToBoxAdapter(),
                   SliverAppBar(
                     backgroundColor: Colors.black,
-                    toolbarHeight: kToolbarHeight - 5,
+                    // toolbarHeight: kToolbarHeight - 5,
                     leading: IconButton(
                       icon: Icon(Icons.backspace),
                       onPressed: () => Navigator.pop(context),
