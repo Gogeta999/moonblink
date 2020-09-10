@@ -87,6 +87,7 @@ class ThemeModel with ChangeNotifier {
     themeData = themeData.copyWith(
       brightness: brightness,
       accentColor: accentColor,
+      canvasColor: Colors.transparent, ///for circular bottom sheet
       cupertinoOverrideTheme: CupertinoThemeData(
         primaryColor: themeColor,
         brightness: brightness,

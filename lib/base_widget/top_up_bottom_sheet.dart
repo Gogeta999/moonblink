@@ -139,11 +139,11 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
           margin: const EdgeInsets.all(8.0),
           child: ShadedContainer(
               child: Row(
-                children: <Widget>[
-                  CupertinoActivityIndicator(),
-                  Text('Trying to connect...'),
-                ],
-              )));
+            children: <Widget>[
+              CupertinoActivityIndicator(),
+              Text('Trying to connect...'),
+            ],
+          )));
     }
 
     ///(_isAvailable == false) showErrorWidgetWithRetry
@@ -158,11 +158,13 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     if (!_isAvailable) {
       children.addAll([
         Divider(),
-        ListTile(
-          title: Text('Not connected',
-              style: TextStyle(color: ThemeData.light().errorColor)),
-          subtitle: const Text(
-              'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
+        ShadedContainer(
+          child: Row(children: <Widget>[
+            Text('Not connected',
+                style: TextStyle(color: ThemeData.light().errorColor)),
+            const Text(
+                'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.')
+          ]),
         ),
       ]);
     }
@@ -184,13 +186,17 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
       return Card();
     }
     //final ListTile productHeader = ListTile(title: Text('Products for Sale'));
-    List<ListTile> productList = <ListTile>[];
+    List<Widget> productList = <Widget>[];
     if (_notFoundIds.isNotEmpty) {
-      productList.add(ListTile(
-          title: Text('[${_notFoundIds.join(", ")}] not found',
+      productList.add(ShadedContainer(
+          child: Row(
+        children: <Widget>[
+          Text('[${_notFoundIds.join(", ")}] not found',
               style: TextStyle(color: ThemeData.light().errorColor)),
-          subtitle: Text(
-              'This app needs special configuration to run. Please see example/README.md for instructions.')));
+          Text(
+              'This app needs special configuration to run. Please see example/README.md for instructions.')
+        ],
+      )));
     }
 
     // This loading previous purchases code is just a demo. Please do not use this as it is.
@@ -206,63 +212,119 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     productList.addAll(_products.map(
       (ProductDetails productDetails) {
         PurchaseDetails previousPurchase = purchases[productDetails.id];
-        return ListTile(
-            title: Text(
-              productDetails.title,
-            ),
-            subtitle: Text(
-              productDetails.description,
-            ),
-            trailing: previousPurchase != null
-                ? Icon(Icons.check)
-                : FlatButton(
-                    child: Text(productDetails.price),
-                    color: Colors.green[800],
-                    textColor: Colors.white,
-                    onPressed: () {
-                      PurchaseParam purchaseParam = PurchaseParam(
-                          productDetails: productDetails,
-                          applicationUserName: null,
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+          child: ShadedContainer(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  productDetails.title,
+                ),
+              ),
+              // Text(
+              //   productDetails.description,
+              // ),
+              previousPurchase != null
+                  ? Icon(Icons.check)
+                  : ShadedContainer(
+                      child: Text(productDetails.price),
+                      ontap: () {
+                        PurchaseParam purchaseParam = PurchaseParam(
+                            productDetails: productDetails,
+                            applicationUserName: null,
 
-                          ///production sandboxTesting false
-                          sandboxTesting: false);
-                      if (productDetails.id == coin200Consumable ||
-                          productDetails.id == coin500Consumable ||
-                          productDetails.id == coin1000Consumable) {
-                        _connection.buyConsumable(
-                            purchaseParam: purchaseParam,
-                            autoConsume: kAutoConsume || Platform.isIOS);
-                      } else {
-                        _connection.buyNonConsumable(
-                            purchaseParam: purchaseParam);
-                      }
-                    },
-                  ));
+                            ///production sandboxTesting false
+                            sandboxTesting: false);
+                        if (productDetails.id == coin200Consumable ||
+                            productDetails.id == coin500Consumable ||
+                            productDetails.id == coin1000Consumable) {
+                          _connection.buyConsumable(
+                              purchaseParam: purchaseParam,
+                              autoConsume: kAutoConsume || Platform.isIOS);
+                        } else {
+                          _connection.buyNonConsumable(
+                              purchaseParam: purchaseParam);
+                        }
+                      },
+                    )
+            ],
+          )),
+        );
       },
     ));
 
-    return Card(child: Column(children: <Widget>[] + productList));
+    return Column(children: <Widget>[] + productList);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              ShadedContainer(
-                ontap: () => Navigator.pop(context, true),
-                child: Text('Done'),
+    List<Widget> stack = [];
+    if (_queryProductError == null) {
+      stack.add(
+        ListView(
+          physics: ClampingScrollPhysics(),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  ShadedContainer(
+                    ontap: () => Navigator.pop(context),
+                    child: Text('Done'),
+                  ),
+                ],
               ),
+            ),
+            _buildConnectionCheckTile(),
+            _buildProductList(),
+          ],
+        ),
+      );
+    } else {
+      stack.add(Center(
+        child: ShadedContainer(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(_queryProductError),
+              CupertinoButton(
+                onPressed: () async {
+                  await initStoreInfo();
+                },
+                child: Text('Retry'),
+              )
             ],
           ),
         ),
-        _buildConnectionCheckTile(),
-        _buildProductList()
-      ],
+      ));
+    }
+    if (_purchasePending) {
+      stack.add(
+        Stack(
+          children: [
+            Opacity(
+              opacity: 0.3,
+              child: const ModalBarrier(dismissible: false, color: Colors.grey),
+            ),
+            Center(
+              child: CupertinoActivityIndicator(),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pop(context);
+        return false;
+      },
+      child: Stack(
+        children: stack,
+      )
     );
   }
 

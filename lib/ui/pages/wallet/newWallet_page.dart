@@ -35,7 +35,6 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   void initState() {
-
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       print("RewardedVideoAd event $event");
@@ -130,7 +129,11 @@ class _WalletPageState extends State<WalletPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           ShadedContainer(
-                            ontap: () => CustomBottomSheet.showTopUpBottomSheet(buildContext: context),
+                            ontap: () {
+                              CustomBottomSheet.showTopUpBottomSheet(
+                                      buildContext: context)
+                                  .whenComplete(() => getUserWallet());
+                            },
                             child: Text("Top Up"),
                           ),
                           ShadedContainer(
@@ -178,9 +181,11 @@ class _WalletPageState extends State<WalletPage> {
                               ),
                             ],
                           ),
-                          child: isWalletLoading ? CupertinoActivityIndicator() : Text(
-                              '${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
-                              style: TextStyle(fontSize: 32)),
+                          child: isWalletLoading
+                              ? CupertinoActivityIndicator()
+                              : Text(
+                                  '${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                                  style: TextStyle(fontSize: 32)),
                         ),
                       ),
                       SizedBox(
