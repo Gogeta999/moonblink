@@ -10,9 +10,12 @@ import 'package:moonblink/base_widget/top_up_bottom_sheet.dart';
 import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+
+import 'game_mode_bottom_sheet.dart';
 
 class CustomBottomSheet {
   // ignore: non_constant_identifier_names
@@ -152,6 +155,31 @@ class CustomBottomSheet {
                 onReport: onReport,
                 onBlock: onBlock,
               ),
+            )).whenComplete(() {
+      try {
+        onDismiss();
+      } catch (e) {
+        if (e is NoSuchMethodError) {
+          print('NoSuchMethodError');
+        }
+      }
+    });
+  }
+
+  static showGameModeBottomSheet(
+      {@required BuildContext buildContext,
+      @required List<GameMode> gameModeList,
+      @required List<int> selectedGameModeIndex,
+      @required Function onDone,
+      Function onDismiss}) {
+    showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.white.withOpacity(0.0),
+        isDismissible: true,
+        builder: (context) => GameModeBottomSheet(
+              gameModeList: gameModeList,
+              selectedGameModeIndex: selectedGameModeIndex,
+              onDone: onDone,
             )).whenComplete(() {
       try {
         onDismiss();

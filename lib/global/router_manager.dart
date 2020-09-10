@@ -4,7 +4,9 @@ import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
+import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
+import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/home/comment_page.dart';
@@ -75,6 +77,8 @@ class RouteName {
   static const String blockedUsers = 'blockedUsers';
   static const String applyForQualification = 'applyForQualification';
   static const String pubgMobile = 'pubgMobile';
+  static const String chooseUserPlayGames = 'chooseUserPlayGames';
+  static const String updateGameProfile = 'updateGameProfile';
 }
 
 class Router {
@@ -159,6 +163,12 @@ class Router {
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));
+      case RouteName.chooseUserPlayGames:
+        return CupertinoPageRoute(builder: (_) => ChooseUserPlayGamePage());
+      case RouteName.updateGameProfile:
+        return CupertinoPageRoute(
+            builder: (_) =>
+                UpdateGameProfilePage(gameProfile: settings.arguments ?? null));
       case RouteName.applyForQualification:
         return CupertinoPageRoute(builder: (_) => ApplyForQualification());
       case RouteName.pubgMobile:

@@ -356,6 +356,14 @@ class _UserListWidgetState extends State<UserListWidget> {
                         showToast(G.of(context).toastonline);
                       }),
 
+          ///profile
+          if (usertype == 1)
+            PageCard(
+                pageTitle: 'Game Profile',
+                iconData: FontAwesomeIcons.userEdit,
+                onTap: () => Navigator.of(context)
+                    .pushNamed(RouteName.chooseUserPlayGames)),
+
           ///wallet
           PageCard(
               pageTitle: G.of(context).userStatusWallet,
@@ -411,7 +419,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                   ? FontAwesomeIcons.android
                   : FontAwesomeIcons.appStoreIos,
               onTap: _openStore),
-          if (StorageManager.sharedPreferences.getString(token) != null) Logout(),
+          if (StorageManager.sharedPreferences.getString(token) != null)
+            Logout(),
         ],
       ),
     );

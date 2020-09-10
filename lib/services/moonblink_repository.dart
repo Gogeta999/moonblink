@@ -14,6 +14,10 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
+import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -281,6 +285,32 @@ class MoonBlinkRepository {
       'user_id': partnerId.toString(),
     });
     return GameList.fromJson(response.data);
+  }
+
+  // User Play Game List
+  static Future<UserPlayGameList> getUserPlayGameList() async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response =
+        await DioUtils().get(Api.UserPlayGame + '$userId/profile/game');
+    return UserPlayGameList.fromJson(response.data);
+  }
+
+  //update game profile
+  static Future updateGameProfile(Map<String, dynamic> gameProfile) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    FormData formData = FormData.fromMap(gameProfile);
+    var response = await DioUtils().postwithData(
+        Api.UpdateGameProfile + '$userId/profile/game',
+        data: formData);
+    return response.data;
+  }
+
+  //delete game profile
+  static Future deleteGameProfile(int gameId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .delete(Api.DeleteGameProfile + '$userId/profile/game/$gameId');
+    return response.data;
   }
 
   // Booking

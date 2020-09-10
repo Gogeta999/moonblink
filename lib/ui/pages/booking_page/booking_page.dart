@@ -17,6 +17,8 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+  String _gameName = '';
+  String _gameMode = '';
   int _matchNumber = 1;
   void add() {
     setState(() {
@@ -31,7 +33,151 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   @override
+  void initState() {
+    _initData();
+    super.initState();
+  }
+
+  _initData() {
+    print('Init Later');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    TextStyle _textStyle = Theme.of(context).textTheme.bodyText2;
+    List<Widget> _gameModeSheet = [
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameMode = 'Classic';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'Classic',
+          style: _textStyle,
+        ),
+      ),
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameMode = 'Rank';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'Rank',
+          style: _textStyle,
+        ),
+      ),
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameMode = 'Arcade';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'Arcade',
+          style: _textStyle,
+        ),
+      ),
+      // CupertinoActionSheetAction(
+      //   onPressed: () {
+      //     setState(() {
+      //       _gameName = 'CounterStrike-GO';
+      //     });
+      //     Navigator.pop(context);
+      //   },
+      //   child: Text(
+      //     'CounterStrike-GO',
+      //     style: _textStyle,
+      //   ),
+      // ),
+    ];
+    //TODO:
+    List<Widget> _cupertinoActionSheet = [
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameName = 'Mobile Legends';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'Mobile Legends',
+          style: _textStyle,
+        ),
+      ),
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameName = 'PUBG-Mobile';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'PUBG-Mobile',
+          style: _textStyle,
+        ),
+      ),
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameName = 'DOTA2';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'DOTA2',
+          style: _textStyle,
+        ),
+      ),
+      CupertinoActionSheetAction(
+        onPressed: () {
+          setState(() {
+            _gameName = 'CounterStrike-GO';
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          'CounterStrike-GO',
+          style: _textStyle,
+        ),
+      ),
+    ];
+    _showGameNameSheet(BuildContext context) {
+      showCupertinoModalPopup(
+          context: context,
+          builder: (context) {
+            return CupertinoActionSheet(
+              title: Text('Select Game'),
+              // message: Text('Message'),
+              actions: _cupertinoActionSheet,
+              cancelButton: CupertinoButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            );
+          });
+    }
+
+    _showGameModeSheet(BuildContext context) {
+      showCupertinoModalPopup(
+          context: context,
+          builder: (context) {
+            return CupertinoActionSheet(
+              title: Text('Select Game Mode'),
+              // message: Text('Message'),
+              actions: _gameModeSheet,
+              cancelButton: CupertinoButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            );
+          });
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -54,93 +200,94 @@ class _BookingPageState extends State<BookingPage> {
       body: Column(
         children: [
           //Top Partner Information
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
-            child: Container(
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Theme.of(context).cardColor,
-                // border:
-                //     Border.all(color: Colors.black, style: BorderStyle.none),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(3),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          widget.partnerUser.prfoileFromPartner.profileImage,
-                      imageBuilder: (context, item) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(width: 2, color: Colors.black),
-                          ),
-                          child: CircleAvatar(
-                            radius: 45,
-                            backgroundImage: item,
-                          ),
-                        );
-                      },
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => CachedLoader(
-                        containerHeight: 50,
-                        containerWidth: 50,
-                      ),
-                      errorWidget: (context, url, error) => CachedError(),
+          // Padding(
+          //   padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          //   child: Container(
+          //     height: 100,
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(15),
+          //       color: Theme.of(context).cardColor,
+          //       // border:
+          //       //     Border.all(color: Colors.black, style: BorderStyle.none),
+          //     ),
+          //     child:
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(2, 10, 2, 20),
+              child: Card(
+                child: ListTile(
+                  leading: CachedNetworkImage(
+                    imageUrl:
+                        widget.partnerUser.prfoileFromPartner.profileImage,
+                    imageBuilder: (context, imageProvider) => CircleAvatar(
+                      radius: 30,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      backgroundImage: imageProvider,
                     ),
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => CachedLoader(
+                      containerHeight: 50,
+                      containerWidth: 50,
+                    ),
+                    errorWidget: (context, url, error) => CachedError(),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 200),
-                    child: Text(
-                      widget.partnerUser.partnerName,
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  )
-                ],
+                  title: Text(
+                    widget.partnerUser.partnerName,
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                  subtitle: Text(
+                    widget.partnerUser.prfoileFromPartner.bios,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  isThreeLine: true,
+                ),
               ),
             ),
           ),
+
           Column(
             children: [
               ///[Game]
               Card(
-                  child: Container(
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text(
-                          'Choos Games',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )),
-                    Text('PUBG')
-                  ],
+                elevation: 8,
+                child: ListTile(
+                  // leading: Text('Choose Game'),
+                  title: Text(
+                    'Choose Games',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  subtitle: Text(
+                    _gameName,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    _showGameNameSheet(context);
+                  },
+                  // isThreeLine: true,
                 ),
-              )),
+              ),
 
               ///[Game's Mode]
               Card(
-                  child: Container(
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text(
-                          'Game Mode',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )),
-                    Icon(FontAwesomeIcons.arrowRight)
-                  ],
+                child: ListTile(
+                  // leading: Text('Choose Game'),
+                  title: Text(
+                    'Choose Mode',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  subtitle: Text(
+                    _gameMode,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    _showGameModeSheet(context);
+                  },
+                  // isThreeLine: true,
                 ),
-              )),
+              ),
 
               ///[Match Count]
               Card(
@@ -224,7 +371,7 @@ class _BookingPageState extends State<BookingPage> {
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             Text(
-                              '100 Coins',
+                              '1000 Coins',
                               style: Theme.of(context).textTheme.subtitle2,
                             )
                           ],
