@@ -299,6 +299,13 @@ class MoonBlinkRepository {
     return response.data;
   }
 
+  //delete game profile
+  static Future deleteGameProfile(int gameId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().delete(Api.DeleteGameProfile + '$userId/profile/game/$gameId');
+    return response.data;
+  }
+
   // Booking
   static Future booking(int partnerId, int gameTypeId) async {
     var response = await DioUtils().post(Api.Booking + '$partnerId/booking',

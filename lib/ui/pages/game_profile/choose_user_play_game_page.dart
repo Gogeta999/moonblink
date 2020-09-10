@@ -51,27 +51,26 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
+                    Card(
+                      elevation: 8,
                       child: StreamBuilder<DeselectState>(
-                        stream: _deselectSubject.stream,
-                        builder: (context, snapshot) {
-                          return IconSlideAction(
-                            closeOnTap: false,
-                            caption: snapshot.data == DeselectState.loading ? 'Loading' : 'Deselect',
-                            color: Theme.of(context).accentColor,
-                            iconWidget: snapshot.data == DeselectState.loading ? CupertinoActivityIndicator() : Icon(Icons.remove_circle),
-                            onTap: () => snapshot.data == DeselectState.loading ? {} : onTapDeselect(item),
-                          );
-                        }
+                          stream: _deselectSubject.stream,
+                          builder: (context, snapshot) {
+                            return IconSlideAction(
+                              closeOnTap: false,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              caption: snapshot.data == DeselectState.loading ? 'Loading' : 'Deselect',
+                              iconWidget: snapshot.data == DeselectState.loading ? CupertinoActivityIndicator() : Icon(Icons.remove_circle, color: Theme.of(context).accentColor),
+                              onTap: () => snapshot.data == DeselectState.loading ? {} : _onTapDeselect(item),
+                            );
+                          }
                       ),
                     )
                   ],
                   child: Card(
+                    elevation: 8,
                     child: ListTile(
-                      onTap: () => Navigator.pushNamed(
-                          context, RouteName.updateGameProfile,
-                          arguments: item.gameProfile),
+                      onTap: () => _onTapListTile(item),
                       leading: CachedNetworkImage(
                         imageUrl: item.gameIcon,
                         imageBuilder: (context, imageProvider) => Container(
@@ -109,13 +108,22 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
     );
   }
 
-  onTapDeselect(UserPlayGame item) async {
+  _onTapListTile(UserPlayGame item) {
+    Navigator.pushNamed(
+        context, RouteName.updateGameProfile,
+        arguments: item.gameProfile).then((value) {if(value != null && value) setState(() {});});
+  }
+
+  _onTapDeselect(UserPlayGame item) {
     ///call delete api
     _deselectSubject.add(DeselectState.loading);
-    await Future.delayed(Duration(milliseconds: 2000));
-    _deselectSubject.add(DeselectState.initial);
-    ///After delete, fetch data from server again
-    setState(() {
+    MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then((value) {
+      _deselectSubject.add(DeselectState.initial);
+      ///After delete, fetch data from server again
+      setState(() {});
+    }, onError: (err){
+      _deselectSubject.add(DeselectState.initial);
+      showToast(err.toString());
     });
   }
 }

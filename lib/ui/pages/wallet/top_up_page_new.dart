@@ -166,7 +166,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
     final QueryPurchaseDetailsResponse purchaseResponse =
         await _connection.queryPastPurchases();
     if (purchaseResponse.error != null) {
-      showToast('Sorry: ${purchaseResponse.error}');
+      print('Sorry: ${purchaseResponse.error}');
     }
     final List<PurchaseDetails> verifiedPurchases = [];
     for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {

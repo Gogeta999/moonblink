@@ -73,16 +73,19 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
             itemBuilder: (context, index) {
               GameMode item = widget.gameModeList[index];
               bool isSelected = widget.selectedGameModeIndex.contains(item.id);
-              return ListTile(
-                title: Text(item.mode),
-                onTap: () => onTapGameModeListTile(item.id, index, isSelected),
-                trailing: Icon(
-                  Icons.check,
-                  color: isSelected
-                      ? Theme.of(context).accentColor
-                      : Colors.transparent,
+              return Card(
+                elevation: 0.3,
+                child: ListTile(
+                  title: Text(item.mode),
+                  onTap: () => onTapGameModeListTile(item.id, index, isSelected),
+                  trailing: Icon(
+                    Icons.check,
+                    color: isSelected
+                        ? Theme.of(context).accentColor
+                        : Colors.transparent,
+                  ),
+                  selected: isSelected,
                 ),
-                selected: isSelected,
               );
             },
           ),

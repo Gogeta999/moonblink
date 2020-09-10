@@ -35,6 +35,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   File _skillCoverPhoto;
 
   ///UI properties
+  int count = 0;
   bool _isUILocked = false;
   BehaviorSubject<UpdateOrSubmitButtonState> _submitOrUpdateSubject =
       BehaviorSubject(onCancel: () => print('Cancelling'))
@@ -175,7 +176,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text('Select Level'),
+            title: Text('Select Your Game Rank'),
             actions: _cupertinoActionSheet,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
@@ -190,6 +191,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     return Card(
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      elevation: 8,
       child: ListTile(
         onTap: onTap,
         title: Text(title, style: Theme.of(context).textTheme.bodyText1),
@@ -203,6 +205,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     return Card(
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      elevation: 8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
@@ -220,6 +223,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     return Card(
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        elevation: 8,
         child: Row(
           children: <Widget>[
             ///for now skill cover image later server will give a sample photo url
@@ -382,7 +386,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       showToast('Game Mode can\'t be blanked');
       return;
     }
-    if (_skillCoverPhoto == null) {
+    if (widget.gameProfile.isPlay == 0 && _skillCoverPhoto == null) {
       showToast('ScreenShot can\'t be blanked');
       return;
     }
@@ -397,7 +401,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       'game_id',
       'player_id',
       'level',
-      'skill_cover_image',
+      if(skillCoverImage != null) 'skill_cover_image',
       'about_order_taking',
       'types'
     ];
@@ -405,20 +409,18 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       widget.gameProfile.gameId,
       _gameIdController.text,
       _level,
-      skillCoverImage,
+      if(skillCoverImage != null) skillCoverImage,
       '',
       _selectedGameModeIndex
     ];
     Map<String, dynamic> gameProfileMap = Map.fromIterables(mapKeys, mapValues);
     gameProfileMap.forEach((key, value) {
-      print(key + ':' + '$value');
+      print(key + ': ' + '$value');
     });
     MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
         (value) => {
               showToast('Update Success'),
-              Navigator.pushNamedAndRemoveUntil(
-                  context, RouteName.main, (route) => false,
-                  arguments: 3)
+              Navigator.pop(context, true)
             },
         onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }

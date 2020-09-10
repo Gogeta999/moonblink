@@ -211,7 +211,7 @@ class DioUtils {
 
   //delete request
   delete(url, {queryParameters, options}) async {
-    print('post request path ------$url-------queryParameters$queryParameters');
+    print('delete request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.delete(url,
         queryParameters: queryParameters, options: options);
