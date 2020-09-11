@@ -28,6 +28,7 @@ class _BookingPageState extends State<BookingPage> {
   TextStyle _textStyle;
   bool _isPageLoading = false;
   bool _isPageError = false;
+  bool _isConfirmLoading = false;
 
   BehaviorSubject<int> _matchSubject = BehaviorSubject.seeded(0);
   BehaviorSubject<int> _totalPriceSubject = BehaviorSubject.seeded(0);
@@ -136,13 +137,27 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   _onTapConfirm() {
+    setState(() {
+      _isConfirmLoading = true;
+    });
     int partnerId = widget.partnerUser.partnerId;
     _totalPriceSubject.first.then((value) {
       if (value != 0)
         _matchSubject.first.then((value) {
           MoonBlinkRepository.booking(partnerId, _gameTypeId, value).then(
-              (value) => Navigator.pushNamed(context, RouteName.chatBox,
-                  arguments: partnerId), onError: (err) => showToast(err.toString()));
+              (value) => {
+                    Navigator.pushNamed(context, RouteName.chatBox,
+                        arguments: partnerId),
+                    setState(() {
+                      _isConfirmLoading = false;
+                    })
+                  },
+              onError: (err) => {
+                    showToast(err.toString()),
+                    setState(() {
+                      _isConfirmLoading = false;
+                    })
+                  });
         });
     });
   }
@@ -451,12 +466,14 @@ class _BookingPageState extends State<BookingPage> {
             InkWell(
               onTap: _onTapConfirm,
               child: Container(
-                child: Center(
-                  child: Text(
-                    'Confirm',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
+                child: _isConfirmLoading
+                    ? CupertinoActivityIndicator()
+                    : Center(
+                        child: Text(
+                          'Confirm',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                      ),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
                     color: Theme.of(context).accentColor,

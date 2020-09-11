@@ -34,7 +34,12 @@ class MoonBlinkRepository {
   static Future fetchPosts(int pageNum, int type, String gender) async {
     // await Future.delayed(Duration(seconds: 1));
     var response = await DioUtils()
-        .get(Api.HOME + 'limit=5&type=$type&page=$pageNum&gender=$gender');
+        .get(Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/, queryParameters: {
+          'limit': 5,
+          'type': type,
+          'page': pageNum,
+          'gender': gender
+    });
     return response.data['data']
         .map<Post>((item) => Post.fromMap(item))
         .toList();
@@ -321,7 +326,7 @@ class MoonBlinkRepository {
       'game_type_id': gameTypeId,
       'count': count,
     });
-    var response = await DioUtils().post(Api.Booking + '$partnerId/booking');
+    var response = await DioUtils().postwithData(Api.Booking + '$partnerId/booking', data: formData);
     return response.data;
   }
 
