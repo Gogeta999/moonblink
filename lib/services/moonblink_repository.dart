@@ -5,6 +5,7 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/blocked_user.dart';
+import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
@@ -280,11 +281,12 @@ class MoonBlinkRepository {
   }
 
   //Game List
-  static Future getGameList(partnerId) async {
+  static Future getGameList(int partnerId) async {
     var response = await DioUtils().get(Api.GameList, queryParameters: {
-      'user_id': partnerId.toString(),
+      'user_id': partnerId,
     });
-    return GameList.fromJson(response.data);
+    //return GameList.fromJson(response.data);
+    return BookingPartnerGameList.fromJson(response.data);
   }
 
   // User Play Game List
@@ -314,9 +316,12 @@ class MoonBlinkRepository {
   }
 
   // Booking
-  static Future booking(int partnerId, int gameType) async {
-    var response = await DioUtils().post(Api.Booking + '$partnerId/booking',
-        queryParameters: {'game_type': gameType});
+  static Future booking(int partnerId, int gameTypeId, int count) async {
+    FormData formData = FormData.fromMap({
+      'game_type_id': gameTypeId,
+      'count': count,
+    });
+    var response = await DioUtils().post(Api.Booking + '$partnerId/booking');
     return response.data;
   }
 

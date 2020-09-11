@@ -157,7 +157,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   // SliverToBoxAdapter(),
                   SliverAppBar(
                     backgroundColor: Colors.black,
-                    toolbarHeight: kToolbarHeight - 5,
+                    //toolbarHeight: kToolbarHeight - 5,
                     // leading: IconButton(
                     //   icon: Icon(Icons.backspace),
                     //   onPressed: () => Navigator.pop(context),
@@ -277,31 +277,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       ],
                     ),
                   ),
-                  if (Platform.isIOS)
-                    SliverToBoxAdapter(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        child: GestureDetector(
-                          child: CachedNetworkImage(
-                            imageUrl: partnerModel
-                                .partnerData.prfoileFromPartner.coverImage,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => CachedLoader(),
-                            errorWidget: (context, url, error) => CachedError(),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ImageView(partnerModel
-                                      .partnerData
-                                      .prfoileFromPartner
-                                      .coverImage),
-                                ));
-                          },
-                        ),
-                      ),
-                    ),
 
                   SliverToBoxAdapter(
                     child: SizedBox(

@@ -70,7 +70,7 @@ class GameMode {
   final int price;
   final String createdAt;
   final String updatedAt;
-  final int selected;
+  final int selected; ///this data won't need at booking
 
   GameMode(
       {this.id,
