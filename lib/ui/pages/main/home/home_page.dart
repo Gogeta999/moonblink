@@ -220,39 +220,32 @@ class _HomePageState extends State<HomePage>
                 context: context,
                 removeTop: false,
                 child: Builder(builder: (_) {
-                  if (homeModel.isError && homeModel.list.isEmpty) {
-                    return AnnotatedRegion<SystemUiOverlayStyle>(
-                        value: StatusBarUtils.systemUiOverlayStyle(context),
-                        child: ViewStateErrorWidget(
-                            error: homeModel.viewStateError,
-                            onPressed: homeModel.initData));
-                  }
-                  if (homeModel.isBusy &&
-                      Theme.of(context).brightness == Brightness.light) {
-                    return Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                ImageHelper.wrapAssetsImage(
-                                    'bookingWaiting.gif'),
-                              ),
-                              fit: BoxFit.fill)),
-                    );
-                  }
-                  if (homeModel.isBusy &&
-                      Theme.of(context).brightness == Brightness.dark) {
-                    return Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                ImageHelper.wrapAssetsImage(
-                                    'moonblinkWaitingDark.gif'),
-                              ),
-                              fit: BoxFit.fill)),
-                    );
-                  }
+                  // if (homeModel.isBusy &&
+                  //     Theme.of(context).brightness == Brightness.light) {
+                  //   return Container(
+                  //     height: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //         image: DecorationImage(
+                  //             image: AssetImage(
+                  //               ImageHelper.wrapAssetsImage(
+                  //                   'bookingWaiting.gif'),
+                  //             ),
+                  //             fit: BoxFit.fill)),
+                  //   );
+                  // }
+                  // if (homeModel.isBusy &&
+                  //     Theme.of(context).brightness == Brightness.dark) {
+                  //   return Container(
+                  //     height: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //         image: DecorationImage(
+                  //             image: AssetImage(
+                  //               ImageHelper.wrapAssetsImage(
+                  //                   'moonblinkWaitingDark.gif'),
+                  //             ),
+                  //             fit: BoxFit.fill)),
+                  //   );
+                  // }
                   return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
@@ -277,13 +270,7 @@ class _HomePageState extends State<HomePage>
                             height: 10,
                           ),
                         ),
-                        if (homeModel.isEmpty)
-                          SliverToBoxAdapter(
-                              child: Padding(
-                            padding: const EdgeInsets.only(top: 50),
-                            child: ViewStateEmptyWidget(
-                                onPressed: homeModel.initData),
-                          )),
+
                         // if (homeModel.stories?.isNotEmpty ?? false)
                         //   StoryList(stories: homeModel.stories),
                         SliverToBoxAdapter(
@@ -306,6 +293,23 @@ class _HomePageState extends State<HomePage>
                             height: 20,
                           ),
                         ),
+                        if (homeModel.isEmpty)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 50),
+                              child: ViewStateEmptyWidget(
+                                  onPressed: homeModel.initData),
+                            ),
+                          ),
+                        if (homeModel.isError && homeModel.list.isEmpty)
+                          SliverToBoxAdapter(
+                            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                                value: StatusBarUtils.systemUiOverlayStyle(
+                                    context),
+                                child: ViewStateErrorWidget(
+                                    error: homeModel.viewStateError,
+                                    onPressed: homeModel.initData)),
+                          ),
                         HomePostList(),
                       ],
                     ),
