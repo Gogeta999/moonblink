@@ -98,39 +98,41 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                               bottom: BorderSide(width: 2, color: Colors.black),
                             ),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
-                                child: Text(
-                                  userName,
-                                  style: TextStyle(fontSize: 26),
-                                ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.content_copy),
-                                      iconSize: 18,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      onPressed: () {
-                                        String id = encrypt(userid);
-                                        FlutterClipboard.copy(id).then((value) {
-                                          showToast('Copy To Your Clipboard');
-                                          print('copied');
-                                        });
-                                      },
-                                    ),
-                                    Text(":copy ID Here")
-                                  ],
-                                ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    userName,
+                                    style: TextStyle(fontSize: 26),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.content_copy),
+                                        iconSize: 18,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        onPressed: () {
+                                          String id = encrypt(userid);
+                                          FlutterClipboard.copy(id)
+                                              .then((value) {
+                                            showToast('Copy To Your Clipboard');
+                                            print('copied');
+                                          });
+                                        },
+                                      ),
+                                      Text(":copy ID Here")
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),

@@ -32,13 +32,17 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
+  var _pageController;
+  int _selectedindex = 0;
   int catagories = 1;
   String gender = "Male";
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _pageController = PageController(initialPage: 0);
+    });
   }
 
   topTabs() {
@@ -62,6 +66,7 @@ class _HomePageState extends State<HomePage>
                     if (catagories != 1) {
                       setState(() {
                         catagories = 1;
+                        _pageController.jumpToPage(0);
                       });
                     } else {
                       print("Already");
@@ -78,6 +83,7 @@ class _HomePageState extends State<HomePage>
                     if (catagories != 3) {
                       setState(() {
                         catagories = 3;
+                        _pageController.jumpToPage(1);
                       });
                     } else {
                       print("Already");
@@ -94,6 +100,7 @@ class _HomePageState extends State<HomePage>
                     if (catagories != 4) {
                       setState(() {
                         catagories = 4;
+                        _pageController.jumpToPage(2);
                       });
                     } else {
                       print("Already");
@@ -110,6 +117,7 @@ class _HomePageState extends State<HomePage>
                     if (catagories != 2) {
                       setState(() {
                         catagories = 2;
+                        _pageController.jumpToPage(3);
                       });
                     } else {
                       print("Already");
@@ -128,59 +136,124 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  malefemaletabs() {
+    return SliverToBoxAdapter(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+            bottom: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(top: 10, bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              MediumShadedContainer(
+                selected: gender == "Male" ? true : false,
+                ontap: () {
+                  if (gender != "Male") {
+                    setState(() {
+                      gender = "Male";
+                      _pageController.jumpToPage(3);
+                    });
+                  }
+                },
+                child: Center(
+                  child: Text("Male"),
+                ),
+              ),
+              MediumShadedContainer(
+                selected: gender == "Female" ? true : false,
+                ontap: () {
+                  if (gender != "Female") {
+                    setState(() {
+                      gender = "Female";
+                      _pageController.jumpToPage(5);
+                    });
+                  }
+                },
+                child: Center(
+                  child: Text("Female"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     print(catagories);
-    return ProviderWidget2<HomeModel, TapToTopModel>(
-      autoDispose: true,
-      model1: HomeModel(type: catagories, gender: gender),
-      model2: TapToTopModel(PrimaryScrollController.of(context),
-          height: kToolbarHeight),
-      onModelReady: (homeModel, tapToTopModel) {
-        homeModel.initData();
-        tapToTopModel.init(() => homeModel.loadMore());
-      },
-      builder: (context, homeModel, tapToTopModel, child) {
-        print("REbuilding");
-        return Scaffold(
-          body: MediaQuery.removePadding(
-              context: context,
-              removeTop: false,
-              child: Builder(builder: (_) {
-                if (homeModel.isError && homeModel.list.isEmpty) {
-                  return AnnotatedRegion<SystemUiOverlayStyle>(
-                      value: StatusBarUtils.systemUiOverlayStyle(context),
-                      child: ViewStateErrorWidget(
-                          error: homeModel.viewStateError,
-                          onPressed: homeModel.initData));
-                }
-                if (homeModel.isBusy &&
-                    Theme.of(context).brightness == Brightness.light) {
-                  return Container(
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                              ImageHelper.wrapAssetsImage('bookingWaiting.gif'),
-                            ),
-                            fit: BoxFit.fill)),
-                  );
-                }
-                if (homeModel.isBusy &&
-                    Theme.of(context).brightness == Brightness.dark) {
-                  return Container(
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                              ImageHelper.wrapAssetsImage(
-                                  'moonblinkWaitingDark.gif'),
-                            ),
-                            fit: BoxFit.fill)),
-                  );
-                }
-                return SmartRefresher(
+    return Scaffold(
+      body: PageView.builder(
+        itemCount: 8,
+        controller: _pageController,
+        onPageChanged: (value) {
+          setState(() {
+            _selectedindex = value;
+            print("index num is &$_selectedindex");
+          });
+        },
+        itemBuilder: (context, index) {
+          return ProviderWidget2<HomeModel, TapToTopModel>(
+            autoDispose: true,
+            model1: HomeModel(type: catagories, gender: gender),
+            model2: TapToTopModel(PrimaryScrollController.of(context),
+                height: kToolbarHeight),
+            onModelReady: (homeModel, tapToTopModel) {
+              homeModel.initData();
+              tapToTopModel.init(() => homeModel.loadMore());
+            },
+            builder: (context, homeModel, tapToTopModel, child) {
+              return MediaQuery.removePadding(
+                context: context,
+                removeTop: false,
+                child: Builder(builder: (_) {
+                  if (homeModel.isError && homeModel.list.isEmpty) {
+                    return AnnotatedRegion<SystemUiOverlayStyle>(
+                        value: StatusBarUtils.systemUiOverlayStyle(context),
+                        child: ViewStateErrorWidget(
+                            error: homeModel.viewStateError,
+                            onPressed: homeModel.initData));
+                  }
+                  if (homeModel.isBusy &&
+                      Theme.of(context).brightness == Brightness.light) {
+                    return Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                ImageHelper.wrapAssetsImage(
+                                    'bookingWaiting.gif'),
+                              ),
+                              fit: BoxFit.fill)),
+                    );
+                  }
+                  if (homeModel.isBusy &&
+                      Theme.of(context).brightness == Brightness.dark) {
+                    return Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                ImageHelper.wrapAssetsImage(
+                                    'moonblinkWaitingDark.gif'),
+                              ),
+                              fit: BoxFit.fill)),
+                    );
+                  }
+                  return SmartRefresher(
                     controller: homeModel.refreshController,
                     header: ShimmerHeader(
                       text: CupertinoActivityIndicator(),
@@ -227,9 +300,7 @@ class _HomePageState extends State<HomePage>
                             height: 20,
                           ),
                         ),
-                        MaleFamleTabs(
-                          gender: gender,
-                        ),
+                        malefemaletabs(),
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height: 20,
@@ -237,10 +308,14 @@ class _HomePageState extends State<HomePage>
                         ),
                         HomePostList(),
                       ],
-                    ));
-              })),
-        );
-      },
+                    ),
+                  );
+                }),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -260,7 +335,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      toolbarHeight: kToolbarHeight - 10,
+      toolbarHeight: kToolbarHeight,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
@@ -271,11 +346,22 @@ class HomeAppBar extends StatelessWidget {
       ],
       flexibleSpace: null,
       bottom: PreferredSize(
-          child: Container(
-            height: 10,
+        child: Container(
+          decoration: BoxDecoration(
             color: Theme.of(context).accentColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                // spreadRadius: 1,
+                blurRadius: 3,
+                offset: Offset(0, 0), // changes position of shadow
+              ),
+            ],
           ),
-          preferredSize: Size.fromHeight(10)),
+          height: 10,
+        ),
+        preferredSize: Size.fromHeight(10),
+      ),
     );
   }
 }
@@ -293,165 +379,165 @@ class HomePostList extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
-class TopTabs extends StatefulWidget {
-  int catagory;
-  TopTabs({this.catagory});
+// // ignore: must_be_immutable
+// class TopTabs extends StatefulWidget {
+//   int catagory;
+//   TopTabs({this.catagory});
 
-  @override
-  _TopTabsState createState() => _TopTabsState();
-}
+//   @override
+//   _TopTabsState createState() => _TopTabsState();
+// }
 
-class _TopTabsState extends State<TopTabs> {
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 40,
-        child: Stack(
-          children: [
-            Center(
-              child: Divider(
-                thickness: 2,
-                color: Colors.black,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SmallShadedContainer(
-                  selected: widget.catagory == 1 ? true : false,
-                  ontap: () {
-                    if (widget.catagory != 1) {
-                      setState(() {
-                        widget.catagory = 1;
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Coplayer",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SmallShadedContainer(
-                  selected: widget.catagory == 1 ? true : false,
-                  ontap: () {
-                    if (widget.catagory != 1) {
-                      setState(() {
-                        widget.catagory = 1;
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Cele",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SmallShadedContainer(
-                  selected: widget.catagory == 4 ? true : false,
-                  ontap: () {
-                    if (widget.catagory != 4) {
-                      setState(() {
-                        widget.catagory = 4;
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Pro",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SmallShadedContainer(
-                  selected: widget.catagory == 2 ? true : false,
-                  ontap: () {
-                    if (widget.catagory != 2) {
-                      setState(() {
-                        widget.catagory = 2;
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Streamer",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class _TopTabsState extends State<TopTabs> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: Container(
+//         height: 40,
+//         child: Stack(
+//           children: [
+//             Center(
+//               child: Divider(
+//                 thickness: 2,
+//                 color: Colors.black,
+//               ),
+//             ),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               children: [
+//                 SmallShadedContainer(
+//                   selected: widget.catagory == 1 ? true : false,
+//                   ontap: () {
+//                     if (widget.catagory != 1) {
+//                       setState(() {
+//                         widget.catagory = 1;
+//                       });
+//                     } else {
+//                       print("Already");
+//                     }
+//                   },
+//                   child: Text(
+//                     "Coplayer",
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//                 SmallShadedContainer(
+//                   selected: widget.catagory == 1 ? true : false,
+//                   ontap: () {
+//                     if (widget.catagory != 1) {
+//                       setState(() {
+//                         widget.catagory = 1;
+//                       });
+//                     } else {
+//                       print("Already");
+//                     }
+//                   },
+//                   child: Text(
+//                     "Cele",
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//                 SmallShadedContainer(
+//                   selected: widget.catagory == 4 ? true : false,
+//                   ontap: () {
+//                     if (widget.catagory != 4) {
+//                       setState(() {
+//                         widget.catagory = 4;
+//                       });
+//                     } else {
+//                       print("Already");
+//                     }
+//                   },
+//                   child: Text(
+//                     "Pro",
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//                 SmallShadedContainer(
+//                   selected: widget.catagory == 2 ? true : false,
+//                   ontap: () {
+//                     if (widget.catagory != 2) {
+//                       setState(() {
+//                         widget.catagory = 2;
+//                       });
+//                     } else {
+//                       print("Already");
+//                     }
+//                   },
+//                   child: Text(
+//                     "Streamer",
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-// ignore: must_be_immutable
-class MaleFamleTabs extends StatefulWidget {
-  String gender;
-  MaleFamleTabs({this.gender});
-  @override
-  _MaleFamleTabsState createState() => _MaleFamleTabsState();
-}
+// // ignore: must_be_immutable
+// class MaleFamleTabs extends StatefulWidget {
+//   String gender;
+//   MaleFamleTabs({this.gender});
+//   @override
+//   _MaleFamleTabsState createState() => _MaleFamleTabsState();
+// }
 
-class _MaleFamleTabsState extends State<MaleFamleTabs> {
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: 2,
-              color: Colors.black,
-            ),
-            bottom: BorderSide(
-              width: 2,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MediumShadedContainer(
-                selected: widget.gender == "Male" ? true : false,
-                ontap: () {
-                  if (widget.gender != "Male") {
-                    setState(() {
-                      widget.gender = "Male";
-                    });
-                  }
-                },
-                child: Center(
-                  child: Text("Male"),
-                ),
-              ),
-              MediumShadedContainer(
-                selected: widget.gender == "Female" ? true : false,
-                ontap: () {
-                  if (widget.gender != "Female") {
-                    setState(() {
-                      widget.gender = "Female";
-                    });
-                  }
-                },
-                child: Center(
-                  child: Text("Female"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class _MaleFamleTabsState extends State<MaleFamleTabs> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: Container(
+//         decoration: BoxDecoration(
+//           border: Border(
+//             top: BorderSide(
+//               width: 2,
+//               color: Colors.black,
+//             ),
+//             bottom: BorderSide(
+//               width: 2,
+//               color: Colors.black,
+//             ),
+//           ),
+//         ),
+//         child: Padding(
+//           padding: EdgeInsets.only(top: 10, bottom: 15),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               MediumShadedContainer(
+//                 selected: widget.gender == "Male" ? true : false,
+//                 ontap: () {
+//                   if (widget.gender != "Male") {
+//                     setState(() {
+//                       widget.gender = "Male";
+//                     });
+//                   }
+//                 },
+//                 child: Center(
+//                   child: Text("Male"),
+//                 ),
+//               ),
+//               MediumShadedContainer(
+//                 selected: widget.gender == "Female" ? true : false,
+//                 ontap: () {
+//                   if (widget.gender != "Female") {
+//                     setState(() {
+//                       widget.gender = "Female";
+//                     });
+//                   }
+//                 },
+//                 child: Center(
+//                   child: Text("Female"),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

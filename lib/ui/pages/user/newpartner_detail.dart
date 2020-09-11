@@ -209,17 +209,24 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                // crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 80),
-                                    child: Text(
-                                      partnerModel.partnerData.partnerName,
-                                      style: TextStyle(fontSize: 26),
-                                    ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
                                   ),
-                                  userstatus(partnerModel.partnerData.status)
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // crossAxisAlignment:
+                                    //     CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        partnerModel.partnerData.partnerName,
+                                        style: TextStyle(fontSize: 26),
+                                      ),
+                                      userstatus(
+                                          partnerModel.partnerData.status)
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),

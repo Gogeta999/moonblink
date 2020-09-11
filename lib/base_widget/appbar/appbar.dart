@@ -9,7 +9,7 @@ class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 15);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
 }
 
 class _AppbarWidgetState extends State<AppbarWidget> {
@@ -17,6 +17,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.black,
+      // toolbarHeight: kToolbarHeight - 10,
       leading: widget.nothome
           ? IconButton(
               icon: Icon(Icons.backspace),
@@ -27,11 +28,22 @@ class _AppbarWidgetState extends State<AppbarWidget> {
         AppbarLogo(),
       ],
       bottom: PreferredSize(
-          child: Container(
-            height: 10,
+        child: Container(
+          decoration: BoxDecoration(
             color: Theme.of(context).accentColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                // spreadRadius: 1,
+                blurRadius: 3,
+                offset: Offset(0, 0), // changes position of shadow
+              ),
+            ],
           ),
-          preferredSize: Size.fromHeight(10)),
+          height: 10,
+        ),
+        preferredSize: Size.fromHeight(10),
+      ),
     );
   }
 }
