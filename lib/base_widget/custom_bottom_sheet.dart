@@ -174,13 +174,15 @@ class CustomBottomSheet {
       Function onDismiss}) {
     showModalBottomSheet(
         context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.0),
+        barrierColor: Colors.white.withOpacity(0.15),
         isDismissible: true,
-        builder: (context) => GameModeBottomSheet(
+        builder: (context) => CircularBottomSheet(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: GameModeBottomSheet(
               gameModeList: gameModeList,
               selectedGameModeIndex: selectedGameModeIndex,
               onDone: onDone,
-            )).whenComplete(() {
+            ))).whenComplete(() {
       try {
         onDismiss();
       } catch (e) {

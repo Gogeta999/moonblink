@@ -52,7 +52,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
             slivers: <Widget>[
               SliverAppBar(
                 backgroundColor: Colors.black,
-                toolbarHeight: kToolbarHeight - 5,
+                //toolbarHeight: kToolbarHeight - 5,
                 // leading: IconButton(
                 //   icon: Icon(Icons.backspace),
                 //   onPressed: () => Navigator.pop(context),

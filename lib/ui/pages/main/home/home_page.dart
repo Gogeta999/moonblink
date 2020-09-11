@@ -199,12 +199,13 @@ class _HomePageState extends State<HomePage>
       body: PageView.builder(
         itemCount: 8,
         controller: _pageController,
-        onPageChanged: (value) {
-          setState(() {
-            _selectedindex = value;
-            print("index num is &$_selectedindex");
-          });
-        },
+        physics: NeverScrollableScrollPhysics(),
+        // onPageChanged: (value) {
+        //   setState(() {
+        //     _selectedindex = value;
+        //     print("index num is &$_selectedindex");
+        //   });
+        // },
         itemBuilder: (context, index) {
           return ProviderWidget2<HomeModel, TapToTopModel>(
             autoDispose: true,
@@ -339,7 +340,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      toolbarHeight: kToolbarHeight,
+      //toolbarHeight: kToolbarHeight,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
