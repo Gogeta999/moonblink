@@ -277,17 +277,21 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   var response = await DioUtils().postwithData(
                                       Api.SetProfile + '$userid/profile',
                                       data: formData);
-                                  print(response);
+                                  User updateProfile =
+                                      User.fromJsonMap(response.data);
+
+                                  // print(response.data);
                                   setState(() {
                                     StorageManager.sharedPreferences.setString(
                                         mLoginName, _nameController.text);
-                                    StorageManager.sharedPreferences
-                                        .setString(mUserProfile, profilePath);
+
+                                    StorageManager.sharedPreferences.setString(
+                                        mUserProfile, updateProfile.profileUrl);
                                     finish = !finish;
                                   });
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       RouteName.main, (route) => false);
-                                  return User.fromJsonMap(response.data);
+                                  return updateProfile;
                                 },
                               )
                             ],

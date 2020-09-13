@@ -203,7 +203,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                 onTap: () {
                   int usertype =
                       StorageManager.sharedPreferences.getInt(mUserType);
-                  if (usertype == 1) {
+                  if (usertype != 0) {
                     Navigator.of(context)
                         .pushNamed(RouteName.partnerOwnProfile);
                   } else if (model?.user?.token == null) {
@@ -330,7 +330,6 @@ class _UserListWidgetState extends State<UserListWidget> {
       ),
       delegate: SliverChildListDelegate.fixed(
         [
-          //TODO: Change here
           if (usertype != 0)
             PageCard(
                 pageTitle:
@@ -358,6 +357,12 @@ class _UserListWidgetState extends State<UserListWidget> {
                         MoonBlinkRepository.changestatus(0);
                         showToast(G.of(context).toastonline);
                       }),
+          if (usertype != 0)
+            PageCard(
+                pageTitle: 'Own Profile',
+                iconData: FontAwesomeIcons.userAlt,
+                onTap: () => Navigator.of(context)
+                    .pushNamed(RouteName.partnerOwnProfile)),
 
           ///profile
           if (usertype != 0)

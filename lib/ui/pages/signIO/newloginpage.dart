@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
             child: ProviderWidget<LoginModel>(
               model: LoginModel(Provider.of(context)),
               onModelReady: (model) {
-                _mailController.text = model.getLoginName();
+                _mailController.text = model.getLoginMail();
               },
               builder: (context, model, child) {
                 return Form(
