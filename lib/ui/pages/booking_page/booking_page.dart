@@ -142,7 +142,8 @@ class _BookingPageState extends State<BookingPage> {
         _matchSubject.first.then((value) {
           MoonBlinkRepository.booking(partnerId, _gameTypeId, value).then(
               (value) => Navigator.pushNamed(context, RouteName.chatBox,
-                  arguments: partnerId), onError: (err) => showToast(err.toString()));
+                  arguments: partnerId),
+              onError: (err) => showToast(err.toString()));
         });
     });
   }
@@ -205,7 +206,7 @@ class _BookingPageState extends State<BookingPage> {
       body: _isPageError
           ? Center(
               child: Text('Something went wrong!',
-                  style: Theme.of(context).textTheme.bodyText1))
+                  style: Theme.of(context).textTheme.headline6))
           : Column(
               children: [
                 //Top Partner Information

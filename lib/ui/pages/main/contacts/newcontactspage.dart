@@ -47,8 +47,8 @@ class _ContactsPageState extends State<ContactsPage> {
     }
     users.forEach((user) {
       items.add(Column(children: <Widget>[
-        Material(
-          color: Theme.of(context).cardColor,
+        Card(
+          // color: Theme.of(context).cardColor,
           child: ListTile(
             leading: CachedNetworkImage(
               imageUrl: user.contactUser.contactUserProfile,
@@ -187,7 +187,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     return items[index];
                   },
                   indexedHeight: (i) {
-                    return 58;
+                    return 65;
                   },
                 ),
               );

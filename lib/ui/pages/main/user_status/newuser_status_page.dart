@@ -330,7 +330,8 @@ class _UserListWidgetState extends State<UserListWidget> {
       ),
       delegate: SliverChildListDelegate.fixed(
         [
-          if (usertype == 1)
+          //TODO: Change here
+          if (usertype != 0)
             PageCard(
                 pageTitle:
                     status != 1 ? G.of(context).online : G.of(context).offline,
@@ -359,7 +360,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       }),
 
           ///profile
-          if (usertype == 1)
+          if (usertype != 0)
             PageCard(
                 pageTitle: 'Game Profile',
                 iconData: FontAwesomeIcons.userEdit,
