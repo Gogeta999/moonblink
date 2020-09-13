@@ -182,29 +182,6 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                   ],
                 ),
               ),
-              if (Platform.isIOS)
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: GestureDetector(
-                      child: CachedNetworkImage(
-                        imageUrl: partnerModel
-                            .partnerData.prfoileFromPartner.coverImage,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => CachedLoader(),
-                        errorWidget: (context, url, error) => CachedError(),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ImageView(partnerModel
-                                  .partnerData.prfoileFromPartner.coverImage),
-                            ));
-                      },
-                    ),
-                  ),
-                ),
 
               SliverToBoxAdapter(
                 child: SizedBox(

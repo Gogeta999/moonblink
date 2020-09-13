@@ -34,8 +34,8 @@ class TapToTopModel with ChangeNotifier{
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
       _isFetching = true;
-      print('IsFetching');
-      await loadMore();
+      //print('IsFetching');
+      //await loadMore();
       _isFetching = false;
     }
   }

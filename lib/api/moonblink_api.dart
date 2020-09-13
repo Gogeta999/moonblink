@@ -14,7 +14,7 @@ class Api {
       'moonblink/api/v1/user/'; //example = moonblink/api/v1/user/10/story/28
 
   /// Home Data [type 1 is partner type]
-  static const String HOME = "moonblink/api/v1/social/user?";
+  static const String HOME = "moonblink/api/v1/social/user";
 
   /// [Simple Tasks Addresses]for user to get and post for simple tasks
   static const String SimpleRequestApi = "moonblink/api/v1/user/";
