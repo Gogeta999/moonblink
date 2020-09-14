@@ -18,6 +18,7 @@ import 'package:moonblink/base_widget/videotrimmer/video_viewer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
@@ -243,21 +244,20 @@ class _ImagePickerState extends State<ImagePickerPage> {
     File compressedImage =
         await _compressAndGetFile(image, temporaryImage.absolute.path);*/
     CustomBottomSheet.show(
-      buildContext: context,
-      limit: 1,
-      body: 'Pick an image',
-      onPressed: (File file) {
-        setState(() {
-          _chossingItem = file;
-          _fileType = 1;
-        });
-      },
-      buttonText: 'Pick',
-      popAfterBtnPressed: true,
-      requestType: RequestType.image,
-      compressQuality: 90,
-      willCrop: true,
-    );
+        buildContext: context,
+        limit: 1,
+        body: 'Pick an image',
+        onPressed: (File file) {
+          setState(() {
+            _chossingItem = file;
+            _fileType = 1;
+          });
+        },
+        buttonText: 'Pick',
+        popAfterBtnPressed: true,
+        requestType: RequestType.image,
+        willCrop: true,
+        compressQuality: NORMAL_COMPRESS_QUALITY);
     /*setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;

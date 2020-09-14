@@ -7,7 +7,6 @@ import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/contact.dart';
-import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
@@ -16,9 +15,7 @@ import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
 import 'package:moonblink/models/user_play_game.dart';
-import 'package:moonblink/models/user_play_game.dart';
-import 'package:moonblink/models/user_play_game.dart';
-import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -440,5 +437,15 @@ class MoonBlinkRepository {
     var response =
         await DioUtils().postwithData(Api.ResetPassword, data: formData);
     return response.data;
+  }
+
+  //User Rating
+  static Future<UserRatingList> userRating(int userId, int limit, int page) async {
+    var response = await DioUtils().get(Api.UserRating, queryParameters: {
+      'user_id': userId,
+      'limit': limit,
+      'page': page
+    });
+    return UserRatingList.fromJson(response.data['data']);
   }
 }

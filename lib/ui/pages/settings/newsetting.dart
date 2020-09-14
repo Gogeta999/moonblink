@@ -143,12 +143,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     ontap: () =>
                         Navigator.pushNamed(context, RouteName.blockedUsers),
                     child: Center(
-                      child: Text("Block List"),
+                      child: Text("Blocked Users"),
                     ),
                   ),
                 ),
                 if (usertype == 0) space(),
-                // if (usertype == 0)
+                if (usertype == 0)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: ShadedContainer(

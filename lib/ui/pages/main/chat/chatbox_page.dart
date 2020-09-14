@@ -472,18 +472,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               _file = file;
             });
 
-            await getImage();
-            model.sendfile(filename, bytes, id, 1, messages);
-            setState(() {
-              textEditingController.text = '';
-              bytes = null;
-            });
-          },
-          onInit: _sendMessageWidgetUp,
-          onDismiss: _sendMessageWidgetDown,
-          compressQuality: 90,
-          willCrop: true,
-        );
+              await getImage();
+              model.sendfile(filename, bytes, id, 1, messages);
+              setState(() {
+                textEditingController.text = '';
+                bytes = null;
+              });
+            },
+            onInit: _sendMessageWidgetUp,
+            onDismiss: _sendMessageWidgetDown,
+            willCrop: false,
+            compressQuality: NORMAL_COMPRESS_QUALITY);
       },
     );
   }

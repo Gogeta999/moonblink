@@ -348,7 +348,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      toolbarHeight: kToolbarHeight,
+      //toolbarHeight: kToolbarHeight,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light

@@ -37,6 +37,7 @@ import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
+import 'package:moonblink/ui/pages/user/user_rating_page.dart';
 import 'package:moonblink/ui/pages/wallet/newWallet_page.dart';
 import 'package:moonblink/ui/pages/wallet/new_top_up_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
@@ -79,6 +80,7 @@ class RouteName {
   static const String pubgMobile = 'pubgMobile';
   static const String chooseUserPlayGames = 'chooseUserPlayGames';
   static const String updateGameProfile = 'updateGameProfile';
+  static const String userRating = 'userRating';
 }
 
 class Router {
@@ -176,6 +178,9 @@ class Router {
 
       case RouteName.topUp:
         return CupertinoPageRoute(builder: (_) => NewTopUpPage());
+
+      case RouteName.userRating:
+        return CupertinoPageRoute(builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
 
       default:
         return CupertinoPageRoute(

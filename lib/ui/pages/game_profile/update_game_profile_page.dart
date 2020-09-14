@@ -11,6 +11,7 @@ import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
@@ -504,7 +505,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                     },
                     buttonText: 'Select',
                     popAfterBtnPressed: true,
-                    requestType: RequestType.image, willCrop: false, compressQuality: 90);
+                    requestType: RequestType.image, willCrop: false, compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
           CupertinoButton(

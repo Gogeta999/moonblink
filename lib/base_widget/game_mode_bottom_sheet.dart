@@ -30,7 +30,7 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textStyle = Theme.of(context).textTheme.bodyText1;
+    _textStyle = TextStyle(color: Theme.of(context).accentColor);
   }
 
   @override
@@ -43,13 +43,15 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
+              CupertinoButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 child: Text(G.of(context).cancel, style: _textStyle),
               ),
-              FlatButton(
+              Text('Select Modes',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              CupertinoButton(
                 onPressed: () {
                   widget.selectedGameModeIndex.sort((a, b) => a > b ? 1 : 0);
                   widget.onDone(widget.selectedGameModeIndex);
@@ -60,8 +62,6 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
             ],
           ),
         ),
-        Text('Select Game Modes',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 20.0),
         Container(
           constraints: BoxConstraints(

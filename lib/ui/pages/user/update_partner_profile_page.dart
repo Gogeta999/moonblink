@@ -16,6 +16,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
@@ -109,20 +110,19 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                             /// [You need to put before OnTap]
                             onTap: () {
                               CustomBottomSheet.show(
-                                requestType: RequestType.image,
-                                popAfterBtnPressed: true,
-                                buttonText: G.of(context).choose,
-                                buildContext: context,
-                                limit: 1,
-                                onPressed: (File file) {
-                                  setState(() {
-                                    _cover = file;
-                                  });
-                                },
-                                body: G.of(context).partnercover,
-                                compressQuality: 90,
-                                willCrop: true,
-                              );
+                                  requestType: RequestType.image,
+                                  popAfterBtnPressed: true,
+                                  buttonText: G.of(context).choose,
+                                  buildContext: context,
+                                  limit: 1,
+                                  onPressed: (File file) {
+                                    setState(() {
+                                      _cover = file;
+                                    });
+                                  },
+                                  body: G.of(context).partnercover,
+                                  willCrop: true,
+                                  compressQuality: NORMAL_COMPRESS_QUALITY);
                             },
                             child: AspectRatio(
                               aspectRatio: 100 / 60,
@@ -144,22 +144,23 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   /// [You need to put before OnTap]
                                   onTap: () {
                                     CustomBottomSheet.show(
-                                      ///profile is small
-                                      popAfterBtnPressed: true,
-                                      requestType: RequestType.image,
-                                      minWidth: 480,
-                                      minHeight: 480,
-                                      buttonText: G.of(context).choose,
-                                      buildContext: context,
-                                      limit: 1,
-                                      onPressed: (File file) {
-                                        setState(() {
-                                          _profile = file;
-                                        });
-                                      },
-                                      body: G.of(context).partnerprofile,
-                                      compressQuality: 90, willCrop: true,
-                                    );
+
+                                        ///profile is small
+                                        popAfterBtnPressed: true,
+                                        requestType: RequestType.image,
+                                        minWidth: 480,
+                                        minHeight: 480,
+                                        buttonText: G.of(context).choose,
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _profile = file;
+                                          });
+                                        },
+                                        body: G.of(context).partnerprofile,
+                                        willCrop: true,
+                                        compressQuality: NORMAL_COMPRESS_QUALITY);
                                   },
                                   child: CircleAvatar(
                                     radius: 75,

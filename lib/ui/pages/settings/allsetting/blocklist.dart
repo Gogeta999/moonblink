@@ -126,7 +126,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Block List",
+                              "Blocked Users",
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -167,7 +167,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Block List",
+                              "Blocked Users",
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -217,7 +217,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Block List",
+                              "Blocked Users",
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -264,7 +264,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Block List",
+                              "Blocked Users",
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -334,7 +334,16 @@ class BlockedUserListTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3.0),
         child: UserTile(
-          name: Text(data.name),
+          name: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(data.name),
+              SizedBox(height: 5),
+              Text('Blocked ' +
+               timeAgo.format(DateTime.parse(data.createdAt),
+                   allowFromNow: true), style: TextStyle(fontSize: 12))
+            ],
+          ),
           image: CachedNetworkImage(
             imageUrl: data.profileImage,
             imageBuilder: (context, imageProvider) => CircleAvatar(

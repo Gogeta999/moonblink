@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 
@@ -67,20 +68,19 @@ class _VoiceBottomSheetState extends State<VoiceBottomSheet>
             children: <Widget>[
               Container(
                 alignment: Alignment.centerRight,
-                child: FlatButton(
+                child: CupertinoButton(
                   onPressed: _cancel,
                   child: Text(G.of(context).cancel,
-                      style: Theme.of(context).textTheme.bodyText1),
+                      style: TextStyle(color: Theme.of(context).accentColor)),
                 ),
               ),
               Container(
                   alignment: Alignment.center,
                   child: Column(
                     children: <Widget>[
-                      Text(G.of(context).labelvoicemsg,
-                          style: Theme.of(context).textTheme.bodyText1),
+                      Text(G.of(context).labelvoicemsg, style: TextStyle(color: Theme.of(context).accentColor)),
                       SizedBox(height: 5),
-                      Text(G.of(context).maxtime)
+                      Text(G.of(context).maxtime, style: TextStyle(color: Theme.of(context).accentColor))
                     ],
                   ))
             ],

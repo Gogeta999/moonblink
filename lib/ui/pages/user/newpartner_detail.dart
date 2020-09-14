@@ -51,7 +51,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         width: 27,
         height: 27,
         child: IconButton(
-          splashRadius: 20,
+          //splashRadius: 20,
           icon: Icon(
             Icons.more_vert,
             size: 22,
@@ -371,9 +371,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             ),
                           ],
                         ),
-                        MBAverageWidget(
-                          title: G.of(context).averageRating,
-                          averageRating: partnerModel.partnerData.rating,
+                        InkWell(
+                          onTap: () => Navigator.pushNamed(context, RouteName.userRating, arguments: partnerModel.partnerId),
+                          child: MBAverageWidget(
+                            title: G.of(context).averageRating,
+                            averageRating: partnerModel.partnerData.rating,
+                          ),
                         )
                       ],
                     ),

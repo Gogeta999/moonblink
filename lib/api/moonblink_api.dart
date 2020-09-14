@@ -129,4 +129,7 @@ class Api {
 
   //Reset Password
   static const String ResetPassword = "moonblink/api/v1/password/reset";
+
+  //UserRating
+  static const String UserRating = 'moonblink/api/v1/social/rating';
 }
