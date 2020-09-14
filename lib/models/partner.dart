@@ -13,6 +13,7 @@ class PartnerUser {
   int status;
   int type;
   int typestatus;
+  String showButton;
   String mlplayerid;
   String pubgplayerid;
   String password; // own Profile
@@ -38,6 +39,7 @@ class PartnerUser {
       this.type,
       this.status,
       this.typestatus,
+      this.showButton,
       this.mlplayerid,
       this.pubgplayerid,
       this.password,
@@ -58,6 +60,7 @@ class PartnerUser {
         password: map['pass_word'],
         type: map['type'],
         typestatus: map['type_status'],
+        showButton: map['show_button'],
         status: map['status'],
         followerCount: map['follower_count'],
         followingCount: map['following_count'],
@@ -86,6 +89,7 @@ class PartnerUser {
     data['updated_at'] = updatedAt;
     data['type'] = type;
     data['type_status'] = typestatus;
+    data['show_button'] = showButton;
     data['status'] = status;
     data['follower_count'] = followerCount;
     data['reaction_count'] = reactionCount;

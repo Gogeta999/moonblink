@@ -83,6 +83,48 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
+            void followingRequest(bool newValue) async {
+              print('status is 0 so bool is' +
+                  followButtonClicked.toString() +
+                  'to false');
+              await DioUtils().post(
+                Api.SocialRequest +
+                    partnerModel.partnerData.partnerId.toString() +
+                    '/follow',
+                queryParameters: {'status': '1'},
+              );
+              print('stauts now is 1 and switch to following button');
+              setState(() {
+                print(
+                    '${partnerModel.partnerData.followerCount} is plus 1 follower');
+                partnerModel.partnerData.followerCount += 1;
+                print('so now is ${partnerModel.partnerData.followerCount}');
+                partnerModel.partnerData.isFollow = 1;
+                followButtonClicked = newValue;
+              });
+            }
+
+            void unFollowRequest(bool newValue) async {
+              print('status is 1 so bool is' +
+                  followButtonClicked.toString() +
+                  'to false');
+              await DioUtils().post(
+                Api.SocialRequest +
+                    partnerModel.partnerData.partnerId.toString() +
+                    '/follow',
+                queryParameters: {'status': '0'},
+              );
+              print('stauts now is 0 and switch to follow button');
+              setState(() {
+                print(
+                    '${partnerModel.partnerData.followerCount} is minus 1 follower');
+                partnerModel.partnerData.followerCount -= 1;
+                print('so now is ${partnerModel.partnerData.followerCount}');
+                partnerModel.partnerData.isFollow = 0;
+                followButtonClicked = newValue;
+              });
+            }
+
             // int followerCount = partnerModel.partnerData.followerCount;
             if (partnerModel.isBusy) {
               return ViewStateBusyWidget();
@@ -119,17 +161,18 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     actions: <Widget>[
                       userstatus(partnerModel.partnerData.status),
                       IconButton(
-                          icon: Icon(
-                            IconFonts.messageIcon,
-                            size: 40,
-                          ),
-                          onPressed: widget.detailPageId == ownId
-                              ? null
-                              : () {
-                                  Navigator.pushReplacementNamed(
-                                      context, RouteName.chatBox,
-                                      arguments: widget.detailPageId);
-                                }),
+                        icon: Icon(
+                          IconFonts.messageIcon,
+                          size: 40,
+                        ),
+                        onPressed: widget.detailPageId == ownId
+                            ? null
+                            : () {
+                                Navigator.pushReplacementNamed(
+                                    context, RouteName.chatBox,
+                                    arguments: widget.detailPageId);
+                              },
+                      ),
                       if (ownId != widget.detailPageId)
                         IconButton(
                           icon: Icon(Icons.more_vert),
@@ -261,7 +304,29 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         ///[Booking Button move to class]
-                        BookingButton(),
+                        if (Platform.isAndroid ||
+                            partnerModel.partnerData.showButton == '1')
+                          BookingButton(),
+                        if (Platform.isIOS &&
+                            partnerModel.partnerData.showButton == '0')
+                          RaisedButton(
+                            color: Theme.of(context).accentColor,
+                            highlightColor: Theme.of(context).accentColor,
+                            colorBrightness: Theme.of(context).brightness,
+                            splashColor: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: Text(G.of(context).tabChat,
+                                style:
+                                    Theme.of(context).accentTextTheme.button),
+                            onPressed: widget.detailPageId == ownId
+                                ? null
+                                : () {
+                                    Navigator.pushReplacementNamed(
+                                        context, RouteName.chatBox,
+                                        arguments: widget.detailPageId);
+                                  },
+                          ),
 
                         /// [Follow Button] different statement to show different button
                         RaisedButton(
@@ -278,51 +343,55 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                               : Text(G.of(context).following,
                                   style:
                                       Theme.of(context).accentTextTheme.button),
-                          onPressed: partnerModel.partnerData.isFollow == 0
-                              ? () async {
-                                  print('status is 0 so bool is' +
-                                      followButtonClicked.toString() +
-                                      'to false');
-                                  await DioUtils().post(
-                                    Api.SocialRequest +
-                                        partnerModel.partnerData.partnerId
-                                            .toString() +
-                                        '/follow',
-                                    queryParameters: {'status': '1'},
-                                  );
-                                  print(
-                                      'stauts now is 1 and switch to following button');
-                                  setState(() {
-                                    print(
-                                        '${partnerModel.partnerData.followerCount} is plus 1 follower');
-                                    partnerModel.partnerData.followerCount += 1;
-                                    print(
-                                        'so now is ${partnerModel.partnerData.followerCount}');
-                                    partnerModel.partnerData.isFollow = 1;
-                                  });
-                                }
-                              : () async {
-                                  print('status is 1 so bool is' +
-                                      followButtonClicked.toString() +
-                                      'to false');
-                                  await DioUtils().post(
-                                    Api.SocialRequest +
-                                        partnerModel.partnerData.partnerId
-                                            .toString() +
-                                        '/follow',
-                                    queryParameters: {'status': '0'},
-                                  );
-                                  print(
-                                      'stauts now is 0 and switch to follow button');
-                                  setState(() {
-                                    print(
-                                        '${partnerModel.partnerData.followerCount} is minus 1 follower');
-                                    partnerModel.partnerData.followerCount -= 1;
-                                    print(
-                                        'so now is ${partnerModel.partnerData.followerCount}');
-                                    partnerModel.partnerData.isFollow = 0;
-                                  });
-                                },
+                          onPressed: widget.detailPageId == ownId
+                              ? null
+                              : partnerModel.partnerData.isFollow == 0
+                                  ? () async {
+                                      print('status is 0 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to false');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '1'},
+                                      );
+                                      print(
+                                          'stauts now is 1 and switch to following button');
+                                      setState(() {
+                                        print(
+                                            '${partnerModel.partnerData.followerCount} is plus 1 follower');
+                                        partnerModel
+                                            .partnerData.followerCount += 1;
+                                        print(
+                                            'so now is ${partnerModel.partnerData.followerCount}');
+                                        partnerModel.partnerData.isFollow = 1;
+                                      });
+                                    }
+                                  : () async {
+                                      print('status is 1 so bool is' +
+                                          followButtonClicked.toString() +
+                                          'to false');
+                                      await DioUtils().post(
+                                        Api.SocialRequest +
+                                            partnerModel.partnerData.partnerId
+                                                .toString() +
+                                            '/follow',
+                                        queryParameters: {'status': '0'},
+                                      );
+                                      print(
+                                          'stauts now is 0 and switch to follow button');
+                                      setState(() {
+                                        print(
+                                            '${partnerModel.partnerData.followerCount} is minus 1 follower');
+                                        partnerModel
+                                            .partnerData.followerCount -= 1;
+                                        print(
+                                            'so now is ${partnerModel.partnerData.followerCount}');
+                                        partnerModel.partnerData.isFollow = 0;
+                                      });
+                                    },
                         ),
                       ],
                     ),
