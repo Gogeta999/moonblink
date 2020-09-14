@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage>
                     setState(
                       () {
                         gender = "Female";
-                        _pageController.jumpToPage(6);
+                        _pageController.jumpToPage(7);
                       },
                     );
                   } else {

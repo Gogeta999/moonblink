@@ -5,13 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/chat/chattile.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/base_widget/container/usercontainer.dart';
-import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/blocked_users/blocked_users_lists/bloc.dart';
 import 'package:moonblink/bloc_pattern/blocked_users/unblock_button/bloc.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/blocked_user.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -339,9 +336,11 @@ class BlockedUserListTile extends StatelessWidget {
             children: <Widget>[
               Text(data.name),
               SizedBox(height: 5),
-              Text('Blocked ' +
-               timeAgo.format(DateTime.parse(data.createdAt),
-                   allowFromNow: true), style: TextStyle(fontSize: 12))
+              Text(
+                  'Blocked ' +
+                      timeAgo.format(DateTime.parse(data.createdAt),
+                          allowFromNow: true),
+                  style: TextStyle(fontSize: 12))
             ],
           ),
           image: CachedNetworkImage(

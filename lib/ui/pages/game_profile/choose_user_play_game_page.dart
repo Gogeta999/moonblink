@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:oktoast/oktoast.dart';

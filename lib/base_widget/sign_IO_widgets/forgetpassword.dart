@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/signIO/newresetpassw.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
 import 'package:moonblink/view_model/forgetpassword_model.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -25,11 +25,12 @@ class ForgetPassword extends StatelessWidget {
                         model.forgetPassword(mail.text).then((value) {
                           if (value) {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ResetPasswordPage(mail: mail.text),
-                                ));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ResetPasswordPage(mail: mail.text),
+                              ),
+                            );
                           } else {
                             model.showErrorMessage(context);
                           }

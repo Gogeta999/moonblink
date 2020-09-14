@@ -7,7 +7,6 @@ import 'package:moonblink/view_model/booking_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:moonblink/generated/l10n.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   final int partnerId;

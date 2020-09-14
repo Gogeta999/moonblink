@@ -10,7 +10,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
+import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/home_model.dart';

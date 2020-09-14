@@ -52,18 +52,11 @@ class ChatModel extends Model {
 
   //connect
   void init() {
+    chatlist.clear();
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-    // for (var event in EVENTS) {
-    //   print("Checking");
-    //   socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
-    // }
-    // socket.on("reconnect", (data) {
-    //   print("reconnecting");
-    //   socket.emit('connect-user', usertoken);
-    //   notifyListeners();
-    // });
+
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -234,9 +227,9 @@ class ChatModel extends Model {
     });
   }
 
-  void receivenoti(int id, String text, String msg) {
-    // PushNotificationsManager().notification(id, text, msg);
-  }
+  // void receivenoti(int id, String text, String msg) {
+  //   // PushNotificationsManager().notification(id, text, msg);
+  // }
 
   void disconnect() {
     socket.disconnect();

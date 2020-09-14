@@ -9,40 +9,26 @@ import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
-import 'package:moonblink/ui/pages/main/home/comment_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
-import 'package:moonblink/ui/pages/main/newmain_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
-import 'package:moonblink/ui/pages/main/user_status/newuser_status_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
-import 'package:moonblink/ui/pages/settings/newsetting.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
-import 'package:moonblink/ui/pages/signIO/newregisterpage.dart';
-import 'package:moonblink/ui/pages/signIO/newresetpassw.dart';
 import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
-import 'package:moonblink/ui/pages/signIO/newloginpage.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';
-import 'package:moonblink/ui/pages/user/blocked_user_page.dart';
-import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
-import 'package:moonblink/ui/pages/user/newsetuser.dart';
-import 'package:moonblink/ui/pages/user/ownprofile.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/user_rating_page.dart';
-import 'package:moonblink/ui/pages/wallet/newWallet_page.dart';
-import 'package:moonblink/ui/pages/wallet/new_top_up_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
-
 import '../ui/pages/settings/allsetting/terms_and_conditions_page.dart';
 
 class RouteName {
@@ -180,7 +166,8 @@ class Router {
         return CupertinoPageRoute(builder: (_) => NewTopUpPage());
 
       case RouteName.userRating:
-        return CupertinoPageRoute(builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
+        return CupertinoPageRoute(
+            builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
 
       default:
         return CupertinoPageRoute(

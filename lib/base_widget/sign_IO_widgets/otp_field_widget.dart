@@ -82,7 +82,6 @@ class _OtpTextFieldState extends State<OtpTextField> {
           ),
         ),
       ),
-      // ),
     );
   }
 }

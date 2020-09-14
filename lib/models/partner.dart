@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:moonblink/models/game_profile.dart';
-
 class PartnerUser {
   int partnerId;
   String partnerName;

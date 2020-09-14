@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:moonblink/base_widget/bookingtimeleft.dart';
-import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,7 +14,6 @@ import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -461,16 +459,16 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           : Colors.white,
       onPressed: () {
         CustomBottomSheet.show(
-          popAfterBtnPressed: true,
-          requestType: RequestType.image,
-          buttonText: G.of(context).sendbutton,
-          buildContext: context,
-          limit: 1,
-          body: G.of(context).labelimageselect,
-          onPressed: (File file) async {
-            setState(() {
-              _file = file;
-            });
+            popAfterBtnPressed: true,
+            requestType: RequestType.image,
+            buttonText: G.of(context).sendbutton,
+            buildContext: context,
+            limit: 1,
+            body: G.of(context).labelimageselect,
+            onPressed: (File file) async {
+              setState(() {
+                _file = file;
+              });
 
               await getImage();
               model.sendfile(filename, bytes, id, 1, messages);

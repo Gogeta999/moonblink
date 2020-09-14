@@ -6,10 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
@@ -505,7 +503,9 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                     },
                     buttonText: 'Select',
                     popAfterBtnPressed: true,
-                    requestType: RequestType.image, willCrop: false, compressQuality: NORMAL_COMPRESS_QUALITY);
+                    requestType: RequestType.image,
+                    willCrop: false,
+                    compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
           CupertinoButton(
@@ -522,8 +522,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   _pickImageFromCamera() async {
-    PickedFile pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
-    File compressedImage = await CompressUtils.compressAndGetFile(File(pickedFile.path), 90, 1080, 1080);
+    PickedFile pickedFile =
+        await ImagePicker().getImage(source: ImageSource.camera);
+    File compressedImage = await CompressUtils.compressAndGetFile(
+        File(pickedFile.path), 90, 1080, 1080);
     setState(() {
       _skillCoverPhoto = compressedImage;
     });
