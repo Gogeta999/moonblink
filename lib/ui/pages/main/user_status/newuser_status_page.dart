@@ -14,6 +14,8 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
+import 'package:moonblink/ui/helper/openfacebook.dart';
+import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -403,16 +405,17 @@ class _UserListWidgetState extends State<UserListWidget> {
 
           ///favorites
           PageCard(
-              pageTitle: G.of(context).userStatusCustomerService,
-              iconData: FontAwesomeIcons.handsHelping,
-              onTap: hasUser == null
-                  ? () {
-                      showToast(G.of(context).loginFirst);
-                    }
-                  // : () {
-                  //     Navigator.of(context).pushNamed(RouteName.network);
-                  //   }),
-                  : _openFacebookPage),
+            pageTitle: G.of(context).userStatusCustomerService,
+            iconData: FontAwesomeIcons.handsHelping,
+            onTap: hasUser == null
+                ? () {
+                    showToast(G.of(context).loginFirst);
+                  }
+                // : () {
+                //     Navigator.of(context).pushNamed(RouteName.network);
+                //   }),
+                : openFacebookPage,
+          ),
 
           ///settings
           PageCard(
@@ -422,55 +425,17 @@ class _UserListWidgetState extends State<UserListWidget> {
 
           ///check app update
           PageCard(
-              pageTitle: G.of(context).userStatusCheckAppUpdate,
-              iconData: Platform.isAndroid
-                  ? FontAwesomeIcons.android
-                  : FontAwesomeIcons.appStoreIos,
-              onTap: _openStore),
+            pageTitle: G.of(context).userStatusCheckAppUpdate,
+            iconData: Platform.isAndroid
+                ? FontAwesomeIcons.android
+                : FontAwesomeIcons.appStoreIos,
+            onTap: openStore,
+          ),
           if (StorageManager.sharedPreferences.getString(token) != null)
             Logout(),
         ],
       ),
     );
-  }
-
-  void _openStore() async {
-    String appStoreUrl;
-    if (Platform.isIOS) {
-      appStoreUrl = 'fb://profile/103254564508101';
-    } else {
-      appStoreUrl =
-          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(appStoreUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
-  }
-
-  void _openFacebookPage() async {
-    String fbProtocolUrl;
-    if (Platform.isIOS) {
-      fbProtocolUrl = 'fb://profile/103254564508101';
-    } else {
-      fbProtocolUrl = 'fb://page/103254564508101';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(fbProtocolUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
   }
 
   void _switchDarkMode(BuildContext context) {

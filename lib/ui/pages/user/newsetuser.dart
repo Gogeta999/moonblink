@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
+import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/Datetime.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
@@ -16,12 +17,10 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
@@ -118,6 +117,40 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
               actions: [
                 AppbarLogo(),
               ],
+            ),
+            SliverToBoxAdapter(
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.black,
+                    height: 200,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 150),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(50.0)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 50),
+                    child: TitleContainer(
+                      height: 100,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: Center(
+                        child: Text(
+                          "Be Our Partner",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SliverToBoxAdapter(
               child: ProviderWidget<LoginModel>(
@@ -245,8 +278,8 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       ),
                                       Expanded(
                                         child: InkResponse(
-                                          onTap: () =>
-                                              _showSelectImageOptions(context, NrcType.front),
+                                          onTap: () => _showSelectImageOptions(
+                                              context, NrcType.front),
                                           child: Column(
                                             children: <Widget>[
                                               Container(
@@ -258,7 +291,25 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                                         size: 120,
                                                         color: Theme.of(context)
                                                             .accentColor)
-                                                    : Image.file(_nrcFront),
+                                                    : Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 15),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            8,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            3,
+                                                        child: Image.file(
+                                                          _nrcFront,
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
                                               ),
                                               SizedBox(height: 5),
                                               Text(G.of(context).labelnrcfront,
@@ -287,20 +338,38 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       ),
                                       Expanded(
                                         child: InkResponse(
-                                          onTap: () =>
-                                              _showSelectImageOptions(context, NrcType.back),
+                                          onTap: () => _showSelectImageOptions(
+                                              context, NrcType.back),
                                           child: Column(
                                             children: <Widget>[
                                               Container(
                                                 height: 120,
                                                 child: _nrcBack == null
                                                     ? Icon(
-                                                    FontAwesomeIcons
-                                                        .solidAddressCard,
-                                                    size: 120,
-                                                    color: Theme.of(context)
-                                                        .accentColor)
-                                                    : Image.file(_nrcBack),
+                                                        FontAwesomeIcons
+                                                            .solidAddressCard,
+                                                        size: 120,
+                                                        color: Theme.of(context)
+                                                            .accentColor)
+                                                    : Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 15),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            8,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            3,
+                                                        child: Image.file(
+                                                          _nrcBack,
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
                                               ),
                                               SizedBox(height: 5),
                                               Text(G.of(context).labelnrcback,
@@ -363,8 +432,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
       setState(() {
         finished = !finished;
       });
-      var userid = StorageManager.sharedPreferences
-          .getInt(mUserId);
+      var userid = StorageManager.sharedPreferences.getInt(mUserId);
       // var coverPath = _cover.absolute.path;
       // var profilePath = _profile.absolute.path;
       FormData formData = FormData.fromMap({
@@ -375,13 +443,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
         // 'profile_image': await MultipartFile.fromFile(
         //     profilePath,
         //     filename: 'profile.jpg'),
-        'nrc_front_image':
-        await MultipartFile.fromFile(
-            _nrcFront.absolute.path,
+        'nrc_front_image': await MultipartFile.fromFile(_nrcFront.absolute.path,
             filename: 'nrc_front_image.jpg'),
-        'nrc_back_image':
-        await MultipartFile.fromFile(
-            _nrcBack.absolute.path,
+        'nrc_back_image': await MultipartFile.fromFile(_nrcBack.absolute.path,
             filename: 'nrc_back_image.jpg'),
         'nrc': _nrcController.text.toString(),
         'gender': _gender,
@@ -390,23 +454,22 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
         'address': _addressController.text.toString()
       });
 
-      var response = await DioUtils().postwithData(
-          Api.SetProfile + '$userid/profile',
-          data: formData,
-          options: Options(
-            sendTimeout: 25 * 1000,
-            receiveTimeout: 25 * 1000,
-          ));
+      var response =
+          await DioUtils().postwithData(Api.SetProfile + '$userid/profile',
+              data: formData,
+              options: Options(
+                sendTimeout: 25 * 1000,
+                receiveTimeout: 25 * 1000,
+              ));
       print('PRINTED $response');
       print("+++++++++++++++++++++++++++++++++++++");
       setState(() {
         finished = !finished;
       });
-      print(
-          "----------------------------------------------------");
+      print("----------------------------------------------------");
       model.logout();
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          RouteName.splash, (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
       return User.fromJsonMap(response.data);
     }
   }
@@ -426,7 +489,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                     body: 'Pick NRC',
                     onPressed: (File file) {
                       setState(() {
-                        type == NrcType.front ? _nrcFront = file : _nrcBack = file;
+                        type == NrcType.front
+                            ? _nrcFront = file
+                            : _nrcBack = file;
                       });
                     },
                     buttonText: 'Select',

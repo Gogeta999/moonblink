@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:moonblink/models/game_profile.dart';
+
 class PartnerUser {
   int partnerId;
   String partnerName;
@@ -23,6 +27,7 @@ class PartnerUser {
   int likecount;
   double rating;
   PartnerProfile prfoileFromPartner;
+  List<PartnerGameProfile> gameprofile;
 
   // String partnerProfileImage;
   // String partnerBackendImage;
@@ -47,31 +52,38 @@ class PartnerUser {
       this.isFollow,
       this.likecount,
       this.rating,
-      this.prfoileFromPartner});
+      this.prfoileFromPartner,
+      this.gameprofile});
 
   factory PartnerUser.fromJson(Map<String, dynamic> map) {
     return PartnerUser(
-        partnerId: map['id'],
-        partnerName: map['name'],
-        partnerLastName: map['last_name'],
-        partnerEmail: map['email'],
-        password: map['pass_word'],
-        type: map['type'],
-        typestatus: map['type_status'],
-        status: map['status'],
-        followerCount: map['follower_count'],
-        followingCount: map['following_count'],
-        reactionCount: map['reaction_count'],
-        isFollow: map['is_follow'],
-        mlplayerid: map['ml_player_id'],
-        pubgplayerid: map['pubg_player_id'],
-        likecount: map['reaction_count'],
-        rating: map['rating'],
-        verified: map['verified'],
-        verifiedAt: map['verified_at'],
-        createdAt: map['created_at'],
-        updatedAt: map['updated_at'],
-        prfoileFromPartner: PartnerProfile.fromJson(map['profile']));
+      partnerId: map['id'],
+      partnerName: map['name'],
+      partnerLastName: map['last_name'],
+      partnerEmail: map['email'],
+      password: map['pass_word'],
+      type: map['type'],
+      typestatus: map['type_status'],
+      status: map['status'],
+      followerCount: map['follower_count'],
+      followingCount: map['following_count'],
+      reactionCount: map['reaction_count'],
+      isFollow: map['is_follow'],
+      mlplayerid: map['ml_player_id'],
+      pubgplayerid: map['pubg_player_id'],
+      likecount: map['reaction_count'],
+      rating: map['rating'],
+      verified: map['verified'],
+      verifiedAt: map['verified_at'],
+      createdAt: map['created_at'],
+      updatedAt: map['updated_at'],
+      prfoileFromPartner: PartnerProfile.fromJson(
+        map['profile'],
+      ),
+      gameprofile: map['game_profile']
+          .map<PartnerGameProfile>((e) => PartnerGameProfile.fromJson(e))
+          .toList(),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -218,3 +230,56 @@ class PartnerProfile {
 //   data['created_at'] = createdAt;
 //   data['updated_at'] = updatedAt;
 // }
+class PartnerGameProfile {
+  final int id;
+  final int userId;
+  final int gameId;
+  final String gameName;
+  final String playerId;
+  final String level;
+  final String skillCoverImage;
+  final String aboutOrderTaking;
+  final int isPlay;
+  final String createdAt;
+  final String updatedAt;
+
+  PartnerGameProfile(
+      {this.id,
+      this.userId,
+      this.gameId,
+      this.gameName,
+      this.playerId,
+      this.level,
+      this.skillCoverImage,
+      this.aboutOrderTaking,
+      this.isPlay,
+      this.createdAt,
+      this.updatedAt});
+
+  PartnerGameProfile.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        userId = json['user_id'],
+        gameId = json['game_id'],
+        gameName = json['game_name'],
+        playerId = json['player_id'],
+        level = json['level'],
+        skillCoverImage = json['skill_cover_image'],
+        aboutOrderTaking = json['about_order_taking'],
+        isPlay = json['is_play'],
+        createdAt = json['created_at'],
+        updatedAt = json['updated_at'];
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'user_id': userId,
+        'game_id': gameId,
+        'game_name': gameName,
+        'player_id': playerId,
+        'level': level,
+        'skill_cover_image': skillCoverImage,
+        'about_order_taking': aboutOrderTaking,
+        'is_play': isPlay,
+        'created_at': createdAt,
+        'updated_at': updatedAt
+      };
+}

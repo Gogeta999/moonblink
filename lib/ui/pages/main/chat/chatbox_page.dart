@@ -461,26 +461,29 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           : Colors.white,
       onPressed: () {
         CustomBottomSheet.show(
-            popAfterBtnPressed: true,
-            requestType: RequestType.image,
-            buttonText: G.of(context).sendbutton,
-            buildContext: context,
-            limit: 1,
-            body: G.of(context).labelimageselect,
-            onPressed: (File file) async {
-              setState(() {
-                _file = file;
-              });
+          popAfterBtnPressed: true,
+          requestType: RequestType.image,
+          buttonText: G.of(context).sendbutton,
+          buildContext: context,
+          limit: 1,
+          body: G.of(context).labelimageselect,
+          onPressed: (File file) async {
+            setState(() {
+              _file = file;
+            });
 
-              await getImage();
-              model.sendfile(filename, bytes, id, 1, messages);
-              setState(() {
-                textEditingController.text = '';
-                bytes = null;
-              });
-            },
-            onInit: _sendMessageWidgetUp,
-            onDismiss: _sendMessageWidgetDown);
+            await getImage();
+            model.sendfile(filename, bytes, id, 1, messages);
+            setState(() {
+              textEditingController.text = '';
+              bytes = null;
+            });
+          },
+          onInit: _sendMessageWidgetUp,
+          onDismiss: _sendMessageWidgetDown,
+          compressQuality: 90,
+          willCrop: true,
+        );
       },
     );
   }
@@ -696,7 +699,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
-    if (selfId != bookingdata.bookinguserid) {
+    if (selfId == bookingdata.bookinguserid) {
       switch (bookingdata.status) {
         //normal
         case (-1):
@@ -704,7 +707,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           break;
         //pending
         case (0):
-          return Container();
+          return BookingTimeLeft(
+            createat: bookingdata.created,
+          );
           break;
         //end booking
         case (1):
@@ -735,15 +740,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           return Container();
       }
     } else {
-      switch (bookingdata.status) {
-        case (0):
-          return BookingTimeLeft(
-            createat: bookingdata.created,
-          );
-          break;
-        default:
-          return Container();
-      }
+      return Container();
     }
   }
 
@@ -820,13 +817,16 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            partnermodel.partnerData.partnerName,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Text(
+                              partnermodel.partnerData.partnerName,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    onTap: partnermodel.partnerData.type == 1
+                    onTap: partnermodel.partnerData.type != 0
                         ? () {
                             Navigator.pushReplacementNamed(
                                 context, RouteName.partnerDetail,

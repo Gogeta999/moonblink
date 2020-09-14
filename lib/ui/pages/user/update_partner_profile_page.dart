@@ -109,17 +109,20 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                             /// [You need to put before OnTap]
                             onTap: () {
                               CustomBottomSheet.show(
-                                  requestType: RequestType.image,
-                                  popAfterBtnPressed: true,
-                                  buttonText: G.of(context).choose,
-                                  buildContext: context,
-                                  limit: 1,
-                                  onPressed: (File file) {
-                                    setState(() {
-                                      _cover = file;
-                                    });
-                                  },
-                                  body: G.of(context).partnercover);
+                                requestType: RequestType.image,
+                                popAfterBtnPressed: true,
+                                buttonText: G.of(context).choose,
+                                buildContext: context,
+                                limit: 1,
+                                onPressed: (File file) {
+                                  setState(() {
+                                    _cover = file;
+                                  });
+                                },
+                                body: G.of(context).partnercover,
+                                compressQuality: 90,
+                                willCrop: true,
+                              );
                             },
                             child: AspectRatio(
                               aspectRatio: 100 / 60,
@@ -141,21 +144,22 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   /// [You need to put before OnTap]
                                   onTap: () {
                                     CustomBottomSheet.show(
-
-                                        ///profile is small
-                                        popAfterBtnPressed: true,
-                                        requestType: RequestType.image,
-                                        minWidth: 480,
-                                        minHeight: 480,
-                                        buttonText: G.of(context).choose,
-                                        buildContext: context,
-                                        limit: 1,
-                                        onPressed: (File file) {
-                                          setState(() {
-                                            _profile = file;
-                                          });
-                                        },
-                                        body: G.of(context).partnerprofile);
+                                      ///profile is small
+                                      popAfterBtnPressed: true,
+                                      requestType: RequestType.image,
+                                      minWidth: 480,
+                                      minHeight: 480,
+                                      buttonText: G.of(context).choose,
+                                      buildContext: context,
+                                      limit: 1,
+                                      onPressed: (File file) {
+                                        setState(() {
+                                          _profile = file;
+                                        });
+                                      },
+                                      body: G.of(context).partnerprofile,
+                                      compressQuality: 90, willCrop: true,
+                                    );
                                   },
                                   child: CircleAvatar(
                                     radius: 75,

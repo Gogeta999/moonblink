@@ -13,7 +13,6 @@ import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/pages/user/newpartner_detail.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/home_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -432,8 +431,6 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                     Divider(
                       height: 5,
                     ),
-                    if (widget.index != 0 && widget.index % 6 == 0)
-                      AdPostWidget()
                   ],
                 ),
                 postprofile(homeModel),
@@ -442,7 +439,12 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
           Divider(
             height: 10,
-          )
+          ),
+          if (widget.index != 0 && widget.index % 6 == 0)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: AdPostWidget(),
+            )
         ],
       ),
     );

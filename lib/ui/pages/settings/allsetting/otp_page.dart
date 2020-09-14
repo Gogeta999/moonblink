@@ -152,17 +152,17 @@ class SignAsPartnerButton extends StatelessWidget {
       ontap: model.isBusy
           ? null
           : () {
-              var formState = Form.of(context);
-              if (formState.validate()) {
-                /*model.signAsPartner(otpController.text).then((value) */
-                model.signInWithCredential(otpController.text).then((value) {
-                  if (value) {
-                    Navigator.of(context).pushNamed(RouteName.setprofile);
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
-              }
+              // var formState = Form.of(context);
+              // if (formState.validate()) {
+              /*model.signAsPartner(otpController.text).then((value) */
+              // model.signInWithCredential(otpController.text).then((value) {
+              //   if (value) {
+              Navigator.of(context).pushNamed(RouteName.setprofile);
+              // } else {
+              //   model.showErrorMessage(context);
+              // }
+              // });
+              // }
             },
     );
   }

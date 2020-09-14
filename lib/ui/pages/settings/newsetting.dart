@@ -1,23 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
-import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/utils/platform_utils.dart';
-import 'package:moonblink/view_model/local_model.dart';
+import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -54,7 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var iconColor = Theme.of(context).accentColor;
     int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return ProviderWidget<PartnerOwnProfileModel>(
         model: PartnerOwnProfileModel(partnerData),
@@ -138,7 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: ShadedContainer(
                     height: 50,
-                    ontap: () => _openStore(),
+                    ontap: () => openStore(),
                     child: Center(
                       child: Text("Rate Our App"),
                     ),
@@ -156,7 +147,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                space(),
+                if (usertype == 0) space(),
+                // if (usertype == 0)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: ShadedContainer(
@@ -184,44 +176,5 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           );
         });
-  }
-
-  void _openStore() async {
-    String appStoreUrl;
-    if (Platform.isIOS) {
-      appStoreUrl = 'fb://profile/103254564508101';
-    } else {
-      appStoreUrl =
-          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(appStoreUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
-  }
-
-  void _openFacebookPage() async {
-    String fbProtocolUrl;
-    if (Platform.isIOS) {
-      fbProtocolUrl = 'fb://profile/103254564508101';
-    } else {
-      fbProtocolUrl = 'fb://page/103254564508101';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(fbProtocolUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
   }
 }

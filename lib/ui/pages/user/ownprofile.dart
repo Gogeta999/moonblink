@@ -235,12 +235,29 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                 ),
               ),
 
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+
               /// [user bio]
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(25),
-                  child: Text(partnerModel.partnerData.prfoileFromPartner.bios),
-                ),
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(width: 2, color: Colors.black),
+                        bottom: BorderSide(width: 2, color: Colors.black),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        partnerModel.partnerData.prfoileFromPartner.bios,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    )),
               ),
 
               /// [user feed]

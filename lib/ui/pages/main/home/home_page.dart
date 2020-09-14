@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -33,9 +32,8 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   var _pageController;
-  int _selectedindex = 0;
   int catagories = 1;
-  String gender = "Male";
+  String gender = "All";
 
   @override
   void initState() {
@@ -160,9 +158,16 @@ class _HomePageState extends State<HomePage>
                 selected: gender == "Male" ? true : false,
                 ontap: () {
                   if (gender != "Male") {
+                    setState(
+                      () {
+                        gender = "Male";
+                        _pageController.jumpToPage(5);
+                      },
+                    );
+                  } else {
                     setState(() {
-                      gender = "Male";
-                      _pageController.jumpToPage(3);
+                      gender = "All";
+                      _pageController.jumpToPage(4);
                     });
                   }
                 },
@@ -174,10 +179,19 @@ class _HomePageState extends State<HomePage>
                 selected: gender == "Female" ? true : false,
                 ontap: () {
                   if (gender != "Female") {
-                    setState(() {
-                      gender = "Female";
-                      _pageController.jumpToPage(5);
-                    });
+                    setState(
+                      () {
+                        gender = "Female";
+                        _pageController.jumpToPage(6);
+                      },
+                    );
+                  } else {
+                    setState(
+                      () {
+                        gender = "All";
+                        _pageController.jumpToPage(4);
+                      },
+                    );
                   }
                 },
                 child: Center(
@@ -200,12 +214,6 @@ class _HomePageState extends State<HomePage>
         itemCount: 8,
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
-        // onPageChanged: (value) {
-        //   setState(() {
-        //     _selectedindex = value;
-        //     print("index num is &$_selectedindex");
-        //   });
-        // },
         itemBuilder: (context, index) {
           return ProviderWidget2<HomeModel, TapToTopModel>(
             autoDispose: true,
@@ -294,14 +302,14 @@ class _HomePageState extends State<HomePage>
                             height: 20,
                           ),
                         ),
-                        if (homeModel.isEmpty)
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 50),
-                              child: ViewStateEmptyWidget(
-                                  onPressed: homeModel.initData),
-                            ),
-                          ),
+                        // if (homeModel.isEmpty)
+                        //   SliverToBoxAdapter(
+                        //     child: Padding(
+                        //       padding: const EdgeInsets.only(top: 50),
+                        //       child: ViewStateEmptyWidget(
+                        //           onPressed: homeModel.initData),
+                        //     ),
+                        //   ),
                         if (homeModel.isError && homeModel.list.isEmpty)
                           SliverToBoxAdapter(
                             child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -340,7 +348,7 @@ class HomeAppBar extends StatelessWidget {
         },
       ),
       pinned: true,
-      //toolbarHeight: kToolbarHeight,
+      toolbarHeight: kToolbarHeight,
       // expandedHeight: kToolbarHeight,
       brightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.light
@@ -383,166 +391,3 @@ class HomePostList extends StatelessWidget {
     );
   }
 }
-
-// // ignore: must_be_immutable
-// class TopTabs extends StatefulWidget {
-//   int catagory;
-//   TopTabs({this.catagory});
-
-//   @override
-//   _TopTabsState createState() => _TopTabsState();
-// }
-
-// class _TopTabsState extends State<TopTabs> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverToBoxAdapter(
-//       child: Container(
-//         height: 40,
-//         child: Stack(
-//           children: [
-//             Center(
-//               child: Divider(
-//                 thickness: 2,
-//                 color: Colors.black,
-//               ),
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               children: [
-//                 SmallShadedContainer(
-//                   selected: widget.catagory == 1 ? true : false,
-//                   ontap: () {
-//                     if (widget.catagory != 1) {
-//                       setState(() {
-//                         widget.catagory = 1;
-//                       });
-//                     } else {
-//                       print("Already");
-//                     }
-//                   },
-//                   child: Text(
-//                     "Coplayer",
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//                 SmallShadedContainer(
-//                   selected: widget.catagory == 1 ? true : false,
-//                   ontap: () {
-//                     if (widget.catagory != 1) {
-//                       setState(() {
-//                         widget.catagory = 1;
-//                       });
-//                     } else {
-//                       print("Already");
-//                     }
-//                   },
-//                   child: Text(
-//                     "Cele",
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//                 SmallShadedContainer(
-//                   selected: widget.catagory == 4 ? true : false,
-//                   ontap: () {
-//                     if (widget.catagory != 4) {
-//                       setState(() {
-//                         widget.catagory = 4;
-//                       });
-//                     } else {
-//                       print("Already");
-//                     }
-//                   },
-//                   child: Text(
-//                     "Pro",
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//                 SmallShadedContainer(
-//                   selected: widget.catagory == 2 ? true : false,
-//                   ontap: () {
-//                     if (widget.catagory != 2) {
-//                       setState(() {
-//                         widget.catagory = 2;
-//                       });
-//                     } else {
-//                       print("Already");
-//                     }
-//                   },
-//                   child: Text(
-//                     "Streamer",
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // ignore: must_be_immutable
-// class MaleFamleTabs extends StatefulWidget {
-//   String gender;
-//   MaleFamleTabs({this.gender});
-//   @override
-//   _MaleFamleTabsState createState() => _MaleFamleTabsState();
-// }
-
-// class _MaleFamleTabsState extends State<MaleFamleTabs> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverToBoxAdapter(
-//       child: Container(
-//         decoration: BoxDecoration(
-//           border: Border(
-//             top: BorderSide(
-//               width: 2,
-//               color: Colors.black,
-//             ),
-//             bottom: BorderSide(
-//               width: 2,
-//               color: Colors.black,
-//             ),
-//           ),
-//         ),
-//         child: Padding(
-//           padding: EdgeInsets.only(top: 10, bottom: 15),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: [
-//               MediumShadedContainer(
-//                 selected: widget.gender == "Male" ? true : false,
-//                 ontap: () {
-//                   if (widget.gender != "Male") {
-//                     setState(() {
-//                       widget.gender = "Male";
-//                     });
-//                   }
-//                 },
-//                 child: Center(
-//                   child: Text("Male"),
-//                 ),
-//               ),
-//               MediumShadedContainer(
-//                 selected: widget.gender == "Female" ? true : false,
-//                 ontap: () {
-//                   if (widget.gender != "Female") {
-//                     setState(() {
-//                       widget.gender = "Female";
-//                     });
-//                   }
-//                 },
-//                 child: Center(
-//                   child: Text("Female"),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

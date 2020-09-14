@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 
 class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
-  bool nothome;
-  AppbarWidget({this.nothome = false});
-
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
@@ -18,12 +15,6 @@ class _AppbarWidgetState extends State<AppbarWidget> {
     return AppBar(
       backgroundColor: Colors.black,
       // toolbarHeight: kToolbarHeight - 10,
-      leading: widget.nothome
-          ? IconButton(
-              icon: Icon(Icons.backspace),
-              onPressed: () => Navigator.pop(context),
-            )
-          : Container(),
       actions: [
         AppbarLogo(),
       ],

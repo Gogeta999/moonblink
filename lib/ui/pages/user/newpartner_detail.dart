@@ -1,16 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/booking/booking.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
@@ -18,9 +15,8 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
-import 'package:moonblink/utils/platform_utils.dart';
+import 'package:moonblink/ui/pages/user/partner_gameprofile.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -46,6 +42,46 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     _refreshController.dispose();
     // _scrollController.dispose();
     super.dispose();
+  }
+
+  reportuser() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        width: 27,
+        height: 27,
+        child: IconButton(
+          splashRadius: 20,
+          icon: Icon(
+            Icons.more_vert,
+            size: 22,
+          ),
+          // iconSize: 18,
+          onPressed: () => CustomBottomSheet.showUserManageContent(
+              buildContext: context,
+              onReport: () async {
+                ///Reporting user
+                try {
+                  await MoonBlinkRepository.reportUser(widget.detailPageId);
+
+                  ///Api call success
+                  showToast(
+                      'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                  Navigator.pop(context);
+                } catch (e) {
+                  showToast('Sorry, $e');
+                }
+              },
+              onBlock: () async {
+                ///Blocking user
+                Navigator.pop(context);
+                Navigator.pop(
+                    context, widget.detailPageId); //result != null will block
+              },
+              onDismiss: () => print('Dismissing BottomSheet')),
+        ),
+      ),
+    );
   }
 
   userstatus(status) {
@@ -199,7 +235,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              height: 100,
+                              height: MediaQuery.of(context).size.height / 7.5,
+                              padding: EdgeInsets.only(top: 8),
                               decoration: BoxDecoration(
                                 border: Border(
                                   top:
@@ -212,16 +249,31 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                 children: [
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 2,
+                                        MediaQuery.of(context).size.width / 2.4,
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     // crossAxisAlignment:
                                     //     CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        partnerModel.partnerData.partnerName,
-                                        style: TextStyle(fontSize: 26),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2,
+                                            child: Center(
+                                              child: Text(
+                                                partnerModel
+                                                    .partnerData.partnerName,
+                                                style: TextStyle(fontSize: 26),
+                                              ),
+                                            ),
+                                          ),
+                                          if (ownId != widget.detailPageId)
+                                            reportuser(),
+                                        ],
                                       ),
                                       userstatus(
                                           partnerModel.partnerData.status)
@@ -366,10 +418,35 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       height: 20,
                     ),
                   ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: MBButtonWidget(
+                        title: "Game Profile",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PartnerGameProfilePage(
+                                gameprofile:
+                                    partnerModel.partnerData.gameprofile,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 20,
+                    ),
+                  ),
 
                   /// [user bio]
-                  SliverToBoxAdapter(
-                    child: Container(
+                  if (partnerModel.partnerData.prfoileFromPartner.bios != "")
+                    SliverToBoxAdapter(
+                      child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 100,
                         decoration: BoxDecoration(
@@ -383,8 +460,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             partnerModel.partnerData.prfoileFromPartner.bios,
                             style: Theme.of(context).textTheme.headline6,
                           ),
-                        )),
-                  ),
+                        ),
+                      ),
+                    ),
 
                   /// [user feed]
                   SliverToBoxAdapter(

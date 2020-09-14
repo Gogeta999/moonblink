@@ -99,9 +99,9 @@ class _ChatListPageState extends State<ChatListPage>
     super.build(context);
 
     return Scaffold(
-        appBar: AppbarWidget(),
-        body:
-            ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+      appBar: AppbarWidget(),
+      body: ScopedModelDescendant<ChatModel>(
+        builder: (context, child, model) {
           model.connection();
           chatlist = model.conversationlist();
           if (chatlist.isEmpty) {
@@ -159,6 +159,8 @@ class _ChatListPageState extends State<ChatListPage>
               },
             );
           }
-        }));
+        },
+      ),
+    );
   }
 }
