@@ -20,6 +20,8 @@ class PhotoBottomSheet extends StatefulWidget {
   final bool popAfterBtnPressed;
   final int minWidth;
   final int minHeight;
+  final bool willCrop;
+  final int compressQuality;
 
   const PhotoBottomSheet(
       {Key key,
@@ -31,7 +33,9 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.buttonText,
       @required this.popAfterBtnPressed,
       @required this.minWidth,
-      @required this.minHeight})
+      @required this.minHeight,
+      @required this.willCrop,
+      @required this.compressQuality})
       : super(key: key);
 
   @override
@@ -79,10 +83,9 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: FlatButton(
+                  child: CupertinoButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(G.of(context).cancel,
-                        style: Theme.of(context).textTheme.bodyText1),
+                    child: Text(G.of(context).cancel),
                   ),
                 ),
                 Expanded(
@@ -91,23 +94,26 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                     children: <Widget>[
                       if (_albums.isNotEmpty)
                         Text('${_albums[_currentAlbum].name}',
-                            style: Theme.of(context).textTheme.bodyText1),
+                            style: TextStyle(
+                                color: Theme.of(context).accentColor)),
                       SizedBox(height: 5),
                       Text('${widget.body}',
-                          style: Theme.of(context).textTheme.bodyText1)
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor))
                     ],
                   ),
                 ),
                 Expanded(
-                  child: FlatButton(
+                  child: CupertinoButton(
                     onPressed: () {
                       showModalBottomSheet<int>(
                           context: context,
-                          barrierColor: Colors.white.withOpacity(0.0),
+                          barrierColor: Colors.black.withOpacity(0.6),
                           isScrollControlled: true,
                           isDismissible: true,
                           builder: (context) {
                             return Container(
+                              color: Theme.of(context).scaffoldBackgroundColor,
                               height: MediaQuery.of(context).size.height * 0.9,
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
@@ -119,22 +125,19 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                                       children: <Widget>[
                                         Container(
                                           alignment: Alignment.centerLeft,
-                                          child: FlatButton(
+                                          child: CupertinoButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child: Text(G.of(context).cancel,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1),
+                                            child: Text(G.of(context).cancel),
                                           ),
                                         ),
                                         Container(
                                             alignment: Alignment.center,
                                             child: Text(
                                                 G.of(context).labelalbumselect,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1))
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .accentColor)))
                                       ],
                                     ),
                                   ),
@@ -179,8 +182,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(G.of(context).albums,
-                            style: Theme.of(context).textTheme.bodyText1),
+                        Text(G.of(context).albums),
                         SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_down)
                       ],
@@ -280,10 +282,10 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   // 2. compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 90,
-    );
+        file.absolute.path, targetPath,
+        quality: widget.compressQuality,
+        minWidth: widget.minWidth,
+        minHeight: widget.minHeight);
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -305,31 +307,29 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
         compressFormat: ImageCompressFormat.jpg,
         aspectRatioPresets: Platform.isAndroid
             ? [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ]
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
             : [
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio5x3,
-          CropAspectRatioPreset.ratio5x4,
-          CropAspectRatioPreset.ratio7x5,
-          CropAspectRatioPreset.ratio16x9
-        ],
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          showCancelConfirmationDialog: true
-        ));
+        iosUiSettings: IOSUiSettings(showCancelConfirmationDialog: true));
     if (croppedFile != null) {
       return croppedFile;
     } else {
@@ -343,14 +343,19 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       Navigator.pop(context);
     }
     File image = await _photoList[_selectedIndices.first].file;
-    File croppedImage = await _cropImage(image);
+    File croppedImage;
     File tempFile = await _getLocalFile();
-    File compressedImage = await _compressAndGetFile(croppedImage, tempFile.path);
+    if (widget.willCrop) {
+      croppedImage = await _cropImage(image);
+    }
+    File compressedImage =
+        await _compressAndGetFile(croppedImage ?? image, tempFile.path);
     print(image.lengthSync());
     print(compressedImage.lengthSync());
     if (compressedImage != null) {
       widget.onPressed(compressedImage);
     }
+    //tempFile.delete(recursive: true);
   }
 
   _fetchNewMedia() async {

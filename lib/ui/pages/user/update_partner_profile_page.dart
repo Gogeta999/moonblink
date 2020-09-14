@@ -37,8 +37,8 @@ class UpdatePartnerProfilePage extends StatefulWidget {
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _nameController = TextEditingController();
   final _biosController = TextEditingController();
-  final _mlIdController = TextEditingController();
-  final _pubgIdController = TextEditingController();
+  // final _mlIdController = TextEditingController();
+  // final _pubgIdController = TextEditingController();
   PartnerUser partnerData;
   File _cover;
   File _profile;
@@ -66,10 +66,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     );
     _biosController.value = _biosController.value
         .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
-    _mlIdController.value =
-        _mlIdController.value.copyWith(text: widget.partnerUser.mlplayerid);
-    _pubgIdController.value =
-        _pubgIdController.value.copyWith(text: widget.partnerUser.pubgplayerid);
+    // _mlIdController.value =
+    //     _mlIdController.value.copyWith(text: widget.partnerUser.mlplayerid);
+    // _pubgIdController.value =
+    //     _pubgIdController.value.copyWith(text: widget.partnerUser.pubgplayerid);
   }
 
   @override
@@ -216,21 +216,21 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       keyboardType: TextInputType.text,
                                     ),
                                     //ML id
-                                    LoginTextField(
-                                      label: G.of(context).labelmlid,
-                                      icon: FontAwesomeIcons.gamepad,
-                                      controller: _mlIdController,
-                                      textInputAction: TextInputAction.next,
-                                      keyboardType: TextInputType.number,
-                                    ),
-                                    //bios
-                                    LoginTextField(
-                                      label: G.of(context).labelpubgid,
-                                      icon: FontAwesomeIcons.gamepad,
-                                      controller: _pubgIdController,
-                                      textInputAction: TextInputAction.next,
-                                      keyboardType: TextInputType.number,
-                                    ),
+                                    // LoginTextField(
+                                    //   label: G.of(context).labelmlid,
+                                    //   icon: FontAwesomeIcons.gamepad,
+                                    //   controller: _mlIdController,
+                                    //   textInputAction: TextInputAction.next,
+                                    //   keyboardType: TextInputType.number,
+                                    // ),
+                                    // //bios
+                                    // LoginTextField(
+                                    //   label: G.of(context).labelpubgid,
+                                    //   icon: FontAwesomeIcons.gamepad,
+                                    //   controller: _pubgIdController,
+                                    //   textInputAction: TextInputAction.next,
+                                    //   keyboardType: TextInputType.number,
+                                    // ),
                                     SizedBox(
                                       height: 20,
                                     ),
@@ -269,10 +269,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                             filename: 'profile.jpg'),
                                     'name': _nameController.text,
                                     'bios': _biosController.text.toString(),
-                                    'ml_player_id':
-                                        _mlIdController.text.toString(),
-                                    'pubg_player_id':
-                                        _pubgIdController.text.toString()
+                                    // 'ml_player_id':
+                                    //     _mlIdController.text.toString(),
+                                    // 'pubg_player_id':
+                                    //     _pubgIdController.text.toString()
                                   });
                                   var response = await DioUtils().postwithData(
                                       Api.SetProfile + '$userid/profile',

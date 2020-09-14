@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
+import 'package:moonblink/utils/compress_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
@@ -483,17 +485,46 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   _onTapImage() {
     if (_isUILocked) return;
-    CustomBottomSheet.show(
-        buildContext: context,
-        limit: 1,
-        body: 'Skill Cover Photo',
-        onPressed: (File file) {
-          setState(() {
-            _skillCoverPhoto = file;
-          });
-        },
-        buttonText: 'Choose',
-        popAfterBtnPressed: true,
-        requestType: RequestType.image);
+    return showCupertinoDialog(
+      context: context,
+      builder: (builder) => CupertinoAlertDialog(
+        content: Text('Pick Image From'),
+        actions: <Widget>[
+          CupertinoButton(
+              child: Text('Gallery'),
+              onPressed: () {
+                CustomBottomSheet.show(
+                    buildContext: context,
+                    limit: 1,
+                    body: 'Skill Cover Photo',
+                    onPressed: (File file) {
+                      setState(() {
+                        _skillCoverPhoto = file;
+                      });
+                    },
+                    buttonText: 'Select',
+                    popAfterBtnPressed: true,
+                    requestType: RequestType.image, willCrop: false, compressQuality: 90);
+                Navigator.pop(context);
+              }),
+          CupertinoButton(
+            child: Text('Camera'),
+            onPressed: () => _pickImageFromCamera(),
+          ),
+          CupertinoButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  _pickImageFromCamera() async {
+    PickedFile pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
+    File compressedImage = await CompressUtils.compressAndGetFile(File(pickedFile.path), 90, 1080, 1080);
+    setState(() {
+      _skillCoverPhoto = compressedImage;
+    });
   }
 }

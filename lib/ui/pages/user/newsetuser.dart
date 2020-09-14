@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -20,8 +21,10 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -35,15 +38,11 @@ class SetPartnerProfilePage extends StatefulWidget {
 class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   bool finished = false;
   final _picker = ImagePicker();
-  String _filePath;
-  String _genderController;
-  List<String> genderList = ["Male", "Female"];
-  //final _phController = TextEditingController();
   final _nrcController = TextEditingController();
   final _biosController = TextEditingController();
   final _addressController = TextEditingController();
-  //final _mailController = TextEditingController();
   final _dobController = TextEditingController();
+  String _gender = '';
 
   @override
   void dispose() {
@@ -54,26 +53,46 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     super.dispose();
   }
 
-  File _cover;
-  File _profile;
+  // File _cover;
+  // File _profile;
   File _nrcFront;
   File _nrcBack;
 
-  bool male = false;
-  bool female = false;
+  // 2. compress file and get file.
+  Future<File> _compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path, targetPath,
+        quality: 70, minWidth: 500, minHeight: 500);
 
-  _pickNrcFromGallery(NrcType type) async {
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<File> _getLocalFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final filePath =
+        '$path/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpeg';
+    return File(filePath);
+  }
+
+  _pickNrcFromCamera(NrcType type) async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
+    File tempImage = await _getLocalFile();
+    File compressedImage =
+        await _compressAndGetFile(image, tempImage.absolute.path);
     switch (type) {
       case NrcType.front:
         setState(() {
-          _nrcFront = image;
+          _nrcFront = compressedImage;
         });
         return;
       case NrcType.back:
         setState(() {
-          _nrcBack = image;
+          _nrcBack = compressedImage;
         });
         return;
       default:
@@ -89,107 +108,32 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        physics: ClampingScrollPhysics(),
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: Colors.black,
-            actions: [
-              AppbarLogo(),
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: ProviderWidget<LoginModel>(
-              model: LoginModel(Provider.of(context)),
-              builder: (context, model, child) => Form(
-                onWillPop: () async {
-                  /*showDialog(
-                              context: context,
-                              builder: (context) => CupertinoAlertDialog(
-                                    title: Text(S
-                                        .of(context)
-                                        .setPartnerFillInformations),
-                                  ));
-                          return !model.isBusy;*/
-                  Navigator.pop(context);
-                  return false;
-                },
+      body: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          physics: ClampingScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.black,
+              actions: [
+                AppbarLogo(),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: ProviderWidget<LoginModel>(
+                model: LoginModel(Provider.of(context)),
+                builder: (context, model, child) => Form(
+                  onWillPop: () async {
+                    Navigator.pop(context);
+                    return false;
+                  },
 
-                /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      /// [You need to put before OnTap]
-                      onTap: () {
-                        // _pickCoverFromGallery();
-                        CustomBottomSheet.show(
-                            requestType: RequestType.image,
-                            popAfterBtnPressed: true,
-                            buttonText: G.of(context).choose,
-                            buildContext: context,
-                            limit: 1,
-                            onPressed: (File file) {
-                              setState(() {
-                                _cover = file;
-                              });
-                            },
-                            body: G.of(context).partnercover);
-                      },
-                      child: AspectRatio(
-                          aspectRatio: 100 / 100,
-                          child: PartnerCoverWidget(_cover)),
-                    ),
-
-                    /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 140.0),
-                      child: Container(
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: GestureDetector(
-                              /// [You need to put before OnTap]
-                              onTap: () {
-                                CustomBottomSheet.show(
-
-                                    ///profile is small
-                                    popAfterBtnPressed: true,
-                                    requestType: RequestType.image,
-                                    minWidth: 480,
-                                    minHeight: 480,
-                                    buttonText: G.of(context).choose,
-                                    buildContext: context,
-                                    limit: 1,
-                                    onPressed: (File file) {
-                                      setState(() {
-                                        _profile = file;
-                                      });
-                                    },
-                                    body: G.of(context).partnerprofile);
-                              },
-                              child: CircleAvatar(
-                                radius: 75,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: ClipOval(
-                                  child: new SizedBox(
-                                    width: 150.0,
-                                    height: 150.0,
-                                    child: PartnerProfileWidget(_profile),
-                                  ),
-                                ),
-                              ),
-                            )),
-                      ),
-                    ),
-
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
+                  /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
+                  child: Column(
+                    children: <Widget>[
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            height: 270,
-                          ),
                           LoginFormContainer(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -239,26 +183,28 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     ShadedContainer(
-                                      selected: male,
+                                      selected: _gender.isNotEmpty &&
+                                              _gender == 'Male'
+                                          ? true
+                                          : false,
                                       ontap: () {
                                         setState(() {
-                                          male = true;
-                                          female = false;
-                                          _genderController = "Male";
+                                          _gender = 'Male';
                                         });
                                       },
-                                      child: Text("Male"),
+                                      child: Text('Male'),
                                     ),
                                     ShadedContainer(
-                                      selected: female,
+                                      selected: _gender.isNotEmpty &&
+                                              _gender == 'Female'
+                                          ? true
+                                          : false,
                                       ontap: () {
                                         setState(() {
-                                          male = false;
-                                          female = true;
-                                          _genderController = "Female";
+                                          _gender = 'Female';
                                         });
                                       },
-                                      child: Text("Female"),
+                                      child: Text('Female'),
                                     )
                                   ],
                                 ),
@@ -299,8 +245,8 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       ),
                                       Expanded(
                                         child: InkResponse(
-                                          onTap: () => _pickNrcFromGallery(
-                                              NrcType.front),
+                                          onTap: () =>
+                                              _showSelectImageOptions(context, NrcType.front),
                                           child: Column(
                                             children: <Widget>[
                                               Container(
@@ -342,18 +288,18 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       Expanded(
                                         child: InkResponse(
                                           onTap: () =>
-                                              _pickNrcFromGallery(NrcType.back),
+                                              _showSelectImageOptions(context, NrcType.back),
                                           child: Column(
                                             children: <Widget>[
                                               Container(
                                                 height: 120,
                                                 child: _nrcBack == null
                                                     ? Icon(
-                                                        FontAwesomeIcons
-                                                            .solidAddressCard,
-                                                        size: 120,
-                                                        color: Theme.of(context)
-                                                            .accentColor)
+                                                    FontAwesomeIcons
+                                                        .solidAddressCard,
+                                                    size: 120,
+                                                    color: Theme.of(context)
+                                                        .accentColor)
                                                     : Image.file(_nrcBack),
                                               ),
                                               SizedBox(height: 5),
@@ -381,82 +327,125 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                         .accentTextTheme
                                         .button
                                         .copyWith(wordSpacing: 6)),
-                            ontap: () async {
-                              if (_cover == null || _profile == null) {
-                                showToast(G.of(context).toastimagenull);
-                                return false;
-                              } else if (_nrcFront == null ||
-                                  _nrcBack == null) {
-                                showToast(G.of(context).toastnrcnull);
-                                return false;
-                              } else if (_nrcController == null ||
-                                  _genderController == null ||
-                                  _dobController == null ||
-                                  _addressController == null) {
-                                showToast(G.of(context).toastlackfield);
-                                return false;
-                              } else {
-                                setState(() {
-                                  finished = !finished;
-                                });
-                                var userid = StorageManager.sharedPreferences
-                                    .getInt(mUserId);
-                                var coverPath = _cover.absolute.path;
-                                var profilePath = _profile.absolute.path;
-                                FormData formData = FormData.fromMap({
-                                  'cover_image': await MultipartFile.fromFile(
-                                    coverPath,
-                                    filename: 'cover.jpg',
-                                  ),
-                                  'profile_image': await MultipartFile.fromFile(
-                                      profilePath,
-                                      filename: 'profile.jpg'),
-                                  'nrc_front_image':
-                                      await MultipartFile.fromFile(
-                                          _nrcFront.absolute.path,
-                                          filename: 'nrc_front_image.jpg'),
-                                  'nrc_back_image':
-                                      await MultipartFile.fromFile(
-                                          _nrcBack.absolute.path,
-                                          filename: 'nrc_back_image.jpg'),
-                                  'nrc': _nrcController.text.toString(),
-                                  //'mail': _mailController.text.toString(),
-                                  'gender': _genderController.toString(),
-                                  'dob': _dobController.text.toString(),
-                                  //'phone': _phController.text.toString(),
-                                  'bios': _biosController.text.toString(),
-                                  'address': _addressController.text.toString()
-                                });
-
-                                var response = await DioUtils().postwithData(
-                                    Api.SetProfile + '$userid/profile',
-                                    data: formData,
-                                    options: Options(
-                                      sendTimeout: 25 * 1000,
-                                      receiveTimeout: 25 * 1000,
-                                    ));
-                                print('PRINTED $response');
-                                print("+++++++++++++++++++++++++++++++++++++");
-                                setState(() {
-                                  finished = !finished;
-                                });
-                                print(
-                                    "----------------------------------------------------");
-                                model.logout();
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    RouteName.splash, (route) => false);
-                                return User.fromJsonMap(response.data);
-                              }
-                            },
+                            ontap: () => _onTapUploadProfile(model),
                           ),
+                          _space,
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _onTapUploadProfile(LoginModel model) async {
+    // if (_cover == null || _profile == null) {
+    //   showToast(G.of(context).toastimagenull);
+    //   return false;
+    // } else
+    if (_nrcFront == null || _nrcBack == null) {
+      showToast(G.of(context).toastnrcnull);
+      return false;
+    } else if (_gender.isEmpty) {
+      showToast('Gender can\'t be blank');
+      return false;
+    } else if (_nrcController == null ||
+        _dobController == null ||
+        _addressController == null) {
+      showToast(G.of(context).toastlackfield);
+      return false;
+    } else {
+      setState(() {
+        finished = !finished;
+      });
+      var userid = StorageManager.sharedPreferences
+          .getInt(mUserId);
+      // var coverPath = _cover.absolute.path;
+      // var profilePath = _profile.absolute.path;
+      FormData formData = FormData.fromMap({
+        // 'cover_image': await MultipartFile.fromFile(
+        //   coverPath,
+        //   filename: 'cover.jpg',
+        // ),
+        // 'profile_image': await MultipartFile.fromFile(
+        //     profilePath,
+        //     filename: 'profile.jpg'),
+        'nrc_front_image':
+        await MultipartFile.fromFile(
+            _nrcFront.absolute.path,
+            filename: 'nrc_front_image.jpg'),
+        'nrc_back_image':
+        await MultipartFile.fromFile(
+            _nrcBack.absolute.path,
+            filename: 'nrc_back_image.jpg'),
+        'nrc': _nrcController.text.toString(),
+        'gender': _gender,
+        'dob': _dobController.text.toString(),
+        'bios': _biosController.text.toString(),
+        'address': _addressController.text.toString()
+      });
+
+      var response = await DioUtils().postwithData(
+          Api.SetProfile + '$userid/profile',
+          data: formData,
+          options: Options(
+            sendTimeout: 25 * 1000,
+            receiveTimeout: 25 * 1000,
+          ));
+      print('PRINTED $response');
+      print("+++++++++++++++++++++++++++++++++++++");
+      setState(() {
+        finished = !finished;
+      });
+      print(
+          "----------------------------------------------------");
+      model.logout();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          RouteName.splash, (route) => false);
+      return User.fromJsonMap(response.data);
+    }
+  }
+
+  _showSelectImageOptions(BuildContext context, NrcType type) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (builder) => CupertinoAlertDialog(
+        content: Text('Pick Image From'),
+        actions: <Widget>[
+          CupertinoButton(
+              child: Text('Gallery'),
+              onPressed: () {
+                CustomBottomSheet.show(
+                    buildContext: context,
+                    limit: 1,
+                    body: 'Pick NRC',
+                    onPressed: (File file) {
+                      setState(() {
+                        type == NrcType.front ? _nrcFront = file : _nrcBack = file;
+                      });
+                    },
+                    buttonText: 'Select',
+                    popAfterBtnPressed: true,
+                    requestType: RequestType.image,
+                    minWidth: 500,
+                    minHeight: 500,
+                    willCrop: false,
+                    compressQuality: 70);
+                Navigator.pop(context);
+              }),
+          CupertinoButton(
+            child: Text('Camera'),
+            onPressed: () => _pickNrcFromCamera(type),
           ),
+          CupertinoButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          )
         ],
       ),
     );
@@ -464,42 +453,42 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
 }
 
 ///[Change Image.file (ImagePicker get File format)]
-class PartnerCoverWidget extends StatelessWidget {
-  PartnerCoverWidget(this.cover);
-  final cover;
-  @override
-  Widget build(BuildContext context) {
-    if (this.cover == null) {
-      return Image.asset(
-        ImageHelper.wrapAssetsImage('defaultBackground.jpg'),
-        fit: BoxFit.cover,
-      );
-    } else {
-      return Image.file(
-        cover,
-        filterQuality: FilterQuality.high,
-        fit: BoxFit.cover,
-      );
-    }
-  }
-}
-
-///[Change Image.file (ImagePicker get File format)]
-class PartnerProfileWidget extends StatelessWidget {
-  PartnerProfileWidget(this.profile);
-  final profile;
-  @override
-  Widget build(BuildContext context) {
-    if (this.profile == null) {
-      return Image.asset(
-        ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg'),
-        fit: BoxFit.fill,
-      );
-    } else {
-      return Image.file(
-        this.profile,
-        fit: BoxFit.fill,
-      );
-    }
-  }
-}
+// class PartnerCoverWidget extends StatelessWidget {
+//   PartnerCoverWidget(this.cover);
+//   final cover;
+//   @override
+//   Widget build(BuildContext context) {
+//     if (this.cover == null) {
+//       return Image.asset(
+//         ImageHelper.wrapAssetsImage('defaultBackground.jpg'),
+//         fit: BoxFit.cover,
+//       );
+//     } else {
+//       return Image.file(
+//         cover,
+//         filterQuality: FilterQuality.high,
+//         fit: BoxFit.cover,
+//       );
+//     }
+//   }
+// }
+//
+// ///[Change Image.file (ImagePicker get File format)]
+// class PartnerProfileWidget extends StatelessWidget {
+//   PartnerProfileWidget(this.profile);
+//   final profile;
+//   @override
+//   Widget build(BuildContext context) {
+//     if (this.profile == null) {
+//       return Image.asset(
+//         ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg'),
+//         fit: BoxFit.fill,
+//       );
+//     } else {
+//       return Image.file(
+//         this.profile,
+//         fit: BoxFit.fill,
+//       );
+//     }
+//   }
+// }

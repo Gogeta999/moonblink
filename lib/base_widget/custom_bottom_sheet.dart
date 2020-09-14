@@ -39,6 +39,8 @@ class CustomBottomSheet {
       @required String buttonText,
       @required bool popAfterBtnPressed,
       @required RequestType requestType,
+      @required bool willCrop,
+      @required int compressQuality,
       int minWidth = 1080,
       int minHeight = 1080,
       Function onInit,
@@ -53,12 +55,12 @@ class CustomBottomSheet {
       }
       showModalBottomSheet(
           context: buildContext,
-          barrierColor: Colors.white.withOpacity(0.15),
+          barrierColor: Colors.black.withOpacity(0.6),
           isDismissible: true,
           isScrollControlled: true,
           builder: (context) => DraggableScrollableSheet(
                 expand: false,
-                initialChildSize: 0.4,
+                initialChildSize: 0.5,
                 maxChildSize: 0.90,
                 builder: (context, scrollController) {
                   return CircularBottomSheet(
@@ -73,6 +75,8 @@ class CustomBottomSheet {
                       buttonText: buttonText,
                       minWidth: minWidth,
                       minHeight: minHeight,
+                      willCrop: willCrop,
+                      compressQuality: compressQuality,
                     ),
                   );
                 },
@@ -109,7 +113,7 @@ class CustomBottomSheet {
       }
       showModalBottomSheet(
           context: buildContext,
-          barrierColor: Colors.white.withOpacity(0.15),
+          barrierColor: Colors.black.withOpacity(0.6),
           isDismissible: true,
           isScrollControlled: true,
           builder: (context) => DraggableScrollableSheet(
@@ -147,7 +151,7 @@ class CustomBottomSheet {
       Function onDismiss}) async {
     showModalBottomSheet(
         context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.15),
+        barrierColor: Colors.black.withOpacity(0.6),
         isDismissible: true,
         builder: (context) => CircularBottomSheet(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -174,7 +178,7 @@ class CustomBottomSheet {
       Function onDismiss}) {
     showModalBottomSheet(
         context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.15),
+        barrierColor: Colors.black.withOpacity(0.6),
         isDismissible: true,
         builder: (context) => CircularBottomSheet(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -200,7 +204,7 @@ class CustomBottomSheet {
       Function onDismiss}) {
     showModalBottomSheet(
         context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.15),
+        barrierColor: Colors.black.withOpacity(0.6),
         isDismissible: true,
         builder: (context) => Provider.value(
               value: model,
@@ -223,8 +227,8 @@ class CustomBottomSheet {
       {@required BuildContext buildContext, Function onDismiss}) {
     return showModalBottomSheet(
         context: buildContext,
-        barrierColor: Colors.white.withOpacity(0.15),
-        isDismissible: false,
+        barrierColor: Colors.black.withOpacity(0.6),
+        isDismissible: true,
         builder: (context) => CircularBottomSheet(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: TopUpBottomSheet())).whenComplete(() {
