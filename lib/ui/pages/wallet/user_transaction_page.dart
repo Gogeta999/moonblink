@@ -85,7 +85,8 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
                 );
               }
               return ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics())),
                 itemBuilder: (BuildContext context, int index) {
                   return index >= state.data.length
                       ? BottomLoader()

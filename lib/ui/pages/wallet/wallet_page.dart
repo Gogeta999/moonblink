@@ -10,6 +10,7 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Emulators are always treated as test devices
@@ -196,19 +197,18 @@ class _WalletPageState extends State<WalletPage> {
                         height: 3,
                         color: Colors.grey,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Text(
-                          "Top Up History",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
                     ],
                   ),
                 )
               ],
             ),
           ),
+          SliverToBoxAdapter(
+            child: Container(margin: const EdgeInsets.only(top: 20),child: Text('Top Up History', textAlign: TextAlign.center, style: TextStyle(fontSize: 18))),
+          ),
+          SliverToBoxAdapter(
+            child: UserTransactionPage(),
+          )
         ],
       ),
     );
