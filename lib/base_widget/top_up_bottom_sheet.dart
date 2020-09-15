@@ -159,11 +159,13 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
       children.addAll([
         Divider(),
         ShadedContainer(
-          child: Row(children: <Widget>[
+          child: Column(children: <Widget>[
             Text('Not connected',
                 style: TextStyle(color: ThemeData.light().errorColor)),
             const Text(
-                'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.')
+              'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.',
+              softWrap: true,
+            )
           ]),
         ),
       ]);
@@ -318,14 +320,13 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     }
 
     return WillPopScope(
-      onWillPop: () async{
-        Navigator.pop(context);
-        return false;
-      },
-      child: Stack(
-        children: stack,
-      )
-    );
+        onWillPop: () async {
+          Navigator.pop(context);
+          return false;
+        },
+        child: Stack(
+          children: stack,
+        ));
   }
 
   userTopUp(String productId) async {

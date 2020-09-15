@@ -402,10 +402,26 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     print(file);
     return Container(
-      height: 100,
-      width: 100,
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).accentColor
+            // ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      constraints: BoxConstraints(
+          // minHeight: MediaQuery.of(context).size.height / 8,
+          maxHeight: MediaQuery.of(context).size.height / 3,
+          // minWidth: MediaQuery.of(context).size.width / 8,
+          maxWidth: MediaQuery.of(context).size.width / 2),
       child: GestureDetector(
-        child: Image.memory(file, fit: BoxFit.fill),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.memory(
+            file,
+          ),
+        ),
         onTap: () {
           Navigator.push(
               context,
@@ -426,19 +442,38 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build image
   buildimage(Message msg) {
     return Container(
-      height: 100,
-      width: 100,
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).accentColor
+            // ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      constraints: BoxConstraints(
+          // minHeight: MediaQuery.of(context).size.height / 8,
+          maxHeight: MediaQuery.of(context).size.height / 3,
+          // minWidth: MediaQuery.of(context).size.width / 8,
+          maxWidth: MediaQuery.of(context).size.width / 2),
+      // height: 100,
+      // width: 100,
       child: GestureDetector(
-        child: Image.network(msg.attach,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.network(
+            msg.attach,
             loadingBuilder: (context, child, progress) {
-          return progress == null ? child : ButtonProgressIndicator();
-        }, fit: BoxFit.fill),
+              return progress == null ? child : ButtonProgressIndicator();
+            },
+          ),
+        ),
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ImageView(msg.attach),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageView(msg.attach),
+            ),
+          );
         },
       ),
     );

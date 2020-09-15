@@ -196,79 +196,65 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                               return Column(
                                 children: <Widget>[
                                   InkWell(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.grey
-                                                  : Colors.black,
-                                            ),
-                                            bottom: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.grey
-                                                  : Colors.black,
-                                            ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          top: BorderSide(
+                                            width: 2,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.grey
+                                                    : Colors.black,
                                           ),
-                                        ),
-                                        constraints: BoxConstraints(
-                                            minHeight: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                2.5,
-                                            maxHeight: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                1.5,
-                                            minWidth: double.infinity,
-                                            maxWidth: double.infinity),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.fill,
-                                          imageUrl: widget.posts.coverImage,
-                                          placeholder: (context, url) =>
-                                              CachedLoader(
-                                            containerHeight: 200,
+                                          bottom: BorderSide(
+                                            width: 2,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.grey
+                                                    : Colors.black,
                                           ),
-                                          errorWidget: (context, url, error) =>
-                                              CachedError(
-                                            containerHeight: 200,
-                                          ),
-                                          // errorWidget: (context, url, error) => Container(
-                                          //   color: Colors.grey.shade600,
-                                          //   child: IconButton(
-                                          //     onPressed: () {
-                                          //       print('Reload');
-                                          //       setState(() {
-                                          //         _coverUrl = widget.posts.coverImage;
-                                          //       });
-                                          //     },
-                                          //     icon: Icon(
-                                          //       Icons.refresh,
-                                          //       color: Colors.grey.shade300,
-                                          //     ),
-                                          //   ),
-                                          // ),
                                         ),
                                       ),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) => ImageView(
-                                                    widget.posts.coverImage)));
-                                        print('object');
-                                      },
-                                      onDoubleTap: widget.posts.isReacted == 0
-                                          ? () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 1)
-                                                  .then((value) {
+                                      constraints: BoxConstraints(
+                                          minHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              2.5,
+                                          maxHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              1.5,
+                                          minWidth: double.infinity,
+                                          maxWidth: double.infinity),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.fill,
+                                        imageUrl: widget.posts.coverImage,
+                                        placeholder: (context, url) =>
+                                            CachedLoader(
+                                          containerHeight: 200,
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            CachedError(
+                                          containerHeight: 200,
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => ImageView(
+                                                  widget.posts.coverImage)));
+                                      print('object');
+                                    },
+                                    onDoubleTap: widget.posts.isReacted == 0
+                                        ? () {
+                                            reactModel
+                                                .reactProfile(
+                                                    widget.posts.userID, 1)
+                                                .then(
+                                              (value) {
                                                 if (value) {
                                                   showToast(G
                                                       .of(context)
@@ -282,28 +268,35 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                                   reactModel.showErrorMessage(
                                                       context);
                                                 }
-                                              });
-                                            }
-                                          : () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.userID, 0)
-                                                  .then((value) {
+                                              },
+                                            );
+                                          }
+                                        : () {
+                                            reactModel
+                                                .reactProfile(
+                                                    widget.posts.userID, 0)
+                                                .then(
+                                              (value) {
                                                 if (value) {
                                                   showToast(G
                                                       .of(context)
                                                       .toastunlikesuccess);
-                                                  setState(() {
-                                                    widget.posts.isReacted = 0;
-                                                    widget.posts
-                                                        .reactionCount -= 1;
-                                                  });
+                                                  setState(
+                                                    () {
+                                                      widget.posts.isReacted =
+                                                          0;
+                                                      widget.posts
+                                                          .reactionCount -= 1;
+                                                    },
+                                                  );
                                                 } else {
                                                   reactModel.showErrorMessage(
                                                       context);
                                                 }
-                                              });
-                                            }),
+                                              },
+                                            );
+                                          },
+                                  ),
 
                                   /// [User_bottom data]
                                   Container(

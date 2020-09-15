@@ -12,7 +12,7 @@ import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -26,7 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
-  final PartnerUser partnerUser;
+  final OwnProfile partnerUser;
   UpdatePartnerProfilePage({Key key, @required this.partnerUser})
       : super(key: key);
 
@@ -40,7 +40,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   final _biosController = TextEditingController();
   // final _mlIdController = TextEditingController();
   // final _pubgIdController = TextEditingController();
-  PartnerUser partnerData;
+  OwnProfile partnerData;
   File _cover;
   File _profile;
   bool finish = false;
@@ -160,7 +160,8 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         },
                                         body: G.of(context).partnerprofile,
                                         willCrop: true,
-                                        compressQuality: NORMAL_COMPRESS_QUALITY);
+                                        compressQuality:
+                                            NORMAL_COMPRESS_QUALITY);
                                   },
                                   child: CircleAvatar(
                                     radius: 75,

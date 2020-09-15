@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 
 class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
+  final Widget title;
+  AppbarWidget({this.title});
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
@@ -14,6 +16,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.black,
+      title: widget.title == null ? Container() : widget.title,
       // toolbarHeight: kToolbarHeight - 10,
       actions: [
         AppbarLogo(),
