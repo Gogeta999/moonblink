@@ -8,9 +8,12 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/contact_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -32,6 +35,16 @@ class _ContactsPageState extends State<ContactsPage> {
       RefreshController(initialRefresh: false);
   TextEditingController searchController = TextEditingController();
 
+  ContactModel _contactModel;
+  bool isBlocking = false;
+
+  @override
+  initState(){
+    _contactModel = ContactModel();
+    super.initState();
+  }
+
+
   ///[Tiles]
   filterList() {
     List<Contact> users = List();
@@ -47,7 +60,7 @@ class _ContactsPageState extends State<ContactsPage> {
       items.add(Column(children: <Widget>[
         Card(
           // color: Theme.of(context).cardColor,
-          child: ListTile(
+          child: isBlocking ? CupertinoActivityIndicator() : ListTile(
             leading: CachedNetworkImage(
               imageUrl: user.contactUser.contactUserProfile,
               imageBuilder: (context, imageProvider) => CircleAvatar(
@@ -71,10 +84,32 @@ class _ContactsPageState extends State<ContactsPage> {
             title: Text(user.contactUser.contactUserName),
             onTap: () {
               int detailPageId = user.contactUser.contactUserId;
+              int index = users.indexOf(user);
+              print(index);
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PartnerDetailPage(detailPageId)));
+                      builder: (context) => PartnerDetailPage(detailPageId))).then((value) async {
+                        if (value != null) {
+                          setState(() {
+                            isBlocking = true;
+                          });
+
+                          ///Block Uesrs
+                          try {
+                            await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
+                            await _contactModel.initData();
+                            setState(() {
+                              isBlocking = false;
+                            });
+                          } catch (e) {
+                            print(e.toString());
+                            setState(() {
+                              isBlocking = false;
+                            });
+                          }
+                        }
+              });
             },
           ),
         ),
@@ -93,7 +128,7 @@ class _ContactsPageState extends State<ContactsPage> {
       ///[Appbar]
       appBar: AppbarWidget(),
       body: ProviderWidget<ContactModel>(
-        model: ContactModel(),
+        model: _contactModel,
         onModelReady: (model) => model.initData(),
         builder: (context, contactModel, child) {
           if (contactModel.isBusy &&
@@ -154,6 +189,8 @@ class _ContactsPageState extends State<ContactsPage> {
           }
           print(contactModel.list.length);
           // print(model.list);
+          contacts.clear();
+          items.clear();
           for (var i = 0; i < contactModel.list.length; i++) {
             contact = contactModel.list[i];
             contacts.add(contact);
