@@ -43,7 +43,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
     super.initState();
   }
 
-  Widget postprofile(homeModel) {
+  Widget postprofile(HomeModel homeModel) {
     return CachedNetworkImage(
       imageUrl: widget.posts.profileImage,
       imageBuilder: (context, imageProvider) => Padding(
