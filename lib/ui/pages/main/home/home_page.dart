@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
@@ -347,6 +348,7 @@ class HomeAppBar extends StatelessWidget {
       ///[Appbar]
       backgroundColor: Colors.black,
       leading: IconButton(
+        // icon: Icon(FontAwesomeIcons.search),
         icon: SvgPicture.asset(
           search,
           color: Theme.of(context).accentColor,

@@ -149,7 +149,7 @@ class _MainTabPageState extends State<MainTabPage>
             CustomNavigationBarItem(
               icon: SvgPicture.asset(
                 home,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).iconTheme.color,
                 semanticsLabel: 'home',
                 width: 30,
                 height: 30,
@@ -165,7 +165,7 @@ class _MainTabPageState extends State<MainTabPage>
             CustomNavigationBarItem(
               icon: SvgPicture.asset(
                 chat,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).iconTheme.color,
                 semanticsLabel: 'messages',
                 width: 30,
                 height: 30,
@@ -174,7 +174,7 @@ class _MainTabPageState extends State<MainTabPage>
             CustomNavigationBarItem(
               icon: SvgPicture.asset(
                 following,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).iconTheme.color,
                 semanticsLabel: 'following',
                 width: 30,
                 height: 30,
@@ -183,7 +183,7 @@ class _MainTabPageState extends State<MainTabPage>
             CustomNavigationBarItem(
               icon: SvgPicture.asset(
                 user,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).iconTheme.color,
                 semanticsLabel: 'user',
                 width: 30,
                 height: 30,
@@ -198,36 +198,6 @@ class _MainTabPageState extends State<MainTabPage>
             });
           },
         ),
-        // FancyBottomNavigation(
-        //   tabs: [
-        //     TabData(
-        //         iconData: IconFonts.homePageIcon, title: G.of(context).tabHome),
-        //     TabData(
-        //         iconData: IconFonts.chatPageIcon, title: G.of(context).tabChat),
-        //     TabData(
-        //         iconData: IconFonts.followingPageIcon,
-        //         title: G.of(context).tabFollowing),
-        //     TabData(
-        //         iconData: IconFonts.statusPageIcon,
-        //         title: G.of(context).tabUser),
-        //   ],
-        //   initialSelection: initPage,
-        //   // inactiveIconSize: 30,
-        //   // circleOutline: 10,
-        //   circleHeight: 50,
-        //   arcHeight: 55,
-        //   arcWidth: 80,
-        //   // activeIconSize: 00,
-        //   shadowAllowance: 18,
-        //   activeIconColor: Colors.white,
-        //   barHeight: 53,
-        //   pageController: _pageController,
-        //   circleColor: Theme.of(context).accentColor,
-        //   onTabChangedListener: (index) {
-        //     _pageController.animateTo(MediaQuery.of(context).size.width * index,
-        //         duration: Duration(milliseconds: 10), curve: Curves.ease);
-        //   },
-        // ),
       ),
     );
   }
