@@ -51,77 +51,73 @@ class _UserStatusPageState extends State<UserStatusPage> {
     var userName = StorageManager.sharedPreferences.getString(mLoginName);
     int userid = StorageManager.sharedPreferences.getInt(mUserId);
     return Column(
-      children: <Widget>[
-        Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Divider(
+              thickness: 2,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey
+                  : Colors.black),
+        ),
+        Center(
+          child: Text(
+            userName,
+            style: TextStyle(
+                fontSize: 26,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Divider(
-                  thickness: 2,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey
-                      : Colors.black),
+            IconButton(
+              icon: Icon(Icons.content_copy),
+              iconSize: 18,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+              onPressed: () {
+                String id = encrypt(userid);
+                FlutterClipboard.copy(id).then((value) {
+                  showToast('Copy To Your Clipboard');
+                  print('copied');
+                });
+              },
             ),
-            Center(
-              child: Text(
-                userName,
-                style: TextStyle(
-                    fontSize: 26,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  iconSize: 18,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                  onPressed: () {
-                    String id = encrypt(userid);
-                    FlutterClipboard.copy(id).then((value) {
-                      showToast('Copy To Your Clipboard');
-                      print('copied');
-                    });
-                  },
-                ),
-                Text(":copy ID Here")
-              ],
-            ),
-            if (hasUser)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.coins,
-                    color: Colors.amber[500],
-                    size: 20,
-                  ),
-                  SizedBox(width: 5.0),
-                  Text(
-                      '${G.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
-                      style: TextStyle(fontSize: 16)),
-                ],
-              ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: Material(
-                shadowColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.white24
-        : Colors.black54,
-                elevation: 8,
-                child: Divider(
-                    thickness: 2,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey
-                        : Colors.black),
-              ),
-            ),
+            Text(":copy ID Here")
           ],
+        ),
+        if (hasUser)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                FontAwesomeIcons.coins,
+                color: Colors.amber[500],
+                size: 20,
+              ),
+              SizedBox(width: 5.0),
+              Text(
+                  '${G.of(context).currentcoin} : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                  style: TextStyle(fontSize: 16)),
+            ],
+          ),
+        Container(
+          margin: const EdgeInsets.only(top: 10),
+          child: Material(
+            shadowColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.white24
+    : Colors.black54,
+            elevation: 8,
+            child: Divider(
+                thickness: 2,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey
+                    : Colors.black),
+          ),
         ),
       ],
     );
@@ -160,7 +156,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 children: [
                   UserStatusCurve(),
                   Padding(
-                    padding: const EdgeInsets.only(top: 70),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
                     child: UserHeaderWidget(),
                   ),
                 ],
