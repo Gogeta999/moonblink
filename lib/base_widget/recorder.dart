@@ -5,12 +5,14 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+final String microphone = 'assets/icons/microphone.svg';
 
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
@@ -140,11 +142,12 @@ class _VoicemsgState extends State<Voicemsg> {
           height: 30,
           width: 30,
           child: GestureDetector(
-            child: Icon(
-              IconFonts.voieMsgIcon,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.white,
+            child: SvgPicture.asset(
+              microphone,
+              color: Colors.white,
+              semanticsLabel: 'user',
+              width: 30,
+              height: 30,
             ),
             onTap: () async {
               await _init();

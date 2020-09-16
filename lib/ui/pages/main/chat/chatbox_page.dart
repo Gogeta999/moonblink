@@ -4,13 +4,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
-import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -38,6 +38,9 @@ import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
+
+final String camera = 'assets/icons/camera.svg';
+final String microphone = 'assets/icons/microphone.svg';
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -225,75 +228,76 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   void rating(bookingid) {
     var rate = 5.0;
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ProviderWidget<RateModel>(
-              model: RateModel(),
-              builder: (context, model, child) {
-                return new AlertDialog(
-                  title: Text(G.of(context).pleaseRatingForThisGame),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  content: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SmoothStarRating(
-                        starCount: 5,
-                        rating: rate,
-                        color: Theme.of(context).accentColor,
-                        isReadOnly: false,
-                        size: 30,
-                        filledIconData: Icons.star,
-                        halfFilledIconData: Icons.star_half,
-                        defaultIconData: Icons.star_border,
-                        allowHalfRating: true,
-                        spacing: 2.0,
-                        //star value
-                        onRated: (value) {
-                          print("rating value -> $value");
-                          setState(() {
-                            rate = value;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      //Comment for Rating
-                      Container(
-                          margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.5, color: Colors.grey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
-                          ),
-                          child: TextField(
-                            controller: comment,
-                            textInputAction: TextInputAction.done,
-                            decoration: InputDecoration(
-                              labelText: G.of(context).labelcomment,
-                            ),
-                          ))
-                    ],
+      context: context,
+      builder: (BuildContext context) {
+        return ProviderWidget<RateModel>(
+          model: RateModel(),
+          builder: (context, model, child) {
+            return new AlertDialog(
+              title: Text(G.of(context).pleaseRatingForThisGame),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SmoothStarRating(
+                    starCount: 5,
+                    rating: rate,
+                    color: Theme.of(context).accentColor,
+                    isReadOnly: false,
+                    size: 30,
+                    filledIconData: Icons.star,
+                    halfFilledIconData: Icons.star_half,
+                    defaultIconData: Icons.star_border,
+                    allowHalfRating: true,
+                    spacing: 2.0,
+                    //star value
+                    onRated: (value) {
+                      print("rating value -> $value");
+                      setState(() {
+                        rate = value;
+                      });
+                    },
                   ),
-                  //Summit Rating
-                  actions: [
-                    FlatButton(
-                        child: Text(G.of(context).submit),
-                        onPressed: () {
-                          model
-                              .rate(widget.detailPageId, bookingid, rate,
-                                  comment.text)
-                              .then((value) => value
-                                  ? Navigator.pop(context)
-                                  : showToast(G.of(context).toastratingfail));
-                        })
-                  ],
-                );
-              });
-        });
+                  SizedBox(
+                    height: 30,
+                  ),
+                  //Comment for Rating
+                  Container(
+                      margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                      ),
+                      child: TextField(
+                        controller: comment,
+                        textInputAction: TextInputAction.done,
+                        decoration: InputDecoration(
+                          labelText: G.of(context).labelcomment,
+                        ),
+                      ))
+                ],
+              ),
+              //Summit Rating
+              actions: [
+                FlatButton(
+                    child: Text(G.of(context).submit),
+                    onPressed: () {
+                      model
+                          .rate(widget.detailPageId, bookingid, rate,
+                              comment.text)
+                          .then((value) => value
+                              ? Navigator.pop(context)
+                              : showToast(G.of(context).toastratingfail));
+                    })
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   //accept button
@@ -463,7 +467,12 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           child: Image.network(
             msg.attach,
             loadingBuilder: (context, child, progress) {
-              return progress == null ? child : ButtonProgressIndicator();
+              return progress == null
+                  ? child
+                  : Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text("Downloading Image"),
+                    );
             },
           ),
         ),
@@ -487,7 +496,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //image pick
   Widget imagepick(model, id) {
     return IconButton(
-      icon: Icon(FontAwesomeIcons.image),
+      icon: SvgPicture.asset(
+        camera,
+        color: Colors.white,
+        semanticsLabel: 'camera',
+        width: 30,
+        height: 30,
+      ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.white
@@ -555,66 +570,99 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
 
   //Send message
   Widget buildmessage(id, model) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      height: MediaQuery.of(context).size.height * 0.1,
-      //color: Theme.of(context).backgroundColor,
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            // ? Colors.grey
-            ? Theme.of(context).accentColor
-            : Colors.black,
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Theme.of(context).brightness == Brightness.dark
-        //         ? Colors.white
-        //         : Colors.black,
-        //     offset: Offset(0.0, 1.0), //(x,y)
-        //     spreadRadius: 3,
-        //   ),
-        // ],
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-      ),
-      child: Row(
-        children: <Widget>[
-          //Image select button
-          imagepick(model, id),
-          //Voice record
-          voicemsg(id),
-          SizedBox(width: 10),
-          //Text Input
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    width: 1,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey
-                        : Colors.black),
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-              ),
-              child: TextField(
-                minLines: 1,
-                maxLines: 5,
-                maxLength: 150,
-                keyboardType: TextInputType.multiline,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.newline,
-                controller: textEditingController,
-                decoration: InputDecoration(
-                  hintText: G.of(context).labelmsg,
-                  counterText: "",
+    if (bookingdata == null) {
+      return ViewStateBusyWidget();
+    }
+    if (bookingdata.isblock == 0) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        height: MediaQuery.of(context).size.height * 0.1,
+        //color: Theme.of(context).backgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Theme.of(context).brightness == Brightness.dark
+          //         ? Colors.white
+          //         : Colors.black,
+          //     offset: Offset(0.0, 1.0), //(x,y)
+          //     spreadRadius: 3,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+        ),
+        child: Row(
+          children: <Widget>[
+            //Image select button
+            imagepick(model, id),
+            //Voice record
+            voicemsg(id),
+            SizedBox(width: 10),
+            //Text Input
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey
+                          : Colors.black),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                ),
+                child: TextField(
+                  minLines: 1,
+                  maxLines: 5,
+                  maxLength: 150,
+                  keyboardType: TextInputType.multiline,
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.newline,
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    hintText: G.of(context).labelmsg,
+                    counterText: "",
+                  ),
                 ),
               ),
             ),
+            //Send button
+            sendbtn(model, id),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        height: MediaQuery.of(context).size.height * 0.1,
+        //color: Theme.of(context).backgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Theme.of(context).brightness == Brightness.dark
+          //         ? Colors.white
+          //         : Colors.black,
+          //     offset: Offset(0.0, 1.0), //(x,y)
+          //     spreadRadius: 3,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+        ),
+        child: Center(
+          child: Text(
+            "This person has blocked you",
+            style: TextStyle(fontSize: 16),
           ),
-          //Send button
-          sendbtn(model, id),
-        ],
-      ),
-    );
+        ),
+      );
+    }
   }
 
   //Booking End button

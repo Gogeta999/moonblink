@@ -1,23 +1,20 @@
-import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
-
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-List<Widget> pages = <Widget>[
-  HomePage(),
-  ChatListPage(),
-  ContactsPage(),
-  UserStatusPage(),
-];
+final String home = 'assets/icons/home.svg';
+final String chat = 'assets/icons/chat.svg';
+final String following = 'assets/icons/following.svg';
+final String user = 'assets/icons/profile.svg';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;
@@ -36,6 +33,7 @@ class _MainTabPageState extends State<MainTabPage>
   // ignore: unused_field
   int _selectedIndex = 0;
   DateTime _lastPressed;
+  ScrollController homeController = ScrollController();
 
   _MainTabPageState(this.initPage);
 
@@ -57,6 +55,13 @@ class _MainTabPageState extends State<MainTabPage>
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> pages = <Widget>[
+      HomePage(homeController),
+      ChatListPage(),
+      ContactsPage(),
+      UserStatusPage(),
+    ];
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
@@ -133,7 +138,7 @@ class _MainTabPageState extends State<MainTabPage>
                   : Colors.black),
         ),
         child: CustomNavigationBar(
-          iconSize: 30.0,
+          // iconSize: 30.0,
           selectedColor: Theme.of(context).accentColor,
           strokeColor: Theme.of(context).accentColor,
           unSelectedColor: Theme.of(context).brightness == Brightness.dark
@@ -141,10 +146,49 @@ class _MainTabPageState extends State<MainTabPage>
               : Colors.black,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           items: [
-            CustomNavigationBarItem(icon: IconFonts.homePageIcon),
-            CustomNavigationBarItem(icon: IconFonts.chatPageIcon),
-            CustomNavigationBarItem(icon: IconFonts.followingPageIcon),
-            CustomNavigationBarItem(icon: IconFonts.statusPageIcon),
+            CustomNavigationBarItem(
+              icon: SvgPicture.asset(
+                home,
+                color: Theme.of(context).accentColor,
+                semanticsLabel: 'home',
+                width: 30,
+                height: 30,
+              ),
+              doubletap: () {
+                homeController.animateTo(
+                  0.0,
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                );
+              },
+            ),
+            CustomNavigationBarItem(
+              icon: SvgPicture.asset(
+                chat,
+                color: Theme.of(context).accentColor,
+                semanticsLabel: 'messages',
+                width: 30,
+                height: 30,
+              ),
+            ),
+            CustomNavigationBarItem(
+              icon: SvgPicture.asset(
+                following,
+                color: Theme.of(context).accentColor,
+                semanticsLabel: 'following',
+                width: 30,
+                height: 30,
+              ),
+            ),
+            CustomNavigationBarItem(
+              icon: SvgPicture.asset(
+                user,
+                color: Theme.of(context).accentColor,
+                semanticsLabel: 'user',
+                width: 30,
+                height: 30,
+              ),
+            )
           ],
           currentIndex: _selectedIndex,
           onTap: (index) {

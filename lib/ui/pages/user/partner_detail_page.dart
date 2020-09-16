@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
@@ -16,11 +17,12 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
-import 'package:moonblink/ui/pages/user/partner_gameprofile.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+final String report = 'assets/icons/report.svg';
 
 class PartnerDetailPage extends StatefulWidget {
   PartnerDetailPage(this.detailPageId);
@@ -44,17 +46,95 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     super.dispose();
   }
 
+  // //Rating Box
+  // void rating(bookingid) {
+  //   var rate = 5.0;
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return ProviderWidget<RateModel>(
+  //         model: RateModel(),
+  //         builder: (context, model, child) {
+  //           return new AlertDialog(
+  //             title: Text(G.of(context).pleaseRatingForThisGame),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0)),
+  //             content: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: <Widget>[
+  //                 SmoothStarRating(
+  //                   starCount: 5,
+  //                   rating: rate,
+  //                   color: Theme.of(context).accentColor,
+  //                   isReadOnly: false,
+  //                   size: 30,
+  //                   filledIconData: Icons.star,
+  //                   halfFilledIconData: Icons.star_half,
+  //                   defaultIconData: Icons.star_border,
+  //                   allowHalfRating: true,
+  //                   spacing: 2.0,
+  //                   //star value
+  //                   onRated: (value) {
+  //                     print("rating value -> $value");
+  //                     setState(() {
+  //                       rate = value;
+  //                     });
+  //                   },
+  //                 ),
+  //                 SizedBox(
+  //                   height: 30,
+  //                 ),
+  //                 //Comment for Rating
+  //                 Container(
+  //                     margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+  //                     padding: EdgeInsets.all(8.0),
+  //                     decoration: BoxDecoration(
+  //                       border: Border.all(width: 1.5, color: Colors.grey),
+  //                       borderRadius: BorderRadius.all(Radius.circular(12.0)),
+  //                     ),
+  //                     child: TextField(
+  //                       controller: comment,
+  //                       textInputAction: TextInputAction.done,
+  //                       decoration: InputDecoration(
+  //                         labelText: G.of(context).labelcomment,
+  //                       ),
+  //                     ))
+  //               ],
+  //             ),
+  //             //Summit Rating
+  //             actions: [
+  //               FlatButton(
+  //                   child: Text(G.of(context).submit),
+  //                   onPressed: () {
+  //                     model
+  //                         .rate(widget.detailPageId, bookingid, rate,
+  //                             comment.text)
+  //                         .then((value) => value
+  //                             ? Navigator.pop(context)
+  //                             : showToast(G.of(context).toastratingfail));
+  //                   })
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+
   reportuser() {
     return Align(
       alignment: Alignment.topRight,
       child: Container(
-        width: 27,
-        height: 27,
+        width: 30,
+        height: 30,
         child: IconButton(
+          // iconSize: 40,
           //splashRadius: 20,
-          icon: Icon(
-            Icons.more_vert,
-            size: 22,
+          icon: SvgPicture.asset(
+            report,
+            color: Theme.of(context).accentColor,
+            semanticsLabel: 'report',
           ),
           // iconSize: 18,
           onPressed: () => CustomBottomSheet.showUserManageContent(
@@ -423,25 +503,25 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       height: 20,
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: MBButtonWidget(
-                        title: "Game Profile",
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PartnerGameProfilePage(
-                                gameprofile:
-                                    partnerModel.partnerData.gameprofile,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  // SliverToBoxAdapter(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 30),
+                  //     child: MBButtonWidget(
+                  //       title: "Game Profile",
+                  //       onTap: () {
+                  //         Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //             builder: (context) => PartnerGameProfilePage(
+                  //               gameprofile:
+                  //                   partnerModel.partnerData.gameprofile,
+                  //             ),
+                  //           ),
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 20,
@@ -451,21 +531,30 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   /// [user bio]
                   if (partnerModel.partnerData.prfoileFromPartner.bios != "")
                     SliverToBoxAdapter(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(width: 2, color: Colors.black),
-                            bottom: BorderSide(width: 2, color: Colors.black),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 2, color: Colors.black),
+                                bottom:
+                                    BorderSide(width: 2, color: Colors.black),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                partnerModel
+                                    .partnerData.prfoileFromPartner.bios,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            partnerModel.partnerData.prfoileFromPartner.bios,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
+                          Row(
+                            children: [],
+                          )
+                        ],
                       ),
                     ),
 

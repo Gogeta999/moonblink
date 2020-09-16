@@ -56,7 +56,8 @@ class Bookingstatus {
   int bookinguserid;
   int status;
   String created;
+  int isblock;
 
-  Bookingstatus(
-      this.bookingid, this.id, this.bookinguserid, this.status, this.created);
+  Bookingstatus(this.bookingid, this.id, this.bookinguserid, this.status,
+      this.created, this.isblock);
 }

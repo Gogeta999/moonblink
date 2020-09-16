@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
@@ -21,8 +21,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 ///streamer = 2
 ///cele = 3
 ///pro = 4
+final String search = 'assets/icons/search.svg';
 
 class HomePage extends StatefulWidget {
+  final homecontroller;
+  HomePage(this.homecontroller);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -59,6 +62,7 @@ class _HomePageState extends State<HomePage>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SmallShadedContainer(
+                  onDoubletap: () {},
                   selected: catagories == 1 ? true : false,
                   ontap: () {
                     if (catagories != 1) {
@@ -271,6 +275,7 @@ class _HomePageState extends State<HomePage>
                     enablePullUp: homeModel.list.isNotEmpty,
                     onLoading: homeModel.loadMore,
                     child: CustomScrollView(
+                      controller: widget.homecontroller,
                       // controller: tapToTopModel.scrollController,
                       slivers: <Widget>[
                         HomeAppBar(),
@@ -342,7 +347,13 @@ class HomeAppBar extends StatelessWidget {
       ///[Appbar]
       backgroundColor: Colors.black,
       leading: IconButton(
-        icon: Icon(FontAwesomeIcons.search),
+        icon: SvgPicture.asset(
+          search,
+          color: Theme.of(context).accentColor,
+          semanticsLabel: 'search',
+          width: 30,
+          height: 30,
+        ),
         onPressed: () {
           showSearch(context: context, delegate: SearchPage());
         },

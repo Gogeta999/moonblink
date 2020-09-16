@@ -181,13 +181,18 @@ class ChatModel extends Model {
   Bookingstatus chatupdated() {
     print("Chat Updated");
     socket.on("chat-updated", (data) {
-      bookingdata = Bookingstatus(data["booking_id"], data["user_id"],
-          data["booking_user_id"], data["status"], data["created_at"]);
-      print(data.toString());
-      print(bookingdata.bookingid);
-      print(bookingdata.id);
-      print(bookingdata.bookinguserid);
-      print(bookingdata.status);
+      bookingdata = Bookingstatus(
+          data["booking_id"],
+          data["user_id"],
+          data["booking_user_id"],
+          data["status"],
+          data["created_at"],
+          data['is_block']);
+      // print(data.toString());
+      // print(bookingdata.bookingid);
+      // print(bookingdata.id);
+      // print(bookingdata.bookinguserid);
+      // print(bookingdata.status);
       notifyListeners();
     });
 
