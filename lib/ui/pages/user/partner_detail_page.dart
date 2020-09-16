@@ -5,11 +5,9 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
-import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -48,81 +46,124 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     super.dispose();
   }
 
-  // //Rating Box
-  // void rating(bookingid) {
-  //   var rate = 5.0;
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return ProviderWidget<RateModel>(
-  //         model: RateModel(),
-  //         builder: (context, model, child) {
-  //           return new AlertDialog(
-  //             title: Text(G.of(context).pleaseRatingForThisGame),
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20.0)),
-  //             content: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: <Widget>[
-  //                 SmoothStarRating(
-  //                   starCount: 5,
-  //                   rating: rate,
-  //                   color: Theme.of(context).accentColor,
-  //                   isReadOnly: false,
-  //                   size: 30,
-  //                   filledIconData: Icons.star,
-  //                   halfFilledIconData: Icons.star_half,
-  //                   defaultIconData: Icons.star_border,
-  //                   allowHalfRating: true,
-  //                   spacing: 2.0,
-  //                   //star value
-  //                   onRated: (value) {
-  //                     print("rating value -> $value");
-  //                     setState(() {
-  //                       rate = value;
-  //                     });
-  //                   },
-  //                 ),
-  //                 SizedBox(
-  //                   height: 30,
-  //                 ),
-  //                 //Comment for Rating
-  //                 Container(
-  //                     margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-  //                     padding: EdgeInsets.all(8.0),
-  //                     decoration: BoxDecoration(
-  //                       border: Border.all(width: 1.5, color: Colors.grey),
-  //                       borderRadius: BorderRadius.all(Radius.circular(12.0)),
-  //                     ),
-  //                     child: TextField(
-  //                       controller: comment,
-  //                       textInputAction: TextInputAction.done,
-  //                       decoration: InputDecoration(
-  //                         labelText: G.of(context).labelcomment,
-  //                       ),
-  //                     ))
-  //               ],
-  //             ),
-  //             //Summit Rating
-  //             actions: [
-  //               FlatButton(
-  //                   child: Text(G.of(context).submit),
-  //                   onPressed: () {
-  //                     model
-  //                         .rate(widget.detailPageId, bookingid, rate,
-  //                             comment.text)
-  //                         .then((value) => value
-  //                             ? Navigator.pop(context)
-  //                             : showToast(G.of(context).toastratingfail));
-  //                   })
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
+  //Rating Box
+  void gameprofiledialog(PartnerUser partnerModel, index) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(15.0),
+          ),
+        ),
+        // title: Text(partnerModel.gameprofile[index].gameName),
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text(partnerModel.gameprofile[index].gameName),
+              ),
+            ),
+            InkResponse(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageView(
+                        partnerModel.gameprofile[index].skillCoverImage),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 250,
+                child: Image.network(
+                  partnerModel.gameprofile[index].skillCoverImage,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Rank"),
+                Text(":"),
+                Text(partnerModel.gameprofile[index].level)
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("PlayerID"),
+                Text(":"),
+                Text(partnerModel.gameprofile[index].playerId)
+              ],
+            ),
+            // Text.rich(
+            //   TextSpan(
+            //     style: TextStyle(fontSize: 16),
+            //     children: [
+            //       TextSpan(
+            //         text: "Rank: ",
+            //         style: TextStyle(color: Theme.of(context).accentColor),
+            //       ),
+            //       TextSpan(
+            //         text: partnerModel.gameprofile[index].level,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // Text.rich(
+            //   TextSpan(
+            //     style: TextStyle(fontSize: 16),
+            //     children: [
+            //       TextSpan(
+            //         text: "PlayerID: ",
+            //         style: TextStyle(color: Theme.of(context).accentColor),
+            //       ),
+            //       TextSpan(text: partnerModel.gameprofile[index].playerId),
+            //     ],
+            //   ),
+            // ),
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15.0),
+                    bottomRight: Radius.circular(15.0),
+                  ),
+                ),
+                child: Text(
+                  "Okay",
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   reportuser() {
     return Align(
@@ -541,85 +582,71 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(width: 1, color: Colors.black),
-                              // bottom:
-                              //     BorderSide(width: 2, color: Colors.black),
+                              bottom: BorderSide(width: 1, color: Colors.black),
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 10),
+                          child: Center(
                             child: Text(
                               partnerModel.partnerData.prfoileFromPartner.bios,
                               style: Theme.of(context).textTheme.headline6,
                             ),
                           ),
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              // top: BorderSide(width: 2, color: Colors.black),
-                              bottom: BorderSide(width: 1, color: Colors.black),
+                        if (partnerModel.partnerData.gameprofile.isNotEmpty)
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 110,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                // top: BorderSide(width: 2, color: Colors.black),
+                                bottom:
+                                    BorderSide(width: 1, color: Colors.black),
+                              ),
                             ),
-                          ),
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  partnerModel.partnerData.gameprofile.length,
-                              // itemCount: 30,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: GestureDetector(
-                                    //TODO:
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) => Padding(
-                                                padding: EdgeInsets.all(15),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: [
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      color: Colors.white,
-                                                      child: Text(partnerModel
-                                                          .partnerData
-                                                          .gameprofile[index]
-                                                          .gameName),
-                                                    )
-                                                  ],
-                                                ),
-                                              ));
-                                    },
-                                    child: CachedNetworkImage(
-                                      imageUrl: partnerModel.partnerData
-                                          .gameprofile[index].skillCoverImage,
-                                      imageBuilder: (context, imageProvider) =>
-                                          CircleAvatar(
-                                        radius: 33,
-                                        backgroundColor:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? Colors.white
-                                                : Colors.black,
-                                        child: CircleAvatar(
-                                          radius: 32,
-                                          backgroundColor: Colors.grey[300],
-                                          backgroundImage: imageProvider,
-                                        ),
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount:
+                                    partnerModel.partnerData.gameprofile.length,
+                                // itemCount: 30,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    child: GestureDetector(
+                                      onTap: () => gameprofiledialog(
+                                          partnerModel.partnerData, index),
+                                      child: Column(
+                                        children: [
+                                          CachedNetworkImage(
+                                            imageUrl: partnerModel
+                                                .partnerData
+                                                .gameprofile[index]
+                                                .skillCoverImage,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    CircleAvatar(
+                                              radius: 33,
+                                              backgroundColor: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              child: CircleAvatar(
+                                                radius: 32,
+                                                backgroundColor:
+                                                    Colors.grey[300],
+                                                backgroundImage: imageProvider,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(partnerModel.partnerData
+                                              .gameprofile[index].gameName),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                        )
+                                  );
+                                }),
+                          )
                       ],
                     ),
                   ),

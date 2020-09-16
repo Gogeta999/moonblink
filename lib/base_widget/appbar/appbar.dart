@@ -27,9 +27,9 @@ class _AppbarWidgetState extends State<AppbarWidget> {
             color: Theme.of(context).accentColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black,
+                color: Theme.of(context).accentColor,
                 // spreadRadius: 1,
-                blurRadius: 3,
+                blurRadius: 4,
                 offset: Offset(0, 0), // changes position of shadow
               ),
             ],
