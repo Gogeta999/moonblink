@@ -14,6 +14,7 @@ import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/stories/storylist.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/story_model.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../../services/chat_service.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -30,7 +31,7 @@ class _ChatListPageState extends State<ChatListPage>
 
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
-
+  RefreshController refreshController = RefreshController();
   // @override
   // void initState() {
   //   super.initState();
@@ -42,6 +43,14 @@ class _ChatListPageState extends State<ChatListPage>
     } else {
       return lastmsg;
     }
+  }
+
+  void onRefresh(StoryModel storyModel) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    storyModel.fetchStory();
+    refreshController.refreshCompleted();
   }
 
   //Chat Tile
@@ -141,21 +150,28 @@ class _ChatListPageState extends State<ChatListPage>
               },
               builder: (context, storymodel, child) {
                 // print(storymodel.stories);
-                return CustomScrollView(slivers: <Widget>[
-                  if (storymodel.stories.isNotEmpty)
-                    StoryList(
-                      stories: storymodel.stories,
-                    ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        Chatlist chat = chatlist[index];
-                        return buildtile(chat);
-                      },
-                      childCount: chatlist?.length ?? 0,
-                    ),
-                  )
-                ]);
+                return SmartRefresher(
+                  controller: refreshController,
+                  header: WaterDropHeader(),
+                  onRefresh: () {
+                    onRefresh(storymodel);
+                  },
+                  child: CustomScrollView(slivers: <Widget>[
+                    if (storymodel.stories.isNotEmpty)
+                      StoryList(
+                        stories: storymodel.stories,
+                      ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          Chatlist chat = chatlist[index];
+                          return buildtile(chat);
+                        },
+                        childCount: chatlist?.length ?? 0,
+                      ),
+                    )
+                  ]),
+                );
               },
             );
           }

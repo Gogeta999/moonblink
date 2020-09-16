@@ -8,6 +8,7 @@ import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
@@ -30,13 +31,14 @@ class MoonBlinkRepository {
 
   static Future fetchPosts(int pageNum, int type, String gender) async {
     // await Future.delayed(Duration(seconds: 1));
-    var response = await DioUtils()
-        .get(Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/, queryParameters: {
+    var response = await DioUtils().get(
+        Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/,
+        queryParameters: {
           'limit': 5,
           'type': type,
           'page': pageNum,
           'gender': gender
-    });
+        });
     return response.data['data']
         .map<Post>((item) => Post.fromMap(item))
         .toList();
@@ -117,7 +119,7 @@ class MoonBlinkRepository {
   static Future fetchOwnProfile() async {
     var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.PartnerOwnProfile + '$partnerId');
-    return PartnerUser.fromJson(response.data);
+    return OwnProfile.fromJson(response.data);
   }
 
   /// [fetch search result] currently only support in name search
@@ -323,7 +325,8 @@ class MoonBlinkRepository {
       'game_type_id': gameTypeId,
       'count': count,
     });
-    var response = await DioUtils().postwithData(Api.Booking + '$partnerId/booking', data: formData);
+    var response = await DioUtils()
+        .postwithData(Api.Booking + '$partnerId/booking', data: formData);
     return response.data;
   }
 
@@ -440,12 +443,10 @@ class MoonBlinkRepository {
   }
 
   //User Rating
-  static Future<UserRatingList> userRating(int userId, int limit, int page) async {
-    var response = await DioUtils().get(Api.UserRating, queryParameters: {
-      'user_id': userId,
-      'limit': limit,
-      'page': page
-    });
+  static Future<UserRatingList> userRating(
+      int userId, int limit, int page) async {
+    var response = await DioUtils().get(Api.UserRating,
+        queryParameters: {'user_id': userId, 'limit': limit, 'page': page});
     return UserRatingList.fromJson(response.data['data']);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/models/partner.dart';
 
 class PartnerGameProfilePage extends StatefulWidget {
@@ -17,12 +18,18 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
   Widget build(BuildContext context) {
     print(widget.gameprofile.length);
     return Scaffold(
-      appBar: AppbarWidget(),
+      appBar: AppbarWidget(
+        title: Text("Game Profile"),
+      ),
       body: Column(
         children: [
           SizedBox(
             height: 20,
           ),
+          if (widget.gameprofile.isEmpty)
+            Center(
+              child: Text("This User have no Game Profile"),
+            ),
           ListView.builder(
             shrinkWrap: true,
             itemCount: widget.gameprofile.length,
@@ -38,17 +45,33 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Container(
-                                height: MediaQuery.of(context).size.width / 4.5,
-                                width: MediaQuery.of(context).size.width / 3,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).accentColor,
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Image.network(
-                                  widget.gameprofile[index].skillCoverImage,
-                                  fit: BoxFit.fill,
+                              InkResponse(
+                                focusColor: Colors.red,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageView(widget
+                                          .gameprofile[index].skillCoverImage),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.width / 4.5,
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).accentColor,
+                                    border: Border.all(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      widget.gameprofile[index].skillCoverImage,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Column(

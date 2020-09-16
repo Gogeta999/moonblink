@@ -13,7 +13,6 @@ import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/contact_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -39,11 +38,10 @@ class _ContactsPageState extends State<ContactsPage> {
   bool isBlocking = false;
 
   @override
-  initState(){
+  initState() {
     _contactModel = ContactModel();
     super.initState();
   }
-
 
   ///[Tiles]
   filterList() {
@@ -60,58 +58,65 @@ class _ContactsPageState extends State<ContactsPage> {
       items.add(Column(children: <Widget>[
         Card(
           // color: Theme.of(context).cardColor,
-          child: isBlocking ? CupertinoActivityIndicator() : ListTile(
-            leading: CachedNetworkImage(
-              imageUrl: user.contactUser.contactUserProfile,
-              imageBuilder: (context, imageProvider) => CircleAvatar(
-                radius: 28,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundImage: imageProvider,
-              ),
-              placeholder: (context, url) => CircleAvatar(
-                radius: 28,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                // backgroundImage: ,
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            // leading: CircleAvatar(
-            //   radius: 28,
-            //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            //   backgroundImage:
-            //       NetworkImage(user.contactUser.contactUserProfile),
-            // ),
-            title: Text(user.contactUser.contactUserName),
-            onTap: () {
-              int detailPageId = user.contactUser.contactUserId;
-              int index = users.indexOf(user);
-              print(index);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PartnerDetailPage(detailPageId))).then((value) async {
-                        if (value != null) {
-                          setState(() {
-                            isBlocking = true;
-                          });
+          child: isBlocking
+              ? CupertinoActivityIndicator()
+              : ListTile(
+                  leading: CachedNetworkImage(
+                    imageUrl: user.contactUser.contactUserProfile,
+                    imageBuilder: (context, imageProvider) => CircleAvatar(
+                      radius: 28,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      backgroundImage: imageProvider,
+                    ),
+                    placeholder: (context, url) => CircleAvatar(
+                      radius: 28,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      // backgroundImage: ,
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                  // leading: CircleAvatar(
+                  //   radius: 28,
+                  //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  //   backgroundImage:
+                  //       NetworkImage(user.contactUser.contactUserProfile),
+                  // ),
+                  title: Text(user.contactUser.contactUserName),
+                  onTap: () {
+                    int detailPageId = user.contactUser.contactUserId;
+                    int index = users.indexOf(user);
+                    print(index);
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PartnerDetailPage(detailPageId)))
+                        .then((value) async {
+                      if (value != null) {
+                        setState(() {
+                          isBlocking = true;
+                        });
 
-                          ///Block Uesrs
-                          try {
-                            await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
-                            await _contactModel.initData();
-                            setState(() {
-                              isBlocking = false;
-                            });
-                          } catch (e) {
-                            print(e.toString());
-                            setState(() {
-                              isBlocking = false;
-                            });
-                          }
+                        ///Block Uesrs
+                        try {
+                          await MoonBlinkRepository.blockOrUnblock(
+                              value, BLOCK);
+                          await _contactModel.initData();
+                          setState(() {
+                            isBlocking = false;
+                          });
+                        } catch (e) {
+                          print(e.toString());
+                          setState(() {
+                            isBlocking = false;
+                          });
                         }
-              });
-            },
-          ),
+                      }
+                    });
+                  },
+                ),
         ),
         // Divider(
         //   color: Colors.grey,

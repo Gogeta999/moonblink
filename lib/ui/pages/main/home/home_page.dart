@@ -350,9 +350,9 @@ class HomeAppBar extends StatelessWidget {
       pinned: true,
       //toolbarHeight: kToolbarHeight,
       // expandedHeight: kToolbarHeight,
-      brightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.light
-          : Brightness.dark,
+      // brightness: Theme.of(context).brightness == Brightness.light
+      //     ? Brightness.light
+      //     : Brightness.dark,
       actions: <Widget>[
         GestureDetector(
             onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),

@@ -120,7 +120,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+    // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -130,9 +130,9 @@ class _UserStatusPageState extends State<UserStatusPage> {
             pinned: true,
             // toolbarHeight: kToolbarHeight - 5,
             // expandedHeight: kToolbarHeight,
-            brightness: Theme.of(context).brightness == Brightness.light
-                ? Brightness.light
-                : Brightness.dark,
+            // brightness: Theme.of(context).brightness == Brightness.light
+            //     ? Brightness.light
+            //     : Brightness.dark,
             actions: <Widget>[
               AppbarLogo(),
             ],
@@ -234,6 +234,7 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               child: CircleAvatar(
                                 radius: 70,
                                 backgroundImage: item,
+                                child: Text("HEllo"),
                               ),
                             );
                           },
@@ -262,9 +263,6 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                               backgroundImage: AssetImage(
                                 ImageHelper.wrapAssetsImage(
                                     'MoonBlinkProfile.jpg'),
-                                // fit: BoxFit.fill,
-                                // width: 120,
-                                // height: 120,
                               ),
                             ),
                           ),
@@ -319,7 +317,6 @@ class _UserListWidgetState extends State<UserListWidget> {
   @override
   Widget build(BuildContext context) {
     int status = StorageManager.sharedPreferences.getInt(mstatus);
-    String usertoken = StorageManager.sharedPreferences.getString(token);
     print("user type is ${usertype.toString()}");
     print("user status is ${status.toString()}");
 

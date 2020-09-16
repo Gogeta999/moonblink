@@ -9,12 +9,11 @@ import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -28,7 +27,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  PartnerUser partnerData;
+  OwnProfile partnerData;
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -40,7 +39,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
       builder: (context, partnerModel, child) {
         if (partnerModel.isBusy) {
           return ViewStateBusyWidget();
-        } else if (partnerModel.isError && partnerModel.isEmpty) {
+        } else if (partnerModel.isError || partnerModel.isEmpty) {
           return ViewStateErrorWidget(
               error: partnerModel.viewStateError,
               onPressed: partnerModel.initData);

@@ -84,7 +84,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return Container(
         height: 40,
         decoration: BoxDecoration(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              // ? Theme.of(context).scaffoldBackgroundColor
+              : Colors.grey,
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
           ),
@@ -100,35 +103,28 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   icon: Icon(Icons.pause),
                   iconSize: 20.0,
                 );
-              }
-              else if (_isLoading == true) {
+              } else if (_isLoading == true) {
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: Center(
-                    child: CupertinoActivityIndicator(),
-                  )
-                );
-              }
-              else if (_isFailed) {
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ));
+              } else if (_isFailed) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     'failed',
-                    style: TextStyle(
-                        fontSize: 10
-                    ),
+                    style: TextStyle(fontSize: 10),
                   ),
                 );
-              }
-              else if (_isPlaying == false) {
+              } else if (_isPlaying == false) {
                 return IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: () => _play(),
                   icon: Icon(Icons.play_arrow),
                   iconSize: 20.0,
                 );
-              }
-              else {
+              } else {
                 return Container(height: 0, width: 0);
               }
             }()),
@@ -138,13 +134,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 backgroundColor: Colors.white,
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
                 value: (_position != null &&
-                    _duration != null &&
-                    _position.inMilliseconds > 0 &&
-                    _position.inMilliseconds < _duration.inMilliseconds)
-                ? _position.inMilliseconds / _duration.inMilliseconds
-                : 0.0,
+                        _duration != null &&
+                        _position.inMilliseconds > 0 &&
+                        _position.inMilliseconds < _duration.inMilliseconds)
+                    ? _position.inMilliseconds / _duration.inMilliseconds
+                    : 0.0,
               ),
             ),
+
             /// can't get max duration at start
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -332,7 +329,10 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
         width: 200,
         height: 40,
         decoration: BoxDecoration(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              // ? Theme.of(context).scaffoldBackgroundColor
+              : Colors.grey,
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
           ),
