@@ -56,6 +56,7 @@ class _OtpTextFieldState extends State<OtpTextField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: TextFormField(
+        style: TextStyle(color: Colors.white),
         controller: controller,
         obscureText: false,
         textAlign: TextAlign.center,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassword_page.dart';
 import 'package:moonblink/view_model/forgetpassword_model.dart';
 import 'package:oktoast/oktoast.dart';
 
