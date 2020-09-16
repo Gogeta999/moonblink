@@ -319,14 +319,9 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
       );
     }
 
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context);
-          return false;
-        },
-        child: Stack(
-          children: stack,
-        ));
+    return Stack(
+      children: stack,
+    );
   }
 
   userTopUp(String productId) async {

@@ -75,17 +75,16 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
             }
             if (state is UserTransactionNoData) {
               return Center(
-                child: Text('This user has no history.'),
+                child: Text('No history'),
               );
             }
             if (state is UserTransactionSuccess) {
               if (state.data.isEmpty) {
                 return Center(
-                  child: Text('This user has no history.'),
+                  child: Text('No history'),
                 );
               }
               return ListView.builder(
-                shrinkWrap: true,
                 physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics())),
                 itemBuilder: (BuildContext context, int index) {
                   return index >= state.data.length

@@ -30,7 +30,6 @@ class _WalletPageState extends State<WalletPage> {
 
   bool isWalletLoading = false;
   bool isAdLoading = false;
-  bool _loading = false;
 
   @override
   void initState() {
@@ -128,11 +127,7 @@ class _WalletPageState extends State<WalletPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           ShadedContainer(
-                            ontap: () {
-                              CustomBottomSheet.showTopUpBottomSheet(
-                                      buildContext: context)
-                                  .whenComplete(() => getUserWallet());
-                            },
+                            ontap: () {_showTopUpBtmSheet();},
                             child: Text("Top Up"),
                           ),
                           ShadedContainer(
@@ -191,11 +186,11 @@ class _WalletPageState extends State<WalletPage> {
                         height: 30,
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 20,
                       ),
                       Divider(
-                        height: 3,
-                        color: Colors.grey,
+                        thickness: 2,
+                        color: Colors.black,
                       ),
                     ],
                   ),
@@ -204,14 +199,30 @@ class _WalletPageState extends State<WalletPage> {
             ),
           ),
           SliverToBoxAdapter(
-            child: Container(margin: const EdgeInsets.only(top: 20),child: Text('Top Up History', textAlign: TextAlign.center, style: TextStyle(fontSize: 18))),
-          ),
-          SliverToBoxAdapter(
-            child: UserTransactionPage(),
+            child: Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text('Top Up History', style: Theme.of(context).textTheme.button),
+                    ),
+                    Divider(thickness: 2, color: Colors.black),
+                    Expanded(
+                      child: UserTransactionPage(),
+                    ),
+                  ],
+                )),
           )
         ],
       ),
     );
+  }
+
+  _showTopUpBtmSheet() {
+    CustomBottomSheet.showTopUpBottomSheet(
+        buildContext: context)
+        .whenComplete(() => getUserWallet());
   }
 
   userReward() async {

@@ -216,39 +216,54 @@ class HistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //var fo
-    return Padding(
-      padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
-      child: Container(
-        // width: 1000,
-        margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.5, color: Colors.black),
-          // color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Image.asset(
-              ImageHelper.wrapAssetsLogo('appbar.jpg'),
-              height: 50,
-              width: 45,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                '${history.transaction}',
-                style: Theme.of(context).textTheme.bodyText2,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-            SizedBox(width: 10),
-            Text(DateFormat.yMd().format(DateTime.parse(history.date)))
-          ],
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: 0.5,
+            // blurRadius: 2,
+            offset: Offset(-3, 3), // changes position of shadow
+          ),
+        ],
       ),
+      child: ListTile(
+        leading: Image.asset(
+          ImageHelper.wrapAssetsLogo('appbar.jpg'),
+          height: 50,
+          width: 45,
+        ),
+        title: Text(
+          '${history.transaction}',
+          style: Theme.of(context).textTheme.button,
+          overflow: TextOverflow.visible,
+        ),
+        trailing: Text(DateFormat.yMd().format(DateTime.parse(history.date))),
+      )/*Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Image.asset(
+            ImageHelper.wrapAssetsLogo('appbar.jpg'),
+            height: 50,
+            width: 45,
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '${history.transaction}',
+              style: Theme.of(context).textTheme.bodyText2,
+              overflow: TextOverflow.visible,
+            ),
+          ),
+          SizedBox(width: 10),
+          Text(DateFormat.yMd().format(DateTime.parse(history.date)))
+        ],
+      ),*/
     );
   }
 }

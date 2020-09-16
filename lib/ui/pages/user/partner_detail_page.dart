@@ -6,6 +6,7 @@ import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -471,10 +472,27 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                   /// [user feed]
                   SliverToBoxAdapter(
-                      child: Feed(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: Text(G.of(context).history, style: Theme.of(context).textTheme.button),
+                              ),
+                              Divider(thickness: 2, color: Colors.black),
+                              Expanded(
+                                child: PartnerGameHistoryWidget(
+                                    partnerModel.partnerData.partnerName,
+                                    partnerModel.partnerData
+                                        .partnerId),
+                              ),
+                            ],
+                          )) /*Feed(
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
-                          partnerModel.partnerData.rating)),
+                          partnerModel.partnerData.rating)*/
+                      ),
                 ],
               ),
             );
