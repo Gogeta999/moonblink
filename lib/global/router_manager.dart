@@ -18,7 +18,7 @@ import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
-import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
+import 'package:moonblink/ui/pages/signIO/resetpassword_page.dart';
 import 'package:moonblink/ui/pages/signIO/login_page.dart';
 import 'package:moonblink/ui/pages/signIO/register_page.dart';
 import 'package:moonblink/ui/pages/splash_page.dart';

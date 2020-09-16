@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
   var _pageController;
   int catagories = 1;
-  String gender = "All";
-
+  // String gender = "All";
+  String gender = "Male";
   @override
   void initState() {
     super.initState();

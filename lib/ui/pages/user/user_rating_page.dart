@@ -9,6 +9,7 @@ import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_rating/user_rating_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:intl/intl.dart';
 
@@ -76,7 +77,7 @@ class _UserRatingPageState extends State<UserRatingPage> {
                   if (state is UserRatingRefreshing) {
                     return Center(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text('Refreshing...'),
@@ -134,9 +135,19 @@ class RatingListTile extends StatelessWidget {
   final UserRatingSuccess state;
   final int index;
 
-  const RatingListTile({Key key, this.state, this.index})
+  RatingListTile({Key key, this.state, this.index})
       : assert(state != null && index != null && index >= 0),
         super(key: key);
+
+  ///false means unexpanded
+  final BehaviorSubject<bool> _expandIconSubject =
+      BehaviorSubject.seeded(false);
+
+  _onTapExpandIcon() {
+    _expandIconSubject.first.then((value) {
+      _expandIconSubject.add(!value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +159,7 @@ class RatingListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).accentColor,
+            color: Colors.black,
             spreadRadius: 0.5,
             // blurRadius: 2,
             offset: Offset(-3, 3), // changes position of shadow
@@ -168,8 +179,51 @@ class RatingListTile extends StatelessWidget {
             placeholder: (context, url) => CachedLoader(),
             errorWidget: (context, url, error) => CachedError(),
           ),
-          title: Text(state.data[index].name),
-          subtitle: Text(state.data[index].comment),
+          title: Container(
+            margin: const EdgeInsets.symmetric(vertical: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(state.data[index].name,
+                    style: Theme.of(context).textTheme.button),
+                InkWell(
+                  onTap: _onTapExpandIcon,
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                            '${state.data[index].comment.isEmpty ? 'No Comment' : 'Commented'}',
+                            style: Theme.of(context).textTheme.button),
+                      ),
+                      SizedBox(width: 5),
+                      if (state.data[index].comment.isNotEmpty)
+                        StreamBuilder<bool>(
+                            initialData: false,
+                            stream: _expandIconSubject.stream,
+                            builder: (context, snapshot) {
+                              return snapshot.data
+                                  ? Icon(Icons.expand_less)
+                                  : Icon(Icons.expand_more);
+                            }),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          subtitle: StreamBuilder<bool>(
+            initialData: false,
+            stream: _expandIconSubject.stream,
+            builder: (context, snapshot) {
+              if (state.data[index].comment.isNotEmpty && snapshot.data) {
+                return Text('\"' + state.data[index].comment + '\"', style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic));
+              }else {
+                return Container();
+              }
+            }
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

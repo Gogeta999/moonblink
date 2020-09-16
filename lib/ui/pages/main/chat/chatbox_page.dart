@@ -910,7 +910,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                         ? () {
                             Navigator.pushReplacementNamed(
                                 context, RouteName.partnerDetail,
-                                arguments: widget.detailPageId);
+                                arguments: widget.detailPageId).then((value) async {
+                                  if (value != null) {
+                                    ///Block Uesrs
+                                    try {
+                                      await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
+                                      showToast('Successfully Block');
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+                                  }
+                            });
                           }
                         : null),
                 actions: <Widget>[
