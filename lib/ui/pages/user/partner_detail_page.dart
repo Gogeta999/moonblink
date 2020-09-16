@@ -4,6 +4,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
@@ -423,51 +424,124 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       height: 20,
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: MBButtonWidget(
-                        title: "Game Profile",
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PartnerGameProfilePage(
-                                gameprofile:
-                                    partnerModel.partnerData.gameprofile,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 20,
-                    ),
-                  ),
+                  // SliverToBoxAdapter(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 30),
+                  //     child: MBButtonWidget(
+                  //       title: "Game Profile",
+                  //       onTap: () {
+                  //         Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //             builder: (context) => PartnerGameProfilePage(
+                  //               gameprofile:
+                  //                   partnerModel.partnerData.gameprofile,
+                  //             ),
+                  //           ),
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
+                  // SliverToBoxAdapter(
+                  //   child: SizedBox(
+                  //     height: 20,
+                  //   ),
+                  // ),
 
                   /// [user bio]
-                  if (partnerModel.partnerData.prfoileFromPartner.bios != "")
-                    SliverToBoxAdapter(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(width: 2, color: Colors.black),
-                            bottom: BorderSide(width: 2, color: Colors.black),
+                  // if (partnerModel.partnerData.prfoileFromPartner.bios != "")
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(width: 1, color: Colors.black),
+                              // bottom:
+                              //     BorderSide(width: 2, color: Colors.black),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text(
+                              partnerModel.partnerData.prfoileFromPartner.bios,
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            partnerModel.partnerData.prfoileFromPartner.bios,
-                            style: Theme.of(context).textTheme.headline6,
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              // top: BorderSide(width: 2, color: Colors.black),
+                              bottom: BorderSide(width: 1, color: Colors.black),
+                            ),
                           ),
-                        ),
-                      ),
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  partnerModel.partnerData.gameprofile.length,
+                              // itemCount: 30,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  child: GestureDetector(
+                                    //TODO:
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => Padding(
+                                                padding: EdgeInsets.all(15),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .stretch,
+                                                  children: [
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      color: Colors.white,
+                                                      child: Text(partnerModel
+                                                          .partnerData
+                                                          .gameprofile[index]
+                                                          .gameName),
+                                                    )
+                                                  ],
+                                                ),
+                                              ));
+                                    },
+                                    child: CachedNetworkImage(
+                                      imageUrl: partnerModel.partnerData
+                                          .gameprofile[index].skillCoverImage,
+                                      imageBuilder: (context, imageProvider) =>
+                                          CircleAvatar(
+                                        radius: 33,
+                                        backgroundColor:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black,
+                                        child: CircleAvatar(
+                                          radius: 32,
+                                          backgroundColor: Colors.grey[300],
+                                          backgroundImage: imageProvider,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                        )
+                      ],
                     ),
+                  ),
 
                   /// [user feed]
                   SliverToBoxAdapter(
