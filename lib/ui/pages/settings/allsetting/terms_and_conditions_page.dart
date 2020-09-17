@@ -194,10 +194,14 @@ class TermsAndConditions extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
                   width: double.infinity,
                   child: RaisedButton(
+                    color: Theme.of(context).accentColor,
                     padding: EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    child: Text(G.of(context).accept),
+                    child: Text(
+                      G.of(context).accept,
+                      style: Theme.of(context).textTheme.button,
+                    ),
                     onPressed: () {
                       if (Platform.isAndroid) {
                         Navigator.pushNamedAndRemoveUntil(

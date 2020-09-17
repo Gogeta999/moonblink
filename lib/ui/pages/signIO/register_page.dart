@@ -7,6 +7,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/helper/agreement.dart';
 import 'package:moonblink/view_model/register_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _nameCtrl = TextEditingController();
   // final _lastnameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _rePasswordCtrl = TextEditingController();
   bool male = false;
   bool female = false;
 
@@ -25,8 +27,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void dispose() {
     _mailCtrl.dispose();
     _nameCtrl.dispose();
-    // _lastnameCtrl.dispose();
     _passwordCtrl.dispose();
+    _rePasswordCtrl.dispose();
     super.dispose();
   }
 
@@ -90,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     label: "Re-Enter Password",
                                     icon: Icons.lock_open,
                                     obscureText: true,
-                                    controller: _passwordCtrl,
+                                    controller: _rePasswordCtrl,
                                     textInputAction: TextInputAction.done,
                                   ),
 
@@ -98,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     height: 40,
                                   ),
                                   RegisterButton(_mailCtrl, _nameCtrl,
-                                      _passwordCtrl, model)
+                                      _passwordCtrl, _rePasswordCtrl, model)
                                 ],
                               ),
                             ),
@@ -120,11 +122,12 @@ class _RegisterPageState extends State<RegisterPage> {
 class RegisterButton extends StatelessWidget {
   final mailCtrl;
   final nameCtrl;
-  // final lastnameCtrl;
   final passwordCtrl;
+  final rePasswordCtrl;
   final RegisterModel model;
 
-  RegisterButton(this.mailCtrl, this.nameCtrl, this.passwordCtrl, this.model);
+  RegisterButton(this.mailCtrl, this.nameCtrl, this.passwordCtrl,
+      this.rePasswordCtrl, this.model);
   @override
   Widget build(BuildContext context) {
     return LoginButtonWidget(
@@ -141,7 +144,7 @@ class RegisterButton extends StatelessWidget {
       onPressed: model.isBusy
           ? null
           : () {
-              if (Form.of(context).validate()) {
+              if (passwordCtrl == rePasswordCtrl) {
                 model
                     .singUp(mailCtrl.text, nameCtrl.text, passwordCtrl.text)
                     .then((value) {
@@ -151,6 +154,8 @@ class RegisterButton extends StatelessWidget {
                     model.showErrorMessage(context);
                   }
                 });
+              } else if (passwordCtrl != rePasswordCtrl) {
+                showToast('Please enter same password');
               }
             },
     );
