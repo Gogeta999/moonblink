@@ -592,7 +592,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           //     spreadRadius: 3,
           //   ),
           // ],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.0),
+          ),
         ),
         child: Row(
           children: <Widget>[
@@ -909,17 +911,19 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                     onTap: partnermodel.partnerData.type != 0
                         ? () {
                             Navigator.pushReplacementNamed(
-                                context, RouteName.partnerDetail,
-                                arguments: widget.detailPageId).then((value) async {
-                                  if (value != null) {
-                                    ///Block Uesrs
-                                    try {
-                                      await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
-                                      showToast('Successfully Block');
-                                    } catch (e) {
-                                      print(e.toString());
-                                    }
-                                  }
+                                    context, RouteName.partnerDetail,
+                                    arguments: widget.detailPageId)
+                                .then((value) async {
+                              if (value != null) {
+                                ///Block Uesrs
+                                try {
+                                  await MoonBlinkRepository.blockOrUnblock(
+                                      value, BLOCK);
+                                  showToast('Successfully Block');
+                                } catch (e) {
+                                  print(e.toString());
+                                }
+                              }
                             });
                           }
                         : null),

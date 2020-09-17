@@ -133,11 +133,16 @@ class _MainTabPageState extends State<MainTabPage>
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border.all(
+              width: 1,
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.black
                   : Colors.black),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10.0),
+          ),
         ),
         child: CustomNavigationBar(
+          borderRadius: Radius.circular(10),
           // iconSize: 30.0,
           selectedColor: Theme.of(context).accentColor,
           strokeColor: Theme.of(context).accentColor,

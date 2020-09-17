@@ -47,164 +47,188 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  topTabs() {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 40,
-        child: Stack(
-          children: [
-            Center(
-              child: Divider(
-                thickness: 2,
-                color: Colors.black,
+  topTabs(homeController) {
+    return Container(
+      height: 40,
+      child: Stack(
+        children: [
+          Center(
+            child: Divider(
+              thickness: 2,
+              color: Colors.black,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SmallShadedContainer(
+                onDoubletap: () {
+                  homeController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                selected: catagories == 1 ? true : false,
+                ontap: () {
+                  if (catagories != 1) {
+                    setState(() {
+                      catagories = 1;
+                      _pageController.jumpToPage(0);
+                    });
+                  } else {
+                    print("Already");
+                  }
+                },
+                child: Text(
+                  "Coplayer",
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SmallShadedContainer(
-                  onDoubletap: () {},
-                  selected: catagories == 1 ? true : false,
-                  ontap: () {
-                    if (catagories != 1) {
-                      setState(() {
-                        catagories = 1;
-                        _pageController.jumpToPage(0);
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Coplayer",
-                    textAlign: TextAlign.center,
-                  ),
+              SmallShadedContainer(
+                selected: catagories == 3 ? true : false,
+                onDoubletap: () {
+                  homeController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                ontap: () {
+                  if (catagories != 3) {
+                    setState(() {
+                      catagories = 3;
+                      _pageController.jumpToPage(1);
+                    });
+                  } else {
+                    print("Already");
+                  }
+                },
+                child: Text(
+                  "Cele",
+                  textAlign: TextAlign.center,
                 ),
-                SmallShadedContainer(
-                  selected: catagories == 3 ? true : false,
-                  ontap: () {
-                    if (catagories != 3) {
-                      setState(() {
-                        catagories = 3;
-                        _pageController.jumpToPage(1);
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Cele",
-                    textAlign: TextAlign.center,
-                  ),
+              ),
+              SmallShadedContainer(
+                selected: catagories == 4 ? true : false,
+                onDoubletap: () {
+                  homeController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                ontap: () {
+                  if (catagories != 4) {
+                    setState(() {
+                      catagories = 4;
+                      _pageController.jumpToPage(2);
+                    });
+                  } else {
+                    print("Already");
+                  }
+                },
+                child: Text(
+                  "Pro",
+                  textAlign: TextAlign.center,
                 ),
-                SmallShadedContainer(
-                  selected: catagories == 4 ? true : false,
-                  ontap: () {
-                    if (catagories != 4) {
-                      setState(() {
-                        catagories = 4;
-                        _pageController.jumpToPage(2);
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Pro",
-                    textAlign: TextAlign.center,
-                  ),
+              ),
+              SmallShadedContainer(
+                selected: catagories == 2 ? true : false,
+                onDoubletap: () {
+                  homeController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                ontap: () {
+                  if (catagories != 2) {
+                    setState(() {
+                      catagories = 2;
+                      _pageController.jumpToPage(3);
+                    });
+                  } else {
+                    print("Already");
+                  }
+                },
+                child: Text(
+                  "Streamer",
+                  textAlign: TextAlign.center,
                 ),
-                SmallShadedContainer(
-                  selected: catagories == 2 ? true : false,
-                  ontap: () {
-                    if (catagories != 2) {
-                      setState(() {
-                        catagories = 2;
-                        _pageController.jumpToPage(3);
-                      });
-                    } else {
-                      print("Already");
-                    }
-                  },
-                  child: Text(
-                    "Streamer",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   malefemaletabs() {
-    return SliverToBoxAdapter(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: 2,
-              color: Colors.black,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 1.5, color: Colors.black
+            // top: BorderSide(
+            //   width: 2,
+            //   color: Colors.black,
+            // ),
+            // bottom: BorderSide(
+            //   width: 2,
+            //   color: Colors.black,
+            // ),
             ),
-            bottom: BorderSide(
-              width: 2,
-              color: Colors.black,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(top: 10, bottom: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            MediumShadedContainer(
+              selected: gender == "Male" ? true : false,
+              ontap: () {
+                if (gender != "Male") {
+                  setState(
+                    () {
+                      gender = "Male";
+                      _pageController.jumpToPage(5);
+                    },
+                  );
+                } else {
+                  setState(() {
+                    gender = "All";
+                    _pageController.jumpToPage(4);
+                  });
+                }
+              },
+              child: Center(
+                child: Text("Male"),
+              ),
             ),
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MediumShadedContainer(
-                selected: gender == "Male" ? true : false,
-                ontap: () {
-                  if (gender != "Male") {
-                    setState(
-                      () {
-                        gender = "Male";
-                        _pageController.jumpToPage(5);
-                      },
-                    );
-                  } else {
-                    setState(() {
+            MediumShadedContainer(
+              selected: gender == "Female" ? true : false,
+              ontap: () {
+                if (gender != "Female") {
+                  setState(
+                    () {
+                      gender = "Female";
+                      _pageController.jumpToPage(7);
+                    },
+                  );
+                } else {
+                  setState(
+                    () {
                       gender = "All";
                       _pageController.jumpToPage(4);
-                    });
-                  }
-                },
-                child: Center(
-                  child: Text("Male"),
-                ),
+                    },
+                  );
+                }
+              },
+              child: Center(
+                child: Text("Female"),
               ),
-              MediumShadedContainer(
-                selected: gender == "Female" ? true : false,
-                ontap: () {
-                  if (gender != "Female") {
-                    setState(
-                      () {
-                        gender = "Female";
-                        _pageController.jumpToPage(7);
-                      },
-                    );
-                  } else {
-                    setState(
-                      () {
-                        gender = "All";
-                        _pageController.jumpToPage(4);
-                      },
-                    );
-                  }
-                },
-                child: Center(
-                  child: Text("Female"),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -215,135 +239,119 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     print(catagories);
     return Scaffold(
-      body: PageView.builder(
-        itemCount: 8,
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return ProviderWidget2<HomeModel, TapToTopModel>(
-            autoDispose: true,
-            model1: HomeModel(type: catagories, gender: gender),
-            model2: TapToTopModel(PrimaryScrollController.of(context),
-                height: kToolbarHeight),
-            onModelReady: (homeModel, tapToTopModel) {
-              homeModel.initData();
-              tapToTopModel.init(() => homeModel.loadMore());
-            },
-            builder: (context, homeModel, tapToTopModel, child) {
-              return MediaQuery.removePadding(
-                context: context,
-                removeTop: false,
-                child: Builder(builder: (_) {
-                  // if (homeModel.isBusy &&
-                  //     Theme.of(context).brightness == Brightness.light) {
-                  //   return Container(
-                  //     height: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         image: DecorationImage(
-                  //             image: AssetImage(
-                  //               ImageHelper.wrapAssetsImage(
-                  //                   'bookingWaiting.gif'),
-                  //             ),
-                  //             fit: BoxFit.fill)),
-                  //   );
-                  // }
-                  // if (homeModel.isBusy &&
-                  //     Theme.of(context).brightness == Brightness.dark) {
-                  //   return Container(
-                  //     height: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         image: DecorationImage(
-                  //             image: AssetImage(
-                  //               ImageHelper.wrapAssetsImage(
-                  //                   'moonblinkWaitingDark.gif'),
-                  //             ),
-                  //             fit: BoxFit.fill)),
-                  //   );
-                  // }
-                  return SmartRefresher(
-                    controller: homeModel.refreshController,
-                    header: ShimmerHeader(
-                      text: CupertinoActivityIndicator(),
-                    ),
-                    footer: ShimmerFooter(
-                      text: CupertinoActivityIndicator(),
-                    ),
-                    enablePullDown: homeModel.list.isNotEmpty,
-                    onRefresh: () async {
-                      await homeModel.refresh();
-                      homeModel.showErrorMessage(context);
-                    },
-                    enablePullUp: homeModel.list.isNotEmpty,
-                    onLoading: homeModel.loadMore,
-                    child: CustomScrollView(
-                      controller: widget.homecontroller,
-                      // controller: tapToTopModel.scrollController,
-                      slivers: <Widget>[
-                        HomeAppBar(),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 10,
+      appBar: HomeAppBar(),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 8,
+          ),
+          topTabs(widget.homecontroller),
+          SizedBox(
+            height: 8,
+          ),
+          malefemaletabs(),
+          SizedBox(
+            height: 8,
+          ),
+          Expanded(
+            child: PageView.builder(
+              itemCount: 8,
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return ProviderWidget2<HomeModel, TapToTopModel>(
+                  autoDispose: true,
+                  model1: HomeModel(type: catagories, gender: gender),
+                  model2: TapToTopModel(PrimaryScrollController.of(context),
+                      height: kToolbarHeight),
+                  onModelReady: (homeModel, tapToTopModel) {
+                    homeModel.initData();
+                    tapToTopModel.init(() => homeModel.loadMore());
+                  },
+                  builder: (context, homeModel, tapToTopModel, child) {
+                    return MediaQuery.removePadding(
+                      context: context,
+                      removeTop: false,
+                      child: Builder(builder: (_) {
+                        // if (homeModel.isBusy &&
+                        //     Theme.of(context).brightness == Brightness.light) {
+                        //   return Container(
+                        //     height: double.infinity,
+                        //     decoration: BoxDecoration(
+                        //         image: DecorationImage(
+                        //             image: AssetImage(
+                        //               ImageHelper.wrapAssetsImage(
+                        //                   'bookingWaiting.gif'),
+                        //             ),
+                        //             fit: BoxFit.fill)),
+                        //   );
+                        // }
+                        // if (homeModel.isBusy &&
+                        //     Theme.of(context).brightness == Brightness.dark) {
+                        //   return Container(
+                        //     height: double.infinity,
+                        //     decoration: BoxDecoration(
+                        //         image: DecorationImage(
+                        //             image: AssetImage(
+                        //               ImageHelper.wrapAssetsImage(
+                        //                   'moonblinkWaitingDark.gif'),
+                        //             ),
+                        //             fit: BoxFit.fill)),
+                        //   );
+                        // }
+                        return SmartRefresher(
+                          controller: homeModel.refreshController,
+                          header: ShimmerHeader(
+                            text: CupertinoActivityIndicator(),
                           ),
-                        ),
-
-                        // if (homeModel.stories?.isNotEmpty ?? false)
-                        //   StoryList(stories: homeModel.stories),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 10,
+                          footer: ShimmerFooter(
+                            text: CupertinoActivityIndicator(),
                           ),
-                        ),
-                        topTabs(),
-                        // TopTabs(
-                        //   catagory: catagories,
-                        // ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 20,
+                          enablePullDown: homeModel.list.isNotEmpty,
+                          onRefresh: () async {
+                            await homeModel.refresh();
+                            homeModel.showErrorMessage(context);
+                          },
+                          enablePullUp: homeModel.list.isNotEmpty,
+                          onLoading: homeModel.loadMore,
+                          child: CustomScrollView(
+                            controller: widget.homecontroller,
+                            // controller: tapToTopModel.scrollController,
+                            slivers: <Widget>[
+                              if (homeModel.isError && homeModel.list.isEmpty)
+                                SliverToBoxAdapter(
+                                  child: AnnotatedRegion<SystemUiOverlayStyle>(
+                                      value:
+                                          StatusBarUtils.systemUiOverlayStyle(
+                                              context),
+                                      child: ViewStateErrorWidget(
+                                          error: homeModel.viewStateError,
+                                          onPressed: homeModel.initData)),
+                                ),
+                              HomePostList(),
+                            ],
                           ),
-                        ),
-                        malefemaletabs(),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 20,
-                          ),
-                        ),
-                        // if (homeModel.isEmpty)
-                        //   SliverToBoxAdapter(
-                        //     child: Padding(
-                        //       padding: const EdgeInsets.only(top: 50),
-                        //       child: ViewStateEmptyWidget(
-                        //           onPressed: homeModel.initData),
-                        //     ),
-                        //   ),
-                        if (homeModel.isError && homeModel.list.isEmpty)
-                          SliverToBoxAdapter(
-                            child: AnnotatedRegion<SystemUiOverlayStyle>(
-                                value: StatusBarUtils.systemUiOverlayStyle(
-                                    context),
-                                child: ViewStateErrorWidget(
-                                    error: homeModel.viewStateError,
-                                    onPressed: homeModel.initData)),
-                          ),
-                        HomePostList(),
-                      ],
-                    ),
-                  );
-                }),
-              );
-            },
-          );
-        },
+                        );
+                      }),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class HomeAppBar extends StatelessWidget {
+class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+
   @override
   Widget build(BuildContext context) {
-    TapToTopModel tapToTopModel = Provider.of(context);
-    return SliverAppBar(
+    return AppBar(
       // centerTitle: true,
       ///[Appbar]
       backgroundColor: Colors.black,
@@ -360,15 +368,10 @@ class HomeAppBar extends StatelessWidget {
           showSearch(context: context, delegate: SearchPage());
         },
       ),
-      pinned: true,
-      //toolbarHeight: kToolbarHeight,
-      // expandedHeight: kToolbarHeight,
-      // brightness: Theme.of(context).brightness == Brightness.light
-      //     ? Brightness.light
-      //     : Brightness.dark,
       actions: <Widget>[
-        GestureDetector(
-            onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
+        AppbarLogo(),
+        // GestureDetector(
+        //     onDoubleTap: tapToTopModel.scrollToTop, child: AppbarLogo()),
       ],
       flexibleSpace: null,
       bottom: PreferredSize(
@@ -377,9 +380,9 @@ class HomeAppBar extends StatelessWidget {
             color: Theme.of(context).accentColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black,
+                color: Theme.of(context).accentColor,
                 // spreadRadius: 1,
-                blurRadius: 3,
+                blurRadius: 4,
                 offset: Offset(0, 0), // changes position of shadow
               ),
             ],
