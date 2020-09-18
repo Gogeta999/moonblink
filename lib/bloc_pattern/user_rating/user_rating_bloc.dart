@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 part 'user_rating_event.dart';
 part 'user_rating_state.dart';
 
-const int ratingLimit = 20;
+const int ratingLimit = 5;
 
 class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
   final int userId;

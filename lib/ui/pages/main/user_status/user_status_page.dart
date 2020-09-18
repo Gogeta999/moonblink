@@ -140,11 +140,15 @@ class _UserStatusPageState extends State<UserStatusPage> {
               child: Stack(
                 children: [
                   UserStatusCurve(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.1),
+                  // Padding(
+                  //   padding: EdgeInsets.only(
+                  //       top: MediaQuery.of(context).size.height * 0.1),
+                  //   child: UserHeaderWidget(),
+                  // ),
+                  Align(
+                    alignment: Alignment.center,
                     child: UserHeaderWidget(),
-                  ),
+                  )
                 ],
               ),
             ),

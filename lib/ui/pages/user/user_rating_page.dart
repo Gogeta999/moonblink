@@ -21,11 +21,14 @@ class UserRatingPage extends StatefulWidget {
   _UserRatingPageState createState() => _UserRatingPageState();
 }
 
-class _UserRatingPageState extends State<UserRatingPage> {
+class _UserRatingPageState extends State<UserRatingPage> with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
-  final _scrollThreshold = 600.0;
+  final _scrollThreshold = 200.0;
   Completer<void> _refreshCompleter;
   UserRatingBloc _usersRatingBloc;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -44,13 +47,13 @@ class _UserRatingPageState extends State<UserRatingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('User Rating'),
-        backgroundColor: Colors.black,
-        actions: [
-          AppbarLogo(),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text('User Rating'),
+      //   backgroundColor: Colors.black,
+      //   actions: [
+      //     AppbarLogo(),
+      //   ],
+      // ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _onRefresh,
@@ -93,8 +96,7 @@ class _UserRatingPageState extends State<UserRatingPage> {
                       );
                     }
                     return ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      shrinkWrap: true,
+                      padding: EdgeInsets.all(10),
                       physics: ScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics(
                               parent: ClampingScrollPhysics())),

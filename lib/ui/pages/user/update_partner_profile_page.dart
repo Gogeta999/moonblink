@@ -160,6 +160,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         },
                                         body: G.of(context).partnerprofile,
                                         willCrop: true,
+                                        defaultCropStyle: false,
                                         compressQuality:
                                             NORMAL_COMPRESS_QUALITY);
                                   },
