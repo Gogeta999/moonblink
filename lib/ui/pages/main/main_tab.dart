@@ -152,13 +152,7 @@ class _MainTabPageState extends State<MainTabPage>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           items: [
             CustomNavigationBarItem(
-              icon: SvgPicture.asset(
-                home,
-                color: Theme.of(context).iconTheme.color,
-                semanticsLabel: 'home',
-                width: 30,
-                height: 30,
-              ),
+              icon: home,
               doubletap: () {
                 homeController.animateTo(
                   0.0,
@@ -168,31 +162,13 @@ class _MainTabPageState extends State<MainTabPage>
               },
             ),
             CustomNavigationBarItem(
-              icon: SvgPicture.asset(
-                chat,
-                color: Theme.of(context).iconTheme.color,
-                semanticsLabel: 'messages',
-                width: 30,
-                height: 30,
-              ),
+              icon: chat,
             ),
             CustomNavigationBarItem(
-              icon: SvgPicture.asset(
-                following,
-                color: Theme.of(context).iconTheme.color,
-                semanticsLabel: 'following',
-                width: 30,
-                height: 30,
-              ),
+              icon: following,
             ),
             CustomNavigationBarItem(
-              icon: SvgPicture.asset(
-                user,
-                color: Theme.of(context).iconTheme.color,
-                semanticsLabel: 'user',
-                width: 30,
-                height: 30,
-              ),
+              icon: user,
             )
           ],
           currentIndex: _selectedIndex,

@@ -18,13 +18,19 @@ class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
   final messages;
+  final Function rotate;
   @required
   final Function onDismiss;
   @required
   final Function onInit;
 
   Voicemsg(
-      {localFileSystem, this.id, this.messages, this.onDismiss, this.onInit})
+      {localFileSystem,
+      this.id,
+      this.messages,
+      this.onDismiss,
+      this.rotate,
+      this.onInit})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -142,14 +148,19 @@ class _VoicemsgState extends State<Voicemsg> {
           height: 30,
           width: 30,
           child: GestureDetector(
-            child: SvgPicture.asset(
-              microphone,
-              color: Colors.white,
-              semanticsLabel: 'mircophone',
-              width: 30,
-              height: 30,
+            child: Icon(
+              Icons.mic,
+              color: Colors.black,
             ),
+            // SvgPicture.asset(
+            //   microphone,
+            //   color: Colors.white,
+            //   semanticsLabel: 'mircophone',
+            //   width: 30,
+            //   height: 30,
+            // ),
             onTap: () async {
+              widget.rotate();
               await _init();
               CustomBottomSheet.showVoiceSheet(
                   buildContext: context,

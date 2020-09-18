@@ -18,6 +18,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/customnavigationbar/src/animation/beacon_painter.dart';
 import 'package:moonblink/base_widget/customnavigationbar/src/custom_navigation_bar_item.dart';
 import 'util/default_style.dart';
@@ -255,11 +256,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                         },
                         selected: i == widget.currentIndex,
                         item: widget.items[i],
-                        selectedColor: widget.selectedColor ??
-                            DefaultCustomNavigationBarStyle.defaultColor,
-                        unSelectedColor: widget.unSelectedColor ??
-                            DefaultCustomNavigationBarStyle
-                                .defaultUnselectedColor,
                       ),
                     ),
                 ],
@@ -278,8 +274,6 @@ class _CustomNavigationBarTile extends StatelessWidget {
     this.onPressed,
     this.selected,
     this.item,
-    this.selectedColor,
-    this.unSelectedColor,
     this.scale,
     this.iconSize,
   }) : super(key: key);
@@ -290,10 +284,6 @@ class _CustomNavigationBarTile extends StatelessWidget {
 
   final CustomNavigationBarItem item;
 
-  final Color selectedColor;
-
-  final Color unSelectedColor;
-
   final double scale;
 
   final double iconSize;
@@ -303,7 +293,16 @@ class _CustomNavigationBarTile extends StatelessWidget {
     return Transform.scale(
       scale: 1.0 + scale,
       child: GestureDetector(
-        child: item.icon,
+        child: SvgPicture.asset(
+          item.icon,
+          color: selected
+              ? Theme.of(context).accentColor
+              : Theme.of(context).iconTheme.color,
+          semanticsLabel: 'home',
+          fit: BoxFit.fill,
+          width: 30,
+          height: 30,
+        ),
         onTap: onPressed,
         onDoubleTap: item.doubletap,
       ),

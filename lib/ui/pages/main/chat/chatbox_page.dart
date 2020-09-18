@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
@@ -53,11 +54,16 @@ class ChatBoxPage extends StatefulWidget {
   _ChatBoxPageState createState() => _ChatBoxPageState();
 }
 
-class _ChatBoxPageState extends State<ChatBoxPage> {
+class _ChatBoxPageState extends State<ChatBoxPage>
+    with TickerProviderStateMixin {
+  //animation
+  bool _isRotated = true;
+  AnimationController _controller;
+  Animation<double> _animation;
+  Animation<double> _animation2;
+  Animation<double> _animation3;
   //Message
   bool got = false;
-  //Timer
-  Timer _timer;
   //Rating
   bool rated = false;
   TextEditingController comment = TextEditingController();
@@ -118,9 +124,46 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  ///[Icon Change]
+  void rotate() {
+    setState(() {
+      if (_isRotated) {
+        _isRotated = false;
+        _controller.forward();
+      } else {
+        _isRotated = true;
+        _controller.reverse();
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    ///[Animation]
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+
+    _animation = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.0, 1.0, curve: Curves.linear),
+    );
+
+    _animation2 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.5, 1.0, curve: Curves.linear),
+    );
+
+    _animation3 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.8, 1.0, curve: Curves.linear),
+    );
+    _controller.reverse();
+
+    ///[Chat Data]
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
     print(
         'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
@@ -625,16 +668,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return IconButton(
       icon: SvgPicture.asset(
         camera,
-        color: Colors.white,
+        color: Colors.black,
         semanticsLabel: 'camera',
         width: 30,
         height: 30,
       ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
-          ? Colors.white
-          : Colors.white,
+          ? Colors.black
+          : Colors.black,
       onPressed: () {
+        rotate();
         CustomBottomSheet.show(
             popAfterBtnPressed: true,
             requestType: RequestType.image,
@@ -669,6 +713,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       id: id,
       messages: messages,
       onDismiss: _sendMessageWidgetDown,
+      rotate: () => rotate(),
     );
   }
 
@@ -730,35 +775,50 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         child: Row(
           children: <Widget>[
-            //Image select button
-            imagepick(model, id),
-            //Voice record
-            voicemsg(id),
-            SizedBox(width: 10),
-            //Text Input
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 20, right: 20),
+            IconButton(
+              iconSize: 35,
+              icon: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey
-                          : Colors.black),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  color: Colors.black,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(100),
                 ),
-                child: TextField(
-                  minLines: 1,
-                  maxLines: 5,
-                  maxLength: 150,
-                  keyboardType: TextInputType.multiline,
-                  textCapitalization: TextCapitalization.sentences,
-                  textInputAction: TextInputAction.newline,
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: G.of(context).labelmsg,
-                    counterText: "",
+                child: Icon(
+                  _isRotated ? Icons.arrow_upward : Icons.arrow_downward,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () => rotate(),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey
+                            : Colors.black),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  child: TextField(
+                    minLines: 1,
+                    maxLines: 5,
+                    maxLength: 150,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                      hintText: G.of(context).labelmsg,
+                      counterText: "",
+                    ),
                   ),
                 ),
               ),
@@ -982,8 +1042,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //Widget build
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model) {
+        return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
           model2: GetmsgModel(widget.detailPageId),
@@ -1065,24 +1126,44 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   action1(model),
                 ],
               ),
-              body: ListView(
-                controller: controller,
-                addAutomaticKeepAlives: true,
-                children: <Widget>[
-                  //chat list
-                  buildChatList(partnermodel.partnerData.partnerId, model),
-                  //Message input box
-                  buildmessage(partnermodel.partnerData.partnerId, model),
-                  //Bottom Box
-                  if (isShowing && Platform.isAndroid)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-                  if (isShowing && Platform.isIOS)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.45)
+              body: Stack(
+                children: [
+                  ListView(
+                    controller: controller,
+                    addAutomaticKeepAlives: true,
+                    children: <Widget>[
+                      //chat list
+                      buildChatList(partnermodel.partnerData.partnerId, model),
+                      //Message input box
+                      buildmessage(partnermodel.partnerData.partnerId, model),
+                      //Bottom Box
+                      if (isShowing && Platform.isAndroid)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5),
+                      if (isShowing && Platform.isIOS)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.45)
+                    ],
+                  ),
+                  FloatingButton(
+                    bottom: 80,
+                    left: 10,
+                    scale: _animation,
+                    child: imagepick(model, widget.detailPageId),
+                  ),
+                  FloatingButton(
+                    bottom: 140,
+                    left: 30,
+                    scale: _animation2,
+                    child: voicemsg(widget.detailPageId),
+                  ),
                 ],
               ),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   //bottom widget up
@@ -1125,59 +1206,61 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ));
     } else if (await Permission.microphone.request().isDenied) {
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } else if (await Permission.microphone.request().isPermanentlyDenied) {
       /// [Error]
       // Permanently being denied,you need to allow in app setting
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    openAppSettings();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
