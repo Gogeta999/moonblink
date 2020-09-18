@@ -69,7 +69,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                 child: Text(partnerModel.gameprofile[index].gameName),
               ),
             ),
-            InkResponse(
+            InkWell(
               onTap: () {
                 Navigator.push(
                   context,
@@ -81,13 +81,17 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 width: MediaQuery.of(context).size.width,
                 height: 250,
-                child: Image.network(
-                  partnerModel.gameprofile[index].skillCoverImage,
-                  fit: BoxFit.fill,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.network(
+                    partnerModel.gameprofile[index].skillCoverImage,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),
@@ -151,6 +155,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
           //splashRadius: 20,
           icon: SvgPicture.asset(
             report,
+            fit: BoxFit.fill,
             color: Theme.of(context).accentColor,
             semanticsLabel: 'report',
           ),

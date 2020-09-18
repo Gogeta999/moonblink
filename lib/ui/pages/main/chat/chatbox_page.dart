@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,6 +17,7 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -42,6 +45,7 @@ import '../../../../services/chat_service.dart';
 
 final String camera = 'assets/icons/camera.svg';
 final String microphone = 'assets/icons/microphone.svg';
+final String send = 'assets/icons/send.svg';
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -50,11 +54,16 @@ class ChatBoxPage extends StatefulWidget {
   _ChatBoxPageState createState() => _ChatBoxPageState();
 }
 
-class _ChatBoxPageState extends State<ChatBoxPage> {
+class _ChatBoxPageState extends State<ChatBoxPage>
+    with TickerProviderStateMixin {
+  //animation
+  bool _isRotated = true;
+  AnimationController _controller;
+  Animation<double> _animation;
+  Animation<double> _animation2;
+  Animation<double> _animation3;
   //Message
   bool got = false;
-  //Timer
-  Timer _timer;
   //Rating
   bool rated = false;
   TextEditingController comment = TextEditingController();
@@ -115,9 +124,46 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  ///[Icon Change]
+  void rotate() {
+    setState(() {
+      if (_isRotated) {
+        _isRotated = false;
+        _controller.forward();
+      } else {
+        _isRotated = true;
+        _controller.reverse();
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    ///[Animation]
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+
+    _animation = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.0, 1.0, curve: Curves.linear),
+    );
+
+    _animation2 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.5, 1.0, curve: Curves.linear),
+    );
+
+    _animation3 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.8, 1.0, curve: Curves.linear),
+    );
+    _controller.reverse();
+
+    ///[Chat Data]
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
     print(
         'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
@@ -187,9 +233,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -228,94 +275,114 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //booking End Dialog
   void bookingenddialog(model, Bookingstatus booking) {
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15.0),
-          ),
-        ),
-        // title: Text(partnerModel.gameprofile[index].gameName),
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(
-                child: Text("End Booking"),
-              ),
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: 'End Booking',
+            row1Content: 'Time Left',
+            row2Content: BookingTimeLeft(
+              upadateat: booking.updated,
+              timeleft: bookingdata.section,
             ),
-            Container(
-              child: Center(
-                child: Text("Time Left"),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              child: Center(
-                child: BookingTimeLeft(
-                  upadateat: booking.updated,
-                  timeleft: bookingdata.section,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15.0),
-                        // bottomRight: Radius.circular(15.0),
-                      ),
-                    ),
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    model.endbooking(selfId, booking.bookingid, 3);
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      borderRadius: BorderRadius.only(
-                        // bottomLeft: Radius.circular(15.0),
-                        bottomRight: Radius.circular(15.0),
-                      ),
-                    ),
-                    child: Text(
-                      "End",
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: 'End',
+            confirmCallback: () {
+              model.endbooking(selfId, booking.bookingid, 3);
+              // Navigator.pop(context);
+            },
+          );
+        }
+        // builder: (_) => AlertDialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.all(
+        //       Radius.circular(15.0),
+        //     ),
+        //   ),
+        //   // title: Text(partnerModel.gameprofile[index].gameName),
+        //   contentPadding: EdgeInsets.zero,
+        //   content: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.stretch,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         padding: EdgeInsets.symmetric(vertical: 20),
+        //         child: Center(
+        //           child: Text("End Booking"),
+        //         ),
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: Text("Time Left"),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 10,
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: BookingTimeLeft(
+        //             upadateat: booking.updated,
+        //             timeleft: bookingdata.section,
+        //           ),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 20,
+        //       ),
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: [
+        //           InkWell(
+        //             onTap: () => Navigator.pop(context),
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   bottomLeft: Radius.circular(15.0),
+        //                   // bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "Cancel",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //           InkWell(
+        //             onTap: () {
+        //               model.endbooking(selfId, booking.bookingid, 3);
+        //               Navigator.pop(context);
+        //             },
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   // bottomLeft: Radius.circular(15.0),
+        //                   bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "End",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
 
   //Rating Box
@@ -400,7 +467,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       minWidth: 70,
       child: FlatButton(
         child: Text(G.of(context).accept,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 17)),
         onPressed: () {
           MoonBlinkRepository.bookingAcceptOrDecline(
               selfId, bookingid, bookingAccept);
@@ -416,7 +486,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         minWidth: 70,
         child: FlatButton(
           child: Text(G.of(context).reject,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, bookingReject);
@@ -476,10 +549,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Theme.of(context).accentColor,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -502,10 +576,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       padding: EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: BoxConstraints(
@@ -542,10 +617,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       padding: EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: BoxConstraints(
@@ -592,16 +668,17 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return IconButton(
       icon: SvgPicture.asset(
         camera,
-        color: Colors.white,
+        color: Colors.black,
         semanticsLabel: 'camera',
         width: 30,
         height: 30,
       ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
-          ? Colors.white
-          : Colors.white,
+          ? Colors.black
+          : Colors.black,
       onPressed: () {
+        rotate();
         CustomBottomSheet.show(
             popAfterBtnPressed: true,
             requestType: RequestType.image,
@@ -636,13 +713,20 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       id: id,
       messages: messages,
       onDismiss: _sendMessageWidgetDown,
+      rotate: () => rotate(),
     );
   }
 
   //send Button
   Widget sendbtn(model, id) {
     return IconButton(
-      icon: Icon(FontAwesomeIcons.share),
+      icon: SvgPicture.asset(
+        send,
+        color: Colors.white,
+        semanticsLabel: 'send',
+        width: 30,
+        height: 30,
+      ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.white
@@ -671,7 +755,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: MediaQuery.of(context).size.height * 0.1,
-        //color: Theme.of(context).backgroundColor,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               // ? Colors.grey
@@ -692,35 +775,50 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         ),
         child: Row(
           children: <Widget>[
-            //Image select button
-            imagepick(model, id),
-            //Voice record
-            voicemsg(id),
-            SizedBox(width: 10),
-            //Text Input
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 20, right: 20),
+            IconButton(
+              iconSize: 35,
+              icon: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey
-                          : Colors.black),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  color: Colors.black,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(100),
                 ),
-                child: TextField(
-                  minLines: 1,
-                  maxLines: 5,
-                  maxLength: 150,
-                  keyboardType: TextInputType.multiline,
-                  textCapitalization: TextCapitalization.sentences,
-                  textInputAction: TextInputAction.newline,
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: G.of(context).labelmsg,
-                    counterText: "",
+                child: Icon(
+                  _isRotated ? Icons.arrow_upward : Icons.arrow_downward,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () => rotate(),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey
+                            : Colors.black),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  child: TextField(
+                    minLines: 1,
+                    maxLines: 5,
+                    maxLength: 150,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                      hintText: G.of(context).labelmsg,
+                      counterText: "",
+                    ),
                   ),
                 ),
               ),
@@ -944,8 +1042,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //Widget build
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model) {
+        return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
           model2: GetmsgModel(widget.detailPageId),
@@ -1027,24 +1126,44 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   action1(model),
                 ],
               ),
-              body: ListView(
-                controller: controller,
-                addAutomaticKeepAlives: true,
-                children: <Widget>[
-                  //chat list
-                  buildChatList(partnermodel.partnerData.partnerId, model),
-                  //Message input box
-                  buildmessage(partnermodel.partnerData.partnerId, model),
-                  //Bottom Box
-                  if (isShowing && Platform.isAndroid)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-                  if (isShowing && Platform.isIOS)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.45)
+              body: Stack(
+                children: [
+                  ListView(
+                    controller: controller,
+                    addAutomaticKeepAlives: true,
+                    children: <Widget>[
+                      //chat list
+                      buildChatList(partnermodel.partnerData.partnerId, model),
+                      //Message input box
+                      buildmessage(partnermodel.partnerData.partnerId, model),
+                      //Bottom Box
+                      if (isShowing && Platform.isAndroid)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5),
+                      if (isShowing && Platform.isIOS)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.45)
+                    ],
+                  ),
+                  FloatingButton(
+                    bottom: 80,
+                    left: 10,
+                    scale: _animation,
+                    child: imagepick(model, widget.detailPageId),
+                  ),
+                  FloatingButton(
+                    bottom: 140,
+                    left: 30,
+                    scale: _animation2,
+                    child: voicemsg(widget.detailPageId),
+                  ),
                 ],
               ),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   //bottom widget up
@@ -1087,59 +1206,61 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ));
     } else if (await Permission.microphone.request().isDenied) {
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } else if (await Permission.microphone.request().isPermanentlyDenied) {
       /// [Error]
       // Permanently being denied,you need to allow in app setting
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    openAppSettings();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
