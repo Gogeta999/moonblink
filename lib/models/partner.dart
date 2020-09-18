@@ -238,19 +238,22 @@ class PartnerGameProfile {
   final int isPlay;
   final String createdAt;
   final String updatedAt;
+  final String gameicon;
 
-  PartnerGameProfile(
-      {this.id,
-      this.userId,
-      this.gameId,
-      this.gameName,
-      this.playerId,
-      this.level,
-      this.skillCoverImage,
-      this.aboutOrderTaking,
-      this.isPlay,
-      this.createdAt,
-      this.updatedAt});
+  PartnerGameProfile({
+    this.id,
+    this.userId,
+    this.gameId,
+    this.gameName,
+    this.playerId,
+    this.level,
+    this.skillCoverImage,
+    this.aboutOrderTaking,
+    this.isPlay,
+    this.createdAt,
+    this.updatedAt,
+    this.gameicon,
+  });
 
   PartnerGameProfile.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -263,7 +266,8 @@ class PartnerGameProfile {
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
         createdAt = json['created_at'],
-        updatedAt = json['updated_at'];
+        updatedAt = json['updated_at'],
+        gameicon = json["game_icon"];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -276,6 +280,7 @@ class PartnerGameProfile {
         'about_order_taking': aboutOrderTaking,
         'is_play': isPlay,
         'created_at': createdAt,
-        'updated_at': updatedAt
+        'updated_at': updatedAt,
+        'game_icon': gameicon,
       };
 }

@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class BookingTimeLeft extends StatefulWidget {
-  final String createat;
-  BookingTimeLeft({this.createat});
+  final String upadateat;
+  final int timeleft;
+  BookingTimeLeft({this.upadateat, this.timeleft});
 
   @override
   _BookingTimeLeftState createState() => _BookingTimeLeftState();
@@ -26,12 +27,12 @@ class _BookingTimeLeftState extends State<BookingTimeLeft> {
   void initState() {
     super.initState();
     var now = DateTime.now().millisecondsSinceEpoch;
-    var at = DateTime.parse(widget.createat).millisecondsSinceEpoch;
+    var at = DateTime.parse(widget.upadateat).millisecondsSinceEpoch;
     int nowsec = (now / 1000).round();
     int atsec = (at / 1000).round();
     int left = nowsec - atsec;
     setState(() {
-      lefttime = 300 - left;
+      lefttime = (widget.timeleft * 60) - left;
       print(lefttime);
     });
     timerCountDown(lefttime);

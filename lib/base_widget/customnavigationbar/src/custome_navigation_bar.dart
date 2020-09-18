@@ -220,44 +220,51 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           : EdgeInsets.zero,
       child: Material(
         elevation: widget.elevation,
-        borderRadius: BorderRadius.all(
-          widget.borderRadius,
+        borderRadius: BorderRadius.vertical(
+          top: widget.borderRadius,
         ),
         child: Container(
           decoration: BoxDecoration(
             color: widget.backgroundColor,
-            borderRadius: BorderRadius.all(
-              widget.borderRadius,
+            borderRadius: BorderRadius.vertical(
+              top: widget.borderRadius,
             ),
           ),
           height: DefaultCustomNavigationBarStyle.defaultHeight +
               (widget.isFloating ? 0.0 : additionalBottomPadding),
           width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              for (var i = 0; i < widget.items.length; i++)
-                CustomPaint(
-                  painter: BeaconPainter(
-                    color: widget.strokeColor,
-                    beaconRadius: _radiuses[i],
-                    maxRadius: _maxRadius,
-                  ),
-                  child: _CustomNavigationBarTile(
-                    iconSize: widget.iconSize,
-                    scale: _sizes[i],
-                    onPressed: () {
-                      widget.onTap(i);
-                    },
-                    selected: i == widget.currentIndex,
-                    item: widget.items[i],
-                    selectedColor: widget.selectedColor ??
-                        DefaultCustomNavigationBarStyle.defaultColor,
-                    unSelectedColor: widget.unSelectedColor ??
-                        DefaultCustomNavigationBarStyle.defaultUnselectedColor,
-                  ),
-                ),
-            ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  for (var i = 0; i < widget.items.length; i++)
+                    CustomPaint(
+                      painter: BeaconPainter(
+                        color: widget.strokeColor,
+                        beaconRadius: _radiuses[i],
+                        maxRadius: _maxRadius,
+                      ),
+                      child: _CustomNavigationBarTile(
+                        iconSize: widget.iconSize,
+                        scale: _sizes[i],
+                        onPressed: () {
+                          widget.onTap(i);
+                        },
+                        selected: i == widget.currentIndex,
+                        item: widget.items[i],
+                        selectedColor: widget.selectedColor ??
+                            DefaultCustomNavigationBarStyle.defaultColor,
+                        unSelectedColor: widget.unSelectedColor ??
+                            DefaultCustomNavigationBarStyle
+                                .defaultUnselectedColor,
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
