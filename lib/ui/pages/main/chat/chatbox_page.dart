@@ -7,6 +7,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,6 +16,7 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -42,6 +44,7 @@ import '../../../../services/chat_service.dart';
 
 final String camera = 'assets/icons/camera.svg';
 final String microphone = 'assets/icons/microphone.svg';
+final String send = 'assets/icons/send.svg';
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -187,9 +190,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -228,94 +232,114 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //booking End Dialog
   void bookingenddialog(model, Bookingstatus booking) {
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15.0),
-          ),
-        ),
-        // title: Text(partnerModel.gameprofile[index].gameName),
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(
-                child: Text("End Booking"),
-              ),
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: 'End Booking',
+            row1Content: 'Time Left',
+            row2Content: BookingTimeLeft(
+              upadateat: booking.updated,
+              timeleft: bookingdata.section,
             ),
-            Container(
-              child: Center(
-                child: Text("Time Left"),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              child: Center(
-                child: BookingTimeLeft(
-                  upadateat: booking.updated,
-                  timeleft: bookingdata.section,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15.0),
-                        // bottomRight: Radius.circular(15.0),
-                      ),
-                    ),
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    model.endbooking(selfId, booking.bookingid, 3);
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      borderRadius: BorderRadius.only(
-                        // bottomLeft: Radius.circular(15.0),
-                        bottomRight: Radius.circular(15.0),
-                      ),
-                    ),
-                    child: Text(
-                      "End",
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: 'End',
+            confirmCallback: () {
+              model.endbooking(selfId, booking.bookingid, 3);
+              // Navigator.pop(context);
+            },
+          );
+        }
+        // builder: (_) => AlertDialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.all(
+        //       Radius.circular(15.0),
+        //     ),
+        //   ),
+        //   // title: Text(partnerModel.gameprofile[index].gameName),
+        //   contentPadding: EdgeInsets.zero,
+        //   content: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.stretch,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         padding: EdgeInsets.symmetric(vertical: 20),
+        //         child: Center(
+        //           child: Text("End Booking"),
+        //         ),
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: Text("Time Left"),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 10,
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: BookingTimeLeft(
+        //             upadateat: booking.updated,
+        //             timeleft: bookingdata.section,
+        //           ),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 20,
+        //       ),
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: [
+        //           InkWell(
+        //             onTap: () => Navigator.pop(context),
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   bottomLeft: Radius.circular(15.0),
+        //                   // bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "Cancel",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //           InkWell(
+        //             onTap: () {
+        //               model.endbooking(selfId, booking.bookingid, 3);
+        //               Navigator.pop(context);
+        //             },
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   // bottomLeft: Radius.circular(15.0),
+        //                   bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "End",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
 
   //Rating Box
@@ -400,7 +424,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       minWidth: 70,
       child: FlatButton(
         child: Text(G.of(context).accept,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 17)),
         onPressed: () {
           MoonBlinkRepository.bookingAcceptOrDecline(
               selfId, bookingid, bookingAccept);
@@ -416,7 +443,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         minWidth: 70,
         child: FlatButton(
           child: Text(G.of(context).reject,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, bookingReject);
@@ -476,10 +506,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Theme.of(context).accentColor,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
         ),
@@ -502,10 +533,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       padding: EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: BoxConstraints(
@@ -542,10 +574,11 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return Container(
       padding: EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).accentColor
-            // ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey,
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: BoxConstraints(
@@ -642,7 +675,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //send Button
   Widget sendbtn(model, id) {
     return IconButton(
-      icon: Icon(FontAwesomeIcons.share),
+      icon: SvgPicture.asset(
+        send,
+        color: Colors.white,
+        semanticsLabel: 'send',
+        width: 30,
+        height: 30,
+      ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.white
@@ -671,7 +710,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         height: MediaQuery.of(context).size.height * 0.1,
-        //color: Theme.of(context).backgroundColor,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               // ? Colors.grey

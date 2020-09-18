@@ -357,9 +357,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.black,
       leading: IconButton(
         // icon: Icon(FontAwesomeIcons.search),
+        color: Colors.white,
         icon: SvgPicture.asset(
           search,
-          color: Theme.of(context).iconTheme.color,
+          color: Colors.white,
           semanticsLabel: 'search',
           width: 30,
           height: 30,

@@ -87,7 +87,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           color: Theme.of(context).brightness == Brightness.dark
               ? Theme.of(context).accentColor
               // ? Theme.of(context).scaffoldBackgroundColor
-              : Colors.grey,
+              : Theme.of(context).accentColor,
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
           ),
@@ -329,10 +329,11 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
         width: 200,
         height: 40,
         decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).accentColor
-              // ? Theme.of(context).scaffoldBackgroundColor
-              : Colors.grey,
+          // color: Theme.of(context).brightness == Brightness.dark
+          //     ? Theme.of(context).accentColor
+          //     // ? Theme.of(context).scaffoldBackgroundColor
+          //     : Colors.grey,
+          color: Theme.of(context).accentColor,
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
           ),

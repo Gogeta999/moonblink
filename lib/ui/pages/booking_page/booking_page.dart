@@ -54,14 +54,14 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future _initGameList() {
-   return MoonBlinkRepository.getGameList(widget.partnerUser.partnerId).then(
-           (value) {
-         if (value is BookingPartnerGameList) {
-           setState(() {
-             this._data = value;
-           });
-         }
-       });
+    return MoonBlinkRepository.getGameList(widget.partnerUser.partnerId)
+        .then((value) {
+      if (value is BookingPartnerGameList) {
+        setState(() {
+          this._data = value;
+        });
+      }
+    });
   }
 
   Future _initUserWallet() {
@@ -172,7 +172,7 @@ class _BookingPageState extends State<BookingPage> {
         _matchSubject.first.then((value) {
           MoonBlinkRepository.booking(partnerId, _gameTypeId, value).then(
               (value) => {
-                    Navigator.pushNamed(context, RouteName.chatBox,
+                    Navigator.pushReplacementNamed(context, RouteName.chatBox,
                         arguments: partnerId),
                     setState(() {
                       _isConfirmLoading = false;
@@ -192,22 +192,28 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   _showNotEnoughCoin() {
-    showCupertinoDialog(context: context, builder: (context) => CupertinoAlertDialog(
-      title: Text('You don\'t have enough coin to make this booking'),///later change booking to something meaningful
-      actions: <Widget>[
-        CupertinoButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(G.of(context).cancel),
-        ),
-        CupertinoButton(
-          onPressed: () {
-            Navigator.pop(context);
-            CustomBottomSheet.showTopUpBottomSheet(buildContext: context).whenComplete(() => Future.wait([_initUserWallet()]));
-          },
-          child: Text('Top up now'),
-        )
-      ],
-    ));
+    showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text('You don\'t have enough coin to make this booking'),
+
+              ///later change booking to something meaningful
+              actions: <Widget>[
+                CupertinoButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(G.of(context).cancel),
+                ),
+                CupertinoButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    CustomBottomSheet.showTopUpBottomSheet(
+                            buildContext: context)
+                        .whenComplete(() => Future.wait([_initUserWallet()]));
+                  },
+                  child: Text('Top up now'),
+                )
+              ],
+            ));
   }
 
   _showGameNameSheet(BuildContext context) {
@@ -285,10 +291,12 @@ class _BookingPageState extends State<BookingPage> {
               child: Card(
                 child: ListTile(
                   leading: CachedNetworkImage(
-                    imageUrl: widget.partnerUser.prfoileFromPartner.profileImage,
+                    imageUrl:
+                        widget.partnerUser.prfoileFromPartner.profileImage,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       radius: 30,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
                       backgroundImage: imageProvider,
                     ),
                     fit: BoxFit.cover,
@@ -379,8 +387,8 @@ class _BookingPageState extends State<BookingPage> {
                               child: Container(
                                 //width: 100,
                                 decoration: BoxDecoration(
-                                    border:
-                                        Border.all(width: 1, color: Colors.black),
+                                    border: Border.all(
+                                        width: 1, color: Colors.black),
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Center(
                                   child: Row(
@@ -390,7 +398,8 @@ class _BookingPageState extends State<BookingPage> {
                                       InkWell(
                                         onTap: _minus,
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
                                           child: Icon(Icons.remove),
                                         ),
                                       ),
@@ -404,7 +413,9 @@ class _BookingPageState extends State<BookingPage> {
                                           builder: (context, snapshot) {
                                             //return Text(_matchNumber.toString());
                                             return Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
                                               child: Text('${snapshot.data}'),
                                             );
                                           }),
@@ -416,7 +427,8 @@ class _BookingPageState extends State<BookingPage> {
                                       InkWell(
                                         onTap: _add,
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
                                           child: Icon(Icons.add),
                                         ),
                                       )
@@ -442,9 +454,10 @@ class _BookingPageState extends State<BookingPage> {
                             height: 50,
                             width: 100,
                             fit: BoxFit.contain,
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.black
-                                : Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.black
+                                    : Colors.black,
                             colorBlendMode: BlendMode.srcIn,
                           )),
                       Padding(
@@ -480,24 +493,26 @@ class _BookingPageState extends State<BookingPage> {
           ],
         ),
         bottomNavigationBar: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 68,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).bottomAppBarColor,
-                    border:
-                        Border(top: BorderSide(width: 2, color: Colors.black))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: _isPageError
-                      ? Center(child: Text('$error'))
-                      : Row(
+          width: MediaQuery.of(context).size.width,
+          height: 68,
+          decoration: BoxDecoration(
+              color: Theme.of(context).bottomAppBarColor,
+              border: Border(top: BorderSide(width: 2, color: Colors.black))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: _isPageError
+                ? Center(child: Text('$error'))
+                : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                          child: _wallet == null ? CupertinoActivityIndicator() : Text(
-                              'You have ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
-                              style: Theme.of(context).textTheme.subtitle1)),
+                          child: _wallet == null
+                              ? CupertinoActivityIndicator()
+                              : Text(
+                                  'You have ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
+                                  style:
+                                      Theme.of(context).textTheme.subtitle1)),
                       // MBButtonWidget(
                       //   onTap: null,
                       //   title: 'Button',
@@ -513,7 +528,9 @@ class _BookingPageState extends State<BookingPage> {
                                     : Center(
                                         child: Text(
                                           'Confirm',
-                                          style: Theme.of(context).textTheme.button,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .button,
                                         ),
                                       ),
                                 decoration: BoxDecoration(
@@ -527,8 +544,8 @@ class _BookingPageState extends State<BookingPage> {
                                             : Colors.black,
                                         spreadRadius: 2,
                                         // blurRadius: 2,
-                                        offset: Offset(
-                                            -8, 7), // changes position of shadow
+                                        offset: Offset(-8,
+                                            7), // changes position of shadow
                                       ),
                                     ]),
                                 width: 100,
@@ -537,8 +554,8 @@ class _BookingPageState extends State<BookingPage> {
                             )
                     ],
                   ),
-                ),
-              ),
+          ),
+        ),
       ),
     );
   }
