@@ -39,37 +39,57 @@ class _NewUserSwiperPageState extends State<NewUserSwiperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Skip', style: Theme.of(context).textTheme.bodyText1),
-            onPressed: () {
-              StorageManager.sharedPreferences.setBool(isNewUser, false);
-              Navigator.pushNamedAndRemoveUntil(
-                  context, RouteName.termsAndConditionsPage, (route) => false);
-            },
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          actions: <Widget>[
+            FlatButton(
+              // color: Colors.white,
+              child: Text('Skip',
+                  style: Theme.of(context).accentTextTheme.bodyText1),
+              onPressed: () {
+                StorageManager.sharedPreferences.setBool(isNewUser, false);
+                Navigator.pushNamedAndRemoveUntil(context,
+                    RouteName.termsAndConditionsPage, (route) => false);
+              },
+            ),
+          ],
+          bottom: PreferredSize(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).accentColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    // spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 0), // changes position of shadow
+                  ),
+                ],
+              ),
+              height: 10,
+            ),
+            preferredSize: Size.fromHeight(10),
           ),
-        ],
-      ),
-      body: Swiper(
-        itemBuilder: (BuildContext context, int index) {
-          return Image.asset(
-            images[index],
-            fit: BoxFit.fill,
-          );
-        },
-        controller: _swiperController,
-        onIndexChanged: (index) {
-          setState(() {
-            this.index = index;
-          });
-        },
-        loop: false,
-        autoplay: false,
-        itemCount: images.length,
-        pagination: SwiperPagination(),
-        control: CustomSwiperControl(),
-      ));
+        ),
+        body: Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            return Image.asset(
+              images[index],
+              fit: BoxFit.fill,
+            );
+          },
+          controller: _swiperController,
+          onIndexChanged: (index) {
+            setState(() {
+              this.index = index;
+            });
+          },
+          loop: false,
+          autoplay: false,
+          itemCount: images.length,
+          pagination: SwiperPagination(),
+          control: CustomSwiperControl(),
+        ));
   }
 
   void onSwipe() {

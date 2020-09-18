@@ -168,9 +168,12 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: Container(
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(
-                            ImageHelper.wrapAssetsImage('noFollowing.jpg'),
-                          ),
+                          image:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AssetImage(ImageHelper.wrapAssetsImage(
+                                      'noFollowing.jpg'))
+                                  : AssetImage(ImageHelper.wrapAssetsImage(
+                                      'noFollowingDark.jpg')),
                           fit: BoxFit.cover)),
                   width: double.infinity,
                   height: double.infinity,
@@ -183,7 +186,12 @@ class _ContactsPageState extends State<ContactsPage> {
                           color: Colors.transparent,
                           child: Text(
                             "${contactModel.viewStateError.errorMessage}",
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontSize: 20),
                           ),
                           onPressed: contactModel.initData,
                         ),
