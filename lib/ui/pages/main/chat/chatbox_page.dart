@@ -5,7 +5,8 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:moonblink/base_widget/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -222,6 +223,99 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       );
     } else
       return Container();
+  }
+
+  //booking End Dialog
+  void bookingenddialog(model, Bookingstatus booking) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(15.0),
+          ),
+        ),
+        // title: Text(partnerModel.gameprofile[index].gameName),
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text("End Booking"),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Text("Time Left"),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: Center(
+                child: BookingTimeLeft(
+                  upadateat: booking.updated,
+                  timeleft: bookingdata.section,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).accentColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        // bottomRight: Radius.circular(15.0),
+                      ),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    model.endbooking(selfId, booking.bookingid, 3);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).accentColor,
+                      borderRadius: BorderRadius.only(
+                        // bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                    ),
+                    child: Text(
+                      "End",
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   //Rating Box
@@ -668,20 +762,21 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   }
 
   //Booking End button
-  Widget endbtn(bookingid) {
+  Widget endbtn(booking) {
     return ProviderWidget(
-        model: CallModel(),
-        builder: (context, model, child) {
-          return FlatButton(
-            child: Text(
-              G.of(context).end,
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              model.endbooking(selfId, bookingid, 3);
-            },
-          );
-        });
+      model: CallModel(),
+      builder: (context, model, child) {
+        return FlatButton(
+          child: Text(
+            G.of(context).end,
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () {
+            bookingenddialog(model, booking);
+          },
+        );
+      },
+    );
   }
 
   //For call button
@@ -789,13 +884,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           break;
         //pending
         case (0):
-          return BookingTimeLeft(
+          return WaitingTimeLeft(
             createat: bookingdata.created,
           );
           break;
         //end booking
         case (1):
-          return endbtn(bookingdata.bookingid);
+          return endbtn(bookingdata);
           break;
         //reject
         case (2):

@@ -112,32 +112,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                 Text(partnerModel.gameprofile[index].playerId)
               ],
             ),
-            // Text.rich(
-            //   TextSpan(
-            //     style: TextStyle(fontSize: 16),
-            //     children: [
-            //       TextSpan(
-            //         text: "Rank: ",
-            //         style: TextStyle(color: Theme.of(context).accentColor),
-            //       ),
-            //       TextSpan(
-            //         text: partnerModel.gameprofile[index].level,
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // Text.rich(
-            //   TextSpan(
-            //     style: TextStyle(fontSize: 16),
-            //     children: [
-            //       TextSpan(
-            //         text: "PlayerID: ",
-            //         style: TextStyle(color: Theme.of(context).accentColor),
-            //       ),
-            //       TextSpan(text: partnerModel.gameprofile[index].playerId),
-            //     ],
-            //   ),
-            // ),
             SizedBox(
               height: 20,
             ),
@@ -578,7 +552,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 50,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
                           decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(width: 1, color: Colors.black),
@@ -592,10 +567,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             ),
                           ),
                         ),
+
+                        ///[game profiles]
                         if (partnerModel.partnerData.gameprofile.isNotEmpty)
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            height: 110,
+                            height: 120,
                             decoration: BoxDecoration(
                               border: Border(
                                 // top: BorderSide(width: 2, color: Colors.black),
@@ -611,17 +588,15 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
+                                        horizontal: 10, vertical: 15),
                                     child: GestureDetector(
                                       onTap: () => gameprofiledialog(
                                           partnerModel.partnerData, index),
                                       child: Column(
                                         children: [
                                           CachedNetworkImage(
-                                            imageUrl: partnerModel
-                                                .partnerData
-                                                .gameprofile[index]
-                                                .skillCoverImage,
+                                            imageUrl: partnerModel.partnerData
+                                                .gameprofile[index].gameicon,
                                             imageBuilder:
                                                 (context, imageProvider) =>
                                                     CircleAvatar(
@@ -638,6 +613,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                                 backgroundImage: imageProvider,
                                               ),
                                             ),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
                                           ),
                                           Text(partnerModel.partnerData
                                               .gameprofile[index].gameName),
