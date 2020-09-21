@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class BookingTimeLeft extends StatefulWidget {
   final String upadateat;
+  final int count;
   final int timeleft;
-  BookingTimeLeft({this.upadateat, this.timeleft});
+  BookingTimeLeft({this.upadateat, this.count, this.timeleft});
 
   @override
   _BookingTimeLeftState createState() => _BookingTimeLeftState();
@@ -32,7 +33,7 @@ class _BookingTimeLeftState extends State<BookingTimeLeft> {
     int atsec = (at / 1000).round();
     int left = nowsec - atsec;
     setState(() {
-      lefttime = (widget.timeleft * 60) - left;
+      lefttime = (widget.timeleft * 60 * widget.count) - left;
       print(lefttime);
     });
     timerCountDown(lefttime);
@@ -49,19 +50,21 @@ class _BookingTimeLeftState extends State<BookingTimeLeft> {
             timer.cancel();
           } else {
             countdown = countdown - 1;
-            setState(() {
-              lefttime = countdown - 1;
-              if (lefttime >= 60) {
-                min = (lefttime / 60).floor().toString().padLeft(1, '0');
-                sec = '00';
-              } else {
-                min = '0';
-              }
-              sec = (lefttime <= 59 ? lefttime : lefttime % 60)
-                  .floor()
-                  .toString()
-                  .padLeft(2, '0');
-            });
+            setState(
+              () {
+                lefttime = countdown - 1;
+                if (lefttime >= 60) {
+                  min = (lefttime / 60).floor().toString().padLeft(1, '0');
+                  sec = '00';
+                } else {
+                  min = '0';
+                }
+                sec = (lefttime <= 59 ? lefttime : lefttime % 60)
+                    .floor()
+                    .toString()
+                    .padLeft(2, '0');
+              },
+            );
           }
         },
       ),

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
@@ -59,6 +60,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   Animation<double> _animation;
   Animation<double> _animation2;
   Animation<double> _animation3;
+  //camera
+  final _picker = ImagePicker();
   //Message
   bool got = false;
   //Rating
@@ -84,7 +87,6 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   //bottom box
   bool isShowing = false;
   final controller = ScrollController();
-
   //compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
@@ -119,6 +121,22 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       bytes = _file.readAsBytesSync();
       print(bytes);
     });
+  }
+
+  //take photo
+  _takePhoto() async {
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    if (compressedImage != null) {
+      setState(() {
+        _file = compressedImage;
+        filename = selfId.toString() + now + ".png";
+        bytes = _file.readAsBytesSync();
+      });
+    }
   }
 
   ///[Icon Change]
@@ -302,6 +320,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             Container(
               child: Center(
                 child: BookingTimeLeft(
+                  count: booking.count,
                   upadateat: booking.updated,
                   timeleft: bookingdata.section,
                 ),
@@ -715,7 +734,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     if (bookingdata.isblock == 0) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: MediaQuery.of(context).size.height * 0.1,
+        height: MediaQuery.of(context).size.height * 0.08,
         //color: Theme.of(context).backgroundColor,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
@@ -989,7 +1008,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       return ViewStateBusyWidget();
     }
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.82,
       child: ListView.builder(
         reverse: true,
         itemCount: messages.length,
@@ -1119,6 +1138,18 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                     scale: _animation2,
                     child: voicemsg(widget.detailPageId),
                   ),
+                  FloatingButton(
+                    bottom: 200,
+                    left: 10,
+                    scale: _animation3,
+                    child: IconButton(
+                      icon: Icon(Icons.camera),
+                      onPressed: () {
+                        _takePhoto();
+                        rotate();
+                      },
+                    ),
+                  )
                 ],
               ),
             );

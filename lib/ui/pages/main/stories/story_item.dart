@@ -16,10 +16,11 @@ class StoryItemWidget extends StatelessWidget {
       child: InkWell(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        StoriesPage(story: stories, index: index)));
+              context,
+              MaterialPageRoute(
+                builder: (context) => StoriesPage(story: stories, index: index),
+              ),
+            );
           },
           child: Align(
             child: CachedNetworkImage(
