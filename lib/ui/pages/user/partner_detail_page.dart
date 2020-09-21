@@ -8,6 +8,7 @@ import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
+import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -636,7 +637,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                   /// [user feed]
                   SliverToBoxAdapter(
-                      child: Container(
+                      child: Feed(
+                          partnerModel.partnerData.partnerName,
+                          partnerModel.partnerData.partnerId,
+                          partnerModel.partnerData.rating
+                      )/*Container(
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Column(
                             children: <Widget>[
@@ -653,7 +658,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                     partnerModel.partnerData.partnerId),
                               ),
                             ],
-                          )) /*Feed(
+                          ))*/ /*Feed(
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
                           partnerModel.partnerData.rating)*/

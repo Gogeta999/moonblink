@@ -41,6 +41,7 @@ class CustomBottomSheet {
       @required RequestType requestType,
       @required bool willCrop,
       @required int compressQuality,
+      bool defaultCropStyle = true,
       int minWidth = 1080,
       int minHeight = 1080,
       Function onInit,
@@ -77,6 +78,7 @@ class CustomBottomSheet {
                       minHeight: minHeight,
                       willCrop: willCrop,
                       compressQuality: compressQuality,
+                      defaultCropStyle: defaultCropStyle,
                     ),
                   );
                 },

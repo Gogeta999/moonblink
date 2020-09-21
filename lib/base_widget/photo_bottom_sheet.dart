@@ -21,6 +21,7 @@ class PhotoBottomSheet extends StatefulWidget {
   final int minWidth;
   final int minHeight;
   final bool willCrop;
+  final bool defaultCropStyle;
   final int compressQuality;
 
   const PhotoBottomSheet(
@@ -35,6 +36,7 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.minWidth,
       @required this.minHeight,
       @required this.willCrop,
+      @required  this.defaultCropStyle,
       @required this.compressQuality})
       : super(key: key);
 
@@ -303,6 +305,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
 
   Future<File> _cropImage(File imageFile) async {
     File croppedFile = await ImageCropper.cropImage(
+        cropStyle: widget.defaultCropStyle ? CropStyle.rectangle : CropStyle.circle,
         sourcePath: imageFile.path,
         compressFormat: ImageCompressFormat.jpg,
         aspectRatioPresets: Platform.isAndroid
@@ -347,6 +350,9 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     File tempFile = await _getLocalFile();
     if (widget.willCrop) {
       croppedImage = await _cropImage(image);
+    }
+    if (widget.willCrop && croppedImage == null) {
+      return;
     }
     File compressedImage =
         await _compressAndGetFile(croppedImage ?? image, tempFile.path);
@@ -404,6 +410,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     _photoList.clear();
     _selectedImages.clear();
     _selectedIndices.clear();
+    _hasReachedMax = false;
     _addNewPhotos();
     _scrollController.jumpTo(0.0);
   }

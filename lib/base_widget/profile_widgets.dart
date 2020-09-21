@@ -73,11 +73,14 @@ class PartnerGameHistoryWidget extends StatefulWidget {
       _PartnerGameHistoryWidgetState();
 }
 
-class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
+class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> with AutomaticKeepAliveClientMixin {
   //PartnerDetailModel partnerDetailModel;
 
   //RefreshController _refreshController = RefreshController();
   //Completer<void> _refreshCompleter;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -102,7 +105,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
         builder: (context, state) {
           if (state is PartnerGameHistoryInitial) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             );
           }
           if (state is PartnerGameHistoryFailure) {
@@ -198,9 +201,7 @@ class BottomLoader extends StatelessWidget {
         child: SizedBox(
           width: 33,
           height: 33,
-          child: CircularProgressIndicator(
-            strokeWidth: 1.5,
-          ),
+          child: CupertinoActivityIndicator(),
         ),
       ),
     );
