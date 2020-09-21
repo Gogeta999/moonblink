@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -123,7 +124,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter your game ID', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
@@ -132,14 +133,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
                   setState(() {});
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -151,7 +152,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text('Enter your game ID\n', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
@@ -160,14 +161,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
                   setState(() {});
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -179,11 +180,11 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text('Select Your Game Rank'),
+            title: Text(G.of(context).selectgamerank),
             actions: _cupertinoActionSheet,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(G.of(context).cancel),
             ),
           );
         });
@@ -232,12 +233,12 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             ///for now skill cover image later server will give a sample photo url
             _buildCachedNetworkImage(
                 imageUrl: widget.gameProfile.skillCoverImage,
-                label: 'Sample',
+                label: G.of(context).sample,
                 isSample: true,
                 onTap: null),
             _buildCachedNetworkImage(
                 imageUrl: widget.gameProfile.skillCoverImage,
-                label: 'Choose',
+                label: G.of(context).select,
                 isSample: false,
                 onTap: _onTapImage)
           ],
@@ -297,7 +298,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         ),
         color: Theme.of(context).backgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text('Submit'),
+        child: Text(G.of(context).submit),
         onPressed: () {},
       ),
     );
@@ -356,29 +357,26 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             physics: ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(10, 16, 10, 0),
             children: <Widget>[
-              _buildTitleWidget(title: 'Fill your game information'),
+              _buildTitleWidget(title: G.of(context).fillgameinfo),
               _buildGameProfileCard(
-                  title: 'Game ID',
+                  title: G.of(context).gameid,
                   subtitle: _gameIdController.text,
                   iconData: Icons.edit,
                   onTap: _onTapGameID),
               _buildGameProfileCard(
-                  title: 'Game Rank',
+                  title: G.of(context).gamerank,
                   subtitle: _level,
                   iconData: Icons.edit,
                   onTap: _onTapLevel),
               _buildDivider(),
-              _buildTitleWidget(
-                  title: 'Game Mode that you are ready to provide services'),
+              _buildTitleWidget(title: G.of(context).gamemodedescript),
               _buildGameProfileCard(
-                  title: 'Game Mode',
+                  title: G.of(context).gamemode,
                   subtitle: _gameMode,
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
               _buildDivider(),
-              _buildTitleWidget(
-                  title:
-                      'Upload the screenshot to prove your game ID and rank'),
+              _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
             ],
           ),
@@ -395,19 +393,19 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   _onSubmitOrUpdate() async {
     if (_gameIdController.text.isEmpty) {
-      showToast('Game ID can\'t be blanked');
+      showToast('Game ID ${G.of(context).cannotblank}');
       return;
     }
     if (_level.isEmpty) {
-      showToast('Level can\'t be blanked');
+      showToast('Level ${G.of(context).cannotblank}');
       return;
     }
     if (_gameMode.isEmpty) {
-      showToast('Game Mode can\'t be blanked');
+      showToast('Game Mode ${G.of(context).cannotblank}');
       return;
     }
     if (widget.gameProfile.isPlay == 0 && _skillCoverPhoto == null) {
-      showToast('ScreenShot can\'t be blanked');
+      showToast('ScreenShot ${G.of(context).cannotblank}');
       return;
     }
     _freezeUI();
@@ -438,7 +436,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       print(key + ': ' + '$value');
     });
     MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
-        (value) => {showToast('Update Success'), Navigator.pop(context, true)},
+        (value) => {
+              showToast(G.of(context).toastsuccess),
+              Navigator.pop(context, true)
+            },
         onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
@@ -463,7 +464,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     } else if (Platform.isIOS) {
       _showCupertinoDialog(context, _gameIdController);
     } else {
-      showToast('This platform is not supported.');
+      showToast(G.of(context).toastplatformnotsupport);
     }
   }
 
@@ -487,21 +488,21 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     return showCupertinoDialog(
       context: context,
       builder: (builder) => CupertinoAlertDialog(
-        content: Text('Pick Image From'),
+        content: Text(G.of(context).pickimage),
         actions: <Widget>[
           CupertinoButton(
-              child: Text('Gallery'),
+              child: Text(G.of(context).imagePickerGallery),
               onPressed: () {
                 CustomBottomSheet.show(
                     buildContext: context,
                     limit: 1,
-                    body: 'Skill Cover Photo',
+                    body: G.of(context).skillcover,
                     onPressed: (File file) {
                       setState(() {
                         _skillCoverPhoto = file;
                       });
                     },
-                    buttonText: 'Select',
+                    buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.image,
                     willCrop: false,
@@ -509,11 +510,11 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                 Navigator.pop(context);
               }),
           CupertinoButton(
-            child: Text('Camera'),
+            child: Text(G.of(context).imagePickerCamera),
             onPressed: () => _pickImageFromCamera(),
           ),
           CupertinoButton(
-            child: Text('Cancel'),
+            child: Text(G.of(context).cancel),
             onPressed: () => Navigator.pop(context),
           )
         ],

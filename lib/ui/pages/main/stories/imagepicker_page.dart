@@ -246,7 +246,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
     CustomBottomSheet.show(
         buildContext: context,
         limit: 1,
-        body: 'Pick an image',
+        body: G.of(context).pickimage,
         onPressed: (File file) {
           setState(() {
             _chossingItem = file;

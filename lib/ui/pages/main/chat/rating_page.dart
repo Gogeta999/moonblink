@@ -47,7 +47,7 @@ class _RatingPageState extends State<RatingPage> {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                         child: Text(
-                          "Rate Player",
+                          G.of(context).rateplayer,
                           style: TextStyle(fontSize: 30),
                         ),
                       ),
@@ -164,7 +164,7 @@ class _RatingPageState extends State<RatingPage> {
                             ? Navigator.pop(context)
                             : showToast(G.of(context).toastratingfail));
                   },
-                  child: Text("Summit"),
+                  child: Text(G.of(context).submit),
                 ),
               )
             ],

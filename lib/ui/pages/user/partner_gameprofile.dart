@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/imageview.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/partner.dart';
 
 class PartnerGameProfilePage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
     print(widget.gameprofile.length);
     return Scaffold(
       appBar: AppbarWidget(
-        title: Text("Game Profile"),
+        title: Text(G.of(context).profilegame),
       ),
       body: Column(
         children: [
@@ -28,7 +29,7 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
           ),
           if (widget.gameprofile.isEmpty)
             Center(
-              child: Text("This User have no Game Profile"),
+              child: Text(G.of(context).nogameprofile),
             ),
           ListView.builder(
             shrinkWrap: true,
@@ -83,7 +84,7 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
                                       style: TextStyle(fontSize: 16),
                                       children: [
                                         TextSpan(
-                                          text: "Rank: ",
+                                          text: "${G.of(context).rank} : ",
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .accentColor),
@@ -99,7 +100,7 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
                                       style: TextStyle(fontSize: 16),
                                       children: [
                                         TextSpan(
-                                          text: "PlayerID: ",
+                                          text: "${G.of(context).playerid} : ",
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .accentColor),

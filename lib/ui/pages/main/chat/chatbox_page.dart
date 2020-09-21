@@ -293,15 +293,15 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         context: context,
         builder: (_) {
           return CustomDialog(
-            title: 'End Booking',
-            row1Content: 'Time Left',
+            title: G.of(context).bookingEnded,
+            row1Content: G.of(context).timeleft,
             row2Content: BookingTimeLeft(
               upadateat: booking.updated,
               timeleft: bookingdata.section,
             ),
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
-            confirmContent: 'End',
+            confirmContent: G.of(context).end,
             confirmCallback: () {
               model.endbooking(selfId, booking.bookingid, 3);
               Navigator.pop(context);
@@ -1139,7 +1139,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                                 try {
                                   await MoonBlinkRepository.blockOrUnblock(
                                       value, BLOCK);
-                                  showToast('Successfully Block');
+                                  showToast(G.of(context).toastsuccess);
                                 } catch (e) {
                                   print(e.toString());
                                 }

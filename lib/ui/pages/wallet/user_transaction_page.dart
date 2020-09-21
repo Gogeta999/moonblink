@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_transaction/bloc.dart';
+import 'package:moonblink/generated/l10n.dart';
 
 class UserTransactionPage extends StatefulWidget {
   @override
   _UserTransactionPageState createState() => _UserTransactionPageState();
 }
 
-class _UserTransactionPageState extends State<UserTransactionPage> with AutomaticKeepAliveClientMixin{
-
+class _UserTransactionPageState extends State<UserTransactionPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -75,17 +76,19 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
             }
             if (state is UserTransactionNoData) {
               return Center(
-                child: Text('No history'),
+                child: Text(G.of(context).textnohistory),
               );
             }
             if (state is UserTransactionSuccess) {
               if (state.data.isEmpty) {
                 return Center(
-                  child: Text('No history'),
+                  child: Text(G.of(context).textnohistory),
                 );
               }
               return ListView.builder(
-                physics: ScrollPhysics(parent: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics())),
+                physics: ScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(
+                        parent: ClampingScrollPhysics())),
                 itemBuilder: (BuildContext context, int index) {
                   return index >= state.data.length
                       ? BottomLoader()
@@ -97,7 +100,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> with Automati
                 controller: _scrollController,
               );
             }
-            return Text('Oops!. Something went wrong.');
+            return Text(G.of(context).toasterror);
           },
         ),
       ),

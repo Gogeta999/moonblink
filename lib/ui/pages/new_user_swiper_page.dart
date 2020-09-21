@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 
@@ -44,7 +45,7 @@ class _NewUserSwiperPageState extends State<NewUserSwiperPage> {
           actions: <Widget>[
             FlatButton(
               // color: Colors.white,
-              child: Text('Skip',
+              child: Text(G.of(context).splashSkip,
                   style: Theme.of(context).accentTextTheme.bodyText1),
               onPressed: () {
                 StorageManager.sharedPreferences.setBool(isNewUser, false);

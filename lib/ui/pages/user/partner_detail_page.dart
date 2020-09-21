@@ -7,7 +7,6 @@ import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -101,7 +100,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Rank"),
+                Text(G.of(context).rank),
                 Text(":"),
                 Text(partnerModel.gameprofile[index].level)
               ],
@@ -112,7 +111,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("PlayerID"),
+                Text(G.of(context).playerid),
                 Text(":"),
                 Text(partnerModel.gameprofile[index].playerId)
               ],
@@ -132,7 +131,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   ),
                 ),
                 child: Text(
-                  "Okay",
+                  G.of(context).okay,
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
@@ -168,8 +167,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   await MoonBlinkRepository.reportUser(widget.detailPageId);
 
                   ///Api call success
-                  showToast(
-                      'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+                  showToast(G.of(context).toastreport);
                   Navigator.pop(context);
                 } catch (e) {
                   showToast('Sorry, $e');
@@ -499,7 +497,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             title: G.of(context).booking,
                             onTap: widget.detailPageId == ownId
                                 ? () {
-                                    showToast('Your Can\'t book yourself ');
+                                    showToast(G.of(context).cannotbookself);
                                   }
                                 : () {
                                     Navigator.pushNamed(
@@ -511,7 +509,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             title: G.of(context).tabChat,
                             onTap: widget.detailPageId == ownId
                                 ? () {
-                                    showToast('Your Can\'t chat yourself ');
+                                    showToast(G.of(context).cannotchatself);
                                   }
                                 : () {
                                     Navigator.pushReplacementNamed(
@@ -640,8 +638,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       child: Feed(
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
-                          partnerModel.partnerData.rating
-                      )/*Container(
+                          partnerModel.partnerData
+                              .rating) /*Container(
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Column(
                             children: <Widget>[

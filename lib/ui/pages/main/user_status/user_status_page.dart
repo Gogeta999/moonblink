@@ -80,7 +80,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 onPressed: () {
                   String id = encrypt(userid);
                   FlutterClipboard.copy(id).then((value) {
-                    showToast('Copy To Your Clipboard');
+                    showToast(G.of(context).toastcopy);
                     print('copied');
                   });
                 },
@@ -283,7 +283,7 @@ class _LogoutState extends State<Logout> {
       model: LoginModel(Provider.of(context)),
       builder: (context, model, child) {
         return PageCard(
-          pageTitle: "Log Out",
+          pageTitle: G.of(context).logout,
           iconData: FontAwesomeIcons.signOutAlt,
           onTap: () {
             model.logout();
@@ -351,7 +351,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       }),
           if (usertype != 0)
             PageCard(
-                pageTitle: 'Own Profile',
+                pageTitle: G.of(context).profileown,
                 iconData: FontAwesomeIcons.userAlt,
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.partnerOwnProfile)),
@@ -359,7 +359,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ///profile
           if (usertype != 0)
             PageCard(
-                pageTitle: 'Game Profile',
+                pageTitle: G.of(context).profilegame,
                 iconData: FontAwesomeIcons.userEdit,
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),

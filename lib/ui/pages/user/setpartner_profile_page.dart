@@ -143,7 +143,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                         child: Text(
-                          "Be Our Partner",
+                          G.of(context).otpWelcomePartner,
                           style: TextStyle(fontSize: 30),
                         ),
                       ),
@@ -225,7 +225,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           _gender = 'Male';
                                         });
                                       },
-                                      child: Text('Male'),
+                                      child: Text(G.of(context).genderMale),
                                     ),
                                     ShadedContainer(
                                       selected: _gender.isNotEmpty &&
@@ -237,7 +237,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                           _gender = 'Female';
                                         });
                                       },
-                                      child: Text('Female'),
+                                      child: Text(G.of(context).genderFemale),
                                     )
                                   ],
                                 ),
@@ -270,7 +270,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       Container(
                                         width: 100,
                                         child: Text(
-                                          "Add Your Front NRC",
+                                          G.of(context).labelnrcfront,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white),
@@ -330,7 +330,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                                       Container(
                                         width: 100,
                                         child: Text(
-                                          "Add Your Back NRC",
+                                          G.of(context).labelnrcback,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white),
@@ -421,7 +421,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
       showToast(G.of(context).toastnrcnull);
       return false;
     } else if (_gender.isEmpty) {
-      showToast('Gender can\'t be blank');
+      showToast('Gender ${G.of(context).cannotblank}');
       return false;
     } else if (_nrcController == null ||
         _dobController == null ||
@@ -478,15 +478,15 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
     return showCupertinoDialog(
       context: context,
       builder: (builder) => CupertinoAlertDialog(
-        content: Text('Pick Image From'),
+        content: Text(G.of(context).pickimage),
         actions: <Widget>[
           CupertinoButton(
-              child: Text('Gallery'),
+              child: Text(G.of(context).imagePickerGallery),
               onPressed: () {
                 CustomBottomSheet.show(
                     buildContext: context,
                     limit: 1,
-                    body: 'Pick NRC',
+                    body: G.of(context).picknrc,
                     onPressed: (File file) {
                       setState(() {
                         type == NrcType.front
@@ -494,7 +494,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                             : _nrcBack = file;
                       });
                     },
-                    buttonText: 'Select',
+                    buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.image,
                     minWidth: 500,
@@ -504,11 +504,11 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                 Navigator.pop(context);
               }),
           CupertinoButton(
-            child: Text('Camera'),
+            child: Text(G.of(context).imagePickerCamera),
             onPressed: () => _pickNrcFromCamera(type),
           ),
           CupertinoButton(
-            child: Text('Cancel'),
+            child: Text(G.of(context).cancel),
             onPressed: () => Navigator.pop(context),
           )
         ],

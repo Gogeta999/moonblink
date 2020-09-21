@@ -76,13 +76,13 @@ class _ResetPasswordPage extends State<ResetPasswordPage> {
                                   keyboardType: TextInputType.emailAddress,
                                 ),
                                 LoginTextField(
-                                  label: "Enter OTP",
+                                  label: G.of(context).labelotp,
                                   icon: FontAwesomeIcons.sms,
                                   controller: _otpCodeController,
                                   keyboardType: TextInputType.phone,
                                 ),
                                 LoginTextField(
-                                  label: "Enter New Password",
+                                  label: G.of(context).newpassword,
                                   icon: Icons.lock_outline,
                                   controller: _passwController,
                                   obscureText: true,
@@ -119,7 +119,7 @@ class ResetPassword extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              "Reset Password",
+              G.of(context).resetpassword,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6

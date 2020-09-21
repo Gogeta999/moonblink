@@ -57,7 +57,7 @@ class TermsAndConditions extends StatelessWidget {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                           child: Text(
-                        "Terms and Conditions",
+                        G.of(context).termAndConditions,
                         style: TextStyle(fontSize: 30),
                       )),
                     ),

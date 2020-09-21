@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -244,7 +245,7 @@ class _NewTopUpPage extends State<NewTopUpPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Top Up'),
+        title: Text(G.of(context).topup),
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -417,7 +418,7 @@ class _NewTopUpPage extends State<NewTopUpPage>
                 FontAwesomeIcons.ad,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: Text('Watch an Ad to get free coins.'),
+              title: Text(G.of(context).watchadfreecoins),
               trailing: isAdLoading ? CupertinoActivityIndicator() : null,
             ),
     );
@@ -436,7 +437,7 @@ class _NewTopUpPage extends State<NewTopUpPage>
                 FontAwesomeIcons.handsHelping,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: Text('Top up with our customer service.'),
+              title: Text(G.of(context).topupservice),
               trailing: Icon(
                 FontAwesomeIcons.facebook,
                 color: Theme.of(context).iconTheme.color,
