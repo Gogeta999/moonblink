@@ -9,6 +9,7 @@ import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
+import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 

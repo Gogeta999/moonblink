@@ -27,18 +27,17 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
-import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
@@ -68,7 +67,6 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   bool got = false;
   //Rating
   bool rated = false;
-  TextEditingController comment = TextEditingController();
   //Messaging
   String filename;
   File _file;
@@ -306,7 +304,14 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             confirmContent: 'End',
             confirmCallback: () {
               model.endbooking(selfId, booking.bookingid, 3);
-              // Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      RatingPage(bookingdata.bookingid, widget.detailPageId),
+                ),
+              );
             },
           );
         }
@@ -402,81 +407,82 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         );
   }
 
-  //Rating Box
-  void rating(bookingid) {
-    var rate = 5.0;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ProviderWidget<RateModel>(
-          model: RateModel(),
-          builder: (context, model, child) {
-            return new AlertDialog(
-              title: Text(G.of(context).pleaseRatingForThisGame),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SmoothStarRating(
-                    starCount: 5,
-                    rating: rate,
-                    color: Theme.of(context).accentColor,
-                    isReadOnly: false,
-                    size: 30,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border,
-                    allowHalfRating: true,
-                    spacing: 2.0,
-                    //star value
-                    onRated: (value) {
-                      print("rating value -> $value");
-                      setState(() {
-                        rate = value;
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  //Comment for Rating
-                  Container(
-                      margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      child: TextField(
-                        controller: comment,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: G.of(context).labelcomment,
-                        ),
-                      ))
-                ],
-              ),
-              //Summit Rating
-              actions: [
-                FlatButton(
-                    child: Text(G.of(context).submit),
-                    onPressed: () {
-                      model
-                          .rate(widget.detailPageId, bookingid, rate,
-                              comment.text)
-                          .then((value) => value
-                              ? Navigator.pop(context)
-                              : showToast(G.of(context).toastratingfail));
-                    })
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // //Rating Box
+  // void rating(bookingid) {
+  //   var rate = 5.0;
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return ProviderWidget<RateModel>(
+  //         model: RateModel(),
+  //         builder: (context, model, child) {
+  //           return new AlertDialog(
+  //             title: Text(G.of(context).pleaseRatingForThisGame),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0)),
+  //             content: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: <Widget>[
+  //                 SmoothStarRating(
+  //                   starCount: 5,
+  //                   rating: rate,
+  //                   color: Theme.of(context).accentColor,
+  //                   isReadOnly: false,
+  //                   size: 30,
+  //                   filledIconData: Icons.star,
+  //                   halfFilledIconData: Icons.star_half,
+  //                   defaultIconData: Icons.star_border,
+  //                   allowHalfRating: true,
+  //                   spacing: 2.0,
+  //                   //star value
+  //                   onRated: (value) {
+  //                     print("rating value -> $value");
+  //                     setState(() {
+  //                       rate = value;
+  //                     });
+  //                   },
+  //                 ),
+  //                 SizedBox(
+  //                   height: 30,
+  //                 ),
+  //                 //Comment for Rating
+  //                 Container(
+  //                   margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+  //                   padding: EdgeInsets.all(8.0),
+  //                   decoration: BoxDecoration(
+  //                     border: Border.all(width: 1.5, color: Colors.grey),
+  //                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
+  //                   ),
+  //                   child: TextField(
+  //                     controller: comment,
+  //                     textInputAction: TextInputAction.done,
+  //                     decoration: InputDecoration(
+  //                       labelText: G.of(context).labelcomment,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             //Summit Rating
+  //             actions: [
+  //               FlatButton(
+  //                   child: Text(G.of(context).submit),
+  //                   onPressed: () {
+  //                     model
+  //                         .rate(widget.detailPageId, bookingid, rate,
+  //                             comment.text)
+  //                         .then((value) => value
+  //                             ? Navigator.pop(context)
+  //                             : showToast(G.of(context).toastratingfail));
+  //                   })
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   //accept button
   acceptbtn(bookingid, msg) {
@@ -1093,7 +1099,9 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               if (bookingdata.status == 3 && rated == false) {
                 rated = true;
                 Future.delayed(
-                    Duration.zero, () => rating(bookingdata.bookingid));
+                  Duration.zero,
+                  () => RatingPage(bookingdata.bookingid, widget.detailPageId),
+                );
               }
             }
             return Scaffold(
