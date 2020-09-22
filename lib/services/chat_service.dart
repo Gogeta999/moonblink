@@ -186,6 +186,7 @@ class ChatModel extends Model {
           data["user_id"],
           data["booking_user_id"],
           data["status"],
+          data['count'],
           data["created_at"],
           data["updated_at"],
           data['minute_per_section'],
@@ -195,6 +196,7 @@ class ChatModel extends Model {
       // print(bookingdata.id);
       // print(bookingdata.bookinguserid);
       // print(bookingdata.status);
+      print(bookingdata.toString());
       notifyListeners();
     });
 

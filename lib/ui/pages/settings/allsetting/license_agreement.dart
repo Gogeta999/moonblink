@@ -54,7 +54,7 @@ class LicenseAgreement extends StatelessWidget {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                           child: Text(
-                        "License Agreement",
+                        G.of(context).licenseagreement,
                         style: TextStyle(fontSize: 30),
                       )),
                     ),
@@ -62,7 +62,7 @@ class LicenseAgreement extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 180),
                     child: Center(
-                      child: Text("License and Agreement",
+                      child: Text(G.of(context).licenseagreement,
                           style: titleTextStyle, textAlign: TextAlign.justify),
                     ),
                   ),

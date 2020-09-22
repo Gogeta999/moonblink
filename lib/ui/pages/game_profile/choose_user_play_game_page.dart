@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -29,7 +30,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Choose Game You Play'),
+        title: Text(G.of(context).choosegame),
         leading: IconButton(
             icon: Icon(CupertinoIcons.back),
             onPressed: () {
@@ -74,8 +75,8 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                               closeOnTap: false,
                               color: Theme.of(context).scaffoldBackgroundColor,
                               caption: snapshot.data == DeselectState.loading
-                                  ? 'Loading'
-                                  : 'Deselect',
+                                  ? G.of(context).loading
+                                  : G.of(context).deselect,
                               iconWidget: snapshot.data == DeselectState.loading
                                   ? CupertinoActivityIndicator()
                                   : Icon(Icons.remove_circle,
@@ -122,7 +123,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
               },
             );
           } else {
-            return Center(child: Text('Something went wrong!'));
+            return Center(child: Text(G.of(context).toasterror));
           }
         },
       ),

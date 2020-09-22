@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/signupwidget.dart';
 import 'package:moonblink/base_widget/thirdLogin.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
@@ -74,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
-                                label: "Enter Mail",
+                                label: G.of(context).loginMail,
                                 icon: Icons.perm_identity,
                                 controller: _mailController,
                                 textInputAction: TextInputAction.next,
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               LoginTextField(
                                 controller: _passwordController,
-                                label: "Enter password",
+                                label: G.of(context).loginPassword,
                                 icon: Icons.lock_outline,
                                 obscureText: true,
                                 focusNode: _pwdFocus,
@@ -145,7 +146,7 @@ class LoginButton extends StatelessWidget {
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              "Sign In",
+              G.of(context).toSignIn,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6

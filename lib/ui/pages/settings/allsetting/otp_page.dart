@@ -73,7 +73,7 @@ class _OtpPageState extends State<OtpPage> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: Center(
                       child: Text(
-                        "Be Our Partner",
+                        G.of(context).otpWelcomePartner,
                         style: TextStyle(fontSize: 30),
                       ),
                     ),

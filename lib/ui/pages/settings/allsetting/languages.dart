@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,7 @@ class _LanguagePageState extends State<LanguagePage> {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Center(
                   child: Text(
-                "Language",
+                G.of(context).settingLanguage,
                 style: TextStyle(fontSize: 30),
               )),
             ),

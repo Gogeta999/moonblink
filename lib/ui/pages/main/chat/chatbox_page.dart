@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
@@ -17,7 +18,6 @@ import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -27,18 +27,17 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
-import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
@@ -62,11 +61,12 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   Animation<double> _animation;
   Animation<double> _animation2;
   Animation<double> _animation3;
+  //camera
+  final _picker = ImagePicker();
   //Message
   bool got = false;
   //Rating
   bool rated = false;
-  TextEditingController comment = TextEditingController();
   //Messaging
   String filename;
   File _file;
@@ -87,7 +87,6 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   //bottom box
   bool isShowing = false;
   final controller = ScrollController();
-
   //compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
@@ -122,6 +121,22 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       bytes = _file.readAsBytesSync();
       print(bytes);
     });
+  }
+
+  //take photo
+  _takePhoto() async {
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    if (compressedImage != null) {
+      setState(() {
+        _file = compressedImage;
+        filename = selfId.toString() + now + ".png";
+        bytes = _file.readAsBytesSync();
+      });
+    }
   }
 
   ///[Icon Change]
@@ -278,18 +293,25 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         context: context,
         builder: (_) {
           return CustomDialog(
-            title: 'End Booking',
-            row1Content: 'Time Left',
+            title: G.of(context).bookingEnded,
+            row1Content: G.of(context).timeleft,
             row2Content: BookingTimeLeft(
               upadateat: booking.updated,
               timeleft: bookingdata.section,
             ),
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
-            confirmContent: 'End',
+            confirmContent: G.of(context).end,
             confirmCallback: () {
               model.endbooking(selfId, booking.bookingid, 3);
-              // Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      RatingPage(bookingdata.bookingid, widget.detailPageId),
+                ),
+              );
             },
           );
         }
@@ -385,81 +407,82 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         );
   }
 
-  //Rating Box
-  void rating(bookingid) {
-    var rate = 5.0;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ProviderWidget<RateModel>(
-          model: RateModel(),
-          builder: (context, model, child) {
-            return new AlertDialog(
-              title: Text(G.of(context).pleaseRatingForThisGame),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SmoothStarRating(
-                    starCount: 5,
-                    rating: rate,
-                    color: Theme.of(context).accentColor,
-                    isReadOnly: false,
-                    size: 30,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border,
-                    allowHalfRating: true,
-                    spacing: 2.0,
-                    //star value
-                    onRated: (value) {
-                      print("rating value -> $value");
-                      setState(() {
-                        rate = value;
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  //Comment for Rating
-                  Container(
-                      margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      child: TextField(
-                        controller: comment,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: G.of(context).labelcomment,
-                        ),
-                      ))
-                ],
-              ),
-              //Summit Rating
-              actions: [
-                FlatButton(
-                    child: Text(G.of(context).submit),
-                    onPressed: () {
-                      model
-                          .rate(widget.detailPageId, bookingid, rate,
-                              comment.text)
-                          .then((value) => value
-                              ? Navigator.pop(context)
-                              : showToast(G.of(context).toastratingfail));
-                    })
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // //Rating Box
+  // void rating(bookingid) {
+  //   var rate = 5.0;
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return ProviderWidget<RateModel>(
+  //         model: RateModel(),
+  //         builder: (context, model, child) {
+  //           return new AlertDialog(
+  //             title: Text(G.of(context).pleaseRatingForThisGame),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0)),
+  //             content: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: <Widget>[
+  //                 SmoothStarRating(
+  //                   starCount: 5,
+  //                   rating: rate,
+  //                   color: Theme.of(context).accentColor,
+  //                   isReadOnly: false,
+  //                   size: 30,
+  //                   filledIconData: Icons.star,
+  //                   halfFilledIconData: Icons.star_half,
+  //                   defaultIconData: Icons.star_border,
+  //                   allowHalfRating: true,
+  //                   spacing: 2.0,
+  //                   //star value
+  //                   onRated: (value) {
+  //                     print("rating value -> $value");
+  //                     setState(() {
+  //                       rate = value;
+  //                     });
+  //                   },
+  //                 ),
+  //                 SizedBox(
+  //                   height: 30,
+  //                 ),
+  //                 //Comment for Rating
+  //                 Container(
+  //                   margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+  //                   padding: EdgeInsets.all(8.0),
+  //                   decoration: BoxDecoration(
+  //                     border: Border.all(width: 1.5, color: Colors.grey),
+  //                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
+  //                   ),
+  //                   child: TextField(
+  //                     controller: comment,
+  //                     textInputAction: TextInputAction.done,
+  //                     decoration: InputDecoration(
+  //                       labelText: G.of(context).labelcomment,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             //Summit Rating
+  //             actions: [
+  //               FlatButton(
+  //                   child: Text(G.of(context).submit),
+  //                   onPressed: () {
+  //                     model
+  //                         .rate(widget.detailPageId, bookingid, rate,
+  //                             comment.text)
+  //                         .then((value) => value
+  //                             ? Navigator.pop(context)
+  //                             : showToast(G.of(context).toastratingfail));
+  //                   })
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   //accept button
   acceptbtn(bookingid, msg) {
@@ -754,7 +777,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     if (bookingdata.isblock == 0) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: MediaQuery.of(context).size.height * 0.1,
+        height: MediaQuery.of(context).size.height * 0.08,
+        //color: Theme.of(context).backgroundColor,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               // ? Colors.grey
@@ -1027,7 +1051,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       return ViewStateBusyWidget();
     }
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.82,
       child: ListView.builder(
         reverse: true,
         itemCount: messages.length,
@@ -1075,7 +1099,9 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               if (bookingdata.status == 3 && rated == false) {
                 rated = true;
                 Future.delayed(
-                    Duration.zero, () => rating(bookingdata.bookingid));
+                  Duration.zero,
+                  () => RatingPage(bookingdata.bookingid, widget.detailPageId),
+                );
               }
             }
             return Scaffold(
@@ -1113,7 +1139,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                                 try {
                                   await MoonBlinkRepository.blockOrUnblock(
                                       value, BLOCK);
-                                  showToast('Successfully Block');
+                                  showToast(G.of(context).toastsuccess);
                                 } catch (e) {
                                   print(e.toString());
                                 }
@@ -1157,6 +1183,18 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                     scale: _animation2,
                     child: voicemsg(widget.detailPageId),
                   ),
+                  FloatingButton(
+                    bottom: 200,
+                    left: 10,
+                    scale: _animation3,
+                    child: IconButton(
+                      icon: Icon(Icons.camera),
+                      onPressed: () {
+                        _takePhoto();
+                        rotate();
+                      },
+                    ),
+                  )
                 ],
               ),
             );

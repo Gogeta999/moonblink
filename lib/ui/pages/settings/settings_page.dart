@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
@@ -92,7 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         color: Theme.of(context).scaffoldBackgroundColor,
                         child: Center(
                             child: Text(
-                          "Setting",
+                          G.of(context).settingsSettings,
                           style: TextStyle(fontSize: 30),
                         )),
                       ),
@@ -105,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ontap: () => Navigator.pushNamed(
                             context, RouteName.termsAndConditionsPage),
                         child: Center(
-                          child: Text("Terms and Conditions"),
+                          child: Text(G.of(context).termAndConditions),
                         ),
                       ),
                     ),
@@ -119,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ontap: () => Navigator.pushNamed(
                         context, RouteName.licenseAgreement),
                     child: Center(
-                      child: Text("License Agreement"),
+                      child: Text(G.of(context).licenseagreement),
                     ),
                   ),
                 ),
@@ -130,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     height: 50,
                     ontap: () => openStore(),
                     child: Center(
-                      child: Text("Rate Our App"),
+                      child: Text(G.of(context).ratingApp),
                     ),
                   ),
                 ),
@@ -142,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ontap: () =>
                         Navigator.pushNamed(context, RouteName.blockedUsers),
                     child: Center(
-                      child: Text("Blocked Users"),
+                      child: Text(G.of(context).block),
                     ),
                   ),
                 ),
@@ -154,7 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       height: 50,
                       ontap: () => Navigator.pushNamed(context, RouteName.otp),
                       child: Center(
-                        child: Text("Register as Partner"),
+                        child: Text(G.of(context).settingsSignAsPartner),
                       ),
                     ),
                   ),
@@ -166,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ontap: () =>
                         Navigator.pushNamed(context, RouteName.language),
                     child: Center(
-                      child: Text("Language"),
+                      child: Text(G.of(context).settingLanguage),
                     ),
                   ),
                 ),

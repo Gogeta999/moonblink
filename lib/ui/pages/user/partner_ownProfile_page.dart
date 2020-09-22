@@ -123,7 +123,7 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                                           String id = encrypt(userid);
                                           FlutterClipboard.copy(id)
                                               .then((value) {
-                                            showToast('Copy To Your Clipboard');
+                                            showToast(G.of(context).toastcopy);
                                             print('copied');
                                           });
                                         },

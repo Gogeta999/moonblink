@@ -9,6 +9,7 @@ import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/base_widget/container/usercontainer.dart';
 import 'package:moonblink/bloc_pattern/blocked_users/blocked_users_lists/bloc.dart';
 import 'package:moonblink/bloc_pattern/blocked_users/unblock_button/bloc.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/blocked_user.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -123,7 +124,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Blocked Users",
+                              G.of(context).block,
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -164,7 +165,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Blocked Users",
+                              G.of(context).block,
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -214,7 +215,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Blocked Users",
+                              G.of(context).block,
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -261,7 +262,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                             color: Theme.of(context).scaffoldBackgroundColor,
                             child: Center(
                                 child: Text(
-                              "Blocked Users",
+                              G.of(context).block,
                               style: TextStyle(fontSize: 30),
                             )),
                           ),
@@ -290,7 +291,7 @@ class _BlockedUserPageState extends State<BlockedUserPage> {
                   ],
                 );
               }
-              return Text('Oops!. Something went wrong.');
+              return Text(G.of(context).toasterror);
             },
           ),
         ),
@@ -378,7 +379,7 @@ class BlockedUserListTile extends StatelessWidget {
                           .add(BlockedUsersRemoved(index: index));
                       return CupertinoActivityIndicator();
                     }
-                    return Text('Something went wrong!');
+                    return Text(G.of(context).toasterror);
                   },
                 ),
         ),
@@ -408,7 +409,7 @@ class UnblockButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(width: 1, color: Colors.black),
               ),
-              child: Text('Unblock')),
+              child: Text(G.of(context).unblock)),
         );
       }),
     );

@@ -186,7 +186,7 @@ class _BookingPageState extends State<BookingPage> {
                   });
         });
       } else {
-        showToast('You need to choose game and game mode');
+        showToast(G.of(context).toastnogame);
       }
     });
   }
@@ -195,7 +195,7 @@ class _BookingPageState extends State<BookingPage> {
     showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-              title: Text('You don\'t have enough coin to make this booking'),
+              title: Text(G.of(context).notenoughcoin),
 
               ///later change booking to something meaningful
               actions: <Widget>[
@@ -204,14 +204,13 @@ class _BookingPageState extends State<BookingPage> {
                   child: Text(G.of(context).cancel),
                 ),
                 CupertinoButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    CustomBottomSheet.showTopUpBottomSheet(
-                            buildContext: context)
-                        .whenComplete(() => Future.wait([_initUserWallet()]));
-                  },
-                  child: Text('Top up now'),
-                )
+                    onPressed: () {
+                      Navigator.pop(context);
+                      CustomBottomSheet.showTopUpBottomSheet(
+                              buildContext: context)
+                          .whenComplete(() => Future.wait([_initUserWallet()]));
+                    },
+                    child: Text(G.of(context).topup))
               ],
             ));
   }
@@ -222,12 +221,12 @@ class _BookingPageState extends State<BookingPage> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text('Select Game'),
+            title: Text(G.of(context).selectgame),
             // message: Text('Message'),
             actions: _gameNameList,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(G.of(context).cancel),
             ),
           );
         });
@@ -239,12 +238,12 @@ class _BookingPageState extends State<BookingPage> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text('Select Game Mode'),
+            title: Text(G.of(context).selectgameMode),
             // message: Text('Message'),
             actions: _gameModeList,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(G.of(context).cancel),
             ),
           );
         });
@@ -256,12 +255,13 @@ class _BookingPageState extends State<BookingPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('Confirm Your Booking'),
+          title: Text(G.of(context).confirmbooking),
           leading: IconButton(
-              icon: Icon(CupertinoIcons.back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
+            icon: Icon(CupertinoIcons.back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           // elevation: 15,
           // shadowColor: Colors.blue,
           bottom: PreferredSize(
@@ -326,7 +326,7 @@ class _BookingPageState extends State<BookingPage> {
                   child: ListTile(
                     // leading: Text('Choose Game'),
                     title: Text(
-                      'Choose Game',
+                      G.of(context).selectgame,
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     subtitle: Text(
@@ -348,7 +348,7 @@ class _BookingPageState extends State<BookingPage> {
                   child: ListTile(
                     // leading: Text('Choose Game'),
                     title: Text(
-                      'Choose Mode',
+                      G.of(context).selectgameMode,
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     subtitle: Text(
@@ -367,48 +367,49 @@ class _BookingPageState extends State<BookingPage> {
 
                 ///[Match Count]
                 Card(
-                    child: Container(
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
+                  child: Container(
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
                           padding: EdgeInsets.only(left: 10),
                           child: Text(
-                            'Match',
+                            G.of(context).match,
                             style: Theme.of(context).textTheme.subtitle1,
-                          )),
-                      _isPageLoading
-                          ? Container(
-                              margin: const EdgeInsets.only(right: 15),
-                              child: CupertinoActivityIndicator())
-                          : Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Container(
-                                //width: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1, color: Colors.black),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: _minus,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Icon(Icons.remove),
+                          ),
+                        ),
+                        _isPageLoading
+                            ? Container(
+                                margin: const EdgeInsets.only(right: 15),
+                                child: CupertinoActivityIndicator())
+                            : Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Container(
+                                  //width: 100,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1, color: Colors.black),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        InkWell(
+                                          onTap: _minus,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Icon(Icons.remove),
+                                          ),
                                         ),
-                                      ),
-                                      Container(
-                                        height: 100,
-                                        width: 1,
-                                        color: Colors.black,
-                                      ),
-                                      StreamBuilder<int>(
+                                        Container(
+                                          height: 100,
+                                          width: 1,
+                                          color: Colors.black,
+                                        ),
+                                        StreamBuilder<int>(
                                           stream: _matchSubject.stream,
                                           builder: (context, snapshot) {
                                             //return Text(_matchNumber.toString());
@@ -418,60 +419,62 @@ class _BookingPageState extends State<BookingPage> {
                                                       horizontal: 10),
                                               child: Text('${snapshot.data}'),
                                             );
-                                          }),
-                                      Container(
-                                        height: 100,
-                                        width: 1,
-                                        color: Colors.black,
-                                      ),
-                                      InkWell(
-                                        onTap: _add,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Icon(Icons.add),
+                                          },
                                         ),
-                                      )
-                                    ],
+                                        Container(
+                                          height: 100,
+                                          width: 1,
+                                          color: Colors.black,
+                                        ),
+                                        InkWell(
+                                          onTap: _add,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Icon(Icons.add),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                    ],
+                              )
+                      ],
+                    ),
                   ),
-                )),
+                ),
 
                 Card(
-                    child: Container(
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(left: 10),
-                          child: Image.asset(
-                            ImageHelper.wrapAssetsLogo('appbar.jpg'),
-                            height: 50,
-                            width: 100,
-                            fit: BoxFit.contain,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.black
-                                    : Colors.black,
-                            colorBlendMode: BlendMode.srcIn,
-                          )),
-                      Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Total Price',
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              StreamBuilder<int>(
+                  child: Container(
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Image.asset(
+                              ImageHelper.wrapAssetsLogo('appbar.jpg'),
+                              height: 50,
+                              width: 100,
+                              fit: BoxFit.contain,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.black
+                                  : Colors.black,
+                              colorBlendMode: BlendMode.srcIn,
+                            )),
+                        Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  G.of(context).totalprice,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                StreamBuilder<int>(
                                   initialData: 0,
                                   stream: _totalPriceSubject.stream,
                                   builder: (context, snapshot) {
@@ -480,14 +483,16 @@ class _BookingPageState extends State<BookingPage> {
                                       style:
                                           Theme.of(context).textTheme.subtitle2,
                                     );
-                                  })
-                            ],
+                                  },
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             )
           ],
@@ -527,31 +532,32 @@ class _BookingPageState extends State<BookingPage> {
                                     ? CupertinoActivityIndicator()
                                     : Center(
                                         child: Text(
-                                          'Confirm',
+                                          G.of(context).confirm,
                                           style: Theme.of(context)
                                               .textTheme
                                               .button,
                                         ),
                                       ),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Theme.of(context).accentColor,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.black
-                                            : Colors.black,
-                                        spreadRadius: 2,
-                                        // blurRadius: 2,
-                                        offset: Offset(-8,
-                                            7), // changes position of shadow
-                                      ),
-                                    ]),
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Theme.of(context).accentColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.black
+                                          : Colors.black,
+                                      spreadRadius: 2,
+                                      // blurRadius: 2,
+                                      offset: Offset(
+                                          -8, 7), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
                                 width: 100,
                                 height: 45,
                               ),
-                            )
+                            ),
                     ],
                   ),
           ),

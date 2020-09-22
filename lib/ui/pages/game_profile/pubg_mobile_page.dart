@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -9,24 +10,23 @@ class PubgMobile extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter your game ID', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor
-              ),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
             ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   print(controller.text);
                   Navigator.pop(context);
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -38,24 +38,23 @@ class PubgMobile extends StatelessWidget {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text('Enter your game ID\n', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor
-              ),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
             ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   print(controller.text);
                   Navigator.pop(context);
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -121,7 +120,7 @@ class PubgMobile extends StatelessWidget {
             ],
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(G.of(context).cancel),
             ),
           );
         });
@@ -137,30 +136,28 @@ class PubgMobile extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         physics: ClampingScrollPhysics(),
         children: <Widget>[
-          Text('Skill description',
+          Text(G.of(context).skilldescription,
               style: Theme.of(context).textTheme.bodyText1),
           SizedBox(height: 20),
-          Text('Play PUBG Mobile with users to teach them how to play~',
+          Text(G.of(context).pubg,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w300,
               )),
           SizedBox(height: 20),
-          Text('Qualification requirements',
+          Text(G.of(context).qualificationrequire,
               style: Theme.of(context).textTheme.bodyText1),
           SizedBox(height: 20),
-          Text(
-              '1. Female Rank ≥ Silver, Male\'s Rank ≥ Platinum.\n(The screenshot must clearly show the game ID and rank.)',
+          Text(G.of(context).pubgrequirement1,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
-          Text(
-              '2. Provide great Service, be patient, and good at time and emotional management.',
+          Text(G.of(context).pubgrequirement2,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
           SizedBox(height: 20),
           Divider(
             thickness: 1,
           ),
           SizedBox(height: 20),
-          Text('Fill in skill level',
+          Text(G.of(context).fillskilllevel,
               style: Theme.of(context).textTheme.bodyText1),
           SizedBox(height: 20),
           InkResponse(
@@ -171,7 +168,7 @@ class PubgMobile extends StatelessWidget {
               } else if (Platform.isIOS) {
                 _showCupertinoDialog(context, _controller);
               } else {
-                showToast('This platform is not supported.');
+                showToast(G.of(context).toastplatformnotsupport);
               }
             },
             child: Row(
@@ -191,7 +188,7 @@ class PubgMobile extends StatelessWidget {
               } else if (Platform.isIOS) {
                 _showCupertinoBottomSheet(context);
               } else {
-                showToast('This platform is not supported.');
+                showToast(G.of(context).toastplatformnotsupport);
               }
             },
             child: Row(
@@ -206,10 +203,10 @@ class PubgMobile extends StatelessWidget {
           SizedBox(height: 20),
           Divider(thickness: 1),
           SizedBox(height: 20),
-          Text('Upload skill cover',
+          Text(G.of(context).uploadskillcover,
               style: Theme.of(context).textTheme.bodyText1),
           SizedBox(height: 20),
-          Text('The screenshot must clearly show the game ID and rank.',
+          Text(G.of(context).toastscreenshot,
               style: TextStyle(color: Colors.deepOrangeAccent)),
           SizedBox(height: 20),
           Row(
@@ -232,19 +229,19 @@ class PubgMobile extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text('Sample Photo',
+              Text(G.of(context).samplephoto,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
-              Text('Upload Cover',
+              Text(G.of(context).uploadcover,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
             ],
           ),
           SizedBox(height: 20),
           Divider(thickness: 1),
           SizedBox(height: 20),
-          Text('Record skill audio',
+          Text(G.of(context).recordskillaudio,
               style: Theme.of(context).textTheme.bodyText1),
           SizedBox(height: 20),
-          Text('No porn, abusive or illegal contents are allowed in the audio.',
+          Text(G.of(context).rule1,
               style: TextStyle(color: Colors.deepOrangeAccent)),
           SizedBox(height: 20),
           Text('00:00',
@@ -258,9 +255,8 @@ class PubgMobile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: 10,
                           horizontal: MediaQuery.of(context).size.width * 0.2),
-                      child: Icon(Icons.mic_none,
-                          size: 32,
-                          color: Colors.white),
+                      child:
+                          Icon(Icons.mic_none, size: 32, color: Colors.white),
                       color: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -271,14 +267,13 @@ class PubgMobile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: 10,
                           horizontal: MediaQuery.of(context).size.width * 0.2),
-                      child: Icon(Icons.mic_none,
-                          size: 32,
-                          color: Colors.white),
+                      child:
+                          Icon(Icons.mic_none, size: 32, color: Colors.white),
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     )),
           SizedBox(height: 20),
-          Text('Click to start recording',
+          Text(G.of(context).buttonstartrecord,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               textAlign: TextAlign.center),
           SizedBox(height: 20),

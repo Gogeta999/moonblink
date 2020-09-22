@@ -4,9 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_rating/user_rating_bloc.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,7 +21,8 @@ class UserRatingPage extends StatefulWidget {
   _UserRatingPageState createState() => _UserRatingPageState();
 }
 
-class _UserRatingPageState extends State<UserRatingPage> with AutomaticKeepAliveClientMixin {
+class _UserRatingPageState extends State<UserRatingPage>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
   Completer<void> _refreshCompleter;
@@ -92,7 +93,7 @@ class _UserRatingPageState extends State<UserRatingPage> with AutomaticKeepAlive
                   if (state is UserRatingSuccess) {
                     if (state.data.isEmpty) {
                       return Center(
-                        child: Text('This user has no rating.'),
+                        child: Text(G.of(context).norating),
                       );
                     }
                     return ListView.builder(
@@ -111,7 +112,7 @@ class _UserRatingPageState extends State<UserRatingPage> with AutomaticKeepAlive
                       controller: _scrollController,
                     );
                   }
-                  return Center(child: Text('Oops Something went wrong!'));
+                  return Center(child: Text(G.of(context).toasterror));
                 },
               )),
         ),
@@ -216,16 +217,17 @@ class RatingListTile extends StatelessWidget {
             ),
           ),
           subtitle: StreamBuilder<bool>(
-            initialData: false,
-            stream: _expandIconSubject.stream,
-            builder: (context, snapshot) {
-              if (state.data[index].comment.isNotEmpty && snapshot.data) {
-                return Text('\"' + state.data[index].comment + '\"', style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic));
-              }else {
-                return Container();
-              }
-            }
-          ),
+              initialData: false,
+              stream: _expandIconSubject.stream,
+              builder: (context, snapshot) {
+                if (state.data[index].comment.isNotEmpty && snapshot.data) {
+                  return Text('\"' + state.data[index].comment + '\"',
+                      style:
+                          TextStyle(fontSize: 14, fontStyle: FontStyle.italic));
+                } else {
+                  return Container();
+                }
+              }),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

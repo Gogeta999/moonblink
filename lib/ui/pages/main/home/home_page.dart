@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage>
                   }
                 },
                 child: Text(
-                  "Coplayer",
+                  G.of(context).usertypecoplayer,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage>
                   }
                 },
                 child: Text(
-                  "Cele",
+                  G.of(context).usertypecele,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage>
                   }
                 },
                 child: Text(
-                  "Pro",
+                  G.of(context).usertypepro,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage>
                   }
                 },
                 child: Text(
-                  "Streamer",
+                  G.of(context).usertypestreamer,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage>
                 }
               },
               child: Center(
-                child: Text("Male"),
+                child: Text(G.of(context).genderMale),
               ),
             ),
             MediumShadedContainer(
@@ -225,7 +225,7 @@ class _HomePageState extends State<HomePage>
                 }
               },
               child: Center(
-                child: Text("Female"),
+                child: Text(G.of(context).genderFemale),
               ),
             ),
           ],

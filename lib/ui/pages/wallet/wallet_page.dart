@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -71,11 +72,13 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget _buildAds() {
-    return isAdLoading ? CupertinoActivityIndicator() : Text('Watch Ad');
+    return isAdLoading
+        ? CupertinoActivityIndicator()
+        : Text(G.of(context).watchad);
   }
 
   Widget _buildTopUpWithCustomerService() {
-    return Text('Customer service');
+    return Text(G.of(context).userStatusCustomerService);
   }
 
   @override
@@ -114,7 +117,7 @@ class _WalletPageState extends State<WalletPage> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: Center(
                         child: Text(
-                      "My Coin",
+                      G.of(context).coin,
                       style: TextStyle(fontSize: 30),
                     )),
                   ),
@@ -127,14 +130,16 @@ class _WalletPageState extends State<WalletPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           ShadedContainer(
-                            ontap: () {_showTopUpBtmSheet();},
-                            child: Text("Top Up"),
+                            ontap: () {
+                              _showTopUpBtmSheet();
+                            },
+                            child: Text(G.of(context).topup),
                           ),
                           ShadedContainer(
                             ontap: () {
                               print("cash");
                             },
-                            child: Text("Cash Out"),
+                            child: Text(G.of(context).cashout),
                           ),
                           ShadedContainer(
                             ontap: _showRewardedAds,
@@ -205,7 +210,8 @@ class _WalletPageState extends State<WalletPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text('Top Up History', style: Theme.of(context).textTheme.button),
+                      child: Text(G.of(context).topuphistory,
+                          style: Theme.of(context).textTheme.button),
                     ),
                     Divider(thickness: 2, color: Colors.black),
                     Expanded(
@@ -220,8 +226,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   _showTopUpBtmSheet() {
-    CustomBottomSheet.showTopUpBottomSheet(
-        buildContext: context)
+    CustomBottomSheet.showTopUpBottomSheet(buildContext: context)
         .whenComplete(() => getUserWallet());
   }
 
