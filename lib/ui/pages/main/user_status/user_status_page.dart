@@ -199,11 +199,13 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
                 onTap: () {
                   int usertype =
                       StorageManager.sharedPreferences.getInt(mUserType);
-                  if (usertype != 0) {
+                  /*if (usertype != 0) {
                     Navigator.of(context)
                         .pushNamed(RouteName.partnerOwnProfile);
-                  } else if (model?.user?.token == null) {
+                  } else */if (model?.user?.token == null) {
                     Navigator.of(context).pushNamed(RouteName.login);
+                  } else {
+                    Navigator.of(context).pushNamed(RouteName.partnerOwnProfile);
                   }
                 },
                 child: Hero(
@@ -349,7 +351,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                         MoonBlinkRepository.changestatus(0);
                         showToast(G.of(context).toastonline);
                       }),
-          if (usertype != 0)
+          //if (usertype != 0)
             PageCard(
                 pageTitle: 'Own Profile',
                 iconData: FontAwesomeIcons.userAlt,

@@ -120,10 +120,10 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class RegisterButton extends StatelessWidget {
-  final mailCtrl;
-  final nameCtrl;
-  final passwordCtrl;
-  final rePasswordCtrl;
+  final TextEditingController mailCtrl;
+  final TextEditingController nameCtrl;
+  final TextEditingController passwordCtrl;
+  final TextEditingController rePasswordCtrl;
   final RegisterModel model;
 
   RegisterButton(this.mailCtrl, this.nameCtrl, this.passwordCtrl,
@@ -144,7 +144,8 @@ class RegisterButton extends StatelessWidget {
       onPressed: model.isBusy
           ? null
           : () {
-              if (passwordCtrl == rePasswordCtrl) {
+              ///Validation error fix
+              if (passwordCtrl.text == rePasswordCtrl.text) {
                 model
                     .singUp(mailCtrl.text, nameCtrl.text, passwordCtrl.text)
                     .then((value) {
@@ -154,7 +155,7 @@ class RegisterButton extends StatelessWidget {
                     model.showErrorMessage(context);
                   }
                 });
-              } else if (passwordCtrl != rePasswordCtrl) {
+              } else if (passwordCtrl.text != rePasswordCtrl.text) {
                 showToast('Please enter same password');
               }
             },

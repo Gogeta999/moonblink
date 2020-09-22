@@ -474,14 +474,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             ),
                           ],
                         ),
-                        InkWell(
-                          onTap: () => Navigator.pushNamed(
-                              context, RouteName.userRating,
-                              arguments: partnerModel.partnerId),
-                          child: MBAverageWidget(
-                            title: G.of(context).averageRating,
-                            averageRating: partnerModel.partnerData.rating,
-                          ),
+                        MBAverageWidget(
+                          title: G.of(context).averageRating,
+                          averageRating: partnerModel.partnerData.rating,
                         )
                       ],
                     ),
