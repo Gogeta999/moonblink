@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -10,6 +11,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -254,14 +256,18 @@ class _BookingPageState extends State<BookingPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              icon: SvgPicture.asset(
+                back,
+                semanticsLabel: 'back',
+                color: Colors.white,
+                width: 30,
+                height: 30,
+              ),
+              onPressed: () => Navigator.pop(context)),
           backgroundColor: Colors.black,
           title: Text(G.of(context).confirmbooking),
-          leading: IconButton(
-            icon: Icon(CupertinoIcons.back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+
           // elevation: 15,
           // shadowColor: Colors.blue,
           bottom: PreferredSize(

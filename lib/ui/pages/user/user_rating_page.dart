@@ -47,14 +47,8 @@ class _UserRatingPageState extends State<UserRatingPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('User Rating'),
-      //   backgroundColor: Colors.black,
-      //   actions: [
-      //     AppbarLogo(),
-      //   ],
-      // ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _onRefresh,
@@ -170,8 +164,8 @@ class RatingListTile extends StatelessWidget {
         ],
       ),
       child: ListTile(
-          onTap: () => Navigator.pushNamed(context, RouteName.partnerDetail,
-              arguments: state.data[index].ratingUserId),
+          // onTap: () => Navigator.pushNamed(context, RouteName.partnerDetail,
+          //     arguments: state.data[index].ratingUserId),
           leading: CachedNetworkImage(
             imageUrl: state.data[index].profileImage,
             imageBuilder: (context, imageProvider) => CircleAvatar(

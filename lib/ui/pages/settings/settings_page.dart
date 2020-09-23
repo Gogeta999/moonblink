@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
@@ -9,6 +10,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -61,6 +63,15 @@ class _SettingsPageState extends State<SettingsPage> {
           }
           return Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                  icon: SvgPicture.asset(
+                    back,
+                    semanticsLabel: 'back',
+                    color: Colors.white,
+                    width: 30,
+                    height: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context)),
               backgroundColor: Colors.black,
               actions: [
                 AppbarLogo(),
