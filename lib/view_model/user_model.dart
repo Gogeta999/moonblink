@@ -25,21 +25,21 @@ class UserModel extends ChangeNotifier {
 
   saveUser(User user) {
     _user = user;
-    notifyListeners();
     print('sdfwerrefsgdsg' + user.toString());
     StorageManager.localStorage.setItem(mUser, user);
+    notifyListeners();
   }
 
   /// clear user data
   clearUser() {
     _user = null;
-    notifyListeners();
     StorageManager.localStorage.deleteItem(mUser);
     StorageManager.sharedPreferences.remove(token);
     StorageManager.sharedPreferences.remove(mLoginName);
     StorageManager.sharedPreferences.remove(mUserId);
     StorageManager.sharedPreferences.remove(mUserType);
     StorageManager.sharedPreferences.remove(mstatus);
+    notifyListeners();
     //StorageManager.sharedPreferences.clear();
   }
 }

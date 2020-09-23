@@ -31,8 +31,8 @@ class BookingDialog extends StatelessWidget {
 // >>>>>>> develop-master
       content: Text('$bookingUserName ' +
           G.of(context).bookingDialogSomeoneBook +
-          '\n\n' +
-          'Game : ${gameList[gameType]}'),
+          '\n\n'/* +
+          'Game : ${gameList[gameType]}'*/),
       actions: <Widget>[
         FlatButton(
             child: Text(G.of(context).bookingDialogReject),
