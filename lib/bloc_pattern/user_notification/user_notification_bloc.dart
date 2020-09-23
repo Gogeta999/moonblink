@@ -5,9 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_notification.dart';
 import 'package:moonblink/models/user_rating.dart';
+import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
@@ -99,7 +102,11 @@ class UserNotificationBloc
   Stream<UserNotificationState> _mapAcceptedToState(
       UserNotificationState currentState, int userId, int bookingId) async* {
     try {
-      await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT);
+      await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT).then((value) =>
+      value != null
+          ? locator<NavigationService>()
+          .navigateTo(RouteName.chatBox, arguments: bookingId)
+          : null);
       showToast('Booking Accepted');
     } catch (error) {
       showToast('$error');
