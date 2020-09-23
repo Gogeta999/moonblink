@@ -171,7 +171,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           image:
                               Theme.of(context).brightness == Brightness.light
                                   ? AssetImage(ImageHelper.wrapAssetsImage(
-                                      'noFollowing.jpg'))
+                                      'noFollowingDay.jpg'))
                                   : AssetImage(ImageHelper.wrapAssetsImage(
                                       'noFollowingDark.jpg')),
                           fit: BoxFit.cover)),
