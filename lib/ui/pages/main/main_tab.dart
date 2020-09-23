@@ -14,7 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 final String home = 'assets/icons/home.svg';
 final String chat = 'assets/icons/chat.svg';
 final String following = 'assets/icons/following.svg';
-final String user = 'assets/icons/profile.svg';
+final String user = 'assets/icons/profileBunny.svg';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;

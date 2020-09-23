@@ -800,13 +800,13 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               iconSize: 35,
               icon: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  border: Border.all(color: Colors.white),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Icon(
                   _isRotated ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               onPressed: () => rotate(),
@@ -1103,6 +1103,15 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             }
             return Scaffold(
               appBar: AppBar(
+                leading: IconButton(
+                    icon: SvgPicture.asset(
+                      back,
+                      semanticsLabel: 'back',
+                      color: Colors.white,
+                      width: 30,
+                      height: 30,
+                    ),
+                    onPressed: () => Navigator.pop(context)),
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
                     // ? Colors.grey
                     ? Colors.black

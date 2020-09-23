@@ -13,7 +13,7 @@ final String loading = 'assets/icons/Loading.svg';
 final String search = 'assets/icons/magnify.svg';
 final String message = 'assets/icons/message.svg';
 final String microphone = 'assets/icons/microphone.svg';
-final String profilebunny = 'assets/icons/Profile Bunny.svg';
+final String profilebunny = 'assets/icons/profileBunny.svg';
 final String profile = 'assets/icons/profile.svg';
 final String report = 'assets/icons/report.svg';
 final String send = 'assets/icons/send.svg';
@@ -22,4 +22,6 @@ final String status = 'assets/icons/status.svg';
 final String theme = 'assets/icons/theme.svg';
 final String wallet = 'assets/icons/wallet.svg';
 
+final String dayMood = 'assets/icons/userPage/sunDayMood.svg';
+final String nightMood = 'assets/icons/userPage/sunNightMood.svg';
 // final String = 'assets/icons/.svg';
