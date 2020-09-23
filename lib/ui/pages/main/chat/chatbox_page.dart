@@ -26,6 +26,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -41,10 +42,6 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
-
-final String camera = 'assets/icons/camera.svg';
-final String microphone = 'assets/icons/microphone.svg';
-final String send = 'assets/icons/send.svg';
 
 class ChatBoxPage extends StatefulWidget {
   ChatBoxPage(this.detailPageId);
@@ -690,9 +687,9 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   Widget imagepick(model, id) {
     return IconButton(
       icon: SvgPicture.asset(
-        camera,
+        gallery,
         color: Colors.black,
-        semanticsLabel: 'camera',
+        semanticsLabel: 'gallery',
         width: 30,
         height: 30,
       ),
@@ -808,7 +805,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Icon(
-                  _isRotated ? Icons.arrow_upward : Icons.arrow_downward,
+                  _isRotated ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                   color: Colors.white,
                 ),
               ),
@@ -1188,7 +1185,13 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                     left: 10,
                     scale: _animation3,
                     child: IconButton(
-                      icon: Icon(Icons.camera),
+                      icon: SvgPicture.asset(
+                        camera,
+                        color: Colors.black,
+                        semanticsLabel: 'camera',
+                        width: 30,
+                        height: 30,
+                      ),
                       onPressed: () {
                         _takePhoto();
                         rotate();
