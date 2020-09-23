@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -15,6 +16,7 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
+import 'package:moonblink/models/user_notification.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
@@ -317,6 +319,16 @@ class MoonBlinkRepository {
     var response = await DioUtils()
         .delete(Api.DeleteGameProfile + '$userId/profile/game/$gameId');
     return response.data;
+  }
+
+  //get user's notifications
+  static Future<UserNotificationResponse> getUserNotifications(int limit, int page) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(Api.UserNotifications + '$userId/notification', queryParameters: {
+      'limit': limit,
+      'page': page
+    });
+    return UserNotificationResponse.fromJson(response.data);
   }
 
   // Booking
