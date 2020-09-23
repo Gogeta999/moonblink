@@ -7,7 +7,6 @@ import 'package:moonblink/view_model/booking_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:moonblink/generated/l10n.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   final int partnerId;
@@ -39,13 +38,13 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 10),
-          Text(/*G.of(context).bookingChooseGameType*/'Choose game type to play',
+          Text(
+              /*G.of(context).bookingChooseGameType*/ 'Choose game type to play',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
           Container(
             constraints: BoxConstraints(
-              maxHeight:  MediaQuery.of(context).size.height * 0.3
-            ),
+                maxHeight: MediaQuery.of(context).size.height * 0.3),
             child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
@@ -72,7 +71,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     subtitle:
                         Text('${bookingModel.gamesList[index].price} Coins'),
                     trailing: BookingButton(
-                        partnerId: widget.partnerId, gameTypeId: bookingModel.gamesList[index].gameTypeId));
+                        partnerId: widget.partnerId,
+                        gameTypeId: bookingModel.gamesList[index].gameTypeId));
               },
             ),
           ),

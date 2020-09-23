@@ -4,17 +4,20 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:moonblink/base_widget/bookingtimeleft.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
+import 'package:moonblink/base_widget/chat/floatingbutton.dart';
+import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
-import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/recorder.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/message.dart';
@@ -23,19 +26,19 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/message_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
-import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
@@ -47,14 +50,20 @@ class ChatBoxPage extends StatefulWidget {
   _ChatBoxPageState createState() => _ChatBoxPageState();
 }
 
-class _ChatBoxPageState extends State<ChatBoxPage> {
+class _ChatBoxPageState extends State<ChatBoxPage>
+    with TickerProviderStateMixin {
+  //animation
+  bool _isRotated = true;
+  AnimationController _controller;
+  Animation<double> _animation;
+  Animation<double> _animation2;
+  Animation<double> _animation3;
+  //camera
+  final _picker = ImagePicker();
   //Message
   bool got = false;
-  //Timer
-  Timer _timer;
   //Rating
   bool rated = false;
-  TextEditingController comment = TextEditingController();
   //Messaging
   String filename;
   File _file;
@@ -75,7 +84,6 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //bottom box
   bool isShowing = false;
   final controller = ScrollController();
-
   //compress file and get file.
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
@@ -112,9 +120,62 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     });
   }
 
+  //take photo
+  _takePhoto() async {
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
+    File image = File(pickedFile.path);
+    File temporaryImage = await _getLocalFile();
+    File compressedImage =
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    if (compressedImage != null) {
+      setState(() {
+        _file = compressedImage;
+        filename = selfId.toString() + now + ".png";
+        bytes = _file.readAsBytesSync();
+      });
+    }
+  }
+
+  ///[Icon Change]
+  void rotate() {
+    setState(() {
+      if (_isRotated) {
+        _isRotated = false;
+        _controller.forward();
+      } else {
+        _isRotated = true;
+        _controller.reverse();
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    ///[Animation]
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+
+    _animation = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.0, 1.0, curve: Curves.linear),
+    );
+
+    _animation2 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.5, 1.0, curve: Curves.linear),
+    );
+
+    _animation3 = new CurvedAnimation(
+      parent: _controller,
+      curve: new Interval(0.8, 1.0, curve: Curves.linear),
+    );
+    _controller.reverse();
+
+    ///[Chat Data]
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
     print(
         'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
@@ -184,6 +245,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     : Colors.grey,
         color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
@@ -194,6 +258,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         children: <Widget>[
           SelectableText(
             msg.text,
+            style: TextStyle(color: Colors.white),
             autofocus: true,
             cursorRadius: Radius.circular(50),
             cursorColor: Colors.white,
@@ -219,80 +284,202 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return Container();
   }
 
-  //Rating Box
-  void rating(bookingid) {
-    var rate = 5.0;
+  //booking End Dialog
+  void bookingenddialog(model, Bookingstatus booking) {
     showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return ProviderWidget<RateModel>(
-              model: RateModel(),
-              builder: (context, model, child) {
-                return new AlertDialog(
-                  title: Text(G.of(context).pleaseRatingForThisGame),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  content: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SmoothStarRating(
-                        starCount: 5,
-                        rating: rate,
-                        color: Theme.of(context).accentColor,
-                        isReadOnly: false,
-                        size: 30,
-                        filledIconData: Icons.star,
-                        halfFilledIconData: Icons.star_half,
-                        defaultIconData: Icons.star_border,
-                        allowHalfRating: true,
-                        spacing: 2.0,
-                        //star value
-                        onRated: (value) {
-                          print("rating value -> $value");
-                          setState(() {
-                            rate = value;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      //Comment for Rating
-                      Container(
-                          margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.5, color: Colors.grey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
-                          ),
-                          child: TextField(
-                            controller: comment,
-                            textInputAction: TextInputAction.done,
-                            decoration: InputDecoration(
-                              labelText: G.of(context).labelcomment,
-                            ),
-                          ))
-                    ],
-                  ),
-                  //Summit Rating
-                  actions: [
-                    FlatButton(
-                        child: Text(G.of(context).submit),
-                        onPressed: () {
-                          model
-                              .rate(widget.detailPageId, bookingid, rate,
-                                  comment.text)
-                              .then((value) => value
-                                  ? Navigator.pop(context)
-                                  : showToast(G.of(context).toastratingfail));
-                        })
-                  ],
-                );
-              });
-        });
+        builder: (_) {
+          return CustomDialog(
+            title: G.of(context).bookingEnded,
+            row1Content: G.of(context).timeleft,
+            row2Content: BookingTimeLeft(
+              upadateat: booking.updated,
+              timeleft: bookingdata.section,
+            ),
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.of(context).end,
+            confirmCallback: () {
+              model.endbooking(selfId, booking.bookingid, 3);
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      RatingPage(bookingdata.bookingid, widget.detailPageId),
+                ),
+              );
+            },
+          );
+        }
+        // builder: (_) => AlertDialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.all(
+        //       Radius.circular(15.0),
+        //     ),
+        //   ),
+        //   // title: Text(partnerModel.gameprofile[index].gameName),
+        //   contentPadding: EdgeInsets.zero,
+        //   content: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.stretch,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         padding: EdgeInsets.symmetric(vertical: 20),
+        //         child: Center(
+        //           child: Text("End Booking"),
+        //         ),
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: Text("Time Left"),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 10,
+        //       ),
+        //       Container(
+        //         width: MediaQuery.of(context).size.width,
+        //         child: Center(
+        //           child: BookingTimeLeft(
+        //             upadateat: booking.updated,
+        //             timeleft: bookingdata.section,
+        //           ),
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         height: 20,
+        //       ),
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: [
+        //           InkWell(
+        //             onTap: () => Navigator.pop(context),
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   bottomLeft: Radius.circular(15.0),
+        //                   // bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "Cancel",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //           InkWell(
+        //             onTap: () {
+        //               model.endbooking(selfId, booking.bookingid, 3);
+        //               Navigator.pop(context);
+        //             },
+        //             child: Container(
+        //               width: MediaQuery.of(context).size.width / 2.5,
+        //               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        //               decoration: BoxDecoration(
+        //                 color: Theme.of(context).accentColor,
+        //                 borderRadius: BorderRadius.only(
+        //                   // bottomLeft: Radius.circular(15.0),
+        //                   bottomRight: Radius.circular(15.0),
+        //                 ),
+        //               ),
+        //               child: Text(
+        //                 "End",
+        //                 style: TextStyle(color: Colors.white),
+        //                 textAlign: TextAlign.center,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
+
+  // //Rating Box
+  // void rating(bookingid) {
+  //   var rate = 5.0;
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return ProviderWidget<RateModel>(
+  //         model: RateModel(),
+  //         builder: (context, model, child) {
+  //           return new AlertDialog(
+  //             title: Text(G.of(context).pleaseRatingForThisGame),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0)),
+  //             content: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: <Widget>[
+  //                 SmoothStarRating(
+  //                   starCount: 5,
+  //                   rating: rate,
+  //                   color: Theme.of(context).accentColor,
+  //                   isReadOnly: false,
+  //                   size: 30,
+  //                   filledIconData: Icons.star,
+  //                   halfFilledIconData: Icons.star_half,
+  //                   defaultIconData: Icons.star_border,
+  //                   allowHalfRating: true,
+  //                   spacing: 2.0,
+  //                   //star value
+  //                   onRated: (value) {
+  //                     print("rating value -> $value");
+  //                     setState(() {
+  //                       rate = value;
+  //                     });
+  //                   },
+  //                 ),
+  //                 SizedBox(
+  //                   height: 30,
+  //                 ),
+  //                 //Comment for Rating
+  //                 Container(
+  //                   margin: EdgeInsets.fromLTRB(0, 1.5, 0, 1.5),
+  //                   padding: EdgeInsets.all(8.0),
+  //                   decoration: BoxDecoration(
+  //                     border: Border.all(width: 1.5, color: Colors.grey),
+  //                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
+  //                   ),
+  //                   child: TextField(
+  //                     controller: comment,
+  //                     textInputAction: TextInputAction.done,
+  //                     decoration: InputDecoration(
+  //                       labelText: G.of(context).labelcomment,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             //Summit Rating
+  //             actions: [
+  //               FlatButton(
+  //                   child: Text(G.of(context).submit),
+  //                   onPressed: () {
+  //                     model
+  //                         .rate(widget.detailPageId, bookingid, rate,
+  //                             comment.text)
+  //                         .then((value) => value
+  //                             ? Navigator.pop(context)
+  //                             : showToast(G.of(context).toastratingfail));
+  //                   })
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   //accept button
   acceptbtn(bookingid, msg) {
@@ -300,7 +487,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       minWidth: 70,
       child: FlatButton(
         child: Text(G.of(context).accept,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 17)),
         onPressed: () {
           MoonBlinkRepository.bookingAcceptOrDecline(
               selfId, bookingid, bookingAccept);
@@ -316,7 +506,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
         minWidth: 70,
         child: FlatButton(
           child: Text(G.of(context).reject,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17)),
           onPressed: () {
             MoonBlinkRepository.bookingAcceptOrDecline(
                 selfId, bookingid, bookingReject);
@@ -376,6 +569,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Theme.of(context).accentColor,
         color: Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
           Radius.circular(15.0),
@@ -383,6 +580,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       ),
       child: SelectableText(
         msg.text,
+        style: TextStyle(color: Colors.white),
         autofocus: true,
         cursorRadius: Radius.circular(50),
         cursorColor: Colors.white,
@@ -396,10 +594,27 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     var file = new Uint8List.fromList(msg.attach.codeUnits);
     print(file);
     return Container(
-      height: 100,
-      width: 100,
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      constraints: BoxConstraints(
+          // minHeight: MediaQuery.of(context).size.height / 8,
+          maxHeight: MediaQuery.of(context).size.height / 3,
+          // minWidth: MediaQuery.of(context).size.width / 8,
+          maxWidth: MediaQuery.of(context).size.width / 2),
       child: GestureDetector(
-        child: Image.memory(file, fit: BoxFit.fill),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.memory(
+            file,
+          ),
+        ),
         onTap: () {
           Navigator.push(
               context,
@@ -420,19 +635,44 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //build image
   buildimage(Message msg) {
     return Container(
-      height: 100,
-      width: 100,
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        // color: Theme.of(context).brightness == Brightness.dark
+        //     ? Theme.of(context).accentColor
+        //     // ? Theme.of(context).scaffoldBackgroundColor
+        //     : Colors.grey,
+        color: Theme.of(context).accentColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      constraints: BoxConstraints(
+          // minHeight: MediaQuery.of(context).size.height / 8,
+          maxHeight: MediaQuery.of(context).size.height / 3,
+          // minWidth: MediaQuery.of(context).size.width / 8,
+          maxWidth: MediaQuery.of(context).size.width / 2),
+      // height: 100,
+      // width: 100,
       child: GestureDetector(
-        child: Image.network(msg.attach,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.network(
+            msg.attach,
             loadingBuilder: (context, child, progress) {
-          return progress == null ? child : ButtonProgressIndicator();
-        }, fit: BoxFit.fill),
+              return progress == null
+                  ? child
+                  : Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text("Downloading Image"),
+                    );
+            },
+          ),
+        ),
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ImageView(msg.attach),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageView(msg.attach),
+            ),
+          );
         },
       ),
     );
@@ -443,102 +683,219 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     return PlayerWidget(url: msg.attach);
   }
 
-  //Send message
-  Widget buildmessage(id, model) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      height: MediaQuery.of(context).size.height * 0.1,
-      //color: Theme.of(context).backgroundColor,
-      child: Row(
-        children: <Widget>[
-          //Image select button
-          IconButton(
-            icon: Icon(FontAwesomeIcons.image),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              CustomBottomSheet.show(
-                  popAfterBtnPressed: true,
-                  requestType: RequestType.image,
-                  buttonText: G.of(context).sendbutton,
-                  buildContext: context,
-                  limit: 1,
-                  body: G.of(context).labelimageselect,
-                  onPressed: (File file) async {
-                    setState(() {
-                      _file = file;
-                    });
+  //image pick
+  Widget imagepick(model, id) {
+    return IconButton(
+      icon: SvgPicture.asset(
+        gallery,
+        color: Colors.black,
+        semanticsLabel: 'gallery',
+        width: 30,
+        height: 30,
+      ),
+      iconSize: 30.0,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.black,
+      onPressed: () {
+        rotate();
+        CustomBottomSheet.show(
+            popAfterBtnPressed: true,
+            requestType: RequestType.image,
+            buttonText: G.of(context).sendbutton,
+            buildContext: context,
+            limit: 1,
+            body: G.of(context).labelimageselect,
+            onPressed: (File file) async {
+              setState(() {
+                _file = file;
+              });
 
-                    await getImage();
-                    model.sendfile(filename, bytes, id, 1, messages);
-                    setState(() {
-                      textEditingController.text = '';
-                      bytes = null;
-                    });
-                  },
-                  onInit: _sendMessageWidgetUp,
-                  onDismiss: _sendMessageWidgetDown);
-            },
-          ),
-          //Voice record
-          Voicemsg(
-            onInit: _sendMessageWidgetUp,
-            id: id,
-            messages: messages,
-            onDismiss: _sendMessageWidgetDown,
-          ),
-          SizedBox(width: 10),
-          //Text Input
-          Expanded(
-            child: TextField(
-              minLines: 1,
-              maxLines: 5,
-              maxLength: 150,
-              keyboardType: TextInputType.multiline,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.newline,
-              controller: textEditingController,
-              decoration: InputDecoration(
-                hintText: G.of(context).labelmsg,
-                counterText: "",
-              ),
-            ),
-          ),
-          //Send button
-          IconButton(
-            icon: Icon(IconFonts.sendIcon),
-            iconSize: 30.0,
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              if (bytes == null) {
-                if (textEditingController.text != '') {
-                  model.sendMessage(textEditingController.text, id, messages);
-                  textEditingController.text = '';
-                }
-              } else {
-                model.sendfile(filename, bytes, id, 1, messages);
+              await getImage();
+              model.sendfile(filename, bytes, id, 1, messages);
+              setState(() {
                 textEditingController.text = '';
                 bytes = null;
-              }
+              });
             },
-          ),
-        ],
-      ),
+            onInit: _sendMessageWidgetUp,
+            onDismiss: _sendMessageWidgetDown,
+            willCrop: false,
+            compressQuality: NORMAL_COMPRESS_QUALITY);
+      },
     );
   }
 
+  //voice msg
+  Widget voicemsg(id) {
+    return Voicemsg(
+      onInit: _sendMessageWidgetUp,
+      id: id,
+      messages: messages,
+      onDismiss: _sendMessageWidgetDown,
+      rotate: () => rotate(),
+    );
+  }
+
+  //send Button
+  Widget sendbtn(model, id) {
+    return IconButton(
+      icon: SvgPicture.asset(
+        send,
+        color: Colors.white,
+        semanticsLabel: 'send',
+        width: 30,
+        height: 30,
+      ),
+      iconSize: 30.0,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.white,
+      onPressed: () {
+        if (bytes == null) {
+          if (textEditingController.text != '') {
+            model.sendMessage(textEditingController.text, id, messages);
+            textEditingController.text = '';
+          }
+        } else {
+          model.sendfile(filename, bytes, id, 1, messages);
+          textEditingController.text = '';
+          bytes = null;
+        }
+      },
+    );
+  }
+
+  //Send message
+  Widget buildmessage(id, model) {
+    if (bookingdata == null) {
+      return ViewStateBusyWidget();
+    }
+    if (bookingdata.isblock == 0) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        height: MediaQuery.of(context).size.height * 0.08,
+        //color: Theme.of(context).backgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Theme.of(context).brightness == Brightness.dark
+          //         ? Colors.white
+          //         : Colors.black,
+          //     offset: Offset(0.0, 1.0), //(x,y)
+          //     spreadRadius: 3,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.0),
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              iconSize: 35,
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Icon(
+                  _isRotated ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: Colors.black,
+                ),
+              ),
+              onPressed: () => rotate(),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey
+                            : Colors.black),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  child: TextField(
+                    minLines: 1,
+                    maxLines: 5,
+                    maxLength: 150,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                      hintText: G.of(context).labelmsg,
+                      counterText: "",
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            //Send button
+            sendbtn(model, id),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        height: MediaQuery.of(context).size.height * 0.1,
+        //color: Theme.of(context).backgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Theme.of(context).brightness == Brightness.dark
+          //         ? Colors.white
+          //         : Colors.black,
+          //     offset: Offset(0.0, 1.0), //(x,y)
+          //     spreadRadius: 3,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+        ),
+        child: Center(
+          child: Text(
+            "This person has blocked you",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      );
+    }
+  }
+
   //Booking End button
-  Widget endbtn(bookingid) {
+  Widget endbtn(booking) {
     return ProviderWidget(
-        model: CallModel(),
-        builder: (context, model, child) {
-          return FlatButton(
-            child: Text(G.of(context).end),
-            onPressed: () {
-              model.endbooking(selfId, bookingid, 3);
-            },
-          );
-        });
+      model: CallModel(),
+      builder: (context, model, child) {
+        return FlatButton(
+          child: Text(
+            G.of(context).end,
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () {
+            bookingenddialog(model, booking);
+          },
+        );
+      },
+    );
   }
 
   //For call button
@@ -552,6 +909,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
             icon: Icon(
               FontAwesomeIcons.phone,
               size: 20,
+              color: Colors.white,
             ),
             onPressed: () {
               // model.call(selfId, anotherPersonId, voiceChannelName);
@@ -570,7 +928,10 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           model: CallModel(),
           builder: (context, model, child) {
             return FlatButton(
-              child: Text(G.of(context).cancel),
+              child: Text(
+                G.of(context).cancel,
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 model.endbooking(selfId, bookingid, 6);
               },
@@ -634,7 +995,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
-    if (selfId != bookingdata.bookinguserid) {
+    if (selfId == bookingdata.bookinguserid) {
       switch (bookingdata.status) {
         //normal
         case (-1):
@@ -642,11 +1003,13 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           break;
         //pending
         case (0):
-          return Container();
+          return WaitingTimeLeft(
+            createat: bookingdata.created,
+          );
           break;
         //end booking
         case (1):
-          return endbtn(bookingdata.bookingid);
+          return endbtn(bookingdata);
           break;
         //reject
         case (2):
@@ -673,15 +1036,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           return Container();
       }
     } else {
-      switch (bookingdata.status) {
-        case (0):
-          return BookingTimeLeft(
-            createat: bookingdata.created,
-          );
-          break;
-        default:
-          return Container();
-      }
+      return Container();
     }
   }
 
@@ -693,7 +1048,7 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
       return ViewStateBusyWidget();
     }
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.82,
       child: ListView.builder(
         reverse: true,
         itemCount: messages.length,
@@ -708,8 +1063,9 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
   //Widget build
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+    return ScopedModelDescendant<ChatModel>(
+      builder: (context, child, model) {
+        return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
           autoDispose: false,
           model1: PartnerDetailModel(partnerdata, widget.detailPageId),
           model2: GetmsgModel(widget.detailPageId),
@@ -740,18 +1096,61 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
               if (bookingdata.status == 3 && rated == false) {
                 rated = true;
                 Future.delayed(
-                    Duration.zero, () => rating(bookingdata.bookingid));
+                  Duration.zero,
+                  () => RatingPage(bookingdata.bookingid, widget.detailPageId),
+                );
               }
             }
             return Scaffold(
               appBar: AppBar(
+                leading: IconButton(
+                    icon: SvgPicture.asset(
+                      back,
+                      semanticsLabel: 'back',
+                      color: Colors.white,
+                      width: 30,
+                      height: 30,
+                    ),
+                    onPressed: () => Navigator.pop(context)),
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    // ? Colors.grey
+                    ? Colors.black
+                    : Colors.black,
                 title: GestureDetector(
-                    child: Text(partnermodel.partnerData.partnerName),
-                    onTap: partnermodel.partnerData.type == 1
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(partnermodel
+                              .partnerData.prfoileFromPartner.profileImage),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Text(
+                              partnermodel.partnerData.partnerName,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: partnermodel.partnerData.type != 0
                         ? () {
                             Navigator.pushReplacementNamed(
-                                context, RouteName.partnerDetail,
-                                arguments: widget.detailPageId);
+                                    context, RouteName.partnerDetail,
+                                    arguments: widget.detailPageId)
+                                .then((value) async {
+                              if (value != null) {
+                                ///Block Uesrs
+                                try {
+                                  await MoonBlinkRepository.blockOrUnblock(
+                                      value, BLOCK);
+                                  showToast(G.of(context).toastsuccess);
+                                } catch (e) {
+                                  print(e.toString());
+                                }
+                              }
+                            });
                           }
                         : null),
                 actions: <Widget>[
@@ -759,24 +1158,62 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
                   action1(model),
                 ],
               ),
-              body: ListView(
-                controller: controller,
-                addAutomaticKeepAlives: true,
-                children: <Widget>[
-                  //chat list
-                  buildChatList(partnermodel.partnerData.partnerId, model),
-                  //Message input box
-                  buildmessage(partnermodel.partnerData.partnerId, model),
-                  //Bottom Box
-                  if (isShowing && Platform.isAndroid)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-                  if (isShowing && Platform.isIOS)
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.45)
+              body: Stack(
+                children: [
+                  ListView(
+                    controller: controller,
+                    addAutomaticKeepAlives: true,
+                    children: <Widget>[
+                      //chat list
+                      buildChatList(partnermodel.partnerData.partnerId, model),
+                      //Message input box
+                      buildmessage(partnermodel.partnerData.partnerId, model),
+                      //Bottom Box
+                      if (isShowing && Platform.isAndroid)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5),
+                      if (isShowing && Platform.isIOS)
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.45)
+                    ],
+                  ),
+                  FloatingButton(
+                    bottom: 80,
+                    left: 10,
+                    scale: _animation,
+                    child: imagepick(model, widget.detailPageId),
+                  ),
+                  FloatingButton(
+                    bottom: 140,
+                    left: 30,
+                    scale: _animation2,
+                    child: voicemsg(widget.detailPageId),
+                  ),
+                  FloatingButton(
+                    bottom: 200,
+                    left: 10,
+                    scale: _animation3,
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        camera,
+                        color: Colors.black,
+                        semanticsLabel: 'camera',
+                        width: 30,
+                        height: 30,
+                      ),
+                      onPressed: () {
+                        _takePhoto();
+                        rotate();
+                      },
+                    ),
+                  )
                 ],
               ),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   //bottom widget up
@@ -819,59 +1256,61 @@ class _ChatBoxPageState extends State<ChatBoxPage> {
           ));
     } else if (await Permission.microphone.request().isDenied) {
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } else if (await Permission.microphone.request().isPermanentlyDenied) {
       /// [Error]
       // Permanently being denied,you need to allow in app setting
       showDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                G.of(context).pleaseAllowMicroPhone,
-                textAlign: TextAlign.center,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              content: Text(G.of(context).youNeedToAllowMicroPermission),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(G.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(G.of(context).confirm),
-                  onPressed: () {
-                    openAppSettings();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }

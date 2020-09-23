@@ -7,10 +7,10 @@ import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
@@ -21,6 +21,7 @@ const String FcmTypeVoiceCall = 'voice_call';
 const String FcmTypeGameIdUpdate = 'game_id_update';
 
 class PushNotificationsManager {
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   PushNotificationsManager._();
   // AndroidNotificationChannel
   factory PushNotificationsManager() => _instance;
@@ -251,14 +252,14 @@ class PushNotificationsManager {
 
     print(name);
 
-    final PartnerProfile  partnerProfile = PartnerProfile(
-      profileImage: profileImage, coverImage: coverImage,
+    final PartnerProfile partnerProfile = PartnerProfile(
+      profileImage: profileImage,
+      coverImage: coverImage,
       bios: bios,
     );
 
-    final PartnerUser partnerUser = PartnerUser(
-      partnerName: name, prfoileFromPartner: partnerProfile
-    );
+    final PartnerUser partnerUser =
+        PartnerUser(partnerName: name, prfoileFromPartner: partnerProfile);
 
     _updateProfile.prepare(partnerUser: partnerUser);
 
@@ -454,9 +455,10 @@ class PushNotificationsManager {
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true,
-        sound: 'moonblink_noti.m4r'
-      );
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'moonblink_noti.m4r');
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
@@ -472,7 +474,9 @@ class PushNotificationsManager {
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true,
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
       );
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -531,11 +535,14 @@ class _UpdateProfile {
 
   void showUpdateProfileDialog() {
     showDialog(
-        context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
+        context: locator<NavigationService>()
+            .navigatorKey
+            .currentState
+            .overlay
+            .context,
         builder: (context) => UpdateProfileDialog(
-          partnerUser: this.partnerUser,
-          navigateToProfilePage: () => this.navigateToUpdateProfile(),
-        )
-    );
+              partnerUser: this.partnerUser,
+              navigateToProfilePage: () => this.navigateToUpdateProfile(),
+            ));
   }
 }

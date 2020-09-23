@@ -11,6 +11,7 @@ class StoryList extends StatelessWidget {
   StoryList({this.stories});
   @override
   Widget build(BuildContext context) {
+    print("----------------------------------------------");
     // HomeModel homeModel = Provider.of(context);
     return SliverToBoxAdapter(
         child: Column(
@@ -28,7 +29,7 @@ class StoryList extends StatelessWidget {
                     int usertype =
                         StorageManager.sharedPreferences.getInt(mUserType);
 
-                    if (usertype == 1 && index == 0) {
+                    if (usertype != 0 && index == 0) {
                       return InkWell(
                         onTap: () {
                           Navigator.of(context).pushNamed(RouteName.imagepick);

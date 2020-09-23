@@ -83,11 +83,21 @@ class G {
     );
   }
 
-  /// `'s average rating is `
-  String get averageRatingIs {
+  /// `Apply for qualification`
+  String get applyforqualification {
     return Intl.message(
-      '\'s average rating is ',
-      name: 'averageRatingIs',
+      'Apply for qualification',
+      name: 'applyforqualification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Average Rating`
+  String get averageRating {
+    return Intl.message(
+      'Average Rating',
+      name: 'averageRating',
       desc: '',
       args: [],
     );
@@ -133,10 +143,10 @@ class G {
     );
   }
 
-  /// `Booking request`
+  /// `Request`
   String get bookingRequest {
     return Intl.message(
-      'Booking request',
+      'Request',
       name: 'bookingRequest',
       desc: '',
       args: [],
@@ -273,11 +283,71 @@ class G {
     );
   }
 
+  /// `Cash Out`
+  String get cashout {
+    return Intl.message(
+      'Cash Out',
+      name: 'cashout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Coin`
+  String get coin {
+    return Intl.message(
+      'My Coin',
+      name: 'coin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `can't be blanked`
+  String get cannotblank {
+    return Intl.message(
+      'can\'t be blanked',
+      name: 'cannotblank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can't book yourself`
+  String get cannotbookself {
+    return Intl.message(
+      'You can\'t book yourself',
+      name: 'cannotbookself',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can't chat yourself`
+  String get cannotchatself {
+    return Intl.message(
+      'You can\'t chat yourself',
+      name: 'cannotchatself',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(
       'Confirm',
       name: 'confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Booking`
+  String get confirmbooking {
+    return Intl.message(
+      'Confirm Booking',
+      name: 'confirmbooking',
       desc: '',
       args: [],
     );
@@ -323,6 +393,26 @@ class G {
     );
   }
 
+  /// `Choose Game You Play`
+  String get choosegame {
+    return Intl.message(
+      'Choose Game You Play',
+      name: 'choosegame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deselect`
+  String get deselect {
+    return Intl.message(
+      'Deselect',
+      name: 'deselect',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `End`
   String get end {
     return Intl.message(
@@ -358,6 +448,16 @@ class G {
     return Intl.message(
       'Enter Call',
       name: 'enterCall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Entertainment`
+  String get entertainment {
+    return Intl.message(
+      'Entertainment',
+      name: 'entertainment',
       desc: '',
       args: [],
     );
@@ -458,6 +558,96 @@ class G {
     return Intl.message(
       'Can\'t be empty',
       name: 'fieldNotEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill in Skill Level`
+  String get fillskilllevel {
+    return Intl.message(
+      'Fill in Skill Level',
+      name: 'fillskilllevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill your game Information`
+  String get fillgameinfo {
+    return Intl.message(
+      'Fill your game Information',
+      name: 'fillgameinfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male`
+  String get genderMale {
+    return Intl.message(
+      'Male',
+      name: 'genderMale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female`
+  String get genderFemale {
+    return Intl.message(
+      'Female',
+      name: 'genderFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Games`
+  String get games {
+    return Intl.message(
+      'Games',
+      name: 'games',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game ID`
+  String get gameid {
+    return Intl.message(
+      'Game ID',
+      name: 'gameid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Rank`
+  String get gamerank {
+    return Intl.message(
+      'Game Rank',
+      name: 'gamerank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Mode`
+  String get gamemode {
+    return Intl.message(
+      'Game Mode',
+      name: 'gamemode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Mode that you are ready to provide services`
+  String get gamemodedescript {
+    return Intl.message(
+      'Game Mode that you are ready to provide services',
+      name: 'gamemodedescript',
       desc: '',
       args: [],
     );
@@ -623,21 +813,11 @@ class G {
     );
   }
 
-  /// `Please enter ML id`
-  String get labelmlid {
+  /// `Please enter your game ID`
+  String get labelid {
     return Intl.message(
-      'Please enter ML id',
-      name: 'labelmlid',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter Pubg id`
-  String get labelpubgid {
-    return Intl.message(
-      'Please enter Pubg id',
-      name: 'labelpubgid',
+      'Please enter your game ID',
+      name: 'labelid',
       desc: '',
       args: [],
     );
@@ -683,20 +863,20 @@ class G {
     );
   }
 
-  /// `NRC Front`
+  /// `Add your NRC Front`
   String get labelnrcfront {
     return Intl.message(
-      'NRC Front',
+      'Add your NRC Front',
       name: 'labelnrcfront',
       desc: '',
       args: [],
     );
   }
 
-  /// `NRC Back`
+  /// `Add your NRC Back`
   String get labelnrcback {
     return Intl.message(
-      'NRC Back',
+      'Add your NRC Back',
       name: 'labelnrcback',
       desc: '',
       args: [],
@@ -753,6 +933,16 @@ class G {
     );
   }
 
+  /// `Loading`
+  String get loading {
+    return Intl.message(
+      'Loading',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Myanmar`
   String get myanmar {
     return Intl.message(
@@ -768,6 +958,36 @@ class G {
     return Intl.message(
       'Maximum one minute',
       name: 'maxtime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match`
+  String get match {
+    return Intl.message(
+      'Match',
+      name: 'match',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter New Password`
+  String get newpassword {
+    return Intl.message(
+      'Enter New Password',
+      name: 'newpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have enough coin to make this booking`
+  String get notenoughcoin {
+    return Intl.message(
+      'You don\'t have enough coin to make this booking',
+      name: 'notenoughcoin',
       desc: '',
       args: [],
     );
@@ -793,11 +1013,61 @@ class G {
     );
   }
 
+  /// `This user has no rating.`
+  String get norating {
+    return Intl.message(
+      'This user has no rating.',
+      name: 'norating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This User have no Game Profile`
+  String get nogameprofile {
+    return Intl.message(
+      'This User have no Game Profile',
+      name: 'nogameprofile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rank`
+  String get rank {
+    return Intl.message(
+      'Rank',
+      name: 'rank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Password`
+  String get resetpassword {
+    return Intl.message(
+      'Reset Password',
+      name: 'resetpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please rate our app`
   String get ratingApp {
     return Intl.message(
       'Please rate our app',
       name: 'ratingApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate Player`
+  String get rateplayer {
+    return Intl.message(
+      'Rate Player',
+      name: 'rateplayer',
       desc: '',
       args: [],
     );
@@ -853,11 +1123,41 @@ class G {
     );
   }
 
+  /// `Record Skill Audio`
+  String get recordskillaudio {
+    return Intl.message(
+      'Record Skill Audio',
+      name: 'recordskillaudio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No porn, abusive or illegal contents are allowed in the audio.`
+  String get rule1 {
+    return Intl.message(
+      'No porn, abusive or illegal contents are allowed in the audio.',
+      name: 'rule1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// ` or `
   String get or {
     return Intl.message(
       ' or ',
       name: 'or',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Okay`
+  String get okay {
+    return Intl.message(
+      'Okay',
+      name: 'okay',
       desc: '',
       args: [],
     );
@@ -893,10 +1193,10 @@ class G {
     );
   }
 
-  /// `Welcome to be our partner`
+  /// `Be Our Partner`
   String get otpWelcomePartner {
     return Intl.message(
-      'Welcome to be our partner',
+      'Be Our Partner',
       name: 'otpWelcomePartner',
       desc: '',
       args: [],
@@ -908,6 +1208,56 @@ class G {
     return Intl.message(
       'Sign As Partner',
       name: 'otpSignAsPartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PlayerID`
+  String get playerid {
+    return Intl.message(
+      'PlayerID',
+      name: 'playerid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Own Profile`
+  String get profileown {
+    return Intl.message(
+      'Own Profile',
+      name: 'profileown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Profile`
+  String get profilegame {
+    return Intl.message(
+      'Game Profile',
+      name: 'profilegame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick Image From`
+  String get pickimage {
+    return Intl.message(
+      'Pick Image From',
+      name: 'pickimage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick NRC`
+  String get picknrc {
+    return Intl.message(
+      'Pick NRC',
+      name: 'picknrc',
       desc: '',
       args: [],
     );
@@ -1008,6 +1358,46 @@ class G {
     return Intl.message(
       ' followers now',
       name: 'profilefollowernow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play PUBG Mobile with users to teach them how to play~`
+  String get pubg {
+    return Intl.message(
+      'Play PUBG Mobile with users to teach them how to play~',
+      name: 'pubg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1. Female Rank ≥ Silver, Male's Rank ≥ Platinum.\n(The screenshot must clearly show the game ID and rank.)`
+  String get pubgrequirement1 {
+    return Intl.message(
+      '1. Female Rank ≥ Silver, Male\'s Rank ≥ Platinum.\n(The screenshot must clearly show the game ID and rank.)',
+      name: 'pubgrequirement1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2. Provide great Service, be patient, and good at time and emotional management.`
+  String get pubgrequirement2 {
+    return Intl.message(
+      '2. Provide great Service, be patient, and good at time and emotional management.',
+      name: 'pubgrequirement2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Qualification requirements`
+  String get qualificationrequire {
+    return Intl.message(
+      'Qualification requirements',
+      name: 'qualificationrequire',
       desc: '',
       args: [],
     );
@@ -1283,11 +1673,131 @@ class G {
     );
   }
 
+  /// `Skill Description`
+  String get skilldescription {
+    return Intl.message(
+      'Skill Description',
+      name: 'skilldescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skill Cover`
+  String get skillcover {
+    return Intl.message(
+      'Skill Cover',
+      name: 'skillcover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select`
+  String get select {
+    return Intl.message(
+      'Select',
+      name: 'select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Game Rank`
+  String get selectgamerank {
+    return Intl.message(
+      'Select Game Rank',
+      name: 'selectgamerank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Game`
+  String get selectgame {
+    return Intl.message(
+      'Select Game',
+      name: 'selectgame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Game Mode`
+  String get selectgameMode {
+    return Intl.message(
+      'Select Game Mode',
+      name: 'selectgameMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Level`
+  String get selectlevel {
+    return Intl.message(
+      'Select Level',
+      name: 'selectlevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sample Photo`
+  String get samplephoto {
+    return Intl.message(
+      'Sample Photo',
+      name: 'samplephoto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sample`
+  String get sample {
+    return Intl.message(
+      'Sample',
+      name: 'sample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time Left`
+  String get timeleft {
+    return Intl.message(
+      'Time Left',
+      name: 'timeleft',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Top up`
   String get topup {
     return Intl.message(
       'Top up',
       name: 'topup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Top up with our customer service.`
+  String get topupservice {
+    return Intl.message(
+      'Top up with our customer service.',
+      name: 'topupservice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Top Up History`
+  String get topuphistory {
+    return Intl.message(
+      'Top Up History',
+      name: 'topuphistory',
       desc: '',
       args: [],
     );
@@ -1403,6 +1913,26 @@ class G {
     );
   }
 
+  /// `Thanks for making our MoonBlink's Universe clean and tidy. We will act on this user within 24 hours.`
+  String get toastreport {
+    return Intl.message(
+      'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.',
+      name: 'toastreport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy to Clipboard`
+  String get toastcopy {
+    return Intl.message(
+      'Copy to Clipboard',
+      name: 'toastcopy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You need to choose cover and profile images`
   String get toastimagenull {
     return Intl.message(
@@ -1448,6 +1978,16 @@ class G {
     return Intl.message(
       'You are Offline now',
       name: 'toastoffline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get toastsuccess {
+    return Intl.message(
+      'Success',
+      name: 'toastsuccess',
       desc: '',
       args: [],
     );
@@ -1503,6 +2043,56 @@ class G {
     );
   }
 
+  /// `You need to choose game and game mode`
+  String get toastnogame {
+    return Intl.message(
+      'You need to choose game and game mode',
+      name: 'toastnogame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This platform is not supported.`
+  String get toastplatformnotsupport {
+    return Intl.message(
+      'This platform is not supported.',
+      name: 'toastplatformnotsupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The screenshot must clearly show the game ID and rank.`
+  String get toastscreenshot {
+    return Intl.message(
+      'The screenshot must clearly show the game ID and rank.',
+      name: 'toastscreenshot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload the screenshot to prove your game ID and rank`
+  String get titlescreenshot {
+    return Intl.message(
+      'Upload the screenshot to prove your game ID and rank',
+      name: 'titlescreenshot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Price`
+  String get totalprice {
+    return Intl.message(
+      'Total Price',
+      name: 'totalprice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Your Profile`
   String get updatePartnerProfile {
     return Intl.message(
@@ -1518,6 +2108,46 @@ class G {
     return Intl.message(
       'Update',
       name: 'updatePartnerButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coplayer`
+  String get usertypecoplayer {
+    return Intl.message(
+      'Coplayer',
+      name: 'usertypecoplayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cele`
+  String get usertypecele {
+    return Intl.message(
+      'Cele',
+      name: 'usertypecele',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Streamer`
+  String get usertypestreamer {
+    return Intl.message(
+      'Streamer',
+      name: 'usertypestreamer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro`
+  String get usertypepro {
+    return Intl.message(
+      'Pro',
+      name: 'usertypepro',
       desc: '',
       args: [],
     );
@@ -1598,6 +2228,46 @@ class G {
     return Intl.message(
       'Upload',
       name: 'upload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Skill Cover`
+  String get uploadskillcover {
+    return Intl.message(
+      'Upload Skill Cover',
+      name: 'uploadskillcover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Profile`
+  String get uploadprofile {
+    return Intl.message(
+      'Upload Profile',
+      name: 'uploadprofile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Cover`
+  String get uploadcover {
+    return Intl.message(
+      'Upload Cover',
+      name: 'uploadcover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `unblock`
+  String get unblock {
+    return Intl.message(
+      'unblock',
+      name: 'unblock',
       desc: '',
       args: [],
     );
@@ -1698,6 +2368,26 @@ class G {
     return Intl.message(
       'Waiting',
       name: 'waiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watch AD`
+  String get watchad {
+    return Intl.message(
+      'Watch AD',
+      name: 'watchad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watch an Ad to get free coins.`
+  String get watchadfreecoins {
+    return Intl.message(
+      'Watch an Ad to get free coins.',
+      name: 'watchadfreecoins',
       desc: '',
       args: [],
     );

@@ -16,7 +16,7 @@ import '../models/message.dart';
 String proSocketurl = 'https://chat.moonblinkuniverse.com';
 String devSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
-IO.Socket socket = IO.io(proSocketurl, <String, dynamic>{
+IO.Socket socket = IO.io(devSocketUrl, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
   'timeout': 2000
@@ -52,18 +52,11 @@ class ChatModel extends Model {
 
   //connect
   void init() {
+    chatlist.clear();
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-    // for (var event in EVENTS) {
-    //   print("Checking");
-    //   socket.on(event, (data) => print('SOCKET EVENT $event ______ $data'));
-    // }
-    // socket.on("reconnect", (data) {
-    //   print("reconnecting");
-    //   socket.emit('connect-user', usertoken);
-    //   notifyListeners();
-    // });
+
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);
@@ -188,13 +181,22 @@ class ChatModel extends Model {
   Bookingstatus chatupdated() {
     print("Chat Updated");
     socket.on("chat-updated", (data) {
-      bookingdata = Bookingstatus(data["booking_id"], data["user_id"],
-          data["booking_user_id"], data["status"], data["created_at"]);
-      print(data.toString());
-      print(bookingdata.bookingid);
-      print(bookingdata.id);
-      print(bookingdata.bookinguserid);
-      print(bookingdata.status);
+      bookingdata = Bookingstatus(
+          data["booking_id"],
+          data["user_id"],
+          data["booking_user_id"],
+          data["status"],
+          data['count'],
+          data["created_at"],
+          data["updated_at"],
+          data['minute_per_section'],
+          data['is_block']);
+      // print(data.toString());
+      // print(bookingdata.bookingid);
+      // print(bookingdata.id);
+      // print(bookingdata.bookinguserid);
+      // print(bookingdata.status);
+      print(bookingdata.toString());
       notifyListeners();
     });
 
@@ -234,9 +236,9 @@ class ChatModel extends Model {
     });
   }
 
-  void receivenoti(int id, String text, String msg) {
-    // PushNotificationsManager().notification(id, text, msg);
-  }
+  // void receivenoti(int id, String text, String msg) {
+  //   // PushNotificationsManager().notification(id, text, msg);
+  // }
 
   void disconnect() {
     socket.disconnect();

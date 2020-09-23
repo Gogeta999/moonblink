@@ -10,8 +10,8 @@ class GameProfile {
   final String skillCoverImage;
   final String aboutOrderTaking;
   final int isPlay;
-  final List<GameMode> gameModeList;
-  final List<String> gameRankList;
+  List<GameMode> gameModeList;
+  List<String> gameRankList;
   final String createdAt;
   final String updatedAt;
 
@@ -40,7 +40,8 @@ class GameProfile {
         skillCoverImage = json['skill_cover_image'],
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
-        gameModeList = List.unmodifiable(json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList()),
+        gameModeList = List.unmodifiable(
+            json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList()),
         gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
         createdAt = json['created_at'],
         updatedAt = json['updated_at'];
@@ -55,8 +56,9 @@ class GameProfile {
         'skill_cover_image': skillCoverImage,
         'about_order_taking': aboutOrderTaking,
         'is_play': isPlay,
-        'types' : gameModeList.map<Map<String, dynamic>>((e) => e.toJson()).toList(),
-        'levels' : gameRankList.map<String>((e) => jsonEncode(e)).toList(),
+        'types':
+            gameModeList.map<Map<String, dynamic>>((e) => e.toJson()).toList(),
+        'levels': gameRankList.map<String>((e) => jsonEncode(e)).toList(),
         'created_at': createdAt,
         'updated_at': updatedAt
       };
@@ -65,12 +67,15 @@ class GameProfile {
 class GameMode {
   final int id;
   final int gameId;
+
   ///json name type but it's actually game mode
   final String mode;
   final int price;
   final String createdAt;
   final String updatedAt;
   final int selected;
+
+  ///this data won't need at booking
 
   GameMode(
       {this.id,
@@ -82,21 +87,21 @@ class GameMode {
       this.selected});
 
   GameMode.fromJson(Map<String, dynamic> json)
-    : id = json['id'],
-      gameId = json['game_id'],
-      mode = json['type'],
-      price = json['price'],
-      createdAt = json['created_at'],
-      updatedAt = json['updated_at'],
-      selected = json['selected'];
+      : id = json['id'],
+        gameId = json['game_id'],
+        mode = json['type'],
+        price = json['price'],
+        createdAt = json['created_at'],
+        updatedAt = json['updated_at'],
+        selected = json['selected'];
 
   Map<String, dynamic> toJson() => {
-    'id' : id,
-    'game_id' : gameId,
-    'type' : mode,
-    'price' : price,
-    'created_at' : createdAt,
-    'updated_at' : updatedAt,
-    'selected' : selected
-  };
+        'id': id,
+        'game_id': gameId,
+        'type': mode,
+        'price': price,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+        'selected': selected
+      };
 }

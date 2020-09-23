@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 
+///TODO - GameName and Type need to fix
 const List<String> gameList = [
   'Mobile Legends - Classic',
   'Mobile Legends - Rank',

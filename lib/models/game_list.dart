@@ -4,7 +4,6 @@ class GameList {
   GameList({this.gameList});
 
   factory GameList.fromJson(List<dynamic> game) {
-
     List<Game> gameList = game.map((e) => Game.fromJson(e)).toList();
 
     return GameList(gameList: gameList);
@@ -13,6 +12,7 @@ class GameList {
   @override
   String toString() => 'gameList: ${gameList[0].gameType}';
 }
+
 ///GameId and GameTypeId only can get from dev server.
 class Game {
   final int gameId;
@@ -31,10 +31,10 @@ class Game {
         icon = json['icon'];
 
   Map<String, dynamic> toJson() => {
-    'game_id': gameId,
-    'game_type_id': gameTypeId,
-    'game_type': gameType,
-    'price': price,
-    'icon': icon
-  };
+        'game_id': gameId,
+        'game_type_id': gameTypeId,
+        'game_type': gameType,
+        'price': price,
+        'icon': icon
+      };
 }

@@ -1,24 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
-
-import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-List<Widget> pages = <Widget>[
-  HomePage(),
-  ChatListPage(),
-  ContactsPage(),
-  UserStatusPage(),
-];
+final String home = 'assets/icons/home.svg';
+final String chat = 'assets/icons/chat.svg';
+final String following = 'assets/icons/following.svg';
+final String user = 'assets/icons/profileBunny.svg';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;
@@ -37,12 +34,9 @@ class _MainTabPageState extends State<MainTabPage>
   // ignore: unused_field
   int _selectedIndex = 0;
   DateTime _lastPressed;
+  ScrollController homeController = ScrollController();
 
   _MainTabPageState(this.initPage);
-  // @override
-  // void dipose() {
-  //   dipose();
-  // }
 
   @override
   void initState() {
@@ -62,6 +56,14 @@ class _MainTabPageState extends State<MainTabPage>
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> pages = <Widget>[
+      HomePage(homeController),
+      ChatListPage(),
+      ContactsPage(),
+      UserNotificationPage(),
+      UserStatusPage(),
+    ];
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
@@ -131,34 +133,55 @@ class _MainTabPageState extends State<MainTabPage>
         ),
       ),
       bottomNavigationBar: Container(
-        child: FancyBottomNavigation(
-          tabs: [
-            TabData(
-                iconData: IconFonts.homePageIcon, title: G.of(context).tabHome),
-            TabData(
-                iconData: IconFonts.chatPageIcon, title: G.of(context).tabChat),
-            TabData(
-                iconData: IconFonts.followingPageIcon,
-                title: G.of(context).tabFollowing),
-            TabData(
-                iconData: IconFonts.statusPageIcon,
-                title: G.of(context).tabUser),
+        decoration: BoxDecoration(
+          border: Border.all(
+              width: 1,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10.0),
+          ),
+        ),
+        child: CustomNavigationBar(
+          borderRadius: Radius.circular(10),
+          // iconSize: 30.0,
+          selectedColor: Theme.of(context).accentColor,
+          strokeColor: Theme.of(context).accentColor,
+          unSelectedColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          items: [
+            CustomNavigationBarItem(
+              icon: home,
+              doubletap: () {
+                homeController.animateTo(
+                  0.0,
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                );
+              },
+            ),
+            CustomNavigationBarItem(
+              icon: chat,
+            ),
+            CustomNavigationBarItem(
+              icon: following,
+            ),
+            CustomNavigationBarItem(
+              icon: following, ///TODO - Change to notification icon later
+            ),
+            CustomNavigationBarItem(
+              icon: user,
+            )
           ],
-          initialSelection: initPage,
-          // inactiveIconSize: 30,
-          // circleOutline: 10,
-          circleHeight: 50,
-          arcHeight: 55,
-          arcWidth: 80,
-          // activeIconSize: 00,
-          shadowAllowance: 18,
-          activeIconColor: Colors.white,
-          barHeight: 53,
-          pageController: _pageController,
-          circleColor: Theme.of(context).accentColor,
-          onTabChangedListener: (index) {
-            _pageController.animateTo(MediaQuery.of(context).size.width * index,
-                duration: Duration(milliseconds: 10), curve: Curves.ease);
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+              _pageController.jumpToPage(_selectedIndex);
+            });
           },
         ),
       ),

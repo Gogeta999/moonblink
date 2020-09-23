@@ -25,9 +25,9 @@ class RoundedContainer extends StatelessWidget {
             color: Theme.of(context).brightness == Brightness.dark
                 ? Colors.black
                 : Colors.black,
-            spreadRadius: 2,
-            // blurRadius: 2,
-            offset: Offset(0, 3), // changes position of shadow
+            // spreadRadius: 2,
+            blurRadius: 4,
+            offset: Offset(-2, 3), // changes position of shadow
           ),
         ],
       ),

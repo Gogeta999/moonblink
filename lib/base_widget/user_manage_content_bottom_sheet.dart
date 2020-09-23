@@ -38,7 +38,7 @@ class _UserManageContentBottomSheetState
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         ListTile(
-          leading: Icon(Icons.report),
+          leading: Icon(Icons.report, color: Theme.of(context).accentColor),
           title: Text(
             G.of(context).report,
             style: _textStyle,
@@ -60,7 +60,7 @@ class _UserManageContentBottomSheetState
               : Container(height: 0, width: 0),
         ),
         ListTile(
-          leading: Icon(Icons.block),
+          leading: Icon(Icons.block, color: Theme.of(context).accentColor),
           title: Text(
             G.of(context).block,
             style: _textStyle,

@@ -40,14 +40,20 @@ class SmallShadedContainer extends StatelessWidget {
   final Widget child;
   final double height;
   final Function ontap;
+  final Function onDoubletap;
   final bool selected;
   SmallShadedContainer(
-      {this.child, this.height, this.ontap, this.selected = false});
+      {this.child,
+      this.height,
+      this.ontap,
+      this.onDoubletap,
+      this.selected = false});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: ontap,
+      onDoubleTap: onDoubletap,
       child: Container(
         width: 80,
         height: height,

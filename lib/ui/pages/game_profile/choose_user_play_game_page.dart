@@ -2,14 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum DeselectState{ initial, loading}
+enum DeselectState { initial, loading }
 
 class ChooseUserPlayGamePage extends StatefulWidget {
   @override
@@ -17,8 +17,8 @@ class ChooseUserPlayGamePage extends StatefulWidget {
 }
 
 class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
-
-  BehaviorSubject<DeselectState> _deselectSubject = BehaviorSubject()..add(DeselectState.initial);
+  BehaviorSubject<DeselectState> _deselectSubject = BehaviorSubject()
+    ..add(DeselectState.initial);
 
   @override
   void initState() {
@@ -29,8 +29,23 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choose game you play'),
+        backgroundColor: Colors.black,
+        title: Text(G.of(context).choosegame),
+        leading: IconButton(
+            icon: Icon(CupertinoIcons.back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        // elevation: 15,
+        // shadowColor: Colors.blue,
+        bottom: PreferredSize(
+            child: Container(
+              height: 10,
+              color: Theme.of(context).accentColor,
+            ),
+            preferredSize: Size.fromHeight(10)),
       ),
+      backgroundColor: Colors.grey[200],
       body: FutureBuilder<UserPlayGameList>(
         future: MoonBlinkRepository.getUserPlayGameList(),
         builder: (context, snapshot) {
@@ -47,7 +62,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
               itemBuilder: (context, index) {
                 UserPlayGame item = snapshot.data.userPlayGameList[index];
                 return Slidable(
-                  enabled:  item.isPlay == 0 ? false : true,
+                  enabled: item.isPlay == 0 ? false : true,
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: <Widget>[
@@ -59,12 +74,19 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                             return IconSlideAction(
                               closeOnTap: false,
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              caption: snapshot.data == DeselectState.loading ? 'Loading' : 'Deselect',
-                              iconWidget: snapshot.data == DeselectState.loading ? CupertinoActivityIndicator() : Icon(Icons.remove_circle, color: Theme.of(context).accentColor),
-                              onTap: () => snapshot.data == DeselectState.loading ? {} : _onTapDeselect(item),
+                              caption: snapshot.data == DeselectState.loading
+                                  ? G.of(context).loading
+                                  : G.of(context).deselect,
+                              iconWidget: snapshot.data == DeselectState.loading
+                                  ? CupertinoActivityIndicator()
+                                  : Icon(Icons.remove_circle,
+                                      color: Theme.of(context).accentColor),
+                              onTap: () =>
+                                  snapshot.data == DeselectState.loading
+                                      ? {}
+                                      : _onTapDeselect(item),
                             );
-                          }
-                      ),
+                          }),
                     )
                   ],
                   child: Card(
@@ -101,7 +123,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
               },
             );
           } else {
-            return Center(child: Text('Something went wrong!'));
+            return Center(child: Text(G.of(context).toasterror));
           }
         },
       ),
@@ -109,19 +131,23 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
   }
 
   _onTapListTile(UserPlayGame item) {
-    Navigator.pushNamed(
-        context, RouteName.updateGameProfile,
-        arguments: item.gameProfile).then((value) {if(value != null && value) setState(() {});});
+    Navigator.pushNamed(context, RouteName.updateGameProfile,
+            arguments: item.gameProfile)
+        .then((value) {
+      if (value != null && value) setState(() {});
+    });
   }
 
   _onTapDeselect(UserPlayGame item) {
     ///call delete api
     _deselectSubject.add(DeselectState.loading);
-    MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then((value) {
+    MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then(
+        (value) {
       _deselectSubject.add(DeselectState.initial);
+
       ///After delete, fetch data from server again
       setState(() {});
-    }, onError: (err){
+    }, onError: (err) {
       _deselectSubject.add(DeselectState.initial);
       showToast(err.toString());
     });

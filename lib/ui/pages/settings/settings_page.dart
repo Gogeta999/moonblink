@@ -1,20 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
+import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/utils/platform_utils.dart';
-import 'package:moonblink/view_model/local_model.dart';
+import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -23,7 +22,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isSigning = false;
-  PartnerUser partnerData;
+  OwnProfile partnerData;
   @override
   void initState() {
     super.initState();
@@ -41,9 +40,14 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  space() {
+    return SizedBox(
+      height: 30,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var iconColor = Theme.of(context).accentColor;
     int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return ProviderWidget<PartnerOwnProfileModel>(
         model: PartnerOwnProfileModel(partnerData),
@@ -59,220 +63,129 @@ class _SettingsPageState extends State<SettingsPage> {
           }
           return Scaffold(
             appBar: AppBar(
-              title: Text(G.of(context).settingsSettings),
+              leading: IconButton(
+                  icon: SvgPicture.asset(
+                    back,
+                    semanticsLabel: 'back',
+                    color: Colors.white,
+                    width: 30,
+                    height: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context)),
+              backgroundColor: Colors.black,
+              actions: [
+                AppbarLogo(),
+              ],
             ),
-            body: SingleChildScrollView(
-              child: ListTileTheme(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: <Widget>[
-                    if (usertype != 1)
-                      Material(
-                        color: Theme.of(context).cardColor,
-                        child: ListTile(
-                          title: isSigning
-                              ? CupertinoActivityIndicator()
-                              : Text(G.of(context).settingsSignAsPartner),
-                          onTap: () async {
-                            var usertoken = StorageManager.sharedPreferences
-                                .getString(token);
-                            if (usertoken != null) {
-                              setState(() {
-                                isSigning = !isSigning;
-                              });
-                              Navigator.of(context).pushNamed(RouteName.otp);
-                              setState(() {
-                                isSigning = !isSigning;
-                              });
-                            } else {
-                              showToast(G.of(context).showToastSignInFirst);
-                            }
-                          },
-                          leading: Icon(
-                            FontAwesomeIcons.user,
-                            color: iconColor,
-                          ),
-                          trailing:
-                              typestatus(usermodel.partnerData.typestatus),
+            body: ListView(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      color: Colors.black,
+                      height: 200,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 150),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(50.0)),
                         ),
                       ),
-                    SizedBox(
-                      height: 20,
                     ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ExpansionTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(G.of(context).settingLanguage
-                                // style: TextStyle(),
-                                ),
-                            Text(LocaleModel.localeName(
-                                Provider.of<LocaleModel>(context).localeIndex,
-                                context)),
-                          ],
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 30, horizontal: 50),
+                      child: TitleContainer(
+                        height: 100,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: Center(
+                            child: Text(
+                          G.of(context).settingsSettings,
+                          style: TextStyle(fontSize: 30),
+                        )),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 180, left: 50, right: 50),
+                      child: ShadedContainer(
+                        height: 50,
+                        ontap: () => Navigator.pushNamed(
+                            context, RouteName.termsAndConditionsPage),
+                        child: Center(
+                          child: Text(G.of(context).termAndConditions),
                         ),
-                        leading: Icon(
-                          Icons.public,
-                          color: iconColor,
-                        ),
-                        children: <Widget>[
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: LocaleModel.localeValueList.length,
-                              itemBuilder: (context, index) {
-                                var model = Provider.of<LocaleModel>(context);
-                                return RadioListTile(
-                                  value: index,
-                                  groupValue: model.localeIndex,
-                                  onChanged: (index) {
-                                    model.switchLocale(index);
-                                  },
-                                  title: Text(
-                                      LocaleModel.localeName(index, context)),
-                                );
-                              }),
-                        ],
                       ),
                     ),
-                    //
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(G.of(context).termAndConditions),
-                        onTap: () async {
-                          Navigator.of(context)
-                              .pushNamed(RouteName.termsAndConditionsPage);
-                        },
-                        leading: Icon(Icons.book, color: iconColor),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(G.of(context).licenseagreement),
-                        onTap: () async {
-                          Navigator.of(context)
-                              .pushNamed(RouteName.licenseAgreement);
-                        },
-                        leading: Icon(Icons.book, color: iconColor),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(G.of(context).ratingApp),
-                        onTap: _openStore,
-                        leading: Icon(Icons.tag_faces, color: iconColor),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(G.of(context).feedback),
-                        onTap: _openFacebookPage,
-                        leading: Icon(
-                          Icons.feedback,
-                          color: iconColor,
-                        ),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(G.of(context).blockList),
-                        onTap: () {
-                          Navigator.pushNamed(context, RouteName.blockedUsers);
-                        },
-                        leading: Icon(
-                          Icons.block,
-                          color: iconColor,
-                        ),
-                        trailing: Icon(Icons.chevron_right),
-                      ),
-                    ),
-                    ///Testing
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // Material(
-                    //   color: Theme.of(context).cardColor,
-                    //   child: ListTile(
-                    //     title: Text('Game Profile Page Testing'),
-                    //     onTap: () {
-                    //       Navigator.pushNamed(context, RouteName.applyForQualification);
-                    //     },
-                    //     leading: Icon(
-                    //       Icons.block,
-                    //       color: iconColor,
-                    //     ),
-                    //     trailing: Icon(Icons.chevron_right),
-                    //   ),
-                    // ),
                   ],
                 ),
-              ),
+                space(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: ShadedContainer(
+                    height: 50,
+                    ontap: () => Navigator.pushNamed(
+                        context, RouteName.licenseAgreement),
+                    child: Center(
+                      child: Text(G.of(context).licenseagreement),
+                    ),
+                  ),
+                ),
+                space(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: ShadedContainer(
+                    height: 50,
+                    ontap: () => openStore(),
+                    child: Center(
+                      child: Text(G.of(context).ratingApp),
+                    ),
+                  ),
+                ),
+                space(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: ShadedContainer(
+                    height: 50,
+                    ontap: () =>
+                        Navigator.pushNamed(context, RouteName.blockedUsers),
+                    child: Center(
+                      child: Text(G.of(context).block),
+                    ),
+                  ),
+                ),
+                if (usertype == 0) space(),
+                if (usertype == 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: ShadedContainer(
+                      height: 50,
+                      ontap: () => Navigator.pushNamed(context, RouteName.otp),
+                      child: Center(
+                        child: Text(G.of(context).settingsSignAsPartner),
+                      ),
+                    ),
+                  ),
+                space(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: ShadedContainer(
+                    height: 50,
+                    ontap: () =>
+                        Navigator.pushNamed(context, RouteName.language),
+                    child: Center(
+                      child: Text(G.of(context).settingLanguage),
+                    ),
+                  ),
+                ),
+                space(),
+              ],
             ),
           );
         });
-  }
-
-  void _openStore() async {
-    String appStoreUrl;
-    if (Platform.isIOS) {
-      appStoreUrl = 'fb://profile/103254564508101';
-    } else {
-      appStoreUrl =
-          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(appStoreUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
-  }
-
-  void _openFacebookPage() async {
-    String fbProtocolUrl;
-    if (Platform.isIOS) {
-      fbProtocolUrl = 'fb://profile/103254564508101';
-    } else {
-      fbProtocolUrl = 'fb://page/103254564508101';
-    }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
-    try {
-      bool nativeAppLaunch = await launch(fbProtocolUrl,
-          forceSafariVC: false, universalLinksOnly: true);
-      if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
-    }
   }
 }

@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
+import 'package:moonblink/utils/compress_utils.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
@@ -89,14 +91,16 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     _updateGameMode();
 
     widget.gameProfile.gameRankList.forEach((element) {
-      _cupertinoActionSheet.add(CupertinoActionSheetAction(
-          onPressed: () {
-            setState(() {
-              _level = element;
-            });
-            Navigator.pop(context);
-          },
-          child: Text(element, style: _textStyle)));
+      _cupertinoActionSheet.add(
+        CupertinoActionSheetAction(
+            onPressed: () {
+              setState(() {
+                _level = element;
+              });
+              Navigator.pop(context);
+            },
+            child: Text(element, style: _textStyle)),
+      );
     });
   }
 
@@ -120,7 +124,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter your game ID', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
@@ -129,14 +133,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
                   setState(() {});
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -148,7 +152,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text('Enter your game ID\n', textAlign: TextAlign.center),
+            title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
@@ -157,14 +161,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: Text(G.of(context).cancel),
               ),
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
                   setState(() {});
                 },
-                child: Text('Submit'),
+                child: Text(G.of(context).submit),
               )
             ],
           );
@@ -176,11 +180,11 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text('Select Your Game Rank'),
+            title: Text(G.of(context).selectgamerank),
             actions: _cupertinoActionSheet,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(G.of(context).cancel),
             ),
           );
         });
@@ -229,12 +233,12 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             ///for now skill cover image later server will give a sample photo url
             _buildCachedNetworkImage(
                 imageUrl: widget.gameProfile.skillCoverImage,
-                label: 'Sample',
+                label: G.of(context).sample,
                 isSample: true,
                 onTap: null),
             _buildCachedNetworkImage(
                 imageUrl: widget.gameProfile.skillCoverImage,
-                label: 'Choose',
+                label: G.of(context).select,
                 isSample: false,
                 onTap: _onTapImage)
           ],
@@ -294,7 +298,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         ),
         color: Theme.of(context).backgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text('Submit'),
+        child: Text(G.of(context).submit),
         onPressed: () {},
       ),
     );
@@ -304,15 +308,23 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           title: Text(widget.gameProfile.gameName),
+          leading: IconButton(
+              icon: Icon(CupertinoIcons.back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
           actions: <Widget>[
             StreamBuilder<UpdateOrSubmitButtonState>(
                 stream: _submitOrUpdateSubject.stream,
                 builder: (context, snapshot) {
                   if (snapshot.data == UpdateOrSubmitButtonState.initial) {
                     return CupertinoButton(
-                      child: Text(
-                          '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      child: Center(
+                        child: Text(
+                            '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      ),
                       onPressed: _onSubmitOrUpdate,
                     );
                   } else if (snapshot.data ==
@@ -330,35 +342,41 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   }
                 })
           ],
+          // elevation: 15,
+          // shadowColor: Colors.blue,
+          bottom: PreferredSize(
+              child: Container(
+                height: 10,
+                color: Theme.of(context).accentColor,
+              ),
+              preferredSize: Size.fromHeight(10)),
         ),
+        backgroundColor: Colors.grey[200],
         body: SafeArea(
           child: ListView(
             physics: ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(10, 16, 10, 0),
             children: <Widget>[
-              _buildTitleWidget(title: 'Fill your game information'),
+              _buildTitleWidget(title: G.of(context).fillgameinfo),
               _buildGameProfileCard(
-                  title: 'Game ID',
+                  title: G.of(context).gameid,
                   subtitle: _gameIdController.text,
                   iconData: Icons.edit,
                   onTap: _onTapGameID),
               _buildGameProfileCard(
-                  title: 'Game Rank',
+                  title: G.of(context).gamerank,
                   subtitle: _level,
                   iconData: Icons.edit,
                   onTap: _onTapLevel),
               _buildDivider(),
-              _buildTitleWidget(
-                  title: 'Game Mode that you are ready to provide services'),
+              _buildTitleWidget(title: G.of(context).gamemodedescript),
               _buildGameProfileCard(
-                  title: 'Game Mode',
+                  title: G.of(context).gamemode,
                   subtitle: _gameMode,
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
               _buildDivider(),
-              _buildTitleWidget(
-                  title:
-                      'Upload the screenshot to prove your game ID and rank'),
+              _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
             ],
           ),
@@ -375,19 +393,19 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   _onSubmitOrUpdate() async {
     if (_gameIdController.text.isEmpty) {
-      showToast('Game ID can\'t be blanked');
+      showToast('Game ID ${G.of(context).cannotblank}');
       return;
     }
     if (_level.isEmpty) {
-      showToast('Level can\'t be blanked');
+      showToast('Level ${G.of(context).cannotblank}');
       return;
     }
     if (_gameMode.isEmpty) {
-      showToast('Game Mode can\'t be blanked');
+      showToast('Game Mode ${G.of(context).cannotblank}');
       return;
     }
     if (widget.gameProfile.isPlay == 0 && _skillCoverPhoto == null) {
-      showToast('ScreenShot can\'t be blanked');
+      showToast('ScreenShot ${G.of(context).cannotblank}');
       return;
     }
     _freezeUI();
@@ -401,7 +419,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       'game_id',
       'player_id',
       'level',
-      if(skillCoverImage != null) 'skill_cover_image',
+      if (skillCoverImage != null) 'skill_cover_image',
       'about_order_taking',
       'types'
     ];
@@ -409,7 +427,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       widget.gameProfile.gameId,
       _gameIdController.text,
       _level,
-      if(skillCoverImage != null) skillCoverImage,
+      if (skillCoverImage != null) skillCoverImage,
       '',
       _selectedGameModeIndex
     ];
@@ -419,7 +437,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     });
     MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
         (value) => {
-              showToast('Update Success'),
+              showToast(G.of(context).toastsuccess),
               Navigator.pop(context, true)
             },
         onError: (e) => {showToast(e.toString()), _unfreezeUI()});
@@ -446,7 +464,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     } else if (Platform.isIOS) {
       _showCupertinoDialog(context, _gameIdController);
     } else {
-      showToast('This platform is not supported.');
+      showToast(G.of(context).toastplatformnotsupport);
     }
   }
 
@@ -467,17 +485,50 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   _onTapImage() {
     if (_isUILocked) return;
-    CustomBottomSheet.show(
-        buildContext: context,
-        limit: 1,
-        body: 'Skill Cover Photo',
-        onPressed: (File file) {
-          setState(() {
-            _skillCoverPhoto = file;
-          });
-        },
-        buttonText: 'Choose',
-        popAfterBtnPressed: true,
-        requestType: RequestType.image);
+    return showCupertinoDialog(
+      context: context,
+      builder: (builder) => CupertinoAlertDialog(
+        content: Text(G.of(context).pickimage),
+        actions: <Widget>[
+          CupertinoButton(
+              child: Text(G.of(context).imagePickerGallery),
+              onPressed: () {
+                CustomBottomSheet.show(
+                    buildContext: context,
+                    limit: 1,
+                    body: G.of(context).skillcover,
+                    onPressed: (File file) {
+                      setState(() {
+                        _skillCoverPhoto = file;
+                      });
+                    },
+                    buttonText: G.of(context).select,
+                    popAfterBtnPressed: true,
+                    requestType: RequestType.image,
+                    willCrop: false,
+                    compressQuality: NORMAL_COMPRESS_QUALITY);
+                Navigator.pop(context);
+              }),
+          CupertinoButton(
+            child: Text(G.of(context).imagePickerCamera),
+            onPressed: () => _pickImageFromCamera(),
+          ),
+          CupertinoButton(
+            child: Text(G.of(context).cancel),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  _pickImageFromCamera() async {
+    PickedFile pickedFile =
+        await ImagePicker().getImage(source: ImageSource.camera);
+    File compressedImage = await CompressUtils.compressAndGetFile(
+        File(pickedFile.path), 90, 1080, 1080);
+    setState(() {
+      _skillCoverPhoto = compressedImage;
+    });
   }
 }

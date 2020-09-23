@@ -33,26 +33,27 @@ class PartnerRatingWidget extends StatelessWidget {
             ),
           ),
           Positioned(
-              bottom: 85,
-              child: SmoothStarRating(
-                rating: averageRating.roundToDouble(),
-                isReadOnly: true,
-                filledIconData: Icons.star,
-                halfFilledIconData: Icons.star_half,
-                defaultIconData: Icons.star_border,
-                color: Theme.of(context).accentColor,
-                starCount: 5,
-                allowHalfRating: true,
-                spacing: 5,
-                // onRated: (value) {
-                //   print("rating value_ $value");
-                // },
-              )),
+            bottom: 85,
+            child: SmoothStarRating(
+              rating: averageRating.roundToDouble(),
+              isReadOnly: true,
+              filledIconData: Icons.star,
+              halfFilledIconData: Icons.star_half,
+              defaultIconData: Icons.star_border,
+              color: Theme.of(context).accentColor,
+              starCount: 5,
+              allowHalfRating: true,
+              spacing: 5,
+              // onRated: (value) {
+              //   print("rating value_ $value");
+              // },
+            ),
+          ),
           Positioned(
               bottom: 50,
               child: Text(
                 partnerName +
-                    G.of(context).averageRatingIs +
+                    G.of(context).averageRating +
                     averageRating.roundToDouble().toString(),
                 style: TextStyle(color: Colors.black),
               ))
@@ -72,11 +73,14 @@ class PartnerGameHistoryWidget extends StatefulWidget {
       _PartnerGameHistoryWidgetState();
 }
 
-class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
+class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> with AutomaticKeepAliveClientMixin {
   //PartnerDetailModel partnerDetailModel;
 
   //RefreshController _refreshController = RefreshController();
   //Completer<void> _refreshCompleter;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -101,7 +105,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> {
         builder: (context, state) {
           if (state is PartnerGameHistoryInitial) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             );
           }
           if (state is PartnerGameHistoryFailure) {
@@ -194,7 +198,11 @@ class BottomLoader extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       child: Center(
-        child: CupertinoActivityIndicator(),
+        child: SizedBox(
+          width: 33,
+          height: 33,
+          child: CupertinoActivityIndicator(),
+        ),
       ),
     );
   }
@@ -210,15 +218,33 @@ class HistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //var fo
     return Container(
-      // width: 1000,
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      padding: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.grey),
-        // color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: 0.5,
+            // blurRadius: 2,
+            offset: Offset(-3, 3), // changes position of shadow
+          ),
+        ],
       ),
-      child: Row(
+      child: ListTile(
+        leading: Image.asset(
+          ImageHelper.wrapAssetsLogo('appbar.jpg'),
+          height: 50,
+          width: 45,
+        ),
+        title: Text(
+          '${history.transaction}',
+          style: Theme.of(context).textTheme.button,
+          overflow: TextOverflow.visible,
+        ),
+        trailing: Text(DateFormat.yMd().format(DateTime.parse(history.date))),
+      )/*Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -238,7 +264,7 @@ class HistoryWidget extends StatelessWidget {
           SizedBox(width: 10),
           Text(DateFormat.yMd().format(DateTime.parse(history.date)))
         ],
-      ),
+      ),*/
     );
   }
 }
