@@ -2,10 +2,11 @@
 final String home = 'assets/icons/mainTab/home.svg';
 final String chat = 'assets/icons/mainTab/chat.svg';
 final String following = 'assets/icons/mainTab/following.svg';
+final String noti = 'assets/icons/mainTab/noti.svg';
 final String mainProfile = 'assets/icons/mainTab/mainProfile.svg';
 
 //UserStatus
-final String customerservice = 'assets/icons/status/customerservice.svg';
+final String customerservice = 'assets/icons/status/customerService.svg';
 final String onOff = 'assets/icons/status/onOffline.svg';
 final String profileEdit = 'assets/icons/status/profileEdit.svg';
 final String setting = 'assets/icons/status/setting.svg';

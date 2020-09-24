@@ -18,6 +18,7 @@ import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
+import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -355,12 +356,6 @@ class _UserListWidgetState extends State<UserListWidget> {
                         MoonBlinkRepository.changestatus(0);
                         showToast(G.of(context).toastonline);
                       }),
-          //if (usertype != 0)
-          PageCard(
-              pageTitle: G.of(context).profileown,
-              iconData: FontAwesomeIcons.userAlt,
-              onTap: () =>
-                  Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
 
           ///profile
           if (usertype != 0)
@@ -370,10 +365,17 @@ class _UserListWidgetState extends State<UserListWidget> {
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
+          //if (usertype != 0)
+          PageCard(
+              pageTitle: G.of(context).profileown,
+              iconData: FontAwesomeIcons.userAlt,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
+
           ///wallet
           SVGPageCard(
               pageTitle: G.of(context).userStatusWallet,
-              iconData: wallet,
+              iconData: onOff,
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);
