@@ -14,14 +14,16 @@ class BookingManager {
   int _bookingId;
   int _bookingUserId;
   String _bookingUserName;
-  int _gameType;
+  String _gameName;
+  String _type; ///Eg - Classic
 
-  void bookingPrepare({int userId, int bookingId, int bookingUserId, String bookingUserName, int gameType}){
+  void bookingPrepare({int userId, int bookingId, int bookingUserId, String bookingUserName, String gameName, String type}){
     this._userId = userId;
     this._bookingId = bookingId;
     this._bookingUserId = bookingUserId;
     this._bookingUserName = bookingUserName;
-    this._gameType = gameType;
+    this._gameName = gameName;
+    this._type = type;
   }
 
   void bookingAccept() {
@@ -37,11 +39,14 @@ class BookingManager {
   }
 
   void showBookingDialog() {
+    print("GameName is $_gameName and Type is $_type");
+    if (_gameName.isEmpty || _type.isEmpty) return;
     showDialog(
       context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
       builder: (context) => BookingDialog(
           bookingUserName: _bookingUserName,
-          gameType: _gameType,
+          gameName: _gameName,
+          type: _type,
           accept: bookingAccept,
           reject: bookingReject,
       )
