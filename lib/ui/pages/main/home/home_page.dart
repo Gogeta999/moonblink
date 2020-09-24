@@ -242,17 +242,17 @@ class _HomePageState extends State<HomePage>
       appBar: HomeAppBar(),
       body: Column(
         children: [
-          SizedBox(
-            height: 8,
-          ),
-          topTabs(widget.homecontroller),
-          SizedBox(
-            height: 8,
-          ),
-          malefemaletabs(),
-          SizedBox(
-            height: 8,
-          ),
+          // SizedBox(
+          //   height: 8,
+          // ),
+          // topTabs(widget.homecontroller),
+          // SizedBox(
+          //   height: 8,
+          // ),
+          // malefemaletabs(),
+          // SizedBox(
+          //   height: 8,
+          // ),
           Expanded(
             child: PageView.builder(
               itemCount: 8,
@@ -318,6 +318,27 @@ class _HomePageState extends State<HomePage>
                             controller: widget.homecontroller,
                             // controller: tapToTopModel.scrollController,
                             slivers: <Widget>[
+                              SliverToBoxAdapter(
+                                child: SizedBox(
+                                  height: 8,
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: topTabs(widget.homecontroller),
+                              ),
+                              SliverToBoxAdapter(
+                                child: SizedBox(
+                                  height: 8,
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: malefemaletabs(),
+                              ),
+                              SliverToBoxAdapter(
+                                child: SizedBox(
+                                  height: 8,
+                                ),
+                              ),
                               if (homeModel.isError && homeModel.list.isEmpty)
                                 SliverToBoxAdapter(
                                   child: AnnotatedRegion<SystemUiOverlayStyle>(

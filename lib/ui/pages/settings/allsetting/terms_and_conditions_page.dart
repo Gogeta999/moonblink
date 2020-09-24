@@ -51,7 +51,7 @@ class TermsAndConditions extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 50),
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                     child: TitleContainer(
                       height: 100,
                       color: Theme.of(context).scaffoldBackgroundColor,
@@ -200,7 +200,7 @@ class TermsAndConditions extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.0)),
                     child: Text(
                       G.of(context).accept,
-                      style: Theme.of(context).textTheme.button,
+                      style: Theme.of(context).accentTextTheme.button,
                     ),
                     onPressed: () {
                       if (Platform.isAndroid) {

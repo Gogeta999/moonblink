@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,10 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
+import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -353,12 +356,6 @@ class _UserListWidgetState extends State<UserListWidget> {
                         MoonBlinkRepository.changestatus(0);
                         showToast(G.of(context).toastonline);
                       }),
-          //if (usertype != 0)
-          PageCard(
-              pageTitle: G.of(context).profileown,
-              iconData: FontAwesomeIcons.userAlt,
-              onTap: () =>
-                  Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
 
           ///profile
           if (usertype != 0)
@@ -368,10 +365,17 @@ class _UserListWidgetState extends State<UserListWidget> {
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
-          ///wallet
+          //if (usertype != 0)
           PageCard(
+              pageTitle: G.of(context).profileown,
+              iconData: FontAwesomeIcons.userAlt,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
+
+          ///wallet
+          SVGPageCard(
               pageTitle: G.of(context).userStatusWallet,
-              iconData: FontAwesomeIcons.wallet,
+              iconData: wallet,
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);
@@ -491,6 +495,63 @@ class PageCard extends StatelessWidget {
               iconData,
               color: Theme.of(context).iconTheme.color,
               size: 30.0,
+            ),
+            Center(
+              child: Text(pageTitle,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  // TextStyle(
+                  //     fontWeight: FontWeight.w700, color: Colors.white),
+                  softWrap: true),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SVGPageCard extends StatelessWidget {
+  final String pageTitle;
+  final String iconData;
+  final Function onTap;
+
+  const SVGPageCard(
+      {Key key,
+      @required this.pageTitle,
+      @required this.iconData,
+      @required this.onTap})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return InkResponse(
+      onTap: onTap,
+      child: Container(
+        // height: 100,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          border: Border.all(width: 1, color: Colors.black),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black,
+              spreadRadius: -5,
+              // blurRadius: 2,
+              offset: Offset(-15, 15), // changes position of shadow
+            ),
+          ],
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            SvgPicture.asset(
+              iconData,
+              color: Theme.of(context).iconTheme.color,
+              height: 30,
+              width: 30,
             ),
             Center(
               child: Text(pageTitle,
