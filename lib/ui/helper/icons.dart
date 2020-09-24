@@ -13,7 +13,6 @@ final String wallet = 'assets/icons/status/wallet.svg';
 
 final String search = 'assets/icons/search.svg';
 final String send = 'assets/icons/send.svg';
-
 final String back = 'assets/icons/back.svg';
 final String camera = 'assets/icons/camera.svg';
 final String favourite = 'assets/icons/favourite.svg';
