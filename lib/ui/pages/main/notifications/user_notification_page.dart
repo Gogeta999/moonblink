@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +12,9 @@ import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_notification.dart';
+import 'package:moonblink/provider/view_state.dart';
+import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class UserNotificationPage extends StatefulWidget {
@@ -22,7 +25,7 @@ class UserNotificationPage extends StatefulWidget {
 class _UserNotificationPageState extends State<UserNotificationPage>
     with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
-  final _scrollThreshold = 200.0;
+  final _scrollThreshold = 600.0;
   Completer<void> _refreshCompleter;
   UserNotificationBloc _userNotificationBloc;
 
@@ -31,9 +34,11 @@ class _UserNotificationPageState extends State<UserNotificationPage>
 
   @override
   void initState() {
-    _userNotificationBloc = UserNotificationBloc();
+    _userNotificationBloc = BlocProvider.of<UserNotificationBloc>(context);
+    _userNotificationBloc.add(UserNotificationFetched());
     _scrollController.addListener(_onScroll);
     _refreshCompleter = Completer<void>();
+    print('Initing');
     super.initState();
   }
 
@@ -55,9 +60,10 @@ class _UserNotificationPageState extends State<UserNotificationPage>
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _onRefresh,
-          child: BlocProvider(
-              create: (_) =>
-                  _userNotificationBloc..add(UserNotificationFetched()),
+          child: BlocProvider.value(
+              value: _userNotificationBloc,
+              //create: (_) =>
+              //_userNotificationBloc..add(UserNotificationFetched()),
               child: BlocConsumer<UserNotificationBloc, UserNotificationState>(
                 listener: (context, state) {
                   if (state is UserNotificationSuccess) {
@@ -74,12 +80,27 @@ class _UserNotificationPageState extends State<UserNotificationPage>
                     return Center(child: CupertinoActivityIndicator());
                   }
                   if (state is UserNotificationFailure) {
-                    return Center(child: Text('Error: ${state.error}'));
+                    print('${state.error}');
+                    return ViewStateErrorWidget(
+                      error: ViewStateError(
+                        ViewStateErrorType.networkTimeOutError,
+                        errorMessage: 'Oops! Something went wrong!',
+                      ),
+                      onPressed: () => _userNotificationBloc
+                          .add(UserNotificationRefreshed()),
+                    );
                   }
                   if (state is UserNotificationSuccess) {
                     if (state.data.isEmpty) {
-                      return Center(
-                        child: Text('You have no notifications.'),
+                      return ListView(
+                        physics: ScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(
+                                parent: ClampingScrollPhysics())),
+                        children: [
+                          Center(
+                            child: Text('You have no notifications'),
+                          )
+                        ],
                       );
                     }
                     return ListView.builder(
@@ -151,13 +172,16 @@ class NotificationListTile extends StatelessWidget {
             ),
             child: ListTile(
               onTap: () => _onTapListTile(context, state.data[index]),
-              title: Text(state.data[index].message, ///add game name and type later
+              title: Text(state.data[index].message,
+
+                  ///add game name and type later
                   style: Theme.of(context).textTheme.bodyText2),
               subtitle: Text(
                   timeAgo.format(DateTime.parse(state.data[index].createdAt),
                       allowFromNow: true),
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
-              trailing: Icon(Icons.more_vert),
+              trailing:
+                  state.data[index].isRead != 0 ? null : Icon(Icons.more_vert),
             ),
           );
         }
@@ -167,23 +191,25 @@ class NotificationListTile extends StatelessWidget {
   }
 
   _onTapListTile(BuildContext context, UserNotificationData data) {
-    if (data.isRead == 0) return;
+    if (data.isRead != 0) return;
     final cancel = CupertinoActionSheetAction(
         onPressed: () => Navigator.pop(context),
         child: Text('Cancel'),
         isDestructiveAction: true);
     final accept = CupertinoActionSheetAction(
         onPressed: () {
-          BlocProvider.of<UserNotificationBloc>(context)
-              .add(UserNotificationAccepted(data.fcmData.userId, data.fcmData.bookingUserId));
+          BlocProvider.of<UserNotificationBloc>(context).add(
+              UserNotificationAccepted(
+                  data.fcmData.userId, data.fcmData.id, data.fcmData.bookingUserId));
           Navigator.pop(context);
         },
         child: Text('Accept'),
         isDefaultAction: true);
     final reject = CupertinoActionSheetAction(
         onPressed: () {
-          BlocProvider.of<UserNotificationBloc>(context)
-              .add(UserNotificationRejected(data.fcmData.userId, data.fcmData.bookingUserId));
+          BlocProvider.of<UserNotificationBloc>(context).add(
+              UserNotificationRejected(
+                  data.fcmData.userId, data.fcmData.id));
           Navigator.pop(context);
         },
         child: Text('Reject'));
@@ -192,6 +218,6 @@ class NotificationListTile extends StatelessWidget {
         builder: (context) {
           return CupertinoActionSheet(
               actions: [accept, reject], cancelButton: cancel);
-        });;
+        });
   }
 }

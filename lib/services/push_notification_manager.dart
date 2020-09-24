@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
+import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
@@ -302,6 +304,8 @@ class PushNotificationsManager {
 
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
+    final context = locator<NavigationService>().navigatorKey.currentContext;
+    BlocProvider.of<UserNotificationBloc>(context).add(UserNotificationRefreshed());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;

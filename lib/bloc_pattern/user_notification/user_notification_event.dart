@@ -9,18 +9,21 @@ abstract class UserNotificationEvent extends Equatable {
 
 class UserNotificationFetched extends UserNotificationEvent {}
 
+class UserNotificationCleared extends UserNotificationEvent {}
+
 class UserNotificationRefreshed extends UserNotificationEvent {}
 
 class UserNotificationAccepted extends UserNotificationEvent {
   final int userId;
+  final int bookingId;
   final int bookingUserId;
 
-  const UserNotificationAccepted(this.userId, this.bookingUserId);
+  const UserNotificationAccepted(this.userId, this.bookingId, this.bookingUserId);
 }
 
 class UserNotificationRejected extends UserNotificationEvent {
   final int userId;
-  final int bookingUserId;
+  final int bookingId;
 
-  const UserNotificationRejected(this.userId, this.bookingUserId);
+  const UserNotificationRejected(this.userId, this.bookingId);
 }

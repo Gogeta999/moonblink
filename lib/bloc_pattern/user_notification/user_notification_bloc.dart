@@ -42,11 +42,14 @@ class UserNotificationBloc
     if (event is UserNotificationRefreshed) {
       yield* _mapRefreshedToState(currentState);
     }
+    if (event is UserNotificationCleared) {
+      yield* _mapClearedToState(currentState);
+    }
     if (event is UserNotificationAccepted) {
-      yield* _mapAcceptedToState(currentState, event.userId, event.bookingUserId);
+      yield* _mapAcceptedToState(currentState, event.userId, event.bookingId, event.bookingUserId);
     }
     if (event is UserNotificationRejected) {
-      yield* _mapRejectedToState(currentState, event.userId, event.bookingUserId);
+      yield* _mapRejectedToState(currentState, event.userId, event.bookingId);
     }
   }
 
@@ -57,8 +60,9 @@ class UserNotificationBloc
       try {
         data = await _fetchUserNotification(limit: notificationLimit, page: 1);
       } catch (e) {
-        yield UserNotificationFailure(error: e);
-        return;
+        //yield UserNotificationFailure(error: e);
+        //return;
+        print('$e');
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield UserNotificationSuccess(
@@ -75,7 +79,7 @@ class UserNotificationBloc
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield data.isEmpty
-          ? currentState.copyWith(hasReachedMax: true)
+          ? {currentState.copyWith(hasReachedMax: true), showToast('You have reached the end of the list')}
           : UserNotificationSuccess(
               data: currentState.data + data,
               hasReachedMax: hasReachedMax,
@@ -98,16 +102,21 @@ class UserNotificationBloc
         : UserNotificationSuccess(
             data: data, hasReachedMax: hasReachedMax, page: 1);
   }
+
+  Stream<UserNotificationState> _mapClearedToState(UserNotificationState currentState) async* {
+    if (currentState is UserNotificationSuccess) {
+      yield UserNotificationInitial();
+    }
+  }
   
   Stream<UserNotificationState> _mapAcceptedToState(
-      UserNotificationState currentState, int userId, int bookingId) async* {
+      UserNotificationState currentState, int userId, int bookingId, int bookingUserId) async* {
     try {
       await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT).then((value) =>
       value != null
-          ? locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: bookingId)
+          ? { locator<NavigationService>()
+          .navigateTo(RouteName.chatBox, arguments: bookingUserId), showToast('Booking Accepted')}
           : null);
-      showToast('Booking Accepted');
     } catch (error) {
       showToast('$error');
       print('Error $error');
