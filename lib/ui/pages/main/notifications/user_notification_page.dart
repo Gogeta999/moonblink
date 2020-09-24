@@ -97,8 +97,14 @@ class _UserNotificationPageState extends State<UserNotificationPage>
                             parent: AlwaysScrollableScrollPhysics(
                                 parent: ClampingScrollPhysics())),
                         children: [
+                          SizedBox(
+                            height: 220,
+                          ),
                           Center(
-                            child: Text('You have no notifications'),
+                            child: Text(
+                              'You have no notifications',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           )
                         ],
                       );
@@ -199,8 +205,8 @@ class NotificationListTile extends StatelessWidget {
     final accept = CupertinoActionSheetAction(
         onPressed: () {
           BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationAccepted(
-                  data.fcmData.userId, data.fcmData.id, data.fcmData.bookingUserId));
+              UserNotificationAccepted(data.fcmData.userId, data.fcmData.id,
+                  data.fcmData.bookingUserId));
           Navigator.pop(context);
         },
         child: Text('Accept'),
@@ -208,8 +214,7 @@ class NotificationListTile extends StatelessWidget {
     final reject = CupertinoActionSheetAction(
         onPressed: () {
           BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationRejected(
-                  data.fcmData.userId, data.fcmData.id));
+              UserNotificationRejected(data.fcmData.userId, data.fcmData.id));
           Navigator.pop(context);
         },
         child: Text('Reject'));
