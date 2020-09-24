@@ -273,6 +273,8 @@ class PushNotificationsManager {
     int bookingId = 0;
     int bookingUserId = 0;
     int gameType = 0;
+    String gameName = '';
+    String type = '';
     String bookingUserName = '';
 
     if (Platform.isAndroid) {
@@ -280,12 +282,16 @@ class PushNotificationsManager {
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
       gameType = json.decode(message['data']['game_type']);
+      gameName = message['data']['game_name'];
+      type = message['data']['type'];
       bookingUserName = message['data']['name'];
     } else if (Platform.isIOS) {
       userId = json.decode(message['user_id']);
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
       gameType = json.decode(message['game_type']);
+      gameName = message['game_name'];
+      type = message['type'];
       bookingUserName = message['name'];
     } else {
       showToast('This platform is not supported');
@@ -294,7 +300,8 @@ class PushNotificationsManager {
 
     _bookingManager.bookingPrepare(
       bookingUserName: bookingUserName,
-      gameType: gameType,
+      gameName: gameName,
+      type: type,
       userId: userId,
       bookingId: bookingId,
       bookingUserId: bookingUserId,
@@ -312,6 +319,8 @@ class PushNotificationsManager {
     int bookingId = 0;
     int bookingUserId = 0;
     int gameType = 0;
+    String gameName = '';
+    String type = '';
     String bookingUserName = '';
 
     String title = '';
@@ -324,6 +333,8 @@ class PushNotificationsManager {
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
       gameType = json.decode(message['data']['game_type']);
+      gameName = message['data']['game_name'];
+      type = message['data']['type'];
       bookingUserName = message['data']['name'];
 
       title = message['notification']['title'].toString();
@@ -334,6 +345,8 @@ class PushNotificationsManager {
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
       gameType = json.decode(message['game_type']);
+      gameName = message['game_name'];
+      type = message['type'];
       bookingUserName = message['name'];
 
       title = message['aps']['alert']['title'].toString();
@@ -349,7 +362,8 @@ class PushNotificationsManager {
 
     _bookingManager.bookingPrepare(
       bookingUserName: bookingUserName,
-      gameType: gameType,
+      gameName: gameName,
+      type: type,
       userId: userId,
       bookingId: bookingId,
       bookingUserId: bookingUserId,

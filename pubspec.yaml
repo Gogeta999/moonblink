@@ -32,7 +32,7 @@ dependencies:
   share: ^0.6.4+3
   flutter_local_notifications: ^1.4.4+1 # Android API 16+ (4.1+, the minimum version supported by Flutter). Uses the NotificationCompat APIs so it can be run older Android devices # iOS 8.0+ (the minimum version supported by Flutter). Supports the old and new iOS notification APIs (the User Notifications Framework introduced in iOS 10 but will use the UILocalNotification APIs for devices predating iOS 10)
   smooth_star_rating: ^1.1.1
-  flutter_ffmpeg: ^0.2.10
+  flutter_ffmpeg: 0.2.10
   video_thumbnail: ^0.2.2
   # fancy_bottom_navigation: ^0.3.2
   # Data
@@ -50,7 +50,7 @@ dependencies:
   #camera
   camera: ^0.5.8+2 #need to edit at ios,andorid require 21 sdk version
   # local storage
-  image_picker: ^0.6.7 #need to edit at android and ios
+  image_picker: ^0.6.7+11 #need to edit at android and ios
   localstorage: ^3.0.2+5
   flutter_cache_manager: ^1.4.1
   story_view: ^0.12.3
