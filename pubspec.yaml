@@ -111,6 +111,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/icons/mainTab/
+    - assets/icons/status/
     - assets/images/
     - assets/logos/
     - images/0.jpg

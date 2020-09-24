@@ -536,7 +536,10 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       ),
       child: Column(
         children: <Widget>[
-          Text(G.of(context).someoneCallingYou),
+          Text(
+            G.of(context).someoneCallingYou,
+            style: TextStyle(color: Colors.white),
+          ),
           buttoncheck(status, msg)
         ],
       ),
@@ -549,7 +552,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       return MaterialButton(
         child: Text(
           G.of(context).enterCall,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white),
         ),
         onPressed: () {
           joinChannel(msg.attach);
