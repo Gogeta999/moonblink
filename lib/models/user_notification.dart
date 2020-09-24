@@ -1,4 +1,7 @@
-class UserNotificationResponse {
+import 'package:equatable/equatable.dart';
+import 'package:moonblink/ui/pages/main/main_tab.dart';
+
+class UserNotificationResponse extends Equatable {
   final List<UserNotificationData> data;
 
   UserNotificationResponse({this.data});
@@ -7,13 +10,16 @@ class UserNotificationResponse {
     List<dynamic> dataJson = json['data'];
 
     List<UserNotificationData> dataList =
-    dataJson.map((e) => UserNotificationData.fromJson(e)).toList();
+        dataJson.map((e) => UserNotificationData.fromJson(e)).toList();
 
     return UserNotificationResponse(data: dataList);
   }
+
+  @override
+  List<Object> get props => [data];
 }
 
-class UserNotificationData {
+class UserNotificationData extends Equatable {
   final int id;
   final int userId;
   final String title;
@@ -24,17 +30,21 @@ class UserNotificationData {
   final UserNotificationFcmData fcmData;
 
   UserNotificationData.fromJson(Map<String, dynamic> json)
-    : id = json['id'],
-      userId = json['user_id'],
-      title = json['title'],
-      message = json['message'],
-      isRead = json['is_read'],
-      createdAt = json['created_at'],
-      updatedAt = json['updated_at'],
-      fcmData = UserNotificationFcmData.fromJson(json['data']);
+      : id = json['id'],
+        userId = json['user_id'],
+        title = json['title'],
+        message = json['message'],
+        isRead = json['is_read'],
+        createdAt = json['created_at'],
+        updatedAt = json['updated_at'],
+        fcmData = UserNotificationFcmData.fromJson(json['data']);
+
+  @override
+  List<Object> get props =>
+      [id, userId, title, message, isRead, createdAt, updatedAt, fcmData];
 }
 
-class UserNotificationFcmData {
+class UserNotificationFcmData extends Equatable {
   final int userId;
   final int bookingUserId;
   final int gameTye;
@@ -48,15 +58,30 @@ class UserNotificationFcmData {
   final String clickAction;
 
   UserNotificationFcmData.fromJson(Map<String, dynamic> json)
-    : userId = json['user_id'],
-      bookingUserId = json['booking_user_id'],
-      gameTye = json['game_type'],
-      status = json['status'],
-      count = json['count'],
-      createdAt = json['created_at'],
-      updatedAt = json['updated_at'],
-      id = json['id'],
-      fcmType = json['fcm_type'],
-      name = json['name'],
-      clickAction = json['click_action'];
+      : userId = json['user_id'],
+        bookingUserId = json['booking_user_id'],
+        gameTye = json['game_type'],
+        status = json['status'],
+        count = json['count'],
+        createdAt = json['created_at'],
+        updatedAt = json['updated_at'],
+        id = json['id'],
+        fcmType = json['fcm_type'],
+        name = json['name'],
+        clickAction = json['click_action'];
+
+  @override
+  List<Object> get props => [
+        user,
+        bookingUserId,
+        gameTye,
+        status,
+        count,
+        createdAt,
+        updatedAt,
+        id,
+        fcmType,
+        name,
+        clickAction
+      ];
 }

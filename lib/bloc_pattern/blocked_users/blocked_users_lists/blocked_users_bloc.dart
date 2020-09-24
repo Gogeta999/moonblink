@@ -77,12 +77,13 @@ class BlockedUsersBloc extends Bloc<BlockedUsersEvent, BlockedUsersState> {
 
   Stream<BlockedUsersState> _mapRefreshedToState(BlockedUsersState currentState) async* {
     List<BlockedUser> data = [];
+    print('Refreshing');
     if (currentState is BlockedUsersSuccess) {
       for (int i = currentState.data.length - 1; i >= 0; --i) {
-        print(i);
+        await Future.delayed(Duration(milliseconds: 20));
         _listKey.currentState.removeItem(i, (context, animation) {
           return buildRemovedItem(context, i, animation, currentState.data[i]);
-          }, duration: Duration(milliseconds: 10));
+          }/*, duration: Duration(milliseconds: 70)*/);
       }
       //currentState.data.clear();
     }
