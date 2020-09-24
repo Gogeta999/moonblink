@@ -39,13 +39,13 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: devUrl,
+    baseUrl: baseUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': devAppKey
+      'app-key': baseAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
@@ -147,7 +147,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        //TODO: navigate to ios store
+        throw forceUpdateAndroidDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -193,7 +193,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        //TODO: navigate to ios store
+        throw forceUpdateAndroidDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -234,7 +234,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        //TODO: navigate to ios store
+        throw forceUpdateAndroidDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -280,7 +280,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        //TODO: navigate to ios store
+        throw forceUpdateAndroidDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -428,6 +428,7 @@ class DioUtils {
         });
   }
 
+  //TODO: Change AppStoreUrl
   void _openStore() async {
     String appStoreUrl;
     if (Platform.isIOS) {

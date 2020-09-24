@@ -369,9 +369,9 @@ class _UserListWidgetState extends State<UserListWidget> {
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
           //if (usertype != 0)
-          PageCard(
+          SVGPageCard(
               pageTitle: G.of(context).profileown,
-              iconData: FontAwesomeIcons.userAlt,
+              iconData: profile,
               color: Colors.deepOrange,
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
@@ -564,8 +564,8 @@ class SVGPageCard extends StatelessWidget {
             SvgPicture.asset(
               iconData,
               color: color == null ? Theme.of(context).iconTheme.color : color,
-              height: 30,
-              width: 30,
+              height: 40,
+              width: 40,
               fit: BoxFit.contain,
             ),
             Center(
