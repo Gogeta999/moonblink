@@ -381,7 +381,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       showToast(G.of(context).loginFirst);
                     }
                   : () {
-                      Navigator.of(context).pushNamed(RouteName.wallet);
+                      Navigator.of(context).pushNamed(RouteName.network);
                     }),
 
           ///switch dark mode
@@ -552,6 +552,7 @@ class SVGPageCard extends StatelessWidget {
               color: Theme.of(context).iconTheme.color,
               height: 30,
               width: 30,
+              fit: BoxFit.contain,
             ),
             Center(
               child: Text(pageTitle,

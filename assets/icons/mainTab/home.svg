@@ -1,1 +1,8 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 863.71 629.52"><title>Home</title><polyline points="120.86 316.98 18.45 316.98 443.92 7.54 654.23 174.65" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/><line x1="760.41" y1="620.84" x2="534.69" y2="620.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/><polyline points="756.4 255.69 846.24 325.66 187.42 325.66 187.42 620.84 421.83 620.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/><polyline points="656.23 180.96 656.23 30.48 760.41 30.48 760.41 261.99" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/><polyline points="421.83 629.52 421.83 444.31 540.48 444.31 540.48 629.52" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/><line x1="111.66" y1="316.98" x2="111.66" y2="629.52" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="12"/></svg>
+<svg width="864" height="630" viewBox="0 0 864 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M444.081 0.00411987L657.963 169.952L650.497 179.348L443.759 15.0759L36.9008 310.98H120.86V322.98H-0.000732422L444.081 0.00411987Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M534.69 614.84H760.41V626.84H534.69V614.84Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M828.771 319.66L752.713 260.424L760.087 250.956L863.709 331.66H193.42V614.84H421.83V626.84H181.42V319.66H828.771Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M650.23 24.48H766.41V261.99H754.41V36.48H662.23V180.96H650.23V24.48Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M415.83 438.31H546.48V629.52H534.48V450.31H427.83V629.52H415.83V438.31Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M105.66 629.52V316.98H117.66V629.52H105.66Z" fill="black"/>
+</svg>
