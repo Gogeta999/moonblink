@@ -72,7 +72,7 @@ class UserNotificationFcmData extends Equatable {
 
   @override
   List<Object> get props => [
-        // user,
+        userId,
         bookingUserId,
         gameTye,
         status,
