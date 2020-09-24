@@ -375,7 +375,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ///wallet
           SVGPageCard(
               pageTitle: G.of(context).userStatusWallet,
-              iconData: onOff,
+              iconData: wallet,
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);
