@@ -16,6 +16,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
@@ -293,6 +294,15 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                 slivers: <Widget>[
                   // SliverToBoxAdapter(),
                   SliverAppBar(
+                    leading: IconButton(
+                        icon: SvgPicture.asset(
+                          back,
+                          semanticsLabel: 'back',
+                          color: Colors.white,
+                          width: 30,
+                          height: 30,
+                        ),
+                        onPressed: () => Navigator.pop(context)),
                     backgroundColor: Colors.black,
                     //toolbarHeight: kToolbarHeight - 5,
                     // leading: IconButton(

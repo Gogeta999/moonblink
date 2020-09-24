@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-final String home = 'assets/icons/home.svg';
-final String chat = 'assets/icons/chat.svg';
-final String following = 'assets/icons/following.svg';
-final String user = 'assets/icons/profile.svg';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;
@@ -59,6 +56,7 @@ class _MainTabPageState extends State<MainTabPage>
       HomePage(homeController),
       ChatListPage(),
       ContactsPage(),
+      UserNotificationPage(),
       UserStatusPage(),
     ];
 
@@ -168,7 +166,12 @@ class _MainTabPageState extends State<MainTabPage>
               icon: following,
             ),
             CustomNavigationBarItem(
-              icon: user,
+              icon: following,
+
+              ///TODO - Change to notification icon later
+            ),
+            CustomNavigationBarItem(
+              icon: mainProfile,
             )
           ],
           currentIndex: _selectedIndex,

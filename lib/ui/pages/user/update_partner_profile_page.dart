@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -16,6 +17,7 @@ import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -86,6 +88,15 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
         }
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+                icon: SvgPicture.asset(
+                  back,
+                  semanticsLabel: 'back',
+                  color: Colors.white,
+                  width: 30,
+                  height: 30,
+                ),
+                onPressed: () => Navigator.pop(context)),
             backgroundColor: Colors.black,
             actions: [
               AppbarLogo(),
