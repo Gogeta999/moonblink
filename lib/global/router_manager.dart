@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
+import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/booking_request_detail_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
@@ -67,6 +70,7 @@ class RouteName {
   static const String chooseUserPlayGames = 'chooseUserPlayGames';
   static const String updateGameProfile = 'updateGameProfile';
   static const String userRating = 'userRating';
+  static const String bookingRequestDetailPage = 'bookingRequestDetailPage';
 }
 
 class Router {
@@ -168,6 +172,13 @@ class Router {
       case RouteName.userRating:
         return CupertinoPageRoute(
             builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
+      case RouteName.bookingRequestDetailPage:
+        return CupertinoPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: BlocProvider.of<UserNotificationBloc>(context),
+            child: BookingRequestDetailPage(index: settings.arguments ?? 0),
+          )
+        );
 
       default:
         return CupertinoPageRoute(

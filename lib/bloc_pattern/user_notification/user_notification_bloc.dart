@@ -114,8 +114,12 @@ class UserNotificationBloc
     try {
       await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT).then((value) =>
       value != null
-          ? { locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: bookingUserId), showToast('Booking Accepted')}
+          ? {
+        this.add(UserNotificationRefreshed()),
+        locator<NavigationService>()
+          .navigateTo(RouteName.chatBox, arguments: bookingUserId),
+        showToast('Booking Accepted')
+      }
           : null);
     } catch (error) {
       showToast('$error');
@@ -128,6 +132,7 @@ class UserNotificationBloc
       UserNotificationState currentState, int userId, int bookingId) async* {
     try {
       await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_REJECT);
+      this.add(UserNotificationRefreshed());
       showToast('Booking Rejected');
     } catch (error) {
       showToast('$error');

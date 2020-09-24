@@ -15,6 +15,7 @@ import 'package:moonblink/models/user_notification.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/ui/pages/main/notifications/booking_request_detail_page.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class UserNotificationPage extends StatefulWidget {
@@ -158,7 +159,9 @@ class NotificationListTile extends StatelessWidget {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: state.data[index].isRead != 0
+                  ? Theme.of(context).scaffoldBackgroundColor
+                  : Theme.of(context).accentColor.withOpacity(0.5),
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
@@ -172,16 +175,22 @@ class NotificationListTile extends StatelessWidget {
             ),
             child: ListTile(
               onTap: () => _onTapListTile(context, state.data[index]),
-              title: Text(state.data[index].message,
+              title: Text(state.data[index].title,
 
                   ///add game name and type later
                   style: Theme.of(context).textTheme.bodyText2),
-              subtitle: Text(
-                  timeAgo.format(DateTime.parse(state.data[index].createdAt),
-                      allowFromNow: true),
+              subtitle: Text(state.data[index].message,
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
-              trailing:
-                  state.data[index].isRead != 0 ? null : Icon(Icons.more_vert),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Icon(Icons.chevron_right),
+                  Text(
+                  timeAgo.format(DateTime.parse(state.data[index].createdAt),
+                    allowFromNow: true), style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic))
+                ]
+              )
             ),
           );
         }
@@ -191,16 +200,18 @@ class NotificationListTile extends StatelessWidget {
   }
 
   _onTapListTile(BuildContext context, UserNotificationData data) {
-    if (data.isRead != 0) return;
+    //Navigator.pushNamed(context, RouteName.bookingRequestDetailPage, arguments: index);
+    //if (data.isRead != 0) return;
+    //now navigate to next page
     final cancel = CupertinoActionSheetAction(
         onPressed: () => Navigator.pop(context),
-        child: Text('Cancel'),
-        isDestructiveAction: true);
+        child: Text('Cancel')
+    );
     final accept = CupertinoActionSheetAction(
         onPressed: () {
           BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationAccepted(
-                  data.fcmData.userId, data.fcmData.id, data.fcmData.bookingUserId));
+              UserNotificationAccepted(data.fcmData.userId, data.fcmData.id,
+                  data.fcmData.bookingUserId));
           Navigator.pop(context);
         },
         child: Text('Accept'),
@@ -208,8 +219,7 @@ class NotificationListTile extends StatelessWidget {
     final reject = CupertinoActionSheetAction(
         onPressed: () {
           BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationRejected(
-                  data.fcmData.userId, data.fcmData.id));
+              UserNotificationRejected(data.fcmData.userId, data.fcmData.id));
           Navigator.pop(context);
         },
         child: Text('Reject'));

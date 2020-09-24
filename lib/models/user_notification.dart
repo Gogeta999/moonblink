@@ -1,7 +1,5 @@
-import 'package:equatable/equatable.dart';
-import 'package:moonblink/ui/pages/main/main_tab.dart';
 
-class UserNotificationResponse extends Equatable {
+class UserNotificationResponse {
   final List<UserNotificationData> data;
 
   UserNotificationResponse({this.data});
@@ -14,12 +12,9 @@ class UserNotificationResponse extends Equatable {
 
     return UserNotificationResponse(data: dataList);
   }
-
-  @override
-  List<Object> get props => [data];
 }
 
-class UserNotificationData extends Equatable {
+class UserNotificationData {
   final int id;
   final int userId;
   final String title;
@@ -38,13 +33,9 @@ class UserNotificationData extends Equatable {
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
         fcmData = UserNotificationFcmData.fromJson(json['data']);
-
-  @override
-  List<Object> get props =>
-      [id, userId, title, message, isRead, createdAt, updatedAt, fcmData];
 }
 
-class UserNotificationFcmData extends Equatable {
+class UserNotificationFcmData {
   final int userId;
   final int bookingUserId;
   final int gameTye;
@@ -55,6 +46,9 @@ class UserNotificationFcmData extends Equatable {
   final int id;
   final String fcmType;
   final String name;
+  final String gameName;
+  final String type;
+  final String gameIcon; /// null for now
   final String clickAction;
 
   UserNotificationFcmData.fromJson(Map<String, dynamic> json)
@@ -68,20 +62,8 @@ class UserNotificationFcmData extends Equatable {
         id = json['id'],
         fcmType = json['fcm_type'],
         name = json['name'],
+        gameName = json['game_name'],
+        type = json['type'],
+        gameIcon = json['game_icon'],
         clickAction = json['click_action'];
-
-  @override
-  List<Object> get props => [
-        user,
-        bookingUserId,
-        gameTye,
-        status,
-        count,
-        createdAt,
-        updatedAt,
-        id,
-        fcmType,
-        name,
-        clickAction
-      ];
 }
