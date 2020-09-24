@@ -364,14 +364,14 @@ class _UserListWidgetState extends State<UserListWidget> {
             PageCard(
                 pageTitle: G.of(context).profilegame,
                 iconData: FontAwesomeIcons.userEdit,
-                color: Colors.yellowAccent,
+                color: Colors.blueGrey,
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
           //if (usertype != 0)
-          SVGPageCard(
+          PageCard(
               pageTitle: G.of(context).profileown,
-              iconData: profile,
+              iconData: FontAwesomeIcons.user,
               color: Colors.deepOrange,
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
@@ -380,7 +380,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           PageCard(
               pageTitle: G.of(context).userStatusWallet,
               iconData: FontAwesomeIcons.wallet,
-              color: Colors.green,
+              color: Colors.greenAccent,
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);

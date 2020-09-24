@@ -27,6 +27,7 @@ class PartnerOwnProfilePage extends StatefulWidget {
 
 class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
     with AutomaticKeepAliveClientMixin {
+  int usertype = StorageManager.sharedPreferences.getInt(mUserType);
   @override
   bool get wantKeepAlive => true;
   OwnProfile partnerData;
@@ -258,11 +259,12 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
               ),
 
               /// [user feed]
-              SliverToBoxAdapter(
-                  child: Feed(
-                      partnerModel.partnerData.partnerName,
-                      partnerModel.partnerData.partnerId,
-                      partnerModel.partnerData.rating)),
+              if (usertype != 0)
+                SliverToBoxAdapter(
+                    child: Feed(
+                        partnerModel.partnerData.partnerName,
+                        partnerModel.partnerData.partnerId,
+                        partnerModel.partnerData.rating)),
 
               /// nothing just test
               // SliverToBoxAdapter(
