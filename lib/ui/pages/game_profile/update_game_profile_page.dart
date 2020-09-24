@@ -511,7 +511,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               }),
           CupertinoButton(
             child: Text(G.of(context).imagePickerCamera),
-            onPressed: () => _pickImageFromCamera(),
+            onPressed: () {
+              Navigator.pop(context);
+              _pickImageFromCamera();
+            },
           ),
           CupertinoButton(
             child: Text(G.of(context).cancel),

@@ -293,6 +293,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             title: G.of(context).bookingEnded,
             row1Content: G.of(context).timeleft,
             row2Content: BookingTimeLeft(
+              count: booking.count,
               upadateat: booking.updated,
               timeleft: bookingdata.section,
             ),
@@ -804,13 +805,18 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               iconSize: 35,
               icon: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  border: Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey
+                          : Colors.black),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Icon(
                   _isRotated ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: Colors.black,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               onPressed: () => rotate(),
@@ -1067,44 +1073,44 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   //Widget build
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(
-      builder: (context, child, model) {
-        return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
-          autoDispose: false,
-          model1: PartnerDetailModel(partnerdata, widget.detailPageId),
-          model2: GetmsgModel(widget.detailPageId),
-          onModelReady: (partnerModel, msgModel) {
-            partnerModel.initData();
-            msgModel.initData();
-          },
-          builder: (context, partnermodel, msgmodel, child) {
-            if (partnermodel.isBusy) {
-              return ViewStateBusyWidget();
-            } else if (partnermodel.isError) {
-              return ViewStateErrorWidget(
-                  error: partnermodel.viewStateError,
-                  onPressed: () {
-                    partnermodel.initData();
-                    msgmodel.initData();
-                  });
-            }
-            if (got == false && msgmodel.list.isNotEmpty) {
-              for (var i = 0; i < msgmodel.list.length; i++) {
-                Lastmsg msgs = msgmodel.list[i];
-                messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
-                    msgs.attach, msgs.type));
-              }
-              got = true;
-            }
-            if (bookingdata != null) {
-              if (bookingdata.status == 3 && rated == false) {
-                rated = true;
-                Future.delayed(
-                  Duration.zero,
-                  () => RatingPage(bookingdata.bookingid, widget.detailPageId),
-                );
-              }
-            }
+    return ProviderWidget2<PartnerDetailModel, GetmsgModel>(
+      autoDispose: false,
+      model1: PartnerDetailModel(partnerdata, widget.detailPageId),
+      model2: GetmsgModel(widget.detailPageId),
+      onModelReady: (partnerModel, msgModel) {
+        partnerModel.initData();
+        msgModel.initData();
+      },
+      builder: (context, partnermodel, msgmodel, child) {
+        if (partnermodel.isBusy) {
+          return ViewStateBusyWidget();
+        } else if (partnermodel.isError) {
+          return ViewStateErrorWidget(
+              error: partnermodel.viewStateError,
+              onPressed: () {
+                partnermodel.initData();
+                msgmodel.initData();
+              });
+        }
+        if (got == false && msgmodel.list.isNotEmpty) {
+          for (var i = 0; i < msgmodel.list.length; i++) {
+            Lastmsg msgs = msgmodel.list[i];
+            messages.add(Message(msgs.msg, msgs.sender, msgs.receiver, now,
+                msgs.attach, msgs.type));
+          }
+          got = true;
+        }
+        if (bookingdata != null) {
+          if (bookingdata.status == 3 && rated == false) {
+            rated = true;
+            Future.delayed(
+              Duration.zero,
+              () => RatingPage(bookingdata.bookingid, widget.detailPageId),
+            );
+          }
+        }
+        return ScopedModelDescendant<ChatModel>(
+          builder: (context, child, model) {
             return Scaffold(
               appBar: AppBar(
                 leading: IconButton(
