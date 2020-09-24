@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/view_model/splahAd_model.dart';
@@ -33,74 +35,8 @@ class PageState extends State<NetWorkPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          ProviderWidget<SplashAdsModel>(
-            model: SplashAdsModel(),
-            onModelReady: (splashModel) {
-              splashModel.initAds();
-            },
-            builder: (context, splashModel, child) {
-              return Container(
-                  height: 50, child: Text(splashModel.splashAds.adUrl));
-            },
-          ),
-          // MaterialButton(
-          //   color: Colors.red,
-          //   child: Text("Audio recorder"),
-          //   onPressed: () {
-          //     Navigator.push(
-          //         context, MaterialPageRoute(builder: (context) => ExampleApp()));
-          //   },
-          // ),
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              width: 80,
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              child:
-                  isOpen ? ButtonProgressIndicator() : Text('False show this'),
-            ),
-            onTap: isOpen
-                ? () {
-                    print('True to False');
-                    setState(() {
-                      isOpen = !isOpen;
-                    });
-                  }
-                : () {
-                    print('False to True');
-                    setState(() {
-                      isOpen = !isOpen;
-                    });
-                  },
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              width: 80,
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              child: Text(channelName.toString()),
-            ),
-            onTap: () async {
-              String key = 'abc';
-              var userId = StorageManager.sharedPreferences.getInt(mUserId);
-              var response = await DioUtils().get(
-                  Api.SimpleRequestApi + '$userId/search',
-                  queryParameters: {
-                    'name': key,
-                  });
-              return response.data['data']
-                  .map<User>((item) => User.fromJsonMap(item))
-                  .toList();
-            },
+          SvgPicture.asset(
+            home,
           ),
           SizedBox(
             height: 30,

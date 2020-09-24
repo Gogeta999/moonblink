@@ -292,6 +292,7 @@ class _LogoutState extends State<Logout> {
         return PageCard(
           pageTitle: G.of(context).logout,
           iconData: FontAwesomeIcons.signOutAlt,
+          color: Colors.black,
           onTap: () {
             model.logout();
             Navigator.of(context)
@@ -336,6 +337,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                 iconData: status != 1
                     ? FontAwesomeIcons.wifi
                     : Icons.portable_wifi_off,
+                color: Colors.redAccent,
                 onTap: status != 1
                     ? () {
                         setState(() {
@@ -362,6 +364,7 @@ class _UserListWidgetState extends State<UserListWidget> {
             PageCard(
                 pageTitle: G.of(context).profilegame,
                 iconData: FontAwesomeIcons.userEdit,
+                color: Colors.yellowAccent,
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
@@ -369,13 +372,15 @@ class _UserListWidgetState extends State<UserListWidget> {
           PageCard(
               pageTitle: G.of(context).profileown,
               iconData: FontAwesomeIcons.userAlt,
+              color: Colors.deepOrange,
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
 
           ///wallet
-          SVGPageCard(
+          PageCard(
               pageTitle: G.of(context).userStatusWallet,
-              iconData: wallet,
+              iconData: FontAwesomeIcons.wallet,
+              color: Colors.green,
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);
@@ -393,18 +398,21 @@ class _UserListWidgetState extends State<UserListWidget> {
                   // ? IconFonts.dayModeIcon
                   ? IconFonts.dayModeIcon
                   : FontAwesomeIcons.moon,
+              color: Colors.purpleAccent,
               onTap: () => _switchDarkMode(context)),
 
           ///theme
           PageCard(
               pageTitle: G.of(context).userStatusTheme,
               iconData: FontAwesomeIcons.palette,
+              color: Colors.pinkAccent,
               onTap: () => _showPaletteDialog(context)),
 
           ///favorites
           PageCard(
             pageTitle: G.of(context).userStatusCustomerService,
             iconData: FontAwesomeIcons.handsHelping,
+            color: Colors.red,
             onTap: hasUser == null
                 ? () {
                     showToast(G.of(context).loginFirst);
@@ -419,6 +427,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           PageCard(
               pageTitle: G.of(context).userStatusSettings,
               iconData: FontAwesomeIcons.cog,
+              color: Colors.grey,
               onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
 
           ///check app update
@@ -427,6 +436,7 @@ class _UserListWidgetState extends State<UserListWidget> {
             iconData: Platform.isAndroid
                 ? FontAwesomeIcons.android
                 : FontAwesomeIcons.appStoreIos,
+            color: Colors.blue,
             onTap: openStore,
           ),
           if (StorageManager.sharedPreferences.getString(token) != null)
@@ -457,12 +467,14 @@ class _UserListWidgetState extends State<UserListWidget> {
 class PageCard extends StatelessWidget {
   final String pageTitle;
   final IconData iconData;
+  final Color color;
   final Function onTap;
 
   const PageCard(
       {Key key,
       @required this.pageTitle,
       @required this.iconData,
+      @required this.color,
       @required this.onTap})
       : super(key: key);
   @override
@@ -493,7 +505,7 @@ class PageCard extends StatelessWidget {
           children: <Widget>[
             Icon(
               iconData,
-              color: Theme.of(context).iconTheme.color,
+              color: color == null ? Theme.of(context).iconTheme.color : color,
               size: 30.0,
             ),
             Center(
@@ -513,12 +525,14 @@ class PageCard extends StatelessWidget {
 class SVGPageCard extends StatelessWidget {
   final String pageTitle;
   final String iconData;
+  final Color color;
   final Function onTap;
 
   const SVGPageCard(
       {Key key,
       @required this.pageTitle,
       @required this.iconData,
+      @required this.color,
       @required this.onTap})
       : super(key: key);
   @override
@@ -549,9 +563,10 @@ class SVGPageCard extends StatelessWidget {
           children: <Widget>[
             SvgPicture.asset(
               iconData,
-              color: Theme.of(context).iconTheme.color,
+              color: color == null ? Theme.of(context).iconTheme.color : color,
               height: 30,
               width: 30,
+              fit: BoxFit.contain,
             ),
             Center(
               child: Text(pageTitle,

@@ -98,8 +98,14 @@ class _UserNotificationPageState extends State<UserNotificationPage>
                             parent: AlwaysScrollableScrollPhysics(
                                 parent: ClampingScrollPhysics())),
                         children: [
+                          SizedBox(
+                            height: 220,
+                          ),
                           Center(
-                            child: Text('You have no notifications'),
+                            child: Text(
+                              'You have no notifications',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           )
                         ],
                       );
