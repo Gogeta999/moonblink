@@ -63,6 +63,9 @@ class Api {
   // Notification List
   static const String UserNotifications = 'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/5/notification
 
+  //Notification read/unread
+  static const String UserNotificationRead = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/{user_id}/notification/{notification_id}
+
   // report user
   static const String ReportUser =
       'moonblink/api/v1/social/user/'; //moonblink/api/v1/user/{partner_user_id}/report

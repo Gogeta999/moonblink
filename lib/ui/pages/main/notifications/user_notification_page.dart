@@ -66,6 +66,10 @@ class _UserNotificationPageState extends State<UserNotificationPage>
               //create: (_) =>
               //_userNotificationBloc..add(UserNotificationFetched()),
               child: BlocConsumer<UserNotificationBloc, UserNotificationState>(
+                buildWhen: (previousState, currentState) =>
+                currentState != UserNotificationAcceptStateToInitial() &&
+                    currentState != UserNotificationRejectStateToInitial()
+                ,
                 listener: (context, state) {
                   if (state is UserNotificationSuccess) {
                     _refreshCompleter.complete();
@@ -159,6 +163,10 @@ class NotificationListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserNotificationBloc, UserNotificationState>(
+      buildWhen: (previousState, currentState) =>
+      currentState != UserNotificationAcceptStateToInitial() &&
+          currentState != UserNotificationRejectStateToInitial()
+      ,
       listener: (context, state) {},
       builder: (context, state) {
         if (state is UserNotificationSuccess) {
@@ -206,34 +214,38 @@ class NotificationListTile extends StatelessWidget {
   }
 
   _onTapListTile(BuildContext context, UserNotificationData data) {
-    //Navigator.pushNamed(context, RouteName.bookingRequestDetailPage, arguments: index);
+    Map<String, int> arguments = {
+      'index': index,
+      'notificationId': data.id
+    };
+    Navigator.pushNamed(context, RouteName.bookingRequestDetailPage, arguments: arguments);
     //if (data.isRead != 0) return;
     //now navigate to next page
-    final cancel = CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context),
-        child: Text('Cancel')
-    );
-    final accept = CupertinoActionSheetAction(
-        onPressed: () {
-          BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationAccepted(data.fcmData.userId, data.fcmData.id,
-                  data.fcmData.bookingUserId));
-          Navigator.pop(context);
-        },
-        child: Text('Accept'),
-        isDefaultAction: true);
-    final reject = CupertinoActionSheetAction(
-        onPressed: () {
-          BlocProvider.of<UserNotificationBloc>(context).add(
-              UserNotificationRejected(data.fcmData.userId, data.fcmData.id));
-          Navigator.pop(context);
-        },
-        child: Text('Reject'));
-    showCupertinoModalPopup(
-        context: context,
-        builder: (context) {
-          return CupertinoActionSheet(
-              actions: [accept, reject], cancelButton: cancel);
-        });
+    // final cancel = CupertinoActionSheetAction(
+    //     onPressed: () => Navigator.pop(context),
+    //     child: Text('Cancel')
+    // );
+    // final accept = CupertinoActionSheetAction(
+    //     onPressed: () {
+    //       BlocProvider.of<UserNotificationBloc>(context).add(
+    //           UserNotificationAccepted(data.fcmData.userId, data.fcmData.id,
+    //               data.fcmData.bookingUserId));
+    //       Navigator.pop(context);
+    //     },
+    //     child: Text('Accept'),
+    //     isDefaultAction: true);
+    // final reject = CupertinoActionSheetAction(
+    //     onPressed: () {
+    //       BlocProvider.of<UserNotificationBloc>(context).add(
+    //           UserNotificationRejected(data.fcmData.userId, data.fcmData.id));
+    //       Navigator.pop(context);
+    //     },
+    //     child: Text('Reject'));
+    // showCupertinoModalPopup(
+    //     context: context,
+    //     builder: (context) {
+    //       return CupertinoActionSheet(
+    //           actions: [accept, reject], cancelButton: cancel);
+    //     });
   }
 }

@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 void openStore() async {
   String appStoreUrl;
   if (Platform.isIOS) {
-    appStoreUrl = 'fb://profile/103254564508101';
+    appStoreUrl = 'https://apps.apple.com/us/app/id1526791060';
   } else {
     appStoreUrl =
         'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';

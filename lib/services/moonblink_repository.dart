@@ -23,6 +23,7 @@ import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -329,6 +330,13 @@ class MoonBlinkRepository {
       'page': page
     });
     return UserNotificationResponse.fromJson(response.data);
+  }
+  
+  //change notification to read state
+  static Future<UserNotificationData> changeUserNotificationReadState(int notificationId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().patch(Api.UserNotificationRead + '$userId/notification/$notificationId');
+    return UserNotificationData.fromJson(response.data);
   }
 
   // Booking

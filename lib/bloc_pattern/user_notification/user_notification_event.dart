@@ -13,6 +13,15 @@ class UserNotificationCleared extends UserNotificationEvent {}
 
 class UserNotificationRefreshed extends UserNotificationEvent {}
 
+class UserNotificationRefreshedFromStartPageToCurrentPage
+    extends UserNotificationEvent {}
+
+class UserNotificationChangeToRead extends UserNotificationEvent {
+  final int notificationId;
+
+  const UserNotificationChangeToRead(this.notificationId);
+}
+
 class UserNotificationAccepted extends UserNotificationEvent {
   final int userId;
   final int bookingId;

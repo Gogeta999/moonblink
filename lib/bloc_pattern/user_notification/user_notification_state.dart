@@ -2,6 +2,9 @@ part of 'user_notification_bloc.dart';
 
 abstract class UserNotificationState extends Equatable {
   const UserNotificationState();
+
+  @override
+  List<Object> get props => [];
 }
 
 class UserNotificationInitial extends UserNotificationState {
@@ -17,6 +20,20 @@ class UserNotificationFailure extends UserNotificationState {
   @override
   List<Object> get props => [error];
 
+}
+
+class UserNotificationUpdating extends UserNotificationState {
+  final List<UserNotificationData> data;
+  final bool hasReachedMax;
+  final int page;
+
+  const UserNotificationUpdating({this.data, this.hasReachedMax, this.page});
+
+  @override
+  List<Object> get props => [data, hasReachedMax];
+
+  @override
+  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
 
 class UserNotificationNoData extends UserNotificationState {
@@ -46,3 +63,7 @@ class UserNotificationSuccess extends UserNotificationState {
   @override
   String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
+
+class UserNotificationAcceptStateToInitial extends UserNotificationState {}
+
+class UserNotificationRejectStateToInitial extends UserNotificationState {}

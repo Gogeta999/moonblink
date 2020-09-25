@@ -413,9 +413,14 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
           }
         }
         if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchaseConnection.instance
-              .completePurchase(purchaseDetails);
-          await userTopUp(purchaseDetails.productID);
+          try {
+            await InAppPurchaseConnection.instance
+                .completePurchase(purchaseDetails);
+            await userTopUp(purchaseDetails.productID);
+            showToast('TopUp Success');
+          } catch (e) {
+            showToast('$e');
+          }
         }
       }
     });
