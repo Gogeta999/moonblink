@@ -4,6 +4,11 @@ final String chat = 'assets/icons/mainTab/chat.svg';
 final String following = 'assets/icons/mainTab/following.svg';
 final String noti = 'assets/icons/mainTab/noti.svg';
 final String mainProfile = 'assets/icons/mainTab/mainProfile.svg';
+final String homefilled = 'assets/icons/mainTab/home1.svg';
+final String chatfilled = 'assets/icons/mainTab/chat1.svg';
+final String followingfilled = 'assets/icons/mainTab/following1.svg';
+final String notifilled = 'assets/icons/mainTab/noti1.svg';
+final String mainProfilefilled = 'assets/icons/mainTab/mainprofile1.svg';
 
 //UserStatus
 final String customerservice = 'assets/icons/status/customerService.svg';

@@ -268,6 +268,24 @@ class PushNotificationsManager {
     _updateProfile.showUpdateProfileDialog();
   }
 
+  // //For No Game Profile
+  // Future<void> showgameprofilenoti() async {
+  //   bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+  //   if (!atChatBox) {
+  //     NotificationDetails platformChannelSpecifics =
+  //         setUpPlatformSpecifics('message', 'Messaging', song: null);
+  //     int partnerId = 0;
+  //     String title = '';
+  //     String body = '';
+  //     String payload = '';
+
+  //     _message.prepare(partnerId: partnerId);
+
+  //     await _flutterLocalNotificationsPlugin
+  //         .show(0, title, body, platformChannelSpecifics, payload: payload);
+  //   }
+  // }
+
   _showBookingDialog(message) async {
     int userId = 0;
     int bookingId = 0;
@@ -312,7 +330,8 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     final context = locator<NavigationService>().navigatorKey.currentContext;
-    BlocProvider.of<UserNotificationBloc>(context).add(UserNotificationRefreshed());
+    BlocProvider.of<UserNotificationBloc>(context)
+        .add(UserNotificationRefreshed());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
@@ -553,14 +572,21 @@ class _UpdateProfile {
 
   void showUpdateProfileDialog() {
     showDialog(
-        context: locator<NavigationService>()
-            .navigatorKey
-            .currentState
-            .overlay
-            .context,
-        builder: (context) => UpdateProfileDialog(
-              partnerUser: this.partnerUser,
-              navigateToProfilePage: () => this.navigateToUpdateProfile(),
-            ));
+      context: locator<NavigationService>()
+          .navigatorKey
+          .currentState
+          .overlay
+          .context,
+      builder: (context) => UpdateProfileDialog(
+        partnerUser: this.partnerUser,
+        navigateToProfilePage: () => this.navigateToUpdateProfile(),
+      ),
+    );
   }
+
+  void nogameprofile() async {
+    await shownoti();
+  }
+
+  Future<void> shownoti() {}
 }

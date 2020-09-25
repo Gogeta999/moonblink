@@ -1,21 +1,15 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_notification.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:moonblink/ui/pages/main/notifications/booking_request_detail_page.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class UserNotificationPage extends StatefulWidget {
@@ -52,12 +46,7 @@ class _UserNotificationPageState extends State<UserNotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        actions: [
-          AppbarLogo(),
-        ],
-      ),
+      appBar: AppbarWidget(),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _onRefresh,
@@ -180,24 +169,26 @@ class NotificationListTile extends StatelessWidget {
               ],
             ),
             child: ListTile(
-              onTap: () => _onTapListTile(context, state.data[index]),
-              title: Text(state.data[index].title,
+                onTap: () => _onTapListTile(context, state.data[index]),
+                title: Text(state.data[index].title,
 
-                  ///add game name and type later
-                  style: Theme.of(context).textTheme.bodyText2),
-              subtitle: Text(state.data[index].message,
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Icon(Icons.chevron_right),
-                  Text(
-                  timeAgo.format(DateTime.parse(state.data[index].createdAt),
-                    allowFromNow: true), style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic))
-                ]
-              )
-            ),
+                    ///add game name and type later
+                    style: Theme.of(context).textTheme.bodyText2),
+                subtitle: Text(state.data[index].message,
+                    style:
+                        TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Icon(Icons.chevron_right),
+                      Text(
+                          timeAgo.format(
+                              DateTime.parse(state.data[index].createdAt),
+                              allowFromNow: true),
+                          style: TextStyle(
+                              fontSize: 12, fontStyle: FontStyle.italic))
+                    ])),
           );
         }
         return Text('Something went wrong!');
@@ -210,9 +201,7 @@ class NotificationListTile extends StatelessWidget {
     //if (data.isRead != 0) return;
     //now navigate to next page
     final cancel = CupertinoActionSheetAction(
-        onPressed: () => Navigator.pop(context),
-        child: Text('Cancel')
-    );
+        onPressed: () => Navigator.pop(context), child: Text('Cancel'));
     final accept = CupertinoActionSheetAction(
         onPressed: () {
           BlocProvider.of<UserNotificationBloc>(context).add(
