@@ -214,11 +214,13 @@ class NotificationListTile extends StatelessWidget {
   }
 
   _onTapListTile(BuildContext context, UserNotificationData data) {
-    Map<String, int> arguments = {
-      'index': index,
-      'notificationId': data.id
-    };
-    Navigator.pushNamed(context, RouteName.bookingRequestDetailPage, arguments: arguments);
+    // Map<String, int> arguments = {
+    //   'index': index,
+    //   'notificationId': data.id
+    // };
+    BlocProvider.of<UserNotificationBloc>(context)
+        .add(UserNotificationChangeToRead(data.id));
+    //Navigator.pushNamed(context, RouteName.bookingRequestDetailPage, arguments: arguments);
     //if (data.isRead != 0) return;
     //now navigate to next page
     // final cancel = CupertinoActionSheetAction(
