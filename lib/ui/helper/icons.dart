@@ -7,27 +7,21 @@ final String mainProfile = 'assets/icons/mainTab/mainProfile.svg';
 
 //UserStatus
 final String customerservice = 'assets/icons/status/customerService.svg';
-final String onOff = 'assets/icons/status/onOffline.svg';
+final String dayMood = 'assets/icons/status/dayMood.svg';
+final String nightMood = 'assets/icons/status/nightMood.svg';
+final String online = 'assets/icons/status/online.svg';
+final String offline = 'assets/icons/status/offline.svg';
+final String gameProfile = 'assets/icons/status/gameProfile.svg';
 final String profileEdit = 'assets/icons/status/profileEdit.svg';
 final String setting = 'assets/icons/status/setting.svg';
+final String theme = 'assets/icons/status/theme.svg';
 final String wallet = 'assets/icons/status/wallet.svg';
-final String profile = 'assets/icons/status/profile.svg';
 
 final String search = 'assets/icons/search.svg';
 final String send = 'assets/icons/send.svg';
 final String back = 'assets/icons/back.svg';
 final String camera = 'assets/icons/camera.svg';
-final String favourite = 'assets/icons/favourite.svg';
 final String gallery = 'assets/icons/gallery.svg';
-final String gameprofile = 'assets/icons/gameprofile.svg';
-final String heart = 'assets/icons/heart.svg';
-final String message = 'assets/icons/message.svg';
 final String microphone = 'assets/icons/microphone.svg';
-final String profilebunny = 'assets/icons/profileBunny.svg';
-
 final String report = 'assets/icons/report.svg';
-
-final String status = 'assets/icons/status.svg';
-final String theme = 'assets/icons/theme.svg';
-
-// final String = 'assets/icons/.svg';
+final String message = 'assets/icons/message.svg';
