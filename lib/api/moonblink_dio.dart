@@ -39,13 +39,13 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: devUrl,
+    baseUrl: baseUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': devAppKey
+      'app-key': baseAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
