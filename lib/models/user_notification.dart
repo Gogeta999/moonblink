@@ -24,6 +24,8 @@ class UserNotificationData {
   final String updatedAt;
   final UserNotificationFcmData fcmData;
 
+  UserNotificationData({this.id, this.userId, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.fcmData});
+
   UserNotificationData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         userId = json['user_id'],
@@ -38,7 +40,7 @@ class UserNotificationData {
 class UserNotificationFcmData {
   final int userId;
   final int bookingUserId;
-  final int gameTye;
+  final int gameType;
   final int status;
   final int count;
   final String createdAt;
@@ -54,7 +56,7 @@ class UserNotificationFcmData {
   UserNotificationFcmData.fromJson(Map<String, dynamic> json)
       : userId = json['user_id'],
         bookingUserId = json['booking_user_id'],
-        gameTye = json['game_type'],
+        gameType = json['game_type'],
         status = json['status'],
         count = json['count'],
         createdAt = json['created_at'],

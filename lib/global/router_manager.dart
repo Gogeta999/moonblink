@@ -173,10 +173,13 @@ class Router {
         return CupertinoPageRoute(
             builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
       case RouteName.bookingRequestDetailPage:
+        int index = (settings.arguments as Map)['index'];
+        int notificationId = (settings.arguments as Map)['notificationId'];
+        print('$index   $notificationId');
         return CupertinoPageRoute(
           builder: (context) => BlocProvider.value(
             value: BlocProvider.of<UserNotificationBloc>(context),
-            child: BookingRequestDetailPage(index: settings.arguments ?? 0),
+            child: BookingRequestDetailPage(index: index, notificationId: notificationId,),
           )
         );
 
