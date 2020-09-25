@@ -145,6 +145,13 @@ class UserNotificationBloc
           return;
         }
       });
+      if (currentData[index].fcmData.status == PENDING) {
+        await locator<NavigationService>()
+            .navigateTo(RouteName.chatBox, arguments: currentData[index].fcmData.bookingUserId);
+      } else {
+        showToast("Booking Request is expired");
+      }
+
       if (currentData[index].isRead == 1
           && (currentData[index].fcmData.status == REJECT
           || currentData[index].fcmData.status == DONE
