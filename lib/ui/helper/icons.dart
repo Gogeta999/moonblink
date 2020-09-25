@@ -22,6 +22,6 @@ final String send = 'assets/icons/send.svg';
 final String back = 'assets/icons/back.svg';
 final String camera = 'assets/icons/camera.svg';
 final String gallery = 'assets/icons/gallery.svg';
-final String message = 'assets/icons/message.svg';
 final String microphone = 'assets/icons/microphone.svg';
 final String report = 'assets/icons/report.svg';
+final String message = 'assets/icons/message.svg';

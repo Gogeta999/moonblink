@@ -88,7 +88,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   });
                 },
               ),
-              Text(":copy ID Here")
+              Text("copy ID")
             ],
           ),
           if (hasUser)
@@ -331,12 +331,10 @@ class _UserListWidgetState extends State<UserListWidget> {
       delegate: SliverChildListDelegate.fixed(
         [
           if (usertype != 0)
-            PageCard(
+            SVGPageCard(
                 pageTitle:
                     status != 1 ? G.of(context).online : G.of(context).offline,
-                iconData: status != 1
-                    ? FontAwesomeIcons.wifi
-                    : Icons.portable_wifi_off,
+                iconData: status != 1 ? online : offline,
                 color: Colors.redAccent,
                 onTap: status != 1
                     ? () {
