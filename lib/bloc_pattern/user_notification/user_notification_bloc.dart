@@ -11,6 +11,7 @@ import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
@@ -42,6 +43,12 @@ class UserNotificationBloc
     if (event is UserNotificationRefreshed) {
       yield* _mapRefreshedToState(currentState);
     }
+    if (event is UserNotificationRefreshedFromStartPageToCurrentPage) {
+      yield* _mapRefreshedFromStartPageToCurrentPage(currentState);
+    }
+    if (event is UserNotificationChangeToRead) {
+      yield* _mapChangeToReadToState(currentState, event.notificationId);
+    }
     if (event is UserNotificationCleared) {
       yield* _mapClearedToState(currentState);
     }
@@ -52,7 +59,7 @@ class UserNotificationBloc
       yield* _mapRejectedToState(currentState, event.userId, event.bookingId);
     }
   }
-
+  ///Initial Fetched
   Stream<UserNotificationState> _mapFetchedToState(
       UserNotificationState currentState) async* {
     if (currentState is UserNotificationInitial) {
@@ -79,14 +86,15 @@ class UserNotificationBloc
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield data.isEmpty
-          ? {currentState.copyWith(hasReachedMax: true), showToast('You have reached the end of the list')}
+          ? currentState.copyWith(hasReachedMax: true)
           : UserNotificationSuccess(
               data: currentState.data + data,
               hasReachedMax: hasReachedMax,
               page: nextPage);
+      if (data.isEmpty) showToast('You have reached the end of the list');
     }
   }
-
+  ///Refreshing page 1
   Stream<UserNotificationState> _mapRefreshedToState(
       UserNotificationState currentState) async* {
     List<UserNotificationData> data = [];
@@ -94,6 +102,8 @@ class UserNotificationBloc
       data = await _fetchUserNotification(limit: notificationLimit, page: 1);
     } catch (error) {
       yield UserNotificationFailure(error: error);
+      yield UserNotificationAcceptStateToInitial();
+      yield UserNotificationRejectStateToInitial();
       return;
     }
     bool hasReachedMax = data.length < notificationLimit ? true : false;
@@ -102,40 +112,105 @@ class UserNotificationBloc
         : UserNotificationSuccess(
             data: data, hasReachedMax: hasReachedMax, page: 1);
   }
-
-  Stream<UserNotificationState> _mapClearedToState(UserNotificationState currentState) async* {
+  ///Refresh from start page to current page
+  Stream<UserNotificationState> _mapRefreshedFromStartPageToCurrentPage(
+      UserNotificationState currentState) async* {
+    List<UserNotificationData> data = [];
+    int currentPage = currentState is UserNotificationSuccess ? currentState.page : 1;
+    for (int startPage = 1; startPage <= currentPage; ++startPage) {
+      try {
+        data += await _fetchUserNotification(limit: notificationLimit, page: startPage);
+      } catch (error) {
+        yield UserNotificationFailure(error: error);
+        return;
+      }
+    }
+    bool hasReachedMax = data.length < notificationLimit * currentPage ? true : false;
+    yield data.isEmpty
+        ? UserNotificationNoData()
+        : UserNotificationSuccess(
+        data: data, hasReachedMax: hasReachedMax, page: currentPage);
+  }
+  ///Notification change to read
+  Stream<UserNotificationState> _mapChangeToReadToState(
+      UserNotificationState currentState, int notificationId) async* {
     if (currentState is UserNotificationSuccess) {
-      yield UserNotificationInitial();
+      List<UserNotificationData> currentData = currentState.data;
+      UserNotificationData data;
+      int index = 0;
+      currentData.forEach((element) {
+        if (element.id == notificationId) {
+          index = currentData.indexOf(element);
+//          print('------------------------Returning from loop');
+          return;
+        }
+      });
+      if (currentData[index].fcmData.status == PENDING) {
+        await locator<NavigationService>()
+            .navigateTo(RouteName.chatBox, arguments: currentData[index].fcmData.bookingUserId);
+      } else {
+        showToast("Booking Request is expired");
+      }
+
+      if (currentData[index].isRead == 1
+          && (currentData[index].fcmData.status == REJECT
+          || currentData[index].fcmData.status == DONE
+          || currentData[index].fcmData.status == EXPIRED
+          || currentData[index].fcmData.status == UNAVAILABLE
+          || currentData[index].fcmData.status == CANCEL)
+      ) {
+        ///old booking notification and already read
+        yield currentState.copyWith();
+        return;
+      }
+      yield UserNotificationUpdating(
+          data: currentState.data, hasReachedMax: currentState.hasReachedMax, page: currentState.page
+      );
+      try {
+        data = await MoonBlinkRepository.changeUserNotificationReadState(
+            notificationId);
+      } catch (error) {
+        yield UserNotificationFailure(error: error);
+        return;
+      }
+      currentData[index] = data;
+      yield currentState.copyWith(data: currentData);
+    } else {
+      print('It\'s not in success state');
     }
   }
-  
+  ///ResetState
+  Stream<UserNotificationState> _mapClearedToState(UserNotificationState currentState) async* {
+      yield UserNotificationInitial();
+  }
+  ///BookingAccept
   Stream<UserNotificationState> _mapAcceptedToState(
       UserNotificationState currentState, int userId, int bookingId, int bookingUserId) async* {
     try {
-      await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT).then((value) =>
-      value != null
-          ? {
-        this.add(UserNotificationRefreshed()),
-        locator<NavigationService>()
-          .navigateTo(RouteName.chatBox, arguments: bookingUserId),
-        showToast('Booking Accepted')
-      }
-          : null);
+      await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_ACCEPT);
+      yield UserNotificationAcceptStateToInitial();
+      add(UserNotificationRefreshed());
+      locator<NavigationService>()
+          .navigateTo(RouteName.chatBox, arguments: bookingUserId);
+      showToast('Booking Accepted');
     } catch (error) {
       showToast('$error');
+      yield UserNotificationAcceptStateToInitial();
       print('Error $error');
       return;
     }
   }
-
+  ///BookingReject
   Stream<UserNotificationState> _mapRejectedToState(
       UserNotificationState currentState, int userId, int bookingId) async* {
     try {
       await MoonBlinkRepository.bookingAcceptOrDecline(userId, bookingId, BOOKING_REJECT);
+      yield UserNotificationRejectStateToInitial();
       this.add(UserNotificationRefreshed());
       showToast('Booking Rejected');
     } catch (error) {
       showToast('$error');
+      yield UserNotificationRejectStateToInitial();
       print('Error $error');
       return;
     }

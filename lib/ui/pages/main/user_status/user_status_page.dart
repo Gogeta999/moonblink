@@ -88,7 +88,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   });
                 },
               ),
-              Text(":copy ID Here")
+              Text("copy ID")
             ],
           ),
           if (hasUser)
@@ -331,12 +331,10 @@ class _UserListWidgetState extends State<UserListWidget> {
       delegate: SliverChildListDelegate.fixed(
         [
           if (usertype != 0)
-            PageCard(
+            SVGPageCard(
                 pageTitle:
                     status != 1 ? G.of(context).online : G.of(context).offline,
-                iconData: status != 1
-                    ? FontAwesomeIcons.wifi
-                    : Icons.portable_wifi_off,
+                iconData: status != 1 ? online : offline,
                 color: Colors.redAccent,
                 onTap: status != 1
                     ? () {
@@ -361,25 +359,25 @@ class _UserListWidgetState extends State<UserListWidget> {
 
           ///profile
           if (usertype != 0)
-            PageCard(
+            SVGPageCard(
                 pageTitle: G.of(context).profilegame,
-                iconData: FontAwesomeIcons.userEdit,
+                iconData: gameProfile,
                 color: Colors.blueGrey,
                 onTap: () => Navigator.of(context)
                     .pushNamed(RouteName.chooseUserPlayGames)),
 
           //if (usertype != 0)
-          PageCard(
+          SVGPageCard(
               pageTitle: G.of(context).profileown,
-              iconData: FontAwesomeIcons.user,
+              iconData: profileEdit,
               color: Colors.deepOrange,
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
 
           ///wallet
-          PageCard(
+          SVGPageCard(
               pageTitle: G.of(context).userStatusWallet,
-              iconData: FontAwesomeIcons.wallet,
+              iconData: wallet,
               color: Colors.greenAccent,
               onTap: hasUser == null
                   ? () {
@@ -396,22 +394,22 @@ class _UserListWidgetState extends State<UserListWidget> {
                   : G.of(context).userStatusDarkMode,
               iconData: Theme.of(context).brightness == Brightness.light
                   // ? IconFonts.dayModeIcon
-                  ? IconFonts.dayModeIcon
+                  ? FontAwesomeIcons.sun
                   : FontAwesomeIcons.moon,
               color: Colors.purpleAccent,
               onTap: () => _switchDarkMode(context)),
 
           ///theme
-          PageCard(
+          SVGPageCard(
               pageTitle: G.of(context).userStatusTheme,
-              iconData: FontAwesomeIcons.palette,
+              iconData: theme,
               color: Colors.pinkAccent,
               onTap: () => _showPaletteDialog(context)),
 
-          ///favorites
-          PageCard(
+          ///Customer Service
+          SVGPageCard(
             pageTitle: G.of(context).userStatusCustomerService,
-            iconData: FontAwesomeIcons.handsHelping,
+            iconData: customerservice,
             color: Colors.red,
             onTap: hasUser == null
                 ? () {
@@ -424,9 +422,9 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
 
           ///settings
-          PageCard(
+          SVGPageCard(
               pageTitle: G.of(context).userStatusSettings,
-              iconData: FontAwesomeIcons.cog,
+              iconData: setting,
               color: Colors.grey,
               onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
 
@@ -564,8 +562,8 @@ class SVGPageCard extends StatelessWidget {
             SvgPicture.asset(
               iconData,
               color: color == null ? Theme.of(context).iconTheme.color : color,
-              height: 40,
-              width: 40,
+              height: 50,
+              width: 50,
               fit: BoxFit.contain,
             ),
             Center(

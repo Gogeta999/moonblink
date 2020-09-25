@@ -331,7 +331,7 @@ class PushNotificationsManager {
   Future<void> _showBookingNotification(message) async {
     final context = locator<NavigationService>().navigatorKey.currentContext;
     BlocProvider.of<UserNotificationBloc>(context)
-        .add(UserNotificationRefreshed());
+        .add(UserNotificationRefreshedFromStartPageToCurrentPage());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;

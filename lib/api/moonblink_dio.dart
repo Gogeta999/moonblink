@@ -147,7 +147,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        throw forceUpdateAndroidDialog();
+        throw forceUpdateAppStoreDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -193,7 +193,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        throw forceUpdateAndroidDialog();
+        throw forceUpdateAppStoreDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -234,7 +234,48 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
+        throw forceUpdateAppStoreDialog();
+      }
+      // Request null data when no story
+      else if (respData.errorCode == 123) {
+        response.data = respData.data;
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        debugPrint(
+            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        return response;
+      } else {
+        throw NotSuccessException.fromRespData(respData);
+      }
+    }
+  }
+
+  //delete request
+  patch(url, {queryParameters, options}) async {
+    print('post request path ------$url-------queryParameters$queryParameters');
+    Response response;
+    response = await _dio.patch(url,
+        queryParameters: queryParameters, options: options);
+    ResponseData respData = ResponseData.fromJson(response.data);
+    if (respData.success) {
+      response.data = respData.data;
+      debugPrint(
+          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      return response;
+    } else {
+      if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
+        throw forceLoginDialog();
+        // throw ForceLoginDialog();
+      } // Platform and version Control
+      // 102 is version late
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+        throw forceUpdateAppStoreDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -280,7 +321,7 @@ class DioUtils {
       else if (respData.errorCode == 102 && Platform.isAndroid) {
         throw forceUpdateAndroidDialog();
       } else if (respData.errorCode == 102 && Platform.isIOS) {
-        throw forceUpdateAndroidDialog();
+        throw forceUpdateAppStoreDialog();
       }
       // Request null data when no story
       else if (respData.errorCode == 123) {
@@ -428,11 +469,54 @@ class DioUtils {
         });
   }
 
-  //TODO: Change AppStoreUrl
+  Future<void> forceUpdateAppStoreDialog() async {
+    showDialog(
+        context: locator<NavigationService>()
+            .navigatorKey
+            .currentState
+            .overlay
+            .context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(G.of(context).forceUpdateTitle),
+            content: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Text(G.of(context).forceUpdateContent),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  //SystemNavigator.pop();
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  _openStore();
+                  //SystemNavigator.pop();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   void _openStore() async {
     String appStoreUrl;
     if (Platform.isIOS) {
-      appStoreUrl = 'fb://profile/103254564508101';
+      appStoreUrl = 'https://apps.apple.com/us/app/id1526791060';
     } else {
       appStoreUrl =
           'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
@@ -442,10 +526,10 @@ class DioUtils {
       bool nativeAppLaunch = await launch(appStoreUrl,
           forceSafariVC: false, universalLinksOnly: true);
       if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
+        await launch(appStoreUrl, forceSafariVC: false);
       }
     } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
+      await launch(appStoreUrl, forceSafariVC: false);
     }
   }
 }

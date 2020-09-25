@@ -301,7 +301,7 @@ class _CustomNavigationBarTile extends StatelessWidget {
           // semanticsLabel: 'home',
           fit: BoxFit.fill,
           width: selected ? 30 : 25,
-          height: selected ? 45 : 25,
+          height: selected ? 35 : 25,
         ),
         onTap: onPressed,
         onDoubleTap: item.doubletap,
