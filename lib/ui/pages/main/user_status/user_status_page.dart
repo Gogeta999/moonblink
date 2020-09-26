@@ -14,11 +14,11 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
-import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
@@ -37,6 +37,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
   @override
   void initState() {
+    // PushNotificationsManager().showgameprofilenoti();
     if (StorageManager.sharedPreferences.getString(token) != null) init();
     print('token: ${StorageManager.sharedPreferences.getString(token)}');
     super.initState();
