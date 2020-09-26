@@ -237,7 +237,7 @@ class ChatModel extends Model {
   }
 
   // void receivenoti(int id, String text, String msg) {
-  //   // PushNotificationsManager().notification(id, text, msg);
+  //   PushNotificationsManager().notification(id, text, msg);
   // }
 
   void disconnect() {

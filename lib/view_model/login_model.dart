@@ -22,6 +22,7 @@ const String mUserId = 'mUserId';
 const String mLoginMail = 'mLoginMail';
 const String mstatus = 'status';
 const String mUserProfile = 'mUserProfile';
+const String mgameprofile = 'gameprofile';
 
 class LoginModel extends ViewStateModel {
   final UserModel userModel;
@@ -118,6 +119,8 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
         StorageManager.sharedPreferences.setInt(mstatus, userModel.user.status);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
+        StorageManager.sharedPreferences
+            .setInt(mgameprofile, userModel.user.gameprofilecount);
         DioUtils().initWithAuthorization();
         PushNotificationsManager().reInit();
         setIdle();

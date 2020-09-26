@@ -150,6 +150,7 @@ class _MainTabPageState extends State<MainTabPage>
           items: [
             CustomNavigationBarItem(
               icon: home,
+              selectedIcon: homefilled,
               doubletap: () {
                 homeController.animateTo(
                   0.0,
@@ -158,18 +159,12 @@ class _MainTabPageState extends State<MainTabPage>
                 );
               },
             ),
+            CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
             CustomNavigationBarItem(
-              icon: chat,
-            ),
+                icon: following, selectedIcon: followingfilled),
+            CustomNavigationBarItem(icon: noti, selectedIcon: notifilled),
             CustomNavigationBarItem(
-              icon: following,
-            ),
-            CustomNavigationBarItem(
-              icon: noti,
-            ),
-            CustomNavigationBarItem(
-              icon: mainProfile,
-            )
+                icon: mainProfile, selectedIcon: mainProfilefilled)
           ],
           currentIndex: _selectedIndex,
           onTap: (index) {

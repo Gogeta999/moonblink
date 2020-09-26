@@ -21,6 +21,7 @@ const String FcmTypeMessage = 'message';
 const String FcmTypeBooking = 'booking';
 const String FcmTypeVoiceCall = 'voice_call';
 const String FcmTypeGameIdUpdate = 'game_id_update';
+const String GameProfileAdd = 'gameprofileadd';
 
 class PushNotificationsManager {
   String usertoken = StorageManager.sharedPreferences.getString(token);
@@ -105,6 +106,9 @@ class PushNotificationsManager {
       } else if (payload == FcmTypeVoiceCall) {
         print('payload: $payload');
         _voiceCall.navigateToCallScreen();
+      } else if (payload == GameProfileAdd) {
+        print('payload: $payload');
+        navigatotogameprofile();
       }
     }
 
@@ -266,6 +270,20 @@ class PushNotificationsManager {
     _updateProfile.prepare(partnerUser: partnerUser);
 
     _updateProfile.showUpdateProfileDialog();
+  }
+
+  //For No Game Profile
+  Future<void> showgameprofilenoti() async {
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('gameprofile', 'gameprofile', song: null);
+
+    await _flutterLocalNotificationsPlugin.show(
+      0,
+      "Welcome to MoonGo",
+      "Please add game profile for other players to play with you",
+      platformChannelSpecifics,
+      payload: GameProfileAdd,
+    );
   }
 
   _showBookingDialog(message) async {
@@ -554,14 +572,19 @@ class _UpdateProfile {
 
   void showUpdateProfileDialog() {
     showDialog(
-        context: locator<NavigationService>()
-            .navigatorKey
-            .currentState
-            .overlay
-            .context,
-        builder: (context) => UpdateProfileDialog(
-              partnerUser: this.partnerUser,
-              navigateToProfilePage: () => this.navigateToUpdateProfile(),
-            ));
+      context: locator<NavigationService>()
+          .navigatorKey
+          .currentState
+          .overlay
+          .context,
+      builder: (context) => UpdateProfileDialog(
+        partnerUser: this.partnerUser,
+        navigateToProfilePage: () => this.navigateToUpdateProfile(),
+      ),
+    );
   }
+}
+
+void navigatotogameprofile() {
+  locator<NavigationService>().navigateTo(RouteName.chooseUserPlayGames);
 }
