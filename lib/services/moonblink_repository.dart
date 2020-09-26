@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -23,7 +22,6 @@ import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -323,19 +321,21 @@ class MoonBlinkRepository {
   }
 
   //get user's notifications
-  static Future<UserNotificationResponse> getUserNotifications(int limit, int page) async {
+  static Future<UserNotificationResponse> getUserNotifications(
+      int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().get(Api.UserNotifications + '$userId/notification', queryParameters: {
-      'limit': limit,
-      'page': page
-    });
+    var response = await DioUtils().get(
+        Api.UserNotifications + '$userId/notification',
+        queryParameters: {'limit': limit, 'page': page});
     return UserNotificationResponse.fromJson(response.data);
   }
-  
+
   //change notification to read state
-  static Future<UserNotificationData> changeUserNotificationReadState(int notificationId) async {
+  static Future<UserNotificationData> changeUserNotificationReadState(
+      int notificationId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().patch(Api.UserNotificationRead + '$userId/notification/$notificationId');
+    var response = await DioUtils().patch(
+        Api.UserNotificationRead + '$userId/notification/$notificationId');
     return UserNotificationData.fromJson(response.data);
   }
 

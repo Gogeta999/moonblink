@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:get_it/get_it.dart';
-import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'user_rating_event.dart';
@@ -55,7 +52,7 @@ class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
     }
     if (currentState is UserRatingSuccess) {
       final nextPage = currentState.page + 1;
-      List<UserRating>  data = [];
+      List<UserRating> data = [];
       try {
         data = await _fetchUserRating(limit: ratingLimit, page: nextPage);
       } catch (error) {
@@ -74,7 +71,7 @@ class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
   Stream<UserRatingState> _mapRefreshedToState(
       UserRatingState currentState) async* {
     print('Execute');
-    List<UserRating>  data = [];
+    List<UserRating> data = [];
     yield UserRatingRefreshing();
     try {
       data = await _fetchUserRating(limit: ratingLimit, page: 1);
@@ -92,7 +89,8 @@ class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
       state is UserRatingSuccess && state.hasReachedMax;
 
   Future<List<UserRating>> _fetchUserRating({int limit, int page}) async {
-    UserRatingList data = await MoonBlinkRepository.userRating(userId, limit, page);
+    UserRatingList data =
+        await MoonBlinkRepository.userRating(userId, limit, page);
     return data.userRatingList;
   }
 }

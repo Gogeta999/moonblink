@@ -5,7 +5,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -144,7 +143,8 @@ class LoginModel extends ViewStateModel {
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
       final context = locator<NavigationService>().navigatorKey.currentContext;
-      BlocProvider.of<UserNotificationBloc>(context).add(UserNotificationCleared());
+      BlocProvider.of<UserNotificationBloc>(context)
+          .add(UserNotificationCleared());
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

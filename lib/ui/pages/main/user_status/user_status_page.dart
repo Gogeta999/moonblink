@@ -18,7 +18,6 @@ import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
-import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';

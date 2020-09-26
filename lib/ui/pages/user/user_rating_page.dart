@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_rating/user_rating_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
