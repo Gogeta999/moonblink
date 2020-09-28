@@ -100,9 +100,9 @@ class UserNotificationBloc
     try {
       data = await _fetchUserNotification(limit: notificationLimit, page: 1);
     } catch (error) {
-      yield UserNotificationFailure(error: error);
       yield UserNotificationAcceptStateToInitial();
       yield UserNotificationRejectStateToInitial();
+      yield UserNotificationFailure(error: error);
       return;
     }
     bool hasReachedMax = data.length < notificationLimit ? true : false;
@@ -166,10 +166,10 @@ class UserNotificationBloc
         yield currentState.copyWith();
         return;
       }
-      yield UserNotificationUpdating(
-          data: currentState.data,
-          hasReachedMax: currentState.hasReachedMax,
-          page: currentState.page);
+      // yield UserNotificationUpdating(
+      //     data: currentState.data,
+      //     hasReachedMax: currentState.hasReachedMax,
+      //     page: currentState.page);
       try {
         data = await MoonBlinkRepository.changeUserNotificationReadState(
             notificationId);

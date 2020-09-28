@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
@@ -27,23 +29,12 @@ class NewUserStatusPage extends StatefulWidget {
 }
 
 class _NewUserStatusPageState extends State<NewUserStatusPage> {
-  Wallet wallet = Wallet(value: 0);
-  bool hasUser = false;
 
   @override
   void initState() {
     // PushNotificationsManager().showgameprofilenoti();
-    if (StorageManager.sharedPreferences.getString(token) != null) init();
     print('token: ${StorageManager.sharedPreferences.getString(token)}');
     super.initState();
-  }
-
-  init() async {
-    Wallet wallet = await MoonBlinkRepository.getUserWallet();
-    setState(() {
-      this.wallet = wallet;
-      hasUser = true;
-    });
   }
 
   @override
@@ -61,8 +52,25 @@ class _NewUserStatusPageState extends State<NewUserStatusPage> {
             // brightness: Theme.of(context).brightness == Brightness.light
             //     ? Brightness.light
             //     : Brightness.dark,
+            leading: AppbarLogo(),
             actions: <Widget>[
-              AppbarLogo(),
+              InkResponse(
+                onTap: /*hasUser == null
+                    ? () {
+                  showToast(G.of(context).loginFirst);
+                }
+                    : */openFacebookPage,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: SvgPicture.asset(
+                    customerservice,
+                    color: Colors.red,
+                    height: 50,
+                    width: 50,
+                    semanticsLabel: G.of(context).userStatusCustomerService,
+                  ),
+                ),
+              ),
             ],
             flexibleSpace: null,
             bottom: PreferredSize(
@@ -131,9 +139,26 @@ class _UserListWidgetState extends State<UserListWidget> {
 
   int usertype = StorageManager.sharedPreferences.getInt(mUserType);
 
+  int userid = StorageManager.sharedPreferences.getInt(mUserId);
+
   var userProfile = StorageManager.sharedPreferences.getString(mUserProfile);
 
+  Wallet userWallet;
+
   Widget blankSpace() => SizedBox(height: 10);
+
+  @override
+  void initState() {
+    if (StorageManager.sharedPreferences.getString(token) != null) init();
+    super.initState();
+  }
+
+  init() async {
+    Wallet wallet = await MoonBlinkRepository.getUserWallet();
+    setState(() {
+      this.userWallet = wallet;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +185,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                               imageUrl: userProfile,
                               imageBuilder: (context, item) {
                                 return CircleAvatar(
-                                  radius: 25,
+                                  radius: 28,
                                   backgroundImage: item,
                                 );
                               },
@@ -169,7 +194,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                               height: 120,
                             )
                           : CircleAvatar(
-                              radius: 25,
+                              radius: 28,
                               backgroundColor: Colors.black,
                               child: CircleAvatar(
                                 radius: 70,
@@ -181,22 +206,54 @@ class _UserListWidgetState extends State<UserListWidget> {
                             ),
                     ),
                   ),
-                  title: Text(model.user.name,
-                      style: Theme.of(context).textTheme.bodyText1),
-                  trailing: InkResponse(
-                    onTap: hasUser == null
-                        ? () {
-                            showToast(G.of(context).loginFirst);
-                          }
-                        : openFacebookPage,
-                    child: SvgPicture.asset(
-                      customerservice,
-                      color: Colors.red,
-                      height: 50,
-                      width: 50,
-                      semanticsLabel: G.of(context).userStatusCustomerService,
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(model.user.name,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            SizedBox(width: 20),
+                            Icon(
+                              FontAwesomeIcons.coins,
+                              color: Colors.amber[500],
+                              size: 20,
+                            ),
+                            SizedBox(width: 5.0),
+                            userWallet != null ? Text(
+                                '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                                style: TextStyle(fontSize: 16)) : CupertinoActivityIndicator()
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        InkResponse(
+                          onTap: () {
+                            String id = encrypt(userid);
+                            FlutterClipboard.copy(id).then((value) {
+                              showToast(G.of(context).toastcopy);
+                              print('copied');
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.content_copy,
+                                size: 18,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              Text("copy ID"),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
+                  //trailing: Icon(Icons.chevron_right),
                 ),
               ));
         }),
@@ -243,8 +300,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                         }),
             ),
           ),
-
-        blankSpace(),
+        if (usertype != 0)
+        //blankSpace(),
 
         ///Game Profile
         if (usertype != 0)
@@ -267,8 +324,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                       .pushNamed(RouteName.chooseUserPlayGames)),
             ),
           ),
-
-        blankSpace(),
+        if (usertype != 0)
+        //blankSpace(),
 
         ///OwnProfile
         if (usertype != 0)
@@ -291,8 +348,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                       .pushNamed(RouteName.partnerOwnProfile)),
             ),
           ),
-
-        blankSpace(),
+        if (usertype != 0)
+        //blankSpace(),
 
         ///Wallet
         Material(
@@ -320,7 +377,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
 
-        blankSpace(),
+        //blankSpace(),
 
         /// Switch dark mode
         Material(
@@ -345,7 +402,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
 
-        blankSpace(),
+        //blankSpace(),
 
         ///Theme
         Material(
@@ -367,7 +424,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
 
-        blankSpace(),
+        //blankSpace(),
 
         ///Settings
         Material(
@@ -389,7 +446,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
 
-        blankSpace(),
+        //blankSpace(),
 
         ///check app update
         Material(
@@ -414,132 +471,12 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
 
-        blankSpace(),
+        //blankSpace(),
 
         ///Logout
         if (StorageManager.sharedPreferences.getString(token) != null) Logout(),
       ]),
     );
-    // return SliverGrid(
-    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 2,
-    //     childAspectRatio: 3 / 2,
-    //     mainAxisSpacing: 15.0,
-    //   ),
-    //   delegate: SliverChildListDelegate.fixed(
-    //     [
-    //       if (usertype != 0)
-    //         SVGPageCard(
-    //             pageTitle:
-    //             status != 1 ? G.of(context).online : G.of(context).offline,
-    //             iconData: status != 1 ? online : offline,
-    //             color: Colors.redAccent,
-    //             onTap: status != 1
-    //                 ? () {
-    //               setState(() {
-    //                 StorageManager.sharedPreferences.setInt(mstatus, 1);
-    //               });
-    //               print(status);
-    //               print("+++++++++++++++++++++++++++");
-    //               MoonBlinkRepository.changestatus(1);
-    //               showToast(G.of(context).toastoffline);
-    //             }
-    //                 : () {
-    //               setState(() {
-    //                 StorageManager.sharedPreferences.setInt(mstatus, 0);
-    //                 // status = 0;
-    //               });
-    //               print(status);
-    //               print("----------------------------");
-    //               MoonBlinkRepository.changestatus(0);
-    //               showToast(G.of(context).toastonline);
-    //             }),
-    //
-    //       ///profile
-    //       if (usertype != 0)
-    //         SVGPageCard(
-    //             pageTitle: G.of(context).profilegame,
-    //             iconData: gameProfile,
-    //             color: Colors.blueGrey,
-    //             onTap: () => Navigator.of(context)
-    //                 .pushNamed(RouteName.chooseUserPlayGames)),
-    //
-    //       //if (usertype != 0)
-    //       SVGPageCard(
-    //           pageTitle: G.of(context).profileown,
-    //           iconData: profileEdit,
-    //           color: Colors.deepOrange,
-    //           onTap: () =>
-    //               Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
-    //
-    //       ///wallet
-    //       SVGPageCard(
-    //           pageTitle: G.of(context).userStatusWallet,
-    //           iconData: wallet,
-    //           color: Colors.greenAccent,
-    //           onTap: hasUser == null
-    //               ? () {
-    //             showToast(G.of(context).loginFirst);
-    //           }
-    //               : () {
-    //             Navigator.of(context).pushNamed(RouteName.wallet);
-    //           }),
-    //
-    //       ///switch dark mode
-    //       PageCard(
-    //           pageTitle: Theme.of(context).brightness == Brightness.light
-    //               ? G.of(context).userStatusDayMode
-    //               : G.of(context).userStatusDarkMode,
-    //           iconData: Theme.of(context).brightness == Brightness.light
-    //           // ? IconFonts.dayModeIcon
-    //               ? FontAwesomeIcons.sun
-    //               : FontAwesomeIcons.moon,
-    //           color: Colors.purpleAccent,
-    //           onTap: () => _switchDarkMode(context)),
-    //
-    //       ///theme
-    //       SVGPageCard(
-    //           pageTitle: G.of(context).userStatusTheme,
-    //           iconData: theme,
-    //           color: Colors.pinkAccent,
-    //           onTap: () => _showPaletteDialog(context)),
-    //
-    //       ///Customer Service
-    //       SVGPageCard(
-    //         pageTitle: G.of(context).userStatusCustomerService,
-    //         iconData: customerservice,
-    //         color: Colors.red,
-    //         onTap: hasUser == null
-    //             ? () {
-    //           showToast(G.of(context).loginFirst);
-    //         }
-    //         // : () {
-    //         //     Navigator.of(context).pushNamed(RouteName.network);
-    //         //   }),
-    //             : openFacebookPage,
-    //       ),
-    //
-    //       ///settings
-    //       SVGPageCard(
-    //           pageTitle: G.of(context).userStatusSettings,
-    //           iconData: setting,
-    //           color: Colors.grey,
-    //           onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
-    //
-    //       ///check app update
-    //       PageCard(
-    //         pageTitle: G.of(context).userStatusCheckAppUpdate,
-    //         iconData: Platform.isAndroid
-    //             ? FontAwesomeIcons.android
-    //             : FontAwesomeIcons.appStoreIos,
-    //         color: Colors.blue,
-    //         onTap: openStore,
-    //       ),
-    //       if (StorageManager.sharedPreferences.getString(token) != null)
-    //         Logout(),
-    //     ],
-    //   ),
-    // );
   }
 
   void _switchDarkMode(BuildContext context) {
@@ -556,64 +493,6 @@ class _UserListWidgetState extends State<UserListWidget> {
       builder: (context) {
         return Dialog(child: SettingThemeWidget());
       },
-    );
-  }
-}
-
-class PageCard extends StatelessWidget {
-  final String pageTitle;
-  final IconData iconData;
-  final Color color;
-  final Function onTap;
-
-  const PageCard(
-      {Key key,
-      @required this.pageTitle,
-      @required this.iconData,
-      @required this.color,
-      @required this.onTap})
-      : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return InkResponse(
-      onTap: onTap,
-      child: Container(
-        // height: 100,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          border: Border.all(width: 1, color: Colors.black),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.black,
-              spreadRadius: -5,
-              // blurRadius: 2,
-              offset: Offset(-15, 15), // changes position of shadow
-            ),
-          ],
-        ),
-        margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Icon(
-              iconData,
-              color: color == null ? Theme.of(context).iconTheme.color : color,
-              size: 30.0,
-            ),
-            Center(
-              child: Text(pageTitle,
-                  style: Theme.of(context).textTheme.bodyText1,
-                  // TextStyle(
-                  //     fontWeight: FontWeight.w700, color: Colors.white),
-                  softWrap: true),
-            )
-          ],
-        ),
-      ),
     );
   }
 }
