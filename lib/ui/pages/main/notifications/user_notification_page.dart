@@ -74,13 +74,39 @@ class _UserNotificationPageState extends State<UserNotificationPage>
                   }
                   if (state is UserNotificationFailure) {
                     print('${state.error}');
-                    return ViewStateErrorWidget(
-                      error: ViewStateError(
-                        ViewStateErrorType.networkTimeOutError,
-                        errorMessage: 'Oops! Something went wrong!',
-                      ),
-                      onPressed: () => _userNotificationBloc
-                          .add(UserNotificationRefreshed()),
+                    return ListView(
+                      physics: ScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(
+                              parent: ClampingScrollPhysics())),
+                      children: [
+                        SizedBox(
+                          height: 220,
+                        ),
+                        Center(
+                          child: Text(
+                            'You have no notifications',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                  if (state is UserNotificationNoData) {
+                    return ListView(
+                      physics: ScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(
+                              parent: ClampingScrollPhysics())),
+                      children: [
+                        SizedBox(
+                          height: 220,
+                        ),
+                        Center(
+                          child: Text(
+                            'You have no notifications',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        )
+                      ],
                     );
                   }
                   if (state is UserNotificationSuccess) {
@@ -162,7 +188,7 @@ class NotificationListTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: state.data[index].isRead != 0
                   ? Theme.of(context).scaffoldBackgroundColor
-                  : Theme.of(context).accentColor.withOpacity(0.5),
+                  : Theme.of(context).accentColor,
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
