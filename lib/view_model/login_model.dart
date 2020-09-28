@@ -142,7 +142,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      await MoonBlinkRepository.logout();
+      // await MoonBlinkRepository.logout();
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
       final context = locator<NavigationService>().navigatorKey.currentContext;

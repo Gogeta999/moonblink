@@ -140,6 +140,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
       }
       // Platform and version Control
@@ -187,6 +190,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
       } // Platform and version Control
       // 102 is version late
@@ -227,6 +233,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
         // throw ForceLoginDialog();
       } // Platform and version Control
@@ -268,6 +277,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
         // throw ForceLoginDialog();
       } // Platform and version Control

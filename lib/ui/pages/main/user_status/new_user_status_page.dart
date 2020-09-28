@@ -29,7 +29,6 @@ class NewUserStatusPage extends StatefulWidget {
 }
 
 class _NewUserStatusPageState extends State<NewUserStatusPage> {
-
   @override
   void initState() {
     // PushNotificationsManager().showgameprofilenoti();
@@ -41,34 +40,25 @@ class _NewUserStatusPageState extends State<NewUserStatusPage> {
   Widget build(BuildContext context) {
     // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
             ///[Appbar]
             backgroundColor: Colors.black,
             pinned: true,
-            // toolbarHeight: kToolbarHeight - 5,
-            // expandedHeight: kToolbarHeight,
-            // brightness: Theme.of(context).brightness == Brightness.light
-            //     ? Brightness.light
-            //     : Brightness.dark,
             leading: AppbarLogo(),
             actions: <Widget>[
-              InkResponse(
-                onTap: /*hasUser == null
-                    ? () {
-                  showToast(G.of(context).loginFirst);
-                }
-                    : */openFacebookPage,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: SvgPicture.asset(
-                    customerservice,
-                    color: Colors.red,
-                    height: 50,
-                    width: 50,
-                    semanticsLabel: G.of(context).userStatusCustomerService,
-                  ),
+              IconButton(
+                onPressed: openCustomerServicePage,
+                icon: SvgPicture.asset(
+                  customerservice,
+                  color: Colors.white,
+                  // height: 30,
+                  // width: 30,
+                  semanticsLabel: G.of(context).userStatusCustomerService,
                 ),
               ),
             ],
@@ -83,7 +73,7 @@ class _NewUserStatusPageState extends State<NewUserStatusPage> {
           UserListWidget(),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 20,
+              height: 30,
             ),
           )
         ],
@@ -103,24 +93,20 @@ class _LogoutState extends State<Logout> {
     return ProviderWidget<LoginModel>(
       model: LoginModel(Provider.of(context)),
       builder: (context, model, child) {
-        return Material(
-            elevation: 8,
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: ListTile(
-                leading: Icon(
-                  FontAwesomeIcons.signOutAlt,
-                  color: Colors.black,
-                ),
-                title: Text(G.of(context).logout,
-                    style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  model.logout();
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
-                },
+        return Card(
+            margin: EdgeInsets.zero,
+            child: ListTile(
+              leading: Icon(
+                FontAwesomeIcons.signOutAlt,
+                color: Colors.black,
               ),
+              title: Text(G.of(context).logout,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () {
+                model.logout();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
+              },
             ));
       },
     );
@@ -170,308 +156,270 @@ class _UserListWidgetState extends State<UserListWidget> {
       delegate: SliverChildListDelegate.fixed([
         ///Profile update and customer service
         Consumer<UserModel>(builder: (context, model, child) {
-          return Material(
-              elevation: 8,
-              child: Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: ListTile(
-                  leading: InkResponse(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(RouteName.partnerOwnProfile),
-                    child: Hero(
-                      tag: 'loginLogo',
-                      child: model.hasUser
-                          ? CachedNetworkImage(
-                              imageUrl: userProfile,
-                              imageBuilder: (context, item) {
-                                return CircleAvatar(
-                                  radius: 28,
-                                  backgroundImage: item,
-                                );
-                              },
-                              fit: BoxFit.cover,
-                              width: 120,
-                              height: 120,
-                            )
-                          : CircleAvatar(
+          return Card(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            // elevation: 3,
+            child: ListTile(
+              leading: InkResponse(
+                onTap: () => Navigator.of(context)
+                    .pushNamed(RouteName.partnerOwnProfile),
+                child: Hero(
+                  tag: 'loginLogo',
+                  child: model.hasUser
+                      ? CachedNetworkImage(
+                          imageUrl: userProfile,
+                          imageBuilder: (context, item) {
+                            return CircleAvatar(
                               radius: 28,
-                              backgroundColor: Colors.black,
-                              child: CircleAvatar(
-                                radius: 70,
-                                backgroundImage: AssetImage(
-                                  ImageHelper.wrapAssetsImage(
-                                      'MoonBlinkProfile.jpg'),
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(model.user.name,
-                                style: Theme.of(context).textTheme.bodyText1),
-                            SizedBox(width: 20),
-                            Icon(
-                              FontAwesomeIcons.coins,
-                              color: Colors.amber[500],
-                              size: 20,
-                            ),
-                            SizedBox(width: 5.0),
-                            userWallet != null ? Text(
-                                '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
-                                style: TextStyle(fontSize: 16)) : CupertinoActivityIndicator()
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        InkResponse(
-                          onTap: () {
-                            String id = encrypt(userid);
-                            FlutterClipboard.copy(id).then((value) {
-                              showToast(G.of(context).toastcopy);
-                              print('copied');
-                            });
+                              backgroundImage: item,
+                            );
                           },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.content_copy,
-                                size: 18,
-                                color: Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                              Text("copy ID"),
-                            ],
-                          ),
+                          fit: BoxFit.cover,
+                          width: 120,
+                          height: 120,
                         )
+                      : CircleAvatar(
+                          radius: 28,
+                          backgroundColor: Colors.black,
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: AssetImage(
+                              ImageHelper.wrapAssetsImage(
+                                  'MoonBlinkProfile.jpg'),
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(model.user.name,
+                            style: Theme.of(context).textTheme.headline6),
+                        SizedBox(width: 20),
+                        Icon(
+                          FontAwesomeIcons.coins,
+                          color: Colors.amber[500],
+                          size: 20,
+                        ),
+                        SizedBox(width: 5.0),
+                        userWallet != null
+                            ? Text(
+                                '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                                style: TextStyle(fontSize: 16))
+                            : CupertinoActivityIndicator()
                       ],
                     ),
-                  ),
-                  //trailing: Icon(Icons.chevron_right),
+                    SizedBox(height: 5),
+                    InkResponse(
+                      onTap: () {
+                        String id = encrypt(userid);
+                        FlutterClipboard.copy(id).then((value) {
+                          showToast(G.of(context).toastcopy);
+                          print('copied');
+                        });
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.content_copy,
+                            size: 18,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
+                          Text("copy ID"),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-              ));
+              ),
+            ),
+          );
         }),
 
-        blankSpace(),
+        // Divider(
+        //   height: 30,
+        // ),
 
         /// Online/ Offline
         if (usertype != 0)
-          Material(
-            elevation: 8,
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: ListTile(
-                  leading: SvgPicture.asset(
-                    status != 1 ? online : offline,
-                    color: Colors.redAccent,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.contain,
-                  ),
-                  title: Text(
-                      status != 1 ? G.of(context).online : G.of(context).offline,
-                      style: Theme.of(context).textTheme.bodyText1),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: status != 1
-                      ? () {
-                          setState(() {
-                            StorageManager.sharedPreferences.setInt(mstatus, 1);
-                          });
-                          print(status);
-                          print("+++++++++++++++++++++++++++");
-                          MoonBlinkRepository.changestatus(1);
-                          showToast(G.of(context).toastoffline);
-                        }
-                      : () {
-                          setState(() {
-                            StorageManager.sharedPreferences.setInt(mstatus, 0);
-                            // status = 0;
-                          });
-                          print(status);
-                          print("----------------------------");
-                          MoonBlinkRepository.changestatus(0);
-                          showToast(G.of(context).toastonline);
-                        }),
-            ),
+          Card(
+            margin: EdgeInsets.zero,
+            child: ListTile(
+                leading: SvgPicture.asset(
+                  status != 1 ? online : offline,
+                  color: Colors.cyan,
+                  height: 32,
+                  width: 32,
+                  fit: BoxFit.contain,
+                ),
+                title: Text(
+                    status != 1 ? G.of(context).online : G.of(context).offline,
+                    style: Theme.of(context).textTheme.bodyText1),
+                // trailing: Icon(Icons.chevron_right),
+                onTap: status != 1
+                    ? () {
+                        setState(() {
+                          StorageManager.sharedPreferences.setInt(mstatus, 1);
+                        });
+                        print(status);
+                        print("+++++++++++++++++++++++++++");
+                        MoonBlinkRepository.changestatus(1);
+                        showToast(G.of(context).toastoffline);
+                      }
+                    : () {
+                        setState(() {
+                          StorageManager.sharedPreferences.setInt(mstatus, 0);
+                          // status = 0;
+                        });
+                        print(status);
+                        print("----------------------------");
+                        MoonBlinkRepository.changestatus(0);
+                        showToast(G.of(context).toastonline);
+                      }),
           ),
-        if (usertype != 0)
-        //blankSpace(),
 
         ///Game Profile
         if (usertype != 0)
-          Material(
-            elevation: 8,
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: ListTile(
-                  leading: SvgPicture.asset(
-                    gameProfile,
-                    color: Colors.blueGrey,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.contain,
-                  ),
-                  title: Text(G.of(context).profilegame,
-                      style: Theme.of(context).textTheme.bodyText1),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context)
-                      .pushNamed(RouteName.chooseUserPlayGames)),
-            ),
-          ),
-        if (usertype != 0)
-        //blankSpace(),
-
-        ///OwnProfile
-        if (usertype != 0)
-          Material(
-            elevation: 8,
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: ListTile(
-                  leading: SvgPicture.asset(
-                    profileEdit,
-                    color: Colors.deepOrange,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.contain,
-                  ),
-                  title: Text(G.of(context).profileown,
-                      style: Theme.of(context).textTheme.bodyText1),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context)
-                      .pushNamed(RouteName.partnerOwnProfile)),
-            ),
-          ),
-        if (usertype != 0)
-        //blankSpace(),
-
-        ///Wallet
-        Material(
-          elevation: 8,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
+          Card(
+            margin: EdgeInsets.zero,
+            // elevation: 8,
             child: ListTile(
                 leading: SvgPicture.asset(
-                  wallet,
-                  color: Colors.greenAccent,
-                  height: 50,
-                  width: 50,
+                  gameProfile,
+                  color: Colors.blueGrey,
+                  height: 32,
+                  width: 32,
                   fit: BoxFit.contain,
                 ),
-                title: Text(G.of(context).userStatusWallet,
+                title: Text(G.of(context).profilegame,
                     style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: hasUser == null
-                    ? () {
-                        showToast(G.of(context).loginFirst);
-                      }
-                    : () {
-                        Navigator.of(context).pushNamed(RouteName.wallet);
-                      }),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(RouteName.chooseUserPlayGames)),
           ),
+
+        ///OwnProfile
+        Card(
+          margin: EdgeInsets.only(bottom: 15),
+          child: ListTile(
+              leading: SvgPicture.asset(
+                profileEdit,
+                color: Colors.orangeAccent,
+                height: 32,
+                width: 32,
+                fit: BoxFit.contain,
+              ),
+              title: Text(G.of(context).profileown,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(RouteName.partnerOwnProfile)),
+        ),
+        // blankSpace(),
+
+        ///Wallet
+        Card(
+          margin: EdgeInsets.zero,
+          // shape: Border(
+          //     bottom: BorderSide(
+          //         width: 1, color: Colors.black, style: BorderStyle.none)),
+          child: ListTile(
+              leading: SvgPicture.asset(
+                wallet,
+                color: Colors.greenAccent,
+                height: 32,
+                width: 32,
+                fit: BoxFit.contain,
+              ),
+              title: Text(G.of(context).userStatusWallet,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: hasUser == null
+                  ? () {
+                      showToast(G.of(context).loginFirst);
+                    }
+                  : () {
+                      Navigator.of(context).pushNamed(RouteName.wallet);
+                    }),
         ),
 
-        //blankSpace(),
-
         /// Switch dark mode
-        Material(
-          elevation: 8,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: ListTile(
-                leading: Icon(
+        Card(
+          margin: EdgeInsets.zero,
+          child: ListTile(
+              leading: Icon(
+                Theme.of(context).brightness == Brightness.light
+                    ? FontAwesomeIcons.sun
+                    : FontAwesomeIcons.moon,
+                size: 32,
+                color: Colors.purpleAccent,
+              ),
+              title: Text(
                   Theme.of(context).brightness == Brightness.light
-                      ? FontAwesomeIcons.sun
-                      : FontAwesomeIcons.moon,
-                  size: 30,
-                  color: Colors.purpleAccent,
-                ),
-                title: Text(
-                    Theme.of(context).brightness == Brightness.light
-                        ? G.of(context).userStatusDayMode
-                        : G.of(context).userStatusDarkMode,
-                    style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () => _switchDarkMode(context)),
-          ),
+                      ? G.of(context).userStatusDayMode
+                      : G.of(context).userStatusDarkMode,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () => _switchDarkMode(context)),
         ),
 
         //blankSpace(),
 
         ///Theme
-        Material(
-          elevation: 8,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: ListTile(
-                leading: SvgPicture.asset(
-                  theme,
-                  color: Colors.pinkAccent,
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.contain,
-                ),
-                title: Text(G.of(context).userStatusTheme,
-                    style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () => _showPaletteDialog(context)),
-          ),
+        Card(
+          margin: EdgeInsets.zero,
+          child: ListTile(
+              leading: SvgPicture.asset(
+                theme,
+                color: Colors.pinkAccent,
+                height: 32,
+                width: 32,
+                fit: BoxFit.contain,
+              ),
+              title: Text(G.of(context).userStatusTheme,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () => _showPaletteDialog(context)),
         ),
-
-        //blankSpace(),
-
-        ///Settings
-        Material(
-          elevation: 8,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: ListTile(
-                leading: SvgPicture.asset(
-                  setting,
-                  color: Colors.grey,
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.contain,
-                ),
-                title: Text(G.of(context).userStatusSettings,
-                    style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
-          ),
-        ),
-
-        //blankSpace(),
 
         ///check app update
-        Material(
-          elevation: 8,
-          // shadowColor: Theme.of(context).brightness == Brightness.light
-          //     ? Colors.black26
-          //     : Colors.white12,
-          child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: ListTile(
-                leading: Icon(
-                  Platform.isAndroid
-                      ? FontAwesomeIcons.android
-                      : FontAwesomeIcons.appStoreIos,
-                  size: 30,
-                  color: Colors.blue,
-                ),
-                title: Text(G.of(context).userStatusCheckAppUpdate,
-                    style: Theme.of(context).textTheme.bodyText1),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () => openStore()),
-          ),
+        Card(
+          margin: EdgeInsets.only(bottom: 15),
+          child: ListTile(
+              leading: Icon(
+                Platform.isAndroid
+                    ? FontAwesomeIcons.android
+                    : FontAwesomeIcons.appStoreIos,
+                // size: 32,
+                color:
+                    Platform.isAndroid ? Colors.lightGreen : Colors.lightBlue,
+              ),
+              title: Text(G.of(context).userStatusCheckAppUpdate,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () => openStore()),
         ),
+        // blankSpace(),
 
-        //blankSpace(),
+        ///Settings
+        Card(
+          margin: EdgeInsets.only(bottom: 10),
+          child: ListTile(
+              leading: SvgPicture.asset(
+                setting,
+                color: Colors.black,
+                height: 32,
+                width: 32,
+                fit: BoxFit.contain,
+              ),
+              title: Text(G.of(context).userStatusSettings,
+                  style: Theme.of(context).textTheme.bodyText1),
+              onTap: () => Navigator.of(context).pushNamed(RouteName.setting)),
+        ),
+        blankSpace(),
 
         ///Logout
         if (StorageManager.sharedPreferences.getString(token) != null) Logout(),

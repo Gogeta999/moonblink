@@ -23,9 +23,9 @@ void openFacebookPage() async {
 void openCustomerServicePage() async {
   String customerServiceUrl;
   if (Platform.isIOS) {
-    customerServiceUrl = 'fb://profile/103254564508101';
+    customerServiceUrl = 'fb://profile/109953790813440';
   } else {
-    customerServiceUrl = 'fb://page/103254564508101';
+    customerServiceUrl = 'fb://page/109953790813440';
   }
   const String pageUrl = 'https://www.facebook.com/Moon-Go-109953790813440/';
   try {
