@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/videotrimmer.dart';
@@ -16,6 +18,7 @@ import 'package:moonblink/base_widget/videotrimmer/video_viewer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
@@ -48,10 +51,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(G.of(context).imagePickerAppBar,
-            style: Theme.of(context).accentTextTheme.headline6),
-      ),
+      appBar: AppbarWidget(),
       body: Column(
         children: <Widget>[
           // Row 1
@@ -60,66 +60,71 @@ class _ImagePickerState extends State<ImagePickerPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(
-                    // color: Colors.blue,
-                    child: FlatButton(
-                        color: Theme.of(context).accentColor,
-                        child: Text(
-                          G.of(context).imagePickerCamera,
-                          style: Theme.of(context)
-                              .accentTextTheme
-                              .button
-                              .copyWith(wordSpacing: 5),
-                        ),
-                        onPressed: () {
-                          _takePhoto();
-                        })),
-                Container(
-                    // color: Colors.blue,
-                    child: FlatButton(
-                        color: Theme.of(context).accentColor,
-                        child: Text(
-                          G.of(context).imagePickerGallery,
-                          style: Theme.of(context)
-                              .accentTextTheme
-                              .button
-                              .copyWith(wordSpacing: 5),
-                        ),
-                        onPressed: () {
-                          _openGallery();
-                        })),
-                Container(
-                    // color: Colors.blue,
-                    child: FlatButton(
-                        color: Theme.of(context).accentColor,
-                        child: Text(
-                          G.of(context).imagePickerVideo,
-                          style: Theme.of(context)
-                              .accentTextTheme
-                              .button
-                              .copyWith(wordSpacing: 5),
-                        ),
-                        onPressed: () {
-                          _pickVideo();
-                        })),
+                ShadedContainer(
+                  color: Theme.of(context).accentColor,
+                  ontap: () {
+                    _takePhoto();
+                  },
+                  child: Text(
+                    G.of(context).imagePickerCamera,
+                    style: Theme.of(context)
+                        .accentTextTheme
+                        .button
+                        .copyWith(wordSpacing: 5),
+                  ),
+                ),
+                ShadedContainer(
+                  color: Theme.of(context).accentColor,
+                  ontap: () {
+                    _openGallery();
+                  },
+                  child: Text(
+                    G.of(context).imagePickerGallery,
+                    style: Theme.of(context)
+                        .accentTextTheme
+                        .button
+                        .copyWith(wordSpacing: 5),
+                  ),
+                ),
+                ShadedContainer(
+                  color: Theme.of(context).accentColor,
+                  child: Text(
+                    G.of(context).imagePickerVideo,
+                    style: Theme.of(context)
+                        .accentTextTheme
+                        .button
+                        .copyWith(wordSpacing: 5),
+                  ),
+                  ontap: () {
+                    _pickVideo();
+                  },
+                ),
               ],
             ),
           ),
-
+          SizedBox(
+            height: 20,
+          ),
           //Row 2
-          Container(
+          if (_fileType == null)
+            Container(
               padding: EdgeInsets.only(left: 50, right: 50),
-              height: 80,
-              child: Text(G.of(context).imagePickerChooseSome)),
+              height: 50,
+              child: Text(G.of(context).imagePickerChooseSome),
+            ),
           if (_fileType == 1) ShowImageWidget(file: _chossingItem),
 
           if (_fileType == 2)
             VideoPlayBack(
               trimv: trimv,
             ),
-          RaisedButton(
+
+          SizedBox(
+            height: 20,
+          ),
+          ShadedContainer(
             color: Theme.of(context).accentColor,
-            onPressed: () async {
+            ontap: () async {
               setState(() {
                 _uploadDone = !_uploadDone;
               });
@@ -241,7 +246,7 @@ class _ImagePickerState extends State<ImagePickerPage> {
     CustomBottomSheet.show(
         buildContext: context,
         limit: 1,
-        body: 'Pick an image',
+        body: G.of(context).pickimage,
         onPressed: (File file) {
           setState(() {
             _chossingItem = file;
@@ -250,7 +255,9 @@ class _ImagePickerState extends State<ImagePickerPage> {
         },
         buttonText: 'Pick',
         popAfterBtnPressed: true,
-        requestType: RequestType.image);
+        requestType: RequestType.image,
+        willCrop: true,
+        compressQuality: NORMAL_COMPRESS_QUALITY);
     /*setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;

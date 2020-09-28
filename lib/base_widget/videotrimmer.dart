@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/videotrimmer/storage_dir.dart';
 import 'package:moonblink/base_widget/videotrimmer/trim_editor.dart';
 import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
@@ -83,9 +84,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(G.of(context).trimYourVideo),
-      ),
+      appBar: AppbarWidget(),
       body: WillPopScope(
         onWillPop: () async {
           return !_progressVisibility;

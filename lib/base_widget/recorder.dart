@@ -5,24 +5,33 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+// final String microphone = 'assets/icons/microphone.svg';
 
 class Voicemsg extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
   final messages;
+  final Function rotate;
   @required
   final Function onDismiss;
   @required
   final Function onInit;
 
   Voicemsg(
-      {localFileSystem, this.id, this.messages, this.onDismiss, this.onInit})
+      {localFileSystem,
+      this.id,
+      this.messages,
+      this.onDismiss,
+      this.rotate,
+      this.onInit})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
@@ -136,28 +145,29 @@ class _VoicemsgState extends State<Voicemsg> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
       this.chatModel = model;
-      return Container(
-          height: 30,
+      return IconButton(
+        icon: SvgPicture.asset(
+          microphone,
+          color: Colors.black,
+          semanticsLabel: 'mircophone',
           width: 30,
-          child: GestureDetector(
-            child: Icon(
-              IconFonts.voieMsgIcon,
-              color: Theme.of(context).accentColor,
-            ),
-            onTap: () async {
-              await _init();
-              CustomBottomSheet.showVoiceSheet(
-                  buildContext: context,
-                  send: () => _send(),
-                  cancel: () {
-                    _recorder.stop();
-                  },
-                  start: () => _start(),
-                  restart: () => _restart(),
-                  onInit: widget.onInit,
-                  onDismiss: widget.onDismiss);
-            },
-          ));
+          height: 30,
+        ),
+        onPressed: () async {
+          widget.rotate();
+          await _init();
+          CustomBottomSheet.showVoiceSheet(
+              buildContext: context,
+              send: () => _send(),
+              cancel: () {
+                _recorder.stop();
+              },
+              start: () => _start(),
+              restart: () => _restart(),
+              onInit: widget.onInit,
+              onDismiss: widget.onDismiss);
+        },
+      );
     });
   }
 }

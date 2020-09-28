@@ -14,8 +14,7 @@ class Api {
       'moonblink/api/v1/user/'; //example = moonblink/api/v1/user/10/story/28
 
   /// Home Data [type 1 is partner type]
-  static const String HOME =
-      "moonblink/api/v1/social/user?limit=5&type=1&page=";
+  static const String HOME = "moonblink/api/v1/social/user";
 
   /// [Simple Tasks Addresses]for user to get and post for simple tasks
   static const String SimpleRequestApi = "moonblink/api/v1/user/";
@@ -61,6 +60,12 @@ class Api {
   static const String BlockOrUnblock =
       'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block
 
+  // Notification List
+  static const String UserNotifications = 'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/5/notification
+
+  //Notification read/unread
+  static const String UserNotificationRead = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/{user_id}/notification/{notification_id}
+
   // report user
   static const String ReportUser =
       'moonblink/api/v1/social/user/'; //moonblink/api/v1/user/{partner_user_id}/report
@@ -81,6 +86,17 @@ class Api {
   //Game List
   static const String GameList = 'moonblink/api/v1/social/game/price';
 
+  //for choose_user_play_game_page
+  static const String UserPlayGame =
+      '/moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/5/profile/game
+
+  ///update game profile
+  static const String UpdateGameProfile =
+      '/moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/1/profile/game
+
+  ///delete game profile
+  static const String DeleteGameProfile =
+      'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/1/profile/game/{game_id}
   ///Booking
   static const String Booking = "moonblink/api/v1/social/user/";
 
@@ -119,4 +135,7 @@ class Api {
 
   //Reset Password
   static const String ResetPassword = "moonblink/api/v1/password/reset";
+
+  //UserRating
+  static const String UserRating = 'moonblink/api/v1/social/rating';
 }

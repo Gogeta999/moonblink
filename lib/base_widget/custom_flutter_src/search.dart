@@ -7,6 +7,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 
 /// Shows a full screen search page and returns the search result selected by
 /// the user when the page is closed.
@@ -472,30 +477,113 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
       label: routeName,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: theme.primaryColor,
-          iconTheme: theme.primaryIconTheme,
-          textTheme: theme.primaryTextTheme,
-          brightness: theme.primaryColorBrightness,
-          leading: widget.delegate.buildLeading(context),
-          title: TextField(
-            controller: widget.delegate._queryTextController,
-            focusNode: focusNode,
-            style: theme.textTheme.headline6,
-            textInputAction: TextInputAction.search,
-            onSubmitted: (String _) {
-              widget.delegate.showResults(context);
-            },
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: searchFieldLabel,
-              hintStyle: theme.inputDecorationTheme.hintStyle,
+          backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: SvgPicture.asset(
+              back,
+              semanticsLabel: 'back',
+              color: Colors.white,
+              width: 30,
+              height: 30,
             ),
+            onPressed: () => Navigator.pop(context),
           ),
-          actions: widget.delegate.buildActions(context),
+          bottom: PreferredSize(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).accentColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).accentColor,
+                    // spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 0), // changes position of shadow
+                  ),
+                ],
+              ),
+              height: 10,
+            ),
+            preferredSize: Size.fromHeight(10),
+          ),
+          actions: [
+            AppbarLogo(),
+          ],
         ),
+        // appBar: AppBar(
+        //   backgroundColor: theme.primaryColor,
+        //   iconTheme: theme.primaryIconTheme,
+        //   textTheme: theme.primaryTextTheme,
+        //   brightness: theme.primaryColorBrightness,
+        //   leading: widget.delegate.buildLeading(context),
+        //   title: TextField(
+        //     controller: widget.delegate._queryTextController,
+        //     focusNode: focusNode,
+        //     style: theme.textTheme.headline6,
+        //     textInputAction: TextInputAction.search,
+        //     onSubmitted: (String _) {
+        //       widget.delegate.showResults(context);
+        //     },
+        //     decoration: InputDecoration(
+        //       border: InputBorder.none,
+        //       hintText: searchFieldLabel,
+        //       hintStyle: theme.inputDecorationTheme.hintStyle,
+        //     ),
+        //   ),
+        //   actions: widget.delegate.buildActions(context),
+        // ),
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: body,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    right: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.black),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: TextField(
+                    controller: widget.delegate._queryTextController,
+                    focusNode: focusNode,
+                    style: theme.textTheme.headline6,
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (String _) {
+                      widget.delegate.showResults(context);
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: UnconstrainedBox(
+                        child: SvgPicture.asset(
+                          search,
+                          color: Colors.black,
+                          // semanticsLabel: 'home',
+                          fit: BoxFit.fill,
+                          width: 25,
+                          height: 25,
+                        ),
+                      ),
+                      border: InputBorder.none,
+                      hintText: searchFieldLabel,
+                      hintStyle: theme.inputDecorationTheme.hintStyle,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              if (body != null)
+                Expanded(
+                  child: body,
+                )
+            ],
+          ),
         ),
       ),
     );

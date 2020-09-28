@@ -12,11 +12,10 @@ class ThirdLogin extends StatefulWidget {
 }
 
 class _ThirdLoginState extends State<ThirdLogin> {
-
   @override
   void initState() {
     super.initState();
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       AppleSignIn.onCredentialRevoked.listen((_) {
         print("Credentials revoked");
       });
@@ -27,9 +26,10 @@ class _ThirdLoginState extends State<ThirdLogin> {
   Widget build(BuildContext context) {
     var model = Provider.of<LoginModel>(context);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 20, left: 50, right: 50),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -67,22 +67,22 @@ class _ThirdLoginState extends State<ThirdLogin> {
                   height: 44,
                 ),
               ),
-              if(Platform.isIOS)
-              InkResponse(
-                onTap: () => model.login(null, null, 'apple').then((value) {
-                  if (value) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouteName.main, (route) => false);
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                }),
-                child: Image.asset(
-                  ImageHelper.wrapAssetsLogo('apple_logo.png'),
-                  width: 48,
-                  height: 48,
-                ),
-              )
+              if (Platform.isIOS)
+                InkResponse(
+                  onTap: () => model.login(null, null, 'apple').then((value) {
+                    if (value) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false);
+                    } else {
+                      model.showErrorMessage(context);
+                    }
+                  }),
+                  child: Image.asset(
+                    ImageHelper.wrapAssetsLogo('apple_logo.png'),
+                    width: 48,
+                    height: 48,
+                  ),
+                )
             ],
           ),
         ),

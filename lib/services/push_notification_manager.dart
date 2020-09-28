@@ -2,15 +2,17 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
+import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
@@ -19,8 +21,10 @@ const String FcmTypeMessage = 'message';
 const String FcmTypeBooking = 'booking';
 const String FcmTypeVoiceCall = 'voice_call';
 const String FcmTypeGameIdUpdate = 'game_id_update';
+const String GameProfileAdd = 'gameprofileadd';
 
 class PushNotificationsManager {
+  String usertoken = StorageManager.sharedPreferences.getString(token);
   PushNotificationsManager._();
   // AndroidNotificationChannel
   factory PushNotificationsManager() => _instance;
@@ -102,6 +106,9 @@ class PushNotificationsManager {
       } else if (payload == FcmTypeVoiceCall) {
         print('payload: $payload');
         _voiceCall.navigateToCallScreen();
+      } else if (payload == GameProfileAdd) {
+        print('payload: $payload');
+        navigatotogameprofile();
       }
     }
 
@@ -251,18 +258,32 @@ class PushNotificationsManager {
 
     print(name);
 
-    final PartnerProfile  partnerProfile = PartnerProfile(
-      profileImage: profileImage, coverImage: coverImage,
+    final PartnerProfile partnerProfile = PartnerProfile(
+      profileImage: profileImage,
+      coverImage: coverImage,
       bios: bios,
     );
 
-    final PartnerUser partnerUser = PartnerUser(
-      partnerName: name, prfoileFromPartner: partnerProfile
-    );
+    final PartnerUser partnerUser =
+        PartnerUser(partnerName: name, prfoileFromPartner: partnerProfile);
 
     _updateProfile.prepare(partnerUser: partnerUser);
 
     _updateProfile.showUpdateProfileDialog();
+  }
+
+  //For No Game Profile
+  Future<void> showgameprofilenoti() async {
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('gameprofile', 'gameprofile', song: null);
+
+    await _flutterLocalNotificationsPlugin.show(
+      0,
+      "Welcome to MoonGo",
+      "Please add game profile for other players to play with you",
+      platformChannelSpecifics,
+      payload: GameProfileAdd,
+    );
   }
 
   _showBookingDialog(message) async {
@@ -270,6 +291,8 @@ class PushNotificationsManager {
     int bookingId = 0;
     int bookingUserId = 0;
     int gameType = 0;
+    String gameName = '';
+    String type = '';
     String bookingUserName = '';
 
     if (Platform.isAndroid) {
@@ -277,12 +300,16 @@ class PushNotificationsManager {
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
       gameType = json.decode(message['data']['game_type']);
+      gameName = message['data']['game_name'];
+      type = message['data']['type'];
       bookingUserName = message['data']['name'];
     } else if (Platform.isIOS) {
       userId = json.decode(message['user_id']);
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
       gameType = json.decode(message['game_type']);
+      gameName = message['game_name'];
+      type = message['type'];
       bookingUserName = message['name'];
     } else {
       showToast('This platform is not supported');
@@ -291,7 +318,8 @@ class PushNotificationsManager {
 
     _bookingManager.bookingPrepare(
       bookingUserName: bookingUserName,
-      gameType: gameType,
+      gameName: gameName,
+      type: type,
       userId: userId,
       bookingId: bookingId,
       bookingUserId: bookingUserId,
@@ -301,12 +329,17 @@ class PushNotificationsManager {
 
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
+    final context = locator<NavigationService>().navigatorKey.currentContext;
+    BlocProvider.of<UserNotificationBloc>(context)
+        .add(UserNotificationRefreshedFromStartPageToCurrentPage());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
     int bookingId = 0;
     int bookingUserId = 0;
     int gameType = 0;
+    String gameName = '';
+    String type = '';
     String bookingUserName = '';
 
     String title = '';
@@ -319,6 +352,8 @@ class PushNotificationsManager {
       bookingId = json.decode(message['data']['id']);
       bookingUserId = json.decode(message['data']['booking_user_id']);
       gameType = json.decode(message['data']['game_type']);
+      gameName = message['data']['game_name'];
+      type = message['data']['type'];
       bookingUserName = message['data']['name'];
 
       title = message['notification']['title'].toString();
@@ -329,6 +364,8 @@ class PushNotificationsManager {
       bookingId = json.decode(message['id']);
       bookingUserId = json.decode(message['booking_user_id']);
       gameType = json.decode(message['game_type']);
+      gameName = message['game_name'];
+      type = message['type'];
       bookingUserName = message['name'];
 
       title = message['aps']['alert']['title'].toString();
@@ -344,7 +381,8 @@ class PushNotificationsManager {
 
     _bookingManager.bookingPrepare(
       bookingUserName: bookingUserName,
-      gameType: gameType,
+      gameName: gameName,
+      type: type,
       userId: userId,
       bookingId: bookingId,
       bookingUserId: bookingUserId,
@@ -454,9 +492,10 @@ class PushNotificationsManager {
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true,
-        sound: 'moonblink_noti.m4r'
-      );
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'moonblink_noti.m4r');
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
@@ -472,7 +511,9 @@ class PushNotificationsManager {
         priority: Priority.High,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true,
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
       );
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -531,11 +572,19 @@ class _UpdateProfile {
 
   void showUpdateProfileDialog() {
     showDialog(
-        context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
-        builder: (context) => UpdateProfileDialog(
-          partnerUser: this.partnerUser,
-          navigateToProfilePage: () => this.navigateToUpdateProfile(),
-        )
+      context: locator<NavigationService>()
+          .navigatorKey
+          .currentState
+          .overlay
+          .context,
+      builder: (context) => UpdateProfileDialog(
+        partnerUser: this.partnerUser,
+        navigateToProfilePage: () => this.navigateToUpdateProfile(),
+      ),
     );
   }
+}
+
+void navigatotogameprofile() {
+  locator<NavigationService>().navigateTo(RouteName.chooseUserPlayGames);
 }

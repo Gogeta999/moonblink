@@ -56,23 +56,33 @@ class _OtpTextFieldState extends State<OtpTextField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: TextFormField(
+        style: TextStyle(color: Colors.white),
         controller: controller,
         obscureText: false,
+        textAlign: TextAlign.center,
         focusNode: widget.focusNode,
         textInputAction: widget.textInputAction,
         keyboardType: widget.keyboardType,
         onFieldSubmitted: widget.onFieldSubmitted,
         decoration: InputDecoration(
-          prefixIcon: Icon(widget.icon, color: theme.accentColor, size: 22),
+          prefixIcon: Icon(widget.icon, color: Colors.white, size: 22),
           hintText: widget.label,
-          hintStyle: TextStyle(fontSize: 16),
+          hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: theme.accentColor),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.green),
+          ),
           suffix: OtpCountDownWidget(
             color: theme.accentColor,
             phoneNumber: widget.phoneController,
           ),
         ),
       ),
-      // ),
     );
   }
 }

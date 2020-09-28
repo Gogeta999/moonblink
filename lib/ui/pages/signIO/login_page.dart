@@ -1,21 +1,20 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
-import 'package:moonblink/base_widget/TopCurvePanel_widget.dart';
+import 'package:moonblink/base_widget/curvepanel.dart';
+import 'package:moonblink/base_widget/sign_IO_widgets/forgetpassword.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
-import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
+import 'package:moonblink/base_widget/sign_IO_widgets/signupwidget.dart';
 import 'package:moonblink/base_widget/thirdLogin.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
-import 'package:moonblink/ui/pages/signIO/resetpassw.dart';
-import 'package:moonblink/view_model/forgetpassword_model.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
+import 'package:moonblink/ui/helper/agreement.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -43,34 +42,38 @@ class _LoginPageState extends State<LoginPage> {
       body: CustomScrollView(
         physics: ClampingScrollPhysics(),
         slivers: <Widget>[
-          SliverAppBar(
-            floating: true,
-          ),
+          // SliverAppBar(
+          //   floating: true,
+          // ),
           SliverToBoxAdapter(
-            child: Stack(
-              children: <Widget>[
-                TopCurvePanel(),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      MoonBlinkLogo(),
-                      LoginFormContainer(
-                        child: ProviderWidget<LoginModel>(
-                          model: LoginModel(Provider.of(context)),
-                          onModelReady: (model) {
-                            _mailController.text = model.getLoginMail();
-                          },
-                          builder: (context, model, child) {
-                            return Form(
-                              onWillPop: () async {
-                                return !model.isBusy;
-                              },
-                              child: child,
-                            );
-                          },
-                          child: Column(
+            child: ProviderWidget<LoginModel>(
+              model: LoginModel(Provider.of(context)),
+              onModelReady: (model) {
+                _mailController.text = model.getLoginMail();
+              },
+              builder: (context, model, child) {
+                return Form(
+                  onWillPop: () async {
+                    return !model.isBusy;
+                  },
+                  child: child,
+                );
+              },
+              child: Stack(
+                children: <Widget>[
+                  SecCurvePanel(),
+                  FirstCurvePanel(),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          MoonBlinkLogo(),
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               LoginTextField(
@@ -91,73 +94,38 @@ class _LoginPageState extends State<LoginPage> {
                                 focusNode: _pwdFocus,
                                 textInputAction: TextInputAction.done,
                               ),
-                              LoginButton(_mailController, _passwordController),
+
+                              // ThirdLogin(),
+                            ],
+                          ),
+                          LoginButton(_mailController, _passwordController),
+                          Container(),
+                          Column(
+                            children: [
                               ThirdLogin(),
                               SignUpWidget(_mailController),
                               ForgetPassword(_mailController),
                             ],
-                          ),
-                        ),
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  // ChatTile(
+                  //     username: "hello",
+                  //     lastmsg: "Last Message",
+                  //     image: NetworkImage(
+                  //         "https://pbs.twimg.com/media/EeS3_XkWoAA0fct.png"),
+                  //     time: "1.20")
+                ],
+              ),
             ),
-          ),
+          )
         ],
       ),
       bottomNavigationBar: SignInOutAgree(
-        isSignIn: true,
-      ),
-    );
-  }
-}
-
-class SignInOutAgree extends StatefulWidget {
-  final bool isSignIn;
-
-  const SignInOutAgree({Key key, this.isSignIn = false}) : super(key: key);
-
-  @override
-  _SignInOutAgreeState createState() => _SignInOutAgreeState();
-}
-
-class _SignInOutAgreeState extends State<SignInOutAgree> {
-  final TapGestureRecognizer _termsAndConditions = TapGestureRecognizer();
-
-  final TapGestureRecognizer _starndardEULA = TapGestureRecognizer();
-
-  @override
-  void initState() {
-    super.initState();
-    _termsAndConditions.onTap =
-        () => navigate(RouteName.termsAndConditionsPage);
-    _starndardEULA.onTap = () => navigate(RouteName.licenseAgreement);
-  }
-
-  void navigate(String routeName) {
-    Navigator.pushNamed(context, routeName, arguments: false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Text.rich(
-        TextSpan(text: G.of(context).bySigning, children: [
-          TextSpan(
-              text: G.of(context).termAndConditions,
-              recognizer: _termsAndConditions,
-              style: TextStyle(color: Theme.of(context).accentColor)),
-          TextSpan(text: G.of(context).and),
-          TextSpan(
-            text: G.of(context).licenseagreement,
-            recognizer: _starndardEULA,
-            style: TextStyle(color: Theme.of(context).accentColor),
-          )
-        ]),
-        textAlign: TextAlign.center,
+        isSignIn: false,
+        signin: true,
       ),
     );
   }
@@ -171,11 +139,16 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<LoginModel>(context);
+    var theme = Theme.of(context);
     return LoginButtonWidget(
+      color: theme.accentColor,
+      // brightness == Brightness.dark
+      //     ? theme.accentColor
+      //     : Colors.white,
       child: model.isBusy
           ? ButtonProgressIndicator()
           : Text(
-              G.of(context).signIn,
+              G.of(context).toSignIn,
               style: Theme.of(context)
                   .accentTextTheme
                   .headline6
@@ -191,6 +164,13 @@ class LoginButton extends StatelessWidget {
                         mailController.text, passwordController.text, 'email')
                     .then((value) {
                   if (value) {
+                    int gameprofile =
+                        StorageManager.sharedPreferences.getInt(mgameprofile);
+                    int type =
+                        StorageManager.sharedPreferences.getInt(mUserType);
+                    if (gameprofile == 0 && type != 0) {
+                      PushNotificationsManager().showgameprofilenoti();
+                    }
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
                     ScopedModel.of<ChatModel>(context).disconnect();
@@ -203,90 +183,5 @@ class LoginButton extends StatelessWidget {
               }
             },
     );
-  }
-}
-
-class SignUpWidget extends StatefulWidget {
-  final nameController;
-
-  SignUpWidget(this.nameController);
-
-  @override
-  _SignUpWidgetState createState() => _SignUpWidgetState();
-}
-
-class _SignUpWidgetState extends State<SignUpWidget> {
-  TapGestureRecognizer _recognizerRegister;
-
-  @override
-  void initState() {
-    _recognizerRegister = TapGestureRecognizer()
-      ..onTap = () async {
-        // Fill Register UserName Into logn name widget
-        widget.nameController.text =
-            await Navigator.of(context).pushNamed(RouteName.register);
-      };
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _recognizerRegister.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text.rich(
-        TextSpan(text: G.of(context).noAccount + '. ', children: [
-          TextSpan(
-              text: G.of(context).toSignUp,
-              recognizer: _recognizerRegister,
-              style: TextStyle(color: Theme.of(context).accentColor)),
-          TextSpan(text: G.of(context).or)
-        ]),
-      ),
-    );
-  }
-}
-
-class ForgetPassword extends StatelessWidget {
-  ForgetPassword(this.mail);
-  final mail;
-
-  @override
-  Widget build(BuildContext context) {
-    return ProviderWidget<ForgetPasswordModel>(
-        model: ForgetPasswordModel(),
-        builder: (context, model, child) {
-          return Center(
-            child: GestureDetector(
-              onTap: model.isBusy
-                  ? null
-                  : () {
-                      if (mail.text == '') {
-                        showToast("Please enter mail");
-                      } else {
-                        model.forgetPassword(mail.text).then((value) {
-                          if (value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ResetPasswordPage(mail: mail.text),
-                                ));
-                          } else {
-                            model.showErrorMessage(context);
-                          }
-                        });
-                      }
-                    },
-              child: Text.rich(TextSpan(
-                  text: G.of(context).forgetPassword,
-                  style: TextStyle(color: Theme.of(context).accentColor))),
-            ),
-          );
-        });
   }
 }

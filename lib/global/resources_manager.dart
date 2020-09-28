@@ -5,6 +5,14 @@ class ImageHelper {
     return "assets/logos/" + url;
   }
 
+  static String wrapAssetsSvg(String url) {
+    return "assets/icons/" + url;
+  }
+
+  static String wrapUserPageAssetsSvg(String url) {
+    return "assets/icons/user/page/" + url;
+  }
+
   static String wrapAssetsImage(String url) {
     return "assets/images/" + url;
   }

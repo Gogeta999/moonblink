@@ -1,11 +1,14 @@
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/view_state_model.dart';
+import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
@@ -19,6 +22,7 @@ const String mUserId = 'mUserId';
 const String mLoginMail = 'mLoginMail';
 const String mstatus = 'status';
 const String mUserProfile = 'mUserProfile';
+const String mgameprofile = 'gameprofile';
 
 class LoginModel extends ViewStateModel {
   final UserModel userModel;
@@ -115,6 +119,8 @@ class LoginModel extends ViewStateModel {
         StorageManager.sharedPreferences.setInt(mUserId, userModel.user.id);
         StorageManager.sharedPreferences.setInt(mstatus, userModel.user.status);
         StorageManager.sharedPreferences.setInt(mUserType, userModel.user.type);
+        StorageManager.sharedPreferences
+            .setInt(mgameprofile, userModel.user.gameprofilecount);
         DioUtils().initWithAuthorization();
         PushNotificationsManager().reInit();
         setIdle();
@@ -139,6 +145,9 @@ class LoginModel extends ViewStateModel {
       await MoonBlinkRepository.logout();
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
+      final context = locator<NavigationService>().navigatorKey.currentContext;
+      BlocProvider.of<UserNotificationBloc>(context)
+          .add(UserNotificationCleared());
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

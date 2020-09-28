@@ -7,7 +7,6 @@ import 'package:moonblink/view_model/booking_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:moonblink/generated/l10n.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   final int partnerId;
@@ -39,11 +38,13 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 10),
-          Text(/*G.of(context).bookingChooseGameType*/'Choose game type to play',
+          Text(
+              /*G.of(context).bookingChooseGameType*/ 'Choose game type to play',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.3),
             child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
@@ -68,9 +69,10 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     title: Text(bookingModel.gamesList[index].gameType,
                         style: _textStyle),
                     subtitle:
-                        Text(bookingModel.gamesList[index].price + ' Coins'),
+                        Text('${bookingModel.gamesList[index].price} Coins'),
                     trailing: BookingButton(
-                        partnerId: widget.partnerId, gameType: index));
+                        partnerId: widget.partnerId,
+                        gameTypeId: bookingModel.gamesList[index].gameTypeId));
               },
             ),
           ),
@@ -113,9 +115,9 @@ enum BookingButtonState {
 
 class BookingButton extends StatefulWidget {
   final int partnerId;
-  final int gameType;
+  final int gameTypeId;
 
-  BookingButton({Key key, this.gameType, this.partnerId}) : super(key: key);
+  BookingButton({Key key, this.gameTypeId, this.partnerId}) : super(key: key);
 
   @override
   _BookingButtonState createState() => _BookingButtonState();
@@ -149,7 +151,7 @@ class _BookingButtonState extends State<BookingButton> {
               try {
                 await context
                     .read<BookingModel>()
-                    .booking(widget.partnerId, widget.gameType);
+                    .booking(widget.partnerId, widget.gameTypeId);
                 Navigator.pop(context);
                 Navigator.pushNamed(context, RouteName.chatBox,
                     arguments: widget.partnerId);

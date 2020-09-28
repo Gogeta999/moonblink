@@ -97,23 +97,45 @@ class _BookingButtonState extends State<BookingButton> {
           if (model.isBusy) {
             return CupertinoActivityIndicator();
           }
-          return RaisedButton(
-            color: Theme.of(context).accentColor,
-            highlightColor: Theme.of(context).accentColor,
-            colorBrightness: Theme.of(context).brightness,
-            splashColor: Colors.grey,
-            child: Text('Request'/*G.of(context).bookingRequest*/,
-                style: Theme.of(context).accentTextTheme.button),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
+          return InkResponse(
+            onTap: userId == partnerDetailModel.partnerId || model.isBusy
+                ? null
+                : () => CustomBottomSheet.showBookingSheet(
+                    buildContext: context,
+                    model: model,
+                    partnerId: partnerDetailModel.partnerId),
+            child: Container(
+              height: 80,
+              width: 160,
+              child: Center(
+                child: Text(G.of(context).bookingRequest,
+                    style: Theme.of(context).textTheme.button),
+              ),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(width: 1, color: Colors.black),
+                  borderRadius: BorderRadius.circular(20.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.black,
+                      spreadRadius: 2,
+                      // blurRadius: 2,
+                      offset: Offset(-8, 7), // changes position of shadow
+                    ),
+                  ]),
 
               ///[to add pop up]
-              onPressed: userId == partnerDetailModel.partnerId || model.isBusy
-                  ? null
-                  : () => CustomBottomSheet.showBookingSheet(
-                      buildContext: context,
-                      model: model,
-                      partnerId: partnerDetailModel.partnerId));
+              // onPressed:
+              //     userId == partnerDetailModel.partnerId || model.isBusy
+              //         ? null
+              //         : () => CustomBottomSheet.showBookingSheet(
+              //             buildContext: context,
+              //             model: model,
+              //             partnerId: partnerDetailModel.partnerId),
+            ),
+          );
         });
   }
 }

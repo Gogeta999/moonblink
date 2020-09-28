@@ -11,10 +11,9 @@ class LoginFormContainer extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-          ),
-          color: Theme.of(context).cardColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          color: Colors.black,
           shadows: [
             BoxShadow(
                 color: Theme.of(context).primaryColor.withAlpha(20),

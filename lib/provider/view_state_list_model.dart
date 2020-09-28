@@ -1,9 +1,4 @@
-import 'dart:typed_data';
-import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:moonblink/models/post.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -40,7 +35,8 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
   }
 
   ///only for home posts
-  Future<bool> removeItem({@required int index, @required int blockUserId}) async {
+  Future<bool> removeItem(
+      {@required int index, @required int blockUserId}) async {
     try {
       await MoonBlinkRepository.blockOrUnblock(blockUserId, BLOCK);
       list.removeAt(index);

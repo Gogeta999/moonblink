@@ -1,14 +1,14 @@
-import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class PartnerOwnProfileModel extends ViewStateModel{
+class PartnerOwnProfileModel extends ViewStateModel {
   PartnerOwnProfileModel(this.partnerData);
-  PartnerUser partnerData;
+  OwnProfile partnerData;
 
-  RefreshController _refreshController = 
-    RefreshController(initialRefresh: false);
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   RefreshController get refreshController => _refreshController;
 
@@ -17,12 +17,10 @@ class PartnerOwnProfileModel extends ViewStateModel{
     try {
       partnerData = await MoonBlinkRepository.fetchOwnProfile();
       setIdle();
-    } catch(e,s){
+    } catch (e, s) {
       refreshController.refreshFailed();
       setError(e, s);
       return null;
     }
   }
-
-  
 }

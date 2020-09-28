@@ -16,7 +16,7 @@ class BlockedUsersFailure extends BlockedUsersState {
   const BlockedUsersFailure({this.error});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }
 
 class BlockedUsersNoData extends BlockedUsersState {

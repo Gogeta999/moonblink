@@ -4,6 +4,7 @@ class User {
   int id;
   int type;
   int status;
+  int gameprofilecount;
   String tokenType;
   String token;
   String expiry;
@@ -41,6 +42,7 @@ class User {
         id = map['id'],
         type = map['type'],
         status = map['status'],
+        gameprofilecount = map['game_profile_count'],
         tokenType = map['token_type'],
         token = map['token'],
         expiry = map['expiry'],
@@ -76,6 +78,7 @@ class User {
     data['id'] = id;
     data['type'] = type;
     data['status'] = status;
+    data['game_profile_count'] = gameprofilecount;
     data['token_type'] = tokenType;
     data['token'] = token;
     data['expiry'] = expiry;

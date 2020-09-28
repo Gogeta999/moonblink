@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/ui/pages/user/user_rating_page.dart';
 
 class Feed extends StatefulWidget {
   final String partnerName;
@@ -8,7 +9,7 @@ class Feed extends StatefulWidget {
   final double partnerRating;
   Feed(this.partnerName, this.partnerId, this.partnerRating);
   @override
-  _Feed createState() => new _Feed();
+  _Feed createState() => _Feed();
 }
 
 class _Feed extends State<Feed> with TickerProviderStateMixin {
@@ -23,32 +24,34 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
       Tab(text: G.of(context).history),
     ];
     _pages = [
-      PartnerRatingWidget(widget.partnerName, widget.partnerRating),
+      // PartnerRatingWidget(widget.partnerName, widget.partnerRating),
+      UserRatingPage(userId: widget.partnerId),
       PartnerGameHistoryWidget(widget.partnerName, widget.partnerId),
     ];
     _controller = TabController(
       length: _tabs.length,
       vsync: this,
     );
-    return new Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: new Column(
-        children: <Widget>[
-          new TabBar(
-            labelColor: Theme.of(context).accentColor,
+    return Column(
+      children: <Widget>[
+        TabBar(
+          labelColor: Theme.of(context).textTheme.bodyText1.color,
+          controller: _controller,
+          tabs: _tabs,
+          indicatorColor: Theme.of(context).textTheme.bodyText1.color,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.45,
+          child: TabBarView(
             controller: _controller,
-            tabs: _tabs,
-            indicatorColor: Theme.of(context).accentColor,
+            children: _pages,
           ),
-          new SizedBox.fromSize(
-            size: const Size.fromHeight(300.0),
-            child: new TabBarView(
-              controller: _controller,
-              children: _pages,
-            ),
-          ),
-        ],
-      ),
+        )
+        /*SizedBox.fromSize(
+          size: const Size.fromHeight(300.0),
+          child: ,
+        ),*/
+      ],
     );
   }
 }

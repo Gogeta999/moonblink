@@ -5,20 +5,23 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/blocked_user.dart';
+import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/contact.dart';
-import 'package:moonblink/models/game_list.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
+import 'package:moonblink/models/user_notification.dart';
+import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -27,9 +30,16 @@ class MoonBlinkRepository {
   }
   // home page's post data
 
-  static Future fetchPosts(int pageNum) async {
+  static Future fetchPosts(int pageNum, int type, String gender) async {
     // await Future.delayed(Duration(seconds: 1));
-    var response = await DioUtils().get(Api.HOME + '$pageNum');
+    var response = await DioUtils().get(
+        Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/,
+        queryParameters: {
+          'limit': 5,
+          'type': type,
+          'page': pageNum,
+          'gender': gender
+        });
     return response.data['data']
         .map<Post>((item) => Post.fromMap(item))
         .toList();
@@ -110,7 +120,7 @@ class MoonBlinkRepository {
   static Future fetchOwnProfile() async {
     var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.PartnerOwnProfile + '$partnerId');
-    return PartnerUser.fromJson(response.data);
+    return OwnProfile.fromJson(response.data);
   }
 
   /// [fetch search result] currently only support in name search
@@ -276,17 +286,67 @@ class MoonBlinkRepository {
   }
 
   //Game List
-  static Future getGameList(partnerId) async {
+  static Future getGameList(int partnerId) async {
     var response = await DioUtils().get(Api.GameList, queryParameters: {
-      'user_id': partnerId.toString(),
+      'user_id': partnerId,
     });
-    return GameList.fromJson(response.data);
+    //return GameList.fromJson(response.data);
+    return BookingPartnerGameList.fromJson(response.data);
+  }
+
+  // User Play Game List
+  static Future<UserPlayGameList> getUserPlayGameList() async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response =
+        await DioUtils().get(Api.UserPlayGame + '$userId/profile/game');
+    return UserPlayGameList.fromJson(response.data);
+  }
+
+  //update game profile
+  static Future updateGameProfile(Map<String, dynamic> gameProfile) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    FormData formData = FormData.fromMap(gameProfile);
+    var response = await DioUtils().postwithData(
+        Api.UpdateGameProfile + '$userId/profile/game',
+        data: formData);
+    return response.data;
+  }
+
+  //delete game profile
+  static Future deleteGameProfile(int gameId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .delete(Api.DeleteGameProfile + '$userId/profile/game/$gameId');
+    return response.data;
+  }
+
+  //get user's notifications
+  static Future<UserNotificationResponse> getUserNotifications(
+      int limit, int page) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+        Api.UserNotifications + '$userId/notification',
+        queryParameters: {'limit': limit, 'page': page});
+    return UserNotificationResponse.fromJson(response.data);
+  }
+
+  //change notification to read state
+  static Future<UserNotificationData> changeUserNotificationReadState(
+      int notificationId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().patch(
+        Api.UserNotificationRead + '$userId/notification/$notificationId');
+    return UserNotificationData.fromJson(response.data);
   }
 
   // Booking
-  static Future booking(int partnerId, int gameType) async {
-    var response = await DioUtils().post(Api.Booking + '$partnerId/booking',
-        queryParameters: {'game_type': gameType});
+  static Future booking(int partnerId, int gameTypeId, int count) async {
+    FormData formData = FormData.fromMap({
+      'game_type_id': gameTypeId,
+      'count': count,
+    });
+    var response = await DioUtils()
+        .postwithData(Api.Booking + '$partnerId/booking', data: formData);
     return response.data;
   }
 
@@ -400,5 +460,13 @@ class MoonBlinkRepository {
     var response =
         await DioUtils().postwithData(Api.ResetPassword, data: formData);
     return response.data;
+  }
+
+  //User Rating
+  static Future<UserRatingList> userRating(
+      int userId, int limit, int page) async {
+    var response = await DioUtils().get(Api.UserRating,
+        queryParameters: {'user_id': userId, 'limit': limit, 'page': page});
+    return UserRatingList.fromJson(response.data['data']);
   }
 }

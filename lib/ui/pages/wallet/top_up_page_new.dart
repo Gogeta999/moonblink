@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -66,7 +67,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
     }, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
-      showToast('Sorry: $error');
+      print('Sorry: $error');
     });
 
     RewardedVideoAd.instance.listener =
@@ -165,7 +166,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
     final QueryPurchaseDetailsResponse purchaseResponse =
         await _connection.queryPastPurchases();
     if (purchaseResponse.error != null) {
-      showToast('Sorry: ${purchaseResponse.error}');
+      print('Sorry: ${purchaseResponse.error}');
     }
     final List<PurchaseDetails> verifiedPurchases = [];
     for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
@@ -243,8 +244,16 @@ class _TopUpPageNew extends State<TopUpPageNew>
     }
 
     return Scaffold(
-      body: Stack(
-        children: stack,
+      body: WillPopScope(
+        onWillPop: () async {
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.main, (route) => false,
+              arguments: 3);
+          return false;
+        },
+        child: Stack(
+          children: stack,
+        ),
       ),
     );
   }

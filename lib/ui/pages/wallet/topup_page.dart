@@ -1,18 +1,16 @@
-/*
+///in_app_purchase
 import 'dart:async';
 import 'dart:io';
-
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/wallet.dart';
-import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Emulators are always treated as test devices
@@ -22,60 +20,55 @@ const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   nonPersonalizedAds: true,
 );
 
-class TopUpPage extends StatefulWidget {
+class NewTopUpPage extends StatefulWidget {
   @override
-  _TopUpPageState createState() => _TopUpPageState();
+  _NewTopUpPage createState() => _NewTopUpPage();
 }
 
-class _TopUpPageState extends State<TopUpPage>
+class _NewTopUpPage extends State<NewTopUpPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  ///to monitor the connection more thoroughly from 2.0.1.
-  StreamSubscription _connectionSubscription;
+  ///Constants
+  final bool kAutoConsume = true;
+  final String coin200Consumable =
+      Platform.isAndroid ? 'coin_200' : 'coin_200_ios';
+  final String coin500Consumable = 'coin_500';
+  final String coin1000Consumable = 'coin_1000';
+  final List<String> _kProductIds = <String>[
+    Platform.isAndroid ? 'coin_200' : 'coin_200_ios',
+    'coin_500',
+    'coin_1000'
+  ];
 
-  ///to monitor purchase event.
-  StreamSubscription _purchaseUpdatedSubscription;
+  ///Properties
+  final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+  List<String> _notFoundIds = [];
+  List<ProductDetails> _products = [];
+  List<PurchaseDetails> _purchases = [];
+  //List<String> _consumables = [];
+  bool _isAvailable = false;
+  bool _purchasePending = false;
+  bool _loading = true;
+  String _queryProductError;
 
-  ///to monitor purchase error event.
-  StreamSubscription _purchaseErrorSubscription;
-
-  final List<String> _productLists = Platform.isAndroid
-      ? ['coin_200', 'coin_500', 'coin_1000']
-      : ['coin_200_ios', 'coin_500', 'coin_1000']; //for now only android
-  List<IAPItem> _items = [];
-  // ignore: unused_field
-  List<PurchasedItem> _purchases = [];
-  // ignore: unused_field
-  List<PurchasedItem> _purchasedHistories = [];
-
+  Wallet wallet = Wallet(value: 0);
+  bool isWalletLoading = false;
   bool isLoading = false;
   bool isAdLoading = false;
-  bool isPageLoading = false;
-
-  Wallet wallet;
 
   @override
   void initState() {
-    asyncInitState();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    asyncDisposeState();
-    super.dispose();
-  }
-
-  void asyncInitState() async {
-    setState(() {
-      isPageLoading = true;
-    });
-    await FlutterInappPurchase.instance.initConnection;
-    await getItemsAndWallet();
-    setState(() {
-      isPageLoading = false;
+    Stream purchaseUpdated =
+        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      print('Sorry: $error');
     });
 
     RewardedVideoAd.instance.listener =
@@ -111,126 +104,409 @@ class _TopUpPageState extends State<TopUpPage>
       }
     };
 
-    _connectionSubscription =
-        FlutterInappPurchase.connectionUpdated.listen((connected) {
-      print('connected: $connected');
-    });
+    initStoreInfo();
+    super.initState();
+  }
 
-    _purchaseUpdatedSubscription =
-        FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-      print('purchase-updated: $productItem');
-      try {
-        //consume after purchase success so user buy the product again.
-        //need to connect with backend to process purchase.
-        //userTopUp(productItem.productId);
-        setState(() {
-          //userWallet.topUp(productItem.productId);
-          userTopUp(productItem.productId);
-        });
-        var msg = FlutterInappPurchase.instance.consumeAllItems;
-        print('consumeAllItems: $msg');
-      } catch (err) {
-        print('consumeAllItems error: $err');
+  Future<void> initStoreInfo() async {
+    getUserWallet();
+
+    setState(() {
+      _notFoundIds = [];
+      _products = [];
+      _purchases = [];
+      _isAvailable = false;
+      _purchasePending = false;
+      _loading = true;
+      _queryProductError = null;
+    });
+    final bool isAvailable = await _connection.isAvailable();
+    if (!isAvailable) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = [];
+        _purchases = [];
+        _notFoundIds = [];
+        //_consumables = [];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    ProductDetailsResponse productDetailResponse =
+        await _connection.queryProductDetails(_kProductIds.toSet());
+    if (productDetailResponse.error != null) {
+      setState(() {
+        _queryProductError = productDetailResponse.error.message;
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = [];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        //_consumables = [];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    if (productDetailResponse.productDetails.isEmpty) {
+      setState(() {
+        _queryProductError = null;
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = [];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        //_consumables = [];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    final QueryPurchaseDetailsResponse purchaseResponse =
+        await _connection.queryPastPurchases();
+    if (purchaseResponse.error != null) {
+      showToast('Sorry: ${purchaseResponse.error}');
+    }
+    final List<PurchaseDetails> verifiedPurchases = [];
+    for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
+      if (await _verifyPurchase(purchase)) {
+        verifiedPurchases.add(purchase);
       }
-    });
+    }
 
-    _purchaseErrorSubscription =
-        FlutterInappPurchase.purchaseError.listen((purchaseError) {
-      print('purchase-error: $purchaseError');
+    _sortProduct(productDetailResponse.productDetails);
+    //List<String> consumables = await ConsumableStore.load();
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _purchases = verifiedPurchases;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      //_consumables = consumables;
+      _purchasePending = false;
+      _loading = false;
     });
   }
 
-  ///You should end the billing service in android when you are done with it.
-  /// Otherwise it will be keep running in background.
-  /// We recommend to use this feature in dispose().
-  void asyncDisposeState() async {
-    //remove all Listeners and Streams
-    await FlutterInappPurchase.instance.endConnection;
-    if (_connectionSubscription != null) {
-      _connectionSubscription.cancel();
-      _connectionSubscription = null;
-    }
-    if (_purchaseUpdatedSubscription != null) {
-      _purchaseUpdatedSubscription.cancel();
-      _purchaseErrorSubscription = null;
-    }
-    if (_purchaseErrorSubscription != null) {
-      _purchaseErrorSubscription.cancel();
-      _purchaseErrorSubscription = null;
-    }
-    if (RewardedVideoAd.instance.listener != null) {
-      RewardedVideoAd.instance.listener = null;
-    }
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> stack = [];
+    if (_queryProductError == null) {
+      stack.add(
+        ListView(
+          children: [
+            _buildConnectionCheckTile(),
+            _buildProductList(),
+            _buildCurrentCoin(),
+            _buildAds(),
+            if (Platform.isAndroid) _buildTopUpWithCustomerService()
+            //_buildConsumableBox(),
+          ],
+        ),
+      );
+    } else {
+      stack.add(Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(_queryProductError),
+            CupertinoButton(
+              onPressed: () async {
+                await initStoreInfo();
+              },
+              child: Text('Retry'),
+            )
+          ],
+        ),
+      ));
+    }
+    if (_purchasePending) {
+      stack.add(
+        Stack(
+          children: [
+            Opacity(
+              opacity: 0.3,
+              child: const ModalBarrier(dismissible: false, color: Colors.grey),
+            ),
+            Center(
+              child: CupertinoActivityIndicator(),
+            ),
+          ],
+        ),
+      );
+    }
 
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(G.of(context).topup),
+      ),
+      body: WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, true);
+          return false;
+        },
+        child: Stack(
+          children: stack,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewContainer({Widget child}) {
+    return Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 20,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 1,
+              // blurRadius: 2,
+              offset: Offset(-5, 5), // changes position of shadow
+            ),
+          ],
+        ),
+        child: child);
+  }
+
+  Card _buildConnectionCheckTile() {
+    if (_loading) {
+      return Card(child: ListTile(title: const Text('Trying to connect...')));
+    }
+    final Widget storeHeader = ListTile(
+      leading: Icon(_isAvailable ? Icons.check : Icons.block,
+          color: _isAvailable ? Colors.green : ThemeData.light().errorColor),
+      title: Text(
+          'The store is ' + (_isAvailable ? 'available' : 'unavailable') + '.'),
+    );
+    final List<Widget> children = <Widget>[storeHeader];
+
+    if (!_isAvailable) {
+      children.addAll([
+        Divider(),
+        ListTile(
+          title: Text('Not connected',
+              style: TextStyle(color: ThemeData.light().errorColor)),
+          subtitle: const Text(
+              'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
+        ),
+      ]);
+    }
+    return Card(child: Column(children: children));
+  }
+
+  Card _buildProductList() {
+    if (_loading) {
+      return Card(
+          child: (ListTile(
+              leading: CupertinoActivityIndicator(),
+              title: Text('Fetching products...'))));
+    }
+    if (!_isAvailable) {
+      return Card();
+    }
+    final ListTile productHeader = ListTile(title: Text('Products for Sale'));
+    List<ListTile> productList = <ListTile>[];
+    if (_notFoundIds.isNotEmpty) {
+      productList.add(ListTile(
+          title: Text('[${_notFoundIds.join(", ")}] not found',
+              style: TextStyle(color: ThemeData.light().errorColor)),
+          subtitle: Text(
+              'This app needs special configuration to run. Please see example/README.md for instructions.')));
+    }
+
+    // This loading previous purchases code is just a demo. Please do not use this as it is.
+    // In your app you should always verify the purchase data using the `verificationData` inside the [PurchaseDetails] object before trusting it.
+    // We recommend that you use your own server to verity the purchase data.
+    Map<String, PurchaseDetails> purchases =
+        Map.fromEntries(_purchases.map((PurchaseDetails purchase) {
+      if (purchase.pendingCompletePurchase) {
+        InAppPurchaseConnection.instance.completePurchase(purchase);
+      }
+      return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
+    }));
+    productList.addAll(_products.map(
+      (ProductDetails productDetails) {
+        PurchaseDetails previousPurchase = purchases[productDetails.id];
+        return ListTile(
+            title: Text(
+              productDetails.title,
+            ),
+            subtitle: Text(
+              productDetails.description,
+            ),
+            trailing: previousPurchase != null
+                ? Icon(Icons.check)
+                : FlatButton(
+                    child: Text(productDetails.price),
+                    color: Colors.green[800],
+                    textColor: Colors.white,
+                    onPressed: () {
+                      PurchaseParam purchaseParam = PurchaseParam(
+                          productDetails: productDetails,
+                          applicationUserName: null,
+
+                          ///production sandboxTesting false
+                          sandboxTesting: false);
+                      if (productDetails.id == coin200Consumable ||
+                          productDetails.id == coin500Consumable ||
+                          productDetails.id == coin1000Consumable) {
+                        _connection.buyConsumable(
+                            purchaseParam: purchaseParam,
+                            autoConsume: kAutoConsume || Platform.isIOS);
+                      } else {
+                        _connection.buyNonConsumable(
+                            purchaseParam: purchaseParam);
+                      }
+                    },
+                  ));
+      },
+    ));
+
+    return Card(
+        child:
+            Column(children: <Widget>[productHeader, Divider()] + productList));
+  }
+
+  Widget _buildCurrentCoin() {
+    // return Card(
+    //   child: _loading
+    //       ? Center(
+    //       child: Container(
+    //           margin: EdgeInsets.all(16.0),
+    //           child: CupertinoActivityIndicator()))
+    //       : ListTile(
+    //     leading: Icon(
+    //       FontAwesomeIcons.coins,
+    //       color: Colors.amber[500],
+    //     ),
+    //     title: Text(
+    //         'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
+    //     trailing: isLoading ? CupertinoActivityIndicator() : null,
+    //   ),
+    // );
+    return Center(
+        child: _buildNewContainer(
+            child: isWalletLoading
+                ? CupertinoActivityIndicator()
+                : Text('${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}',
+                    style: TextStyle(fontSize: 32))));
+  }
+
+  Card _buildAds() {
+    return Card(
+      child: _loading
+          ? Center(
+              child: Container(
+                  margin: EdgeInsets.all(16.0),
+                  child: CupertinoActivityIndicator()))
+          : ListTile(
+              onTap: _showRewardedAds,
+              leading: Icon(
+                FontAwesomeIcons.ad,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: Text(G.of(context).watchadfreecoins),
+              trailing: isAdLoading ? CupertinoActivityIndicator() : null,
+            ),
+    );
+  }
+
+  Card _buildTopUpWithCustomerService() {
+    return Card(
+      child: _loading
+          ? Center(
+              child: Container(
+                  margin: EdgeInsets.all(16.0),
+                  child: CupertinoActivityIndicator()))
+          : ListTile(
+              onTap: _openFacebookPage,
+              leading: Icon(
+                FontAwesomeIcons.handsHelping,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: Text(G.of(context).topupservice),
+              trailing: Icon(
+                FontAwesomeIcons.facebook,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+    );
+  }
+
+  /*Card _buildConsumableBox() {
+    if (_loading) {
+      return Card(
+          child: (ListTile(
+              leading: CupertinoActivityIndicator(),
+              title: Text('Fetching consumables...'))));
+    }
+    if (!_isAvailable || _notFoundIds.contains('coin_200_ios') || _notFoundIds.contains('coin_500') || _notFoundIds.contains('coin_1000')) {
+      return Card();
+    }
+    final ListTile consumableHeader =
+    ListTile(title: Text('Purchased consumables'));
+    final List<Widget> tokens = _consumables.map((String id) {
+      return GridTile(
+        child: IconButton(
+          icon: Icon(
+            Icons.stars,
+            size: 42.0,
+            color: Colors.orange,
+          ),
+          splashColor: Colors.yellowAccent,
+          onPressed: () => consume(id),
+        ),
+      );
+    }).toList();
+    return Card(
+        child: Column(children: <Widget>[
+          consumableHeader,
+          Divider(),
+          GridView.count(
+            crossAxisCount: 5,
+            children: tokens,
+            shrinkWrap: true,
+            padding: EdgeInsets.all(16.0),
+          )
+        ]));
+  }
+  Future<void> consume(String id) async {
+    await ConsumableStore.consume(id);
+    final List<String> consumables = await ConsumableStore.load();
+    setState(() {
+      _consumables = consumables;
+    });
+  }*/
 
   ///get user wallet
   Future<void> getUserWallet() async {
+    setState(() {
+      isWalletLoading = true;
+    });
     try {
       Wallet wallet = await MoonBlinkRepository.getUserWallet();
       setState(() {
         this.wallet = wallet;
+        isWalletLoading = false;
       });
     } catch (error) {
       print(error);
-    }
-  }
-
-  ///get IAP items.
-  Future<void> getItems() async {
-    List<IAPItem> items =
-        await FlutterInappPurchase.instance.getProducts(_productLists);
-    items.sort((a, b) => double.tryParse(a.price) > double.tryParse(b.price)
-        ? 1
-        : 0); //sort by price;
-    this.setState(() {
-      this._items = items;
-    });
-    for (var item in items) {
-      print('${item.toString()}');
-    }
-  }
-
-  ///get Purchased items.
-  Future<void> getPurchasedItems() async {
-    List<PurchasedItem> items =
-        await FlutterInappPurchase.instance.getAvailablePurchases();
-    setState(() {
-      this._purchases = items;
-    });
-    for (var item in items) {
-      print('${item.toString()}');
-    }
-  }
-
-  ///get PurchasedHistory items.
-  Future<void> getPurchasedHistoryItems() async {
-    List<PurchasedItem> items =
-        await FlutterInappPurchase.instance.getPurchaseHistory();
-    setState(() {
-      this._purchasedHistories = items;
-    });
-    for (var item in items) {
-      print('${item.toString()}');
-    }
-  }
-
-  ///purchase IAP items.
-  purchaseItem(IAPItem iapItem) async {
-    var msg =
-        await FlutterInappPurchase.instance.requestPurchase(iapItem.productId);
-    print('purchasedMsg: $msg');
-  }
-
-  consumeAllProduct() async {
-    try {
-      //consume after purchase success so user buy the product again.
-      //need to connect with backend to process purchase.
-      var msg = await FlutterInappPurchase.instance.consumeAllItems;
-      print('consumeAllItems: $msg');
-    } catch (err) {
-      print('consumeAllItems error: $err');
+      setState(() {
+        isWalletLoading = false;
+      });
     }
   }
 
@@ -266,159 +542,6 @@ class _TopUpPageState extends State<TopUpPage>
     });
   }
 
-  Widget _buildProductListTile(IAPItem iapItem, String productName) {
-    return Container(
-        alignment: Alignment.center,
-        // // color: Colors.grey,
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.5, color: Colors.grey),
-          // color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-        ),
-        child: ListTile(
-          leading: Icon(
-            FontAwesomeIcons.coins,
-            color: Colors.amber[500],
-          ),
-          title: Text('${Platform.isAndroid ? iapItem.description : iapItem.title.isEmpty ? productName : iapItem.title}'),
-          subtitle: Text('${iapItem.price} ${iapItem.currency}'),
-          trailing: RaisedButton(
-              color: Theme.of(context).accentColor,
-              child: Text('Top Up',
-                  style: Theme.of(context).accentTextTheme.button),
-              onPressed: () => purchaseItem(iapItem)),
-        ));
-  }
-
-  Widget _buildCurrentCoinAmount() {
-    return Container(
-        alignment: Alignment.center,
-        // // color: Colors.grey,
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.5, color: Colors.grey),
-          // color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-        ),
-        child: ListTile(
-          leading: Icon(
-            FontAwesomeIcons.coins,
-            color: Colors.amber[500],
-          ),
-          title: Text(
-              'Current coin : ${wallet.value} ${wallet.value > 1 ? 'coins' : 'coin'}'),
-          trailing: isLoading ? CupertinoActivityIndicator() : null,
-        ));
-  }
-
-  Widget _buildTopUpWithCustomerService() {
-    return InkResponse(
-      onTap: _openFacebookPage,
-      child: Container(
-          alignment: Alignment.center,
-          // // color: Colors.grey,
-          margin: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(width: 1.5, color: Colors.grey),
-            // color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          ),
-          child: ListTile(
-            leading: Icon(
-              FontAwesomeIcons.handsHelping,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            title: Text('Top up with our customer service.'),
-            trailing: Icon(
-              FontAwesomeIcons.facebook,
-              color: Theme.of(context).iconTheme.color,
-            ),
-          )),
-    );
-  }
-
-  Widget _buildAds() {
-    return InkResponse(
-      onTap: _showRewardedAds,
-      child: Container(
-          alignment: Alignment.center,
-          // // color: Colors.grey,
-          margin: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(width: 1.5, color: Colors.grey),
-            // color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          ),
-          child: ListTile(
-            leading: Icon(
-              FontAwesomeIcons.ad,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            title: Text('Watch an Ad to get free coins.'),
-            trailing: isAdLoading ? CupertinoActivityIndicator() : null,
-          )),
-    );
-  }
-
-  Widget _buildWalletList() {
-    if (_items.isEmpty || wallet == null) {
-      return ViewStateErrorWidget(
-        error: ViewStateError(ViewStateErrorType.defaultError),
-        onPressed: () async {
-          setState(() {
-            isPageLoading = true;
-          });
-          await getItemsAndWallet();
-          setState(() {
-            isPageLoading = false;
-          });
-        },
-      );
-    } else {
-      return Column(
-        children: <Widget>[
-          Flexible(
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _items.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                String productName = '';
-                if (_items[index].productId == 'coin_200_ios') {
-                  productName = '200 Moon Go Coins';
-                } else if (_items[index].productId == 'coin_500') {
-                  productName = '500 Moon Go Coins';
-                } else if (_items[index].productId == 'coin_1000') {
-                  productName = '1000 Moon Go Coins';
-                }
-                return _buildProductListTile(_items[index], productName);
-              },
-            ),
-          ),
-          _buildCurrentCoinAmount(),
-          _buildAds(),
-          if (Platform.isAndroid) _buildTopUpWithCustomerService(),
-        ],
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushNamedAndRemoveUntil(
-              context, RouteName.main, (route) => false,
-              arguments: 3);
-          return false;
-        },
-        child: isPageLoading
-            ? Center(child: CupertinoActivityIndicator())
-            : _buildWalletList());
-  }
-
   void _openFacebookPage() async {
     String fbProtocolUrl;
     if (Platform.isIOS) {
@@ -446,5 +569,94 @@ class _TopUpPageState extends State<TopUpPage>
     await RewardedVideoAd.instance
         .load(adUnitId: AdManager.rewardedAdId, targetingInfo: targetingInfo);
   }
+
+  void _sortProduct(List<ProductDetails> list) {
+    if (Platform.isAndroid) {
+      list.sort((a, b) =>
+          a.skuDetail.priceAmountMicros > b.skuDetail.priceAmountMicros
+              ? 1
+              : 0);
+    } else {
+      list.sort((a, b) => double.tryParse(a.skProduct.price) >
+              double.tryParse(b.skProduct.price)
+          ? 1
+          : 0);
+    }
+  }
+
+  void showPendingUI() {
+    setState(() {
+      _purchasePending = true;
+    });
+  }
+
+  void deliverProduct(PurchaseDetails purchaseDetails) async {
+    // IMPORTANT!! Always verify a purchase purchase details before delivering the product.
+    if (purchaseDetails.productID == coin200Consumable ||
+        purchaseDetails.productID == coin500Consumable ||
+        purchaseDetails.productID == coin1000Consumable) {
+      //await ConsumableStore.save(purchaseDetails.purchaseID);
+      //List<String> consumables = await ConsumableStore.load();
+      setState(() {
+        _purchasePending = false;
+      });
+    } else {
+      setState(() {
+        _purchases.add(purchaseDetails);
+        _purchasePending = false;
+      });
+    }
+  }
+
+  void handleError(IAPError error) {
+    showToast(error.message);
+    setState(() {
+      _purchasePending = false;
+    });
+  }
+
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
+    // IMPORTANT!! Always verify a purchase before delivering the product.
+    // For the purpose of an example, we directly return true.
+    return Future<bool>.value(true);
+  }
+
+  void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
+    // handle invalid purchase here if  _verifyPurchase` failed.
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        showPendingUI();
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          handleError(purchaseDetails.error);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased) {
+          bool valid = await _verifyPurchase(purchaseDetails);
+          if (valid) {
+            deliverProduct(purchaseDetails);
+          } else {
+            _handleInvalidPurchase(purchaseDetails);
+            return;
+          }
+        }
+        if (Platform.isAndroid) {
+          if (!kAutoConsume && purchaseDetails.productID == coin200Consumable ||
+              purchaseDetails.productID == coin500Consumable ||
+              purchaseDetails.productID == coin1000Consumable) {
+            await InAppPurchaseConnection.instance
+                .consumePurchase(purchaseDetails);
+          }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchaseConnection.instance
+              .completePurchase(purchaseDetails);
+          setState(() {
+            userTopUp(purchaseDetails.productID);
+          });
+        }
+      }
+    });
+  }
 }
-*/

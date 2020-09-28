@@ -16,18 +16,25 @@ class StoryItemWidget extends StatelessWidget {
       child: InkWell(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        StoriesPage(story: stories, index: index)));
+              context,
+              MaterialPageRoute(
+                builder: (context) => StoriesPage(story: stories, index: index),
+              ),
+            );
           },
           child: Align(
             child: CachedNetworkImage(
               imageUrl: story.profile,
               imageBuilder: (context, imageProvider) => CircleAvatar(
                 radius: 33,
-                backgroundColor: Colors.grey[300],
-                backgroundImage: imageProvider,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                child: CircleAvatar(
+                  radius: 32,
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage: imageProvider,
+                ),
               ),
             ),
           )),
