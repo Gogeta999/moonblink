@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/message/user_message_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -33,8 +34,17 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
   InAppPurchaseConnection.enablePendingPurchases();
-  runApp(BlocProvider<UserNotificationBloc>(
-      create: (_) => UserNotificationBloc(), child: MyApp()));
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (_) => UserBookingNotificationBloc(),
+      ),
+      BlocProvider(
+       create: (_) =>  UserMessageNotificationBloc(),
+      )
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -64,8 +74,8 @@ class _MyAppState extends State<MyApp> {
         statusBarBrightness: Brightness.light));
     PushNotificationsManager().init();
     if (StorageManager.sharedPreferences.getString(token) != null)
-      BlocProvider.of<UserNotificationBloc>(context)
-          .add(UserNotificationFetched());
+      BlocProvider.of<UserBookingNotificationBloc>(context)
+          .add(UserBookingNotificationFetched());
     restartConstants();
     FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }

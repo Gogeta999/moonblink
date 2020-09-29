@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/page_route_animation.dart';
-import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/apply_for_qualification_page.dart';
@@ -172,16 +172,16 @@ class Router {
       case RouteName.userRating:
         return CupertinoPageRoute(
             builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));
-      case RouteName.bookingRequestDetailPage:
-        int index = (settings.arguments as Map)['index'];
-        int notificationId = (settings.arguments as Map)['notificationId'];
-        print('$index   $notificationId');
-        return CupertinoPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: BlocProvider.of<UserNotificationBloc>(context),
-            child: BookingRequestDetailPage(index: index, notificationId: notificationId,),
-          )
-        );
+      // case RouteName.bookingRequestDetailPage:
+      //   int index = (settings.arguments as Map)['index'];
+      //   int notificationId = (settings.arguments as Map)['notificationId'];
+      //   print('$index   $notificationId');
+      //   return CupertinoPageRoute(
+      //     builder: (context) => BlocProvider.value(
+      //       value: BlocProvider.of<UserNotificationBloc>(context),
+      //       child: BookingRequestDetailPage(index: index, notificationId: notificationId,),
+      //     )
+      //   );
 
       default:
         return CupertinoPageRoute(

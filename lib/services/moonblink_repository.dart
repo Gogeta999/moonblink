@@ -15,7 +15,8 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
-import 'package:moonblink/models/user_notification.dart';
+import 'package:moonblink/models/user_booking_notification.dart';
+import 'package:moonblink/models/user_message_notification.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
@@ -320,23 +321,42 @@ class MoonBlinkRepository {
     return response.data;
   }
 
-  //get user's notifications
-  static Future<UserNotificationResponse> getUserNotifications(
+  //get user's booking notifications
+  static Future<UserBookingNotificationResponse> getUserBookingNotifications(
       int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(
         Api.UserNotifications + '$userId/notification',
-        queryParameters: {'limit': limit, 'page': page});
-    return UserNotificationResponse.fromJson(response.data);
+        queryParameters: {'limit': limit, 'page': page, 'fcm_type': 'booking'});
+    return UserBookingNotificationResponse.fromJson(response.data);
   }
 
-  //change notification to read state
-  static Future<UserNotificationData> changeUserNotificationReadState(
+  //get user's message notifications
+  static Future<UserMessageNotificationResponse> getUserMessageNotifications(
+      int limit, int page) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+        Api.UserNotifications + '$userId/notification',
+        queryParameters: {'limit': limit, 'page': page, 'fcm_type': 'message'});
+    return UserMessageNotificationResponse.fromJson(response.data);
+  }
+
+  //change message notification to read state
+  static Future<UserMessageNotificationData> changeUserMessageNotificationReadState(
       int notificationId) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().patch(
         Api.UserNotificationRead + '$userId/notification/$notificationId');
-    return UserNotificationData.fromJson(response.data);
+    return UserMessageNotificationData.fromJson(response.data);
+  }
+
+  //change booking notification to read state
+  static Future<UserBookingNotificationData> changeUserBookingNotificationReadState(
+      int notificationId) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().patch(
+        Api.UserNotificationRead + '$userId/notification/$notificationId');
+    return UserBookingNotificationData.fromJson(response.data);
   }
 
   // Booking

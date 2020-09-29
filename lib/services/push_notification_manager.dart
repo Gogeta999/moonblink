@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
-import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/partner.dart';
@@ -45,7 +45,7 @@ class PushNotificationsManager {
         print('onTokenRefresh: $event');
       });
       print('FCM_Token: ${await getFcmToken()}');
-      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
+//      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
       _initialized = true;
     }
   }
@@ -66,19 +66,19 @@ class PushNotificationsManager {
     }
   }
 
-  Future<void> _createLocalNotiChannel(
-      String id, String name, String description) async {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var androidNotificationChannel = AndroidNotificationChannel(
-      id,
-      name,
-      description,
-    );
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidNotificationChannel);
-  }
+  // Future<void> _createLocalNotiChannel(
+  //     String id, String name, String description) async {
+  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //   var androidNotificationChannel = AndroidNotificationChannel(
+  //     id,
+  //     name,
+  //     description,
+  //   );
+  //   await flutterLocalNotificationsPlugin
+  //       .resolvePlatformSpecificImplementation<
+  //           AndroidFlutterLocalNotificationsPlugin>()
+  //       ?.createNotificationChannel(androidNotificationChannel);
+  // }
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
     ..autoInitEnabled();
@@ -330,8 +330,8 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     final context = locator<NavigationService>().navigatorKey.currentContext;
-    BlocProvider.of<UserNotificationBloc>(context)
-        .add(UserNotificationRefreshedFromStartPageToCurrentPage());
+    BlocProvider.of<UserBookingNotificationBloc>(context)
+        .add(UserBookingNotificationRefreshedFromStartPageToCurrentPage());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
@@ -478,6 +478,27 @@ class PushNotificationsManager {
     await _flutterLocalNotificationsPlugin.show(
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
+
+  // Future<void> showTestNotification() async {
+  //   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //       'com.moonuniverse.moonblink', //same package name for both platform
+  //       'Moon Blink Voice Call',
+  //       'Moon Blink',
+  //       largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+  //       playSound: true,
+  //       importance: Importance.Max,
+  //       priority: Priority.High,
+  //       sound: RawResourceAndroidNotificationSound('moonblink_noti'),
+  //       autoCancel: true);
+  //
+  //   var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+  //       presentAlert: true, presentBadge: true, presentSound: true);
+  //   var platformChannelSpecifics = NotificationDetails(
+  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  //
+  //   await _flutterLocalNotificationsPlugin.show(
+  //       1, 'Test', 'Testing', platformChannelSpecifics);
+  // }
 
   NotificationDetails setUpPlatformSpecifics(name, channelName, {String song}) {
     if (song != null) {

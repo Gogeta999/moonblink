@@ -1,20 +1,20 @@
 
-class UserNotificationResponse {
-  final List<UserNotificationData> data;
+class UserBookingNotificationResponse {
+  final List<UserBookingNotificationData> data;
 
-  UserNotificationResponse({this.data});
+  UserBookingNotificationResponse({this.data});
 
-  factory UserNotificationResponse.fromJson(Map<String, dynamic> json) {
+  factory UserBookingNotificationResponse.fromJson(Map<String, dynamic> json) {
     List<dynamic> dataJson = json['data'];
 
-    List<UserNotificationData> dataList =
-        dataJson.map((e) => UserNotificationData.fromJson(e)).toList();
+    List<UserBookingNotificationData> dataList =
+        dataJson.map((e) => UserBookingNotificationData.fromJson(e)).toList();
 
-    return UserNotificationResponse(data: dataList);
+    return UserBookingNotificationResponse(data: dataList);
   }
 }
 
-class UserNotificationData {
+class UserBookingNotificationData {
   final int id;
   final int userId;
   final String title;
@@ -22,11 +22,11 @@ class UserNotificationData {
   final int isRead;
   final String createdAt;
   final String updatedAt;
-  final UserNotificationFcmData fcmData;
+  final UserBookingNotificationFcmData fcmData;
 
-  UserNotificationData({this.id, this.userId, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.fcmData});
+  UserBookingNotificationData({this.id, this.userId, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.fcmData});
 
-  UserNotificationData.fromJson(Map<String, dynamic> json)
+  UserBookingNotificationData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         userId = json['user_id'],
         title = json['title'],
@@ -34,10 +34,10 @@ class UserNotificationData {
         isRead = json['is_read'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
-        fcmData = UserNotificationFcmData.fromJson(json['data']);
+        fcmData = UserBookingNotificationFcmData.fromJson(json['data']);
 }
 
-class UserNotificationFcmData {
+class UserBookingNotificationFcmData {
   final int userId;
   final int bookingUserId;
   final int gameType;
@@ -53,7 +53,7 @@ class UserNotificationFcmData {
   final String gameIcon; /// null for now
   final String clickAction;
 
-  UserNotificationFcmData.fromJson(Map<String, dynamic> json)
+  UserBookingNotificationFcmData.fromJson(Map<String, dynamic> json)
       : userId = json['user_id'],
         bookingUserId = json['booking_user_id'],
         gameType = json['game_type'],
