@@ -50,19 +50,37 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
           body: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                leading: IconButton(
-                    icon: SvgPicture.asset(
-                      back,
-                      semanticsLabel: 'back',
-                      color: Colors.white,
-                      width: 30,
-                      height: 30,
-                    ),
-                    onPressed: () => Navigator.pop(context)),
                 backgroundColor: Colors.black,
                 actions: [
                   AppbarLogo(),
                 ],
+                leading: IconButton(
+                  icon: SvgPicture.asset(
+                    back,
+                    semanticsLabel: 'back',
+                    color: Colors.white,
+                    width: 30,
+                    height: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                bottom: PreferredSize(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).accentColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).accentColor,
+                          // spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: Offset(0, 0), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    height: 5,
+                  ),
+                  preferredSize: Size.fromHeight(8),
+                ),
               ),
               SliverToBoxAdapter(
                 child: Stack(

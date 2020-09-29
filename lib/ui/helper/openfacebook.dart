@@ -19,3 +19,22 @@ void openFacebookPage() async {
     await launch(pageUrl, forceSafariVC: false);
   }
 }
+
+void openCustomerServicePage() async {
+  String customerServiceUrl;
+  if (Platform.isIOS) {
+    customerServiceUrl = 'fb://profile/109953790813440';
+  } else {
+    customerServiceUrl = 'fb://page/109953790813440';
+  }
+  const String pageUrl = 'https://www.facebook.com/Moon-Go-109953790813440/';
+  try {
+    bool nativeAppLaunch = await launch(customerServiceUrl,
+        forceSafariVC: false, universalLinksOnly: true);
+    if (!nativeAppLaunch) {
+      await launch(pageUrl, forceSafariVC: false);
+    }
+  } catch (e) {
+    await launch(pageUrl, forceSafariVC: false);
+  }
+}

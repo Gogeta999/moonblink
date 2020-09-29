@@ -108,6 +108,9 @@ class _ChatListPageState extends State<ChatListPage>
     super.build(context);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
       appBar: AppbarWidget(),
       body: ScopedModelDescendant<ChatModel>(
         builder: (context, child, model) {

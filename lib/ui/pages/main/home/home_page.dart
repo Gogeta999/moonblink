@@ -239,6 +239,9 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     print(catagories);
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
       appBar: HomeAppBar(),
       body: Column(
         children: [

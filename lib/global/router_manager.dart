@@ -95,8 +95,8 @@ class Router {
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));
-      case RouteName.userStatus:
-        return NoAnimRouteBuilder(UserStatusPage());
+      // case RouteName.userStatus:
+      //   return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
       // case RouteName.comment:
@@ -177,11 +177,13 @@ class Router {
         int notificationId = (settings.arguments as Map)['notificationId'];
         print('$index   $notificationId');
         return CupertinoPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: BlocProvider.of<UserNotificationBloc>(context),
-            child: BookingRequestDetailPage(index: index, notificationId: notificationId,),
-          )
-        );
+            builder: (context) => BlocProvider.value(
+                  value: BlocProvider.of<UserNotificationBloc>(context),
+                  child: BookingRequestDetailPage(
+                    index: index,
+                    notificationId: notificationId,
+                  ),
+                ));
 
       default:
         return CupertinoPageRoute(

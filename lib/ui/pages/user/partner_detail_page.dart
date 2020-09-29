@@ -304,6 +304,24 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
+                    bottom: PreferredSize(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).accentColor,
+                              // spreadRadius: 1,
+                              blurRadius: 4,
+                              offset:
+                                  Offset(0, 0), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        height: 5,
+                      ),
+                      preferredSize: Size.fromHeight(8),
+                    ),
                     backgroundColor: Colors.black,
                     //toolbarHeight: kToolbarHeight - 5,
                     // leading: IconButton(

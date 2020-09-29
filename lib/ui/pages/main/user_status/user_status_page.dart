@@ -14,7 +14,6 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
@@ -201,8 +200,8 @@ class _UserHeaderWidgetState extends State<UserHeaderWidget> {
             child: Center(
               child: InkWell(
                 onTap: () {
-                  int usertype =
-                      StorageManager.sharedPreferences.getInt(mUserType);
+                  // int usertype =
+                  //     StorageManager.sharedPreferences.getInt(mUserType);
                   /*if (usertype != 0) {
                     Navigator.of(context)
                         .pushNamed(RouteName.partnerOwnProfile);
@@ -419,7 +418,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                 // : () {
                 //     Navigator.of(context).pushNamed(RouteName.network);
                 //   }),
-                : openFacebookPage,
+                : openCustomerServicePage,
           ),
 
           ///settings

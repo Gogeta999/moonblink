@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profilefollowernow" : MessageLookupByLibrary.simpleMessage(" followers now"),
     "profilegame" : MessageLookupByLibrary.simpleMessage("Game Profile"),
     "profileown" : MessageLookupByLibrary.simpleMessage("Own Profile"),
-    "profiletext" : MessageLookupByLibrary.simpleMessage("You have"),
+    "profiletext" : MessageLookupByLibrary.simpleMessage("You have "),
     "pubg" : MessageLookupByLibrary.simpleMessage("Play PUBG Mobile with users to teach them how to play~"),
     "pubgrequirement1" : MessageLookupByLibrary.simpleMessage("1. Female Rank ≥ Silver, Male\'s Rank ≥ Platinum.\n(The screenshot must clearly show the game ID and rank.)"),
     "pubgrequirement2" : MessageLookupByLibrary.simpleMessage("2. Provide great Service, be patient, and good at time and emotional management."),

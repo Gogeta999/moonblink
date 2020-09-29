@@ -8,6 +8,7 @@ import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
+import 'package:moonblink/ui/pages/main/user_status/new_user_status_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -56,7 +57,7 @@ class _MainTabPageState extends State<MainTabPage>
       ChatListPage(),
       ContactsPage(),
       UserNotificationPage(),
-      UserStatusPage(),
+      NewUserStatusPage(),
     ];
 
     return Scaffold(
@@ -80,12 +81,13 @@ class _MainTabPageState extends State<MainTabPage>
               onHorizontalDragEnd: (details) {
                 //Swipe right
                 if (details.primaryVelocity < 0) {
+                  if (index == pages.length - 1) return
                   print("Swiping right");
                   if (index >= 0) {
                     index++;
                     // setState(() {
                     //   _selectedIndex = index;
-                    // });
+                    // });dfgh
                     _pageController.animateTo(
                         MediaQuery.of(context).size.width * index,
                         duration: Duration(milliseconds: 200),
@@ -96,6 +98,7 @@ class _MainTabPageState extends State<MainTabPage>
                 }
                 //Swipe left
                 else if (details.primaryVelocity > 0) {
+                  if (index == 0) return;
                   print("Swiping left");
                   if (index < pages.length) {
                     index--;

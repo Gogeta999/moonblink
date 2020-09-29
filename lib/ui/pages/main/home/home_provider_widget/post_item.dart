@@ -218,14 +218,14 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         ),
                                       ),
                                       constraints: BoxConstraints(
-                                          minHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              2.5,
-                                          maxHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              1.5,
+                                          // minHeight: MediaQuery.of(context)
+                                          //         .size
+                                          //         .height /
+                                          //     2.5,
+                                          // maxHeight: MediaQuery.of(context)
+                                          //         .size
+                                          //         .height /
+                                          //     1.5,
                                           minWidth: double.infinity,
                                           maxWidth: double.infinity),
                                       child: CachedNetworkImage(
