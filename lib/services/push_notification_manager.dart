@@ -9,6 +9,7 @@ import 'package:moonblink/base_widget/update_profile_dialog.dart';
 import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/main.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -97,33 +98,70 @@ class PushNotificationsManager {
   Future<void> _configLocalNotification() async {
     ///android
     Future<void> onSelectNotification(String payload) async {
-      if (payload == FcmTypeBooking) {
-        print('payload: $payload');
-        _bookingManager.showBookingDialog();
-      } else if (payload == FcmTypeMessage) {
-        print('payload: $payload');
-        _message.navigateToChatBox();
-      } else if (payload == FcmTypeVoiceCall) {
-        print('payload: $payload');
-        _voiceCall.navigateToCallScreen();
-      } else if (payload == GameProfileAdd) {
-        print('payload: $payload');
-        navigatotogameprofile();
+      if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
+      } else {
+        locator<NavigationService>().navigateToAndReplace(RouteName.main);
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
       }
     }
 
     ///iOS
     Future<dynamic> onDidReceiveLocalNotification(
         int id, String title, String body, String payload) async {
-      if (payload == FcmTypeBooking) {
-        print('payload: $payload');
-        _bookingManager.showBookingDialog();
-      } else if (payload == FcmTypeMessage) {
-        print('payload: $payload');
-        _message.navigateToChatBox();
-      } else if (payload == FcmTypeVoiceCall) {
-        print('payload: $payload');
-        _voiceCall.navigateToCallScreen();
+      if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
+      } else {
+        locator<NavigationService>().navigateToAndReplace(RouteName.main);
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
       }
     }
 
@@ -552,10 +590,14 @@ class _Message {
 
   void prepare({int partnerId}) {
     this._partnerId = partnerId;
+    StorageManager.sharedPreferences.setInt(kPartnerUserIdForChat, partnerId);
   }
 
   void navigateToChatBox() {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    if (_partnerId == null) {
+      this._partnerId = StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);
+    }
     if (!atChatBox)
       locator<NavigationService>()
           .navigateTo(RouteName.chatBox, arguments: _partnerId);

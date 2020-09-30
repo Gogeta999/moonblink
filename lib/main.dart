@@ -21,6 +21,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'bloc_pattern/simple_bloc_observer.dart';
@@ -52,10 +53,25 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('$state');
+    if (state == AppLifecycleState.inactive) {
+      StorageManager.sharedPreferences.setBool(isUserOnForeground, false);
+      print(StorageManager.sharedPreferences.get(isUserOnForeground));
+    }
+    if (state == AppLifecycleState.resumed) {
+      StorageManager.sharedPreferences.setBool(isUserOnForeground, true);
+      print(StorageManager.sharedPreferences.get(isUserOnForeground));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _init();
   }
 
@@ -63,6 +79,7 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     print('Disposing main app');
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   Future<void> _init() async {
