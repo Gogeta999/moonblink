@@ -73,7 +73,8 @@ class PartnerGameHistoryWidget extends StatefulWidget {
       _PartnerGameHistoryWidgetState();
 }
 
-class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> with AutomaticKeepAliveClientMixin {
+class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget>
+    with AutomaticKeepAliveClientMixin {
   //PartnerDetailModel partnerDetailModel;
 
   //RefreshController _refreshController = RefreshController();
@@ -95,6 +96,7 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget> wit
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     //partnerDetailModel = Provider.of<PartnerDetailModel>(context);
     return BlocProvider<PartnerGameHistoryBloc>(
       create: (context) => PartnerGameHistoryBloc(
@@ -218,33 +220,33 @@ class HistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //var fo
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black,
-            spreadRadius: 0.5,
-            // blurRadius: 2,
-            offset: Offset(-3, 3), // changes position of shadow
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 0.5,
+              // blurRadius: 2,
+              offset: Offset(-3, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: ListTile(
+          leading: Image.asset(
+            ImageHelper.wrapAssetsLogo('appbar.jpg'),
+            height: 50,
+            width: 45,
           ),
-        ],
-      ),
-      child: ListTile(
-        leading: Image.asset(
-          ImageHelper.wrapAssetsLogo('appbar.jpg'),
-          height: 50,
-          width: 45,
-        ),
-        title: Text(
-          '${history.transaction}',
-          style: Theme.of(context).textTheme.button,
-          overflow: TextOverflow.visible,
-        ),
-        trailing: Text(DateFormat.yMd().format(DateTime.parse(history.date))),
-      )/*Row(
+          title: Text(
+            '${history.transaction}',
+            style: Theme.of(context).textTheme.button,
+            overflow: TextOverflow.visible,
+          ),
+          trailing: Text(DateFormat.yMd().format(DateTime.parse(history.date))),
+        ) /*Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -265,6 +267,6 @@ class HistoryWidget extends StatelessWidget {
           Text(DateFormat.yMd().format(DateTime.parse(history.date)))
         ],
       ),*/
-    );
+        );
   }
 }

@@ -538,10 +538,10 @@ class DioUtils {
       bool nativeAppLaunch = await launch(appStoreUrl,
           forceSafariVC: false, universalLinksOnly: true);
       if (!nativeAppLaunch) {
-        await launch(appStoreUrl, forceSafariVC: false);
+        await launch(pageUrl, forceSafariVC: false);
       }
     } catch (e) {
-      await launch(appStoreUrl, forceSafariVC: false);
+      await launch(pageUrl, forceSafariVC: false);
     }
   }
 }
