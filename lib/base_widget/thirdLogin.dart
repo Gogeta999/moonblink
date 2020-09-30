@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ThirdLogin extends StatefulWidget {
   @override
@@ -37,8 +41,15 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'google').then((value) {
                     if (value) {
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
                     } else {
                       model.showErrorMessage(context);
                     }
@@ -54,8 +65,15 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'facebook').then((value) {
                     if (value) {
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
                     } else {
                       model.showErrorMessage(context);
                     }

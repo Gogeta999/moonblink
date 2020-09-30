@@ -14,7 +14,6 @@ import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
-import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';

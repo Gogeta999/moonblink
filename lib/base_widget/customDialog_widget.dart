@@ -10,6 +10,7 @@ class CustomDialog extends StatefulWidget {
   final bool isCancel; //Having Cancel button or not,Default is true
   final Color confirmButtonColor;
   final Color cancelColor;
+  final String cancelContent;
   final bool outsideDismiss; //点击弹窗外部，关闭弹窗，默认为true true：可以关闭 false：不可以关闭
   final Function confirmCallback; //点击确定按钮回调
   final Function dismissCallback; //弹窗关闭回调
@@ -28,6 +29,7 @@ class CustomDialog extends StatefulWidget {
       this.isCancel = true,
       this.confirmButtonColor,
       this.cancelColor,
+      this.cancelContent,
       this.outsideDismiss = true,
       this.confirmCallback,
       this.dismissCallback,
@@ -69,7 +71,8 @@ class _CustomDialogState extends State<CustomDialog> {
         // SizedBox(height: 1.0, child: Container(color: Colors.grey)),
         if (widget.simpleContent != null)
           Expanded(
-              child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(15),
                 child: Text(
                     widget.simpleContent == null ? '' : widget.simpleContent,
                     style: TextStyle(fontSize: 14.0)),
@@ -102,7 +105,10 @@ class _CustomDialogState extends State<CustomDialog> {
                                 borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(12.0))),
                             child: FlatButton(
-                              child: Text('Cancel',
+                              child: Text(
+                                  widget.cancelContent == null
+                                      ? 'Cancel'
+                                      : widget.cancelContent,
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: widget.cancelColor == null

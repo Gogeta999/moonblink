@@ -16,7 +16,7 @@ import '../models/message.dart';
 String proSocketurl = 'https://chat.moonblinkuniverse.com';
 String devSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
-IO.Socket socket = IO.io(devSocketUrl, <String, dynamic>{
+IO.Socket socket = IO.io(proSocketurl, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
   'timeout': 2000
@@ -56,7 +56,6 @@ class ChatModel extends Model {
     String usertoken = StorageManager.sharedPreferences.getString(token);
     socket.emit('connect-user', usertoken);
     socket.connect();
-
     //connect user list
     socket.once('connected-users', (jsonData) {
       print(jsonData);

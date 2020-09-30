@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/azlist.dart';
-import 'package:moonblink/base_widget/chat/chattile.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
