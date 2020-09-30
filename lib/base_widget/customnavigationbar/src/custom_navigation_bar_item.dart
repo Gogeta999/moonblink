@@ -27,7 +27,10 @@ class CustomNavigationBarItem {
     this.selectedTitle,
     this.unSelectedTitle,
     this.doubletap,
-  }) : selectedIcon = selectedIcon ?? icon;
+    this.badgeCount = 0,
+  }) :  assert(badgeCount != null),
+        assert(badgeCount >= 0),
+        selectedIcon = selectedIcon ?? icon;
 
   ///
   /// The icon of the item
@@ -53,6 +56,11 @@ class CustomNavigationBarItem {
   ///
   /// Item will only show [icon] when [unSelectedTitle] is null.
   final String unSelectedTitle;
+
+  ///
+  /// badge count --- if zero badge don't show
+  ///
+  final int badgeCount;
 
   final Function doubletap;
 }

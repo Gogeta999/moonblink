@@ -162,7 +162,7 @@ class _MainTabPageState extends State<MainTabPage>
             CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
             CustomNavigationBarItem(
                 icon: following, selectedIcon: followingfilled),
-            CustomNavigationBarItem(icon: noti, selectedIcon: notifilled),
+            CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: 13), ///not real
             CustomNavigationBarItem(
                 icon: mainProfile, selectedIcon: mainProfilefilled)
           ],

@@ -239,23 +239,56 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   for (var i = 0; i < widget.items.length; i++)
-                    CustomPaint(
-                      painter: BeaconPainter(
-                        color: widget.strokeColor,
-                        beaconRadius: _radiuses[i],
-                        maxRadius: _maxRadius,
-                      ),
-                      child: _CustomNavigationBarTile(
-                        iconSize: widget.iconSize,
-                        scale: _sizes[i],
-                        onPressed: () {
-                          widget.onTap(i);
-                        },
-                        selected: i == widget.currentIndex,
-                        item: widget.items[i],
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          if (widget.items[i].badgeCount != 0)
+                            Positioned(
+                              right: 15,
+                              top: 13,
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                constraints: BoxConstraints.expand(
+                                    width: 22, height: 22),
+                                child: Center(
+                                  child: Text(
+                                    '${widget.items[i].badgeCount < 100 ? widget.items[i].badgeCount : '99+'}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: CustomPaint(
+                              painter: BeaconPainter(
+                                color: widget.strokeColor,
+                                beaconRadius: _radiuses[i],
+                                maxRadius: _maxRadius,
+                              ),
+                              child: _CustomNavigationBarTile(
+                                iconSize: widget.iconSize,
+                                scale: _sizes[i],
+                                onPressed: () {
+                                  widget.onTap(i);
+                                },
+                                selected: i == widget.currentIndex,
+                                item: widget.items[i],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                 ],
