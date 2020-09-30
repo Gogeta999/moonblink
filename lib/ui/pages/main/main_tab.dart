@@ -7,7 +7,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
-import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_notifications_tab.dart';
 import 'package:moonblink/ui/pages/main/user_status/new_user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -36,7 +36,6 @@ class _MainTabPageState extends State<MainTabPage>
   @override
   void initState() {
     print(usertoken);
-    //PushNotificationsManager().init();
     if (usertoken != null) {
       ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
       ScopedModel.of<ChatModel>(context).conversationlist();
@@ -45,7 +44,6 @@ class _MainTabPageState extends State<MainTabPage>
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
-
     super.initState();
   }
 
@@ -55,7 +53,7 @@ class _MainTabPageState extends State<MainTabPage>
       HomePage(homeController),
       ChatListPage(),
       ContactsPage(),
-      UserNotificationPage(),
+      UserNotificationTab(),
       NewUserStatusPage(),
     ];
 

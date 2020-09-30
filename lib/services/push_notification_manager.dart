@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
-import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/main.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -45,7 +46,7 @@ class PushNotificationsManager {
         print('onTokenRefresh: $event');
       });
       print('FCM_Token: ${await getFcmToken()}');
-      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
+//      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
       _initialized = true;
     }
   }
@@ -66,19 +67,19 @@ class PushNotificationsManager {
     }
   }
 
-  Future<void> _createLocalNotiChannel(
-      String id, String name, String description) async {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var androidNotificationChannel = AndroidNotificationChannel(
-      id,
-      name,
-      description,
-    );
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidNotificationChannel);
-  }
+  // Future<void> _createLocalNotiChannel(
+  //     String id, String name, String description) async {
+  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //   var androidNotificationChannel = AndroidNotificationChannel(
+  //     id,
+  //     name,
+  //     description,
+  //   );
+  //   await flutterLocalNotificationsPlugin
+  //       .resolvePlatformSpecificImplementation<
+  //           AndroidFlutterLocalNotificationsPlugin>()
+  //       ?.createNotificationChannel(androidNotificationChannel);
+  // }
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging()
     ..autoInitEnabled();
@@ -97,33 +98,70 @@ class PushNotificationsManager {
   Future<void> _configLocalNotification() async {
     ///android
     Future<void> onSelectNotification(String payload) async {
-      if (payload == FcmTypeBooking) {
-        print('payload: $payload');
-        _bookingManager.showBookingDialog();
-      } else if (payload == FcmTypeMessage) {
-        print('payload: $payload');
-        _message.navigateToChatBox();
-      } else if (payload == FcmTypeVoiceCall) {
-        print('payload: $payload');
-        _voiceCall.navigateToCallScreen();
-      } else if (payload == GameProfileAdd) {
-        print('payload: $payload');
-        navigatotogameprofile();
+      if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
+      } else {
+        locator<NavigationService>().navigateToAndReplace(RouteName.main);
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
       }
     }
 
     ///iOS
     Future<dynamic> onDidReceiveLocalNotification(
         int id, String title, String body, String payload) async {
-      if (payload == FcmTypeBooking) {
-        print('payload: $payload');
-        _bookingManager.showBookingDialog();
-      } else if (payload == FcmTypeMessage) {
-        print('payload: $payload');
-        _message.navigateToChatBox();
-      } else if (payload == FcmTypeVoiceCall) {
-        print('payload: $payload');
-        _voiceCall.navigateToCallScreen();
+      if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
+      } else {
+        locator<NavigationService>().navigateToAndReplace(RouteName.main);
+        if (payload == FcmTypeBooking) {
+          print('payload: $payload');
+          _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeMessage) {
+          print('payload: $payload');
+          _message.navigateToChatBox();
+        } else if (payload == FcmTypeVoiceCall) {
+          print('payload: $payload');
+          _voiceCall.navigateToCallScreen();
+        } else if (payload == GameProfileAdd) {
+          print('payload: $payload');
+          navigatotogameprofile();
+        }
       }
     }
 
@@ -330,8 +368,8 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     final context = locator<NavigationService>().navigatorKey.currentContext;
-    BlocProvider.of<UserNotificationBloc>(context)
-        .add(UserNotificationRefreshedFromStartPageToCurrentPage());
+    BlocProvider.of<UserBookingNotificationBloc>(context)
+        .add(UserBookingNotificationRefreshedFromStartPageToCurrentPage());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;
@@ -479,6 +517,27 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
+  // Future<void> showTestNotification() async {
+  //   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //       'com.moonuniverse.moonblink', //same package name for both platform
+  //       'Moon Blink Voice Call',
+  //       'Moon Blink',
+  //       largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
+  //       playSound: true,
+  //       importance: Importance.Max,
+  //       priority: Priority.High,
+  //       sound: RawResourceAndroidNotificationSound('moonblink_noti'),
+  //       autoCancel: true);
+  //
+  //   var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+  //       presentAlert: true, presentBadge: true, presentSound: true);
+  //   var platformChannelSpecifics = NotificationDetails(
+  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  //
+  //   await _flutterLocalNotificationsPlugin.show(
+  //       1, 'Test', 'Testing', platformChannelSpecifics);
+  // }
+
   NotificationDetails setUpPlatformSpecifics(name, channelName, {String song}) {
     if (song != null) {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -531,10 +590,14 @@ class _Message {
 
   void prepare({int partnerId}) {
     this._partnerId = partnerId;
+    StorageManager.sharedPreferences.setInt(kPartnerUserIdForChat, partnerId);
   }
 
   void navigateToChatBox() {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    if (_partnerId == null) {
+      this._partnerId = StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);
+    }
     if (!atChatBox)
       locator<NavigationService>()
           .navigateTo(RouteName.chatBox, arguments: _partnerId);
