@@ -9,7 +9,6 @@ import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/new_user_status_page.dart';
-import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 

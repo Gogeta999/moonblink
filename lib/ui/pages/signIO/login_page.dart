@@ -14,6 +14,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/ui/helper/agreement.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -42,9 +43,6 @@ class _LoginPageState extends State<LoginPage> {
       body: CustomScrollView(
         physics: ClampingScrollPhysics(),
         slivers: <Widget>[
-          // SliverAppBar(
-          //   floating: true,
-          // ),
           SliverToBoxAdapter(
             child: ProviderWidget<LoginModel>(
               model: LoginModel(Provider.of(context)),
@@ -168,14 +166,12 @@ class LoginButton extends StatelessWidget {
                         StorageManager.sharedPreferences.getInt(mgameprofile);
                     int type =
                         StorageManager.sharedPreferences.getInt(mUserType);
-                    if (gameprofile == 0 && type != 0) {
-                      PushNotificationsManager().showgameprofilenoti();
-                    }
+
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
-                    ScopedModel.of<ChatModel>(context).disconnect();
-                    ScopedModel.of<ChatModel>(context, rebuildOnChange: false)
-                        .init();
+                    if (gameprofile == 0 && type != 0) {
+                      gameProfileSetUp();
+                    }
                   } else {
                     model.showErrorMessage(context);
                   }

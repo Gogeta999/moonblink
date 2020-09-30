@@ -8,8 +8,6 @@ import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_notification/user_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/user_notification.dart';
-import 'package:moonblink/provider/view_state.dart';
-import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class UserNotificationPage extends StatefulWidget {

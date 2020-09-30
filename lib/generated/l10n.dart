@@ -1283,6 +1283,26 @@ class G {
     );
   }
 
+  /// `Please add Game Profile`
+  String get pleaseAddGameProfile {
+    return Intl.message(
+      'Please add Game Profile',
+      name: 'pleaseAddGameProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Game Profile to let your customer can order you`
+  String get pleasegameProfileHelperContent {
+    return Intl.message(
+      'Add Game Profile to let your customer can order you',
+      name: 'pleasegameProfileHelperContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please rating for this game`
   String get pleaseRatingForThisGame {
     return Intl.message(
@@ -1663,10 +1683,10 @@ class G {
     );
   }
 
-  /// `Connection Error`
+  /// `Offline`
   String get statuserror {
     return Intl.message(
-      'Connection Error',
+      'Offline',
       name: 'statuserror',
       desc: '',
       args: [],

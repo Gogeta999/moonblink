@@ -11,17 +11,18 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewUserStatusPage extends StatefulWidget {
   @override
@@ -108,6 +109,7 @@ class _LogoutState extends State<Logout> {
                   style: Theme.of(context).textTheme.bodyText1),
               onTap: () {
                 model.logout();
+                ScopedModel.of<ChatModel>(context).disconnect();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
               },
