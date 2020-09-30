@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
@@ -11,6 +12,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -91,6 +93,35 @@ class _WalletPageState extends State<WalletPage> {
             actions: [
               AppbarLogo(),
             ],
+            leading: IconButton(
+              icon: SvgPicture.asset(
+                back,
+                semanticsLabel: 'back',
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).accentColor
+                    : Colors.white,
+                width: 30,
+                height: 30,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            bottom: PreferredSize(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).accentColor,
+                      // spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
+                ),
+                height: 5,
+              ),
+              preferredSize: Size.fromHeight(8),
+            ),
           ),
           SliverToBoxAdapter(
             child: Stack(

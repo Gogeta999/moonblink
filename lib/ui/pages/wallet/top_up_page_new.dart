@@ -196,6 +196,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     List<Widget> stack = [];
     if (_queryProductError == null) {
       stack.add(
@@ -205,8 +206,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
             _buildProductList(),
             _buildCurrentCoin(),
             _buildAds(),
-            if (Platform.isAndroid)
-              _buildTopUpWithCustomerService()
+            if (Platform.isAndroid) _buildTopUpWithCustomerService()
             //_buildConsumableBox(),
           ],
         ),
@@ -537,10 +537,10 @@ class _TopUpPageNew extends State<TopUpPageNew>
 
   void _sortProduct(List<ProductDetails> list) {
     if (Platform.isAndroid) {
-      list.sort((a, b) => a.skuDetail.priceAmountMicros >
-              b.skuDetail.priceAmountMicros
-          ? 1
-          : 0);
+      list.sort((a, b) =>
+          a.skuDetail.priceAmountMicros > b.skuDetail.priceAmountMicros
+              ? 1
+              : 0);
     } else {
       list.sort((a, b) => double.tryParse(a.skProduct.price) >
               double.tryParse(b.skProduct.price)

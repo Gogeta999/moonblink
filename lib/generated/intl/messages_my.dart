@@ -57,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coin" : MessageLookupByLibrary.simpleMessage("ကျွန်တော့် ပိုက်ဆံ"),
     "confirm" : MessageLookupByLibrary.simpleMessage("အတည်ပြု"),
     "confirmbooking" : MessageLookupByLibrary.simpleMessage("Booking ကိုအတည်ပြုပါ"),
+    "copyID" : MessageLookupByLibrary.simpleMessage("copy ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("လက်ရှိ"),
     "deselect" : MessageLookupByLibrary.simpleMessage("ပယ်ဖျက်ပါ"),
     "end" : MessageLookupByLibrary.simpleMessage("အဆုံးသတ်"),

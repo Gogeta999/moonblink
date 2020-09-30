@@ -39,13 +39,13 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: devUrl,
+    baseUrl: baseUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': devAppKey
+      'app-key': baseAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
@@ -140,6 +140,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
       }
       // Platform and version Control
@@ -187,6 +190,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
       } // Platform and version Control
       // 102 is version late
@@ -227,6 +233,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
         // throw ForceLoginDialog();
       } // Platform and version Control
@@ -268,6 +277,9 @@ class DioUtils {
         StorageManager.sharedPreferences.remove(mLoginName);
         StorageManager.sharedPreferences.remove(mUserId);
         StorageManager.sharedPreferences.remove(mUserType);
+        StorageManager.sharedPreferences.remove(mstatus);
+        StorageManager.sharedPreferences.remove(mUserProfile);
+        StorageManager.sharedPreferences.remove(mgameprofile);
         throw forceLoginDialog();
         // throw ForceLoginDialog();
       } // Platform and version Control
@@ -526,10 +538,10 @@ class DioUtils {
       bool nativeAppLaunch = await launch(appStoreUrl,
           forceSafariVC: false, universalLinksOnly: true);
       if (!nativeAppLaunch) {
-        await launch(appStoreUrl, forceSafariVC: false);
+        await launch(pageUrl, forceSafariVC: false);
       }
     } catch (e) {
-      await launch(appStoreUrl, forceSafariVC: false);
+      await launch(pageUrl, forceSafariVC: false);
     }
   }
 }

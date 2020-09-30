@@ -260,7 +260,9 @@ class _BookingPageState extends State<BookingPage> {
               icon: SvgPicture.asset(
                 back,
                 semanticsLabel: 'back',
-                color: Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).accentColor
+                    : Colors.white,
                 width: 30,
                 height: 30,
               ),
@@ -277,7 +279,7 @@ class _BookingPageState extends State<BookingPage> {
               ),
               preferredSize: null),
         ),
-        //backgroundColor: Colors.grey[200],
+        backgroundColor: Colors.grey[200],
         body: Column(
           children: [
             //Top Partner Information

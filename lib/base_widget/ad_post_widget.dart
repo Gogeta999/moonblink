@@ -72,21 +72,106 @@ class _AdPostWidgetState extends State<AdPostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 330,
-          child: NativeAdmob(
-            options: _nativeAdmobOptions,
-            adUnitID: AdManager.nativeAdId,
-            controller: _nativeAdController,
-            type: NativeAdmobType.full,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 2.0,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey
+              : Colors.black,
         ),
-        Divider(
-          height: 0.5,
-        )
-      ],
+        borderRadius: BorderRadius.circular(40),
+      ),
+      child: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              /// [user_Profile]
+              Container(
+                height: 40,
+              ),
+
+              /// [User_Image]
+
+              Column(
+                children: <Widget>[
+                  InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(
+                            width: 2,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey
+                                    : Colors.black,
+                          ),
+                          bottom: BorderSide(
+                            width: 2,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey
+                                    : Colors.black,
+                          ),
+                        ),
+                      ),
+                      constraints: BoxConstraints(
+                          minHeight: 330,
+                          maxHeight: 330,
+                          minWidth: double.infinity,
+                          maxWidth: double.infinity),
+                      child: NativeAdmob(
+                        options: _nativeAdmobOptions,
+                        adUnitID: AdManager.nativeAdId,
+                        controller: _nativeAdController,
+                        type: NativeAdmobType.full,
+                      ),
+                    ),
+                    // onTap: () {
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           ImageView(widget.posts.coverImage)));
+                    //   print('object');
+                    // },
+                  ),
+
+                  /// [User_bottom data]
+                  Container(
+                    height: 30,
+                    width: double.infinity,
+                    margin: EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: <Widget>[],
+                    ),
+                  )
+                ],
+              ),
+
+              /// [bottom date]
+
+              Divider(
+                height: 5,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
+    // return Column(
+    //   children: <Widget>[
+    //     Container(
+    //       height: 330,
+    //       child: NativeAdmob(
+    //         options: _nativeAdmobOptions,
+    //         adUnitID: AdManager.nativeAdId,
+    //         controller: _nativeAdController,
+    //         type: NativeAdmobType.full,
+    //       ),
+    //     ),
+    //     Divider(
+    //       height: 0.5,
+    //     )
+    //   ],
+    // );
   }
 }

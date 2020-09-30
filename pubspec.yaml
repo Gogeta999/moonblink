@@ -21,6 +21,7 @@ dependencies:
   device_info: ^0.4.2+4
   package_info: ^0.4.1
   clipboard: ^0.1.2+8
+  grouped_list: ^3.5.0
   #Base UI
   shimmer: ^1.1.1
   flutter_holo_date_picker: ^0.1.5

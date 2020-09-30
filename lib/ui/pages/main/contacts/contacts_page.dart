@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/azlist.dart';
+import 'package:moonblink/base_widget/chat/chattile.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -24,15 +25,21 @@ class _ContactsPageState extends State<ContactsPage> {
   // with AutomaticKeepAliveClientMixin {
   // @override
   // bool get wantKeepAlive => true;
-
+  List<String> alphabetList = [];
+  Map<String, int> strMap = {};
   List<Contact> contacts = [];
   List<String> strList = [];
   Contact contact;
+  List<ItemCount> itemcount = [];
+  ItemCount item;
   List<Widget> items = [];
+  List<String> alphabet = [];
   // ignore: unused_field
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   TextEditingController searchController = TextEditingController();
+  String _currentAlphabet = "";
+  int count = 0;
 
   ContactModel _contactModel;
   bool isBlocking = false;
@@ -43,92 +50,146 @@ class _ContactsPageState extends State<ContactsPage> {
     super.initState();
   }
 
+  initList(List<String> strlist, List<Contact> contactslist) {
+    // print(strlist.toString());
+    items = [];
+    List<String> tempList = strlist;
+    tempList.sort();
+    tempList.sort((a, b) {
+      if (a.codeUnitAt(0) < 65 ||
+          a.codeUnitAt(0) > 122 &&
+              b.codeUnitAt(0) >= 65 &&
+              b.codeUnitAt(0) <= 122) {
+        return 1;
+      } else if (b.codeUnitAt(0) < 65 ||
+          b.codeUnitAt(0) > 122 &&
+              a.codeUnitAt(0) >= 65 &&
+              a.codeUnitAt(0) <= 122) {
+        return -1;
+      }
+      return a.compareTo(b);
+    });
+    // _currentAlphabet = tempList[0];
+    // alphabetList.add(tempList[0]);
+    for (var i = 0; i < tempList.length; i++) {
+      var currentStr = tempList[i][0];
+      strMap[currentStr] = i;
+      if (_currentAlphabet != currentStr) {
+        alphabetList.add(currentStr);
+      }
+      Contact contact = contactslist[i];
+      count += 1;
+      Widget tile = contactTile(contact);
+      items.add(tile);
+
+      if (_currentAlphabet != currentStr) {
+        item = ItemCount(items, count);
+        print("Item Count");
+        // print(item.contactitems.length);
+        // print(item.count);
+        itemcount.add(item);
+        count = 0;
+        items = [];
+        _currentAlphabet = currentStr;
+      }
+    }
+    print(alphabetList.toString());
+    print(itemcount[0].contactitems.length);
+  }
+
   ///[Tiles]
   filterList() {
+    // int end = "Z".codeUnitAt(0);
+    // while (c <= end) {
+    //   print(new String.fromCharCode(c));
+    //   c++;
+    // }
+    // for (var i = 0; i < contacts.length; i++) {
+    //   contact = contacts[i];
+    //   alphabet.add(contact.contactUser.contactUserName.toUpperCase()[0]);
+    // }
+    // var group = groupBy(contacts, (obj) => obj['time'].substring(0, 10));
+    // for (var j = 0; j < alphabet.)
+    // for (int c = "A".codeUnitAt(0); c <= end; c++) {
+    //   contacts.forEach((element) { })
+    // }
     List<Contact> users = List();
     users.addAll(contacts);
-    items = [];
-    strList = [];
-    if (searchController.text.isNotEmpty) {
-      users.retainWhere((user) => user.contactUser.contactUserName
-          .toLowerCase()
-          .contains(searchController.text.toLowerCase()));
-    }
-    users.forEach((user) {
-      items.add(Column(children: <Widget>[
-        Card(
-          // color: Theme.of(context).cardColor,
-          child: isBlocking
-              ? CupertinoActivityIndicator()
-              : ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: user.contactUser.contactUserProfile,
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: 28,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      backgroundImage: imageProvider,
-                    ),
-                    placeholder: (context, url) => CircleAvatar(
-                      radius: 28,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      // backgroundImage: ,
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  // leading: CircleAvatar(
-                  //   radius: 28,
-                  //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  //   backgroundImage:
-                  //       NetworkImage(user.contactUser.contactUserProfile),
-                  // ),
-                  title: Text(user.contactUser.contactUserName),
-                  onTap: () {
-                    int detailPageId = user.contactUser.contactUserId;
-                    int index = users.indexOf(user);
-                    print(index);
-                    Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PartnerDetailPage(detailPageId)))
-                        .then((value) async {
-                      if (value != null) {
-                        setState(() {
-                          isBlocking = true;
-                        });
+    users.forEach(
+      (user) {
+        // items.add(contactTile(user));
+        strList.add(user.contactUser.contactUserName.toUpperCase()[0]);
+      },
+    );
+  }
 
-                        ///Block Uesrs
-                        try {
-                          await MoonBlinkRepository.blockOrUnblock(
-                              value, BLOCK);
-                          await _contactModel.initData();
-                          setState(() {
-                            isBlocking = false;
-                          });
-                        } catch (e) {
-                          print(e.toString());
-                          setState(() {
-                            isBlocking = false;
-                          });
-                        }
-                      }
-                    });
-                  },
+  contactTile(user) {
+    return Card(
+      // color: Theme.of(context).cardColor,
+      child: isBlocking
+          ? CupertinoActivityIndicator()
+          : ListTile(
+              leading: CachedNetworkImage(
+                imageUrl: user.contactUser.contactUserProfile,
+                imageBuilder: (context, imageProvider) => CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundImage: imageProvider,
                 ),
-        ),
-        // Divider(
-        //   color: Colors.grey,
-        // )
-      ]));
-      strList.add(user.contactUser.contactUserName.toUpperCase());
-    });
+                placeholder: (context, url) => CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  // backgroundImage: ,
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+              // leading: CircleAvatar(
+              //   radius: 28,
+              //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              //   backgroundImage:
+              //       NetworkImage(user.contactUser.contactUserProfile),
+              // ),
+              title: Text(user.contactUser.contactUserName),
+              onTap: () {
+                int detailPageId = user.contactUser.contactUserId;
+                // int index = users.indexOf(user);
+                // print(index);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PartnerDetailPage(detailPageId))).then(
+                  (value) async {
+                    if (value != null) {
+                      setState(() {
+                        isBlocking = true;
+                      });
+
+                      ///Block Uesrs
+                      try {
+                        await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
+                        await _contactModel.initData();
+                        setState(() {
+                          isBlocking = false;
+                        });
+                      } catch (e) {
+                        print(e.toString());
+                        setState(() {
+                          isBlocking = false;
+                        });
+                      }
+                    }
+                  },
+                );
+              },
+            ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     // super.build(context);
+
     return Scaffold(
       ///[Appbar]
       appBar: AppbarWidget(),
@@ -164,46 +225,46 @@ class _ContactsPageState extends State<ContactsPage> {
           }
           if (contactModel.isError && contactModel.list.isEmpty) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: StatusBarUtils.systemUiOverlayStyle(context),
-                child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? AssetImage(ImageHelper.wrapAssetsImage(
-                                      'noFollowingDay.png'))
-                                  : AssetImage(ImageHelper.wrapAssetsImage(
-                                      'noFollowingDark.jpg')),
-                          fit: BoxFit.cover)),
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        top: 200,
-                        child: CupertinoButton(
-                          color: Colors.transparent,
-                          child: Text(
-                            "${contactModel.viewStateError.errorMessage}",
-                            style: TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
-                                fontSize: 20),
-                          ),
-                          onPressed: contactModel.initData,
+              value: StatusBarUtils.systemUiOverlayStyle(context),
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: Theme.of(context).brightness == Brightness.light
+                            ? AssetImage(ImageHelper.wrapAssetsImage(
+                                'noFollowingDay.png'))
+                            : AssetImage(ImageHelper.wrapAssetsImage(
+                                'noFollowingDark.jpg')),
+                        fit: BoxFit.cover)),
+                width: double.infinity,
+                height: double.infinity,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned(
+                      top: 200,
+                      child: CupertinoButton(
+                        color: Colors.transparent,
+                        child: Text(
+                          "${contactModel.viewStateError.errorMessage}",
+                          style: TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontSize: 20),
                         ),
+                        onPressed: contactModel.initData,
                       ),
-                    ],
-                  ),
-                ));
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
-          print(contactModel.list.length);
+          // print(contactModel.list.length);
           // print(model.list);
           contacts.clear();
-          items.clear();
+          // items.clear();
           for (var i = 0; i < contactModel.list.length; i++) {
             contact = contactModel.list[i];
             contacts.add(contact);
@@ -213,26 +274,34 @@ class _ContactsPageState extends State<ContactsPage> {
               .toLowerCase()
               .compareTo(b.contactUser.contactUserName.toLowerCase()));
           filterList();
-          // print(strList.length);
+          initList(strList, contacts);
           if (contactModel.isEmpty)
             SliverToBoxAdapter(
-                child: Padding(
-              padding: const EdgeInsets.only(top: 50),
-              child: ViewStateEmptyWidget(onPressed: contactModel.initData),
-            ));
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: ViewStateEmptyWidget(onPressed: contactModel.initData),
+              ),
+            );
           return Padding(
             padding: EdgeInsets.only(top: 8),
             child: AlphabetListScrollView(
-              strList: strList,
+              strList: alphabetList,
               highlightTextStyle: TextStyle(
                 color: Theme.of(context).accentColor,
               ),
               showPreview: true,
               itemBuilder: (context, index) {
-                return items[index];
+                // return Text("Hello");
+                return ListView.builder(
+                  itemBuilder: (context, newindex) {
+                    return itemcount[index].contactitems[newindex];
+                  },
+                  itemCount: itemcount[index].contactitems.length,
+                );
               },
               indexedHeight: (i) {
-                return 65;
+                // return 80;
+                return (itemcount[i].count * 80).toDouble();
               },
             ),
           );
@@ -240,4 +309,10 @@ class _ContactsPageState extends State<ContactsPage> {
       ),
     );
   }
+}
+
+class ItemCount {
+  final List<Widget> contactitems;
+  final int count;
+  ItemCount(this.contactitems, this.count);
 }

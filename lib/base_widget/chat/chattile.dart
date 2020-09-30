@@ -26,6 +26,9 @@ class ChatTile extends StatelessWidget {
                 padding:
                     EdgeInsets.only(top: 8, bottom: 8, left: 70, right: 20),
                 decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : null,
                   border: Border.all(
                     width: 1,
                     color: theme.brightness == Brightness.dark

@@ -95,8 +95,8 @@ class Router {
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));
-      case RouteName.userStatus:
-        return NoAnimRouteBuilder(UserStatusPage());
+      // case RouteName.userStatus:
+      //   return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
       // case RouteName.comment:

@@ -36,7 +36,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
           ),
           height: 10,
         ),
-        preferredSize: Size.fromHeight(10),
+        preferredSize: Size.fromHeight(5),
       ),
     );
   }

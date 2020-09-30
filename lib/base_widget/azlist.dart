@@ -10,9 +10,10 @@ class AlphabetScrollListHeader {
   final Icon icon;
   final IndexedHeight indexedHeaderHeight;
 
-  AlphabetScrollListHeader({@required this.widgetList,
-    @required this.icon,
-    @required this.indexedHeaderHeight});
+  AlphabetScrollListHeader(
+      {@required this.widgetList,
+      @required this.icon,
+      @required this.indexedHeaderHeight});
 }
 
 class _SpecialHeaderAlphabet {
@@ -39,9 +40,9 @@ class AlphabetListScrollView extends StatefulWidget {
       this.highlightTextStyle = const TextStyle(color: Colors.red),
       this.normalTextStyle = const TextStyle(color: Colors.black),
       this.showPreview = false,
-        this.headerWidgetList = const [],
-        @required this.indexedHeight,
-        this.keyboardUsage = false})
+      this.headerWidgetList = const [],
+      @required this.indexedHeight,
+      this.keyboardUsage = false})
       : super(key: key);
 
   @override
@@ -60,6 +61,8 @@ class _AlphabetListScrollViewState extends State<AlphabetListScrollView> {
   double sideHeight = 0;
   int selectedIndex = 0;
   String selectedChar = "A";
+  // int letter = 0;
+  // int letterindex = 0;
   Map<String, int> strMap = {};
   Map<String, double> heightMap = {};
   int savedIndex = 0;
@@ -279,31 +282,46 @@ class _AlphabetListScrollViewState extends State<AlphabetListScrollView> {
 //    );
   }
 
+  // _letterhead() {
+  //   if (letterindex < widget.strList.length - 1) {
+  //     if (widget.strList[letterindex][0] != alphabetList[letter] &&
+  //         letter < alphabetList.length - 1) {
+  //       letter += 1;
+  //       letterindex += 1;
+  //       return Container(
+  //         child: Text(alphabetList[letter]),
+  //       );
+  //     } else {
+  //       letterindex += 1;
+  //       return Container();
+  //     }
+  // }
+
   @override
   void dispose() {
     super.dispose();
     controller.removeListener(_callback);
   }
 
-  List<SliverList> _headerWidgetList() {
-    List<SliverList> sliverList = [];
-    for (var i = 0; i < widget.headerWidgetList.length; i++) {
-      var headerWidget = widget.headerWidgetList[i];
-      List<Widget> widgetList = [];
-      for (var j = 0; j < headerWidget.widgetList.length; j++) {
-        widgetList.add(Container(
-          height: headerWidget.indexedHeaderHeight(j),
-          child: headerWidget.widgetList[j],
-        ));
-      }
-      sliverList.add(SliverList(
-        delegate: SliverChildListDelegate([
-          ...widgetList,
-        ]),
-      ));
-    }
-    return sliverList;
-  }
+  // List<SliverList> _headerWidgetList() {
+  //   List<SliverList> sliverList = [];
+  //   for (var i = 0; i < widget.headerWidgetList.length; i++) {
+  //     var headerWidget = widget.headerWidgetList[i];
+  //     List<Widget> widgetList = [];
+  //     for (var j = 0; j < headerWidget.widgetList.length; j++) {
+  //       widgetList.add(Container(
+  //         height: headerWidget.indexedHeaderHeight(j),
+  //         child: headerWidget.widgetList[j],
+  //       ));
+  //     }
+  //     sliverList.add(SliverList(
+  //       delegate: SliverChildListDelegate([
+  //         ...widgetList,
+  //       ]),
+  //     ));
+  //   }
+  //   return sliverList;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -339,16 +357,24 @@ class _AlphabetListScrollViewState extends State<AlphabetListScrollView> {
             key: _mainKey,
             controller: controller,
             slivers: <Widget>[
-              ..._headerWidgetList(),
+              // ..._headerWidgetList(),
+              // SliverToBoxAdapter(
+              //   child: Center(child: Text(alphabetList[0])),
+              // ),
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   var currentIndex = index;
-                  return Container(
-                    height: widget.indexedHeight(index),
-                    child: widget.itemBuilder(context, currentIndex),
-                  );
+                  // print("++++++++++++++++++--------------------");
+                  // print(currentIndex);
+                  return Column(children: [
+                    Text(widget.strList[index]),
+                    Container(
+                      height: widget.indexedHeight(index),
+                      child: widget.itemBuilder(context, currentIndex),
+                    )
+                  ]);
                 }, childCount: widget.strList.length),
-              )
+              ),
             ],
           ),
           if (widget.showPreview)
@@ -441,7 +467,7 @@ class _AlphabetListScollViewState extends State<_AlphabetListScollView> {
 
       if (widget.strList[x].length > 1) {
         var header =
-        widget.specialList.firstWhere((sp) => sp.id == widget.strList[x]);
+            widget.specialList.firstWhere((sp) => sp.id == widget.strList[x]);
         textview = IconTheme(
           data: IconThemeData(
             size: 18,
@@ -460,10 +486,12 @@ class _AlphabetListScollViewState extends State<_AlphabetListScollView> {
               : widget.normalTextStyle,
         );
       }
-      charList.add(Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: textview,
-      ));
+      charList.add(
+        Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: textview,
+        ),
+      );
     }
     return charList;
   }

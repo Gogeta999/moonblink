@@ -239,6 +239,9 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     print(catagories);
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
       appBar: HomeAppBar(),
       body: Column(
         children: [
@@ -377,11 +380,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ///[Appbar]
       backgroundColor: Colors.black,
       leading: IconButton(
-        // icon: Icon(FontAwesomeIcons.search),
         color: Colors.white,
         icon: SvgPicture.asset(
           search,
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              : Colors.white,
           semanticsLabel: 'search',
           width: 30,
           height: 30,
