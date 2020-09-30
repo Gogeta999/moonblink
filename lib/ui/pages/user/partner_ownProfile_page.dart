@@ -58,7 +58,9 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
                   icon: SvgPicture.asset(
                     back,
                     semanticsLabel: 'back',
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).accentColor
+                        : Colors.white,
                     width: 30,
                     height: 30,
                   ),

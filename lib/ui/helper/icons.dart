@@ -11,9 +11,11 @@ final String notifilled = 'assets/icons/mainTab/noti1.svg';
 final String mainProfilefilled = 'assets/icons/mainTab/mainprofile1.svg';
 
 //UserStatus
+final String checkUpdate = 'assets/icons/status/checkUpdate.svg';
 final String customerservice = 'assets/icons/status/customerService.svg';
 final String dayMood = 'assets/icons/status/dayMood.svg';
 final String nightMood = 'assets/icons/status/nightMood.svg';
+final String logout = 'assets/icons/status/logout.svg';
 final String online = 'assets/icons/status/online.svg';
 final String offline = 'assets/icons/status/offline.svg';
 final String gameProfile = 'assets/icons/status/gameProfile.svg';

@@ -55,9 +55,11 @@ class _NewUserStatusPageState extends State<NewUserStatusPage> {
                 onPressed: openCustomerServicePage,
                 icon: SvgPicture.asset(
                   customerservice,
-                  color: Colors.white,
-                  // height: 30,
-                  // width: 30,
+                  height: 30,
+                  width: 30,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).accentColor
+                      : Colors.white,
                   semanticsLabel: G.of(context).userStatusCustomerService,
                 ),
               ),
@@ -96,9 +98,11 @@ class _LogoutState extends State<Logout> {
         return Card(
             margin: EdgeInsets.zero,
             child: ListTile(
-              leading: Icon(
-                FontAwesomeIcons.signOutAlt,
-                color: Colors.black,
+              leading: SvgPicture.asset(
+                logout,
+                height: 30,
+                width: 30,
+                fit: BoxFit.contain,
               ),
               title: Text(G.of(context).logout,
                   style: Theme.of(context).textTheme.bodyText1),
@@ -234,7 +238,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                                     ? Colors.white
                                     : Colors.black,
                           ),
-                          Text("copy ID"),
+                          Text(G.of(context).copyID),
                         ],
                       ),
                     )
@@ -256,9 +260,9 @@ class _UserListWidgetState extends State<UserListWidget> {
             child: ListTile(
                 leading: SvgPicture.asset(
                   status != 1 ? online : offline,
-                  color: Colors.cyan,
-                  height: 32,
-                  width: 32,
+                  // color: Colors.cyan,
+                  height: 30,
+                  width: 30,
                   fit: BoxFit.contain,
                 ),
                 title: Text(
@@ -295,9 +299,9 @@ class _UserListWidgetState extends State<UserListWidget> {
             child: ListTile(
                 leading: SvgPicture.asset(
                   gameProfile,
-                  color: Colors.blueGrey,
-                  height: 32,
-                  width: 32,
+                  // color: Colors.blueGrey,
+                  height: 30,
+                  width: 30,
                   fit: BoxFit.contain,
                 ),
                 title: Text(G.of(context).profilegame,
@@ -312,7 +316,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: ListTile(
               leading: SvgPicture.asset(
                 profileEdit,
-                color: Colors.orangeAccent,
+                // color: Colors.orangeAccent,
                 height: 32,
                 width: 32,
                 fit: BoxFit.contain,
@@ -327,15 +331,12 @@ class _UserListWidgetState extends State<UserListWidget> {
         ///Wallet
         Card(
           margin: EdgeInsets.zero,
-          // shape: Border(
-          //     bottom: BorderSide(
-          //         width: 1, color: Colors.black, style: BorderStyle.none)),
           child: ListTile(
               leading: SvgPicture.asset(
                 wallet,
-                color: Colors.greenAccent,
-                height: 32,
-                width: 32,
+                // color: Colors.greenAccent,
+                height: 30,
+                width: 30,
                 fit: BoxFit.contain,
               ),
               title: Text(G.of(context).userStatusWallet,
@@ -353,12 +354,13 @@ class _UserListWidgetState extends State<UserListWidget> {
         Card(
           margin: EdgeInsets.zero,
           child: ListTile(
-              leading: Icon(
+              leading: SvgPicture.asset(
                 Theme.of(context).brightness == Brightness.light
-                    ? FontAwesomeIcons.sun
-                    : FontAwesomeIcons.moon,
-                size: 32,
-                color: Colors.purpleAccent,
+                    ? dayMood
+                    : nightMood,
+                width: 30,
+                height: 30,
+                // color: Colors.purpleAccent,
               ),
               title: Text(
                   Theme.of(context).brightness == Brightness.light
@@ -376,9 +378,9 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: ListTile(
               leading: SvgPicture.asset(
                 theme,
-                color: Colors.pinkAccent,
-                height: 32,
-                width: 32,
+                // color: Colors.pinkAccent,
+                height: 30,
+                width: 30,
                 fit: BoxFit.contain,
               ),
               title: Text(G.of(context).userStatusTheme,
@@ -390,13 +392,11 @@ class _UserListWidgetState extends State<UserListWidget> {
         Card(
           margin: EdgeInsets.only(bottom: 15),
           child: ListTile(
-              leading: Icon(
-                Platform.isAndroid
-                    ? FontAwesomeIcons.android
-                    : FontAwesomeIcons.appStoreIos,
-                // size: 32,
-                color:
-                    Platform.isAndroid ? Colors.lightGreen : Colors.lightBlue,
+              leading: SvgPicture.asset(
+                checkUpdate,
+                height: 30,
+                width: 30,
+                fit: BoxFit.contain,
               ),
               title: Text(G.of(context).userStatusCheckAppUpdate,
                   style: Theme.of(context).textTheme.bodyText1),
@@ -410,9 +410,9 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: ListTile(
               leading: SvgPicture.asset(
                 setting,
-                color: Colors.black,
-                height: 32,
-                width: 32,
+                // color: Colors.black,
+                height: 30,
+                width: 30,
                 fit: BoxFit.contain,
               ),
               title: Text(G.of(context).userStatusSettings,

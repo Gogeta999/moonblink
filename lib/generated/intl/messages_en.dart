@@ -57,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coin" : MessageLookupByLibrary.simpleMessage("My Coin"),
     "confirm" : MessageLookupByLibrary.simpleMessage("Confirm"),
     "confirmbooking" : MessageLookupByLibrary.simpleMessage("Confirm Booking"),
+    "copyID" : MessageLookupByLibrary.simpleMessage("copy ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("Current coin"),
     "deselect" : MessageLookupByLibrary.simpleMessage("Deselect"),
     "end" : MessageLookupByLibrary.simpleMessage("End"),

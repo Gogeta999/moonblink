@@ -29,13 +29,6 @@ import 'services/navigation_service.dart';
 // String usertoken = StorageManager.sharedPreferences.getString(token);
 
 main() async {
-  FlutterError.onError = (error) {
-    // dumps errors to console
-    FlutterError.dumpErrorToConsole(error);
-    // re-throws error so that `runZoned` handles it
-    throw error;
-  };
-
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();

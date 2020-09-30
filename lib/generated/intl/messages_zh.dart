@@ -57,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coin" : MessageLookupByLibrary.simpleMessage("我的金币"),
     "confirm" : MessageLookupByLibrary.simpleMessage("确认"),
     "confirmbooking" : MessageLookupByLibrary.simpleMessage("确认下单"),
+    "copyID" : MessageLookupByLibrary.simpleMessage("复制ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("当前金币"),
     "deselect" : MessageLookupByLibrary.simpleMessage("取消"),
     "end" : MessageLookupByLibrary.simpleMessage("结束"),

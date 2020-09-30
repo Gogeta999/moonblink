@@ -303,6 +303,16 @@ class G {
     );
   }
 
+  /// `copy ID`
+  String get copyID {
+    return Intl.message(
+      'copy ID',
+      name: 'copyID',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `can't be blanked`
   String get cannotblank {
     return Intl.message(
