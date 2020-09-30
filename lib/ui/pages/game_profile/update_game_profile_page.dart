@@ -351,7 +351,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               ),
               preferredSize: Size.fromHeight(10)),
         ),
-        backgroundColor: Colors.grey[200],
+//        backgroundColor: Colors.grey[200],
         body: SafeArea(
           child: ListView(
             physics: ClampingScrollPhysics(),

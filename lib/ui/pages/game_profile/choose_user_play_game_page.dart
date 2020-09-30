@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
@@ -28,24 +29,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(G.of(context).choosegame),
-        leading: IconButton(
-            icon: Icon(CupertinoIcons.back),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        // elevation: 15,
-        // shadowColor: Colors.blue,
-        bottom: PreferredSize(
-            child: Container(
-              height: 10,
-              color: Theme.of(context).accentColor,
-            ),
-            preferredSize: Size.fromHeight(10)),
-      ),
-      backgroundColor: Colors.grey[200],
+      appBar: AppbarWidget(),
       body: FutureBuilder<UserPlayGameList>(
         future: MoonBlinkRepository.getUserPlayGameList(),
         builder: (context, snapshot) {
