@@ -16,7 +16,6 @@
 // SOFTWARE.
 
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/customnavigationbar/src/animation/beacon_painter.dart';
@@ -239,36 +238,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+
                 children: <Widget>[
                   for (var i = 0; i < widget.items.length; i++)
                     Expanded(
                       child: Stack(
                         children: [
-                          if (widget.items[i].badgeCount != 0)
-                            Positioned(
-                              right: 15,
-                              top: 13,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: Colors.redAccent,
-                                  shape: BoxShape.circle,
-                                ),
-                                constraints: BoxConstraints.expand(
-                                    width: 22, height: 22),
-                                child: Center(
-                                  child: Text(
-                                    '${widget.items[i].badgeCount < 100 ? widget.items[i].badgeCount : '99+'}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
                           Align(
                             alignment: Alignment.center,
                             child: CustomPaint(
@@ -288,6 +264,32 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                               ),
                             ),
                           ),
+                          if (widget.items[i].badgeCount != 0)
+                            Positioned(
+                              right: MediaQuery.of(context).size.width * 0.08 / 4,
+                              top: MediaQuery.of(context).size.height * 0.02 / 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width * 0.08,
+                                  minHeight: MediaQuery.of(context).size.height * 0.02,
+                                  maxWidth: MediaQuery.of(context).size.width * 0.1,
+                                  maxHeight: MediaQuery.of(context).size.height * 0.028,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${widget.items[i].badgeCount < 100 ? widget.items[i].badgeCount : '99+'}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
