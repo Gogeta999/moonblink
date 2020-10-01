@@ -196,7 +196,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 alignment: Alignment.center,
                 child: widget.image == null ? _columnText : _columnImage,
                 decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(12.0)),
               ),
             ),

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/azlist.dart';
+import 'package:moonblink/base_widget/contacttemple/contactcontainer.dart';
+import 'package:moonblink/base_widget/container/roundedContainer.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -29,8 +32,6 @@ class _ContactsPageState extends State<ContactsPage> {
   List<Contact> contacts = [];
   List<String> strList = [];
   Contact contact;
-  List<ItemCount> itemcount = [];
-  ItemCount item;
   List<Widget> items = [];
   List<String> alphabet = [];
   // ignore: unused_field
@@ -49,69 +50,55 @@ class _ContactsPageState extends State<ContactsPage> {
     super.initState();
   }
 
-  initList(List<String> strlist, List<Contact> contactslist) {
-    // print(strlist.toString());
-    items = [];
-    List<String> tempList = strlist;
-    tempList.sort();
-    tempList.sort((a, b) {
-      if (a.codeUnitAt(0) < 65 ||
-          a.codeUnitAt(0) > 122 &&
-              b.codeUnitAt(0) >= 65 &&
-              b.codeUnitAt(0) <= 122) {
-        return 1;
-      } else if (b.codeUnitAt(0) < 65 ||
-          b.codeUnitAt(0) > 122 &&
-              a.codeUnitAt(0) >= 65 &&
-              a.codeUnitAt(0) <= 122) {
-        return -1;
-      }
-      return a.compareTo(b);
-    });
-    // _currentAlphabet = tempList[0];
-    // alphabetList.add(tempList[0]);
-    for (var i = 0; i < tempList.length; i++) {
-      var currentStr = tempList[i][0];
-      strMap[currentStr] = i;
-      if (_currentAlphabet != currentStr) {
-        alphabetList.add(currentStr);
-      }
-      Contact contact = contactslist[i];
-      count += 1;
-      Widget tile = contactTile(contact);
-      items.add(tile);
+  // initList(List<String> strlist, List<Contact> contactslist) {
+  //   // print(strlist.toString());
+  //   items = [];
+  //   List<String> tempList = strlist;
+  //   tempList.sort();
+  //   tempList.sort((a, b) {
+  //     if (a.codeUnitAt(0) < 65 ||
+  //         a.codeUnitAt(0) > 122 &&
+  //             b.codeUnitAt(0) >= 65 &&
+  //             b.codeUnitAt(0) <= 122) {
+  //       return 1;
+  //     } else if (b.codeUnitAt(0) < 65 ||
+  //         b.codeUnitAt(0) > 122 &&
+  //             a.codeUnitAt(0) >= 65 &&
+  //             a.codeUnitAt(0) <= 122) {
+  //       return -1;
+  //     }
+  //     return a.compareTo(b);
+  //   });
+  //   // _currentAlphabet = tempList[0];
+  //   // alphabetList.add(tempList[0]);
+  //   for (var i = 0; i < tempList.length; i++) {
+  //     var currentStr = tempList[i][0];
+  //     strMap[currentStr] = i;
+  //     if (_currentAlphabet != currentStr) {
+  //       alphabetList.add(currentStr);
+  //     }
+  //     Contact contact = contactslist[i];
+  //     count += 1;
+  //     Widget tile = contactTile(contact);
+  //     items.add(tile);
 
-      if (_currentAlphabet != currentStr) {
-        item = ItemCount(items, count);
-        print("Item Count");
-        // print(item.contactitems.length);
-        // print(item.count);
-        itemcount.add(item);
-        count = 0;
-        items = [];
-        _currentAlphabet = currentStr;
-      }
-    }
-    print(alphabetList.toString());
-    print(itemcount[0].contactitems.length);
-  }
+  //     if (_currentAlphabet != currentStr) {
+  //       item = ItemCount(items, count);
+  //       print("Item Count");
+  //       // print(item.contactitems.length);
+  //       // print(item.count);
+  //       itemcount.add(item);
+  //       count = 0;
+  //       items = [];
+  //       _currentAlphabet = currentStr;
+  //     }
+  //   }
+  //   print(alphabetList.toString());
+  //   print(itemcount[0].contactitems.length);
+  // }
 
   ///[Tiles]
   filterList() {
-    // int end = "Z".codeUnitAt(0);
-    // while (c <= end) {
-    //   print(new String.fromCharCode(c));
-    //   c++;
-    // }
-    // for (var i = 0; i < contacts.length; i++) {
-    //   contact = contacts[i];
-    //   alphabet.add(contact.contactUser.contactUserName.toUpperCase()[0]);
-    // }
-    // var group = groupBy(contacts, (obj) => obj['time'].substring(0, 10));
-    // for (var j = 0; j < alphabet.)
-    // for (int c = "A".codeUnitAt(0); c <= end; c++) {
-    //   contacts.forEach((element) { })
-    // }
     List<Contact> users = List();
     users.addAll(contacts);
     users.forEach(
@@ -122,68 +109,66 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  contactTile(user) {
-    return Card(
-      // color: Theme.of(context).cardColor,
-      child: isBlocking
-          ? CupertinoActivityIndicator()
-          : ListTile(
-              leading: CachedNetworkImage(
-                imageUrl: user.contactUser.contactUserProfile,
-                imageBuilder: (context, imageProvider) => CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  backgroundImage: imageProvider,
-                ),
-                placeholder: (context, url) => CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  // backgroundImage: ,
-                ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
-              // leading: CircleAvatar(
-              //   radius: 28,
-              //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              //   backgroundImage:
-              //       NetworkImage(user.contactUser.contactUserProfile),
-              // ),
-              title: Text(user.contactUser.contactUserName),
-              onTap: () {
-                int detailPageId = user.contactUser.contactUserId;
-                // int index = users.indexOf(user);
-                // print(index);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            PartnerDetailPage(detailPageId))).then(
-                  (value) async {
-                    if (value != null) {
-                      setState(() {
-                        isBlocking = true;
-                      });
+  // contactTile(user) {
+  //   return isBlocking
+  //       ? CupertinoActivityIndicator()
+  //       :
+  //       // ListTile(
+  //       //     leading: CachedNetworkImage(
+  //       //       imageUrl: user.contactUser.contactUserProfile,
+  //       //       imageBuilder: (context, imageProvider) => CircleAvatar(
+  //       //         radius: 28,
+  //       //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  //       //         backgroundImage: imageProvider,
+  //       //       ),
+  //       //       placeholder: (context, url) => CircleAvatar(
+  //       //         radius: 28,
+  //       //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  //       //         // backgroundImage: ,
+  //       //       ),
+  //       //       errorWidget: (context, url, error) => Icon(Icons.error),
+  //       //     ),
+  //       //     // leading: CircleAvatar(
+  //       //     //   radius: 28,
+  //       //     //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  //       //     //   backgroundImage:
+  //       //     //       NetworkImage(user.contactUser.contactUserProfile),
+  //       //     // ),
+  //       //     title: Text(user.contactUser.contactUserName),
+  //       //     onTap: () {
+  //       //       int detailPageId = user.contactUser.contactUserId;
+  //       //       // int index = users.indexOf(user);
+  //       //       // print(index);
+  //       //       Navigator.push(
+  //       //           context,
+  //       //           MaterialPageRoute(
+  //       //               builder: (context) =>
+  //       //                   PartnerDetailPage(detailPageId))).then(
+  //       //         (value) async {
+  //       //           if (value != null) {
+  //       //             setState(() {
+  //       //               isBlocking = true;
+  //       //             });
 
-                      ///Block Uesrs
-                      try {
-                        await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
-                        await _contactModel.initData();
-                        setState(() {
-                          isBlocking = false;
-                        });
-                      } catch (e) {
-                        print(e.toString());
-                        setState(() {
-                          isBlocking = false;
-                        });
-                      }
-                    }
-                  },
-                );
-              },
-            ),
-    );
-  }
+  //       //             ///Block Uesrs
+  //       //             try {
+  //       //               await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
+  //       //               await _contactModel.initData();
+  //       //               setState(() {
+  //       //                 isBlocking = false;
+  //       //               });
+  //       //             } catch (e) {
+  //       //               print(e.toString());
+  //       //               setState(() {
+  //       //                 isBlocking = false;
+  //       //               });
+  //       //             }
+  //       //           }
+  //       //         },
+  //       //       );
+  //       //     },
+  //       //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +258,6 @@ class _ContactsPageState extends State<ContactsPage> {
               .toLowerCase()
               .compareTo(b.contactUser.contactUserName.toLowerCase()));
           filterList();
-          initList(strList, contacts);
           if (contactModel.isEmpty)
             SliverToBoxAdapter(
               child: Padding(
@@ -281,28 +265,37 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: ViewStateEmptyWidget(onPressed: contactModel.initData),
               ),
             );
-          return Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: AlphabetListScrollView(
-              strList: alphabetList,
-              highlightTextStyle: TextStyle(
-                color: Theme.of(context).accentColor,
-              ),
-              showPreview: true,
-              itemBuilder: (context, index) {
-                // return Text("Hello");
-                return ListView.builder(
-                  itemBuilder: (context, newindex) {
-                    return itemcount[index].contactitems[newindex];
+          return CustomScrollView(
+            slivers: [
+              // SliverToBoxAdapter(
+              //   child: Padding(
+              //     padding:
+              //         const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              //     child: RoundedContainer(
+              //       height: 50,
+              //       color: Theme.of(context).scaffoldBackgroundColor,
+              //       child: Container(
+              //         padding: EdgeInsets.only(top: 10),
+              //         child: ListView.builder(
+              //           scrollDirection: Axis.horizontal,
+              //           itemBuilder: (context, index) {
+              //             return Text("A");
+              //           },
+              //           itemCount: contacts.length,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return ContactContainer(contacts[index]);
                   },
-                  itemCount: itemcount[index].contactitems.length,
-                );
-              },
-              indexedHeight: (i) {
-                // return 80;
-                return (itemcount[i].count * 80).toDouble();
-              },
-            ),
+                  childCount: contacts.length,
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -310,8 +303,23 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 }
 
-class ItemCount {
-  final List<Widget> contactitems;
-  final int count;
-  ItemCount(this.contactitems, this.count);
-}
+// AlphabetListScrollView(
+//   strList: alphabetList,
+//   highlightTextStyle: TextStyle(
+//     color: Theme.of(context).accentColor,
+//   ),
+//   showPreview: true,
+//   itemBuilder: (context, index) {
+//     // return Text("Hello");
+//     return ListView.builder(
+//       itemBuilder: (context, newindex) {
+//         return itemcount[index].contactitems[newindex];
+//       },
+//       itemCount: itemcount[index].contactitems.length,
+//     );
+//   },
+//   indexedHeight: (i) {
+//     // return 80;
+//     return (itemcount[i].count * 80).toDouble();
+//   },
+// ),
