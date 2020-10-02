@@ -202,24 +202,24 @@ class _UserListWidgetState extends State<UserListWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(model.user.name,
-                            style: Theme.of(context).textTheme.headline6),
-                        SizedBox(width: 20),
-                        Icon(
-                          FontAwesomeIcons.coins,
-                          color: Colors.amber[500],
-                          size: 20,
-                        ),
-                        SizedBox(width: 5.0),
-                        userWallet != null
-                            ? Text(
-                                '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
-                                style: TextStyle(fontSize: 16))
-                            : CupertinoActivityIndicator()
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    Text(model.user.name,
+                        style: Theme.of(context).textTheme.headline6),
+                    // SizedBox(width: 20),
+                    // Icon(
+                    //   FontAwesomeIcons.coins,
+                    //   color: Colors.amber[500],
+                    //   size: 20,
+                    // ),
+                    // SizedBox(width: 5.0),
+                    // userWallet != null
+                    //     ? Text(
+                    //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                    //         style: TextStyle(fontSize: 16))
+                    //     : CupertinoActivityIndicator()
+                    //   ],
+                    // ),
                     SizedBox(height: 5),
                     InkResponse(
                       onTap: () {
@@ -341,8 +341,24 @@ class _UserListWidgetState extends State<UserListWidget> {
                 width: 30,
                 fit: BoxFit.contain,
               ),
-              title: Text(G.of(context).userStatusWallet,
-                  style: Theme.of(context).textTheme.bodyText1),
+              title: Row(
+                children: [
+                  Text(G.of(context).userStatusWallet,
+                      style: Theme.of(context).textTheme.bodyText1),
+                  SizedBox(width: 20),
+                  Icon(
+                    FontAwesomeIcons.coins,
+                    color: Colors.amber[500],
+                    size: 20,
+                  ),
+                  SizedBox(width: 5.0),
+                  userWallet != null
+                      ? Text(
+                          '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                          style: TextStyle(fontSize: 16))
+                      : CupertinoActivityIndicator()
+                ],
+              ),
               onTap: hasUser == null
                   ? () {
                       showToast(G.of(context).loginFirst);
