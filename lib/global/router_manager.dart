@@ -10,6 +10,8 @@ import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart'
 import 'package:moonblink/ui/pages/game_profile/pubg_mobile_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/booking_request_detail_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
@@ -69,7 +71,8 @@ class RouteName {
   static const String chooseUserPlayGames = 'chooseUserPlayGames';
   static const String updateGameProfile = 'updateGameProfile';
   static const String userRating = 'userRating';
-  static const String bookingRequestDetailPage = 'bookingRequestDetailPage';
+  static const String userMessageHistory = 'userMessageHistory';
+  static const String userBookingHistory = 'userBookingHistory';
 }
 
 class Router {
@@ -181,7 +184,14 @@ class Router {
       //       child: BookingRequestDetailPage(index: index, notificationId: notificationId,),
       //     )
       //   );
-
+      case RouteName.userMessageHistory:
+        return CupertinoPageRoute(
+          builder: (_) => UserMessageNotificationPage()
+        );
+      case RouteName.userBookingHistory:
+        return CupertinoPageRoute(
+          builder: (_) => UserBookingNotificationPage()
+        );
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

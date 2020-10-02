@@ -8,6 +8,7 @@ import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/post.dart';
@@ -15,14 +16,15 @@ import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/models/user_history.dart';
-import 'package:moonblink/models/user_booking_notification.dart';
-import 'package:moonblink/models/user_message_notification.dart';
+import 'package:moonblink/models/notification_models/user_booking_notification.dart';
+import 'package:moonblink/models/notification_models/user_message_notification.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:moonblink/view_model/user_model.dart';
 
 class MoonBlinkRepository {
   static Future showAd() async {
@@ -321,13 +323,24 @@ class MoonBlinkRepository {
     return response.data;
   }
 
+  //get user's new notifications
+  static Future<UserNewNotificationResponse> getUserNewNotifications(int limit,
+      int page) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+        Api.UserNotifications + '$userId/notification',
+        queryParameters: {'limit': limit, 'page': page});
+    return UserNewNotificationResponse.fromJson(response.data);
+  }
+
   //get user's booking notifications
   static Future<UserBookingNotificationResponse> getUserBookingNotifications(
       int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(
         Api.UserNotifications + '$userId/notification',
-        queryParameters: {'limit': limit, 'page': page, 'fcm_type': 'booking'});
+        queryParameters: {'limit': limit, 'page': page,
+          'fcm_type': 'booking', 'is_archive': 1});
     return UserBookingNotificationResponse.fromJson(response.data);
   }
 
@@ -337,25 +350,48 @@ class MoonBlinkRepository {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(
         Api.UserNotifications + '$userId/notification',
-        queryParameters: {'limit': limit, 'page': page, 'fcm_type': 'message'});
+        queryParameters: {'limit': limit, 'page': page,
+          'fcm_type': 'message', 'is_archive': 1});
     return UserMessageNotificationResponse.fromJson(response.data);
   }
 
   //change message notification to read state
   static Future<UserMessageNotificationData> changeUserMessageNotificationReadState(
-      int notificationId) async {
+      int notificationId, {int isArchive, int isRead}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().patch(
-        Api.UserNotificationRead + '$userId/notification/$notificationId');
+    var response;
+    if (isRead != null && isArchive == null) {
+      response = await DioUtils().patch(
+          Api.UserNotificationRead + '$userId/notification/$notificationId',
+          queryParameters: {'is_read': isRead});
+    } else if (isArchive != null && isRead == null) {
+      response = await DioUtils().patch(
+          Api.UserNotificationRead + '$userId/notification/$notificationId',
+          queryParameters: {'is_archive': isArchive});
+    } else {
+      print("-----ERROR----- can't make this request");
+      return null;
+    }
     return UserMessageNotificationData.fromJson(response.data);
   }
 
   //change booking notification to read state
   static Future<UserBookingNotificationData> changeUserBookingNotificationReadState(
-      int notificationId) async {
+      int notificationId, {int isArchive, int isRead}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().patch(
-        Api.UserNotificationRead + '$userId/notification/$notificationId');
+    var response;
+    if (isRead != null && isArchive == null) {
+      response = await DioUtils().patch(
+          Api.UserNotificationRead + '$userId/notification/$notificationId',
+          queryParameters: {'is_read': isRead});
+    } else if (isArchive != null && isRead == null) {
+      response = await DioUtils().patch(
+          Api.UserNotificationRead + '$userId/notification/$notificationId',
+          queryParameters: {'is_archive': isArchive});
+    } else {
+      print("-----ERROR----- can't make this request");
+      return null;
+    }
     return UserBookingNotificationData.fromJson(response.data);
   }
 
