@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
-import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -20,15 +21,11 @@ class UserNewNotificationPage extends StatefulWidget {
       _UserNewNotificationPageState();
 }
 
-class _UserNewNotificationPageState extends State<UserNewNotificationPage>
-    with AutomaticKeepAliveClientMixin {
+class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
   final _scrollController = ScrollController();
   final _scrollThreshold = 600.0;
   Completer<void> _refreshCompleter;
   UserNewNotificationBloc _userNotificationBloc;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -48,151 +45,158 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: BlocProvider.value(
-            value: _userNotificationBloc,
-            //create: (_) =>
-            //_userNotificationBloc..add(UserNotificationFetched()),
-            child:
-                BlocConsumer<UserNewNotificationBloc, UserNewNotificationState>(
-              listener: (context, state) {
-                if (state is UserNewNotificationSuccess) {
-                  _refreshCompleter.complete();
-                  _refreshCompleter = Completer();
-                }
-                if (state is UserNewNotificationFailure) {
-                  _refreshCompleter.completeError(state.error);
-                  _refreshCompleter = Completer();
-                }
-              },
-              buildWhen: (previousState, currentState) =>
-                  currentState != UserNewNotificationDeleteSuccess() &&
-                  currentState != UserNewNotificationDeleteFailure(),
-              builder: (context, state) {
-                if (state is UserNewNotificationInitial) {
-                  return Center(child: CupertinoActivityIndicator());
-                }
-                if (state is UserNewNotificationFailure) {
-                  print('${state.error}');
-                  return ListView(
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    children: [
-                      SizedBox(
-                        height: 220,
-                      ),
-                      Center(
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: ListView(
+        controller: _scrollController,
+        physics: AlwaysScrollableScrollPhysics(
+          parent: ClampingScrollPhysics()
+        ),
+        children: [
+          Card(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: ListTile(
+              leading: Icon(
+                Icons.settings_applications,
+                size: 50,
+              ),
+              onTap: () => Navigator.pushNamed(
+                  context, RouteName.userMessageHistory),
+              title: Text(
+                'Moon Go History',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              subtitle: Text(''),
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.zero,
+            child: ListTile(
+              leading: Icon(
+                FontAwesomeIcons.book,
+                size: 50,
+              ),
+              onTap: () => Navigator.pushNamed(
+                  context, RouteName.userBookingHistory),
+              title: Text(
+                'Booking History',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              subtitle: Text(''),
+            ),
+          ),
+          BlocProvider.value(
+              value: _userNotificationBloc,
+              child:
+              BlocConsumer<UserNewNotificationBloc, UserNewNotificationState>(
+                listener: (context, state) {
+                  if (state is UserNewNotificationSuccess) {
+                    _refreshCompleter.complete();
+                    _refreshCompleter = Completer();
+                  }
+                  if (state is UserNewNotificationFailure) {
+                    _refreshCompleter.completeError(state.error);
+                    _refreshCompleter = Completer();
+                  }
+                },
+                buildWhen: (previousState, currentState) =>
+                currentState != UserNewNotificationDeleteSuccess() &&
+                    currentState != UserNewNotificationDeleteFailure(),
+                builder: (context, state) {
+                  if (state is UserNewNotificationInitial) {
+                    return SizedBox(
+                      height: 220,
+                      child: Center(child: CupertinoActivityIndicator()));
+                  }
+                  if (state is UserNewNotificationFailure) {
+                    print('${state.error}');
+                    return SizedBox(
+                      height: 220,
+                      child: Center(
                         child: Text(
                           'You have no notifications',
                           style: TextStyle(fontSize: 20),
                         ),
-                      )
-                    ],
-                  );
-                }
-                if (state is UserNewNotificationNoData) {
-                  return ListView(
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    children: [
-                      SizedBox(
-                        height: 220,
                       ),
-                      Center(
+                    );
+                  }
+                  if (state is UserNewNotificationNoData) {
+                    return SizedBox(
+                      height: 220,
+                      child: Center(
                         child: Text(
                           'You have no notifications',
                           style: TextStyle(fontSize: 20),
                         ),
-                      )
-                    ],
-                  );
-                }
-                if (state is UserNewNotificationSuccess) {
-                  if (state.data.isEmpty) {
-                    return ListView(
-                      physics: ScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(
-                              parent: ClampingScrollPhysics())),
-                      children: [
-                        SizedBox(
-                          height: 220,
-                        ),
-                        Center(
+                      ),
+                    );
+                  }
+                  if (state is UserNewNotificationSuccess) {
+                    if (state.data.isEmpty) {
+                      return SizedBox(
+                        height: 220,
+                        child: Center(
                           child: Text(
                             'You have no notifications',
                             style: TextStyle(fontSize: 20),
                           ),
-                        )
-                      ],
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.all(10),
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return index >= state.data.length
+                            ? BottomLoader()
+                            : BlocProvider.value(
+                            value: BlocProvider.of<UserNewNotificationBloc>(
+                                context),
+                            child: NotificationListTile(index: index));
+                      },
+                      itemCount: state.hasReachedMax
+                          ? state.data.length
+                          : state.data.length + 1,
+                      //controller: _scrollController,
                     );
                   }
-                  return ListView.builder(
-                    padding: EdgeInsets.all(10),
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    itemBuilder: (BuildContext context, int index) {
-                      return index >= state.data.length
-                          ? BottomLoader()
-                          : BlocProvider.value(
-                              value: BlocProvider.of<UserNewNotificationBloc>(
-                                  context),
-                              child: NotificationListTile(index: index));
-                    },
-                    itemCount: state.hasReachedMax
-                        ? state.data.length
-                        : state.data.length + 1,
-                    controller: _scrollController,
-                  );
-                }
 
-                ///Same with success
-                if (state is UserNewNotificationUpdating) {
-                  if (state.data.isEmpty) {
-                    return ListView(
-                      physics: ScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(
-                              parent: ClampingScrollPhysics())),
-                      children: [
-                        SizedBox(
-                          height: 220,
-                        ),
-                        Center(
+                  ///Same with success
+                  if (state is UserNewNotificationUpdating) {
+                    if (state.data.isEmpty) {
+                      return SizedBox(
+                        height: 220,
+                        child: Center(
                           child: Text(
                             'You have no notifications',
                             style: TextStyle(fontSize: 20),
                           ),
-                        )
-                      ],
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.all(10),
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return index >= state.data.length
+                            ? BottomLoader()
+                            : BlocProvider.value(
+                            value: BlocProvider.of<UserNewNotificationBloc>(
+                                context),
+                            child: NotificationListTile(index: index));
+                      },
+                      itemCount: state.hasReachedMax
+                          ? state.data.length
+                          : state.data.length + 1,
+                      //controller: _scrollController,
                     );
                   }
-                  return ListView.builder(
-                    padding: EdgeInsets.all(10),
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    itemBuilder: (BuildContext context, int index) {
-                      return index >= state.data.length
-                          ? BottomLoader()
-                          : BlocProvider.value(
-                              value: BlocProvider.of<UserNewNotificationBloc>(
-                                  context),
-                              child: NotificationListTile(index: index));
-                    },
-                    itemCount: state.hasReachedMax
-                        ? state.data.length
-                        : state.data.length + 1,
-                    controller: _scrollController,
-                  );
-                }
-                return Center(child: Text(G.of(context).toasterror));
-              },
-            )),
+                  return Center(child: Text(G.of(context).toasterror));
+                },
+              )),
+        ],
       ),
     );
   }
@@ -336,7 +340,7 @@ class NotificationListTile extends StatelessWidget {
               secondaryActions: <Widget>[
                 Container(
                   margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                  const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                   decoration: BoxDecoration(
                     color: state.data[index].isRead != 0
                         ? Theme.of(context).scaffoldBackgroundColor
@@ -351,21 +355,13 @@ class NotificationListTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: StreamBuilder<DeleteState>(
-                      stream: _deleteSubject,
-                      builder: (context, snapshot) {
-                        return IconSlideAction(
-                          closeOnTap: false,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          iconWidget: snapshot.data == DeleteState.loading
-                              ? CupertinoActivityIndicator()
-                              : Icon(Icons.delete,
-                                  color: Theme.of(context).accentColor),
-                          onTap: () => snapshot.data == DeleteState.loading
-                              ? {}
-                              : _onTapDelete(context, state.data[index]),
-                        );
-                      }),
+                  child: IconSlideAction(
+                    closeOnTap: true,
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    iconWidget: Icon(Icons.delete,
+                        color: Theme.of(context).accentColor),
+                    onTap: () => _onTapDelete(context, state.data[index]),
+                  ),
                 )
               ],
               child: Container(
@@ -391,29 +387,40 @@ class NotificationListTile extends StatelessWidget {
                 ),
                 child: Material(
                   child: InkWell(
-                    child: ListTile(
-                        onTap: () => _onTapListTile(context, state.data[index]),
-                        title: Text(state.data[index].title,
+                    child: StreamBuilder<DeleteState>(
+                        initialData: DeleteState.initial,
+                        stream: _deleteSubject,
+                        builder: (context, snapshot) {
+                          return ListTile(
+                              onTap: () =>
+                                  _onTapListTile(context, state.data[index]),
+                              title: Text(state.data[index].title,
 
-                            ///add game name and type later
-                            style: Theme.of(context).textTheme.bodyText2),
-                        subtitle: Text(state.data[index].message,
-                            style: TextStyle(
-                                fontSize: 12, fontStyle: FontStyle.italic)),
-                        trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(Icons.chevron_right),
-                              Text(
-                                  timeAgo.format(
-                                      DateTime.parse(
-                                          state.data[index].createdAt),
-                                      allowFromNow: true),
+                                  ///add game name and type later
+                                  style: Theme.of(context).textTheme.bodyText2),
+                              subtitle: Text(state.data[index].message,
                                   style: TextStyle(
                                       fontSize: 12,
-                                      fontStyle: FontStyle.italic))
-                            ])),
+                                      fontStyle: FontStyle.italic)),
+                              trailing: snapshot.data == DeleteState.loading
+                                  ? CupertinoActivityIndicator()
+                                  : Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.end,
+                                  children: [
+                                    Icon(Icons.chevron_right),
+                                    Text(
+                                        timeAgo.format(
+                                            DateTime.parse(state
+                                                .data[index].createdAt),
+                                            allowFromNow: true),
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic))
+                                  ]));
+                        }),
                   ),
                 ),
               ));

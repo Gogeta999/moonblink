@@ -204,7 +204,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                   children: [
                     // Row(
                     //   children: [
-                    Text(model.user.name,
+                    Text(model.user.name ?? "???",
                         style: Theme.of(context).textTheme.headline6),
                     // SizedBox(width: 20),
                     // Icon(

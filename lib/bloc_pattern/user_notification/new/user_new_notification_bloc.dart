@@ -171,7 +171,7 @@ class UserNewNotificationBloc
           await locator<NavigationService>().navigateTo(RouteName.chatBox,
               arguments: data.fcmData.bookingUserId);
         } else {
-          showToast("New Request is expired");
+          showToast("Booking Request is expired");
         }
 
         if (currentData[index].isRead == 1 &&

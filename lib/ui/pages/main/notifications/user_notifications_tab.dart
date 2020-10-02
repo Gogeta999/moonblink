@@ -1,72 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
-import 'package:rxdart/rxdart.dart';
-
-enum SelectedName { message, booking }
 
 class UserNotificationTab extends StatefulWidget {
   @override
   _UserNotificationTabState createState() => _UserNotificationTabState();
 }
 
-class _UserNotificationTabState extends State<UserNotificationTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => false;
-
-  SizedBox blankSpace() => SizedBox(height: 10);
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _UserNotificationTabState extends State<UserNotificationTab> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         appBar: AppbarWidget(),
         body: SafeArea(
-          child: Column(
-            children: [
-              Card(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.settings_applications,
-                    size: 50,
-                  ),
-                  onTap: () => Navigator.pushNamed(
-                      context, RouteName.userMessageHistory),
-                  title: Text(
-                    'Moon Go History',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  subtitle: Text(''),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  leading: Icon(
-                    FontAwesomeIcons.book,
-                    size: 50,
-                  ),
-                  onTap: () => Navigator.pushNamed(
-                      context, RouteName.userBookingHistory),
-                  title: Text(
-                    'Booking History',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  subtitle: Text(''),
-                ),
-              ),
-              Expanded(child: UserNewNotificationPage())
-            ],
-          ),
+          child: UserNewNotificationPage(),
         ));
   }
 }
