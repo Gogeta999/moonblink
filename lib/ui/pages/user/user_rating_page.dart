@@ -69,7 +69,7 @@ class _UserRatingPageState extends State<UserRatingPage>
                     return Center(child: CupertinoActivityIndicator());
                   }
                   if (state is UserRatingFailure) {
-                    return Center(child: Text('Error: ${state.error}'));
+                    return Center(child: Text('${state.error}'));
                   }
                   if (state is UserRatingRefreshing) {
                     return Center(

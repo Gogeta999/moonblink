@@ -6,10 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
-import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/main.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -368,8 +367,8 @@ class PushNotificationsManager {
   //For booking Fcm
   Future<void> _showBookingNotification(message) async {
     final context = locator<NavigationService>().navigatorKey.currentContext;
-    BlocProvider.of<UserBookingNotificationBloc>(context)
-        .add(UserBookingNotificationRefreshedFromStartPageToCurrentPage());
+    BlocProvider.of<UserNewNotificationBloc>(context)
+        .add(UserNewNotificationRefreshedFromStartPageToCurrentPage());
     NotificationDetails platformChannelSpecifics =
         setUpPlatformSpecifics('booking', 'Booking', song: 'moonblink_noti');
     int userId = 0;

@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:moonblink/bloc_pattern/user_notification/booking/user_booking_notification_bloc.dart';
-import 'package:moonblink/bloc_pattern/user_notification/message/user_message_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -21,10 +19,10 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'bloc_pattern/simple_bloc_observer.dart';
+import 'bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
 
@@ -38,11 +36,8 @@ main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (_) => UserBookingNotificationBloc(),
+        create: (_) => UserNewNotificationBloc(),
       ),
-      BlocProvider(
-       create: (_) =>  UserMessageNotificationBloc(),
-      )
     ],
     child: MyApp(),
   ));
@@ -91,8 +86,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         statusBarBrightness: Brightness.light));
     PushNotificationsManager().init();
     if (StorageManager.sharedPreferences.getString(token) != null)
-      BlocProvider.of<UserBookingNotificationBloc>(context)
-          .add(UserBookingNotificationFetched());
+      BlocProvider.of<UserNewNotificationBloc>(context)
+          .add(UserNewNotificationFetched());
     restartConstants();
     FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/models/user_booking_notification.dart';
-import 'package:moonblink/models/user_message_notification.dart';
+import 'package:moonblink/models/notification_models/user_booking_notification.dart';
+import 'package:moonblink/models/notification_models/user_message_notification.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
@@ -153,7 +153,7 @@ class UserMessageNotificationBloc
           page: currentState.page);
       try {
         data = await MoonBlinkRepository.changeUserMessageNotificationReadState(
-            notificationId);
+            notificationId, isRead: 1);
       } catch (error) {
         yield UserMessageNotificationFailure(error: error);
         return;

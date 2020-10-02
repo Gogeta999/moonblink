@@ -17,6 +17,7 @@ class UserBookingNotificationResponse {
 class UserBookingNotificationData {
   final int id;
   final int userId;
+  final String fcmType;
   final String title;
   final String message;
   final int isRead;
@@ -24,11 +25,12 @@ class UserBookingNotificationData {
   final String updatedAt;
   final UserBookingNotificationFcmData fcmData;
 
-  UserBookingNotificationData({this.id, this.userId, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.fcmData});
+  UserBookingNotificationData({this.id, this.userId, this.fcmType, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.fcmData});
 
   UserBookingNotificationData.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         userId = json['user_id'],
+        fcmType = json['fcm_type'],
         title = json['title'],
         message = json['message'],
         isRead = json['is_read'],

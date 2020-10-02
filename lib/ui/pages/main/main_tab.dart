@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
+import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
@@ -138,41 +140,87 @@ class _MainTabPageState extends State<MainTabPage>
             top: Radius.circular(10.0),
           ),
         ),
-        child: CustomNavigationBar(
-          borderRadius: Radius.circular(10),
-          // iconSize: 30.0,
-          selectedColor: Theme.of(context).accentColor,
-          strokeColor: Theme.of(context).accentColor,
-          unSelectedColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          items: [
-            CustomNavigationBarItem(
-              icon: home,
-              selectedIcon: homefilled,
-              doubletap: () {
-                homeController.animateTo(
-                  0.0,
-                  curve: Curves.easeOut,
-                  duration: const Duration(milliseconds: 300),
+        child: BlocProvider.value(
+          value: BlocProvider.of<UserNewNotificationBloc>(context),
+          child: BlocBuilder<UserNewNotificationBloc, UserNewNotificationState>(
+            //buildWhen: (previousState, currentState) => currentState == UserNewNotificationSuccess(),
+            builder: (context, state) {
+              if (state is UserNewNotificationSuccess) {
+                return CustomNavigationBar(
+                  borderRadius: Radius.circular(10),
+                  // iconSize: 30.0,
+                  selectedColor: Theme.of(context).accentColor,
+                  strokeColor: Theme.of(context).accentColor,
+                  unSelectedColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  items: [
+                    CustomNavigationBarItem(
+                      icon: home,
+                      selectedIcon: homefilled,
+                      doubletap: () {
+                        homeController.animateTo(
+                          0.0,
+                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 300),
+                        );
+                      },
+                    ),
+                    CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
+                    CustomNavigationBarItem(
+                        icon: following, selectedIcon: followingfilled),
+                    CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: state.unreadCount ?? 0), ///not real
+                    CustomNavigationBarItem(
+                        icon: mainProfile, selectedIcon: mainProfilefilled)
+                  ],
+                  currentIndex: _selectedIndex,
+                  onTap: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                      _pageController.jumpToPage(_selectedIndex);
+                    });
+                  },
                 );
-              },
-            ),
-            CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
-            CustomNavigationBarItem(
-                icon: following, selectedIcon: followingfilled),
-            CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: 13), ///not real
-            CustomNavigationBarItem(
-                icon: mainProfile, selectedIcon: mainProfilefilled)
-          ],
-          currentIndex: _selectedIndex,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-              _pageController.jumpToPage(_selectedIndex);
-            });
-          },
+              }
+              return CustomNavigationBar(
+                borderRadius: Radius.circular(10),
+                // iconSize: 30.0,
+                selectedColor: Theme.of(context).accentColor,
+                strokeColor: Theme.of(context).accentColor,
+                unSelectedColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                items: [
+                  CustomNavigationBarItem(
+                    icon: home,
+                    selectedIcon: homefilled,
+                    doubletap: () {
+                      homeController.animateTo(
+                        0.0,
+                        curve: Curves.easeOut,
+                        duration: const Duration(milliseconds: 300),
+                      );
+                    },
+                  ),
+                  CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
+                  CustomNavigationBarItem(
+                      icon: following, selectedIcon: followingfilled),
+                  CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: 0),
+                  CustomNavigationBarItem(
+                      icon: mainProfile, selectedIcon: mainProfilefilled)
+                ],
+                currentIndex: _selectedIndex,
+                onTap: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                    _pageController.jumpToPage(_selectedIndex);
+                  });
+                },
+              );
+            },
+          ),
         ),
       ),
     );

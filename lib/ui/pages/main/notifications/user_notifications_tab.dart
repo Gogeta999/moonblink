@@ -1,5 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
+import 'package:rxdart/rxdart.dart';
+
+enum SelectedName { message, booking }
+
+class UserNotificationTab extends StatefulWidget {
+  @override
+  _UserNotificationTabState createState() => _UserNotificationTabState();
+}
+
+class _UserNotificationTabState extends State<UserNotificationTab>
+    with AutomaticKeepAliveClientMixin {
+
+  @override
+  bool get wantKeepAlive => false;
+
+  SizedBox blankSpace() => SizedBox(height: 10);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Scaffold(
+        appBar: AppbarWidget(),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Card(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                child: ListTile(
+                  onTap: () => Navigator.pushNamed(context, RouteName.userMessageHistory),
+                  title: Text('Message History'),
+                ),
+              ),
+              Card(
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () => Navigator.pushNamed(context, RouteName.userBookingHistory),
+                  title: Text('Booking History'),
+                ),
+              ),
+              Expanded(
+                child: UserNewNotificationPage()
+              )
+            ],
+          ),
+        )
+    );
+  }
+}
+
+
+/*
+import 'package:flutter/material.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
 import 'package:rxdart/rxdart.dart';
@@ -120,3 +180,6 @@ class _UserNotificationTabState extends State<UserNotificationTab>
         ));
   }
 }
+
+
+ */
