@@ -127,11 +127,12 @@ class MoonBlinkRepository {
   }
 
   /// [fetch search result] currently only support in name search
-  static Future fetchSearchResults({key}) async {
+  static Future fetchSearchResults({key, int pageNum}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils()
         .get(Api.SimpleRequestApi + '$userId/search', queryParameters: {
       'name': key,
+      'page': pageNum,
     });
     print(response);
     return response.data['data']
@@ -324,8 +325,8 @@ class MoonBlinkRepository {
   }
 
   //get user's new notifications
-  static Future<UserNewNotificationResponse> getUserNewNotifications(int limit,
-      int page) async {
+  static Future<UserNewNotificationResponse> getUserNewNotifications(
+      int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(
         Api.UserNotifications + '$userId/notification',
@@ -337,10 +338,13 @@ class MoonBlinkRepository {
   static Future<UserBookingNotificationResponse> getUserBookingNotifications(
       int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().get(
-        Api.UserNotifications + '$userId/notification',
-        queryParameters: {'limit': limit, 'page': page,
-          'fcm_type': 'booking', 'is_archive': 1});
+    var response = await DioUtils()
+        .get(Api.UserNotifications + '$userId/notification', queryParameters: {
+      'limit': limit,
+      'page': page,
+      'fcm_type': 'booking',
+      'is_archive': 1
+    });
     return UserBookingNotificationResponse.fromJson(response.data);
   }
 
@@ -348,16 +352,20 @@ class MoonBlinkRepository {
   static Future<UserMessageNotificationResponse> getUserMessageNotifications(
       int limit, int page) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    var response = await DioUtils().get(
-        Api.UserNotifications + '$userId/notification',
-        queryParameters: {'limit': limit, 'page': page,
-          'fcm_type': 'message', 'is_archive': 1});
+    var response = await DioUtils()
+        .get(Api.UserNotifications + '$userId/notification', queryParameters: {
+      'limit': limit,
+      'page': page,
+      'fcm_type': 'message',
+      'is_archive': 1
+    });
     return UserMessageNotificationResponse.fromJson(response.data);
   }
 
   //change message notification to read state
-  static Future<UserMessageNotificationData> changeUserMessageNotificationReadState(
-      int notificationId, {int isArchive, int isRead}) async {
+  static Future<UserMessageNotificationData>
+      changeUserMessageNotificationReadState(int notificationId,
+          {int isArchive, int isRead}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response;
     if (isRead != null && isArchive == null) {
@@ -376,8 +384,9 @@ class MoonBlinkRepository {
   }
 
   //change booking notification to read state
-  static Future<UserBookingNotificationData> changeUserBookingNotificationReadState(
-      int notificationId, {int isArchive, int isRead}) async {
+  static Future<UserBookingNotificationData>
+      changeUserBookingNotificationReadState(int notificationId,
+          {int isArchive, int isRead}) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response;
     if (isRead != null && isArchive == null) {
