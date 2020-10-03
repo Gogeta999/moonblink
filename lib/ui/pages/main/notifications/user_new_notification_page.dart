@@ -49,9 +49,7 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
       onRefresh: _onRefresh,
       child: ListView(
         controller: _scrollController,
-        physics: AlwaysScrollableScrollPhysics(
-          parent: ClampingScrollPhysics()
-        ),
+        physics: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
         children: [
           Card(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -60,8 +58,9 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                 Icons.settings_applications,
                 size: 50,
               ),
-              onTap: () => Navigator.pushNamed(
-                  context, RouteName.userMessageHistory),
+              onTap: () =>
+                  Navigator.pushNamed(context, RouteName.userMessageHistory),
+              // isThreeLine: true,
               title: Text(
                 'Moon Go History',
                 style: Theme.of(context).textTheme.headline6,
@@ -76,8 +75,8 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                 FontAwesomeIcons.book,
                 size: 50,
               ),
-              onTap: () => Navigator.pushNamed(
-                  context, RouteName.userBookingHistory),
+              onTap: () =>
+                  Navigator.pushNamed(context, RouteName.userBookingHistory),
               title: Text(
                 'Booking History',
                 style: Theme.of(context).textTheme.headline6,
@@ -87,8 +86,8 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
           ),
           BlocProvider.value(
               value: _userNotificationBloc,
-              child:
-              BlocConsumer<UserNewNotificationBloc, UserNewNotificationState>(
+              child: BlocConsumer<UserNewNotificationBloc,
+                  UserNewNotificationState>(
                 listener: (context, state) {
                   if (state is UserNewNotificationSuccess) {
                     _refreshCompleter.complete();
@@ -100,13 +99,13 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                   }
                 },
                 buildWhen: (previousState, currentState) =>
-                currentState != UserNewNotificationDeleteSuccess() &&
+                    currentState != UserNewNotificationDeleteSuccess() &&
                     currentState != UserNewNotificationDeleteFailure(),
                 builder: (context, state) {
                   if (state is UserNewNotificationInitial) {
                     return SizedBox(
-                      height: 220,
-                      child: Center(child: CupertinoActivityIndicator()));
+                        height: 220,
+                        child: Center(child: CupertinoActivityIndicator()));
                   }
                   if (state is UserNewNotificationFailure) {
                     print('${state.error}');
@@ -151,9 +150,9 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                         return index >= state.data.length
                             ? BottomLoader()
                             : BlocProvider.value(
-                            value: BlocProvider.of<UserNewNotificationBloc>(
-                                context),
-                            child: NotificationListTile(index: index));
+                                value: BlocProvider.of<UserNewNotificationBloc>(
+                                    context),
+                                child: NotificationListTile(index: index));
                       },
                       itemCount: state.hasReachedMax
                           ? state.data.length
@@ -183,9 +182,9 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                         return index >= state.data.length
                             ? BottomLoader()
                             : BlocProvider.value(
-                            value: BlocProvider.of<UserNewNotificationBloc>(
-                                context),
-                            child: NotificationListTile(index: index));
+                                value: BlocProvider.of<UserNewNotificationBloc>(
+                                    context),
+                                child: NotificationListTile(index: index));
                       },
                       itemCount: state.hasReachedMax
                           ? state.data.length
@@ -242,6 +241,102 @@ class NotificationListTile extends StatelessWidget {
       builder: (context, state) {
         ///Same with update
         if (state is UserNewNotificationSuccess) {
+          return Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              secondaryActions: <Widget>[
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: state.data[index].isRead != 0
+                        ? Theme.of(context).scaffoldBackgroundColor
+                        : Theme.of(context).accentColor,
+                    borderRadius: BorderRadius.circular(10),
+                    // color: Colors.pink,
+                    border: Border.all(color: Colors.black),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.black,
+                    //     spreadRadius: 0.5,
+                    //     // blurRadius: 2,
+                    //     offset: Offset(-3, 3), // changes position of shadow
+                    //   ),
+                    // ],
+                  ),
+                  child: Card(
+                    child: IconSlideAction(
+                      closeOnTap: true,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      iconWidget: Icon(Icons.delete,
+                          color: Theme.of(context).accentColor),
+                      onTap: () => _onTapDelete(context, state.data[index]),
+                    ),
+                  ),
+                )
+              ],
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  color: () {
+                    if (state.data[index].isRead != 0) {
+                      return Theme.of(context).scaffoldBackgroundColor;
+                    } else {
+                      return Theme.of(context).accentColor;
+                    }
+                  }(),
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(10),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black,
+                  //     spreadRadius: 0.5,
+                  //     // blurRadius: 2,
+                  //     offset: Offset(-3, 3), // changes position of shadow
+                  //   ),
+                  // ],
+                ),
+                child: Card(
+                  child: InkWell(
+                    child: StreamBuilder<DeleteState>(
+                        initialData: DeleteState.initial,
+                        stream: _deleteSubject,
+                        builder: (context, snapshot) {
+                          return ListTile(
+                              onTap: () =>
+                                  _onTapListTile(context, state.data[index]),
+                              title: Text(state.data[index].title,
+
+                                  ///add game name and type later
+                                  style: Theme.of(context).textTheme.bodyText2),
+                              subtitle: Text(state.data[index].message,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic)),
+                              trailing: snapshot.data == DeleteState.loading
+                                  ? CupertinoActivityIndicator()
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                          Icon(Icons.chevron_right),
+                                          Text(
+                                              timeAgo.format(
+                                                  DateTime.parse(state
+                                                      .data[index].createdAt),
+                                                  allowFromNow: true),
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontStyle: FontStyle.italic))
+                                        ]));
+                        }),
+                  ),
+                ),
+              ));
+        }
+        if (state is UserNewNotificationUpdating) {
           return Slidable(
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
@@ -328,98 +423,6 @@ class NotificationListTile extends StatelessWidget {
                                                   fontSize: 12,
                                                   fontStyle: FontStyle.italic))
                                         ]));
-                        }),
-                  ),
-                ),
-              ));
-        }
-        if (state is UserNewNotificationUpdating) {
-          return Slidable(
-              actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              secondaryActions: <Widget>[
-                Container(
-                  margin:
-                  const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: state.data[index].isRead != 0
-                        ? Theme.of(context).scaffoldBackgroundColor
-                        : Theme.of(context).accentColor,
-                    border: Border.all(color: Colors.black),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        spreadRadius: 0.5,
-                        // blurRadius: 2,
-                        offset: Offset(-3, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: IconSlideAction(
-                    closeOnTap: true,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    iconWidget: Icon(Icons.delete,
-                        color: Theme.of(context).accentColor),
-                    onTap: () => _onTapDelete(context, state.data[index]),
-                  ),
-                )
-              ],
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                decoration: BoxDecoration(
-                  color: () {
-                    if (state.data[index].isRead != 0) {
-                      return Theme.of(context).scaffoldBackgroundColor;
-                    } else {
-                      return Theme.of(context).accentColor;
-                    }
-                  }(),
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      spreadRadius: 0.5,
-                      // blurRadius: 2,
-                      offset: Offset(-3, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: Material(
-                  child: InkWell(
-                    child: StreamBuilder<DeleteState>(
-                        initialData: DeleteState.initial,
-                        stream: _deleteSubject,
-                        builder: (context, snapshot) {
-                          return ListTile(
-                              onTap: () =>
-                                  _onTapListTile(context, state.data[index]),
-                              title: Text(state.data[index].title,
-
-                                  ///add game name and type later
-                                  style: Theme.of(context).textTheme.bodyText2),
-                              subtitle: Text(state.data[index].message,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic)),
-                              trailing: snapshot.data == DeleteState.loading
-                                  ? CupertinoActivityIndicator()
-                                  : Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.end,
-                                  children: [
-                                    Icon(Icons.chevron_right),
-                                    Text(
-                                        timeAgo.format(
-                                            DateTime.parse(state
-                                                .data[index].createdAt),
-                                            allowFromNow: true),
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontStyle: FontStyle.italic))
-                                  ]));
                         }),
                   ),
                 ),

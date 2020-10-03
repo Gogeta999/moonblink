@@ -163,10 +163,10 @@ class Router {
         return CupertinoPageRoute(
             builder: (_) =>
                 UpdateGameProfilePage(gameProfile: settings.arguments ?? null));
-      case RouteName.applyForQualification:
-        return CupertinoPageRoute(builder: (_) => ApplyForQualification());
-      case RouteName.pubgMobile:
-        return CupertinoPageRoute(builder: (_) => PubgMobile());
+      // case RouteName.applyForQualification:
+      //   return CupertinoPageRoute(builder: (_) => ApplyForQualification());
+      // case RouteName.pubgMobile:
+      //   return CupertinoPageRoute(builder: (_) => PubgMobile());
 
       case RouteName.topUp:
         return CupertinoPageRoute(builder: (_) => NewTopUpPage());
@@ -186,12 +186,10 @@ class Router {
       //   );
       case RouteName.userMessageHistory:
         return CupertinoPageRoute(
-          builder: (_) => UserMessageNotificationPage()
-        );
+            builder: (_) => UserMessageNotificationPage());
       case RouteName.userBookingHistory:
         return CupertinoPageRoute(
-          builder: (_) => UserBookingNotificationPage()
-        );
+            builder: (_) => UserBookingNotificationPage());
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(
