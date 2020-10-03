@@ -98,6 +98,15 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     return result;
   }
 
+  //Short Title
+  String titlename(String title) {
+    if (title.length > 10) {
+      return title.substring(0, 9) + '...';
+    } else {
+      return title;
+    }
+  }
+
   //File formatting
   Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -1111,6 +1120,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         }
         return ScopedModelDescendant<ChatModel>(
           builder: (context, child, model) {
+            String name = titlename(partnermodel.partnerData.partnerName);
             return Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -1138,7 +1148,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                           child: Container(
                             width: MediaQuery.of(context).size.width / 3,
                             child: Text(
-                              partnermodel.partnerData.partnerName,
+                              name,
                             ),
                           ),
                         ),

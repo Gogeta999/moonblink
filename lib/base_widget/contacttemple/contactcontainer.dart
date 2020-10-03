@@ -309,7 +309,7 @@ class _ContactContainerState extends State<ContactContainer> {
                               Center(
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      left: 8.0, top: 10, bottom: 5),
+                                      left: 8.0, top: 3, bottom: 5),
                                   // padding:
                                   //     EdgeInsets.symmetric(vertical: 6),
                                   child: Text(

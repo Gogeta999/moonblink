@@ -30,9 +30,11 @@ class UpdateGameProfilePage extends StatefulWidget {
 class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   ///will send back to server
   TextEditingController _gameIdController = TextEditingController();
+  TextEditingController _gamepriceController = TextEditingController();
   String _level = '';
   String _gameMode = '';
   List<GameMode> _gameModeList = [];
+  Map currencies = {"4": "1000"};
   List<int> _selectedGameModeIndex = [];
   File _skillCoverPhoto;
 
@@ -376,6 +378,13 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
               _buildDivider(),
+              _buildTitleWidget(title: "Give Price for your Game"),
+              _buildGameProfileCard(
+                  title: G.of(context).gamemode,
+                  subtitle: _gameMode,
+                  iconData: Icons.edit,
+                  onTap: _onTapGameMode),
+              _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
             ],
@@ -463,6 +472,17 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       _showMaterialDialog(context, _gameIdController);
     } else if (Platform.isIOS) {
       _showCupertinoDialog(context, _gameIdController);
+    } else {
+      showToast(G.of(context).toastplatformnotsupport);
+    }
+  }
+
+  _onTapGamePrice() {
+    if (_isUILocked) return;
+    if (Platform.isAndroid) {
+      _showMaterialDialog(context, _gamepriceController);
+    } else if (Platform.isIOS) {
+      _showCupertinoDialog(context, _gamepriceController);
     } else {
       showToast(G.of(context).toastplatformnotsupport);
     }

@@ -254,10 +254,10 @@ class _ContactsPageState extends State<ContactsPage> {
             contacts.add(contact);
           }
           // print(contacts);
-          contacts.sort((a, b) => a.contactUser.contactUserName
-              .toLowerCase()
-              .compareTo(b.contactUser.contactUserName.toLowerCase()));
-          filterList();
+          // contacts.sort((a, b) => a.contactUser.contactUserName
+          //     .toLowerCase()
+          //     .compareTo(b.contactUser.contactUserName.toLowerCase()));
+          // filterList();
           if (contactModel.isEmpty)
             SliverToBoxAdapter(
               child: Padding(

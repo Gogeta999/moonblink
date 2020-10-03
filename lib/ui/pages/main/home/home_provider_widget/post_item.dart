@@ -377,7 +377,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                         Center(
                                           child: Container(
                                             margin: EdgeInsets.only(
-                                                left: 8.0, top: 10, bottom: 5),
+                                                left: 5.0, top: 3, bottom: 5),
                                             // padding:
                                             //     EdgeInsets.symmetric(vertical: 6),
                                             child: Text(
