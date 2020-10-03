@@ -25,15 +25,15 @@ class UserNewNotificationBloc
 
   @override
   Stream<Transition<UserNewNotificationEvent, UserNewNotificationState>>
-  transformEvents(Stream<UserNewNotificationEvent> events, transitionFn) {
+      transformEvents(Stream<UserNewNotificationEvent> events, transitionFn) {
     return super.transformEvents(
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
 
   @override
   Stream<UserNewNotificationState> mapEventToState(
-      UserNewNotificationEvent event,
-      ) async* {
+    UserNewNotificationEvent event,
+  ) async* {
     final currentState = state;
     if (event is UserNewNotificationFetched && !_hasReachedMax(currentState)) {
       yield* _mapFetchedToState(currentState);
@@ -69,7 +69,8 @@ class UserNewNotificationBloc
       List<UserNewNotificationData> data = [];
       int unreadCount = 0;
       try {
-        var response = await _fetchUserNotification(limit: notificationLimit, page: 1);
+        var response =
+            await _fetchUserNotification(limit: notificationLimit, page: 1);
         data = response.data;
         unreadCount = response.unreadCount;
       } catch (e) {
@@ -79,7 +80,10 @@ class UserNewNotificationBloc
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield UserNewNotificationSuccess(
-          data: data, hasReachedMax: hasReachedMax, page: 1, unreadCount: unreadCount);
+          data: data,
+          hasReachedMax: hasReachedMax,
+          page: 1,
+          unreadCount: unreadCount);
     }
     if (currentState is UserNewNotificationSuccess) {
       final nextPage = currentState.page + 1;
@@ -97,10 +101,10 @@ class UserNewNotificationBloc
       yield data.isEmpty
           ? currentState.copyWith(hasReachedMax: true)
           : UserNewNotificationSuccess(
-          data: currentState.data + data,
-          hasReachedMax: hasReachedMax,
-          page: nextPage,
-          unreadCount: unreadCount);
+              data: currentState.data + data,
+              hasReachedMax: hasReachedMax,
+              page: nextPage,
+              unreadCount: unreadCount);
       if (data.isEmpty) showToast('You have reached the end of the list');
     }
   }
@@ -111,7 +115,8 @@ class UserNewNotificationBloc
     List<UserNewNotificationData> data = [];
     int unreadCount = 0;
     try {
-      var response = await _fetchUserNotification(limit: notificationLimit, page: 1);
+      var response =
+          await _fetchUserNotification(limit: notificationLimit, page: 1);
       data = response.data;
       unreadCount = response.unreadCount;
     } catch (error) {
@@ -122,7 +127,10 @@ class UserNewNotificationBloc
     yield data.isEmpty
         ? UserNewNotificationNoData()
         : UserNewNotificationSuccess(
-        data: data, hasReachedMax: hasReachedMax, page: 1, unreadCount: unreadCount);
+            data: data,
+            hasReachedMax: hasReachedMax,
+            page: 1,
+            unreadCount: unreadCount);
   }
 
   ///Refresh from start page to current page
@@ -131,7 +139,7 @@ class UserNewNotificationBloc
     List<UserNewNotificationData> data = [];
     int unreadCount = 0;
     int currentPage =
-    currentState is UserNewNotificationSuccess ? currentState.page : 1;
+        currentState is UserNewNotificationSuccess ? currentState.page : 1;
     for (int startPage = 1; startPage <= currentPage; ++startPage) {
       try {
         var response = await _fetchUserNotification(
@@ -144,11 +152,14 @@ class UserNewNotificationBloc
       }
     }
     bool hasReachedMax =
-    data.length < notificationLimit * currentPage ? true : false;
+        data.length < notificationLimit * currentPage ? true : false;
     yield data.isEmpty
         ? UserNewNotificationNoData()
         : UserNewNotificationSuccess(
-        data: data, hasReachedMax: hasReachedMax, page: currentPage, unreadCount: unreadCount);
+            data: data,
+            hasReachedMax: hasReachedMax,
+            page: currentPage,
+            unreadCount: unreadCount);
   }
 
   ///Notification change to read
@@ -192,8 +203,10 @@ class UserNewNotificationBloc
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page);
         try {
-          final bookingData = await MoonBlinkRepository.changeUserBookingNotificationReadState(
-              notificationId, isRead: 1);
+          final bookingData =
+              await MoonBlinkRepository.changeUserBookingNotificationReadState(
+                  notificationId,
+                  isRead: 1);
           final data = UserNewNotificationData(
               id: bookingData.id,
               userId: bookingData.userId,
@@ -203,8 +216,7 @@ class UserNewNotificationBloc
               isRead: bookingData.isRead,
               createdAt: bookingData.createdAt,
               updatedAt: bookingData.updatedAt,
-              data: bookingData.fcmData
-          );
+              data: bookingData.fcmData);
           newData = data;
         } catch (error) {
           yield UserNewNotificationFailure(error: error);
@@ -215,28 +227,31 @@ class UserNewNotificationBloc
             data: currentData,
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page,
-            unreadCount: currentState.unreadCount - 1);
+            unreadCount: currentState.unreadCount == 0
+                ? currentState.unreadCount
+                : currentState.unreadCount - 1);
       } else if (currentData[index].fcmType == 'message') {
 //        final data = currentData[index].data as UserMessageNotificationData;
-      /// ----- Message -----
+        /// ----- Message -----
         yield UserNewNotificationUpdating(
             data: currentData,
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page);
         try {
-          final messageData = await MoonBlinkRepository.changeUserMessageNotificationReadState(
-              notificationId, isRead: 1);
+          final messageData =
+              await MoonBlinkRepository.changeUserMessageNotificationReadState(
+                  notificationId,
+                  isRead: 1);
           final data = UserNewNotificationData(
-            id: messageData.id,
-            userId: messageData.userId,
-            fcmType: messageData.fcmType,
-            title: messageData.title,
-            message: messageData.message,
-            isRead: messageData.isRead,
-            createdAt: messageData.createdAt,
-            updatedAt: messageData.updatedAt,
-            data: messageData.messageData
-          );
+              id: messageData.id,
+              userId: messageData.userId,
+              fcmType: messageData.fcmType,
+              title: messageData.title,
+              message: messageData.message,
+              isRead: messageData.isRead,
+              createdAt: messageData.createdAt,
+              updatedAt: messageData.updatedAt,
+              data: messageData.messageData);
           newData = data;
         } catch (error) {
           yield UserNewNotificationFailure(error: error);
@@ -247,7 +262,9 @@ class UserNewNotificationBloc
             data: currentData,
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page,
-            unreadCount: currentState.unreadCount - 1);
+            unreadCount: currentState.unreadCount == 0
+                ? currentState.unreadCount
+                : currentState.unreadCount - 1);
       } else {
         print("----This type of notification is not supported for now----");
       }
@@ -277,7 +294,8 @@ class UserNewNotificationBloc
             page: currentState.page);
         try {
           await MoonBlinkRepository.changeUserBookingNotificationReadState(
-              notificationId, isArchive: 1);
+              notificationId,
+              isArchive: 1);
           currentData.removeAt(index);
           yield UserNewNotificationDeleteSuccess();
         } catch (error) {
@@ -297,7 +315,8 @@ class UserNewNotificationBloc
             page: currentState.page);
         try {
           await MoonBlinkRepository.changeUserMessageNotificationReadState(
-              notificationId, isArchive: 1);
+              notificationId,
+              isArchive: 1);
           currentData.removeAt(index);
           yield UserNewNotificationDeleteSuccess();
         } catch (error) {
@@ -367,7 +386,7 @@ class UserNewNotificationBloc
   Future<UserNewNotificationResponse> _fetchUserNotification(
       {int limit, int page}) async {
     UserNewNotificationResponse data =
-    await MoonBlinkRepository.getUserNewNotifications(limit, page);
+        await MoonBlinkRepository.getUserNewNotifications(limit, page);
     return data;
   }
 }
