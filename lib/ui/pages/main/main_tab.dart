@@ -56,7 +56,7 @@ class _MainTabPageState extends State<MainTabPage>
       ChatListPage(),
       ContactsPage(),
       UserNotificationTab(),
-      NewUserStatusPage(),
+      UserStatusPage(),
     ];
 
     return Scaffold(
@@ -80,8 +80,7 @@ class _MainTabPageState extends State<MainTabPage>
               onHorizontalDragEnd: (details) {
                 //Swipe right
                 if (details.primaryVelocity < 0) {
-                  if (index == pages.length - 1) return
-                  print("Swiping right");
+                  if (index == pages.length - 1) return print("Swiping right");
                   if (index >= 0) {
                     index++;
                     // setState(() {
@@ -151,9 +150,10 @@ class _MainTabPageState extends State<MainTabPage>
                   // iconSize: 30.0,
                   selectedColor: Theme.of(context).accentColor,
                   strokeColor: Theme.of(context).accentColor,
-                  unSelectedColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
+                  unSelectedColor:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   items: [
                     CustomNavigationBarItem(
@@ -167,10 +167,16 @@ class _MainTabPageState extends State<MainTabPage>
                         );
                       },
                     ),
-                    CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
+                    CustomNavigationBarItem(
+                        icon: chat, selectedIcon: chatfilled),
                     CustomNavigationBarItem(
                         icon: following, selectedIcon: followingfilled),
-                    CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: state.unreadCount ?? 0), ///not real
+                    CustomNavigationBarItem(
+                        icon: noti,
+                        selectedIcon: notifilled,
+                        badgeCount: state.unreadCount ?? 0),
+
+                    ///not real
                     CustomNavigationBarItem(
                         icon: mainProfile, selectedIcon: mainProfilefilled)
                   ],
@@ -207,7 +213,8 @@ class _MainTabPageState extends State<MainTabPage>
                   CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
                   CustomNavigationBarItem(
                       icon: following, selectedIcon: followingfilled),
-                  CustomNavigationBarItem(icon: noti, selectedIcon: notifilled, badgeCount: 0),
+                  CustomNavigationBarItem(
+                      icon: noti, selectedIcon: notifilled, badgeCount: 0),
                   CustomNavigationBarItem(
                       icon: mainProfile, selectedIcon: mainProfilefilled)
                 ],

@@ -7,9 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String kLocalStorageSearch = 'kLocalStorageSearch';
 const String kSearchHistory = 'kSearchHistory';
 
-
 class SearchHistoryModel extends ViewStateListModel<String> {
-  
   clearHistory() async {
     debugPrint('clearHistory');
     var sharedPreferences = await SharedPreferences.getInstance();
@@ -46,6 +44,6 @@ class SearchResultModel extends ViewStateRefreshListModel {
     if (keyword.isEmpty) return [];
     searchHistoryModel.addHistory(keyword);
     return await MoonBlinkRepository.fetchSearchResults(
-        key: keyword);
+        key: keyword, pageNum: pageNum);
   }
 }

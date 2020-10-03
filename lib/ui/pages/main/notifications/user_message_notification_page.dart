@@ -12,10 +12,12 @@ import 'package:timeago/timeago.dart' as timeAgo;
 
 class UserMessageNotificationPage extends StatefulWidget {
   @override
-  _UserMessageNotificationPageState createState() => _UserMessageNotificationPageState();
+  _UserMessageNotificationPageState createState() =>
+      _UserMessageNotificationPageState();
 }
 
-class _UserMessageNotificationPageState extends State<UserMessageNotificationPage> {
+class _UserMessageNotificationPageState
+    extends State<UserMessageNotificationPage> {
   final _scrollController = ScrollController();
   final _scrollThreshold = 600.0;
   Completer<void> _refreshCompleter;
@@ -47,7 +49,8 @@ class _UserMessageNotificationPageState extends State<UserMessageNotificationPag
             value: _userNotificationBloc,
             //create: (_) =>
             //_userNotificationBloc..add(UserNotificationFetched()),
-            child: BlocConsumer<UserMessageNotificationBloc, UserMessageNotificationState>(
+            child: BlocConsumer<UserMessageNotificationBloc,
+                UserMessageNotificationState>(
               listener: (context, state) {
                 if (state is UserMessageNotificationSuccess) {
                   _refreshCompleter.complete();
@@ -127,9 +130,10 @@ class _UserMessageNotificationPageState extends State<UserMessageNotificationPag
                       return index >= state.data.length
                           ? BottomLoader()
                           : BlocProvider.value(
-                          value: BlocProvider.of<UserMessageNotificationBloc>(
-                              context),
-                          child: NotificationListTile(index: index));
+                              value:
+                                  BlocProvider.of<UserMessageNotificationBloc>(
+                                      context),
+                              child: NotificationListTile(index: index));
                     },
                     itemCount: state.hasReachedMax
                         ? state.data.length
@@ -137,6 +141,7 @@ class _UserMessageNotificationPageState extends State<UserMessageNotificationPag
                     controller: _scrollController,
                   );
                 }
+
                 ///Same with success
                 if (state is UserMessageNotificationUpdating) {
                   if (state.data.isEmpty) {
@@ -166,9 +171,10 @@ class _UserMessageNotificationPageState extends State<UserMessageNotificationPag
                       return index >= state.data.length
                           ? BottomLoader()
                           : BlocProvider.value(
-                          value: BlocProvider.of<UserMessageNotificationBloc>(
-                              context),
-                          child: NotificationListTile(index: index));
+                              value:
+                                  BlocProvider.of<UserMessageNotificationBloc>(
+                                      context),
+                              child: NotificationListTile(index: index));
                     },
                     itemCount: state.hasReachedMax
                         ? state.data.length
@@ -204,7 +210,8 @@ class NotificationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserMessageNotificationBloc, UserMessageNotificationState>(
+    return BlocConsumer<UserMessageNotificationBloc,
+        UserMessageNotificationState>(
       listener: (context, state) {},
       builder: (context, state) {
         ///Same with update
@@ -217,25 +224,26 @@ class NotificationListTile extends StatelessWidget {
                   : Theme.of(context).accentColor,
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black,
-                  spreadRadius: 0.5,
-                  // blurRadius: 2,
-                  offset: Offset(-3, 3), // changes position of shadow
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black,
+              //     spreadRadius: 0.5,
+              //     // blurRadius: 2,
+              //     offset: Offset(-3, 3), // changes position of shadow
+              //   ),
+              // ],
             ),
-            child: Material(
+            child: Card(
               child: InkWell(
                 child: ListTile(
                     onTap: () => _onTapListTile(context, state.data[index]),
                     title: Text(state.data[index].title,
+
                         ///add game name and type later
                         style: Theme.of(context).textTheme.bodyText2),
                     subtitle: Text(state.data[index].message,
-                        style:
-                        TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                        style: TextStyle(
+                            fontSize: 12, fontStyle: FontStyle.italic)),
                     trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -261,25 +269,26 @@ class NotificationListTile extends StatelessWidget {
                   : Theme.of(context).accentColor,
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black,
-                  spreadRadius: 0.5,
-                  // blurRadius: 2,
-                  offset: Offset(-3, 3), // changes position of shadow
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black,
+              //     spreadRadius: 0.5,
+              //     // blurRadius: 2,
+              //     offset: Offset(-3, 3), // changes position of shadow
+              //   ),
+              // ],
             ),
-            child: Material(
+            child: Card(
               child: InkWell(
                 child: ListTile(
                     onTap: () => _onTapListTile(context, state.data[index]),
                     title: Text(state.data[index].title,
+
                         ///add game name and type later
                         style: Theme.of(context).textTheme.bodyText2),
                     subtitle: Text(state.data[index].message,
-                        style:
-                        TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                        style: TextStyle(
+                            fontSize: 12, fontStyle: FontStyle.italic)),
                     trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,

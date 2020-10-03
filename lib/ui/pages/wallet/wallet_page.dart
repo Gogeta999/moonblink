@@ -172,10 +172,10 @@ class _WalletPageState extends State<WalletPage> {
                             },
                             child: Text(G.of(context).cashout),
                           ),
-                          ShadedContainer(
-                            ontap: _showRewardedAds,
-                            child: _buildAds(),
-                          ),
+                          // ShadedContainer(
+                          //   ontap: _showRewardedAds,
+                          //   child: _buildAds(),
+                          // ),
                         ],
                       ),
                       SizedBox(height: 20),

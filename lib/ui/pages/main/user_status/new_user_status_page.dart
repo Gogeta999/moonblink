@@ -24,12 +24,12 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class NewUserStatusPage extends StatefulWidget {
+class UserStatusPage extends StatefulWidget {
   @override
-  _NewUserStatusPageState createState() => _NewUserStatusPageState();
+  _UserStatusPageState createState() => _UserStatusPageState();
 }
 
-class _NewUserStatusPageState extends State<NewUserStatusPage> {
+class _UserStatusPageState extends State<UserStatusPage> {
   @override
   void initState() {
     // PushNotificationsManager().showgameprofilenoti();

@@ -348,22 +348,26 @@ class NotificationListTile extends StatelessWidget {
                     color: state.data[index].isRead != 0
                         ? Theme.of(context).scaffoldBackgroundColor
                         : Theme.of(context).accentColor,
+                    borderRadius: BorderRadius.circular(10),
+                    // color: Colors.pink,
                     border: Border.all(color: Colors.black),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        spreadRadius: 0.5,
-                        // blurRadius: 2,
-                        offset: Offset(-3, 3), // changes position of shadow
-                      ),
-                    ],
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.black,
+                    //     spreadRadius: 0.5,
+                    //     // blurRadius: 2,
+                    //     offset: Offset(-3, 3), // changes position of shadow
+                    //   ),
+                    // ],
                   ),
-                  child: IconSlideAction(
-                    closeOnTap: true,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    iconWidget: Icon(Icons.delete,
-                        color: Theme.of(context).accentColor),
-                    onTap: () => _onTapDelete(context, state.data[index]),
+                  child: Card(
+                    child: IconSlideAction(
+                      closeOnTap: true,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      iconWidget: Icon(Icons.delete,
+                          color: Theme.of(context).accentColor),
+                      onTap: () => _onTapDelete(context, state.data[index]),
+                    ),
                   ),
                 )
               ],
@@ -379,16 +383,16 @@ class NotificationListTile extends StatelessWidget {
                   }(),
                   border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      spreadRadius: 0.5,
-                      // blurRadius: 2,
-                      offset: Offset(-3, 3), // changes position of shadow
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black,
+                  //     spreadRadius: 0.5,
+                  //     // blurRadius: 2,
+                  //     offset: Offset(-3, 3), // changes position of shadow
+                  //   ),
+                  // ],
                 ),
-                child: Material(
+                child: Card(
                   child: InkWell(
                     child: StreamBuilder<DeleteState>(
                         initialData: DeleteState.initial,
