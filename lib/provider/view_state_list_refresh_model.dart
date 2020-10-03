@@ -57,6 +57,7 @@ abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T>{
   Future<List<T>> loadMore() async {
     try {
       var data = await loadData(pageNum: ++_currentPageNum);
+      print("Current Page Is - $_currentPageNum");
       if (data.isEmpty) {
         _currentPageNum--;
         refreshController.loadNoData();

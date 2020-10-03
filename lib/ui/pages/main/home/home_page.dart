@@ -425,6 +425,12 @@ class HomePostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeModel homeModel = Provider.of(context);
+    if (homeModel.isBusy) {
+      return SliverToBoxAdapter(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: Center(child: CupertinoActivityIndicator())));
+    }
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
         Post item = homeModel.list[index];

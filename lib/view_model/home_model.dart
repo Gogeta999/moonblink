@@ -1,4 +1,5 @@
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_list_refresh_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
@@ -24,10 +25,11 @@ class HomeModel extends ViewStateRefreshListModel {
     //   futures.add(MoonBlinkRepository.fetchStory());
     // }
     print(type);
+    viewState = ViewState.busy;
     futures.add(MoonBlinkRepository.fetchPosts(pageNum, type, gender));
 
     var result = await Future.wait(futures);
-
+    viewState = ViewState.idle;
     // if (usertoken != null &&
     //     pageNum == ViewStateRefreshListModel.pageNumFirst) {
     //   _stories = result[0];
