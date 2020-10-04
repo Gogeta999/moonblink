@@ -2,13 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/models/notification_models/user_booking_notification.dart';
 import 'package:moonblink/models/notification_models/user_message_notification.dart';
-import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/services/navigation_service.dart';
-import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -23,17 +18,19 @@ class UserMessageNotificationBloc
 
   @override
   Stream<Transition<UserMessageNotificationEvent, UserMessageNotificationState>>
-  transformEvents(Stream<UserMessageNotificationEvent> events, transitionFn) {
+      transformEvents(
+          Stream<UserMessageNotificationEvent> events, transitionFn) {
     return super.transformEvents(
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
 
   @override
   Stream<UserMessageNotificationState> mapEventToState(
-      UserMessageNotificationEvent event,
-      ) async* {
+    UserMessageNotificationEvent event,
+  ) async* {
     final currentState = state;
-    if (event is UserMessageNotificationFetched && !_hasReachedMax(currentState)) {
+    if (event is UserMessageNotificationFetched &&
+        !_hasReachedMax(currentState)) {
       yield* _mapFetchedToState(currentState);
     }
     if (event is UserMessageNotificationRefreshed) {
@@ -86,9 +83,9 @@ class UserMessageNotificationBloc
       yield data.isEmpty
           ? currentState.copyWith(hasReachedMax: true)
           : UserMessageNotificationSuccess(
-          data: currentState.data + data,
-          hasReachedMax: hasReachedMax,
-          page: nextPage);
+              data: currentState.data + data,
+              hasReachedMax: hasReachedMax,
+              page: nextPage);
       if (data.isEmpty) showToast('You have reached the end of the list');
     }
   }
@@ -107,7 +104,7 @@ class UserMessageNotificationBloc
     yield data.isEmpty
         ? UserMessageNotificationNoData()
         : UserMessageNotificationSuccess(
-        data: data, hasReachedMax: hasReachedMax, page: 1);
+            data: data, hasReachedMax: hasReachedMax, page: 1);
   }
 
   ///Refresh from start page to current page
@@ -115,7 +112,7 @@ class UserMessageNotificationBloc
       UserMessageNotificationState currentState) async* {
     List<UserMessageNotificationData> data = [];
     int currentPage =
-    currentState is UserMessageNotificationSuccess ? currentState.page : 1;
+        currentState is UserMessageNotificationSuccess ? currentState.page : 1;
     for (int startPage = 1; startPage <= currentPage; ++startPage) {
       try {
         data += await _fetchUserNotification(
@@ -126,11 +123,11 @@ class UserMessageNotificationBloc
       }
     }
     bool hasReachedMax =
-    data.length < notificationLimit * currentPage ? true : false;
+        data.length < notificationLimit * currentPage ? true : false;
     yield data.isEmpty
         ? UserMessageNotificationNoData()
         : UserMessageNotificationSuccess(
-        data: data, hasReachedMax: hasReachedMax, page: currentPage);
+            data: data, hasReachedMax: hasReachedMax, page: currentPage);
   }
 
   ///Notification change to read
@@ -153,7 +150,8 @@ class UserMessageNotificationBloc
           page: currentState.page);
       try {
         data = await MoonBlinkRepository.changeUserMessageNotificationReadState(
-            notificationId, isRead: 1);
+            notificationId,
+            isRead: 1);
       } catch (error) {
         yield UserMessageNotificationFailure(error: error);
         return;
@@ -219,7 +217,7 @@ class UserMessageNotificationBloc
   Future<List<UserMessageNotificationData>> _fetchUserNotification(
       {int limit, int page}) async {
     UserMessageNotificationResponse data =
-    await MoonBlinkRepository.getUserMessageNotifications(limit, page);
+        await MoonBlinkRepository.getUserMessageNotifications(limit, page);
     return data.data;
   }
 }

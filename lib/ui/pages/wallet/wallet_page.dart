@@ -73,6 +73,7 @@ class _WalletPageState extends State<WalletPage> {
     super.initState();
   }
 
+  // ignore: unused_element
   Widget _buildAds() {
     return isAdLoading
         ? CupertinoActivityIndicator()
@@ -296,6 +297,7 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
+  // ignore: unused_element
   void _showRewardedAds() async {
     if (isAdLoading) return;
     setState(() {

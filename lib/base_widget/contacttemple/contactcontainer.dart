@@ -20,7 +20,7 @@ class ContactContainer extends StatefulWidget {
 }
 
 class _ContactContainerState extends State<ContactContainer> {
-  String _profileUrl;
+  // String _profileUrl;
   Widget postprofile(Contact contact) {
     return CachedNetworkImage(
       imageUrl: widget.contact.contactUser.contactUserProfile,
@@ -74,9 +74,7 @@ class _ContactContainerState extends State<ContactContainer> {
         color: Colors.grey.shade600,
         child: IconButton(
           onPressed: () {
-            setState(() {
-              _profileUrl = widget.contact.contactUser.contactUserProfile;
-            });
+            showToast('Sorry, Please refresh again');
           },
           icon: Icon(
             Icons.refresh,

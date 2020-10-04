@@ -35,10 +35,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   bool isBlocking = false;
   bool isRetying = false;
   // var _coverUrl;
-  var _profileUrl;
+  // var _profileUrl;
   @override
   void initState() {
-    _profileUrl = widget.posts.profileImage;
+    // _profileUrl = widget.posts.profileImage;
     // _coverUrl = widget.posts.coverImage;
     super.initState();
   }
@@ -100,9 +100,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
         color: Colors.grey.shade600,
         child: IconButton(
           onPressed: () {
-            setState(() {
-              _profileUrl = widget.posts.profileImage;
-            });
+            showToast('Refresh Again');
           },
           icon: Icon(
             Icons.refresh,

@@ -542,7 +542,7 @@ class _BookingPageState extends State<BookingPage> {
                                         child: Text(
                                           G.of(context).confirm,
                                           style: Theme.of(context)
-                                              .textTheme
+                                              .accentTextTheme
                                               .button,
                                         ),
                                       ),

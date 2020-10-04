@@ -40,6 +40,7 @@ class Voicemsg extends StatefulWidget {
 
 class _VoicemsgState extends State<Voicemsg> {
   FlutterAudioRecorder _recorder;
+  // ignore: unused_field
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
   String filename;

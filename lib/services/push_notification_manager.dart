@@ -327,6 +327,7 @@ class PushNotificationsManager {
     int userId = 0;
     int bookingId = 0;
     int bookingUserId = 0;
+    // ignore: unused_local_variable
     int gameType = 0;
     String gameName = '';
     String type = '';
@@ -595,7 +596,8 @@ class _Message {
   void navigateToChatBox() {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
     if (_partnerId == null) {
-      this._partnerId = StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);
+      this._partnerId =
+          StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);
     }
     if (!atChatBox)
       locator<NavigationService>()

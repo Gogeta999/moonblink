@@ -32,3 +32,5 @@ final String gallery = 'assets/icons/gallery.svg';
 final String microphone = 'assets/icons/microphone.svg';
 final String report = 'assets/icons/report.svg';
 final String message = 'assets/icons/message.svg';
+final String moongoHistoryNoti = 'assets/icons/moonGoHistoryNoti.svg';
+final String bookHistoryNoti = 'assets/icons/bookHistoryNoti.svg';

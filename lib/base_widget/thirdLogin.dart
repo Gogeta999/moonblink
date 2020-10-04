@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class ThirdLogin extends StatefulWidget {
   @override

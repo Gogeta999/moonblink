@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:moonblink/base_widget/booking/booking_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_booking_notification.dart';
 import 'package:moonblink/services/locator.dart';
@@ -23,7 +22,8 @@ class UserBookingNotificationBloc
 
   @override
   Stream<Transition<UserBookingNotificationEvent, UserBookingNotificationState>>
-      transformEvents(Stream<UserBookingNotificationEvent> events, transitionFn) {
+      transformEvents(
+          Stream<UserBookingNotificationEvent> events, transitionFn) {
     return super.transformEvents(
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
@@ -33,7 +33,8 @@ class UserBookingNotificationBloc
     UserBookingNotificationEvent event,
   ) async* {
     final currentState = state;
-    if (event is UserBookingNotificationFetched && !_hasReachedMax(currentState)) {
+    if (event is UserBookingNotificationFetched &&
+        !_hasReachedMax(currentState)) {
       yield* _mapFetchedToState(currentState);
     }
     if (event is UserBookingNotificationRefreshed) {
@@ -173,7 +174,8 @@ class UserBookingNotificationBloc
           page: currentState.page);
       try {
         data = await MoonBlinkRepository.changeUserBookingNotificationReadState(
-            notificationId, isRead: 1);
+            notificationId,
+            isRead: 1);
       } catch (error) {
         yield UserBookingNotificationFailure(error: error);
         return;

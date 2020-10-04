@@ -163,6 +163,16 @@ class G {
     );
   }
 
+  /// `Booking History`
+  String get bookingHistory {
+    return Intl.message(
+      'Booking History',
+      name: 'bookingHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose game type to play with our partner`
   String get bookingChooseGameType {
     return Intl.message(
@@ -978,6 +988,16 @@ class G {
     return Intl.message(
       'Match',
       name: 'match',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Moon Go History`
+  String get moonGoHistory {
+    return Intl.message(
+      'Moon Go History',
+      name: 'moonGoHistory',
       desc: '',
       args: [],
     );
