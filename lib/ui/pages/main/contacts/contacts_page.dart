@@ -23,7 +23,7 @@ class _ContactsPageState extends State<ContactsPage> {
   // @override
   // bool get wantKeepAlive => true;
   List<String> alphabetList = [];
-  Map<String, int> strMap = {};
+  // Map<String, int> strMap = {};
   List<Contact> contacts = [];
   List<double> scrollindex = [];
   List<String> strList = [];
@@ -89,9 +89,9 @@ class _ContactsPageState extends State<ContactsPage> {
     // alphabetList.add(tempList[0]);
     for (var i = 0; i < tempList.length; i++) {
       var currentStr = tempList[i][0];
-      strMap[currentStr] = i;
+      // strMap[currentStr] = i;
       if (currentStr.codeUnitAt(0) < 65 || currentStr.codeUnitAt(0) > 122) {
-        strMap["#"] = i;
+        // strMap["#"] = i;
         alphabetList.add("#");
         _currentAlphabet = "#";
       }
@@ -105,6 +105,7 @@ class _ContactsPageState extends State<ContactsPage> {
         _currentAlphabet = currentStr;
       }
     }
+    count = -1;
     print(alphabetList.toString());
     print(scrollindex.toString());
   }
@@ -260,6 +261,9 @@ class _ContactsPageState extends State<ContactsPage> {
           // print(contactModel.list.length);
           // print(model.list);
           contacts.clear();
+          strList.clear();
+          alphabetList.clear();
+          scrollindex.clear();
           // items.clear();
           for (var i = 0; i < contactModel.list.length; i++) {
             contact = contactModel.list[i];

@@ -28,17 +28,17 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
   }
 
-  Widget typestatus(int status) {
-    switch (status) {
-      case (-1):
-        return Icon(Icons.chevron_right);
-      case (0):
-        return Text(
-          "Pending",
-          style: TextStyle(color: Theme.of(context).accentColor),
-        );
-    }
-  }
+  // Widget typestatus(int status) {
+  //   switch (status) {
+  //     case (-1):
+  //       return Icon(Icons.chevron_right);
+  //     case (0):
+  //       return Text(
+  //         "Pending",
+  //         style: TextStyle(color: Theme.of(context).accentColor),
+  //       );
+  //   }
+  // }
 
   space() {
     return SizedBox(

@@ -487,9 +487,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                   : false,
                               trueText: G.of(context).follow,
                               falseText: G.of(context).following,
-                              onChanged: partnerModel.partnerData.isFollow == 0
-                                  ? followingRequest
-                                  : unFollowRequest,
+                              onChanged: widget.detailPageId == ownId
+                                  ? null
+                                  : partnerModel.partnerData.isFollow == 0
+                                      ? followingRequest
+                                      : unFollowRequest,
                             ),
                             SizedBox(
                               height: 20,

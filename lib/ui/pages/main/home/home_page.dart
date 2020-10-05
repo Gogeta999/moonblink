@@ -304,9 +304,7 @@ class _HomePageState extends State<HomePage>
                         // }
                         return SmartRefresher(
                           controller: homeModel.refreshController,
-                          header: ShimmerHeader(
-                            text: CupertinoActivityIndicator(),
-                          ),
+                          header: WaterDropHeader(),
                           footer: ShimmerFooter(
                             text: CupertinoActivityIndicator(),
                           ),

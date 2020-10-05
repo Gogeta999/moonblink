@@ -61,14 +61,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     super.dispose();
   }
 
-
   _initWithRemoteData() {
     _gameModeList = List.unmodifiable(widget.gameProfile.gameModeList);
     _gameIdController.text = widget.gameProfile.playerId;
     _level = widget.gameProfile.level;
     for (int i = 0; i < _gameModeList.length; ++i) {
       if (_gameModeList[i].selected == 1) {
-        _selectedGameModeIndex.add({_gameModeList[i].id.toString(): _gameModeList[i].price});
+        _selectedGameModeIndex
+            .add({_gameModeList[i].id.toString(): _gameModeList[i].price});
       }
     }
 
@@ -225,7 +225,9 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
           children: <Widget>[
             ///for now skill cover image later server will give a sample photo url
             _buildCachedNetworkImage(
-                imageUrl: gameProfileSample.isEmpty || null ? widget.gameProfile.skillCoverImage : gameProfileSample,
+                imageUrl: gameProfileSample.isEmpty || null
+                    ? widget.gameProfile.skillCoverImage
+                    : gameProfileSample,
                 label: G.of(context).sample,
                 isSample: true,
                 onTap: null),
