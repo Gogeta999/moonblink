@@ -175,7 +175,7 @@ class CustomBottomSheet {
   static showGameModeBottomSheet(
       {@required BuildContext buildContext,
       @required List<GameMode> gameModeList,
-      @required List<int> selectedGameModeIndex,
+      @required List<Map<String, int>> selectedGameModeIndex,
       @required Function onDone,
       Function onDismiss}) {
     showModalBottomSheet(

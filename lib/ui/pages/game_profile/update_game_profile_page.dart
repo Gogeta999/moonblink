@@ -30,16 +30,13 @@ class UpdateGameProfilePage extends StatefulWidget {
 class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   ///will send back to server
   TextEditingController _gameIdController = TextEditingController();
-  TextEditingController _gamepriceController = TextEditingController();
   String _level = '';
   String _gameMode = '';
   List<GameMode> _gameModeList = [];
-  Map currencies = {"4": "1000"};
-  List<int> _selectedGameModeIndex = [];
+  List<Map<String, int>> _selectedGameModeIndex = [];
   File _skillCoverPhoto;
 
   ///UI properties
-  int count = 0;
   bool _isUILocked = false;
   BehaviorSubject<UpdateOrSubmitButtonState> _submitOrUpdateSubject =
       BehaviorSubject(onCancel: () => print('Cancelling'))
@@ -61,18 +58,9 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   @override
   void dispose() {
-    //_discardChanges();
     super.dispose();
   }
 
-  _discardChanges() {
-    ///original list always got modify...
-    // _gameModeList.forEach((e) {
-    //   if (_selectedGameModeIndex.contains(e.id)) {
-    //     e.selected = 0;
-    //   }
-    // });
-  }
 
   _initWithRemoteData() {
     _gameModeList = List.unmodifiable(widget.gameProfile.gameModeList);
@@ -80,13 +68,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     _level = widget.gameProfile.level;
     for (int i = 0; i < _gameModeList.length; ++i) {
       if (_gameModeList[i].selected == 1) {
-        _selectedGameModeIndex.add(_gameModeList[i].id);
-        // _gameMode += _gameModeList[i].mode;
-        //
-        // if (i >= _selectedGameModeIndex.length - 1)
-        //   continue;
-        // else
-        //   _gameMode += ', ';
+        _selectedGameModeIndex.add({_gameModeList[i].id.toString(): _gameModeList[i].price});
       }
     }
 
@@ -109,7 +91,13 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   _updateGameMode() {
     _gameMode = '';
     for (int i = 0; i < _gameModeList.length; ++i) {
-      bool isSelected = _selectedGameModeIndex.contains(_gameModeList[i].id);
+      bool isSelected = false;
+      _selectedGameModeIndex.forEach((element) {
+        if (element.containsKey(_gameModeList[i].id.toString())) {
+          isSelected = true;
+          return;
+        }
+      });
       if (isSelected) {
         _gameMode += _gameModeList[i].mode;
 
@@ -131,6 +119,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
+              textAlign: TextAlign.center,
             ),
             actions: <Widget>[
               FlatButton(
@@ -159,13 +148,14 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
+              textAlign: TextAlign.center,
             ),
             actions: <Widget>[
-              FlatButton(
+              CupertinoButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(G.of(context).cancel),
               ),
-              FlatButton(
+              CupertinoButton(
                 onPressed: () {
                   Navigator.pop(context);
                   setState(() {});
@@ -226,6 +216,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   Card _buildGameProfilePhotoCard() {
+    String gameProfileSample = widget.gameProfile.gameProfileSample;
     return Card(
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
@@ -234,7 +225,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
           children: <Widget>[
             ///for now skill cover image later server will give a sample photo url
             _buildCachedNetworkImage(
-                imageUrl: widget.gameProfile.skillCoverImage,
+                imageUrl: gameProfileSample.isEmpty || null ? widget.gameProfile.skillCoverImage : gameProfileSample,
                 label: G.of(context).sample,
                 isSample: true,
                 onTap: null),
@@ -323,10 +314,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                 builder: (context, snapshot) {
                   if (snapshot.data == UpdateOrSubmitButtonState.initial) {
                     return CupertinoButton(
-                      child: Center(
-                        child: Text(
-                            '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
-                      ),
+                      child: Text(
+                          '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
                       onPressed: _onSubmitOrUpdate,
                     );
                   } else if (snapshot.data ==
@@ -377,13 +366,13 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   subtitle: _gameMode,
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
-              _buildDivider(),
-              _buildTitleWidget(title: "Give Price for your Game"),
-              _buildGameProfileCard(
-                  title: G.of(context).gamemode,
-                  subtitle: _gameMode,
-                  iconData: Icons.edit,
-                  onTap: _onTapGameMode),
+              // _buildDivider(),
+              // _buildTitleWidget(title: "Give Price for your Game"),
+              // _buildGameProfileCard(
+              //     title: G.of(context).gamemode,
+              //     subtitle: _gameMode,
+              //     iconData: Icons.edit,
+              //     onTap: _onTapGameMode),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
@@ -393,7 +382,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   ///update game mode
-  _onDone(List<int> newSelectedGameModeIndex) {
+  _onDone(List<Map<String, int>> newSelectedGameModeIndex) {
     _selectedGameModeIndex = List.from(newSelectedGameModeIndex);
     setState(() {
       _updateGameMode();
@@ -472,17 +461,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
       _showMaterialDialog(context, _gameIdController);
     } else if (Platform.isIOS) {
       _showCupertinoDialog(context, _gameIdController);
-    } else {
-      showToast(G.of(context).toastplatformnotsupport);
-    }
-  }
-
-  _onTapGamePrice() {
-    if (_isUILocked) return;
-    if (Platform.isAndroid) {
-      _showMaterialDialog(context, _gamepriceController);
-    } else if (Platform.isIOS) {
-      _showCupertinoDialog(context, _gamepriceController);
     } else {
       showToast(G.of(context).toastplatformnotsupport);
     }
