@@ -12,6 +12,7 @@ class GameProfile {
   final int isPlay;
   List<GameMode> gameModeList;
   List<String> gameRankList;
+  final String gameProfileSample;
   final String createdAt;
   final String updatedAt;
 
@@ -27,6 +28,7 @@ class GameProfile {
       this.isPlay,
       this.gameModeList,
       this.gameRankList,
+      this.gameProfileSample,
       this.createdAt,
       this.updatedAt});
 
@@ -44,7 +46,8 @@ class GameProfile {
             json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList()),
         gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
         createdAt = json['created_at'],
-        updatedAt = json['updated_at'];
+        updatedAt = json['updated_at'],
+        gameProfileSample = json['game_profile_sample'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -59,6 +62,7 @@ class GameProfile {
         'types':
             gameModeList.map<Map<String, dynamic>>((e) => e.toJson()).toList(),
         'levels': gameRankList.map<String>((e) => jsonEncode(e)).toList(),
+        'game_profile_sample': gameProfileSample,
         'created_at': createdAt,
         'updated_at': updatedAt
       };

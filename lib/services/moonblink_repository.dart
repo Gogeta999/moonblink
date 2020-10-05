@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -290,7 +292,7 @@ class MoonBlinkRepository {
     return response.data;
   }
 
-  //Game List
+  //Game List for booking
   static Future getGameList(int partnerId) async {
     var response = await DioUtils().get(Api.GameList, queryParameters: {
       'user_id': partnerId,
