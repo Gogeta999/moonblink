@@ -144,6 +144,8 @@ class UserMessageNotificationBloc
           return;
         }
       });
+      ///Already read
+      if (currentData[index].isRead == 1) return;
       yield UserMessageNotificationUpdating(
           data: currentData,
           hasReachedMax: currentState.hasReachedMax,
