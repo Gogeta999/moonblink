@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/contacttemple/contactcontainer.dart';
+import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -23,6 +25,7 @@ class _ContactsPageState extends State<ContactsPage> {
   List<String> alphabetList = [];
   Map<String, int> strMap = {};
   List<Contact> contacts = [];
+  List<double> scrollindex = [];
   List<String> strList = [];
   Contact contact;
   List<Widget> items = [];
@@ -32,7 +35,9 @@ class _ContactsPageState extends State<ContactsPage> {
       RefreshController(initialRefresh: false);
   TextEditingController searchController = TextEditingController();
   String _currentAlphabet = "";
-  int count = 0;
+  int count = -1;
+  double itemExtent = 415;
+  ScrollController listController = ScrollController();
 
   ContactModel _contactModel;
   bool isBlocking = false;
@@ -43,52 +48,66 @@ class _ContactsPageState extends State<ContactsPage> {
     super.initState();
   }
 
-  // initList(List<String> strlist, List<Contact> contactslist) {
-  //   // print(strlist.toString());
-  //   items = [];
-  //   List<String> tempList = strlist;
-  //   tempList.sort();
-  //   tempList.sort((a, b) {
-  //     if (a.codeUnitAt(0) < 65 ||
-  //         a.codeUnitAt(0) > 122 &&
-  //             b.codeUnitAt(0) >= 65 &&
-  //             b.codeUnitAt(0) <= 122) {
-  //       return 1;
-  //     } else if (b.codeUnitAt(0) < 65 ||
-  //         b.codeUnitAt(0) > 122 &&
-  //             a.codeUnitAt(0) >= 65 &&
-  //             a.codeUnitAt(0) <= 122) {
-  //       return -1;
-  //     }
-  //     return a.compareTo(b);
-  //   });
-  //   // _currentAlphabet = tempList[0];
-  //   // alphabetList.add(tempList[0]);
-  //   for (var i = 0; i < tempList.length; i++) {
-  //     var currentStr = tempList[i][0];
-  //     strMap[currentStr] = i;
-  //     if (_currentAlphabet != currentStr) {
-  //       alphabetList.add(currentStr);
-  //     }
-  //     Contact contact = contactslist[i];
-  //     count += 1;
-  //     Widget tile = contactTile(contact);
-  //     items.add(tile);
+  titlebox(String title, double index) {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+        child: GestureDetector(
+          onTap: () {
+            listController.animateTo(
+              itemExtent * (index),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          },
+          child: Text(title),
+        ),
+      ),
+    );
+  }
 
-  //     if (_currentAlphabet != currentStr) {
-  //       item = ItemCount(items, count);
-  //       print("Item Count");
-  //       // print(item.contactitems.length);
-  //       // print(item.count);
-  //       itemcount.add(item);
-  //       count = 0;
-  //       items = [];
-  //       _currentAlphabet = currentStr;
-  //     }
-  //   }
-  //   print(alphabetList.toString());
-  //   print(itemcount[0].contactitems.length);
-  // }
+  initList(List<String> strlist) {
+    // print(strlist.toString());
+    items = [];
+    List<String> tempList = strlist;
+    // tempList.sort();
+    tempList.sort((a, b) {
+      if (a.codeUnitAt(0) < 65 ||
+          a.codeUnitAt(0) > 122 &&
+              b.codeUnitAt(0) >= 65 &&
+              b.codeUnitAt(0) <= 122) {
+        return 1;
+      } else if (b.codeUnitAt(0) < 65 ||
+          b.codeUnitAt(0) > 122 &&
+              a.codeUnitAt(0) >= 65 &&
+              a.codeUnitAt(0) <= 122) {
+        return -1;
+      }
+      return a.compareTo(b);
+    });
+    // _currentAlphabet = tempList[0];
+    // alphabetList.add(tempList[0]);
+    for (var i = 0; i < tempList.length; i++) {
+      var currentStr = tempList[i][0];
+      strMap[currentStr] = i;
+      if (currentStr.codeUnitAt(0) < 65 || currentStr.codeUnitAt(0) > 122) {
+        strMap["#"] = i;
+        alphabetList.add("#");
+        _currentAlphabet = "#";
+      }
+      if (_currentAlphabet != currentStr) {
+        alphabetList.add(currentStr);
+      }
+      count += 1;
+
+      if (_currentAlphabet != currentStr) {
+        scrollindex.add(count.toDouble());
+        _currentAlphabet = currentStr;
+      }
+    }
+    print(alphabetList.toString());
+    print(scrollindex.toString());
+  }
 
   ///[Tiles]
   filterList() {
@@ -245,12 +264,14 @@ class _ContactsPageState extends State<ContactsPage> {
           for (var i = 0; i < contactModel.list.length; i++) {
             contact = contactModel.list[i];
             contacts.add(contact);
+            strList.add(contact.contactUser.contactUserName.toUpperCase()[0]);
           }
           // print(contacts);
           // contacts.sort((a, b) => a.contactUser.contactUserName
           //     .toLowerCase()
           //     .compareTo(b.contactUser.contactUserName.toLowerCase()));
           // filterList();
+          initList(strList);
           if (contactModel.isEmpty)
             SliverToBoxAdapter(
               child: Padding(
@@ -258,34 +279,43 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: ViewStateEmptyWidget(onPressed: contactModel.initData),
               ),
             );
-          return CustomScrollView(
-            slivers: [
-              // SliverToBoxAdapter(
-              //   child: Padding(
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              //     child: RoundedContainer(
-              //       height: 50,
-              //       color: Theme.of(context).scaffoldBackgroundColor,
-              //       child: Container(
-              //         padding: EdgeInsets.only(top: 10),
-              //         child: ListView.builder(
-              //           scrollDirection: Axis.horizontal,
-              //           itemBuilder: (context, index) {
-              //             return Text("A");
-              //           },
-              //           itemCount: contacts.length,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return ContactContainer(contacts[index]);
-                  },
-                  childCount: contacts.length,
+          return Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: RoundedContainer(
+                  height: 50,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Center(
+                    child: Container(
+                      constraints: BoxConstraints(minWidth: 0, minHeight: 10),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return titlebox(
+                              alphabetList[index], scrollindex[index]);
+                        },
+                        itemCount: alphabetList.length,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: CustomScrollView(
+                  shrinkWrap: true,
+                  controller: listController,
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return ContactContainer(contacts[index]);
+                        },
+                        childCount: contacts.length,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
