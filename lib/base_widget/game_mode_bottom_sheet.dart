@@ -131,7 +131,16 @@ class _GameModeListTileState extends State<GameModeListTile> {
             ),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context);
+                  GameMode item = widget.gameModeList[widget.index];
+                  widget.selectedGameModeIndex.forEach((element) {
+                    if (element.containsKey(item.id.toString())) {
+                      _gamePriceController.text = element.values.first.toString();
+                      return;
+                    }
+                  });
+                },
                 child: Text(G.of(context).cancel),
               ),
               FlatButton(
@@ -176,7 +185,16 @@ class _GameModeListTileState extends State<GameModeListTile> {
             ),
             actions: <Widget>[
               CupertinoButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context);
+                  GameMode item = widget.gameModeList[widget.index];
+                  widget.selectedGameModeIndex.forEach((element) {
+                    if (element.containsKey(item.id.toString())) {
+                      _gamePriceController.text = element.values.first.toString();
+                      return;
+                    }
+                  });
+                },
                 child: Text(G.of(context).cancel),
               ),
               CupertinoButton(
