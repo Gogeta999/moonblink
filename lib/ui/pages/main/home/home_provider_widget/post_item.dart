@@ -431,7 +431,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           Divider(
             height: 10,
           ),
-          if (widget.index != 0 && widget.index % 6 == 0)
+          if (widget.index != 0 && widget.index % 10 == 0)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: AdPostWidget(),

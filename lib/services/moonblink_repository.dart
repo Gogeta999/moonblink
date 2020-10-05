@@ -32,7 +32,7 @@ class MoonBlinkRepository {
   }
   // home page's post data
 
-  static Future fetchPosts(int pageNum, int type, String gender) async {
+  static Future fetchPosts({int pageNum, int type, String gender}) async {
     // await Future.delayed(Duration(seconds: 1));
     var response = await DioUtils().get(
         Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/,
@@ -42,6 +42,8 @@ class MoonBlinkRepository {
           'page': pageNum,
           'gender': gender
         });
+    print(
+        '000000000000000000000000000000000000000000000QueryPareameters$type,$pageNum,$gender');
     return response.data['data']
         .map<Post>((item) => Post.fromMap(item))
         .toList();
