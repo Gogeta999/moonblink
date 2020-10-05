@@ -25,7 +25,6 @@ class UserModel extends ChangeNotifier {
 
   saveUser(User user) {
     _user = user;
-    print('sdfwerrefsgdsg' + user.toString());
     StorageManager.localStorage.setItem(mUser, user);
     notifyListeners();
   }
@@ -42,6 +41,5 @@ class UserModel extends ChangeNotifier {
     StorageManager.sharedPreferences.remove(mUserProfile);
     StorageManager.sharedPreferences.remove(mgameprofile);
     notifyListeners();
-    //StorageManager.sharedPreferences.clear();
   }
 }

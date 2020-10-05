@@ -378,12 +378,12 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
               _buildDivider(),
-              _buildTitleWidget(title: "Give Price for your Game"),
-              _buildGameProfileCard(
-                  title: G.of(context).gamemode,
-                  subtitle: _gameMode,
-                  iconData: Icons.edit,
-                  onTap: _onTapGameMode),
+              // _buildTitleWidget(title: "Give Price for your Game"),
+              // _buildGameProfileCard(
+              //     title: G.of(context).gamemode,
+              //     subtitle: _gameMode,
+              //     iconData: Icons.edit,
+              //     onTap: _onTapGameMode),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
