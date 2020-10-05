@@ -161,96 +161,97 @@ class _UserListWidgetState extends State<UserListWidget> {
     return SliverList(
       delegate: SliverChildListDelegate.fixed([
         ///Profile update and customer service
-        Consumer<UserModel>(builder: (context, model, child) {
-          return Card(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-            // elevation: 3,
-            child: ListTile(
-              leading: InkResponse(
-                onTap: () => Navigator.of(context)
-                    .pushNamed(RouteName.partnerOwnProfile),
-                child: Hero(
-                  tag: 'loginLogo',
-                  child: model.hasUser
-                      ? CachedNetworkImage(
-                          imageUrl: userProfile,
-                          imageBuilder: (context, item) {
-                            return CircleAvatar(
+        ProviderWidget<UserModel>(
+            model: UserModel(),
+            builder: (context, model, child) {
+              return Card(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                // elevation: 3,
+                child: ListTile(
+                  leading: InkResponse(
+                    onTap: () => Navigator.of(context)
+                        .pushNamed(RouteName.partnerOwnProfile),
+                    child: Hero(
+                      tag: 'loginLogo',
+                      child: model.hasUser
+                          ? CachedNetworkImage(
+                              imageUrl: userProfile,
+                              imageBuilder: (context, item) {
+                                return CircleAvatar(
+                                  radius: 28,
+                                  backgroundImage: item,
+                                );
+                              },
+                              fit: BoxFit.cover,
+                              width: 120,
+                              height: 120,
+                            )
+                          : CircleAvatar(
                               radius: 28,
-                              backgroundImage: item,
-                            );
-                          },
-                          fit: BoxFit.cover,
-                          width: 120,
-                          height: 120,
-                        )
-                      : CircleAvatar(
-                          radius: 28,
-                          backgroundColor: Colors.black,
-                          child: CircleAvatar(
-                            radius: 70,
-                            backgroundImage: AssetImage(
-                              ImageHelper.wrapAssetsImage(
-                                  'MoonBlinkProfile.jpg'),
+                              backgroundColor: Colors.black,
+                              child: CircleAvatar(
+                                radius: 70,
+                                backgroundImage: AssetImage(
+                                  ImageHelper.wrapAssetsImage(
+                                      'MoonBlinkProfile.jpg'),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                ),
-              ),
-              title: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Row(
-                    //   children: [
-                    if(model.hasUser)
-                    Text(model.user.name,
-                        style: Theme.of(context).textTheme.headline6),
-                    // SizedBox(width: 20),
-                    // Icon(
-                    //   FontAwesomeIcons.coins,
-                    //   color: Colors.amber[500],
-                    //   size: 20,
-                    // ),
-                    // SizedBox(width: 5.0),
-                    // userWallet != null
-                    //     ? Text(
-                    //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
-                    //         style: TextStyle(fontSize: 16))
-                    //     : CupertinoActivityIndicator()
-                    //   ],
-                    // ),
-                    SizedBox(height: 5),
-                    InkResponse(
-                      onTap: () {
-                        String id = encrypt(userid);
-                        FlutterClipboard.copy(id).then((value) {
-                          showToast(G.of(context).toastcopy);
-                          print('copied');
-                        });
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.content_copy,
-                            size: 18,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
+                    ),
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Row(
+                        //   children: [
+                        Text(model.user.name ?? "???",
+                            style: Theme.of(context).textTheme.headline6),
+                        // SizedBox(width: 20),
+                        // Icon(
+                        //   FontAwesomeIcons.coins,
+                        //   color: Colors.amber[500],
+                        //   size: 20,
+                        // ),
+                        // SizedBox(width: 5.0),
+                        // userWallet != null
+                        //     ? Text(
+                        //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                        //         style: TextStyle(fontSize: 16))
+                        //     : CupertinoActivityIndicator()
+                        //   ],
+                        // ),
+                        SizedBox(height: 5),
+                        InkResponse(
+                          onTap: () {
+                            String id = encrypt(userid);
+                            FlutterClipboard.copy(id).then((value) {
+                              showToast(G.of(context).toastcopy);
+                              print('copied');
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.content_copy,
+                                size: 18,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
+                              ),
+                              Text(G.of(context).copyID),
+                            ],
                           ),
-                          Text(G.of(context).copyID),
-                        ],
-                      ),
-                    )
-                  ],
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }),
+              );
+            }),
 
         // Divider(
         //   height: 30,

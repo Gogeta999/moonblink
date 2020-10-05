@@ -147,17 +147,19 @@ class _ContactContainerState extends State<ContactContainer> {
                                 ),
                               ),
                             ),
-                            constraints: BoxConstraints(
-                                // minHeight: MediaQuery.of(context)
-                                //         .size
-                                //         .height /
-                                //     2.5,
-                                // maxHeight: MediaQuery.of(context)
-                                //         .size
-                                //         .height /
-                                //     1.5,
-                                minWidth: double.infinity,
-                                maxWidth: double.infinity),
+                            height: 300,
+                            width: MediaQuery.of(context).size.width,
+                            // constraints: BoxConstraints(
+                            //     // minHeight: MediaQuery.of(context)
+                            //     //         .size
+                            //     //         .height /
+                            //     //     2.5,
+                            //     // maxHeight: MediaQuery.of(context)
+                            //     //         .size
+                            //     //         .height /
+                            //     //     1.5,
+                            //     minWidth: double.infinity,
+                            //     maxWidth: double.infinity),
                             child: CachedNetworkImage(
                               fit: BoxFit.fill,
                               imageUrl:
