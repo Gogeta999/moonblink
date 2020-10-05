@@ -33,6 +33,7 @@ class UserModel extends ChangeNotifier {
   /// clear user data
   clearUser() {
     _user = null;
+    notifyListeners();
     StorageManager.localStorage.deleteItem(mUser);
     StorageManager.sharedPreferences.remove(token);
     StorageManager.sharedPreferences.remove(mLoginName);
@@ -41,7 +42,6 @@ class UserModel extends ChangeNotifier {
     StorageManager.sharedPreferences.remove(mstatus);
     StorageManager.sharedPreferences.remove(mUserProfile);
     StorageManager.sharedPreferences.remove(mgameprofile);
-    notifyListeners();
     //StorageManager.sharedPreferences.clear();
   }
 }
