@@ -142,7 +142,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
                     widget.selectedGameModeIndex.forEach((element) {
                       if (element.containsKey(item.id.toString())) {
                         int price = int.tryParse(controller.text);
-                        if (price >= item.price) {
+                        if (price >= 50) {
                           element[item.id.toString()] = int.tryParse(controller.text);
                         } else {
                           controller.text = item.price.toString();
@@ -187,7 +187,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
                     widget.selectedGameModeIndex.forEach((element) {
                       if (element.containsKey(item.id.toString())) {
                         int price = int.tryParse(controller.text);
-                        if (price >= item.price) {
+                        if (price >= 50) {
                           element[item.id.toString()] = int.tryParse(controller.text);
                         } else {
                           controller.text = item.price.toString();
