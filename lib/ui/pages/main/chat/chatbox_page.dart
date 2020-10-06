@@ -65,9 +65,9 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   //Rating
   bool rated = false;
   //Messaging
-  String filename;
+
   File _file;
-  String now = DateTime.now().toString();
+
   Uint8List bytes;
   final TextEditingController textEditingController = TextEditingController();
   String _filePath;
@@ -123,7 +123,6 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         await _compressAndGetFile(_file, temporaryImage.absolute.path);
     setState(() {
       _file = _compressedImage;
-      filename = selfId.toString() + now + ".png";
       bytes = _file.readAsBytesSync();
       print(bytes);
     });
@@ -139,7 +138,6 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     if (compressedImage != null) {
       setState(() {
         _file = compressedImage;
-        filename = selfId.toString() + now + ".png";
         bytes = _file.readAsBytesSync();
       });
     }
@@ -726,6 +724,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               });
 
               await getImage();
+              String now = DateTime.now().toString();
+              String filename = selfId.toString() + now + ".png";
               model.sendfile(filename, bytes, id, 1, messages);
               setState(() {
                 textEditingController.text = '';
@@ -771,11 +771,12 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             model.sendMessage(textEditingController.text, id, messages);
             textEditingController.text = '';
           }
-        } else {
-          model.sendfile(filename, bytes, id, 1, messages);
-          textEditingController.text = '';
-          bytes = null;
         }
+        // else {
+        //   model.sendfile(filename, bytes, id, 1, messages);
+        //   textEditingController.text = '';
+        //   bytes = null;
+        // }
       },
     );
   }
