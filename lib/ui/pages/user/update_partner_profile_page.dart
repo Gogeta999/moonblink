@@ -263,8 +263,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                               ShadedContainer(
                                 child: finish
                                     ? ButtonProgressIndicator()
-                                    : Text(G.of(context).updatePartnerButton),
-                                color: Theme.of(context).buttonColor,
+                                    : Text(
+                                        G.of(context).updatePartnerButton,
+                                        style: Theme.of(context)
+                                            .accentTextTheme
+                                            .button,
+                                      ),
+                                color: Theme.of(context).accentColor,
                                 ontap: () async {
                                   if (_cover == null || _profile == null) {
                                     showToast(G.of(context).toastimagenull);

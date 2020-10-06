@@ -10,7 +10,7 @@ const String mUser = 'mUser';
 class UserModel extends ChangeNotifier {
   // static const String mUser = 'mUser';
 
-  final GlobalFavouriteStateModel globalFavouriteStateModel;
+  // final GlobalFavouriteStateModel globalFavouriteStateModel;
 
   User _user;
 
@@ -18,7 +18,7 @@ class UserModel extends ChangeNotifier {
 
   bool get hasUser => user != null;
 
-  UserModel({this.globalFavouriteStateModel}) {
+  UserModel() {
     var userMap = StorageManager.localStorage.getItem(mUser);
     _user = userMap != null ? User.fromJsonMap(userMap) : null;
   }
