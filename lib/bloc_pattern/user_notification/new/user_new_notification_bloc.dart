@@ -173,6 +173,8 @@ class UserNewNotificationBloc
           return;
         }
       });
+      ///Already read
+      if (currentData[index].isRead == 1) return;
       if (currentData[index].fcmType == 'booking') {
         /// ----- Booking -----
         final data = currentData[index].data as UserBookingNotificationData;

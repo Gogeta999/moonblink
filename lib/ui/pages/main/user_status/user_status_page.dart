@@ -155,6 +155,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   @override
   Widget build(BuildContext context) {
     int status = StorageManager.sharedPreferences.getInt(mstatus);
+    String name = StorageManager.sharedPreferences.getString(mLoginName);
     print("user type is ${usertype.toString()}");
     print("user status is ${status.toString()}");
 
@@ -206,7 +207,7 @@ class _UserListWidgetState extends State<UserListWidget> {
                       children: [
                         // Row(
                         //   children: [
-                        Text(model.user.name ?? "???",
+                        Text(name,
                             style: Theme.of(context).textTheme.headline6),
                         // SizedBox(width: 20),
                         // Icon(
