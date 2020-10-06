@@ -89,18 +89,18 @@ class _ContactsPageState extends State<ContactsPage> {
     // alphabetList.add(tempList[0]);
     for (var i = 0; i < tempList.length; i++) {
       var currentStr = tempList[i][0];
+      print(currentStr.codeUnitAt(0));
       // strMap[currentStr] = i;
-      if (currentStr.codeUnitAt(0) < 65 || currentStr.codeUnitAt(0) > 122) {
-        // strMap["#"] = i;
-        alphabetList.add("#");
-        _currentAlphabet = "#";
-      }
-      if (_currentAlphabet != currentStr) {
-        alphabetList.add(currentStr);
-      }
       count += 1;
-
-      if (_currentAlphabet != currentStr) {
+      if (currentStr.codeUnitAt(0) < 65 || currentStr.codeUnitAt(0) > 122) {
+        currentStr = '#';
+        if (_currentAlphabet != currentStr) {
+          alphabetList.add("#");
+          scrollindex.add(count.toDouble());
+        }
+        _currentAlphabet = "#";
+      } else if (_currentAlphabet != currentStr) {
+        alphabetList.add(currentStr);
         scrollindex.add(count.toDouble());
         _currentAlphabet = currentStr;
       }

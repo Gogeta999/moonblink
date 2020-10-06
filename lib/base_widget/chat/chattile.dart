@@ -14,7 +14,7 @@ class ChatTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 80,
+        height: 86,
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [
@@ -22,9 +22,9 @@ class ChatTile extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
               child: Container(
-                height: 64,
+                height: 70,
                 padding:
-                    EdgeInsets.only(top: 8, bottom: 8, left: 70, right: 20),
+                    EdgeInsets.only(top: 3, bottom: 3, left: 70, right: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -41,13 +41,11 @@ class ChatTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         name,
-                        Divider(
-                          height: 5,
-                          color: Colors.grey,
-                        ),
                         lastmsg,
                       ],
                     ),

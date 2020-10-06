@@ -61,12 +61,12 @@ class _ChatListPageState extends State<ChatListPage>
         image: CachedNetworkImage(
           imageUrl: chat.profile,
           imageBuilder: (context, imageProvider) => CircleAvatar(
-            radius: 30,
+            radius: 33,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             backgroundImage: imageProvider,
           ),
           placeholder: (context, url) => CircleAvatar(
-            radius: 30,
+            radius: 33,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             // backgroundImage: ,
           ),
