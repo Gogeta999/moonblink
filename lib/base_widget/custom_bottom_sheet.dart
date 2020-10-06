@@ -183,8 +183,8 @@ class CustomBottomSheet {
         barrierColor: Colors.black.withOpacity(0.6),
         isDismissible: true,
         builder: (context) => CircularBottomSheet(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: GameModeBottomSheet(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: GameModeBottomSheet(
               gameModeList: gameModeList,
               selectedGameModeIndex: selectedGameModeIndex,
               onDone: onDone,
