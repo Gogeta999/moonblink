@@ -11,8 +11,7 @@ void openStore() async {
   }
   const String pageUrl = 'https://www.facebook.com/Moonblink2000';
   try {
-    bool nativeAppLaunch = await launch(appStoreUrl,
-        forceSafariVC: false, universalLinksOnly: true);
+    bool nativeAppLaunch = await launch(appStoreUrl, forceSafariVC: false);
     if (!nativeAppLaunch) {
       await launch(pageUrl, forceSafariVC: false);
     }
