@@ -121,6 +121,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     }
 
     _sortProduct(productDetailResponse.productDetails);
+    print(productDetailResponse.productDetails[0].title);
     //List<String> consumables = await ConsumableStore.load();
     setState(() {
       _isAvailable = isAvailable;
@@ -222,7 +223,10 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  productDetails.title,
+                  productDetails.title ??
+                      (Platform.isIOS
+                          ? productDetails.skProduct.localizedTitle
+                          : productDetails.skuDetail.title),
                 ),
               ),
               // Text(
@@ -327,9 +331,10 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
   userTopUp(String productId) async {
     try {
       var msg = await MoonBlinkRepository.topUp(productId);
-      print(msg);
+      showToast('Top Up Success');
     } catch (err) {
       print(err);
+      showToast('Can\'t complete this purchase, Please contact us');
     }
   }
 
@@ -358,8 +363,6 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     if (purchaseDetails.productID == coin200Consumable ||
         purchaseDetails.productID == coin500Consumable ||
         purchaseDetails.productID == coin1000Consumable) {
-      //await ConsumableStore.save(purchaseDetails.purchaseID);
-      //List<String> consumables = await ConsumableStore.load();
       setState(() {
         _purchasePending = false;
       });
@@ -379,13 +382,12 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
   }
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
-    // IMPORTANT!! Always verify a purchase before delivering the product.
-    // For the purpose of an example, we directly return true.
+    /// Should verify this purchase. for now just return true
     return Future<bool>.value(true);
   }
 
   void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
-    // handle invalid purchase here if  _verifyPurchase` failed.
+    /// Should implement this.
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
@@ -413,14 +415,45 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
           }
         }
         if (purchaseDetails.pendingCompletePurchase) {
-          try {
-            await InAppPurchaseConnection.instance
-                .completePurchase(purchaseDetails);
-            await userTopUp(purchaseDetails.productID);
-            showToast('TopUp Success');
-          } catch (e) {
-            showToast('$e');
-          }
+          await InAppPurchaseConnection.instance
+              .completePurchase(purchaseDetails)
+              .then((value) {
+            switch (value.responseCode) {
+              case BillingResponse.ok:
+                userTopUp(purchaseDetails.productID);
+                break;
+              case BillingResponse.billingUnavailable:
+                showToast('Billing unavailable');
+                break;
+              case BillingResponse.featureNotSupported:
+                showToast('Feature not supported');
+                break;
+              case BillingResponse.serviceDisconnected:
+                showToast('Service disconnected');
+                break;
+              case BillingResponse.userCanceled:
+                print('Ok, User cancel');
+                break;
+              case BillingResponse.serviceUnavailable:
+                showToast('Service unavailable');
+                break;
+              case BillingResponse.itemUnavailable:
+                showToast('Product unavailable');
+                break;
+              case BillingResponse.developerError:
+                print('Developer Error');
+                break;
+              case BillingResponse.error:
+                print('Error');
+                break;
+              case BillingResponse.itemAlreadyOwned:
+                showToast('Item Already owned');
+                break;
+              case BillingResponse.itemNotOwned:
+                showToast('Item not owned');
+                break;
+            }
+          });
         }
       }
     });
