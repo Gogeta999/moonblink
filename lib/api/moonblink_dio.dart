@@ -531,17 +531,16 @@ class DioUtils {
       appStoreUrl = 'https://apps.apple.com/us/app/id1526791060';
     } else {
       appStoreUrl =
-          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
+      'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
     }
-    const String pageUrl = 'https://www.facebook.com/Moonblink2000';
     try {
       bool nativeAppLaunch = await launch(appStoreUrl,
           forceSafariVC: false, universalLinksOnly: true);
       if (!nativeAppLaunch) {
-        await launch(pageUrl, forceSafariVC: false);
+        await launch(appStoreUrl, forceSafariVC: false);
       }
     } catch (e) {
-      await launch(pageUrl, forceSafariVC: false);
+      await launch(appStoreUrl, forceSafariVC: false);
     }
   }
 }

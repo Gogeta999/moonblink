@@ -9,14 +9,13 @@ void openStore() async {
     appStoreUrl =
         'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
   }
-  const String pageUrl = 'https://www.facebook.com/Moonblink2000';
   try {
     bool nativeAppLaunch = await launch(appStoreUrl,
         forceSafariVC: false, universalLinksOnly: true);
     if (!nativeAppLaunch) {
-      await launch(pageUrl, forceSafariVC: false);
+      await launch(appStoreUrl, forceSafariVC: false);
     }
   } catch (e) {
-    await launch(pageUrl, forceSafariVC: false);
+    await launch(appStoreUrl, forceSafariVC: false);
   }
 }
