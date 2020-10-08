@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/profile_widgets.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
-import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -55,12 +54,18 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
           Card(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: ListTile(
-              leading: SvgPicture.asset(
-                moongoHistoryNoti,
-                height: 50,
-                width: 50,
-                color: Theme.of(context).accentColor,
+              // leading: SvgPicture.asset(
+              //   moongoHistoryNoti,
+              //   height: 50,
+              //   width: 50,
+              //   color: Theme.of(context).accentColor,
+              // ),
+              leading: Icon(
+                IconFonts.systemNotiIcon,
+                size: 50,
+                color: Colors.amberAccent[200],
               ),
+
               onTap: () =>
                   Navigator.pushNamed(context, RouteName.userMessageHistory),
               // isThreeLine: true,
@@ -74,11 +79,16 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
           Card(
             margin: EdgeInsets.zero,
             child: ListTile(
-              leading: SvgPicture.asset(
-                bookHistoryNoti,
-                height: 50,
-                width: 50,
-                color: Theme.of(context).accentColor,
+              // leading: SvgPicture.asset(
+              //   bookHistoryNoti,
+              //   height: 50,
+              //   width: 50,
+              //   color: Theme.of(context).accentColor,
+              // ),
+              leading: Icon(
+                IconFonts.bookingHistoryIcon,
+                size: 50,
+                color: Colors.deepPurpleAccent[200],
               ),
               onTap: () =>
                   Navigator.pushNamed(context, RouteName.userBookingHistory),

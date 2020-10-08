@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:moonblink/base_widget/page_route_animation.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
@@ -28,6 +27,7 @@ import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/user_rating_page.dart';
 import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
+import 'package:moonblink/utils/page_route_animation.dart';
 import '../ui/pages/settings/allsetting/terms_and_conditions_page.dart';
 
 class RouteName {

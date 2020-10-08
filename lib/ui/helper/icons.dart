@@ -19,6 +19,7 @@ final String logout = 'assets/icons/status/logout.svg';
 final String online = 'assets/icons/status/online.svg';
 final String offline = 'assets/icons/status/offline.svg';
 final String gameProfile = 'assets/icons/status/gameProfile.svg';
+// final String gameProfileDark = 'assets/icons/status/gameProfileDark.svg';
 final String profileEdit = 'assets/icons/status/profileEdit.svg';
 final String setting = 'assets/icons/status/setting.svg';
 final String theme = 'assets/icons/status/theme.svg';

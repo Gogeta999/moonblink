@@ -45,18 +45,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
-                    // colorBlendMode: BlendMode
-                    //     .srcOver
-                    // color: Colors.black.withOpacity(
-                    //     Theme.of(context).brightness == Brightness.light
-                    //         ? 0
-                    //         : 0.65),
                     fit: BoxFit.cover);
               } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 if (snapshot.data.status == '1') {
                   return InkWell(
-                    // onTap: ,
                     child: Image.network(
                       snapshot.data.adUrl,
                       fit: BoxFit.fill,
@@ -65,22 +58,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   );
                 } else {
                   return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
-                      // colorBlendMode: BlendMode
-                      //     .srcOver
-                      // color: Colors.black.withOpacity(
-                      //     Theme.of(context).brightness == Brightness.light
-                      //         ? 0
-                      //         : 0.65),
                       fit: BoxFit.cover);
                 }
               } else if (snapshot.hasError) {
                 return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
-                    // colorBlendMode: BlendMode
-                    //     .srcOver
-                    // color: Colors.black.withOpacity(
-                    //     Theme.of(context).brightness == Brightness.light
-                    //         ? 0
-                    //         : 0.65),
                     fit: BoxFit.cover);
               }
               return Center(child: CircularProgressIndicator());

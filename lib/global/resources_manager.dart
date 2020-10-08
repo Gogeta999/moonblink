@@ -32,6 +32,11 @@ class IconFonts {
   IconFonts._();
   //AliIcon
   static const String fontFamily = 'appIconFonts';
+  //Noti Icon
+  static const IconData bookingHistoryIcon =
+      IconData(0xe674, fontFamily: fontFamily);
+  static const IconData systemNotiIcon =
+      IconData(0xe638, fontFamily: fontFamily);
   //Button Icon
   static const IconData messageIcon = IconData(0xe605, fontFamily: fontFamily);
   static const IconData sendIcon = IconData(0xe603, fontFamily: fontFamily);
