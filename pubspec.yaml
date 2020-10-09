@@ -1,7 +1,7 @@
 name: moonblink
 description: MoonBlink Universe's app
 
-version: 2.1.1+23
+version: 2.1.1+24
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
