@@ -117,6 +117,11 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
       if (await _verifyPurchase(purchase)) {
         verifiedPurchases.add(purchase);
+        // if (Platform.isIOS) {
+        //   // Mark that you've delivered the purchase. Only the App Store requires
+        //   // this final confirmation.
+        //   InAppPurchaseConnection.instance.completePurchase(purchase);
+        // }
       }
     }
 
@@ -363,6 +368,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     if (purchaseDetails.productID == coin200Consumable ||
         purchaseDetails.productID == coin500Consumable ||
         purchaseDetails.productID == coin1000Consumable) {
+      userTopUp(purchaseDetails.productID);
       setState(() {
         _purchasePending = false;
       });
@@ -375,7 +381,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
   }
 
   void handleError(IAPError error) {
-    showToast(error.message);
+    print(error.message);
     setState(() {
       _purchasePending = false;
     });
@@ -420,7 +426,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
               .then((value) {
             switch (value.responseCode) {
               case BillingResponse.ok:
-                userTopUp(purchaseDetails.productID);
+                print('OK');
                 break;
               case BillingResponse.billingUnavailable:
                 showToast('Billing unavailable');
