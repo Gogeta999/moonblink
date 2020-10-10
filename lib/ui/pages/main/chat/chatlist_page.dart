@@ -158,6 +158,7 @@ class _ChatListPageState extends State<ChatListPage>
                   header: WaterDropHeader(),
                   onRefresh: () {
                     onRefresh(storymodel);
+                    model.init();
                   },
                   child: CustomScrollView(slivers: <Widget>[
                     if (storymodel.stories.isNotEmpty)
