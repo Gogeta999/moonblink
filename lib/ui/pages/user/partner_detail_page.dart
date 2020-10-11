@@ -204,7 +204,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         return Center(
             child: Text(G.of(context).statuserror,
                 style: TextStyle(
-                    color: Colors.orange, fontWeight: FontWeight.bold)));
+                    color: Colors.green, fontWeight: FontWeight.bold)));
         break;
       case (3):
         return Center(
