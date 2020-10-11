@@ -126,7 +126,7 @@ void nextPage(context) {
   //     : Navigator.of(context)
   //         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
   if (newUser == true) {
-    Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage);
+    Navigator.of(context).pushReplacementNamed(RouteName.termsAndConditionsPage);
   } else if (newUser == false && hasUser == null) {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.login, (route) => false);

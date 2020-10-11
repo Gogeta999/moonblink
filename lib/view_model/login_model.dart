@@ -1,9 +1,11 @@
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/locator.dart';
@@ -67,7 +69,32 @@ class LoginModel extends ViewStateModel {
             print('case loggedIn');
             final FacebookAccessToken accessToken = result.accessToken;
             user = await MoonBlinkRepository.loginWithFacebook(
-                accessToken.token, fcmToken);
+                accessToken.token, fcmToken).catchError((e) {
+                  showCupertinoDialog(
+                    context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('Sign In Failed\n'),
+                        content: Text('Having trouble signing in using Facebook? '
+                            'Would you like to view the instructions that we prepared for you.'),
+                        actions: [
+                          CupertinoButton(
+                            child: Text('No, it\'s okay'),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          CupertinoButton(
+                            child: Text('Yes, show me'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, RouteName.facebookLoginError);
+                            },
+                          )
+                        ],
+                      );
+                    }
+                  );
+                }
+            );
             break;
           case FacebookLoginStatus.cancelledByUser:
             print('case cancelledByUser');
@@ -142,7 +169,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      // await MoonBlinkRepository.logout();
+      await MoonBlinkRepository.logout();
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
       final context = locator<NavigationService>().navigatorKey.currentContext;
