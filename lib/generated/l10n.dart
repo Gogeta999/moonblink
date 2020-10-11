@@ -1683,10 +1683,10 @@ class G {
     );
   }
 
-  /// `Available`
+  /// `Online`
   String get statusavailable {
     return Intl.message(
-      'Available',
+      'Online',
       name: 'statusavailable',
       desc: '',
       args: [],
@@ -1703,10 +1703,10 @@ class G {
     );
   }
 
-  /// `Offline`
+  /// `Available`
   String get statuserror {
     return Intl.message(
-      'Offline',
+      'Available',
       name: 'statuserror',
       desc: '',
       args: [],
