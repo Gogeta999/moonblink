@@ -77,6 +77,8 @@ class GameMode {
   final int price;
   final String createdAt;
   final String updatedAt;
+  final int timeInMinute;
+  final int defaultPrice;
   final int selected;
 
   ///this data won't need at booking
@@ -88,6 +90,8 @@ class GameMode {
       this.price,
       this.createdAt,
       this.updatedAt,
+      this.timeInMinute,
+      this.defaultPrice,
       this.selected});
 
   GameMode.fromJson(Map<String, dynamic> json)
@@ -97,6 +101,8 @@ class GameMode {
         price = json['price'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
+        timeInMinute = json['time_in_minute'],
+        defaultPrice = json['default_price'],
         selected = json['selected'];
 
   Map<String, dynamic> toJson() => {
@@ -106,6 +112,8 @@ class GameMode {
         'price': price,
         'created_at': createdAt,
         'updated_at': updatedAt,
+        'time_in_minute': timeInMinute,
+        'default_price': defaultPrice,
         'selected': selected
       };
 }

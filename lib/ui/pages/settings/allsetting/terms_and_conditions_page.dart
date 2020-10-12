@@ -1,12 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/user_model.dart';
-import 'package:oktoast/oktoast.dart';
 
 const TextStyle titleTextStyle =
     TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
@@ -16,13 +17,31 @@ const TextStyle contentTextStyle = TextStyle(fontWeight: FontWeight.w300);
 
 class TermsAndConditions extends StatelessWidget {
   final bool showAccept;
+  final ScrollController _scrollController = ScrollController();
 
-  const TermsAndConditions({Key key, this.showAccept = true}) : super(key: key);
+  TermsAndConditions({Key key, this.showAccept = true}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: IconButton(
+          icon: Icon(Icons.arrow_downward),
+          onPressed: () {
+            if (_scrollController.position.maxScrollExtent > _scrollController.position.pixels) {
+              if(Platform.isIOS) {
+                _scrollController.jumpTo(
+                    _scrollController.position.maxScrollExtent -
+                        _scrollController.position.pixels);
+              } else {
+                _scrollController.jumpTo(
+                    _scrollController.position.maxScrollExtent);
+              }
+            }
+          },
+        ),
         backgroundColor: Colors.black,
         actions: [
           AppbarLogo(),
@@ -30,8 +49,8 @@ class TermsAndConditions extends StatelessWidget {
       ),
       body: SafeArea(
         child: Container(
-          // margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: ListView(
+            controller: _scrollController,
             children: <Widget>[
               Stack(
                 children: [
@@ -92,8 +111,7 @@ class TermsAndConditions extends StatelessWidget {
                           '\nThe specific content of this service is provided by Moonblink Group according to the actual situation, including but not limited to authorized users to conduct instant messaging through their accounts, check platform user game role information, add friends, join groups, follow others, and post messages. Moonblink Group may change the services it provides, and the content of services provided by Moonblink Group may change at any time, and users will receive notice from Moonblink Group about service changes.\n',
                           style: contentTextStyle,
                           textAlign: TextAlign.justify),
-                      Text(
-                          'Protection of users\' personal privacy information',
+                      Text('Protection of users\' personal privacy information',
                           style: subtitleTextStyle,
                           textAlign: TextAlign.justify),
                       Text(
@@ -182,11 +200,6 @@ class TermsAndConditions extends StatelessWidget {
                   ),
                 ),
               ),
-              // if (newUser != false)
-              // RaisedButton(
-              //   onPressed: null,
-              //   child: Text(hasUser.toString()),
-              // ),
               if (hasUser == null && showAccept)
                 Container(
                   margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -201,15 +214,17 @@ class TermsAndConditions extends StatelessWidget {
                       style: Theme.of(context).accentTextTheme.button,
                     ),
                     onPressed: () {
-                      if (Platform.isAndroid) {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, RouteName.login, (route) => false);
-                      } else if (Platform.isIOS) {
-                        Navigator.pushNamedAndRemoveUntil(context,
-                            RouteName.licenseAgreement, (route) => false);
-                      } else {
-                        showToast('This platform is not supported');
-                      }
+                      // if (Platform.isAndroid) {
+                      //   Navigator.pushNamedAndRemoveUntil(
+                      //       context, RouteName.login, (route) => false);
+                      // } else if (Platform.isIOS) {
+                      //   Navigator.pushNamedAndRemoveUntil(context,
+                      //       RouteName.licenseAgreement, (route) => false);
+                      // } else {
+                      //   showToast('This platform is not supported');
+                      // }
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, RouteName.login, (route) => false);
                     },
                   ),
                 ),
