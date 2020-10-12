@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -38,6 +39,89 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
     _textStyle = TextStyle(color: Theme.of(context).accentColor);
   }
 
+  _buildCharge() {
+    int type = StorageManager.sharedPreferences.getInt(mUserType);
+    final TapGestureRecognizer _learnMore = TapGestureRecognizer();
+    _learnMore.onTap = () {
+      showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              content: Text('Learn More'),
+              actions: [
+                CupertinoButton(
+                  child: Text('Okay'),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            );
+          });
+    };
+
+    switch (type) {
+      case 1:
+        return Text.rich(
+          TextSpan(
+              text: '*We will charge 50% of the price* ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              // children: [
+              //   TextSpan(
+              //       text: 'Learn more',
+              //       recognizer: _learnMore,
+              //       style: TextStyle(color: Theme.of(context).accentColor)),
+              // ]
+          ),
+          textAlign: TextAlign.center,
+        );
+        break;
+      case 2:
+        return Text.rich(
+          TextSpan(
+              text: '*We will charge 30% of the price* ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              // children: [
+              //   TextSpan(
+              //       text: 'Learn more',
+              //       recognizer: _learnMore,
+              //       style: TextStyle(color: Theme.of(context).accentColor)),
+              // ]
+          ),
+          textAlign: TextAlign.center,
+        );
+        break;
+      case 3:
+        return Text.rich(
+          TextSpan(
+              text: '*We will charge 30% of the price* ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              // children: [
+              //   TextSpan(
+              //       text: 'Learn more',
+              //       recognizer: _learnMore,
+              //       style: TextStyle(color: Theme.of(context).accentColor)),
+              // ]
+          ),
+          textAlign: TextAlign.center,
+        );
+        break;
+      case 4:
+        return Text.rich(
+          TextSpan(
+              text: '*We will charge 40% of the price* ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              // children: [
+              //   TextSpan(
+              //       text: 'Learn more',
+              //       recognizer: _learnMore,
+              //       style: TextStyle(color: Theme.of(context).accentColor)),
+              // ]
+          ),
+          textAlign: TextAlign.center,
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,8 +143,9 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
               CupertinoButton(
                 onPressed: () {
                   widget.selectedGameModeIndex.sort((a, b) =>
-                  int.tryParse(a.keys.first) > int.tryParse(b.keys.first) ? 1 : 0
-                  );
+                      int.tryParse(a.keys.first) > int.tryParse(b.keys.first)
+                          ? 1
+                          : 0);
                   widget.onDone(widget.selectedGameModeIndex);
                   Navigator.pop(context);
                 },
@@ -69,7 +154,8 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
             ],
           ),
         ),
-        SizedBox(height: 20.0),
+        _buildCharge(),
+        SizedBox(height: 10.0),
         Container(
           constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.8),
@@ -78,7 +164,8 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
             physics: ClampingScrollPhysics(),
             itemCount: widget.gameModeList.length,
             itemBuilder: (context, index) {
-              return GameModeListTile(widget.gameModeList, widget.selectedGameModeIndex, index);
+              return GameModeListTile(
+                  widget.gameModeList, widget.selectedGameModeIndex, index);
             },
           ),
         )
@@ -92,7 +179,10 @@ class GameModeListTile extends StatefulWidget {
   final List<Map<String, int>> selectedGameModeIndex;
   final int index;
 
-  const GameModeListTile(this.gameModeList, this.selectedGameModeIndex, this.index, {Key key}) : super(key: key);
+  const GameModeListTile(
+      this.gameModeList, this.selectedGameModeIndex, this.index,
+      {Key key})
+      : super(key: key);
 
   @override
   _GameModeListTileState createState() => _GameModeListTileState();
@@ -100,12 +190,12 @@ class GameModeListTile extends StatefulWidget {
 
 class _GameModeListTileState extends State<GameModeListTile> {
   TextEditingController _gamePriceController;
+  int _defaultPrice = 0;
 
   @override
   void initState() {
     _gamePriceController = TextEditingController(
-        text: '${widget.gameModeList[widget.index].price}'
-    );
+        text: '${widget.gameModeList[widget.index].price}');
     GameMode item = widget.gameModeList[widget.index];
     widget.selectedGameModeIndex.forEach((element) {
       if (element.containsKey(item.id.toString())) {
@@ -113,6 +203,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
         return;
       }
     });
+    _defaultPrice = widget.gameModeList[widget.index].defaultPrice;
     super.initState();
   }
 
@@ -124,7 +215,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
             title: Text('Enter price for a game', textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
-              BoxDecoration(color: Theme.of(context).backgroundColor),
+                  BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
@@ -136,7 +227,8 @@ class _GameModeListTileState extends State<GameModeListTile> {
                   GameMode item = widget.gameModeList[widget.index];
                   widget.selectedGameModeIndex.forEach((element) {
                     if (element.containsKey(item.id.toString())) {
-                      _gamePriceController.text = element.values.first.toString();
+                      _gamePriceController.text =
+                          element.values.first.toString();
                       return;
                     }
                   });
@@ -151,12 +243,14 @@ class _GameModeListTileState extends State<GameModeListTile> {
                     widget.selectedGameModeIndex.forEach((element) {
                       if (element.containsKey(item.id.toString())) {
                         int price = int.tryParse(controller.text);
-                        if (price >= 50) {
-                          element[item.id.toString()] = int.tryParse(controller.text);
+                        if (price >= _defaultPrice) {
+                          element[item.id.toString()] =
+                              int.tryParse(controller.text);
                         } else {
                           controller.text = item.price.toString();
                           element[item.id.toString()] = item.price;
-                          showToast("Can't update price. It's lower than the default");
+                          showToast(
+                              "Can't update price. It's lower than the default");
                         }
                         return;
                       }
@@ -178,7 +272,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
             title: Text('Enter price for a game', textAlign: TextAlign.center),
             content: CupertinoTextField(
               decoration:
-              BoxDecoration(color: Theme.of(context).backgroundColor),
+                  BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
@@ -190,7 +284,8 @@ class _GameModeListTileState extends State<GameModeListTile> {
                   GameMode item = widget.gameModeList[widget.index];
                   widget.selectedGameModeIndex.forEach((element) {
                     if (element.containsKey(item.id.toString())) {
-                      _gamePriceController.text = element.values.first.toString();
+                      _gamePriceController.text =
+                          element.values.first.toString();
                       return;
                     }
                   });
@@ -205,12 +300,14 @@ class _GameModeListTileState extends State<GameModeListTile> {
                     widget.selectedGameModeIndex.forEach((element) {
                       if (element.containsKey(item.id.toString())) {
                         int price = int.tryParse(controller.text);
-                        if (price >= 50) {
-                          element[item.id.toString()] = int.tryParse(controller.text);
+                        if (price >= _defaultPrice) {
+                          element[item.id.toString()] =
+                              int.tryParse(controller.text);
                         } else {
                           controller.text = item.price.toString();
                           element[item.id.toString()] = item.price;
-                          showToast("Can't update price. it's lower than the default");
+                          showToast(
+                              "Can't update price. it's lower than the default");
                         }
                         return;
                       }
@@ -242,21 +339,18 @@ class _GameModeListTileState extends State<GameModeListTile> {
           children: [
             Text('Price - ${_gamePriceController.text} Coins'),
             SizedBox(width: 10),
-            if(StorageManager.sharedPreferences.getInt(mUserType) == 2||
-            StorageManager.sharedPreferences.getInt(mUserType) == 3||
-            StorageManager.sharedPreferences.getInt(mUserType) == 4)
-            InkWell(
-              onTap: () => _onTapEditPrice(),
-              child: Icon(Icons.edit)
-            )
+            if (StorageManager.sharedPreferences.getInt(mUserType) == 2 ||
+                StorageManager.sharedPreferences.getInt(mUserType) == 3 ||
+                StorageManager.sharedPreferences.getInt(mUserType) == 4)
+              InkWell(onTap: () => _onTapEditPrice(), child: Icon(Icons.edit))
           ],
         ),
-        onTap: () => _onTapGameModeListTile(item.id, int.tryParse(_gamePriceController.text), isSelected),
+        onTap: () => _onTapGameModeListTile(
+            item.id, int.tryParse(_gamePriceController.text), isSelected),
         trailing: Icon(
           Icons.check,
-          color: isSelected
-              ? Theme.of(context).accentColor
-              : Colors.transparent,
+          color:
+              isSelected ? Theme.of(context).accentColor : Colors.transparent,
         ),
         selected: isSelected,
       ),
