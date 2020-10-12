@@ -373,6 +373,36 @@ class G {
     );
   }
 
+  /// `*We will charge 50% of the price*`
+  String get chargeForNormalPartner {
+    return Intl.message(
+      '*We will charge 50% of the price*',
+      name: 'chargeForNormalPartner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*We will charge 30% of the price*`
+  String get chargeForCeleNStreamer {
+    return Intl.message(
+      '*We will charge 30% of the price*',
+      name: 'chargeForCeleNStreamer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*We will charge 40% of the price*`
+  String get chargeForPro {
+    return Intl.message(
+      '*We will charge 40% of the price*',
+      name: 'chargeForPro',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Chinese`
   String get china {
     return Intl.message(
@@ -418,6 +448,16 @@ class G {
     return Intl.message(
       'Choose Game You Play',
       name: 'choosegame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get done {
+    return Intl.message(
+      'Done',
+      name: 'done',
       desc: '',
       args: [],
     );

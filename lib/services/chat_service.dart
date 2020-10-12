@@ -16,7 +16,7 @@ import '../models/message.dart';
 String proSocketurl = 'https://chat.moonblinkuniverse.com';
 String devSocketUrl = 'http://157.230.35.18:8000/';
 String now = DateTime.now().toString();
-IO.Socket socket = IO.io(devSocketUrl, <String, dynamic>{
+IO.Socket socket = IO.io(proSocketurl, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
   'timeout': 2000
