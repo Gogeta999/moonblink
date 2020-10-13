@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/view_model/user_model.dart';
 
 const TextStyle titleTextStyle =
@@ -223,6 +224,7 @@ class TermsAndConditions extends StatelessWidget {
                       // } else {
                       //   showToast('This platform is not supported');
                       // }
+                      StorageManager.sharedPreferences.setBool(isNewUser, false);
                       Navigator.pushNamedAndRemoveUntil(
                           context, RouteName.login, (route) => false);
                     },
