@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("လက်ခံ"),
+    "alarmRatio" : MessageLookupByLibrary.simpleMessage("MoonGO ရွှေဒင်္ဂါးနှင့်ကျပ်ငွေလဲနှုန်းသည် ၁ မှ ၁၀ ဖြစ်သည်"),
     "albums" : MessageLookupByLibrary.simpleMessage("အယ်လ်ဘမ်"),
     "and" : MessageLookupByLibrary.simpleMessage(" နှင့် "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),

@@ -63,6 +63,16 @@ class G {
     );
   }
 
+  /// `MoonGo coin and Kyat exchange rate is 1 to 10`
+  String get alarmRatio {
+    return Intl.message(
+      'MoonGo coin and Kyat exchange rate is 1 to 10',
+      name: 'alarmRatio',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Albums`
   String get albums {
     return Intl.message(

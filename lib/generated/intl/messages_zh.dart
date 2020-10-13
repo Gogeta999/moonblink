@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("接受"),
+    "alarmRatio" : MessageLookupByLibrary.simpleMessage("MoonGo金币和缅币的汇率是1比10"),
     "albums" : MessageLookupByLibrary.simpleMessage("图库"),
     "and" : MessageLookupByLibrary.simpleMessage(" 和 "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
