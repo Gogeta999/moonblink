@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -27,18 +28,19 @@ class TermsAndConditions extends StatelessWidget {
     var hasUser = StorageManager.localStorage.getItem(mUser);
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: IconButton(
-          icon: Icon(Icons.arrow_downward),
-          onPressed: () {
-            if (_scrollController.position.maxScrollExtent > _scrollController.position.pixels) {
-              if(Platform.isIOS) {
+        // centerTitle: true,
+        title: InkWell(
+          child: Text(G.current.splashSkip),
+          onTap: () {
+            if (_scrollController.position.maxScrollExtent >
+                _scrollController.position.pixels) {
+              if (Platform.isIOS) {
                 _scrollController.jumpTo(
                     _scrollController.position.maxScrollExtent -
                         _scrollController.position.pixels);
               } else {
-                _scrollController.jumpTo(
-                    _scrollController.position.maxScrollExtent);
+                _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent);
               }
             }
           },

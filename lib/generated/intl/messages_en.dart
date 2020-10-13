@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("Accept"),
+    "alarmRatio" : MessageLookupByLibrary.simpleMessage("MoonGo coin and Kyat exchange rate is 1 to 10"),
     "albums" : MessageLookupByLibrary.simpleMessage("Albums"),
     "and" : MessageLookupByLibrary.simpleMessage(" and "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
@@ -52,6 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "cannotbookself" : MessageLookupByLibrary.simpleMessage("You can\'t book yourself"),
     "cannotchatself" : MessageLookupByLibrary.simpleMessage("You can\'t chat yourself"),
     "cashout" : MessageLookupByLibrary.simpleMessage("Cash Out"),
+    "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*We will charge 30% of the price*"),
+    "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*We will charge 50% of the price*"),
+    "chargeForPro" : MessageLookupByLibrary.simpleMessage("*We will charge 40% of the price*"),
     "china" : MessageLookupByLibrary.simpleMessage("Chinese"),
     "choose" : MessageLookupByLibrary.simpleMessage("Choose"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("Choose Game You Play"),
@@ -61,6 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyID" : MessageLookupByLibrary.simpleMessage("copy ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("Current coin"),
     "deselect" : MessageLookupByLibrary.simpleMessage("Deselect"),
+    "done" : MessageLookupByLibrary.simpleMessage("Done"),
     "end" : MessageLookupByLibrary.simpleMessage("End"),
     "english" : MessageLookupByLibrary.simpleMessage("English"),
     "enterCall" : MessageLookupByLibrary.simpleMessage("Enter Call"),

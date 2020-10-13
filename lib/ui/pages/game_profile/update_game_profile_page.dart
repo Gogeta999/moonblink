@@ -362,6 +362,19 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   iconData: Icons.edit,
                   onTap: _onTapLevel),
               _buildDivider(),
+              Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                elevation: 8,
+                child: ListTile(
+                  onTap: null,
+                  title: Text(
+                    G.current.alarmRatio,
+                    // style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+              ),
+              _buildDivider(),
               _buildTitleWidget(title: G.of(context).gamemodedescript),
               _buildGameProfileCard(
                   title: G.of(context).gamemode,

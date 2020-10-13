@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("接受"),
+    "alarmRatio" : MessageLookupByLibrary.simpleMessage("MoonGo金币和缅币的汇率是1比10"),
     "albums" : MessageLookupByLibrary.simpleMessage("图库"),
     "and" : MessageLookupByLibrary.simpleMessage(" 和 "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
@@ -52,6 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "cannotbookself" : MessageLookupByLibrary.simpleMessage("您无法自己对自己下单"),
     "cannotchatself" : MessageLookupByLibrary.simpleMessage("您无法自己与自己聊天"),
     "cashout" : MessageLookupByLibrary.simpleMessage("取钱"),
+    "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的30%*"),
+    "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*我们会收取价格的50%*"),
+    "chargeForPro" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的40%*"),
     "china" : MessageLookupByLibrary.simpleMessage("中文"),
     "choose" : MessageLookupByLibrary.simpleMessage("选择"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("选择您准备游玩的游戏"),
@@ -61,6 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyID" : MessageLookupByLibrary.simpleMessage("复制ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("当前金币"),
     "deselect" : MessageLookupByLibrary.simpleMessage("取消"),
+    "done" : MessageLookupByLibrary.simpleMessage("确认"),
     "end" : MessageLookupByLibrary.simpleMessage("结束"),
     "english" : MessageLookupByLibrary.simpleMessage("英语"),
     "enterCall" : MessageLookupByLibrary.simpleMessage("进入呼叫页面"),

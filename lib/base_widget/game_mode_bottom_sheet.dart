@@ -62,14 +62,14 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
       case 1:
         return Text.rich(
           TextSpan(
-              text: '*We will charge 50% of the price* ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              // children: [
-              //   TextSpan(
-              //       text: 'Learn more',
-              //       recognizer: _learnMore,
-              //       style: TextStyle(color: Theme.of(context).accentColor)),
-              // ]
+            text: G.current.chargeForNormalPartner,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            // children: [
+            //   TextSpan(
+            //       text: 'Learn more',
+            //       recognizer: _learnMore,
+            //       style: TextStyle(color: Theme.of(context).accentColor)),
+            // ]
           ),
           textAlign: TextAlign.center,
         );
@@ -77,14 +77,14 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
       case 2:
         return Text.rich(
           TextSpan(
-              text: '*We will charge 30% of the price* ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              // children: [
-              //   TextSpan(
-              //       text: 'Learn more',
-              //       recognizer: _learnMore,
-              //       style: TextStyle(color: Theme.of(context).accentColor)),
-              // ]
+            text: G.current.chargeForCeleNStreamer,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            // children: [
+            //   TextSpan(
+            //       text: 'Learn more',
+            //       recognizer: _learnMore,
+            //       style: TextStyle(color: Theme.of(context).accentColor)),
+            // ]
           ),
           textAlign: TextAlign.center,
         );
@@ -92,14 +92,14 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
       case 3:
         return Text.rich(
           TextSpan(
-              text: '*We will charge 30% of the price* ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              // children: [
-              //   TextSpan(
-              //       text: 'Learn more',
-              //       recognizer: _learnMore,
-              //       style: TextStyle(color: Theme.of(context).accentColor)),
-              // ]
+            text: G.current.chargeForCeleNStreamer,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            // children: [
+            //   TextSpan(
+            //       text: 'Learn more',
+            //       recognizer: _learnMore,
+            //       style: TextStyle(color: Theme.of(context).accentColor)),
+            // ]
           ),
           textAlign: TextAlign.center,
         );
@@ -107,14 +107,14 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
       case 4:
         return Text.rich(
           TextSpan(
-              text: '*We will charge 40% of the price* ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              // children: [
-              //   TextSpan(
-              //       text: 'Learn more',
-              //       recognizer: _learnMore,
-              //       style: TextStyle(color: Theme.of(context).accentColor)),
-              // ]
+            text: G.current.chargeForPro,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            // children: [
+            //   TextSpan(
+            //       text: 'Learn more',
+            //       recognizer: _learnMore,
+            //       style: TextStyle(color: Theme.of(context).accentColor)),
+            // ]
           ),
           textAlign: TextAlign.center,
         );
@@ -138,7 +138,7 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
                 },
                 child: Text(G.of(context).cancel, style: _textStyle),
               ),
-              Text('Select Modes',
+              Text(G.current.selectgameMode,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               CupertinoButton(
                 onPressed: () {
@@ -149,7 +149,7 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
                   widget.onDone(widget.selectedGameModeIndex);
                   Navigator.pop(context);
                 },
-                child: Text('Done', style: _textStyle),
+                child: Text(G.current.done, style: _textStyle),
               ),
             ],
           ),

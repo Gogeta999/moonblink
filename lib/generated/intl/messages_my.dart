@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "accept" : MessageLookupByLibrary.simpleMessage("လက်ခံ"),
+    "alarmRatio" : MessageLookupByLibrary.simpleMessage("MoonGO ရွှေဒင်္ဂါးနှင့်ကျပ်ငွေလဲနှုန်းသည် ၁ မှ ၁၀ ဖြစ်သည်"),
     "albums" : MessageLookupByLibrary.simpleMessage("အယ်လ်ဘမ်"),
     "and" : MessageLookupByLibrary.simpleMessage(" နှင့် "),
     "appName" : MessageLookupByLibrary.simpleMessage("MoonBlink"),
@@ -52,6 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "cannotbookself" : MessageLookupByLibrary.simpleMessage("သင်ကိုယ်တိုင်ဘွတ်လုပ်လို့မရဘူး"),
     "cannotchatself" : MessageLookupByLibrary.simpleMessage("သင်ကိုယ်တိုင်စကားမပြောနိုင်ပါ"),
     "cashout" : MessageLookupByLibrary.simpleMessage("ငွေထုတ်"),
+    "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 30% ကောက်လိမ့်မည်*"),
+    "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 50% ကောက်လိမ့်မည်*"),
+    "chargeForPro" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 40% ကောက်လိမ့်မည်*"),
     "china" : MessageLookupByLibrary.simpleMessage("တရုတ်"),
     "choose" : MessageLookupByLibrary.simpleMessage("ရွေးချယ်ပါ"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("သင်ကစားသောဂိမ်းကိုရွေးချယ်ပါ"),
@@ -61,6 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyID" : MessageLookupByLibrary.simpleMessage("copy ID"),
     "currentcoin" : MessageLookupByLibrary.simpleMessage("လက်ရှိ"),
     "deselect" : MessageLookupByLibrary.simpleMessage("ပယ်ဖျက်ပါ"),
+    "done" : MessageLookupByLibrary.simpleMessage("အိုကေ"),
     "end" : MessageLookupByLibrary.simpleMessage("အဆုံးသတ်"),
     "english" : MessageLookupByLibrary.simpleMessage("အင်္ဂလိပ်"),
     "enterCall" : MessageLookupByLibrary.simpleMessage("ဖုန်းလက်ခံ"),
