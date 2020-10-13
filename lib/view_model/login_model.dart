@@ -169,7 +169,7 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      await MoonBlinkRepository.logout();
+      await MoonBlinkRepository.logout(); ///to notify server to remove fcm token.
       PushNotificationsManager().dispose();
       DioUtils().initWithoutAuthorization();
       final context = locator<NavigationService>().navigatorKey.currentContext;

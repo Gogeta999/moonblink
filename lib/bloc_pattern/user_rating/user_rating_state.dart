@@ -50,5 +50,5 @@ class UserRatingSuccess extends UserRatingState {
   List<Object> get props => [data, hasReachedMax];
 
   @override
-  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
+  String toString() => 'UserRatingSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
