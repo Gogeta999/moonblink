@@ -47,33 +47,31 @@ class _UserRatingPageState extends State<UserRatingPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: BlocProvider(
-              create: (_) => _usersRatingBloc..add(UserRatingFetched()),
-              child: BlocConsumer<UserRatingBloc, UserRatingState>(
-                listener: (context, state) {
-                  if (state is UserRatingSuccess) {
-                    _refreshCompleter.complete();
-                    _refreshCompleter = Completer();
-                  }
-                  if (state is UserRatingFailure) {
-                    _refreshCompleter.completeError(state.error);
-                    _refreshCompleter = Completer();
-                  }
-                },
-                builder: (context, state) {
-                  if (state is UserRatingInitial) {
-                    return Center(child: CupertinoActivityIndicator());
-                  }
-                  if (state is UserRatingFailure) {
-                    return Center(child: Text('${state.error}'));
-                  }
-                  if (state is UserRatingRefreshing) {
-                    return Center(
-                        child: Row(
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: BlocProvider(
+          create: (_) => _usersRatingBloc..add(UserRatingFetched()),
+          child: BlocConsumer<UserRatingBloc, UserRatingState>(
+            listener: (context, state) {
+              if (state is UserRatingSuccess) {
+                _refreshCompleter.complete();
+                _refreshCompleter = Completer();
+              }
+              if (state is UserRatingFailure) {
+                _refreshCompleter.completeError(state.error);
+                _refreshCompleter = Completer();
+              }
+            },
+            builder: (context, state) {
+              if (state is UserRatingInitial) {
+                return Center(child: CupertinoActivityIndicator());
+              }
+              if (state is UserRatingFailure) {
+                return Center(child: Text('${state.error}'));
+              }
+              if (state is UserRatingRefreshing) {
+                return Center(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
@@ -82,34 +80,31 @@ class _UserRatingPageState extends State<UserRatingPage>
                         CupertinoActivityIndicator()
                       ],
                     ));
-                  }
-                  if (state is UserRatingSuccess) {
-                    if (state.data.isEmpty) {
-                      return Center(
-                        child: Text(G.of(context).norating),
-                      );
-                    }
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10),
-                      physics: ScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(
-                              parent: ClampingScrollPhysics())),
-                      itemBuilder: (BuildContext context, int index) {
-                        return index >= state.data.length
-                            ? BottomLoader()
-                            : RatingListTile(state: state, index: index);
-                      },
-                      itemCount: state.hasReachedMax
-                          ? state.data.length
-                          : state.data.length + 1,
-                      controller: _scrollController,
-                    );
-                  }
-                  return Center(child: Text(G.of(context).toasterror));
-                },
-              )),
-        ),
-      ),
+              }
+              if (state is UserRatingSuccess) {
+                if (state.data.isEmpty) {
+                  return Center(
+                    child: Text(G.of(context).norating),
+                  );
+                }
+                return ListView.builder(
+                  physics: ScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(
+                          parent: ClampingScrollPhysics())),
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= state.data.length
+                        ? BottomLoader()
+                        : RatingListTile(state: state, index: index);
+                  },
+                  itemCount: state.hasReachedMax
+                      ? state.data.length
+                      : state.data.length + 1,
+                  controller: _scrollController,
+                );
+              }
+              return Center(child: Text(G.of(context).toasterror));
+            },
+          )),
     );
   }
 
@@ -172,8 +167,8 @@ class RatingListTile extends StatelessWidget {
               backgroundImage: imageProvider,
             ),
             fit: BoxFit.cover,
-            placeholder: (context, url) => CachedLoader(),
-            errorWidget: (context, url, error) => CachedError(),
+            placeholder: (context, url) => CupertinoActivityIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           title: Container(
             margin: const EdgeInsets.symmetric(vertical: 15),
