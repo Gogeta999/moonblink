@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user.dart';
-import 'package:moonblink/view_model/favorite_model.dart';
 
 import 'login_model.dart';
 

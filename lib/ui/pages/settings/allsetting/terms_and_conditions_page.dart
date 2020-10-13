@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -226,7 +225,8 @@ class TermsAndConditions extends StatelessWidget {
                       // } else {
                       //   showToast('This platform is not supported');
                       // }
-                      StorageManager.sharedPreferences.setBool(isNewUser, false);
+                      StorageManager.sharedPreferences
+                          .setBool(isNewUser, false);
                       Navigator.pushNamedAndRemoveUntil(
                           context, RouteName.login, (route) => false);
                     },

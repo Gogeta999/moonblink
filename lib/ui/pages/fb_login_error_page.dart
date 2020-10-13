@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
 
 const List<String> images = [
   'images/fb1.jpeg',
@@ -118,12 +115,12 @@ class CustomSwiperControl extends SwiperPlugin {
 
   const CustomSwiperControl(
       {this.iconPrevious: Icons.arrow_back_ios,
-        this.iconNext: Icons.arrow_forward_ios,
-        this.color,
-        this.disableColor,
-        this.key,
-        this.size: 30.0,
-        this.padding: const EdgeInsets.all(5.0)});
+      this.iconNext: Icons.arrow_forward_ios,
+      this.color,
+      this.disableColor,
+      this.key,
+      this.size: 30.0,
+      this.padding: const EdgeInsets.all(5.0)});
 
   Widget buildButton(SwiperPluginConfig config, Color color, IconData iconDaga,
       int quarterTurns, bool previous) {
