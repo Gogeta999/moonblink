@@ -24,19 +24,20 @@ class ChatListPage extends StatefulWidget {
   _ChatListPageState createState() => _ChatListPageState();
 }
 
-class _ChatListPageState extends State<ChatListPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _ChatListPageState extends State<ChatListPage> {
+  // with AutomaticKeepAliveClientMixin {
+  // @override
+  // bool get wantKeepAlive => true;
 
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
   RefreshController refreshController = RefreshController();
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   ScopedModel.of<ChatModel>(context).connection();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    ScopedModel.of<ChatModel>(context).init();
+  }
+
   String finalmsg(String lastmsg) {
     if (lastmsg.length > 15) {
       return lastmsg.substring(0, 15) + '...';
@@ -105,7 +106,7 @@ class _ChatListPageState extends State<ChatListPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light

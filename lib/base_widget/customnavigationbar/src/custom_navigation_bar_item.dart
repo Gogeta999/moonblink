@@ -28,7 +28,7 @@ class CustomNavigationBarItem {
     this.unSelectedTitle,
     this.doubletap,
     this.badgeCount = 0,
-  }) :  assert(badgeCount != null),
+  })  : assert(badgeCount != null),
         assert(badgeCount >= 0),
         selectedIcon = selectedIcon ?? icon;
 
