@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/systemNoti.dart';
 
 class NetWorkPage extends StatefulWidget {
   @override
@@ -70,18 +72,14 @@ class PageState extends State<NetWorkPage> {
               ],
             ),
           ),
-          Expanded(
-              child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Center(
-              child: resultJson.length <= 0
-                  ? Text("数据加载中...")
-                  : Text(
-                      resultJson,
-                      style: TextStyle(fontSize: 16),
-                    ),
-            ),
-          ))
+          SizedBox(
+            height: 20,
+          ),
+          CupertinoButton.filled(
+              child: Text('Test'),
+              onPressed: () {
+                systemNoti();
+              })
         ],
       ),
     );

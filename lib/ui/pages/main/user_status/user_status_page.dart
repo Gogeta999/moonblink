@@ -183,9 +183,6 @@ class _UserListWidgetState extends State<UserListWidget> {
                                   backgroundImage: item,
                                 );
                               },
-                              fit: BoxFit.cover,
-                              width: 120,
-                              height: 120,
                             )
                           : CircleAvatar(
                               radius: 28,
