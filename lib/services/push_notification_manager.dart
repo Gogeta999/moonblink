@@ -595,6 +595,7 @@ class _Message {
 
   void navigateToChatBox() {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
+    // ChatModel().init();
     if (_partnerId == null) {
       this._partnerId =
           StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);

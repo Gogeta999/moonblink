@@ -24,10 +24,10 @@ class ChatListPage extends StatefulWidget {
   _ChatListPageState createState() => _ChatListPageState();
 }
 
-class _ChatListPageState extends State<ChatListPage> {
-  // with AutomaticKeepAliveClientMixin {
-  // @override
-  // bool get wantKeepAlive => true;
+class _ChatListPageState extends State<ChatListPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
@@ -106,7 +106,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // super.build(context);
+    super.build(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light
@@ -120,33 +120,38 @@ class _ChatListPageState extends State<ChatListPage> {
           if (chatlist.isEmpty) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
                 value: StatusBarUtils.systemUiOverlayStyle(context),
-                child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                            ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+                child: SmartRefresher(
+                  controller: refreshController,
+                  header: WaterDropHeader(),
+                  onRefresh: () {
+                    model.init();
+                    chatlist = model.conversationlist();
+                    refreshController.refreshCompleted();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+                            ),
+                            fit: BoxFit.cover)),
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          top: 200,
+                          child: Text(
+                            G.of(context).noChatHistory,
+                            style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
-                          fit: BoxFit.cover)),
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        top: 200,
-                        child: Text(
-                          G.of(context).noChatHistory,
-                          style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ));
           } else {
-            print(
-                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            print(chatlist.length);
-
             return ProviderWidget<StoryModel>(
               model: StoryModel(),
               onModelReady: (model) {
@@ -160,6 +165,7 @@ class _ChatListPageState extends State<ChatListPage> {
                   onRefresh: () {
                     onRefresh(storymodel);
                     model.init();
+                    chatlist = model.conversationlist();
                   },
                   child: CustomScrollView(slivers: <Widget>[
                     if (storymodel.stories.isNotEmpty)
