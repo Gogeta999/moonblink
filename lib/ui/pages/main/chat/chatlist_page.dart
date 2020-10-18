@@ -32,11 +32,12 @@ class _ChatListPageState extends State<ChatListPage>
   List<Chatlist> chatlist = [];
   List<Message> msg = [];
   RefreshController refreshController = RefreshController();
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   ScopedModel.of<ChatModel>(context).connection();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    ScopedModel.of<ChatModel>(context).init();
+  }
+
   String finalmsg(String lastmsg) {
     if (lastmsg.length > 15) {
       return lastmsg.substring(0, 15) + '...';
@@ -119,33 +120,38 @@ class _ChatListPageState extends State<ChatListPage>
           if (chatlist.isEmpty) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
                 value: StatusBarUtils.systemUiOverlayStyle(context),
-                child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                            ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+                child: SmartRefresher(
+                  controller: refreshController,
+                  header: WaterDropHeader(),
+                  onRefresh: () {
+                    model.init();
+                    chatlist = model.conversationlist();
+                    refreshController.refreshCompleted();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+                            ),
+                            fit: BoxFit.cover)),
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          top: 200,
+                          child: Text(
+                            G.of(context).noChatHistory,
+                            style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
-                          fit: BoxFit.cover)),
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        top: 200,
-                        child: Text(
-                          G.of(context).noChatHistory,
-                          style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ));
           } else {
-            print(
-                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            print(chatlist.length);
-
             return ProviderWidget<StoryModel>(
               model: StoryModel(),
               onModelReady: (model) {
@@ -159,6 +165,7 @@ class _ChatListPageState extends State<ChatListPage>
                   onRefresh: () {
                     onRefresh(storymodel);
                     model.init();
+                    chatlist = model.conversationlist();
                   },
                   child: CustomScrollView(slivers: <Widget>[
                     if (storymodel.stories.isNotEmpty)
