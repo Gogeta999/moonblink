@@ -22,20 +22,6 @@ class UserBookingNotificationFailure extends UserBookingNotificationState {
 
 }
 
-class UserBookingNotificationUpdating extends UserBookingNotificationState {
-  final List<UserBookingNotificationData> data;
-  final bool hasReachedMax;
-  final int page;
-
-  const UserBookingNotificationUpdating({this.data, this.hasReachedMax, this.page});
-
-  @override
-  List<Object> get props => [data, hasReachedMax];
-
-  @override
-  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
-}
-
 class UserBookingNotificationNoData extends UserBookingNotificationState {
   @override
   List<Object> get props => [];
@@ -58,12 +44,8 @@ class UserBookingNotificationSuccess extends UserBookingNotificationState {
   }
 
   @override
-  List<Object> get props => [data, hasReachedMax];
+  List<Object> get props => [data, hasReachedMax, page];
 
   @override
   String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
-
-// class UserNotificationAcceptStateToInitial extends UserNotificationState {}
-//
-// class UserNotificationRejectStateToInitial extends UserNotificationState {}

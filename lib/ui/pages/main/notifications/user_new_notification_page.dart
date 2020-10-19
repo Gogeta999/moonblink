@@ -33,7 +33,6 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
     _userNotificationBloc.add(UserNewNotificationFetched());
     _scrollController.addListener(_onScroll);
     _refreshCompleter = Completer<void>();
-    print('Initing');
     super.initState();
   }
 
@@ -54,12 +53,6 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
           Card(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: ListTile(
-              // leading: SvgPicture.asset(
-              //   moongoHistoryNoti,
-              //   height: 50,
-              //   width: 50,
-              //   color: Theme.of(context).accentColor,
-              // ),
               leading: Icon(
                 IconFonts.systemNotiIcon,
                 size: 50,
@@ -79,12 +72,6 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
           Card(
             margin: EdgeInsets.zero,
             child: ListTile(
-              // leading: SvgPicture.asset(
-              //   bookHistoryNoti,
-              //   height: 50,
-              //   width: 50,
-              //   color: Theme.of(context).accentColor,
-              // ),
               leading: Icon(
                 IconFonts.bookingHistoryIcon,
                 size: 50,
@@ -172,39 +159,6 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
                       itemCount: state.hasReachedMax
                           ? state.data.length
                           : state.data.length + 1,
-                      //controller: _scrollController,
-                    );
-                  }
-
-                  ///Same with success
-                  if (state is UserNewNotificationUpdating) {
-                    if (state.data.isEmpty) {
-                      return SizedBox(
-                        height: 220,
-                        child: Center(
-                          child: Text(
-                            'You have no notifications',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.all(10),
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return index >= state.data.length
-                            ? BottomLoader()
-                            : BlocProvider.value(
-                                value: BlocProvider.of<UserNewNotificationBloc>(
-                                    context),
-                                child: NotificationListTile(index: index));
-                      },
-                      itemCount: state.hasReachedMax
-                          ? state.data.length
-                          : state.data.length + 1,
-                      //controller: _scrollController,
                     );
                   }
                   return Center(child: Text(G.of(context).toasterror));
@@ -254,7 +208,6 @@ class NotificationListTile extends StatelessWidget {
           currentState != UserNewNotificationDeleteSuccess() &&
           currentState != UserNewNotificationDeleteFailure(),
       builder: (context, state) {
-        ///Same with update
         if (state is UserNewNotificationSuccess) {
           return Slidable(
               actionPane: SlidableDrawerActionPane(),
@@ -268,16 +221,7 @@ class NotificationListTile extends StatelessWidget {
                         ? Theme.of(context).scaffoldBackgroundColor
                         : Theme.of(context).accentColor,
                     borderRadius: BorderRadius.circular(10),
-                    // color: Colors.pink,
                     border: Border.all(color: Colors.black),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black,
-                    //     spreadRadius: 0.5,
-                    //     // blurRadius: 2,
-                    //     offset: Offset(-3, 3), // changes position of shadow
-                    //   ),
-                    // ],
                   ),
                   child: Card(
                     child: IconSlideAction(
@@ -302,110 +246,6 @@ class NotificationListTile extends StatelessWidget {
                   }(),
                   border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(10),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black,
-                  //     spreadRadius: 0.5,
-                  //     // blurRadius: 2,
-                  //     offset: Offset(-3, 3), // changes position of shadow
-                  //   ),
-                  // ],
-                ),
-                child: Card(
-                  child: InkWell(
-                    child: StreamBuilder<DeleteState>(
-                        initialData: DeleteState.initial,
-                        stream: _deleteSubject,
-                        builder: (context, snapshot) {
-                          return ListTile(
-                              onTap: () =>
-                                  _onTapListTile(context, state.data[index]),
-                              title: Text(state.data[index].title,
-
-                                  ///add game name and type later
-                                  style: Theme.of(context).textTheme.bodyText2),
-                              subtitle: Text(state.data[index].message,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic)),
-                              trailing: snapshot.data == DeleteState.loading
-                                  ? CupertinoActivityIndicator()
-                                  : Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                          Icon(Icons.chevron_right),
-                                          Text(
-                                              timeAgo.format(
-                                                  DateTime.parse(state
-                                                      .data[index].createdAt),
-                                                  allowFromNow: true),
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontStyle: FontStyle.italic))
-                                        ]));
-                        }),
-                  ),
-                ),
-              ));
-        }
-        if (state is UserNewNotificationUpdating) {
-          return Slidable(
-              actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              secondaryActions: <Widget>[
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: state.data[index].isRead != 0
-                        ? Theme.of(context).scaffoldBackgroundColor
-                        : Theme.of(context).accentColor,
-                    borderRadius: BorderRadius.circular(10),
-                    // color: Colors.pink,
-                    border: Border.all(color: Colors.black),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black,
-                    //     spreadRadius: 0.5,
-                    //     // blurRadius: 2,
-                    //     offset: Offset(-3, 3), // changes position of shadow
-                    //   ),
-                    // ],
-                  ),
-                  child: Card(
-                    child: IconSlideAction(
-                      closeOnTap: true,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      iconWidget: Icon(Icons.delete,
-                          color: Theme.of(context).accentColor),
-                      onTap: () => _onTapDelete(context, state.data[index]),
-                    ),
-                  ),
-                )
-              ],
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                decoration: BoxDecoration(
-                  color: () {
-                    if (state.data[index].isRead != 0) {
-                      return Theme.of(context).scaffoldBackgroundColor;
-                    } else {
-                      return Theme.of(context).accentColor;
-                    }
-                  }(),
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black,
-                  //     spreadRadius: 0.5,
-                  //     // blurRadius: 2,
-                  //     offset: Offset(-3, 3), // changes position of shadow
-                  //   ),
-                  // ],
                 ),
                 child: Card(
                   child: InkWell(

@@ -183,6 +183,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                                   backgroundImage: item,
                                 );
                               },
+                              placeholder: (_, __) => CupertinoActivityIndicator(),
+                              errorWidget: (_, __, ___) => Icon(Icons.error),
                             )
                           : CircleAvatar(
                               radius: 28,

@@ -228,10 +228,17 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  productDetails.title ??
-                      (Platform.isIOS
-                          ? productDetails.skProduct.localizedTitle
-                          : productDetails.skuDetail.title),
+                  productDetails.title ?? (){
+                    if (productDetails.id == coin200Consumable) {
+                      return '200 Moon Go Coins';
+                    } else if (productDetails.id == coin500Consumable) {
+                      return '500 Moon Go Coins';
+                    } else if (productDetails.id == coin1000Consumable) {
+                      return '1000 Moon Go Coins';
+                    } else {
+                      return 'Moon Go Coins';
+                    }
+                  }(),
                 ),
               ),
               // Text(

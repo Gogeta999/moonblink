@@ -51,13 +51,6 @@ class UserNewNotificationBloc
     if (event is UserNewNotificationCleared) {
       yield* _mapClearedToState(currentState);
     }
-    // if (event is UserNotificationAccepted) {
-    //   yield* _mapAcceptedToState(
-    //       currentState, event.userId, event.bookingId, event.bookingUserId);
-    // }
-    // if (event is UserNotificationRejected) {
-    //   yield* _mapRejectedToState(currentState, event.userId, event.bookingId);
-    // }
   }
 
   ///Initial Fetched
@@ -173,8 +166,6 @@ class UserNewNotificationBloc
           return;
         }
       });
-      ///Already read
-      if (currentData[index].isRead == 1) return;
       if (currentData[index].fcmType == 'booking') {
         /// ----- Booking -----
         final data = currentData[index].data as UserBookingNotificationData;
@@ -198,10 +189,6 @@ class UserNewNotificationBloc
               page: currentState.page);
           return;
         }
-        yield UserNewNotificationUpdating(
-            data: currentData,
-            hasReachedMax: currentState.hasReachedMax,
-            page: currentState.page);
         try {
           final bookingData =
               await MoonBlinkRepository.changeUserBookingNotificationReadState(
@@ -231,12 +218,9 @@ class UserNewNotificationBloc
                 ? currentState.unreadCount
                 : currentState.unreadCount - 1);
       } else if (currentData[index].fcmType == 'message') {
-//        final data = currentData[index].data as UserMessageNotificationData;
         /// ----- Message -----
-        yield UserNewNotificationUpdating(
-            data: currentData,
-            hasReachedMax: currentState.hasReachedMax,
-            page: currentState.page);
+        /// ///Already read
+        if (currentData[index].isRead == 1) return;
         try {
           final messageData =
               await MoonBlinkRepository.changeUserMessageNotificationReadState(
@@ -287,11 +271,6 @@ class UserNewNotificationBloc
       });
       if (currentData[index].fcmType == 'booking') {
         /// ----- Booking -----
-//        final data = currentData[index].data as UserBookingNotificationData;
-        yield UserNewNotificationUpdating(
-            data: currentData,
-            hasReachedMax: currentState.hasReachedMax,
-            page: currentState.page);
         try {
           await MoonBlinkRepository.changeUserBookingNotificationReadState(
               notificationId,
@@ -307,12 +286,7 @@ class UserNewNotificationBloc
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page);
       } else if (currentData[index].fcmType == 'message') {
-//        final data = currentData[index].data as UserMessageNotificationData;
         /// ----- Message -----
-        yield UserNewNotificationUpdating(
-            data: currentData,
-            hasReachedMax: currentState.hasReachedMax,
-            page: currentState.page);
         try {
           await MoonBlinkRepository.changeUserMessageNotificationReadState(
               notificationId,
@@ -340,45 +314,6 @@ class UserNewNotificationBloc
       UserNewNotificationState currentState) async* {
     yield UserNewNotificationInitial();
   }
-
-  // ///NewAccept
-  // Stream<UserNotificationState> _mapAcceptedToState(
-  //     UserNotificationState currentState,
-  //     int userId,
-  //     int bookingId,
-  //     int bookingUserId) async* {
-  //   try {
-  //     await MoonBlinkRepository.bookingAcceptOrDecline(
-  //         userId, bookingId, BOOKING_ACCEPT);
-  //     yield UserNotificationAcceptStateToInitial();
-  //     add(UserNotificationRefreshed());
-  //     locator<NavigationService>()
-  //         .navigateTo(RouteName.chatBox, arguments: bookingUserId);
-  //     showToast('New Accepted');
-  //   } catch (error) {
-  //     showToast('$error');
-  //     yield UserNotificationAcceptStateToInitial();
-  //     print('Error $error');
-  //     return;
-  //   }
-  // }
-  //
-  // ///NewReject
-  // Stream<UserNotificationState> _mapRejectedToState(
-  //     UserNotificationState currentState, int userId, int bookingId) async* {
-  //   try {
-  //     await MoonBlinkRepository.bookingAcceptOrDecline(
-  //         userId, bookingId, BOOKING_REJECT);
-  //     yield UserNotificationRejectStateToInitial();
-  //     this.add(UserNotificationRefreshed());
-  //     showToast('New Rejected');
-  //   } catch (error) {
-  //     showToast('$error');
-  //     yield UserNotificationRejectStateToInitial();
-  //     print('Error $error');
-  //     return;
-  //   }
-  // }
 
   bool _hasReachedMax(UserNewNotificationState state) =>
       state is UserNewNotificationSuccess && state.hasReachedMax;

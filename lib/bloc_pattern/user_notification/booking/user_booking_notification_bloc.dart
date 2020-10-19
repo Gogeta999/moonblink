@@ -49,13 +49,6 @@ class UserBookingNotificationBloc
     if (event is UserBookingNotificationCleared) {
       yield* _mapClearedToState(currentState);
     }
-    // if (event is UserNotificationAccepted) {
-    //   yield* _mapAcceptedToState(
-    //       currentState, event.userId, event.bookingId, event.bookingUserId);
-    // }
-    // if (event is UserNotificationRejected) {
-    //   yield* _mapRejectedToState(currentState, event.userId, event.bookingId);
-    // }
   }
 
   ///Initial Fetched
@@ -139,12 +132,11 @@ class UserBookingNotificationBloc
       UserBookingNotificationState currentState, int notificationId) async* {
     if (currentState is UserBookingNotificationSuccess) {
       List<UserBookingNotificationData> currentData = currentState.data;
-      UserBookingNotificationData data;
+      List<UserBookingNotificationData> newData = List.from(currentState.data);
       int index = 0;
       currentData.forEach((element) {
         if (element.id == notificationId) {
           index = currentData.indexOf(element);
-//          print('------------------------Returning from loop');
           return;
         }
       });
@@ -168,21 +160,28 @@ class UserBookingNotificationBloc
             page: currentState.page);
         return;
       }
-      yield UserBookingNotificationUpdating(
-          data: currentData,
-          hasReachedMax: currentState.hasReachedMax,
-          page: currentState.page);
       try {
-        data = await MoonBlinkRepository.changeUserBookingNotificationReadState(
+        final bookingData =
+        await MoonBlinkRepository.changeUserBookingNotificationReadState(
             notificationId,
             isRead: 1);
+        final data = UserBookingNotificationData(
+            id: bookingData.id,
+            userId: bookingData.userId,
+            fcmType: bookingData.fcmType,
+            title: bookingData.title,
+            message: bookingData.message,
+            isRead: bookingData.isRead,
+            createdAt: bookingData.createdAt,
+            updatedAt: bookingData.updatedAt,
+            fcmData: bookingData.fcmData);
+        newData[index] = data;
       } catch (error) {
         yield UserBookingNotificationFailure(error: error);
         return;
       }
-      currentData[index] = data;
       yield UserBookingNotificationSuccess(
-          data: currentData,
+          data: newData,
           hasReachedMax: currentState.hasReachedMax,
           page: currentState.page);
     } else {
