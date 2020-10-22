@@ -1,4 +1,5 @@
 import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/wallet.dart';
 
 class OwnProfile {
   int partnerId;
@@ -24,6 +25,10 @@ class OwnProfile {
   int isFollow;
   int likecount;
   double rating;
+  String level;
+  String ordertaking;
+  String levelpercent;
+  Wallet wallet;
   PartnerProfile prfoileFromPartner;
 
   // String partnerProfileImage;
@@ -49,6 +54,10 @@ class OwnProfile {
     this.isFollow,
     this.likecount,
     this.rating,
+    this.level,
+    this.ordertaking,
+    this.levelpercent,
+    this.wallet,
     this.prfoileFromPartner,
   });
 
@@ -74,6 +83,10 @@ class OwnProfile {
       verifiedAt: map['verified_at'],
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
+      level: map['account_level'],
+      ordertaking: map['order_taking'],
+      levelpercent: map['level_percentage'],
+      wallet: Wallet.fromJson(map['wallet']),
       prfoileFromPartner: PartnerProfile.fromJson(
         map['profile'],
       ),
