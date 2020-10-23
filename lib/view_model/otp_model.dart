@@ -36,16 +36,17 @@ class OtpModel extends ViewStateModel {
         this._verificationId = verificationId;
         this._forceResendingToken = forceResendingToken;
       }
+
       if (retry) {
         await _firebaseAuth.verifyPhoneNumber(
-          forceResendingToken: _forceResendingToken,
-          phoneNumber: phone,
-          timeout: const Duration(seconds: 60),
-          verificationCompleted: verificationCompleted,
-          verificationFailed: verificationFailed,
-          codeSent: codeSent,
-          codeAutoRetrievalTimeout: (verificationId) =>
-              print('Code: $verificationId'));
+            forceResendingToken: _forceResendingToken,
+            phoneNumber: phone,
+            timeout: const Duration(seconds: 60),
+            verificationCompleted: verificationCompleted,
+            verificationFailed: verificationFailed,
+            codeSent: codeSent,
+            codeAutoRetrievalTimeout: (verificationId) =>
+                print('Code: $verificationId'));
       } else {
         await _firebaseAuth.verifyPhoneNumber(
             phoneNumber: phone,

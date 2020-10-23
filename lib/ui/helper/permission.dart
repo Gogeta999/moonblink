@@ -4,4 +4,5 @@ Future<void> permission(context) async {
   await Permission.camera.request();
   await Permission.microphone.request();
   await Permission.storage.request();
+  await Permission.notification.request();
 }

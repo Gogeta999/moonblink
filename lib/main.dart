@@ -49,7 +49,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('$state');
@@ -118,7 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   GlobalWidgetsLocalizations.delegate
                 ],
                 supportedLocales: G.delegate.supportedLocales,
-                onGenerateRoute: Router.generateRoute,
+                onGenerateRoute: MoonGoRouter.generateRoute,
                 initialRoute: RouteName.splash,
                 navigatorKey: locator<NavigationService>().navigatorKey,
               ));

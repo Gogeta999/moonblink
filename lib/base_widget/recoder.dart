@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:flutter_plugin_record/flutter_plugin_record.dart';
+// import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/services/chat_service.dart';
@@ -39,7 +40,8 @@ class Voicemsg extends StatefulWidget {
 }
 
 class _VoicemsgState extends State<Voicemsg> {
-  FlutterAudioRecorder _recorder;
+  FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
+
   // ignore: unused_field
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
@@ -50,6 +52,7 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   void initState() {
+    recordPlugin.init();
     super.initState();
   }
 
