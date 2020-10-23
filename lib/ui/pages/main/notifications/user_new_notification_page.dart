@@ -21,11 +21,15 @@ class UserNewNotificationPage extends StatefulWidget {
       _UserNewNotificationPageState();
 }
 
-class _UserNewNotificationPageState extends State<UserNewNotificationPage> {
+class _UserNewNotificationPageState extends State<UserNewNotificationPage> with
+    AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   final _scrollThreshold = 600.0;
   Completer<void> _refreshCompleter;
   UserNewNotificationBloc _userNotificationBloc;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
