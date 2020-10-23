@@ -1281,7 +1281,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NewVoiceCallWidget(
+            builder: (context) => VoiceCallWidget(
               channelName: voiceChannelName,
             ),
           ));

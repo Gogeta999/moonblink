@@ -71,7 +71,7 @@ class RouteName {
   static const String facebookLoginError = 'facebookLoginError';
 }
 
-class Router {
+class MoonGoRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.splash:
@@ -147,7 +147,7 @@ class Router {
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:
         return CupertinoPageRoute(
-            builder: (_) => NewVoiceCallWidget(
+            builder: (_) => VoiceCallWidget(
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));
