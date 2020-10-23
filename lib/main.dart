@@ -8,7 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/router_manager.dart' as Nav;
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
@@ -117,8 +117,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   GlobalWidgetsLocalizations.delegate
                 ],
                 supportedLocales: G.delegate.supportedLocales,
-                onGenerateRoute: MoonGoRouter.generateRoute,
-                initialRoute: RouteName.splash,
+                onGenerateRoute: Nav.Router.generateRoute,
+                initialRoute: Nav.RouteName.splash,
                 navigatorKey: locator<NavigationService>().navigatorKey,
               ));
         }),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/call/voice_call_pageNew.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
@@ -70,7 +71,7 @@ class RouteName {
   static const String facebookLoginError = 'facebookLoginError';
 }
 
-class MoonGoRouter {
+class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.splash:
@@ -146,7 +147,7 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:
         return CupertinoPageRoute(
-            builder: (_) => VoiceCallWidget(
+            builder: (_) => NewVoiceCallWidget(
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));

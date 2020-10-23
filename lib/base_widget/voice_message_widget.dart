@@ -9,7 +9,7 @@ import 'package:moonblink/utils/platform_utils.dart';
 typedef startRecord = Future Function();
 typedef stopRecord = Future Function();
 
-class VoiceWidget extends StatefulWidget {
+class MoonGoVoiceWidget extends StatefulWidget {
   final LocalFileSystem localFileSystem;
   final id;
   final messages;
@@ -17,7 +17,7 @@ class VoiceWidget extends StatefulWidget {
   final Function stopRecord;
 
   /// startRecord 开始录制回调  stopRecord回调
-  const VoiceWidget(
+  const MoonGoVoiceWidget(
       {Key key,
       this.localFileSystem,
       this.id,
@@ -27,10 +27,10 @@ class VoiceWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _VoiceWidgetState createState() => _VoiceWidgetState();
+  _MoonGoVoiceWidgetState createState() => _MoonGoVoiceWidgetState();
 }
 
-class _VoiceWidgetState extends State<VoiceWidget> {
+class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
   double starty = 0.0;
   double offset = 0.0;
   bool isUp = false;

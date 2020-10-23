@@ -17,6 +17,7 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/recorderOld.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
+import 'package:moonblink/base_widget/voice_message_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -28,6 +29,7 @@ import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/call/voice_call_pageNew.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';
@@ -747,13 +749,17 @@ class _ChatBoxPageState extends State<ChatBoxPage>
 
   //voice msg
   Widget voicemsg(id) {
-    return Voicemsg(
-      onInit: _sendMessageWidgetUp,
+    return MoonGoVoiceWidget(
       id: id,
       messages: messages,
-      onDismiss: _sendMessageWidgetDown,
-      rotate: () => rotate(),
     );
+    // return Voicemsg(
+    //   onInit: _sendMessageWidgetUp,
+    //   id: id,
+    //   messages: messages,
+    //   onDismiss: _sendMessageWidgetDown,
+    //   rotate: () => rotate(),
+    // );
   }
 
   //send Button
@@ -1275,7 +1281,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VoiceCallWidget(
+            builder: (context) => NewVoiceCallWidget(
               channelName: voiceChannelName,
             ),
           ));

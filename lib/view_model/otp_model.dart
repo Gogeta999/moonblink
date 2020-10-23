@@ -28,7 +28,7 @@ class OtpModel extends ViewStateModel {
         showToast('SMS Arrivals');
       }
 
-      void verificationFailed(AuthException authException) async {
+      void verificationFailed(FirebaseAuthException authException) async {
         print(authException.message);
       }
 
@@ -80,9 +80,9 @@ class OtpModel extends ViewStateModel {
   Future<bool> signInWithCredential(String smsCode) async {
     setBusy();
     try {
-      AuthCredential authCredential = PhoneAuthProvider.getCredential(
+      AuthCredential authCredential = PhoneAuthProvider.credential(
           verificationId: _verificationId, smsCode: smsCode);
-      AuthResult authResult =
+      UserCredential authResult =
           await _firebaseAuth.signInWithCredential(authCredential);
       if (authResult.user != null) {
         await signAsPartner(_phone);
