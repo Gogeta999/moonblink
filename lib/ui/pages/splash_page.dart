@@ -7,6 +7,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/permission.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'new_user_swiper_page.dart';
 
@@ -20,6 +21,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    permission(context);
     _countdownController =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     _countdownController.forward();
@@ -44,7 +46,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             future: MoonBlinkRepository.showAd(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
+                return Image.asset(ImageHelper.wrapAssetsImage('splash.png'),
                     fit: BoxFit.cover);
               } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
@@ -57,11 +59,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     ),
                   );
                 } else {
-                  return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
+                  return Image.asset(ImageHelper.wrapAssetsImage('splash.png'),
                       fit: BoxFit.cover);
                 }
               } else if (snapshot.hasError) {
-                return Image.asset(ImageHelper.wrapAssetsImage('splash.jpg'),
+                return Image.asset(ImageHelper.wrapAssetsImage('splash.png'),
                     fit: BoxFit.cover);
               }
               return Center(child: CircularProgressIndicator());
@@ -126,7 +128,8 @@ void nextPage(context) {
   //     : Navigator.of(context)
   //         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
   if (newUser == true) {
-    Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage);
+    Navigator.of(context)
+        .pushReplacementNamed(RouteName.termsAndConditionsPage);
   } else if (newUser == false && hasUser == null) {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.login, (route) => false);

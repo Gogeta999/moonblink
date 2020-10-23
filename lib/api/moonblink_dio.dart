@@ -39,13 +39,13 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: devUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': baseAppKey
+      'app-key': devAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
@@ -531,7 +531,7 @@ class DioUtils {
       appStoreUrl = 'https://apps.apple.com/us/app/id1526791060';
     } else {
       appStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
+          'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink';
     }
     try {
       bool nativeAppLaunch = await launch(appStoreUrl,

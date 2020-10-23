@@ -9,6 +9,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
@@ -21,6 +22,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -135,7 +137,7 @@ class _UserListWidgetState extends State<UserListWidget> {
 
   var userProfile = StorageManager.sharedPreferences.getString(mUserProfile);
 
-  Wallet userWallet;
+  OwnProfile profile;
 
   Widget blankSpace() => SizedBox(height: 10);
 
@@ -146,10 +148,14 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   init() async {
-    Wallet wallet = await MoonBlinkRepository.getUserWallet();
+    OwnProfile user = await MoonBlinkRepository.getUserWallet();
     setState(() {
-      this.userWallet = wallet;
+      this.profile = user;
     });
+    print(profile.level);
+    print(profile.levelpercent);
+    print(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
   }
 
   @override
@@ -163,96 +169,134 @@ class _UserListWidgetState extends State<UserListWidget> {
       delegate: SliverChildListDelegate.fixed([
         ///Profile update and customer service
         ProviderWidget<UserModel>(
-            model: UserModel(),
-            builder: (context, model, child) {
-              return Card(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                // elevation: 3,
-                child: ListTile(
-                  leading: InkResponse(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(RouteName.partnerOwnProfile),
-                    child: Hero(
-                      tag: 'loginLogo',
-                      child: model.hasUser
-                          ? CachedNetworkImage(
-                              imageUrl: userProfile,
-                              imageBuilder: (context, item) {
-                                return CircleAvatar(
-                                  radius: 28,
-                                  backgroundImage: item,
-                                );
-                              },
-                              fit: BoxFit.cover,
-                              width: 120,
-                              height: 120,
-                            )
-                          : CircleAvatar(
-                              radius: 28,
-                              backgroundColor: Colors.black,
-                              child: CircleAvatar(
-                                radius: 70,
-                                backgroundImage: AssetImage(
-                                  ImageHelper.wrapAssetsImage(
-                                      'MoonBlinkProfile.jpg'),
-                                ),
+          model: UserModel(),
+          builder: (context, model, child) {
+            return Card(
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+              // elevation: 3,
+              child: ListTile(
+                leading: InkResponse(
+                  onTap: () => Navigator.of(context)
+                      .pushNamed(RouteName.partnerOwnProfile),
+                  child: Hero(
+                    tag: 'loginLogo',
+                    child: model.hasUser
+                        ? CachedNetworkImage(
+                            imageUrl: userProfile,
+                            imageBuilder: (context, item) {
+                              return CircleAvatar(
+                                radius: 28,
+                                backgroundImage: item,
+                              );
+                            },
+                            placeholder: (_, __) =>
+                                CupertinoActivityIndicator(),
+                            errorWidget: (_, __, ___) => Icon(Icons.error),
+                          )
+                        : CircleAvatar(
+                            radius: 28,
+                            backgroundColor: Colors.black,
+                            child: CircleAvatar(
+                              radius: 70,
+                              backgroundImage: AssetImage(
+                                ImageHelper.wrapAssetsImage(
+                                    'MoonBlinkProfile.jpg'),
                               ),
                             ),
-                    ),
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Row(
-                        //   children: [
-                        Text(name,
-                            style: Theme.of(context).textTheme.headline6),
-                        // SizedBox(width: 20),
-                        // Icon(
-                        //   FontAwesomeIcons.coins,
-                        //   color: Colors.amber[500],
-                        //   size: 20,
-                        // ),
-                        // SizedBox(width: 5.0),
-                        // userWallet != null
-                        //     ? Text(
-                        //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
-                        //         style: TextStyle(fontSize: 16))
-                        //     : CupertinoActivityIndicator()
-                        //   ],
-                        // ),
-                        SizedBox(height: 5),
-                        InkResponse(
-                          onTap: () {
-                            String id = encrypt(userid);
-                            FlutterClipboard.copy(id).then((value) {
-                              showToast(G.of(context).toastcopy);
-                              print('copied');
-                            });
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.content_copy,
-                                size: 18,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                              Text(G.of(context).copyID),
-                            ],
                           ),
-                        )
-                      ],
-                    ),
                   ),
                 ),
-              );
-            }),
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Row(
+                      //   children: [
+                      Text(name, style: Theme.of(context).textTheme.headline6),
+                      // SizedBox(width: 20),
+                      // Icon(
+                      //   FontAwesomeIcons.coins,
+                      //   color: Colors.amber[500],
+                      //   size: 20,
+                      // ),
+                      // SizedBox(width: 5.0),
+                      // userWallet != null
+                      //     ? Text(
+                      //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                      //         style: TextStyle(fontSize: 16))
+                      //     : CupertinoActivityIndicator()
+                      //   ],
+                      // ),
+                      SizedBox(height: 5),
+                      InkResponse(
+                        onTap: () {
+                          String id = encrypt(userid);
+                          FlutterClipboard.copy(id).then((value) {
+                            showToast(G.of(context).toastcopy);
+                            print('copied');
+                          });
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.content_copy,
+                              size: 18,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                            Text(G.of(context).copyID),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        //Level Indicator
+        if (usertype != 0)
+          Card(
+            margin: EdgeInsets.only(bottom: 15),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Level ${profile != null ? profile.level : "."}",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15.0,
+                      horizontal: 20,
+                    ),
+                    child: new LinearPercentIndicator(
+                      // width: MediaQuery.of(context).size.width - 40,
+                      animation: true,
+                      animationDuration: 1000,
+                      lineHeight: 12.0,
+                      leading: Text("Exp"),
+                      percent: profile != null
+                          ? double.parse(profile.levelpercent)
+                          : 0,
+                      linearStrokeCap: LinearStrokeCap.roundAll,
+                      progressColor: Theme.of(context).accentColor,
+                    ),
+                  ),
+                  Text(
+                      "Need 2 matches to be level ${profile != null ? (int.parse(profile.level) + 1).toString() : "."}")
+                ],
+              ),
+            ),
+          ),
 
         // Divider(
         //   height: 30,
@@ -355,9 +399,9 @@ class _UserListWidgetState extends State<UserListWidget> {
                     size: 20,
                   ),
                   SizedBox(width: 5.0),
-                  userWallet != null
+                  profile != null
                       ? Text(
-                          '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
+                          '${profile.wallet.value} ${profile.wallet.value > 1 ? 'coins' : 'coin'}',
                           style: TextStyle(fontSize: 16))
                       : CupertinoActivityIndicator()
                 ],

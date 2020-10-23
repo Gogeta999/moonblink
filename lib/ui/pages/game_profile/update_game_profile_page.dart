@@ -221,54 +221,69 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         elevation: 8,
-        child: Row(
-          children: <Widget>[
-            ///for now skill cover image later server will give a sample photo url
-            _buildCachedNetworkImage(
-                imageUrl: gameProfileSample.isEmpty || null
-                    ? widget.gameProfile.skillCoverImage
-                    : gameProfileSample,
-                label: G.of(context).sample,
-                isSample: true,
-                onTap: null),
-            _buildCachedNetworkImage(
-                imageUrl: widget.gameProfile.skillCoverImage,
-                label: G.of(context).select,
-                isSample: false,
-                onTap: _onTapImage)
+        child: Column(
+          children: [
+            Row(
+              children: <Widget>[
+                ///for now skill cover image later server will give a sample photo url
+                _buildCachedNetworkImage(
+                    imageUrl:
+                        gameProfileSample.isEmpty || gameProfileSample == null
+                            ? widget.gameProfile.skillCoverImage
+                            : gameProfileSample,
+                    isSample: true,
+                    onTap: null),
+                _skillCoverPhoto == null &&
+                        (widget.gameProfile.skillCoverImage == null ||
+                            widget.gameProfile.skillCoverImage.isEmpty)
+                    ? Expanded(
+                        child: InkResponse(
+                            onTap: _onTapImage,
+                            child: Container(
+                                margin: const EdgeInsets.all(16),
+                                child: Icon(Icons.add_box, size: 52))))
+                    : _buildCachedNetworkImage(
+                        imageUrl: widget.gameProfile.skillCoverImage,
+                        isSample: false,
+                        onTap: _onTapImage)
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(G.of(context).sample),
+                InkResponse(
+                    onTap: _onTapImage, child: Text(G.of(context).select))
+              ],
+            ),
+            SizedBox(height: 10),
           ],
         ));
   }
 
   Widget _buildCachedNetworkImage(
-      {String imageUrl, String label, bool isSample, Function onTap}) {
+      {String imageUrl, bool isSample, Function onTap}) {
     return Expanded(
       child: InkResponse(
         onTap: onTap,
         child: Container(
-          margin: const EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              _skillCoverPhoto != null && isSample == false
-                  ? Image.file(_skillCoverPhoto, height: 150, fit: BoxFit.cover)
-                  : CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      imageBuilder: (context, imageProvider) => Container(
-                        height: 150,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
-                      ),
-                      placeholder: (context, url) =>
-                          CupertinoActivityIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+          margin: const EdgeInsets.fromLTRB(16, 16, 16, 2),
+          child: _skillCoverPhoto != null && isSample == false
+              ? Image.file(_skillCoverPhoto, height: 150, fit: BoxFit.cover)
+              : CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
                     ),
-              SizedBox(height: 10),
-              Text(label),
-            ],
-          ),
+                  ),
+                  placeholder: (context, url) => CupertinoActivityIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
         ),
       ),
     );
@@ -362,22 +377,29 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   iconData: Icons.edit,
                   onTap: _onTapLevel),
               _buildDivider(),
+              Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                elevation: 8,
+                child: ListTile(
+                  onTap: null,
+                  title: Text(
+                    G.current.alarmRatio,
+                    // style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+              ),
+              _buildDivider(),
               _buildTitleWidget(title: G.of(context).gamemodedescript),
               _buildGameProfileCard(
                   title: G.of(context).gamemode,
                   subtitle: _gameMode,
                   iconData: Icons.edit,
                   onTap: _onTapGameMode),
-              // _buildDivider(),
-              // _buildTitleWidget(title: "Give Price for your Game"),
-              // _buildGameProfileCard(
-              //     title: G.of(context).gamemode,
-              //     subtitle: _gameMode,
-              //     iconData: Icons.edit,
-              //     onTap: _onTapGameMode),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
+              SizedBox(height: 20),
             ],
           ),
         ));

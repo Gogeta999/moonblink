@@ -22,20 +22,6 @@ class UserMessageNotificationFailure extends UserMessageNotificationState {
 
 }
 
-class UserMessageNotificationUpdating extends UserMessageNotificationState {
-  final List<UserMessageNotificationData> data;
-  final bool hasReachedMax;
-  final int page;
-
-  const UserMessageNotificationUpdating({this.data, this.hasReachedMax, this.page});
-
-  @override
-  List<Object> get props => [data, hasReachedMax];
-
-  @override
-  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
-}
-
 class UserMessageNotificationNoData extends UserMessageNotificationState {
   @override
   List<Object> get props => [];
@@ -58,12 +44,8 @@ class UserMessageNotificationSuccess extends UserMessageNotificationState {
   }
 
   @override
-  List<Object> get props => [data, hasReachedMax];
+  List<Object> get props => [data, hasReachedMax, page];
 
   @override
-  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
+  String toString() => 'UserNewNotificationSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
-
-// class UserNotificationAcceptStateToInitial extends UserNotificationState {}
-//
-// class UserNotificationRejectStateToInitial extends UserNotificationState {}

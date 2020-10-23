@@ -23,7 +23,7 @@ class UserMessageNotificationData {
   final int isRead;
   final String createdAt;
   final String updatedAt;
-  final UserMessageNotificationMessageData messageData;
+  UserMessageNotificationMessageData messageData;
 
   UserMessageNotificationData({this.id, this.userId, this.fcmType, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.messageData});
 

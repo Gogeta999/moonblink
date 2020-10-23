@@ -43,6 +43,8 @@ class _ThirdLoginState extends State<ThirdLogin> {
                           StorageManager.sharedPreferences.getInt(mgameprofile);
                       int type =
                           StorageManager.sharedPreferences.getInt(mUserType);
+                      // print(
+                      //     'User\'s type: is $type and Profile is $gameprofile');
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
                       if (gameprofile == 0 && type != 0) {

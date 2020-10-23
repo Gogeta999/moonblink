@@ -129,7 +129,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //take photo
-  _takePhoto() async {
+  _takePhoto(ChatModel model) async {
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
     File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
@@ -139,6 +139,11 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       setState(() {
         _file = compressedImage;
         bytes = _file.readAsBytesSync();
+        String now = DateTime.now().toString();
+        String filename = selfId.toString() + now + ".png";
+        model.sendfile(filename, bytes, widget.detailPageId, 1, messages);
+        bytes = null;
+        textEditingController.text = '';
       });
     }
   }
@@ -771,12 +776,11 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             model.sendMessage(textEditingController.text, id, messages);
             textEditingController.text = '';
           }
+        } else {
+          // model.sendfile(filename, bytes, id, 1, messages);
+          // textEditingController.text = '';
+          bytes = null;
         }
-        // else {
-        //   model.sendfile(filename, bytes, id, 1, messages);
-        //   textEditingController.text = '';
-        //   bytes = null;
-        // }
       },
     );
   }
@@ -1223,7 +1227,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                         height: 30,
                       ),
                       onPressed: () {
-                        _takePhoto();
+                        _takePhoto(model);
                         rotate();
                       },
                     ),

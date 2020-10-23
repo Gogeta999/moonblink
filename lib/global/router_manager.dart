@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
@@ -10,7 +11,6 @@ import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
-import 'package:moonblink/ui/pages/new_user_swiper_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
@@ -57,7 +57,6 @@ class RouteName {
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
   static const String callScreen = 'callScreen';
-  static const String newUserSwiperPage = 'newUserSwiperPage';
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
   static const String licenseAgreement = 'licenseAgreement';
   static const String blockedUsers = 'blockedUsers';
@@ -68,6 +67,7 @@ class RouteName {
   static const String userRating = 'userRating';
   static const String userMessageHistory = 'userMessageHistory';
   static const String userBookingHistory = 'userBookingHistory';
+  static const String facebookLoginError = 'facebookLoginError';
 }
 
 class Router {
@@ -79,8 +79,6 @@ class Router {
         return CupertinoPageRoute(
             builder: (_) =>
                 BookingPage(partnerUser: settings.arguments ?? 'Unknown data'));
-      case RouteName.newUserSwiperPage:
-        return CupertinoPageRoute(builder: (_) => NewUserSwiperPage());
       case RouteName.termsAndConditionsPage:
         return CupertinoPageRoute(
             builder: (_) =>
@@ -185,6 +183,8 @@ class Router {
       case RouteName.userBookingHistory:
         return CupertinoPageRoute(
             builder: (_) => UserBookingNotificationPage());
+      case RouteName.facebookLoginError:
+        return CupertinoPageRoute(builder: (_) => FbLoginErrorPage());
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

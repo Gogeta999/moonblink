@@ -22,34 +22,37 @@ class PartnerUser {
   int isFollow;
   int likecount;
   double rating;
+  String ordertaking;
   PartnerProfile prfoileFromPartner;
   List<PartnerGameProfile> gameprofile;
 
   // String partnerProfileImage;
   // String partnerBackendImage;
-  PartnerUser(
-      {this.partnerId,
-      this.partnerName,
-      this.partnerLastName,
-      this.partnerEmail,
-      this.verified,
-      this.verifiedAt,
-      this.createdAt,
-      this.updatedAt,
-      this.type,
-      this.status,
-      this.typestatus,
-      this.mlplayerid,
-      this.pubgplayerid,
-      this.password,
-      this.followerCount,
-      this.followingCount,
-      this.reactionCount,
-      this.isFollow,
-      this.likecount,
-      this.rating,
-      this.prfoileFromPartner,
-      this.gameprofile});
+  PartnerUser({
+    this.partnerId,
+    this.partnerName,
+    this.partnerLastName,
+    this.partnerEmail,
+    this.verified,
+    this.verifiedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.type,
+    this.status,
+    this.typestatus,
+    this.mlplayerid,
+    this.pubgplayerid,
+    this.password,
+    this.followerCount,
+    this.followingCount,
+    this.reactionCount,
+    this.isFollow,
+    this.likecount,
+    this.rating,
+    this.ordertaking,
+    this.prfoileFromPartner,
+    this.gameprofile,
+  });
 
   factory PartnerUser.fromJson(Map<String, dynamic> map) {
     return PartnerUser(
@@ -73,6 +76,7 @@ class PartnerUser {
       verifiedAt: map['verified_at'],
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
+      ordertaking: map['order_taking'],
       prfoileFromPartner: PartnerProfile.fromJson(
         map['profile'],
       ),

@@ -204,7 +204,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         return Center(
             child: Text(G.of(context).statuserror,
                 style: TextStyle(
-                    color: Colors.orange, fontWeight: FontWeight.bold)));
+                    color: Colors.green, fontWeight: FontWeight.bold)));
         break;
       case (3):
         return Center(
@@ -666,8 +666,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       child: Feed(
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
+                          partnerModel.partnerData.rating,
                           partnerModel.partnerData
-                              .rating) /*Container(
+                              .ordertaking) /*Container(
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Column(
                             children: <Widget>[

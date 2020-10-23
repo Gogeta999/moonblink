@@ -45,13 +45,6 @@ class UserMessageNotificationBloc
     if (event is UserMessageNotificationCleared) {
       yield* _mapClearedToState(currentState);
     }
-    // if (event is UserNotificationAccepted) {
-    //   yield* _mapAcceptedToState(
-    //       currentState, event.userId, event.bookingId, event.bookingUserId);
-    // }
-    // if (event is UserNotificationRejected) {
-    //   yield* _mapRejectedToState(currentState, event.userId, event.bookingId);
-    // }
   }
 
   ///Initial Fetched
@@ -135,32 +128,38 @@ class UserMessageNotificationBloc
       UserMessageNotificationState currentState, int notificationId) async* {
     if (currentState is UserMessageNotificationSuccess) {
       List<UserMessageNotificationData> currentData = currentState.data;
-      UserMessageNotificationData data;
+      List<UserMessageNotificationData> newData = List.from(currentState.data);
       int index = 0;
       currentData.forEach((element) {
         if (element.id == notificationId) {
           index = currentData.indexOf(element);
-//          print('------------------------Returning from loop');
           return;
         }
       });
       ///Already read
       if (currentData[index].isRead == 1) return;
-      yield UserMessageNotificationUpdating(
-          data: currentData,
-          hasReachedMax: currentState.hasReachedMax,
-          page: currentState.page);
       try {
-        data = await MoonBlinkRepository.changeUserMessageNotificationReadState(
+        final messageData =
+        await MoonBlinkRepository.changeUserMessageNotificationReadState(
             notificationId,
             isRead: 1);
+        final data = UserMessageNotificationData(
+            id: messageData.id,
+            userId: messageData.userId,
+            fcmType: messageData.fcmType,
+            title: messageData.title,
+            message: messageData.message,
+            isRead: messageData.isRead,
+            createdAt: messageData.createdAt,
+            updatedAt: messageData.updatedAt,
+            messageData: messageData.messageData);
+        newData[index] = data;
       } catch (error) {
         yield UserMessageNotificationFailure(error: error);
         return;
       }
-      currentData[index] = data;
       yield UserMessageNotificationSuccess(
-          data: currentData,
+          data: newData,
           hasReachedMax: currentState.hasReachedMax,
           page: currentState.page);
     } else {
@@ -173,45 +172,6 @@ class UserMessageNotificationBloc
       UserMessageNotificationState currentState) async* {
     yield UserMessageNotificationInitial();
   }
-
-  // ///MessageAccept
-  // Stream<UserNotificationState> _mapAcceptedToState(
-  //     UserNotificationState currentState,
-  //     int userId,
-  //     int bookingId,
-  //     int bookingUserId) async* {
-  //   try {
-  //     await MoonBlinkRepository.bookingAcceptOrDecline(
-  //         userId, bookingId, BOOKING_ACCEPT);
-  //     yield UserNotificationAcceptStateToInitial();
-  //     add(UserNotificationRefreshed());
-  //     locator<NavigationService>()
-  //         .navigateTo(RouteName.chatBox, arguments: bookingUserId);
-  //     showToast('Message Accepted');
-  //   } catch (error) {
-  //     showToast('$error');
-  //     yield UserNotificationAcceptStateToInitial();
-  //     print('Error $error');
-  //     return;
-  //   }
-  // }
-  //
-  // ///MessageReject
-  // Stream<UserNotificationState> _mapRejectedToState(
-  //     UserNotificationState currentState, int userId, int bookingId) async* {
-  //   try {
-  //     await MoonBlinkRepository.bookingAcceptOrDecline(
-  //         userId, bookingId, BOOKING_REJECT);
-  //     yield UserNotificationRejectStateToInitial();
-  //     this.add(UserNotificationRefreshed());
-  //     showToast('Message Rejected');
-  //   } catch (error) {
-  //     showToast('$error');
-  //     yield UserNotificationRejectStateToInitial();
-  //     print('Error $error');
-  //     return;
-  //   }
-  // }
 
   bool _hasReachedMax(UserMessageNotificationState state) =>
       state is UserMessageNotificationSuccess && state.hasReachedMax;
