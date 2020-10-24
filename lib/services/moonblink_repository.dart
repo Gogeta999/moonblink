@@ -162,10 +162,10 @@ class MoonBlinkRepository {
   }
 
   ///user wallet
-  static Future getUserWallet() async {
+  static Future<Wallet> getUserWallet() async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.UserWallet + '$userId');
-    return OwnProfile.fromJson(response.data);
+    return Wallet.fromJson(response.data['wallet']);
   }
 
   ///user history

@@ -148,10 +148,11 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   init() async {
-    OwnProfile user = await MoonBlinkRepository.getUserWallet();
+    OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
       this.profile = user;
     });
+    print(profile.wallet.value);
     print(profile.level);
     print(profile.levelpercent);
     print(
@@ -261,7 +262,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
 
         //Level Indicator
-        if (usertype != 0)
+        if (usertype != 0 && profile != null && profile.levelpercent != null && profile.level != null)
           Card(
             margin: EdgeInsets.only(bottom: 15),
             child: Container(
@@ -285,14 +286,14 @@ class _UserListWidgetState extends State<UserListWidget> {
                       lineHeight: 12.0,
                       leading: Text("Exp"),
                       percent: profile != null
-                          ? double.parse(profile.levelpercent)
+                          ? double.tryParse(profile.levelpercent) ?? 0.0
                           : 0,
                       linearStrokeCap: LinearStrokeCap.roundAll,
                       progressColor: Theme.of(context).accentColor,
                     ),
                   ),
                   Text(
-                      "Need 2 matches to be level ${profile != null ? (int.parse(profile.level) + 1).toString() : "."}")
+                      "Need 2 matches to be level ${profile != null ? (int.tryParse(profile.level) ?? 0 + 1).toString() : "."}")
                 ],
               ),
             ),
