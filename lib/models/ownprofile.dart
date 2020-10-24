@@ -26,8 +26,10 @@ class OwnProfile {
   int likecount;
   double rating;
   String level;
+  String leftorder;
   String ordertaking;
   String levelpercent;
+  String levelresettime;
   Wallet wallet;
   PartnerProfile prfoileFromPartner;
 
@@ -55,8 +57,10 @@ class OwnProfile {
     this.likecount,
     this.rating,
     this.level,
+    this.leftorder,
     this.ordertaking,
     this.levelpercent,
+    this.levelresettime,
     this.wallet,
     this.prfoileFromPartner,
   });
@@ -84,8 +88,10 @@ class OwnProfile {
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
       level: map['account_level'],
+      leftorder: map['need_to_take_order'],
       ordertaking: map['order_taking'],
       levelpercent: map['level_percentage'],
+      levelresettime: map['level_reset_time'],
       wallet: Wallet.fromJson(map['wallet']),
       prfoileFromPartner: PartnerProfile.fromJson(
         map['profile'],
