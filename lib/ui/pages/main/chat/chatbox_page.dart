@@ -749,11 +749,10 @@ class _ChatBoxPageState extends State<ChatBoxPage>
 
   //voice msg
   Widget voicemsg(id) {
-    showToast('$id');
-    // return MoonGoVoiceWidget(
-    //   id: id,
-    //   messages: messages,
-    // );
+    return MoonGoVoiceWidget(
+      id: id,
+      messages: messages,
+    );
     // return Voicemsg(
     //   onInit: _sendMessageWidgetUp,
     //   id: id,

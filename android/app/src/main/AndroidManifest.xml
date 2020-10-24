@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.moonuniverse.moonblink">
+    package="com.moonuniverse.moonblink"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- here is for flutter webrtc -->
@@ -26,6 +27,7 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
+        tools:replace="android:label"
         android:name=".Application"
         android:label="Moon Go"
         android:icon="@mipmap/moonblink">

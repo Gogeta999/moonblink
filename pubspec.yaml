@@ -40,8 +40,7 @@ dependencies:
   photo_view: ^0.10.2
   audioplayers: ^0.16.1
   dio: ^3.0.10
-  #TODO:
-  # flutter_plugin_record: ^0.3.4
+  flutter_plugin_record: ^0.3.4
   shared_preferences: ^0.5.12+2
   socket_io_client: ^0.9.11
   scoped_model: ^1.1.0
