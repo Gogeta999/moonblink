@@ -7,7 +7,8 @@ class Feed extends StatefulWidget {
   final String partnerName;
   final int partnerId;
   final double partnerRating;
-  Feed(this.partnerName, this.partnerId, this.partnerRating);
+  final String totalBooking;
+  Feed(this.partnerName, this.partnerId, this.partnerRating, this.totalBooking);
   @override
   _Feed createState() => _Feed();
 }
@@ -25,8 +26,15 @@ class _Feed extends State<Feed> with TickerProviderStateMixin {
     ];
     _pages = [
       // PartnerRatingWidget(widget.partnerName, widget.partnerRating),
-      UserRatingPage(userId: widget.partnerId),
-      PartnerGameHistoryWidget(widget.partnerName, widget.partnerId),
+      UserRatingPage(
+        userId: widget.partnerId,
+        totalBooking: widget.totalBooking,
+      ),
+      PartnerGameHistoryWidget(
+        widget.partnerName,
+        widget.partnerId,
+        widget.totalBooking,
+      ),
     ];
     _controller = TabController(
       length: _tabs.length,

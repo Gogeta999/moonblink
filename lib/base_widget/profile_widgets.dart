@@ -66,7 +66,8 @@ class PartnerRatingWidget extends StatelessWidget {
 class PartnerGameHistoryWidget extends StatefulWidget {
   final partnerName;
   final partnerId;
-  PartnerGameHistoryWidget(this.partnerName, this.partnerId);
+  final String totalBooking;
+  PartnerGameHistoryWidget(this.partnerName, this.partnerId, this.totalBooking);
 
   @override
   _PartnerGameHistoryWidgetState createState() =>
@@ -126,7 +127,10 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget>
                 child: Text(G.of(context).textnohistory),
               );
             }
-            return HistoryListView(state: state);
+            return HistoryListView(
+              state: state,
+              totalBooking: widget.totalBooking,
+            );
           }
           return null;
         },
@@ -137,8 +141,10 @@ class _PartnerGameHistoryWidgetState extends State<PartnerGameHistoryWidget>
 
 class HistoryListView extends StatefulWidget {
   final PartnerGameHistorySuccess state;
+  final String totalBooking;
 
-  const HistoryListView({Key key, this.state}) : super(key: key);
+  const HistoryListView({Key key, this.state, this.totalBooking})
+      : super(key: key);
   @override
   _HistoryListViewState createState() => _HistoryListViewState();
 }
@@ -164,17 +170,52 @@ class _HistoryListViewState extends State<HistoryListView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: AlwaysScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return index >= widget.state.data.length
-            ? BottomLoader()
-            : HistoryWidget(history: widget.state.data[index]);
-      },
-      itemCount: widget.state.hasReachedMax
-          ? widget.state.data.length
-          : widget.state.data.length + 1,
-      controller: _scrollController,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(
+                flex: 2,
+              ),
+              Text(
+                "Total Booking Count",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Spacer(
+                flex: 1,
+              ),
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: Theme.of(context).accentColor,
+                child: Text(
+                  widget.totalBooking,
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              Spacer(
+                flex: 2,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            physics: AlwaysScrollableScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              return index >= widget.state.data.length
+                  ? BottomLoader()
+                  : HistoryWidget(history: widget.state.data[index]);
+            },
+            itemCount: widget.state.hasReachedMax
+                ? widget.state.data.length
+                : widget.state.data.length + 1,
+            controller: _scrollController,
+          ),
+        ),
+      ],
     );
   }
 

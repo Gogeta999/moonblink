@@ -666,8 +666,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       child: Feed(
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
+                          partnerModel.partnerData.rating,
                           partnerModel.partnerData
-                              .rating) /*Container(
+                              .ordertaking) /*Container(
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Column(
                             children: <Widget>[

@@ -14,8 +14,10 @@ import 'package:intl/intl.dart';
 
 class UserRatingPage extends StatefulWidget {
   final int userId;
+  final String totalBooking;
 
-  const UserRatingPage({Key key, this.userId}) : super(key: key);
+  const UserRatingPage({Key key, this.userId, this.totalBooking})
+      : super(key: key);
   @override
   _UserRatingPageState createState() => _UserRatingPageState();
 }
@@ -72,14 +74,14 @@ class _UserRatingPageState extends State<UserRatingPage>
               if (state is UserRatingRefreshing) {
                 return Center(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Refreshing...'),
-                        SizedBox(width: 5),
-                        CupertinoActivityIndicator()
-                      ],
-                    ));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text('Refreshing...'),
+                    SizedBox(width: 5),
+                    CupertinoActivityIndicator()
+                  ],
+                ));
               }
               if (state is UserRatingSuccess) {
                 if (state.data.isEmpty) {
@@ -87,19 +89,55 @@ class _UserRatingPageState extends State<UserRatingPage>
                     child: Text(G.of(context).norating),
                   );
                 }
-                return ListView.builder(
-                  physics: ScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(
-                          parent: ClampingScrollPhysics())),
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= state.data.length
-                        ? BottomLoader()
-                        : RatingListTile(state: state, index: index);
-                  },
-                  itemCount: state.hasReachedMax
-                      ? state.data.length
-                      : state.data.length + 1,
-                  controller: _scrollController,
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(
+                            flex: 2,
+                          ),
+                          Text(
+                            "Total Booking Count",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          Spacer(
+                            flex: 1,
+                          ),
+                          CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Theme.of(context).accentColor,
+                            child: Text(
+                              widget.totalBooking,
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                          ),
+                          Spacer(
+                            flex: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        physics: ScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(
+                                parent: ClampingScrollPhysics())),
+                        itemBuilder: (BuildContext context, int index) {
+                          return index >= state.data.length
+                              ? BottomLoader()
+                              : RatingListTile(state: state, index: index);
+                        },
+                        itemCount: state.hasReachedMax
+                            ? state.data.length
+                            : state.data.length + 1,
+                        controller: _scrollController,
+                      ),
+                    ),
+                  ],
                 );
               }
               return Center(child: Text(G.of(context).toasterror));
