@@ -747,13 +747,14 @@ class _ChatBoxPageState extends State<ChatBoxPage>
 
   //voice msg
   Widget voicemsg(id) {
-    return Voicemsg(
-      onInit: _sendMessageWidgetUp,
-      id: id,
-      messages: messages,
-      onDismiss: _sendMessageWidgetDown,
-      rotate: () => rotate(),
-    );
+    // return Voicemsg(
+    //   onInit: _sendMessageWidgetUp,
+    //   id: id,
+    //   messages: messages,
+    //   onDismiss: _sendMessageWidgetDown,
+    //   rotate: () => rotate(),
+    // );
+    return Container();
   }
 
   //send Button
