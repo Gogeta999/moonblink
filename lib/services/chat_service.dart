@@ -17,7 +17,7 @@ String proSocketurl = 'https://chat.moonblinkuniverse.com';
 String devSocketUrl = 'http://157.230.35.18:8000/';
 String oldDevSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
-IO.Socket socket = IO.io(devSocketUrl, <String, dynamic>{
+IO.Socket socket = IO.io(oldDevSocketUrl, <String, dynamic>{
   'transports': ['websocket'],
   'autoConnect': false,
   'timeout': 2000
