@@ -747,9 +747,21 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     );
   }
 
+  startRecord() {
+    print("111开始录制");
+  }
+
+  stopRecord(String path, double audioTimeLength) {
+    print("结束束录制");
+    print("音频文件位置" + path);
+    print("音频录制时长" + audioTimeLength.toString());
+  }
+
   //voice msg
   Widget voicemsg(id) {
     return MoonGoVoiceWidget(
+      startRecord: startRecord,
+      stopRecord: stopRecord,
       id: id,
       messages: messages,
     );

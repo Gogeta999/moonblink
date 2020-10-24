@@ -5,6 +5,7 @@ import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
@@ -24,6 +25,8 @@ class MainTabPage extends StatefulWidget {
 
 class _MainTabPageState extends State<MainTabPage>
     with SingleTickerProviderStateMixin {
+  int gameprofile = StorageManager.sharedPreferences.getInt(mgameprofile);
+  int type = StorageManager.sharedPreferences.getInt(mUserType);
   var _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
   // ignore: unused_field
@@ -46,6 +49,9 @@ class _MainTabPageState extends State<MainTabPage>
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
+    if (gameprofile == 0 && type != 0) {
+      gameProfileSetUp();
+    }
     super.initState();
   }
 
