@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 // import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:moonblink/base_widget/booking/booking_bottom_sheet.dart';
+import 'package:moonblink/base_widget/flutteraudiorecorder/audiorecorder.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/top_up_bottom_sheet.dart';
 import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
@@ -97,54 +98,54 @@ class CustomBottomSheet {
     }
   }
 
-  // static showVoiceSheet(
-  //     {@required BuildContext buildContext,
-  //     @required Function send,
-  //     @required Function cancel,
-  //     @required Function start,
-  //     @required Function restart,
-  //     Function onInit,
-  //     Function onDismiss}) async {
-  //   ///request permission with async
-  //   bool permission = await FlutterAudioRecorder.hasPermissions;
-  //   if (permission) {
-  //     try {
-  //       onInit();
-  //     } catch (e) {
-  //       if (e is NoSuchMethodError) print('NoSuchMethodError');
-  //     }
-  //     showModalBottomSheet(
-  //         context: buildContext,
-  //         barrierColor: Colors.black.withOpacity(0.6),
-  //         isDismissible: true,
-  //         isScrollControlled: true,
-  //         builder: (context) => DraggableScrollableSheet(
-  //               expand: false,
-  //               initialChildSize: 0.4,
-  //               maxChildSize: 0.90,
-  //               builder: (context, scrollController) {
-  //                 return CircularBottomSheet(
-  //                   color: Theme.of(context).scaffoldBackgroundColor,
-  //                   child: VoiceBottomSheet(
-  //                       send: send,
-  //                       cancel: cancel,
-  //                       start: start,
-  //                       restart: restart),
-  //                 );
-  //               },
-  //             )).whenComplete(() {
-  //       try {
-  //         onDismiss();
-  //       } catch (e) {
-  //         if (e is NoSuchMethodError) {
-  //           print('NoSuchMethodError');
-  //         }
-  //       }
-  //     });
-  //   } else {
-  //     _permissionFail(buildContext, 'Microphone');
-  //   }
-  // }
+  static showVoiceSheet(
+      {@required BuildContext buildContext,
+      @required Function send,
+      @required Function cancel,
+      @required Function start,
+      @required Function restart,
+      Function onInit,
+      Function onDismiss}) async {
+    ///request permission with async
+    bool permission = await FlutterAudioRecorder.hasPermissions;
+    if (permission) {
+      try {
+        onInit();
+      } catch (e) {
+        if (e is NoSuchMethodError) print('NoSuchMethodError');
+      }
+      showModalBottomSheet(
+          context: buildContext,
+          barrierColor: Colors.black.withOpacity(0.6),
+          isDismissible: true,
+          isScrollControlled: true,
+          builder: (context) => DraggableScrollableSheet(
+                expand: false,
+                initialChildSize: 0.4,
+                maxChildSize: 0.90,
+                builder: (context, scrollController) {
+                  return CircularBottomSheet(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: VoiceBottomSheet(
+                        send: send,
+                        cancel: cancel,
+                        start: start,
+                        restart: restart),
+                  );
+                },
+              )).whenComplete(() {
+        try {
+          onDismiss();
+        } catch (e) {
+          if (e is NoSuchMethodError) {
+            print('NoSuchMethodError');
+          }
+        }
+      });
+    } else {
+      _permissionFail(buildContext, 'Microphone');
+    }
+  }
 
   static showUserManageContent(
       {@required BuildContext buildContext,

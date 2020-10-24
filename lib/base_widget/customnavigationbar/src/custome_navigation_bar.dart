@@ -239,7 +239,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-
                 children: <Widget>[
                   for (var i = 0; i < widget.items.length; i++)
                     Expanded(
@@ -266,18 +265,25 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                           ),
                           if (widget.items[i].badgeCount != 0)
                             Positioned(
-                              right: MediaQuery.of(context).size.width * 0.08 / 4,
-                              top: MediaQuery.of(context).size.height * 0.02 / 3,
+                              right:
+                                  MediaQuery.of(context).size.width * 0.08 / 4,
+                              top:
+                                  MediaQuery.of(context).size.height * 0.02 / 3,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.redAccent,
                                   shape: BoxShape.circle,
                                 ),
                                 constraints: BoxConstraints(
-                                  minWidth: MediaQuery.of(context).size.width * 0.08,
-                                  minHeight: MediaQuery.of(context).size.height * 0.02,
-                                  maxWidth: MediaQuery.of(context).size.width * 0.1,
-                                  maxHeight: MediaQuery.of(context).size.height * 0.028,
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.08,
+                                  minHeight:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height *
+                                          0.028,
                                 ),
                                 child: Center(
                                   child: Text(

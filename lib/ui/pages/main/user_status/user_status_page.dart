@@ -148,7 +148,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   init() async {
-    OwnProfile user = await MoonBlinkRepository.getUserWallet();
+    OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
       this.profile = user;
     });
