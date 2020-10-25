@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:file/local.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 
 typedef startRecord = Future Function();
@@ -34,8 +36,8 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
   double starty = 0.0;
   double offset = 0.0;
   bool isUp = false;
-  String textShow = "按住说话";
-  String toastShow = "手指上滑,取消发送";
+  String textShow = "Long Press to talk";
+  String toastShow = "Drag up to send, let go to send";
   String voiceIco = "assets/images/voice_volume_1.png";
   String filePath = "";
   String fileName = "";
@@ -43,7 +45,7 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
   Uint8List bytes;
   ChatModel chatModel;
 
-  ///默认隐藏状态
+  ///Default is close
   bool voiceState = true;
   OverlayEntry overlayEntry;
   FlutterPluginRecord recordPlugin;
@@ -55,7 +57,7 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
 
     _init();
 
-    ///初始化方法的监听
+    ///Init Listening
     recordPlugin.responseFromInit.listen((data) {
       if (data) {
         print("Init Sucess");
@@ -68,11 +70,11 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
     /// Start Record and End Record
     recordPlugin.response.listen((data) {
       if (data.msg == "onStop") {
-        ///结束录制时会返回录制文件的地址方便上传服务器
+        ///TODO: After End record
         print("onStop  " + data.path);
         fileName = widget.id.toString() + "SendAt" + currentTime;
         filePath = data.path;
-        _voiceFile = widget.localFileSystem.file(data.path);
+        _voiceFile = widget.localFileSystem.file(filePath);
         widget.stopRecord(data.path, data.audioTimeLength);
       } else if (data.msg == "onStart") {
         print("onStart --");
@@ -140,7 +142,7 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
                           voiceIco,
                           width: 100,
                           height: 100,
-                          package: 'flutter_plugin_record',
+                          // package: 'flutter_plugin_record',
                         ),
                       ),
                       Container(
@@ -168,7 +170,7 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
 
   showVoiceView() {
     setState(() {
-      textShow = "松开结束";
+      textShow = "Drag up to end";
       voiceState = false;
     });
     buildOverLayView(context);
@@ -177,7 +179,7 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
 
   hideVoiceView() {
     setState(() {
-      textShow = "按住说话";
+      textShow = "Long press to talk";
       voiceState = true;
     });
 
@@ -188,9 +190,12 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
     }
 
     if (isUp) {
-      print("取消发送");
+      print("Cancel");
     } else {
-      print("进行发送");
+      print("Send");
+      bytes = _voiceFile.readAsBytesSync();
+      chatModel.sendaudio(
+          fileName, bytes, widget.id, 3, widget.messages, filePath);
     }
   }
 
@@ -199,59 +204,58 @@ class _MoonGoVoiceWidgetState extends State<MoonGoVoiceWidget> {
     setState(() {
       isUp = starty - offset > 100 ? true : false;
       if (isUp) {
-        textShow = "松开手指,取消发送";
+        textShow = "Drag up to cancel";
         toastShow = textShow;
         bytes = _voiceFile.readAsBytesSync();
         chatModel.sendaudio(
             fileName, bytes, widget.id, 3, widget.messages, filePath);
       } else {
-        textShow = "松开结束";
-        toastShow = "手指上滑,取消发送";
+        textShow = "Unpress to end";
+        toastShow = "Drag up to cancel";
       }
     });
   }
 
-  ///初始化语音录制的方法
+  ///Init Voice Record
   void _init() async {
     recordPlugin.init();
+    print('Inittttttttttttttt');
   }
 
-  ///开始语音录制的方法
+  ///Start Voice Record
   void start() async {
     recordPlugin.start();
+    print('Startttttttttttttttt');
   }
 
-  ///停止语音录制的方法
+  ///Stop Voice
   void stop() {
     recordPlugin.stop();
+    print('Stopppppppppppppppppppppppppp');
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: GestureDetector(
-        onLongPressStart: (details) {
-          starty = details.globalPosition.dy;
-          showVoiceView();
-        },
-        onLongPressEnd: (details) {
-          hideVoiceView();
-        },
-        onLongPressMoveUpdate: (details) {
-          offset = details.globalPosition.dy;
-          moveVoiceView();
-        },
-        child: Container(
-          height: 60,
-          color: Colors.blue,
-          margin: EdgeInsets.fromLTRB(50, 0, 50, 20),
-          child: Center(
-            child: Text(
-              textShow,
-            ),
-          ),
-        ),
-      ),
+          onLongPressStart: (details) {
+            starty = details.globalPosition.dy;
+            showVoiceView();
+          },
+          onLongPressEnd: (details) {
+            hideVoiceView();
+          },
+          onLongPressMoveUpdate: (details) {
+            offset = details.globalPosition.dy;
+            moveVoiceView();
+          },
+          child: SvgPicture.asset(
+            microphone,
+            color: Colors.black,
+            semanticsLabel: 'mircophone',
+            width: 30,
+            height: 30,
+          )),
     );
   }
 

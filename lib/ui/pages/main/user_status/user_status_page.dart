@@ -213,6 +213,7 @@ class _UserListWidgetState extends State<UserListWidget> {
     setState(() {
       this.profile = user;
     });
+    print(profile.wallet.value);
     print(profile.level);
     print(profile.levelpercent);
     print(
@@ -345,7 +346,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
 
         //Level Indicator
-        if (usertype != 0)
+        if (usertype != 0 && profile != null && profile.levelpercent != null && profile.level != null)
           Card(
             margin: EdgeInsets.only(bottom: 15),
             child: InkWell(

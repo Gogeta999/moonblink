@@ -67,12 +67,10 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future _initUserWallet() {
-    return MoonBlinkRepository.getUserWallet().then((value) {
-      if (value is Wallet) {
-        setState(() {
-          this._wallet = value;
-        });
-      }
+    return MoonBlinkRepository.fetchOwnProfile().then((value) {
+      setState(() {
+        this._wallet = value.wallet;
+      });
     });
   }
 
