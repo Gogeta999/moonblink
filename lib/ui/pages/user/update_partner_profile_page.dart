@@ -116,33 +116,56 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                     /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
                     child: Stack(
                       children: <Widget>[
-                        GestureDetector(
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 240,
+                          child: Stack(
+                            children: [
+                              GestureDetector(
 
-                            /// [You need to put before OnTap]
-                            onTap: () {
-                              CustomBottomSheet.show(
-                                  requestType: RequestType.image,
-                                  popAfterBtnPressed: true,
-                                  buttonText: G.of(context).choose,
-                                  buildContext: context,
-                                  limit: 1,
-                                  onPressed: (File file) {
-                                    setState(() {
-                                      _cover = file;
-                                    });
+                                  /// [You need to put before OnTap]
+
+                                  onTap: () {
+                                    CustomBottomSheet.show(
+                                        requestType: RequestType.image,
+                                        popAfterBtnPressed: true,
+                                        buttonText: G.of(context).choose,
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _cover = file;
+                                          });
+                                        },
+                                        body: G.of(context).partnercover,
+                                        willCrop: true,
+                                        compressQuality:
+                                            NORMAL_COMPRESS_QUALITY);
                                   },
-                                  body: G.of(context).partnercover,
-                                  willCrop: true,
-                                  compressQuality: NORMAL_COMPRESS_QUALITY);
-                            },
-                            child: AspectRatio(
-                              aspectRatio: 100 / 60,
-                              child: PartnerCoverWidget(
-                                  _cover,
-                                  partnermodel,
-                                  widget.partnerUser.prfoileFromPartner
-                                      .coverImage),
-                            )),
+                                  child: AspectRatio(
+                                    aspectRatio: 100 / 60,
+                                    child: PartnerCoverWidget(
+                                        _cover,
+                                        partnermodel,
+                                        widget.partnerUser.prfoileFromPartner
+                                            .coverImage),
+                                  )),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white70,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Icon(
+                                    Icons.camera_alt_rounded,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
                         /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
                         Padding(
@@ -204,10 +227,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
-                                            color: Colors.white70,
-                                            borderRadius: BorderRadius.circular(20)
+                                              color: Colors.white70,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: Icon(
+                                            Icons.camera_alt_rounded,
+                                            color: Colors.black,
                                           ),
-                                          child: Icon(Icons.camera_alt_rounded, color: Colors.black,),
                                         ),
                                       ),
                                     ],

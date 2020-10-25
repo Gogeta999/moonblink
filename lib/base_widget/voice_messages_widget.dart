@@ -58,10 +58,7 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   void dispose() {
-    if (recordPlugin != null) {
-      recordPlugin.dispose();
-      print('RecordPlugin Dispose');
-    }
+    recordPlugin.dispose();
 
     super.dispose();
   }
