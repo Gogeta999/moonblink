@@ -15,9 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/player.dart';
-import 'package:moonblink/base_widget/recorderOld.dart';
+import 'package:moonblink/base_widget/voice_messages_widget.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
-import 'package:moonblink/base_widget/voice_message_widget.dart';
+
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -28,7 +28,6 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
-import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_pageNew.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -748,7 +747,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   startRecord() {
-    print("111开始录制");
+    print("开始录制");
   }
 
   stopRecord(String path, double audioTimeLength) {
@@ -759,19 +758,21 @@ class _ChatBoxPageState extends State<ChatBoxPage>
 
   //voice msg
   Widget voicemsg(id) {
-    return MoonGoVoiceWidget(
-      startRecord: startRecord,
-      stopRecord: stopRecord,
-      id: id,
-      messages: messages,
-    );
-    // return Voicemsg(
-    //   onInit: _sendMessageWidgetUp,
+    // return MoonGoVoiceWidget(
+    //   startRecord: startRecord,
+    //   stopRecord: stopRecord,
     //   id: id,
     //   messages: messages,
-    //   onDismiss: _sendMessageWidgetDown,
-    //   rotate: () => rotate(),
     // );
+    return Voicemsg(
+      onInit: _sendMessageWidgetUp,
+      id: id,
+      messages: messages,
+      onDismiss: _sendMessageWidgetDown,
+      rotate: () => rotate(),
+      startRecord: startRecord,
+      stopRecord: stopRecord,
+    );
   }
 
   //send Button

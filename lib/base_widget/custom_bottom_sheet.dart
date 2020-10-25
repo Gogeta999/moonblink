@@ -13,6 +13,7 @@ import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/view_model/booking_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -145,6 +146,46 @@ class CustomBottomSheet {
     } else {
       _permissionFail(buildContext, 'Microphone');
     }
+  }
+
+  static showNewVoiceSheet(
+      {@required BuildContext buildContext,
+      @required Function send,
+      @required Function cancel,
+      @required Function start,
+      @required Function restart,
+      Function onInit,
+      Function onDismiss}) async {
+    ///request permission with async
+
+    showModalBottomSheet(
+        context: buildContext,
+        barrierColor: Colors.black.withOpacity(0.6),
+        isDismissible: true,
+        isScrollControlled: true,
+        builder: (context) => DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.4,
+              maxChildSize: 0.90,
+              builder: (context, scrollController) {
+                return CircularBottomSheet(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: VoiceBottomSheet(
+                      send: send,
+                      cancel: cancel,
+                      start: start,
+                      restart: restart),
+                );
+              },
+            )).whenComplete(() {
+      try {
+        onDismiss();
+      } catch (e) {
+        if (e is NoSuchMethodError) {
+          print('NoSuchMethodError');
+        }
+      }
+    });
   }
 
   static showUserManageContent(
