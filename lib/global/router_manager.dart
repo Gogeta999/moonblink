@@ -147,7 +147,7 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:
         return CupertinoPageRoute(
-            builder: (_) => VoiceCallWidget(
+            builder: (_) => NewVoiceCallWidget(
                 channelName: settings.arguments != null
                     ? settings.arguments
                     : 'Unknown Channel'));

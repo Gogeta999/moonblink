@@ -13,73 +13,72 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
   # State Management
-  provider: ^4.0.4
-  path_provider: ^1.6.11
+  provider: ^4.3.2+2
+  path_provider: ^1.6.21
   #Base Component
   platform_device_id: ^0.1.1
-  device_info: ^0.4.2+4
-  package_info: ^0.4.1
+  device_info: ^0.4.2+9
+  package_info: ^0.4.3
   clipboard: ^0.1.2+8
   grouped_list: ^3.5.0
   #Base UI
-  shimmer: ^1.1.1
-  flutter_holo_date_picker: ^0.1.5
+  shimmer: ^1.1.2
+  flutter_holo_date_picker: ^0.2.1
   datetime_picker_formfield: ^1.0.0
-  cached_network_image: ^2.0+1
-  flutter_blurhash: ^0.5.0
+  cached_network_image: ^2.3.3
   oktoast: ^2.3.2
-  pull_to_refresh: ^1.6.0
-  share: ^0.6.4+3
-  flutter_local_notifications: ^1.4.4+1 # Android API 16+ (4.1+, the minimum version supported by Flutter). Uses the NotificationCompat APIs so it can be run older Android devices # iOS 8.0+ (the minimum version supported by Flutter). Supports the old and new iOS notification APIs (the User Notifications Framework introduced in iOS 10 but will use the UILocalNotification APIs for devices predating iOS 10)
+  pull_to_refresh: ^1.6.2
+  share: ^0.6.5+3
+  flutter_local_notifications: ^3.0.0 # Android API 16+ (4.1+, the minimum version supported by Flutter). Uses the NotificationCompat APIs so it can be run older Android devices # iOS 8.0+ (the minimum version supported by Flutter). Supports the old and new iOS notification APIs (the User Notifications Framework introduced in iOS 10 but will use the UILocalNotification APIs for devices predating iOS 10)
   smooth_star_rating: ^1.1.1
-  flutter_ffmpeg: 0.2.10
+  #TODO: IChange here also Change At Stories Page too
+  flutter_ffmpeg: 0.3.0
   video_thumbnail: ^0.2.2
-  # fancy_bottom_navigation: ^0.3.2
   # Data
-  photo_view: ^0.9.2
-  audioplayers: ^0.15.1
-  dio: ^3.0.9
+  photo_view: ^0.10.2
+  audioplayers: ^0.16.1
+  dio: ^3.0.10
   flutter_plugin_record: ^0.3.4
-  shared_preferences: ^0.5.12
-  socket_io_client: ^0.9.4
-  scoped_model: ^1.0.1
-  url_launcher: ^5.5.0
+  shared_preferences: ^0.5.12+2
+  socket_io_client: ^0.9.11
+  scoped_model: ^1.1.0
+  url_launcher: ^5.7.7
   #voice call
-  # agora_rtc_engine: ^3.1.3
-  agora_rtc_engine: 1.0.13
+  agora_rtc_engine: ^3.1.3
   # agora_rtc_engine: 1.0.13 #need to edit at android and ios
-  permission_handler: ^5.0.1
+  permission_handler: ^5.0.1+1
   #camera
-  camera: ^0.5.8+2 #need to edit at ios,andorid require 21 sdk version
+  camera: ^0.5.8+11 #need to edit at ios,andorid require 21 sdk version
   # local storage
-  image_picker: ^0.6.7+11 #need to edit at android and ios
-  localstorage: ^3.0.2+5
-  flutter_cache_manager: ^1.4.1
+  image_picker: ^0.6.7+12 #need to edit at android and ios
+  localstorage: ^3.0.3+6
+  #Can't change here cuz storyview no update
+  flutter_cache_manager: ^1.2.2
   story_view: ^0.12.3
-  vibration: ^1.4.0
+  vibration: ^1.7.1
   # signIn helper
-  google_sign_in: ^4.5.1 #complete for both
+  google_sign_in: ^4.5.5 #complete for both
   flutter_facebook_login: ^3.0.0 #complete for both
   # FCM
   firebase_messaging: ^7.0.3
   # This is a simple Service Locator for Dart and Flutter projects with some additional goodies highly inspired by Splat. It can be used instead of InheritedWidget or Provider to access objects e.g. from your UI.
-  get_it: ^4.0.2
-  in_app_purchase: ^0.3.4+5
+  get_it: ^5.0.1
+  in_app_purchase: ^0.3.4+15
   # image_compressing
   flutter_image_compress: ^0.7.0
   # video_player
   video_player: ^0.10.11+2
   common_utils: ^1.2.1
   # DateFormat
-  timeago: ^2.0.26
+  timeago: ^2.0.28
   # Bloc Pattern
-  flutter_bloc: ^6.0.1
+  flutter_bloc: ^6.0.6
   # RxDart
   rxdart: ^0.24.1
   # Simplify Equality Comparisons
-  equatable: ^1.2.2
+  equatable: ^1.2.5
   flutter_swiper: ^1.1.6
   # ADs
   firebase_admob: ^0.10.0+2
@@ -88,20 +87,20 @@ dependencies:
   # Firebase Auth - // Phone OTP
   firebase_auth: ^0.18.1+2
   # loading image from local -- new libraries
-  photo_manager: ^0.5.7
+  photo_manager: ^0.5.8
   # Apple Sign in - android, ios and mac support
-  sign_in_with_apple: ^2.5.2
+  sign_in_with_apple: ^2.5.4
   # Apple Sign in 2 - only iOS support
   apple_sign_in: ^0.1.0
   #encrypt
-  encrypt: ^4.0.2
+  encrypt: ^4.1.0
   #crop, compresss, resize image
-  image_cropper: ^1.3.0
+  image_cropper: ^1.3.1
   # swipe list tile to show more options
   flutter_slidable: ^0.5.7
-  flutter_svg: ^0.19.0
-  font_awesome_flutter: ^8.8.1 #The Font Awesome Icon pack available as set of Flutter Icons.
-  percent_indicator: "^2.1.7+2"
+  flutter_svg: ^0.19.1
+  font_awesome_flutter: ^8.10.0 #The Font Awesome Icon pack available as set of Flutter Icons.
+  percent_indicator: 2.1.7+4
   
 dev_dependencies:
   flutter_test:

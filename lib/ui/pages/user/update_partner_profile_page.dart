@@ -175,26 +175,42 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         compressQuality:
                                             NORMAL_COMPRESS_QUALITY);
                                   },
-                                  child: CircleAvatar(
-                                    radius: 75,
-                                    child: CircleAvatar(
-                                      radius: 72,
-                                      backgroundColor:
-                                          Theme.of(context).primaryColor,
-                                      child: ClipOval(
-                                        child: new SizedBox(
-                                          width: 150.0,
-                                          height: 150.0,
-                                          child: PartnerProfileWidget(
-                                              _profile,
-                                              partnermodel,
-                                              widget
-                                                  .partnerUser
-                                                  .prfoileFromPartner
-                                                  .profileImage),
+                                  child: Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 75,
+                                        child: CircleAvatar(
+                                          radius: 72,
+                                          backgroundColor:
+                                              Theme.of(context).primaryColor,
+                                          child: ClipOval(
+                                            child: new SizedBox(
+                                              width: 150.0,
+                                              height: 150.0,
+                                              child: PartnerProfileWidget(
+                                                  _profile,
+                                                  partnermodel,
+                                                  widget
+                                                      .partnerUser
+                                                      .prfoileFromPartner
+                                                      .profileImage),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        bottom: 12,
+                                        right: 12,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius: BorderRadius.circular(20)
+                                          ),
+                                          child: Icon(Icons.camera_alt_rounded, color: Colors.black,),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 )),
                           ),
