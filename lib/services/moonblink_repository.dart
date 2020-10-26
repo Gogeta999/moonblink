@@ -6,6 +6,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
+import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
@@ -73,6 +74,18 @@ class MoonBlinkRepository {
         await DioUtils().get(Api.Messages + '$id/messages?limit=40&page=1');
     return response.data['data']
         .map<Lastmsg>((item) => Lastmsg.fromMap(item))
+        .toList();
+  }
+
+  // get last messages
+  static Future<List<LastMessage>> getLastMessages({int id, int limit, int page}) async {
+    var response =
+    await DioUtils().get(Api.Messages + '$id/messages', queryParameters: {
+      'limit': limit,
+      'page': page,
+    });
+    return response.data['data']
+        .map<LastMessage>((e) => LastMessage.fromJson(e))
         .toList();
   }
 
@@ -165,7 +178,7 @@ class MoonBlinkRepository {
   static Future getUserWallet() async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.UserWallet + '$userId');
-    return OwnProfile.fromJson(response.data);
+    return Wallet.fromJson(response.data['wallet']);
   }
 
   ///user history

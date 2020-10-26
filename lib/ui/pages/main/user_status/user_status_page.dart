@@ -148,7 +148,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   init() async {
-    OwnProfile user = await MoonBlinkRepository.getUserWallet();
+    OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
       this.profile = user;
     });
@@ -261,7 +261,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
 
         //Level Indicator
-        if (usertype != 0)
+        if (usertype != 0 && profile != null && profile.levelpercent != null && profile.level != null)
           Card(
             margin: EdgeInsets.only(bottom: 15),
             child: Container(

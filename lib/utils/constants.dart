@@ -6,6 +6,7 @@ const int UNBLOCK = 0;
 const int BLOCK = 1;
 const int NORMAL_COMPRESS_QUALITY = 90;
 ///Booking Status
+const int UNKNOWN = -1;
 const int PENDING = 0;
 const int ACCEPTED = 1;
 const int REJECT = 2;

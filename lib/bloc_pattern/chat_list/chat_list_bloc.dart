@@ -10,10 +10,22 @@ part 'chat_list_state.dart';
 
 const int _limit = 5;
 
+///The simplest bloc xD
 class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
-  final int userId;
 
-  ChatListBloc(this.userId) : super(ChatListInitial());
+  ChatListBloc() : super(ChatListInitial());
+
+  final chatsSubject = BehaviorSubject.seeded(<NewChat>[]);
+
+  @override
+  Stream<ChatListState> mapEventToState(ChatListEvent event) async* {
+
+  }
+}
+
+/*
+
+  ChatListBloc() : super(ChatListInitial());
 
   @override
   Stream<Transition<ChatListEvent, ChatListState>> transformEvents(
@@ -69,7 +81,6 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
 
   Stream<ChatListState> _mapRefreshedToState(
       ChatListState currentState) async* {
-    print('Execute');
     List<NewChat> data = [];
     yield ChatListRefreshing();
     try {
@@ -87,7 +98,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   bool _hasReachedMax(ChatListState state) =>
       state is ChatListSuccess && state.hasReachedMax;
 
+  ///limit and page don't need for now
   Future<List<NewChat>> _fetchChatList({int limit, int page}) async {
-    
-  }
-}
+
+  }*/
