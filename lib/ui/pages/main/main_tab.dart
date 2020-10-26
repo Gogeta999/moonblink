@@ -49,6 +49,9 @@ class _MainTabPageState extends State<MainTabPage>
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
+    if (StorageManager.sharedPreferences.getString(token) != null)
+      BlocProvider.of<UserNewNotificationBloc>(context)
+          .add(UserNewNotificationFetched());
     if (gameprofile == 0 && type != 0) {
       gameProfileSetUp();
     }

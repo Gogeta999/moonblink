@@ -224,8 +224,8 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         ),
                                       ),
                                       Positioned(
-                                        bottom: 12,
-                                        right: 12,
+                                        bottom: 18,
+                                        right: 18,
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
