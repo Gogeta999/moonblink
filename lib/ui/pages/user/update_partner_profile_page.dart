@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
@@ -157,10 +158,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   decoration: BoxDecoration(
                                       color: Colors.white70,
                                       borderRadius: BorderRadius.circular(20)),
-                                  child: Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: Colors.black,
-                                  ),
+                                  child: Icon(IconFonts.cameraIcon),
                                 ),
                               ),
                             ],
@@ -230,10 +228,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               color: Colors.white70,
                                               borderRadius:
                                                   BorderRadius.circular(20)),
-                                          child: Icon(
-                                            Icons.camera_alt_rounded,
-                                            color: Colors.black,
-                                          ),
+                                          child: Icon(IconFonts.cameraIcon),
                                         ),
                                       ),
                                     ],

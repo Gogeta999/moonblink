@@ -339,7 +339,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                       UpdateOrSubmitButtonState.loading) {
                     return CupertinoButton(
                       child: CupertinoActivityIndicator(),
-                      onPressed: null,
+                      onPressed: () {},
                     );
                   } else {
                     return CupertinoButton(
@@ -551,7 +551,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     PickedFile pickedFile =
         await ImagePicker().getImage(source: ImageSource.camera);
     File compressedImage = await CompressUtils.compressAndGetFile(
-        File(pickedFile.path), 90, 1080, 1080);
+        File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
     setState(() {
       _skillCoverPhoto = compressedImage;
     });

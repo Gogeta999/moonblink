@@ -166,9 +166,9 @@ class LoginButton extends StatelessWidget {
                     // print('User\'s type: is $type and Profile is $gameprofile');
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
-                    if (gameprofile == 0 && type != 0) {
-                      gameProfileSetUp();
-                    }
+                    // if (gameprofile == 0 && type != 0) {
+                    //   gameProfileSetUp();
+                    // }
                   } else {
                     model.showErrorMessage(context);
                   }
