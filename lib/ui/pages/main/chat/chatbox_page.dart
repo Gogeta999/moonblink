@@ -746,15 +746,15 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     );
   }
 
-  startRecord() {
-    print("开始录制");
-  }
+  // startRecord() {
+  //   print("开始录制");
+  // }
 
-  stopRecord(String path, double audioTimeLength) {
-    print("结束束录制");
-    print("音频文件位置" + path);
-    print("音频录制时长" + audioTimeLength.toString());
-  }
+  // stopRecord(String path, double audioTimeLength) {
+  //   print("结束束录制");
+  //   print("音频文件位置" + path);
+  //   print("音频录制时长" + audioTimeLength.toString());
+  // }
 
   //voice msg
   Widget voicemsg(id) {
@@ -770,8 +770,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       messages: messages,
       onDismiss: _sendMessageWidgetDown,
       rotate: () => rotate(),
-      startRecord: startRecord,
-      stopRecord: stopRecord,
+      // startRecord: startRecord,
+      // stopRecord: stopRecord,
     );
   }
 

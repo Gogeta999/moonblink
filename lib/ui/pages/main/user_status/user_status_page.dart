@@ -282,21 +282,25 @@ class _UserListWidgetState extends State<UserListWidget> {
                             child: Text(name,
                                 style: Theme.of(context).textTheme.headline6),
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserLevelPage()));
-                            },
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(
-                                "Lv ${profile != null ? profile.level : "."}",
-                                style: TextStyle(fontSize: 13),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          if (usertype != 0)
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserLevelPage()));
+                              },
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  "Lv ${profile != null ? profile.level : "."}",
+                                  style: TextStyle(fontSize: 13),
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                       // SizedBox(width: 20),
@@ -346,7 +350,10 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
 
         //Level Indicator
-        if (usertype != 0 && profile != null && profile.levelpercent != null && profile.level != null)
+        if (usertype != 0 &&
+            profile != null &&
+            profile.levelpercent != null &&
+            profile.level != null)
           Card(
             margin: EdgeInsets.only(bottom: 15),
             child: InkWell(

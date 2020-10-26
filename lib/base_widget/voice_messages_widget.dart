@@ -10,7 +10,6 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -46,22 +45,19 @@ class _VoicemsgState extends State<Voicemsg> {
   String filename;
   File _file;
   Uint8List bytes;
-  ChatModel chatModel;
+  // ChatModel chatModel;
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
   String filePath = "";
+  bool sent = true;
   @override
   void initState() {
     super.initState();
-
     _init();
   }
 
   @override
   void dispose() {
-    if (recordPlugin != null) {
-      recordPlugin.dispose();
-      print('RecordPlugin Dispose');
-    }
+    recordPlugin.dispose();
 
     super.dispose();
   }
@@ -69,7 +65,7 @@ class _VoicemsgState extends State<Voicemsg> {
   ///Init Voice Record
   void _init() async {
     Permission.microphone.request();
-    recordPlugin.initRecordMp3();
+    recordPlugin.init();
     print('Inittttttttttttttt');
   }
 
@@ -90,14 +86,15 @@ class _VoicemsgState extends State<Voicemsg> {
   ///Stop Voice
   void _send() {
     recordPlugin.stop();
-    chatModel.sendaudio(
-        filename, bytes, widget.id, 3, widget.messages, filePath);
+    setState(() {
+      sent = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      this.chatModel = model;
+      // this.chatModel = model;
       return IconButton(
         icon: SvgPicture.asset(
           microphone,
@@ -108,7 +105,7 @@ class _VoicemsgState extends State<Voicemsg> {
         ),
         onPressed: () async {
           widget.rotate();
-          _init();
+          // _init();
 
           ///Init Listening
           recordPlugin.responseFromInit.listen((data) {
@@ -125,6 +122,7 @@ class _VoicemsgState extends State<Voicemsg> {
               print("onStart --");
             } else if (data.msg == "onStop") {
               print("onStop  Path" + data.path);
+              print("++++++++++++++++++++++++++++++++++++++++++++++++R");
               setState(() {
                 String currentTime =
                     DateTime.now().millisecondsSinceEpoch.toString();
@@ -139,7 +137,15 @@ class _VoicemsgState extends State<Voicemsg> {
                 print("File Bytes: $bytes");
                 print(bytes);
               });
-              print("onStop  时长 " + data.audioTimeLength.toString());
+              print("onStop " + data.audioTimeLength.toString());
+              print("NOT SENT YET +++++++++++++++++++++++++++++++");
+              print(sent);
+              if (sent == false) {
+                model.sendaudio(
+                    filename, bytes, widget.id, 3, widget.messages, filePath);
+                print("Sent ___________________________________");
+                sent = true;
+              }
             } else {
               print("--" + data.msg);
             }
@@ -147,8 +153,8 @@ class _VoicemsgState extends State<Voicemsg> {
 
           ///Vibration Response
           recordPlugin.responseFromAmplitude.listen((data) {
-            var voiceData = double.parse(data.msg);
-            print("Vibration----------" + voiceData.toString());
+            // var voiceData = double.parse(data.msg);
+            // // print("Vibration----------" + voiceData.toString());
           });
           // recordPlugin.responsePlayStateController.listen((data) {
           //   print("PlayPath   " + data.playPath);
