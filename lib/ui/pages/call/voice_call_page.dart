@@ -1,4 +1,4 @@
-// import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+// import 'package:agora_rtc_engine/rtc_engine.dart';
 // import 'package:flutter/material.dart';
 // import 'package:moonblink/api/voice_call_id.dart';
 // import 'package:moonblink/generated/l10n.dart';
@@ -41,7 +41,7 @@
 
 //   //OtherPeople's userId
 //   int anotherUserId;
-
+//   RtcEngine _engine;
 //   @override
 //   void initState() {
 //     PushNotificationsManager().showVoiceCallNotification();
@@ -82,7 +82,7 @@
 //       // _countdownController.dispose();
 //       _userSessions.clear();
 //       // AgoraRtcEngine.leaveChannel();
-//       AgoraRtcEngine.destroy();
+//       _engine.destroy();
 //     } catch (e) {
 //       print(e);
 //     }
@@ -114,7 +114,7 @@
 //   void _createRendererView(int uid) {
 //     //to join Voice Channel, need to pass ChannelName and UserId
 //     setState(() {
-//       AgoraRtcEngine.joinChannel(null, widget.channelName, null, uid);
+//       _engine.joinChannel(null, widget.channelName, null, uid);
 //     });
 
 //     VideoUserSession videoUserSession = VideoUserSession(uid);
@@ -149,26 +149,26 @@
 
 //     await _initAgoraRtcEngine();
 //     _addAgoraEventListener();
-//     await AgoraRtcEngine.enableWebSdkInteroperability(true);
-//     await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
+//     await _engine.enableWebSdkInteroperability(true);
+//     await _engine.joinChannel(null, widget.channelName, null, 0);
 //   }
 
 //   Future<void> _initAgoraRtcEngine() async {
 //     //init AgoraInstance
-//     await AgoraRtcEngine.create(Agora_AppId);
-//     await AgoraRtcEngine.enableAudio();
-//     await AgoraRtcEngine.setAudioProfile(
+//     _engine = await RtcEngine.create(Agora_AppId);
+//     await _engine.enableAudio();
+//     await _engine.setAudioProfile(
 //         AudioProfile.SpeechStandard, AudioScenario.ChatRoomGaming);
 //     _createRendererView(0);
 //   }
 
 //   void _addAgoraEventListener() {
 //     //Debug Error
-//     AgoraRtcEngine.onError = (dynamic code) {
+//     _engine.onError = (dynamic code) {
 //       print('onError: $code');
 //     };
 //     //JoinSuccesss
-//     AgoraRtcEngine.onJoinChannelSuccess =
+//     _engine.onJoinChannelSuccess =
 //         (String channel, int uid, int elapsed) {
 //       print('JoinSuccess, onJoinChannel: $channel, uid: $uid');
 //     };
