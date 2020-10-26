@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
@@ -142,8 +143,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         compressQuality:
                                             NORMAL_COMPRESS_QUALITY);
                                   },
-                                  child: AspectRatio(
-                                    aspectRatio: 100 / 60,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 240,
                                     child: PartnerCoverWidget(
                                         _cover,
                                         partnermodel,
@@ -158,8 +160,8 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                       color: Colors.white70,
                                       borderRadius: BorderRadius.circular(20)),
                                   child: Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: Colors.black,
+                                    IconFonts.cameraIcon,
+                                    color: Colors.purple,
                                   ),
                                 ),
                               ),
@@ -231,8 +233,8 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               borderRadius:
                                                   BorderRadius.circular(20)),
                                           child: Icon(
-                                            Icons.camera_alt_rounded,
-                                            color: Colors.black,
+                                            IconFonts.cameraIcon,
+                                            color: Colors.purple,
                                           ),
                                         ),
                                       ),

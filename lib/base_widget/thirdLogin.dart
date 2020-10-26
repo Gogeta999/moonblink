@@ -39,17 +39,17 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'google').then((value) {
                     if (value) {
-                      int gameprofile =
-                          StorageManager.sharedPreferences.getInt(mgameprofile);
-                      int type =
-                          StorageManager.sharedPreferences.getInt(mUserType);
+                      // int gameprofile =
+                      //     StorageManager.sharedPreferences.getInt(mgameprofile);
+                      // int type =
+                      //     StorageManager.sharedPreferences.getInt(mUserType);
                       // print(
                       //     'User\'s type: is $type and Profile is $gameprofile');
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
-                      if (gameprofile == 0 && type != 0) {
-                        gameProfileSetUp();
-                      }
+                      // if (gameprofile == 0 && type != 0) {
+                      //   gameProfileSetUp();
+                      // }
                     } else {
                       model.showErrorMessage(context);
                     }
@@ -65,15 +65,15 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'facebook').then((value) {
                     if (value) {
-                      int gameprofile =
-                          StorageManager.sharedPreferences.getInt(mgameprofile);
-                      int type =
-                          StorageManager.sharedPreferences.getInt(mUserType);
+                      // int gameprofile =
+                      //     StorageManager.sharedPreferences.getInt(mgameprofile);
+                      // int type =
+                      //     StorageManager.sharedPreferences.getInt(mUserType);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
-                      if (gameprofile == 0 && type != 0) {
-                        gameProfileSetUp();
-                      }
+                      // if (gameprofile == 0 && type != 0) {
+                      //   gameProfileSetUp();
+                      // }
                     } else {
                       model.showErrorMessage(context);
                     }
