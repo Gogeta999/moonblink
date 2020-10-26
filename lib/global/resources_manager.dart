@@ -33,7 +33,7 @@ class IconFonts {
   //AliIcon
   static const String fontFamily = 'appIconFonts';
   //Camera Icon
-  static const IconData cameraIcon = IconData(0xe608, fontFamily: fontFamily);
+  static const IconData cameraIcon = IconData(0xe657, fontFamily: fontFamily);
   //Noti Icon
   static const IconData bookingHistoryIcon =
       IconData(0xe674, fontFamily: fontFamily);

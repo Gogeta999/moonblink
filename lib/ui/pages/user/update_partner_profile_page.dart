@@ -143,8 +143,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         compressQuality:
                                             NORMAL_COMPRESS_QUALITY);
                                   },
-                                  child: AspectRatio(
-                                    aspectRatio: 100 / 60,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 240,
                                     child: PartnerCoverWidget(
                                         _cover,
                                         partnermodel,
@@ -158,7 +159,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   decoration: BoxDecoration(
                                       color: Colors.white70,
                                       borderRadius: BorderRadius.circular(20)),
-                                  child: Icon(IconFonts.cameraIcon),
+                                  child: Icon(
+                                    IconFonts.cameraIcon,
+                                    color: Colors.purple,
+                                  ),
                                 ),
                               ),
                             ],
@@ -228,7 +232,10 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                               color: Colors.white70,
                                               borderRadius:
                                                   BorderRadius.circular(20)),
-                                          child: Icon(IconFonts.cameraIcon),
+                                          child: Icon(
+                                            IconFonts.cameraIcon,
+                                            color: Colors.purple,
+                                          ),
                                         ),
                                       ),
                                     ],
