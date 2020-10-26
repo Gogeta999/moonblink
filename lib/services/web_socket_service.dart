@@ -68,7 +68,7 @@ class WebSocketService {
 
   ///Init when app starts
   void init(ChatListBloc chatListBloc) {
-    this._chatListBloc = _chatListBloc;
+    this._chatListBloc = chatListBloc;
     final userToken = StorageManager.sharedPreferences.getString(token);
     _socket.connect();
     _socket.on(DefaultEvents.connect, (data) {
@@ -93,6 +93,7 @@ class WebSocketService {
     this._chatBoxBloc = chatBoxBloc;
     int myId = StorageManager.sharedPreferences.getInt(mUserId);
     _socket.on(EventsToListen.chatUpdated, (data) {
+      print('Booking Status: $data');
       final bookingStatus = BookingStatus.fromJson(data);
       _chatBoxBloc.bookingStatusSubject.add(bookingStatus);
     });

@@ -60,3 +60,21 @@ class ChatBoxCancelBookingFailure extends ChatBoxState {
   @override
   List<Object> get props => [error];
 }
+
+class ChatBoxCallSuccess extends ChatBoxState {
+  final String channel;
+
+  ChatBoxCallSuccess(this.channel);
+
+  @override
+  List<Object> get props => [channel];
+}
+
+class ChatBoxCallFailure extends ChatBoxState {
+  final error;
+
+  ChatBoxCallFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}

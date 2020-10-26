@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
@@ -10,6 +10,8 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'chat_box_event.dart';
@@ -27,6 +29,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
 
   ///Button State
   final bookingCancelButtonSubject = BehaviorSubject.seeded(false);
+  final callButtonSubject = BehaviorSubject.seeded(false);
+
 
   @override
   Stream<Transition<ChatBoxEvent, ChatBoxState>> transformEvents(
@@ -44,6 +48,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       yield* _mapFetchedToState(currentState);
     }
     if (event is ChatBoxCancelBooking) yield* _mapCancelBookingToState(event.bookingId);
+    if (event is ChatBoxCall) yield* _mapCallToState(event.channel, event.receiverId);
   }
 
   Stream<ChatBoxState> _mapFetchedToState(
@@ -93,6 +98,18 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     } catch (e) {
       yield ChatBoxCancelBookingFailure(e);
       bookingCancelButtonSubject.add(false);
+    }
+  }
+
+  Stream<ChatBoxState> _mapCallToState(String channel, int id) async* {
+    try {
+      callButtonSubject.add(true);
+      await MoonBlinkRepository.call(channel, id);
+      yield ChatBoxCallSuccess(channel);
+      callButtonSubject.add(false);
+    } catch (e) {
+      yield ChatBoxCallFailure(e);
+      callButtonSubject.add(false);
     }
   }
 

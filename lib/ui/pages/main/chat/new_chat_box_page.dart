@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/chat_box_bloc.dart';
@@ -16,10 +17,13 @@ import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:rxdart/rxdart.dart';
 
 class NewChatBoxPage extends StatefulWidget {
   final int partnerId;
@@ -30,7 +34,6 @@ class NewChatBoxPage extends StatefulWidget {
 
 class _NewChatBoxPageState extends State<NewChatBoxPage>
     with SingleTickerProviderStateMixin {
-
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
@@ -38,12 +41,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   final _scrollThreshold = 600.0;
   final ScrollController _scrollController = ScrollController();
 
+  final TextEditingController _messageController = TextEditingController();
+  final _rotatedSubject = BehaviorSubject.seeded(true);
+
   AnimationController _animationController;
   Animation<double> _animation;
   Animation<double> _animation2;
   Animation<double> _animation3;
 
-  bool _isRotated = false;
   ///Private Properties - End
 
   ///Lifecycle - Start
@@ -93,6 +98,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     WebSocketService().disposeWithChatBoxBloc();
     super.dispose();
   }
+
   ///Lifecycle - End
 
   ///Private UI Widgets - Start
@@ -130,147 +136,179 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         ));
   }
 
-  //Send message
-  /*Widget buildmessage(id, model) {
-    if (bookingdata == null) {
-      return ViewStateBusyWidget();
-    }
-    if (bookingdata.isblock == 0) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: MediaQuery.of(context).size.height * 0.08,
-        //color: Theme.of(context).backgroundColor,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-          // ? Colors.grey
-              ? Theme.of(context).accentColor
-              : Colors.black,
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Theme.of(context).brightness == Brightness.dark
-          //         ? Colors.white
-          //         : Colors.black,
-          //     offset: Offset(0.0, 1.0), //(x,y)
-          //     spreadRadius: 3,
-          //   ),
-          // ],
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(30.0),
-          ),
-        ),
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              iconSize: 35,
-              icon: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  border: Border.all(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey
-                          : Colors.black),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Icon(
-                  _isRotated ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                ),
+  Widget _buildActionBottomBar() {
+    return StreamBuilder<BookingStatus>(
+      initialData: null,
+      stream: _chatBoxBloc.bookingStatusSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+
+        ///Blocked
+        if (snapshot.data.isBlock == 1) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            height: MediaQuery.of(context).size.height * 0.1,
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  // ? Colors.grey
+                  ? Theme.of(context).accentColor
+                  : Colors.black,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+            ),
+            child: Center(
+              child: Text(
+                "This person has blocked you",
+                style: TextStyle(fontSize: 16),
               ),
-              onPressed: () => rotate(),
             ),
-            SizedBox(
-              width: 10,
+          );
+        }
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          height: MediaQuery.of(context).size.height * 0.08,
+          //color: Theme.of(context).backgroundColor,
+          decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).accentColor
+                : Colors.black,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(30.0),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 7),
-                child: Container(
-                  padding: EdgeInsets.only(left: 20, right: 20),
+          ),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                iconSize: 35,
+                icon: Container(
                   decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     border: Border.all(
-                        width: 1,
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.grey
                             : Colors.black),
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    borderRadius: BorderRadius.circular(100),
                   ),
-                  child: TextField(
-                    minLines: 1,
-                    maxLines: 5,
-                    maxLength: 150,
-                    keyboardType: TextInputType.multiline,
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputAction: TextInputAction.newline,
-                    controller: textEditingController,
-                    decoration: InputDecoration(
-                      hintText: G.of(context).labelmsg,
-                      counterText: "",
+                  child: StreamBuilder<bool>(
+                      initialData: true,
+                      stream: _rotatedSubject,
+                      builder: (context, snapshot) {
+                        return Icon(
+                          snapshot.data
+                              ? Icons.arrow_drop_up
+                              : Icons.arrow_drop_down,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        );
+                      }),
+                ),
+                onPressed: () => _rotate(),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 7),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey
+                              : Colors.black),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                    ),
+                    child: TextField(
+                      minLines: 1,
+                      maxLines: 5,
+                      maxLength: 150,
+                      keyboardType: TextInputType.multiline,
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.newline,
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: G.of(context).labelmsg,
+                        counterText: "",
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            //Send button
-            sendbtn(model, id),
-          ],
-        ),
-      );
-    } else {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        height: MediaQuery.of(context).size.height * 0.1,
-        //color: Theme.of(context).backgroundColor,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-          // ? Colors.grey
-              ? Theme.of(context).accentColor
-              : Colors.black,
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Theme.of(context).brightness == Brightness.dark
-          //         ? Colors.white
-          //         : Colors.black,
-          //     offset: Offset(0.0, 1.0), //(x,y)
-          //     spreadRadius: 3,
-          //   ),
-          // ],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-        ),
-        child: Center(
-          child: Text(
-            "This person has blocked you",
-            style: TextStyle(fontSize: 16),
+              _buildSendButton(),
+            ],
           ),
-        ),
-      );
-    }
-  }*/
+        );
+      },
+    );
+  }
 
-
-  Widget _buildPickImageIcon() {
+  Widget _buildSendButton() {
     return IconButton(
       icon: SvgPicture.asset(
-        gallery,
-        color: Colors.black,
-        semanticsLabel: 'gallery',
+        send,
+        color: Colors.white,
+        semanticsLabel: 'send',
         width: 30,
         height: 30,
       ),
       iconSize: 30.0,
       color: Theme.of(context).brightness == Brightness.dark
-          ? Colors.black
-          : Colors.black,
-      onPressed: () {
-        _rotate();
-      },
+          ? Colors.white
+          : Colors.white,
+      onPressed: () {},
+    );
+  }
+
+  Widget _buildPickImageIcon() {
+    return Container(
+      margin: const EdgeInsets.all(4),
+      child: InkResponse(
+        child: SvgPicture.asset(
+          gallery,
+          color: Colors.black,
+          semanticsLabel: 'gallery',
+        ),
+        onTap: () {
+          _rotate();
+          // CustomBottomSheet.show(
+          //     popAfterBtnPressed: true,
+          //     requestType: RequestType.image,
+          //     buttonText: G.of(context).sendbutton,
+          //     buildContext: context,
+          //     limit: 1,
+          //     body: G.of(context).labelimageselect,
+          //     onPressed: (File file) async {
+          //       setState(() {
+          //         _file = file;
+          //       });
+          //
+          //       await getImage();
+          //       String now = DateTime.now().toString();
+          //       String filename = selfId.toString() + now + ".png";
+          //       model.sendfile(filename, bytes, id, 1, messages);
+          //       setState(() {
+          //         textEditingController.text = '';
+          //         bytes = null;
+          //       });
+          //     },
+          //     onInit: _sendMessageWidgetUp,
+          //     onDismiss: _sendMessageWidgetDown,
+          //     willCrop: false,
+          //     compressQuality: NORMAL_COMPRESS_QUALITY);
+        },
+      ),
     );
   }
 
   Widget _buildVoiceRecorderIcon() {
-    return Container();
+    return Container(
+      margin: const EdgeInsets.all(4),
+    );
   }
 
   // Booking Cancel
@@ -281,9 +319,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       builder: (context, snapshot) {
         if (snapshot.data) {
           return CupertinoButton(
-            child: CupertinoActivityIndicator(),
-            onPressed: (){}
-          );
+              child: CupertinoActivityIndicator(), onPressed: () {});
         }
         return CupertinoButton(
           child: Text(
@@ -296,60 +332,40 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
+  Widget _buildPhoneButton(int receiverId) {
+    String voiceChannelName = 'UserId($myId)CallToUserId($receiverId)';
+    return IconButton(
+        icon: Icon(
+          FontAwesomeIcons.phone,
+          size: 20,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          _chatBoxBloc.add(ChatBoxCall(voiceChannelName, receiverId));
+        });
+  }
+
   Widget _buildFirstAction() {
     return StreamBuilder<BookingStatus>(
       initialData: null,
+      stream: _chatBoxBloc.bookingStatusSubject,
       builder: (context, snapshot) {
-        if (snapshot.data.status == PENDING && _bookingUserIsMe(snapshot.data.booingUserId)) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.data.status == PENDING &&
+            _bookingUserIsMe(snapshot.data.booingUserId)) {
           return _buildBookingCancelButton(snapshot.data.bookingId);
         }
-        return CupertinoActivityIndicator();
+        if (snapshot.data.status == ACCEPTED &&
+            _bookingUserIsMe(snapshot.data.booingUserId)) {
+          return _buildPhoneButton(snapshot.data.userId);
+        }
+        return Container();
       },
     );
-    // if (bookingdata == null) {
-    //   return ViewStateBusyWidget();
-    // }
-    // switch (bookingdata.status) {
-    // //normal
-    //   case (-1):
-    //     return Container();
-    //     break;
-    // //cancel booking
-    //   case (0):
-    //     return bookingcancel(
-    //       bookingdata.bookingid,
-    //       bookingdata.bookinguserid,
-    //     );
-    //     break;
-    // //in booking
-    //   case (1):
-    //     return callbtn(widget.detailPageId);
-    //     break;
-    // //reject
-    //   case (2):
-    //     return Container();
-    //     break;
-    // //done
-    //   case (3):
-    //     return Container();
-    //     break;
-    // //expired
-    //   case (4):
-    //     return Container();
-    //     break;
-    // //unavailable
-    //   case (5):
-    //     return Container();
-    //     break;
-    // //cancel
-    //   case (6):
-    //     return Container();
-    //     break;
-    // //default
-    //   default:
-    //     return Container();
-    // }
   }
+
   ///Private UI Widgets - End
 
   @override
@@ -357,7 +373,23 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     return BlocProvider(
       create: (_) => _chatBoxBloc,
       child: BlocConsumer<ChatBoxBloc, ChatBoxState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ChatBoxCancelBookingFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxCallFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxCallSuccess) {
+            _handleVoiceCall(state.channel);
+          }
+        },
+        buildWhen: (previous, current) {
+          return !(current is ChatBoxCancelBookingSuccess) &&
+              !(current is ChatBoxCancelBookingFailure) &&
+              !(current is ChatBoxCallSuccess) &&
+              !(current is ChatBoxCallFailure);
+        },
         builder: (context, state) {
           if (state is ChatBoxInitial) {
             return Scaffold(body: Center(child: CupertinoActivityIndicator()));
@@ -420,56 +452,105 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                               });
                             }
                           : null),
-                   actions: <Widget>[
-                  //   action2(model),
-                     _buildFirstAction(),
-                   ],
+                  actions: <Widget>[
+                    //   action2(model),
+                    _buildFirstAction(),
+                  ],
                 ),
                 body: SafeArea(
-                  child: Stack(
-                    children: [
-                      ListView.builder(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        controller: _scrollController,
-                        reverse: true,
-                        itemBuilder: (context, index) {
-                          if (index >= state.data.length)
-                            return Center(child: CupertinoActivityIndicator());
-                          return _buildSingleMessage(state.data[index]);
-                        },
-                        itemCount: state.hasReachedMax
-                            ? state.data.length
-                            : state.data.length + 1,
-                      ),
-                      FloatingButton(
-                        bottom: 80,
-                        left: 10,
-                        scale: _animation,
-                        child: _buildPickImageIcon(),
-                      ),
-                      FloatingButton(
-                        bottom: 140,
-                        left: 30,
-                        scale: _animation2,
-                        child: _buildVoiceRecorderIcon(),
-                      ),
-                      FloatingButton(
-                        bottom: 200,
-                        left: 10,
-                        scale: _animation3,
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            camera,
-                            color: Colors.black,
-                            semanticsLabel: 'camera',
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () => print('Camera')
-                        ),
-                      )
-                    ],
-                  ),
+                  child: StreamBuilder<bool>(
+                      initialData: true,
+                      stream: _rotatedSubject,
+                      builder: (context, snapshot) {
+                        if (!snapshot.data) {
+                          return Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  ///Chat messages list
+                                  Expanded(
+                                    child: ListView.builder(
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      controller: _scrollController,
+                                      reverse: true,
+                                      itemBuilder: (context, index) {
+                                        if (index >= state.data.length)
+                                          return Center(
+                                              child:
+                                                  CupertinoActivityIndicator());
+                                        return _buildSingleMessage(
+                                            state.data[index]);
+                                      },
+                                      itemCount: state.hasReachedMax
+                                          ? state.data.length
+                                          : state.data.length + 1,
+                                    ),
+                                  ),
+                                  _buildActionBottomBar(),
+                                ],
+                              ),
+                              FloatingButton(
+                                bottom: 80,
+                                left: 10,
+                                scale: _animation,
+                                child: _buildPickImageIcon(),
+                              ),
+                              FloatingButton(
+                                bottom: 140,
+                                left: 30,
+                                scale: _animation2,
+                                child: _buildVoiceRecorderIcon(),
+                              ),
+                              FloatingButton(
+                                bottom: 200,
+                                left: 10,
+                                scale: _animation3,
+                                child: Container(
+                                  margin: const EdgeInsets.all(4),
+                                  child: InkResponse(
+                                    onTap: () {
+                                      _rotate();
+                                    },
+                                    child: SvgPicture.asset(
+                                      camera,
+                                      color: Colors.black,
+                                      semanticsLabel: 'camera',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            Column(
+                              children: [
+                                ///Chat messages list
+                                Expanded(
+                                  child: ListView.builder(
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    controller: _scrollController,
+                                    reverse: true,
+                                    itemBuilder: (context, index) {
+                                      if (index >= state.data.length)
+                                        return Center(
+                                            child:
+                                                CupertinoActivityIndicator());
+                                      return _buildSingleMessage(
+                                          state.data[index]);
+                                    },
+                                    itemCount: state.hasReachedMax
+                                        ? state.data.length
+                                        : state.data.length + 1,
+                                  ),
+                                ),
+                                _buildActionBottomBar(),
+                              ],
+                            ),
+                          ],
+                        );
+                      }),
                 ));
           }
           return Text('Something went wrong!');
@@ -479,13 +560,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   ///Private Methods - Start
-  void _rotate() { //Animate Icon
-    setState(() {
-      if (_isRotated) {
-        _isRotated = false;
+  void _rotate() {
+    //Animate Icon
+    _rotatedSubject.first.then((rotated) {
+      if (rotated) {
+        _rotatedSubject.add(false);
         _animationController.forward();
       } else {
-        _isRotated = true;
+        _rotatedSubject.add(true);
         _animationController.reverse();
       }
     });
@@ -494,6 +576,76 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   bool _senderIsMe(int senderId) => myId == senderId;
   bool _bookingUserIsMe(int booingUserId) => myId == booingUserId;
 
+  Future<void> _handleVoiceCall(String voiceChannelName) async {
+    await [Permission.microphone].request();
+    if (await Permission.microphone.request().isGranted) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VoiceCallWidget(
+              channelName: voiceChannelName,
+            ),
+          ));
+    } else if (await Permission.microphone.request().isDenied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else if (await Permission.microphone.request().isPermanentlyDenied) {
+      /// [Error]
+      // Permanently being denied,you need to allow in app setting
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              G.of(context).pleaseAllowMicroPhone,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(G.of(context).youNeedToAllowMicroPermission),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(G.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text(G.of(context).confirm),
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   void _onScroll() {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
@@ -501,5 +653,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       _chatBoxBloc.add(ChatBoxFetched());
     }
   }
+
   ///Private Methods - End
 }
