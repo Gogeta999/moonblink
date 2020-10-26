@@ -207,17 +207,18 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //build messages
-  Widget buildSingleMessage(int status, int bookingid, Message message) {
+  Widget buildSingleMessage(
+      int status, int bookingid, Message message, otherUserProfile) {
     return Container(
         alignment: message.senderID == widget.detailPageId
             ? Alignment.centerLeft
             : Alignment.centerRight,
         margin: EdgeInsets.all(10.0),
-        child: builds(status, bookingid, message));
+        child: builds(status, bookingid, message, otherUserProfile));
   }
 
   //build msg
-  builds(int status, int bookingid, Message msg) {
+  builds(int status, int bookingid, Message msg, otherUserProfile) {
     switch (msg.type) {
       //build widget for text msgs
       case (0):
@@ -233,7 +234,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         return buildaudio(msg);
         break;
       case (4):
-        return buildcallmsg(status, bookingid, msg);
+        return buildcallmsg(status, bookingid, msg, otherUserProfile);
         break;
       case (5):
         return buildlocalimg(msg);
@@ -538,7 +539,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //build call msg
-  buildcallmsg(int status, int id, Message msg) {
+  buildcallmsg(int status, int id, Message msg, otherUserProfile) {
     return Container(
       width: 150,
       padding: EdgeInsets.all(10.0),
@@ -554,14 +555,14 @@ class _ChatBoxPageState extends State<ChatBoxPage>
             G.of(context).someoneCallingYou,
             style: TextStyle(color: Colors.white),
           ),
-          buttoncheck(status, msg)
+          buttoncheck(status, msg, otherUserProfile)
         ],
       ),
     );
   }
 
   //button enable
-  buttoncheck(status, msg) {
+  buttoncheck(status, msg, otherUserProfile) {
     if (status == 1) {
       return MaterialButton(
         child: Text(
@@ -570,7 +571,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white),
         ),
         onPressed: () {
-          joinChannel(msg.attach);
+          joinChannel(msg.attach, otherUserProfile);
         },
       );
     } else {
@@ -746,24 +747,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
     );
   }
 
-  // startRecord() {
-  //   print("开始录制");
-  // }
-
-  // stopRecord(String path, double audioTimeLength) {
-  //   print("结束束录制");
-  //   print("音频文件位置" + path);
-  //   print("音频录制时长" + audioTimeLength.toString());
-  // }
-
   //voice msg
   Widget voicemsg(id) {
-    // return MoonGoVoiceWidget(
-    //   startRecord: startRecord,
-    //   stopRecord: stopRecord,
-    //   id: id,
-    //   messages: messages,
-    // );
     return Voicemsg(
       onInit: _sendMessageWidgetUp,
       id: id,
@@ -942,7 +927,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //For call button
-  Widget callbtn(anotherPersonId) {
+  Widget callbtn(anotherPersonId, otherUserProfile) {
     String voiceChannelName = 'UserId($selfId)CallToUserId($anotherPersonId)';
     return ProviderWidget(
         model: CallModel(),
@@ -958,7 +943,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
               // model.call(selfId, anotherPersonId, voiceChannelName);
               child.call(voiceChannelName, anotherPersonId);
               // PushNotificationsManager().showVoiceCallNotification('com.moonuniverse.moonblink', 'VoiceCallTitle', 'VoiceCallBody');
-              joinChannel(voiceChannelName);
+              joinChannel(voiceChannelName, otherUserProfile);
             },
           );
         });
@@ -986,7 +971,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //action 1
-  action1(model) {
+  action1(model, otherUserProfile) {
     if (bookingdata == null) {
       return ViewStateBusyWidget();
     }
@@ -1004,7 +989,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         break;
       //in booking
       case (1):
-        return callbtn(widget.detailPageId);
+        return callbtn(widget.detailPageId, otherUserProfile);
         break;
       //reject
       case (2):
@@ -1084,7 +1069,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
   }
 
   //Chat List
-  Widget buildChatList(id, ChatModel model) {
+  Widget buildChatList(id, ChatModel model, otherUserProfile) {
     model.receiver(messages, widget.detailPageId);
     bookingdata = model.chatupdated();
     if (bookingdata == null) {
@@ -1096,8 +1081,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         reverse: true,
         itemCount: messages.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildSingleMessage(
-              bookingdata.status, bookingdata.bookingid, messages[index]);
+          return buildSingleMessage(bookingdata.status, bookingdata.bookingid,
+              messages[index], otherUserProfile);
         },
       ),
     );
@@ -1145,6 +1130,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
         return ScopedModelDescendant<ChatModel>(
           builder: (context, child, model) {
             String name = titlename(partnermodel.partnerData.partnerName);
+            String otherUserProfile =
+                partnermodel.partnerData.prfoileFromPartner.profileImage;
             return Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -1199,7 +1186,7 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                         : null),
                 actions: <Widget>[
                   action2(model),
-                  action1(model),
+                  action1(model, otherUserProfile),
                 ],
               ),
               body: Stack(
@@ -1209,7 +1196,8 @@ class _ChatBoxPageState extends State<ChatBoxPage>
                     addAutomaticKeepAlives: true,
                     children: <Widget>[
                       //chat list
-                      buildChatList(partnermodel.partnerData.partnerId, model),
+                      buildChatList(partnermodel.partnerData.partnerId, model,
+                          otherUserProfile),
                       //Message input box
                       buildmessage(partnermodel.partnerData.partnerId, model),
                       //Bottom Box
@@ -1280,22 +1268,23 @@ class _ChatBoxPageState extends State<ChatBoxPage>
 
   ///[CallFunction]
   ///Here is for voiceCall
-  Future<void> joinChannel(voiceChannelName) async {
+  Future<void> joinChannel(voiceChannelName, otherUserProfile) async {
     if (voiceChannelName.isNotEmpty) {
-      await _handleVoiceCall(voiceChannelName);
+      await _handleVoiceCall(voiceChannelName, otherUserProfile);
     } else if (voiceChannelName.isEmpty) {
       showToast(G.of(context).toasterror);
     }
   }
 
-  Future<void> _handleVoiceCall(voiceChannelName) async {
+  Future<void> _handleVoiceCall(voiceChannelName, otherUserProfile) async {
     await [Permission.microphone].request();
     if (await Permission.microphone.request().isGranted) {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NewVoiceCallWidget(
+            builder: (context) => VoiceCallWidget(
               channelName: voiceChannelName,
+              otherUserProfile: otherUserProfile,
             ),
           ));
     } else if (await Permission.microphone.request().isDenied) {
