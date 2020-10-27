@@ -2,7 +2,7 @@ name: moonblink
 description: MoonBlink Universe's app
 publish_to: 'none'
 
-version: 2.1.5+29
+version: 2.2.0+30
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
