@@ -1,14 +1,24 @@
 class LastMessage {
-  int id;
-  int roomId;
-  int senderId;
-  int receiverId;
-  String message;
-  int type;
-  String attach;
-  String createdAt;
-  String updatedAt;
-  String booking;
+  final int id;
+  final int roomId;
+  final int senderId;
+  final int receiverId;
+  final String message;
+  final int type;
+  final String attach;
+  final String createdAt;
+  final String updatedAt;
+
+  LastMessage(
+      this.id,
+      this.roomId,
+      this.senderId,
+      this.receiverId,
+      this.message,
+      this.type,
+      this.attach,
+      this.createdAt,
+      this.updatedAt);
 
   LastMessage.fromJson(Map<String, dynamic> json)
       :
@@ -20,6 +30,5 @@ class LastMessage {
     type = json['type'],
     attach = json['attach'],
     createdAt = json['created_at'],
-    updatedAt = json['updated_at'],
-    booking = json['booking'];
+    updatedAt = json['updated_at'];
 }

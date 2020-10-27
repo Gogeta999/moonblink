@@ -12,7 +12,6 @@ import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart' as Nav;
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -88,10 +87,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light));
     PushNotificationsManager().init();
-    WebSocketService().init(BlocProvider.of<ChatListBloc>(context));
-    if (StorageManager.sharedPreferences.getString(token) != null)
-      BlocProvider.of<UserNewNotificationBloc>(context)
-          .add(UserNewNotificationFetched());
     restartConstants();
     FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }

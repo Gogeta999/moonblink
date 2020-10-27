@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
+import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -18,6 +23,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
+import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -41,7 +47,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   final _scrollThreshold = 600.0;
   final ScrollController _scrollController = ScrollController();
 
-  final TextEditingController _messageController = TextEditingController();
   final _rotatedSubject = BehaviorSubject.seeded(true);
 
   AnimationController _animationController;
@@ -76,7 +81,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       curve: Interval(0.5, 1.0, curve: Curves.linear),
     );
 
-    _animation3 = new CurvedAnimation(
+    _animation3 = CurvedAnimation(
       parent: _animationController,
       curve: Interval(0.8, 1.0, curve: Curves.linear),
     );
@@ -102,38 +107,151 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - End
 
   ///Private UI Widgets - Start
-  //build messages
-  Widget _buildSingleMessage(LastMessage lastMessage) {
+  Widget _buildMessageOnType(LastMessage lastMessage) {
+    switch (lastMessage.type) {
+      case MESSAGE:
+        return _buildSingleMessage(lastMessage);
+      case IMAGE:
+        return Text('Image');
+      case VIDEO:
+        return VideoPlayerWidget(videoUrl: lastMessage.attach);
+      case AUDIO:
+        return Text('Audio');
+      case CALL:
+        return Text('Call');
+      case REQUEST:
+        return _buildRequestMessage(lastMessage);
+      default:
+        return Text('This message type is not supported');
+    }
+  }
+
+  Widget _buildBasicMessageWidget({Widget child, LastMessage lastMessage}) {
     return Container(
-        alignment: _senderIsMe(lastMessage.senderId)
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
-        margin: EdgeInsets.all(10.0),
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.5,
-          ),
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          decoration: BoxDecoration(
-              color: _senderIsMe(lastMessage.senderId)
-                  ? Theme.of(context).accentColor.withOpacity(0.5)
-                  : Colors.black12,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10.0),
-              ),
-              border: Border.all(
-                  color: _senderIsMe(lastMessage.senderId)
-                      ? Colors.black12
-                      : Theme.of(context).accentColor)),
-          child: SelectableText(
-            lastMessage.message,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-            autofocus: true,
-            cursorRadius: Radius.circular(50),
-            cursorColor: Colors.white,
-            toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
-          ),
-        ));
+      alignment: _senderIsMe(lastMessage.senderId)
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      margin: EdgeInsets.all(10.0),
+      child: child,
+    );
+  }
+
+  Widget _buildSingleMessage(LastMessage lastMessage) {
+    return _buildBasicMessageWidget(
+      lastMessage: lastMessage,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.5,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        decoration: BoxDecoration(
+            color: _senderIsMe(lastMessage.senderId)
+                ? _isDark()
+                    ? Theme.of(context).accentColor.withOpacity(0.5)
+                    : Theme.of(context).accentColor
+                : _isDark()
+                    ? Colors.black12
+                    : Colors.white12,
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+            border: Border.all(
+                color: _senderIsMe(lastMessage.senderId)
+                    ? Colors.black12
+                    : Theme.of(context).accentColor)),
+        child: SelectableText(
+          lastMessage.message,
+          style: TextStyle(
+              color: _isDark() ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w500),
+          autofocus: true,
+          cursorRadius: Radius.circular(50),
+          cursorColor: Colors.white,
+          toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRequestMessage(LastMessage lastMessage) {
+    return _buildBasicMessageWidget(
+      lastMessage: lastMessage,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.5,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        decoration: BoxDecoration(
+            color: _senderIsMe(lastMessage.senderId)
+                ? _isDark()
+                    ? Theme.of(context).accentColor.withOpacity(0.5)
+                    : Theme.of(context).accentColor
+                : _isDark()
+                    ? Colors.black12
+                    : Colors.white12,
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+            border: Border.all(
+                color: _senderIsMe(lastMessage.senderId)
+                    ? Colors.black12
+                    : Theme.of(context).accentColor)),
+        child: Column(
+          children: [
+            SelectableText(
+              lastMessage.message,
+              style: TextStyle(
+                  color: _isDark() ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.w500),
+              autofocus: true,
+              cursorRadius: Radius.circular(50),
+              cursorColor: Colors.white,
+              toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+            ),
+            if (lastMessage.senderId == widget.partnerId)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ///Reject
+                  StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _chatBoxBloc.rejectButtonSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data) {
+                          return CupertinoButton(
+                            child: CupertinoActivityIndicator(),
+                            onPressed: () {},
+                          );
+                        }
+                        return CupertinoButton(
+                            child: Text(G.of(context).reject),
+                            onPressed: () =>
+                                _chatBoxBloc.add(ChatBoxRejectBooking()));
+                      }),
+
+                  ///Accept
+                  StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _chatBoxBloc.acceptButtonSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data) {
+                          return CupertinoButton(
+                            child: CupertinoActivityIndicator(),
+                            onPressed: () {},
+                          );
+                        }
+                        return CupertinoButton(
+                          child: Text(G.of(context).accept),
+                          onPressed: () =>
+                              _chatBoxBloc.add(ChatBoxAcceptBooking()),
+                        );
+                      })
+                ],
+              )
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildActionBottomBar() {
@@ -230,7 +348,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                       keyboardType: TextInputType.multiline,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.newline,
-                      controller: _messageController,
+                      controller: _chatBoxBloc.messageController,
                       decoration: InputDecoration(
                         hintText: G.of(context).labelmsg,
                         counterText: "",
@@ -260,7 +378,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.white
           : Colors.white,
-      onPressed: () {},
+      onPressed: () => _chatBoxBloc.add(ChatBoxSendMessage()),
     );
   }
 
@@ -312,7 +430,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   // Booking Cancel
-  Widget _buildBookingCancelButton(int bookingId) {
+  Widget _buildBookingCancelButton() {
     return StreamBuilder<bool>(
       initialData: false,
       stream: _chatBoxBloc.bookingCancelButtonSubject,
@@ -326,7 +444,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             G.of(context).cancel,
             style: TextStyle(color: Colors.white),
           ),
-          onPressed: () => _chatBoxBloc.add(ChatBoxCancelBooking(bookingId)),
+          onPressed: () => _chatBoxBloc.add(ChatBoxCancelBooking()),
         );
       },
     );
@@ -345,6 +463,16 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         });
   }
 
+  Widget _buildBookingEndButton() {
+    return CupertinoButton(
+        child: Text(
+          G.of(context).end,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => _chatBoxBloc.bookingStatusSubject.first
+            .then((value) => _showBookingEndDialog(value)));
+  }
+
   Widget _buildFirstAction() {
     return StreamBuilder<BookingStatus>(
       initialData: null,
@@ -355,11 +483,17 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == PENDING &&
             _bookingUserIsMe(snapshot.data.booingUserId)) {
-          return _buildBookingCancelButton(snapshot.data.bookingId);
+          return _buildBookingCancelButton();
+        }
+        if (snapshot.data.status == PENDING) {
+          return WaitingTimeLeft(createat: snapshot.data.createdAt);
         }
         if (snapshot.data.status == ACCEPTED &&
             _bookingUserIsMe(snapshot.data.booingUserId)) {
           return _buildPhoneButton(snapshot.data.userId);
+        }
+        if (snapshot.data.status == ACCEPTED) {
+          return _buildBookingEndButton();
         }
         return Container();
       },
@@ -374,6 +508,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       create: (_) => _chatBoxBloc,
       child: BlocConsumer<ChatBoxBloc, ChatBoxState>(
         listener: (context, state) {
+          if (state is ChatBoxCancelBookingSuccess) {
+            showToast('Booking Cancelled');
+          }
           if (state is ChatBoxCancelBookingFailure) {
             showToast(state.error.toString());
           }
@@ -383,12 +520,33 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           if (state is ChatBoxCallSuccess) {
             _handleVoiceCall(state.channel);
           }
+          if (state is ChatBoxEndBookingSuccess) {
+            showToast('Booking Ended');
+          }
+          if (state is ChatBoxEndBookingFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxRejectBookingSuccess) {
+            showToast('Booking Rejected');
+          }
+          if (state is ChatBoxRejectBookingFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxAcceptBookingFailure) {
+            showToast(state.error.toString());
+          }
         },
         buildWhen: (previous, current) {
           return !(current is ChatBoxCancelBookingSuccess) &&
               !(current is ChatBoxCancelBookingFailure) &&
               !(current is ChatBoxCallSuccess) &&
-              !(current is ChatBoxCallFailure);
+              !(current is ChatBoxCallFailure) &&
+              !(current is ChatBoxEndBookingSuccess) &&
+              !(current is ChatBoxEndBookingFailure) &&
+              !(current is ChatBoxRejectBookingSuccess) &&
+              !(current is ChatBoxRejectBookingFailure) &&
+              !(current is ChatBoxAcceptBookingSuccess) &&
+              !(current is ChatBoxAcceptBookingFailure);
         },
         builder: (context, state) {
           if (state is ChatBoxInitial) {
@@ -417,9 +575,18 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   title: GestureDetector(
                       child: Row(
                         children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(state
-                                .partnerUser.prfoileFromPartner.profileImage),
+                          CachedNetworkImage(
+                            imageUrl: state
+                                .partnerUser.prfoileFromPartner.profileImage,
+                            imageBuilder: (context, item) {
+                              return CircleAvatar(
+                                radius: 28,
+                                backgroundImage: item,
+                              );
+                            },
+                            placeholder: (_, __) =>
+                                CupertinoActivityIndicator(),
+                            errorWidget: (_, __, ___) => Icon(Icons.error),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
@@ -478,7 +645,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                           return Center(
                                               child:
                                                   CupertinoActivityIndicator());
-                                        return _buildSingleMessage(
+                                        return _buildMessageOnType(
                                             state.data[index]);
                                       },
                                       itemCount: state.hasReachedMax
@@ -575,6 +742,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   bool _senderIsMe(int senderId) => myId == senderId;
   bool _bookingUserIsMe(int booingUserId) => myId == booingUserId;
+  bool _isDark() => Theme.of(context).brightness == Brightness.dark;
 
   Future<void> _handleVoiceCall(String voiceChannelName) async {
     await [Permission.microphone].request();
@@ -644,6 +812,36 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
       );
     }
+  }
+
+  void _showBookingEndDialog(BookingStatus bookingStatus) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: G.of(context).bookingEnded,
+            row1Content: G.of(context).timeleft,
+            row2Content: BookingTimeLeft(
+              count: bookingStatus.count,
+              upadateat: bookingStatus.updatedAt,
+              timeleft: bookingStatus.minutePerSection,
+            ),
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.of(context).end,
+            confirmCallback: () {
+              _chatBoxBloc.add(ChatBoxEndBooking());
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      RatingPage(bookingdata.bookingid, widget.partnerId),
+                ),
+              );
+            },
+          );
+        });
   }
 
   void _onScroll() {

@@ -13,6 +13,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:moonblink/services/web_socket_service.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';
@@ -171,6 +172,7 @@ class LoginModel extends ViewStateModel {
     try {
       await MoonBlinkRepository.logout(); ///to notify server to remove fcm token.
       PushNotificationsManager().dispose();
+      WebSocketService().dispose();
       DioUtils().initWithoutAuthorization();
       final context = locator<NavigationService>().navigatorKey.currentContext;
       BlocProvider.of<UserNewNotificationBloc>(context)

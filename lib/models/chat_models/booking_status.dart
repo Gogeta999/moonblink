@@ -1,13 +1,13 @@
 class BookingStatus {
-  int bookingId;
-  int userId;
-  int booingUserId;
-  int status;
-  int count;
-  String createdAt;
-  String updatedAt;
-  int minutePerSection;
-  int isBlock;
+  final int bookingId;
+  final int userId;
+  final int booingUserId;
+  final int status;
+  final int count;
+  final String createdAt;
+  final String updatedAt;
+  final int minutePerSection;
+  final int isBlock;
 
   BookingStatus.fromJson(Map<String, dynamic> json)
     : bookingId = json['booking_id'],

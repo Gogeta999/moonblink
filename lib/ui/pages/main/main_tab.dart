@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
+import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
+import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/chat/new_chat_list_page.dart';
@@ -38,11 +40,10 @@ class _MainTabPageState extends State<MainTabPage>
 
   @override
   void initState() {
-    print(usertoken);
-    // if (usertoken != null) {
-    //   ScopedModel.of<ChatModel>(context, rebuildOnChange: false).init();
-    //   ScopedModel.of<ChatModel>(context).conversationlist();
-    // }
+    WebSocketService().init(BlocProvider.of<ChatListBloc>(context));
+    if (StorageManager.sharedPreferences.getString(token) != null)
+      BlocProvider.of<UserNewNotificationBloc>(context)
+          .add(UserNewNotificationFetched());
     setState(() {
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;

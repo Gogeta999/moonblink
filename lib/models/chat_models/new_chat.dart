@@ -1,30 +1,30 @@
 class NewChat {
-  int id;
-  String name;
-  String lastMessageTime;
-  int messages;
-  int type;
-  int canLeave;
-  String createdAt;
-  String updatedAt;
-  String profileImage;
-  String lastMessage;
-  int unread;
-  String lastAttach;
-  int userId;
+  final int id;
+  final String name;
+  final String lastMessageTime;
+  final int messages;
+  final int type;
+  final int canLeave;
+  final String createdAt;
+  final String updatedAt;
+  final String profileImage;
+  final String lastMessage;
+  final int unread;
+  final String lastAttach;
+  final int userId;
 
-  NewChat.fromJson(Map<String, dynamic> map)
-      : id = map['id'],
-        name = map['name'],
-        lastMessageTime = map['last_msg_time'],
-        messages = map['msgs'],
-        type = map['type'],
-        canLeave = map['can_leave'],
-        createdAt = map['created_at'],
-        updatedAt = map['updated_at'],
-        profileImage = map['profile_image'],
-        lastMessage = map['last_message'],
-        unread = map['unread'],
-        lastAttach = map['last_attach'],
-        userId = map['user_id'];
+  NewChat.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        lastMessageTime = json['last_msg_time'],
+        messages = json['msgs'],
+        type = json['type'],
+        canLeave = json['can_leave'],
+        createdAt = json['created_at'],
+        updatedAt = json['updated_at'],
+        profileImage = json['profile_image'],
+        lastMessage = json['last_message'],
+        unread = json['unread'],
+        lastAttach = json['last_attach'],
+        userId = json['user_id'];
 }

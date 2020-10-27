@@ -78,3 +78,45 @@ class ChatBoxCallFailure extends ChatBoxState {
   @override
   List<Object> get props => [error];
 }
+
+class ChatBoxEndBookingSuccess extends ChatBoxState {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxEndBookingFailure extends ChatBoxState {
+  final error;
+
+  ChatBoxEndBookingFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class ChatBoxRejectBookingSuccess extends ChatBoxState {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxRejectBookingFailure extends ChatBoxState {
+  final error;
+
+  ChatBoxRejectBookingFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class ChatBoxAcceptBookingSuccess extends ChatBoxState {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxAcceptBookingFailure extends ChatBoxState {
+  final error;
+
+  ChatBoxAcceptBookingFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
