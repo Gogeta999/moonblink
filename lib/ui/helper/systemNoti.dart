@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/systemDialog_widget.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:oktoast/oktoast.dart';

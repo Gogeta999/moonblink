@@ -13,7 +13,6 @@ import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/view_model/booking_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
