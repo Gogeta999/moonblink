@@ -47,16 +47,15 @@ class _VoicemsgState extends State<Voicemsg> {
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
   String filePath = "";
   bool sent = true;
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _init();
+  // }
 
   @override
   void dispose() {
     recordPlugin.dispose();
-
     super.dispose();
   }
 
@@ -102,7 +101,7 @@ class _VoicemsgState extends State<Voicemsg> {
         ),
         onPressed: () async {
           widget.rotate();
-          // _init();
+          _init();
 
           ///Init Listening
           recordPlugin.responseFromInit.listen((data) {
@@ -131,16 +130,19 @@ class _VoicemsgState extends State<Voicemsg> {
                 _file = widget.localFileSystem.file(filePath);
 
                 bytes = _file.readAsBytesSync();
-                print("File Bytes: $bytes");
-                print(bytes);
+                // print("File Bytes: $bytes");
+                // print(bytes);
               });
-              print("onStop " + data.audioTimeLength.toString());
+              // print("onStop " + data.audioTimeLength.toString());
               print("NOT SENT YET +++++++++++++++++++++++++++++++");
               print(sent);
               if (sent == false) {
                 model.sendaudio(
                     filename, bytes, widget.id, 3, widget.messages, filePath);
+                print(filePath);
+                print(filename);
                 print("Sent ___________________________________");
+                // recordPlugin.dispose();
                 sent = true;
               }
             } else {
