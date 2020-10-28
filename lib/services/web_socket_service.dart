@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/bloc_pattern/chat_box_bloc.dart';
+import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';

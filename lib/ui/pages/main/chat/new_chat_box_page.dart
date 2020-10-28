@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
@@ -26,6 +27,7 @@ import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
+import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -108,6 +110,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     _debounce?.cancel();
     _animationController.dispose();
     _scrollController.dispose();
+    List<Future> futures = [
+      _rotatedSubject.close(),
+      _upWidgetSubject.close(),
+    ];
+    Future.wait(futures);
+    _chatBoxBloc.dispose();
     super.dispose();
   }
 
@@ -198,14 +206,17 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   imageUrl: lastMessage.attach,
                   placeholder: (_, __) => Container(
                     margin: const EdgeInsets.all(4),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CupertinoActivityIndicator(),
-                        SizedBox(height: 5),
-                        Text('Downloading Image',
-                            overflow: TextOverflow.ellipsis)
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CupertinoActivityIndicator(),
+                          SizedBox(height: 5),
+                          Text('Downloading Image',
+                              overflow: TextOverflow.ellipsis)
+                        ],
+                      ),
                     ),
                   ),
                   errorWidget: (_, __, ___) => Icon(Icons.error),
@@ -447,6 +458,28 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
+  Widget _buildCameraIcon() {
+    return Container(
+      margin: const EdgeInsets.all(4),
+      child: InkResponse(
+        onTap: () async {
+          _rotate();
+          PickedFile pickedFile =
+              await ImagePicker().getImage(source: ImageSource.camera);
+          File image = File(pickedFile.path);
+          File compressedImage = await CompressUtils.compressAndGetFile(
+              image, LOW_COMPRESS_QUALITY, 500, 500);
+          _chatBoxBloc.add(ChatBoxSendImage(compressedImage));
+        },
+        child: SvgPicture.asset(
+          camera,
+          color: Colors.black,
+          semanticsLabel: 'camera',
+        ),
+      ),
+    );
+  }
+
   Widget _buildVoiceRecorderIcon() {
     return Container(
       margin: const EdgeInsets.all(4),
@@ -506,17 +539,30 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == PENDING &&
             _bookingUserIsMe(snapshot.data.booingUserId)) {
-          return _buildBookingCancelButton();
-        }
-        if (snapshot.data.status == PENDING) {
           return WaitingTimeLeft(createat: snapshot.data.createdAt);
-        }
-        if (snapshot.data.status == ACCEPTED &&
-            _bookingUserIsMe(snapshot.data.booingUserId)) {
-          return _buildPhoneButton(snapshot.data.userId);
         }
         if (snapshot.data.status == ACCEPTED) {
           return _buildBookingEndButton();
+        }
+        return Container();
+      },
+    );
+  }
+
+  Widget _buildSecondAction() {
+    return StreamBuilder<BookingStatus>(
+      initialData: null,
+      stream: _chatBoxBloc.bookingStatusSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.data.status == PENDING &&
+            _bookingUserIsMe(snapshot.data.booingUserId)) {
+          return _buildBookingCancelButton();
+        }
+        if (snapshot.data.status == ACCEPTED) {
+          return _buildPhoneButton(snapshot.data.userId);
         }
         return Container();
       },
@@ -650,6 +696,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   actions: <Widget>[
                     //   action2(model),
                     _buildFirstAction(),
+                    _buildSecondAction()
                   ],
                 ),
                 body: SafeArea(
@@ -697,23 +744,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                 child: _buildVoiceRecorderIcon(),
                               ),
                               FloatingButton(
-                                bottom: 200,
-                                left: 10,
-                                scale: _animation3,
-                                child: Container(
-                                  margin: const EdgeInsets.all(4),
-                                  child: InkResponse(
-                                    onTap: () {
-                                      _rotate();
-                                    },
-                                    child: SvgPicture.asset(
-                                      camera,
-                                      color: Colors.black,
-                                      semanticsLabel: 'camera',
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                  bottom: 200,
+                                  left: 10,
+                                  scale: _animation3,
+                                  child: _buildCameraIcon()),
                             ],
                           );
                         }

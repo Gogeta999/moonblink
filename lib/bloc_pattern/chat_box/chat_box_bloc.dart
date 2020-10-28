@@ -38,6 +38,20 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
 
   final TextEditingController messageController = TextEditingController();
 
+  void dispose() async {
+    List<Future> futures = [
+      bookingStatusSubject.close(),
+      partnerUserSubject.close(),
+      bookingCancelButtonSubject.close(),
+      callButtonSubject.close(),
+      rejectButtonSubject.close(),
+      acceptButtonSubject.close(),
+      this.close()
+    ];
+    messageController.dispose();
+    Future.wait(futures);
+  }
+
   @override
   Stream<ChatBoxState> mapEventToState(
     ChatBoxEvent event,
