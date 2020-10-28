@@ -5,7 +5,6 @@ import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
 import 'package:moonblink/models/chat_models/new_chat.dart';
-import 'package:moonblink/models/chatlist.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -21,9 +20,9 @@ const String oldDevSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
 
 // List<Message> messages = List<Message>();
-List<Files> files = List<Files>();
-List<Chatlist> chatlist = List<Chatlist>();
-Bookingstatus bookingdata;
+// List<Files> files = List<Files>();
+// List<Chatlist> chatlist = List<Chatlist>();
+// Bookingstatus bookingdata;
 
 class DefaultEvents {
   ///Defaults Events to listen
@@ -47,6 +46,7 @@ class EventsToEmit {
   static const chatUpdating = 'chat-updating';
   static const chatMessage = 'chat-message';
   static const callUser = 'call-user';
+  static const uploadAttach = 'upload-attach';
 }
 
 class EventsToListen {
@@ -82,7 +82,7 @@ class WebSocketService {
       _socket.emit(EventsToEmit.connectUser, userToken);
       showToast('Connected');
     });
-    _socket.on(EventsToListen.connectedUsers, (data) {
+    _socket.once(EventsToListen.connectedUsers, (data) {
       print('Connected Users: $data');
     });
     _socket.on(EventsToListen.conversation, (data) {
@@ -131,32 +131,25 @@ class WebSocketService {
     ]);
   }
 
+  void sendImage(String fileName, Uint8List file, int receiverId) {
+    int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    print('Emitted Successfully');
+    _socket.emit(EventsToEmit.uploadAttach, [
+      {
+        'name': fileName,
+        'data': file,
+        'sender_id': myId,
+        'receiver_id': receiverId,
+        'media_type': IMAGE
+      }
+    ]);
+  }
+
   void disposeWithChatBoxBloc() {
     this._chatBoxBloc = null;
     _socket.off(EventsToListen.chatUpdated);
     _socket.off(EventsToListen.receiveAttach);
     _socket.off(EventsToListen.receiveMessage);
-  }
-
-  //file message
-  void sendfile(String name, Uint8List file, int receiverChatID, int type,
-      List<Message> msg) {
-    int userid = StorageManager.sharedPreferences.getInt(mUserId);
-    String local = new String.fromCharCodes(file);
-    msg.insert(0, Message(name, userid, receiverChatID, now, local, 5));
-    print('User ID : $userid');
-    print('Receiver ID : $receiverChatID');
-    print('Name : $name');
-    //print('File : ${file.toString()}');
-    _socket.emit('upload-attach', [
-      {
-        'name': name,
-        'data': file,
-        'sender_id': userid,
-        'receiver_id': receiverChatID,
-        'media_type': type
-      }
-    ]);
   }
 
   //file message

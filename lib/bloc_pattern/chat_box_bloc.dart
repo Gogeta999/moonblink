@@ -9,6 +9,7 @@ import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/constants.dart';
+import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:moonblink/services/web_socket_service.dart';
@@ -17,19 +18,17 @@ import 'package:intl/intl.dart';
 part 'chat_box_event.dart';
 part 'chat_box_state.dart';
 
-const int _limit = 30;
+const int _limit = 20;
 
 class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   ChatBoxBloc(this.partnerId) : super(ChatBoxInitial());
 
-  bool _isFetching = false;
-
-  final int partnerId;
-
   /// it's also other user id
+  final int partnerId;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
 
   final bookingStatusSubject = BehaviorSubject<BookingStatus>.seeded(null);
+  final partnerUserSubject = BehaviorSubject<PartnerUser>.seeded(null);
 
   ///Button State
   final bookingCancelButtonSubject = BehaviorSubject.seeded(false);
@@ -58,6 +57,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       yield* _mapAcceptBookingToState(currentState);
     if (event is ChatBoxSendMessage)
       yield* _mapSendMessageToState(currentState);
+    if (event is ChatBoxSendImage)
+      yield* _mapSendImageToState(currentState, event.image);
     if (event is ChatBoxReceiveMessage)
       yield* _mapReceiveMessageToState(
           currentState,
@@ -72,45 +73,32 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapFetchedToState(ChatBoxState currentState) async* {
     if (currentState is ChatBoxInitial) {
       List<LastMessage> data = [];
-      PartnerUser partnerUser;
-      try {
-        List<Future> futures = [
-          _fetchLastMessages(limit: _limit, page: 1),
-          MoonBlinkRepository.fetchPartner(partnerId)
-        ];
-        final results = await Future.wait(futures, eagerError: true);
+      List<Future> futures = [
+        _fetchLastMessages(limit: _limit, page: 1),
+      ];
+      MoonBlinkRepository.fetchPartner(partnerId)
+          .then((value) => partnerUserSubject.add(value));
+      Future.wait(futures).then((results) async* {
         data = results.first;
-        partnerUser = results.last;
-      } catch (e) {
-        yield ChatBoxFailure(error: e);
-        return;
-      }
-      bool hasReachedMax = data.length < _limit ? true : false;
-      yield ChatBoxSuccess(
-          partnerUser: partnerUser,
-          data: data,
-          hasReachedMax: hasReachedMax,
-          page: 1);
+        bool hasReachedMax = data.length < _limit ? true : false;
+        yield ChatBoxSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
+      });
     }
     if (currentState is ChatBoxSuccess) {
-      if (_isFetching) return;
-      _isFetching = true;
       final nextPage = currentState.page + 1;
-      List<LastMessage> data = [];
       try {
-        data = await _fetchLastMessages(limit: _limit, page: nextPage);
+        List<LastMessage> data =
+            await _fetchLastMessages(limit: _limit, page: nextPage);
+        bool hasReachedMax = data.length < _limit ? true : false;
+        yield data.isEmpty
+            ? currentState.copyWith(hasReachedMax: true)
+            : ChatBoxSuccess(
+                data: currentState.data + data,
+                hasReachedMax: hasReachedMax,
+                page: nextPage);
       } catch (error) {
         yield ChatBoxFailure(error: error);
       }
-      bool hasReachedMax = data.length < _limit ? true : false;
-      _isFetching = false;
-      yield data.isEmpty
-          ? currentState.copyWith(hasReachedMax: true)
-          : ChatBoxSuccess(
-              partnerUser: currentState.partnerUser,
-              data: currentState.data + data,
-              hasReachedMax: hasReachedMax,
-              page: nextPage);
     }
   }
 
@@ -222,6 +210,25 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final updatedAt = now;
       final lastMessage = LastMessage(id, roomId, senderId, receiverId,
           newMessage, type, attach, createdAt, updatedAt);
+      final List<LastMessage> data = List.from(currentState.data);
+      data.insert(0, lastMessage);
+      yield currentState.copyWith(data: data);
+    }
+  }
+
+  Stream<ChatBoxState> _mapSendImageToState(
+      ChatBoxState currentState, File image) async* {
+    if (currentState is ChatBoxSuccess) {
+      messageController.clear();
+      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+      final now = dateFormat.format(DateTime.now());
+      String fileName = myId.toString() + now + ".jpg";
+      WebSocketService()
+          .sendImage(fileName, image.readAsBytesSync(), partnerId);
+      final id = currentState.data.last.id + 1;
+      final roomId = currentState.data.last.roomId;
+      final lastMessage = LastMessage(id, roomId, myId, partnerId, '', IMAGE,
+          image.absolute.path, now, now);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);

@@ -19,28 +19,22 @@ class ChatBoxFailure extends ChatBoxState {
 }
 
 class ChatBoxSuccess extends ChatBoxState {
-  final PartnerUser partnerUser;
   final List<LastMessage> data;
   final bool hasReachedMax;
   final int page;
 
-  const ChatBoxSuccess(
-      {this.partnerUser, this.data, this.hasReachedMax, this.page});
+  const ChatBoxSuccess({this.data, this.hasReachedMax, this.page});
 
   ChatBoxSuccess copyWith(
-      {PartnerUser partnerUser,
-      List<LastMessage> data,
-      bool hasReachedMax,
-      int page}) {
+      {List<LastMessage> data, bool hasReachedMax, int page}) {
     return ChatBoxSuccess(
-        partnerUser: partnerUser ?? this.partnerUser,
         data: data ?? this.data,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax,
         page: page ?? this.page);
   }
 
   @override
-  List<Object> get props => [partnerUser, data, hasReachedMax, page];
+  List<Object> get props => [data, hasReachedMax, page];
 
   @override
   String toString() =>

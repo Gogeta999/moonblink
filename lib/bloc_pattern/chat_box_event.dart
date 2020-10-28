@@ -14,6 +14,15 @@ class ChatBoxSendMessage extends ChatBoxEvent {
   List<Object> get props => [];
 }
 
+class ChatBoxSendImage extends ChatBoxEvent {
+  final File image;
+
+  ChatBoxSendImage(this.image);
+
+  @override
+  List<Object> get props => [image];
+}
+
 class ChatBoxReceiveMessage extends ChatBoxEvent {
   final String message;
   final int senderId;

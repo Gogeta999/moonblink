@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -19,6 +20,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
+import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
@@ -42,12 +44,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     with SingleTickerProviderStateMixin {
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
+  Timer _debounce;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
 
   final _scrollThreshold = 600.0;
   final ScrollController _scrollController = ScrollController();
 
   final _rotatedSubject = BehaviorSubject.seeded(true);
+  final _upWidgetSubject = BehaviorSubject.seeded(false);
 
   AnimationController _animationController;
   Animation<double> _animation;
@@ -101,6 +105,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     print(
         'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     WebSocketService().disposeWithChatBoxBloc();
+    _debounce?.cancel();
+    _animationController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -112,7 +119,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       case MESSAGE:
         return _buildSingleMessage(lastMessage);
       case IMAGE:
-        return Text('Image');
+        return _buildImageMessage(lastMessage);
       case VIDEO:
         return VideoPlayerWidget(videoUrl: lastMessage.attach);
       case AUDIO:
@@ -132,33 +139,34 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           ? Alignment.centerRight
           : Alignment.centerLeft,
       margin: EdgeInsets.all(10.0),
-      child: child,
+      child: Container(
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.6,
+              maxHeight: MediaQuery.of(context).size.height * 0.3),
+          decoration: BoxDecoration(
+              color: _senderIsMe(lastMessage.senderId)
+                  ? _isDark()
+                      ? Theme.of(context).accentColor.withOpacity(0.5)
+                      : Theme.of(context).accentColor
+                  : _isDark()
+                      ? Colors.black12
+                      : Colors.white12,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+              border: Border.all(
+                  color: _senderIsMe(lastMessage.senderId)
+                      ? Colors.black12
+                      : Theme.of(context).accentColor)),
+          child: child),
     );
   }
 
   Widget _buildSingleMessage(LastMessage lastMessage) {
     return _buildBasicMessageWidget(
       lastMessage: lastMessage,
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.5,
-        ),
+      child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        decoration: BoxDecoration(
-            color: _senderIsMe(lastMessage.senderId)
-                ? _isDark()
-                    ? Theme.of(context).accentColor.withOpacity(0.5)
-                    : Theme.of(context).accentColor
-                : _isDark()
-                    ? Colors.black12
-                    : Colors.white12,
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-            border: Border.all(
-                color: _senderIsMe(lastMessage.senderId)
-                    ? Colors.black12
-                    : Theme.of(context).accentColor)),
         child: SelectableText(
           lastMessage.message,
           style: TextStyle(
@@ -173,30 +181,55 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
+  Widget _buildImageMessage(LastMessage lastMessage) {
+    return _buildBasicMessageWidget(
+      lastMessage: lastMessage,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: lastMessage.attach.contains('http')
+            ? InkResponse(
+                onTap: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        fullscreenDialog: true,
+                        builder: (_) =>
+                            FullScreenImageView(imageUrl: lastMessage.attach))),
+                child: CachedNetworkImage(
+                  imageUrl: lastMessage.attach,
+                  placeholder: (_, __) => Container(
+                    margin: const EdgeInsets.all(4),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CupertinoActivityIndicator(),
+                        SizedBox(height: 5),
+                        Text('Downloading Image',
+                            overflow: TextOverflow.ellipsis)
+                      ],
+                    ),
+                  ),
+                  errorWidget: (_, __, ___) => Icon(Icons.error),
+                ),
+              )
+            : InkResponse(
+                onTap: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) =>
+                          FullScreenImageView(image: File(lastMessage.attach)),
+                    )),
+                child: Image.file(File(lastMessage.attach))),
+      ),
+    );
+  }
+
   Widget _buildRequestMessage(LastMessage lastMessage) {
     return _buildBasicMessageWidget(
       lastMessage: lastMessage,
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.5,
-        ),
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        decoration: BoxDecoration(
-            color: _senderIsMe(lastMessage.senderId)
-                ? _isDark()
-                    ? Theme.of(context).accentColor.withOpacity(0.5)
-                    : Theme.of(context).accentColor
-                : _isDark()
-                    ? Colors.black12
-                    : Colors.white12,
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-            border: Border.all(
-                color: _senderIsMe(lastMessage.senderId)
-                    ? Colors.black12
-                    : Theme.of(context).accentColor)),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SelectableText(
               lastMessage.message,
@@ -393,31 +426,22 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         ),
         onTap: () {
           _rotate();
-          // CustomBottomSheet.show(
-          //     popAfterBtnPressed: true,
-          //     requestType: RequestType.image,
-          //     buttonText: G.of(context).sendbutton,
-          //     buildContext: context,
-          //     limit: 1,
-          //     body: G.of(context).labelimageselect,
-          //     onPressed: (File file) async {
-          //       setState(() {
-          //         _file = file;
-          //       });
-          //
-          //       await getImage();
-          //       String now = DateTime.now().toString();
-          //       String filename = selfId.toString() + now + ".png";
-          //       model.sendfile(filename, bytes, id, 1, messages);
-          //       setState(() {
-          //         textEditingController.text = '';
-          //         bytes = null;
-          //       });
-          //     },
-          //     onInit: _sendMessageWidgetUp,
-          //     onDismiss: _sendMessageWidgetDown,
-          //     willCrop: false,
-          //     compressQuality: NORMAL_COMPRESS_QUALITY);
+          CustomBottomSheet.show(
+              popAfterBtnPressed: true,
+              requestType: RequestType.image,
+              buttonText: G.of(context).sendbutton,
+              buildContext: context,
+              limit: 1,
+              body: G.of(context).labelimageselect,
+              onPressed: (File file) {
+                _chatBoxBloc.add(ChatBoxSendImage(file));
+              },
+              //onInit: _sendMessageWidgetUp,
+              //onDismiss: _sendMessageWidgetDown,
+              minWidth: 500,
+              minHeight: 500,
+              willCrop: false,
+              compressQuality: LOW_COMPRESS_QUALITY);
         },
       ),
     );
@@ -429,7 +453,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
-  // Booking Cancel
   Widget _buildBookingCancelButton() {
     return StreamBuilder<bool>(
       initialData: false,
@@ -562,7 +585,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                       icon: SvgPicture.asset(
                         back,
                         semanticsLabel: 'back',
-                        color: Colors.white,
+                        color: Theme.of(context).accentColor,
                         width: 30,
                         height: 30,
                       ),
@@ -572,53 +595,58 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           // ? Colors.grey
                           ? Colors.black
                           : Colors.black,
-                  title: GestureDetector(
-                      child: Row(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: state
-                                .partnerUser.prfoileFromPartner.profileImage,
-                            imageBuilder: (context, item) {
-                              return CircleAvatar(
-                                radius: 28,
-                                backgroundImage: item,
-                              );
-                            },
-                            placeholder: (_, __) =>
-                                CupertinoActivityIndicator(),
-                            errorWidget: (_, __, ___) => Icon(Icons.error),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              child: Text(
-                                state.partnerUser.partnerName,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                  title: StreamBuilder<PartnerUser>(
+                      initialData: null,
+                      stream: _chatBoxBloc.partnerUserSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return CupertinoActivityIndicator();
+                        }
+                        return GestureDetector(
+                            child: Row(
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: snapshot
+                                      .data.prfoileFromPartner.profileImage,
+                                  imageBuilder: (context, item) {
+                                    return CircleAvatar(
+                                      backgroundImage: item,
+                                    );
+                                  },
+                                  placeholder: (_, __) =>
+                                      CupertinoActivityIndicator(),
+                                  errorWidget: (_, __, ___) =>
+                                      Icon(Icons.error),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    snapshot.data.partnerName,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      onTap: state.partnerUser.type != 0
-                          ? () {
-                              Navigator.pushReplacementNamed(
-                                      context, RouteName.partnerDetail,
-                                      arguments: widget.partnerId)
-                                  .then((value) async {
-                                if (value != null) {
-                                  ///Block Uesrs
-                                  try {
-                                    await MoonBlinkRepository.blockOrUnblock(
-                                        value, BLOCK);
-                                    showToast(G.of(context).toastsuccess);
-                                  } catch (e) {
-                                    print(e.toString());
+                            onTap: snapshot.data.type != 0
+                                ? () {
+                                    Navigator.pushReplacementNamed(
+                                            context, RouteName.partnerDetail,
+                                            arguments: widget.partnerId)
+                                        .then((value) async {
+                                      if (value != null) {
+                                        ///Block Uesrs
+                                        try {
+                                          await MoonBlinkRepository
+                                              .blockOrUnblock(value, BLOCK);
+                                          showToast(G.of(context).toastsuccess);
+                                        } catch (e) {
+                                          print(e.toString());
+                                        }
+                                      }
+                                    });
                                   }
-                                }
-                              });
-                            }
-                          : null),
+                                : null);
+                      }),
                   actions: <Widget>[
                     //   action2(model),
                     _buildFirstAction(),
@@ -704,7 +732,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                         return Center(
                                             child:
                                                 CupertinoActivityIndicator());
-                                      return _buildSingleMessage(
+                                      return _buildMessageOnType(
                                           state.data[index]);
                                     },
                                     itemCount: state.hasReachedMax
@@ -743,6 +771,21 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   bool _senderIsMe(int senderId) => myId == senderId;
   bool _bookingUserIsMe(int booingUserId) => myId == booingUserId;
   bool _isDark() => Theme.of(context).brightness == Brightness.dark;
+
+  //bottom widget up
+  ///not using now
+  _sendMessageWidgetUp() {
+    _upWidgetSubject.add(true);
+    _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
+  //bottom widget down
+  _sendMessageWidgetDown() {
+    _upWidgetSubject.add(false);
+    _scrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
+  }
 
   Future<void> _handleVoiceCall(String voiceChannelName) async {
     await [Permission.microphone].request();
@@ -836,7 +879,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      RatingPage(bookingdata.bookingid, widget.partnerId),
+                      RatingPage(bookingStatus.bookingId, widget.partnerId),
                 ),
               );
             },
@@ -848,7 +891,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _chatBoxBloc.add(ChatBoxFetched());
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        _chatBoxBloc.add(ChatBoxFetched());
+      });
     }
   }
 
