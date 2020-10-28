@@ -459,18 +459,16 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     gameProfileMap.forEach((key, value) {
       print(key + ': ' + '$value');
     });
-    MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
-        (value) => {
-              showToast(G.of(context).toastsuccess),
-              StorageManager.sharedPreferences.setInt(mgameprofile,
-                  StorageManager.sharedPreferences.getInt(mgameprofile) + 1),
-              print("GAMEPROFILE COUNT IS" +
-                  StorageManager.sharedPreferences
-                      .getInt(mgameprofile)
-                      .toString()),
-              Navigator.pop(context, true)
-            },
-        onError: (e) => {showToast(e.toString()), _unfreezeUI()});
+    MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
+      showToast(G.of(context).toastsuccess);
+      if (widget.gameProfile.isPlay == 0) {
+        StorageManager.sharedPreferences.setInt(mgameprofile,
+            StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
+        print("GAMEPROFILE COUNT IS " +
+            StorageManager.sharedPreferences.getInt(mgameprofile).toString());
+      }
+      Navigator.pop(context, true);
+    }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
   _freezeUI() {
