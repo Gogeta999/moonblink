@@ -164,243 +164,174 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                   /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
                   child: Column(
                     children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          LoginFormContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                //NRC
-                                LoginTextField(
-                                  validator: (value) => value.isEmpty
-                                      ? G.of(context).labelnrc
-                                      : null,
-                                  label: G.of(context).labelnrc,
-                                  icon: FontAwesomeIcons.idCard,
-                                  controller: _nrcController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                _space,
-                                //date
-                                BasicDateField(_dobController),
-                                _space,
-                                //bios
-                                LoginTextField(
-                                  validator: (value) => value.isEmpty
-                                      ? G.of(context).labelbios
-                                      : null,
-                                  label: G.of(context).labelbios,
-                                  icon: FontAwesomeIcons.book,
-                                  controller: _biosController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                _space,
-                                //address
-                                LoginTextField(
-                                  validator: (value) => value.isEmpty
-                                      ? G.of(context).labeladdress
-                                      : null,
-                                  label: G.of(context).labeladdress,
-                                  icon: FontAwesomeIcons.addressBook,
-                                  controller: _addressController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                _space,
+                      LoginFormContainer(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            //NRC
+                            LoginTextField(
+                              validator: (value) =>
+                                  value.isEmpty ? G.of(context).labelnrc : null,
+                              label: G.of(context).labelnrc,
+                              icon: FontAwesomeIcons.idCard,
+                              controller: _nrcController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                            ),
+                            _space,
+                            //date
+                            BasicDateField(_dobController),
+                            _space,
+                            //bios
+                            LoginTextField(
+                              validator: (value) => value.isEmpty
+                                  ? G.of(context).labelbios
+                                  : null,
+                              label: G.of(context).labelbios,
+                              icon: FontAwesomeIcons.book,
+                              controller: _biosController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                            ),
+                            _space,
+                            //address
+                            LoginTextField(
+                              validator: (value) => value.isEmpty
+                                  ? G.of(context).labeladdress
+                                  : null,
+                              label: G.of(context).labeladdress,
+                              icon: FontAwesomeIcons.addressBook,
+                              controller: _addressController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                            ),
+                            _space,
 
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ShadedContainer(
-                                      selected: _gender.isNotEmpty &&
-                                              _gender == 'Male'
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ShadedContainer(
+                                  selected:
+                                      _gender.isNotEmpty && _gender == 'Male'
                                           ? true
                                           : false,
-                                      ontap: () {
-                                        setState(() {
-                                          _gender = 'Male';
-                                        });
-                                      },
-                                      child: Text(G.of(context).genderMale),
-                                    ),
-                                    ShadedContainer(
-                                      selected: _gender.isNotEmpty &&
-                                              _gender == 'Female'
-                                          ? true
-                                          : false,
-                                      ontap: () {
-                                        setState(() {
-                                          _gender = 'Female';
-                                        });
-                                      },
-                                      child: Text(G.of(context).genderFemale),
-                                    )
-                                  ],
+                                  ontap: () {
+                                    setState(() {
+                                      _gender = 'Male';
+                                    });
+                                  },
+                                  child: Text(G.of(context).genderMale),
                                 ),
-                                _space,
+                                ShadedContainer(
+                                  selected:
+                                      _gender.isNotEmpty && _gender == 'Female'
+                                          ? true
+                                          : false,
+                                  ontap: () {
+                                    setState(() {
+                                      _gender = 'Female';
+                                    });
+                                  },
+                                  child: Text(G.of(context).genderFemale),
+                                )
                               ],
                             ),
-                          ),
-                          //NRC
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 10,
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 50),
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                              child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        width: 100,
-                                        child: Text(
-                                          G.of(context).labelnrcfront,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: InkResponse(
-                                          onTap: () => _showSelectImageOptions(
-                                              context, NrcType.front),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 120,
-                                                child: _nrcFront == null
-                                                    ? Icon(
-                                                        FontAwesomeIcons
-                                                            .addressCard,
-                                                        size: 120,
-                                                        color: Theme.of(context)
-                                                            .accentColor)
-                                                    : Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 15),
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            8,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            3,
-                                                        child: Image.file(
-                                                          _nrcFront,
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Text(G.of(context).labelnrcfront,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 100,
-                                        child: Text(
-                                          G.of(context).labelnrcback,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: InkResponse(
-                                          onTap: () => _showSelectImageOptions(
-                                              context, NrcType.back),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 120,
-                                                child: _nrcBack == null
-                                                    ? Icon(
-                                                        FontAwesomeIcons
-                                                            .solidAddressCard,
-                                                        size: 120,
-                                                        color: Theme.of(context)
-                                                            .accentColor)
-                                                    : Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 15),
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            8,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            3,
-                                                        child: Image.file(
-                                                          _nrcBack,
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Text(G.of(context).labelnrcback,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          ShadedContainer(
-                            color: Theme.of(context).accentColor,
-                            selected: false,
-                            child: finished
-                                ? ButtonProgressIndicator()
-                                : Text(G.of(context).setPartnerButton,
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .button
-                                        .copyWith(wordSpacing: 6)),
-                            ontap: () => _onTapUploadProfile(model),
-                          ),
-                          _space,
-                        ],
+                            _space,
+                          ],
+                        ),
                       ),
+                      //NRC
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkResponse(
+                                    onTap: () => _showSelectImageOptions(
+                                        context, NrcType.front),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          height: 140,
+                                          child: _nrcFront == null
+                                              ? Icon(
+                                                  FontAwesomeIcons.addressCard,
+                                                  size: 100,
+                                                  color: Theme.of(context)
+                                                      .accentColor)
+                                              : Image.file(
+                                                  _nrcFront,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(G.of(context).labelnrcfront,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: InkResponse(
+                                    onTap: () => _showSelectImageOptions(
+                                        context, NrcType.back),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          height: 140,
+                                          child: _nrcBack == null
+                                              ? Icon(
+                                                  FontAwesomeIcons
+                                                      .solidAddressCard,
+                                                  size: 100,
+                                                  color: Theme.of(context)
+                                                      .accentColor)
+                                              : Image.file(
+                                                  _nrcBack,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(G.of(context).labelnrcback,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      ShadedContainer(
+                        color: Theme.of(context).accentColor,
+                        selected: false,
+                        child: finished
+                            ? ButtonProgressIndicator()
+                            : Text(G.of(context).setPartnerButton,
+                                style: Theme.of(context)
+                                    .accentTextTheme
+                                    .button
+                                    .copyWith(wordSpacing: 6)),
+                        ontap: () => _onTapUploadProfile(model),
+                      ),
+                      _space,
                     ],
                   ),
                 ),
