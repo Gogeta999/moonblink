@@ -77,7 +77,6 @@ class _VoicemsgState extends State<Voicemsg> {
 
   _restart() async {
     recordPlugin.stop();
-    recordPlugin.dispose();
 
     ///stop success
     _init();
