@@ -14,7 +14,7 @@ import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
-import 'package:moonblink/bloc_pattern/chat_box_bloc.dart';
+import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
