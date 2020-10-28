@@ -1,4 +1,4 @@
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/voice_call_id.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -13,7 +13,9 @@ import 'package:moonblink/utils/constants.dart';
 class VoiceCallWidget extends StatefulWidget {
   //passFrom last Place
   final String channelName;
-  VoiceCallWidget({Key key, @required this.channelName}) : super(key: key);
+  final String otherUserProfile;
+  VoiceCallWidget({Key key, @required this.channelName, this.otherUserProfile})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +43,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
 
   //OtherPeople's userId
   int anotherUserId;
+  RtcEngine _engine;
 
   @override
   void initState() {
@@ -48,12 +51,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     super.initState();
     StorageManager.sharedPreferences.setBool(isUserAtVoiceCallPage, true);
     timerCountDown();
-    //animation false
-    // _countdownController =
-    //     AnimationController(vsync: this, duration: Duration(seconds: 30));
-    // _countdownController.forward();
-
-    //initAgora
     initAgoraSdk();
   }
 
@@ -81,8 +78,9 @@ class AudioCallPageState extends State<VoiceCallWidget> {
       _timer.cancel();
       // _countdownController.dispose();
       _userSessions.clear();
-      // AgoraRtcEngine.leaveChannel();
-      AgoraRtcEngine.destroy();
+      // TODO:
+      // _engine.leaveChannel();
+      _engine.destroy();
     } catch (e) {
       print(e);
     }
@@ -110,11 +108,91 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     );
   }
 
-  // Render View For Profile
+  Future<void> initAgoraSdk() async {
+    if (Agora_AppId.isEmpty) {
+      print('APP_ID missing, please provide your APP_ID in settings.dart');
+      print('Agora Engine is not starting');
+      return;
+    }
+//init AgoraInstance
+    await _initAgoraRtcEngine();
+    _addAgoraEventHandlers();
+
+    // await engine.enableWebSdkInteroperability(true);
+    await _engine.joinChannel(null, widget.channelName, null, 0);
+  }
+
+  /// Create agora sdk instance and initialize
+  Future<void> _initAgoraRtcEngine() async {
+    _engine = await RtcEngine.create(Agora_AppId);
+    await _engine.enableAudio();
+    await _engine.setAudioProfile(
+        AudioProfile.SpeechStandard, AudioScenario.ChatRoomGaming);
+  }
+
+  /// Add agora event handlers
+  void _addAgoraEventHandlers() {
+    _engine.setEventHandler(RtcEngineEventHandler(error: (code) {
+      setState(() {
+        print('onError: $code');
+      });
+    }, joinChannelSuccess: (channel, uid, elapsed) {
+      setState(() {
+        print('onJoinChannel: $channel, uid: $uid');
+      });
+    }, userJoined: (uid, elapsed) {
+      print('userJoined: $uid');
+      setState(() {
+        _createRendererView(uid);
+        anotherUserId = uid;
+      });
+    }, userOffline: (uid, elapsed) {
+      setState(() {
+        print('userOffline: $uid');
+        _removeRenderView(uid);
+        _onExit(context);
+      });
+    }, leaveChannel: (stats) {
+      print("User is leaving Channel");
+    }, firstRemoteVideoFrame: (uid, width, height, elapsed) {
+      setState(() {
+        print('None Uses');
+      });
+    }));
+  }
+
+  //TODO:
+  // Mute
+  void _isMute() {
+    setState(() {
+      muted = !muted;
+    });
+    _engine.muteLocalAudioStream(muted);
+  }
+
+  //Speaker
+  void _isSpeakPhone() {
+    setState(() {
+      speakPhone = !speakPhone;
+    });
+    _engine.setEnableSpeakerphone(speakPhone);
+  }
+
+  //Exit Channel
+  void _onExit(BuildContext context) {
+    _engine.leaveChannel();
+    if (_tickerSubscription != null) {
+      _tickerSubscription.cancel();
+    }
+    PushNotificationsManager().cancelVoiceCallNotification();
+    Navigator.pop(context);
+  }
+
+//   // Render View For Profile
   void _createRendererView(int uid) {
     //to join Voice Channel, need to pass ChannelName and UserId
     setState(() {
-      AgoraRtcEngine.joinChannel(null, widget.channelName, null, uid);
+      _engine.joinChannel(null, widget.channelName, null, uid);
     });
 
     VideoUserSession videoUserSession = VideoUserSession(uid);
@@ -122,7 +200,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     print("UserSessionSize" + _userSessions.length.toString());
   }
 
-  //get UserId from Session
+//   //get UserId from Session
   VideoUserSession _getVideoUidSession(int uid) {
     //pass userId to Channel
     return _userSessions.firstWhere((userSession) {
@@ -130,7 +208,12 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     });
   }
 
-  //Auto remove RenderView with close
+  //return renderViews by list
+  List<int> _getRenderViews() {
+    return _userSessions.map((session) => session.uid).toList();
+  }
+
+//   //Auto remove RenderView with close
   void _removeRenderView(int uid) {
     //Remove with UserId
     VideoUserSession videoUserSession = _getVideoUidSession(uid);
@@ -140,102 +223,13 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     }
   }
 
-  Future<void> initAgoraSdk() async {
-    if (Agora_AppId.isEmpty) {
-      print('APP_ID missing, please provide your APP_ID in settings.dart');
-      print('Agora Engine is not starting');
-      return;
-    }
-
-    await _initAgoraRtcEngine();
-    _addAgoraEventListener();
-    await AgoraRtcEngine.enableWebSdkInteroperability(true);
-    await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
-  }
-
-  Future<void> _initAgoraRtcEngine() async {
-    //init AgoraInstance
-    await AgoraRtcEngine.create(Agora_AppId);
-    await AgoraRtcEngine.enableAudio();
-    await AgoraRtcEngine.setAudioProfile(
-        AudioProfile.SpeechStandard, AudioScenario.ChatRoomGaming);
-    _createRendererView(0);
-  }
-
-  void _addAgoraEventListener() {
-    //Debug Error
-    AgoraRtcEngine.onError = (dynamic code) {
-      print('onError: $code');
-    };
-    //JoinSuccesss
-    AgoraRtcEngine.onJoinChannelSuccess =
-        (String channel, int uid, int elapsed) {
-      print('JoinSuccess, onJoinChannel: $channel, uid: $uid');
-    };
-
-    //Listen User Join or not
-    AgoraRtcEngine.onUserJoined = (int uid, int elapsed) {
-      print("UserId: $uid");
-
-      setState(() {
-        _createRendererView(uid);
-        anotherUserId = uid;
-      });
-    };
-
-    //Listen User exit or not
-    AgoraRtcEngine.onUserOffline = (int uid, int reason) {
-      print("Leaving UserId:$uid");
-      setState(() {
-        _removeRenderView(uid);
-        _onExit(context);
-      });
-    };
-
-    //ListenUserLeaveChannel Or not
-    AgoraRtcEngine.onLeaveChannel = () {
-      print("User is leaving Channel");
-    };
-  }
-
-  //return renderViews by list
-  List<int> _getRenderViews() {
-    return _userSessions.map((session) => session.uid).toList();
-  }
-
-  //Mute
-  void _isMute() {
-    setState(() {
-      muted = !muted;
-    });
-    AgoraRtcEngine.muteLocalAudioStream(muted);
-  }
-
-  //Speaker
-  void _isSpeakPhone() {
-    setState(() {
-      speakPhone = !speakPhone;
-    });
-    AgoraRtcEngine.setEnableSpeakerphone(speakPhone);
-  }
-
-  //Exit Channel
-  void _onExit(BuildContext context) {
-    AgoraRtcEngine.leaveChannel();
-    if (_tickerSubscription != null) {
-      _tickerSubscription.cancel();
-    }
-    PushNotificationsManager().cancelVoiceCallNotification();
-    Navigator.pop(context);
-  }
-
   ///Profile Showing
   Widget _viewAudio() {
     //check Chennel user number first
     List<int> views = _getRenderViews();
     switch (views.length) {
       //Only You
-      case 1:
+      case 0:
         return Positioned(
           //Show User Name in Container
           top: 80,
@@ -270,7 +264,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
           ),
         );
       //Two user
-      case 2:
+      case 1:
         setState(() {
           _closeAgora = !_closeAgora;
         });
@@ -296,8 +290,10 @@ class AudioCallPageState extends State<VoiceCallWidget> {
                     width: 140,
                     height: 140,
                     // color: Colors.red,
-                    child: Image.asset(
-                        ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg')),
+                    child: widget.otherUserProfile == null
+                        ? Image.asset(
+                            ImageHelper.wrapAssetsImage('MoonBlinkProfile.jpg'))
+                        : Image.network(widget.otherUserProfile),
                   ),
                 ),
                 Text(
@@ -314,7 +310,7 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     return Container();
   }
 
-  //bottomToolBar
+  // bottomToolBar
   Widget _bottomToolBar() {
     return Container(
       alignment: Alignment.bottomCenter,

@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
@@ -339,7 +341,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                       UpdateOrSubmitButtonState.loading) {
                     return CupertinoButton(
                       child: CupertinoActivityIndicator(),
-                      onPressed: null,
+                      onPressed: () {},
                     );
                   } else {
                     return CupertinoButton(
@@ -457,12 +459,16 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     gameProfileMap.forEach((key, value) {
       print(key + ': ' + '$value');
     });
-    MoonBlinkRepository.updateGameProfile(gameProfileMap).then(
-        (value) => {
-              showToast(G.of(context).toastsuccess),
-              Navigator.pop(context, true)
-            },
-        onError: (e) => {showToast(e.toString()), _unfreezeUI()});
+    MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
+      showToast(G.of(context).toastsuccess);
+      if (widget.gameProfile.isPlay == 0) {
+        StorageManager.sharedPreferences.setInt(mgameprofile,
+            StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
+        print("GAMEPROFILE COUNT IS " +
+            StorageManager.sharedPreferences.getInt(mgameprofile).toString());
+      }
+      Navigator.pop(context, true);
+    }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
   _freezeUI() {
@@ -551,7 +557,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     PickedFile pickedFile =
         await ImagePicker().getImage(source: ImageSource.camera);
     File compressedImage = await CompressUtils.compressAndGetFile(
-        File(pickedFile.path), 90, 1080, 1080);
+        File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
     setState(() {
       _skillCoverPhoto = compressedImage;
     });

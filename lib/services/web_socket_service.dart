@@ -98,7 +98,7 @@ class WebSocketService {
 
   void initWithChatBoxBloc(ChatBoxBloc chatBoxBloc) {
     this._chatBoxBloc = chatBoxBloc;
-    int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
     _socket.on(EventsToListen.chatUpdated, (data) {
       print('Booking Status: $data');
       final bookingStatus = BookingStatus.fromJson(data);
@@ -132,7 +132,7 @@ class WebSocketService {
   }
 
   void sendImage(String fileName, Uint8List file, int receiverId) {
-    int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final int myId = StorageManager.sharedPreferences.getInt(mUserId);
     print('Emitted Successfully');
     _socket.emit(EventsToEmit.uploadAttach, [
       {
@@ -145,33 +145,25 @@ class WebSocketService {
     ]);
   }
 
+  void sendAudio(String fileName, Uint8List file, int receiverId) {
+    final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    print('Emitted Successfully');
+    _socket.emit(EventsToEmit.uploadAttach, [
+      {
+        'name': fileName,
+        'data': file,
+        'sender_id': myId,
+        'receiver_id': receiverId,
+        'media_type': AUDIO
+      }
+    ]);
+  }
+
   void disposeWithChatBoxBloc() {
     this._chatBoxBloc = null;
     _socket.off(EventsToListen.chatUpdated);
     _socket.off(EventsToListen.receiveAttach);
     _socket.off(EventsToListen.receiveMessage);
-  }
-
-  //file message
-  void sendaudio(String name, Uint8List file, int receiverChatID, int type,
-      List<Message> msg, String path) {
-    int userid = StorageManager.sharedPreferences.getInt(mUserId);
-    // String local = new String.fromCharCodes(file);
-    msg.insert(0, Message(name, userid, receiverChatID, now, path, 6));
-    print('User ID : $userid');
-    print('Receiver ID : $receiverChatID');
-    print('Name : $name');
-    print('File Path : $path');
-    //print('File : ${file.toString()}');
-    _socket.emit('upload-attach', [
-      {
-        'name': name,
-        'data': file,
-        'sender_id': userid,
-        'receiver_id': receiverChatID,
-        'media_type': type
-      }
-    ]);
   }
 
   ///Not Using

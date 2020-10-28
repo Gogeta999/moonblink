@@ -70,7 +70,7 @@ class RouteName {
   static const String facebookLoginError = 'facebookLoginError';
 }
 
-class Router {
+class MoonGoRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.splash:

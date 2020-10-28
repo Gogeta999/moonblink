@@ -7,7 +7,9 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/permission.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'new_user_swiper_page.dart';
 
@@ -123,6 +125,8 @@ class AnimatedCountdown extends AnimatedWidget {
 void nextPage(context) {
   final hasUser = StorageManager.localStorage.getItem(mUser);
   bool newUser = StorageManager.sharedPreferences.getBool(isNewUser) ?? true;
+  int gameprofile = StorageManager.sharedPreferences.getInt(mgameprofile);
+  int type = StorageManager.sharedPreferences.getInt(mUserType);
   // newUser
   //     ? Navigator.of(context).pushReplacementNamed(RouteName.newUserSwiperPage)
   //     : Navigator.of(context)
@@ -136,5 +140,8 @@ void nextPage(context) {
   } else {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+    if (gameprofile == 0 && type != 0) {
+      gameProfileSetUp();
+    }
   }
 }

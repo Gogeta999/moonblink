@@ -269,12 +269,12 @@ class LocalPlayerWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _LocalPlayerWidgetState(path, mode);
+    return _LocalPlayerWidgetState(this.mode);
   }
 }
 
 class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
-  String path;
+  // String path;
   PlayerMode mode;
 
   AudioPlayer _audioPlayer;
@@ -304,7 +304,7 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
   get _isPlayingThroughEarpiece =>
       _playingRouteState == PlayingRouteState.earpiece;
 
-  _LocalPlayerWidgetState(this.path, this.mode);
+  _LocalPlayerWidgetState(this.mode);
 
   @override
   void initState() {
@@ -326,52 +326,59 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 200,
-        height: 40,
-        decoration: BoxDecoration(
-          // color: Theme.of(context).brightness == Brightness.dark
-          //     ? Theme.of(context).accentColor
-          //     // ? Theme.of(context).scaffoldBackgroundColor
-          //     : Colors.grey,
-          color: Theme.of(context).accentColor,
-          borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
-          ),
+      height: 40,
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).accentColor
+            // ? Theme.of(context).scaffoldBackgroundColor
+            : Theme.of(context).accentColor,
+        borderRadius: BorderRadius.all(
+          Radius.circular(20.0),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _isPlaying
-                ? IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => _pause(),
-                    icon: Icon(Icons.pause),
-                    iconSize: 20.0,
-                  )
-                : IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => _play(),
-                    icon: Icon(Icons.play_arrow),
-                    iconSize: 20.0,
-                  ),
-            Flexible(
-                child: LinearProgressIndicator(
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          (() {
+            if (_isPlaying == true) {
+              return IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => _pause(),
+                icon: Icon(Icons.pause),
+                iconSize: 20.0,
+              );
+            } else if (_isPlaying == false) {
+              return IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => _play(),
+                icon: Icon(Icons.play_arrow),
+                iconSize: 20.0,
+              );
+            } else {
+              return Container(height: 0, width: 0);
+            }
+          }()),
+          Container(
+            width: 100,
+            child: LinearProgressIndicator(
               backgroundColor: Colors.white,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
               value: (_position != null &&
                       _duration != null &&
                       _position.inMilliseconds > 0 &&
                       _position.inMilliseconds < _duration.inMilliseconds)
                   ? _position.inMilliseconds / _duration.inMilliseconds
                   : 0.0,
-            )),
-
-            /// can't get max duration at start
-            Padding(
-              padding: const EdgeInsets.all(10.0),
             ),
-          ],
-        ));
+          ),
+
+          /// can't get max duration at start
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+          ),
+        ],
+      ),
+    );
   }
 
   void _initAudioPlayer() async {
@@ -418,14 +425,17 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
   }
 
   Future<int> _play() async {
+    print(widget.path);
+    print(
+        'Playing this FIle ++++++++++++++++++++++++++++++++++++++++++++++++++++');
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&
             _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
-    final result =
-        await _audioPlayer.play(path, position: playPosition, isLocal: true);
+    final result = await _audioPlayer.play(widget.path,
+        position: playPosition, isLocal: true);
     if (result == 1) setState(() => _playerState = PlayerState.playing);
 
     // default playback rate is 1.0

@@ -6,7 +6,6 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 -dontwarn io.flutter.embedding.**
--keep class io.agora.**{*;}
 #In app Purchase
 -keep class com.amazon.** {*;}
 -keep class com.dooboolab.** { *; }

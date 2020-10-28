@@ -1,8 +1,8 @@
 PODS:
-  - agora_rtc_engine (1.0.13):
-    - AgoraRtcEngine_iOS_Crypto (= 2.9.1)
+  - agora_rtc_engine (3.1.3):
+    - AgoraRtcEngine_iOS_Crypto (= 3.1.2)
     - Flutter
-  - AgoraRtcEngine_iOS_Crypto (2.9.1)
+  - AgoraRtcEngine_iOS_Crypto (3.1.2)
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
@@ -95,9 +95,9 @@ PODS:
     - FBSDKCoreKit (~> 5.5)
     - FBSDKLoginKit (~> 5.5)
     - Flutter
-  - flutter_ffmpeg/min-lts (0.2.10):
+  - flutter_ffmpeg/min-lts (0.3.0):
     - Flutter
-    - mobile-ffmpeg-min (= 4.3.1.LTS)
+    - mobile-ffmpeg-min (= 4.4.LTS)
   - flutter_image_compress (0.0.1):
     - Flutter
     - Mantle
@@ -108,6 +108,11 @@ PODS:
     - Flutter
     - Google-Mobile-Ads-SDK
     - PureLayout
+<<<<<<< HEAD
+=======
+  - flutter_plugin_record (0.0.1):
+    - Flutter
+>>>>>>> origin/develop-master
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -176,7 +181,11 @@ PODS:
   - Mantle (2.1.6):
     - Mantle/extobjc (= 2.1.6)
   - Mantle/extobjc (2.1.6)
+<<<<<<< HEAD
   - mobile-ffmpeg-min (4.3.1.LTS)
+=======
+  - mobile-ffmpeg-min (4.4.LTS)
+>>>>>>> origin/develop-master
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
     - nanopb/encode (= 1.30906.0)
@@ -235,6 +244,10 @@ DEPENDENCIES:
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_admob (from `.symlinks/plugins/flutter_native_admob/ios`)
+<<<<<<< HEAD
+=======
+  - flutter_plugin_record (from `.symlinks/plugins/flutter_plugin_record/ios`)
+>>>>>>> origin/develop-master
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -320,6 +333,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_native_admob:
     :path: ".symlinks/plugins/flutter_native_admob/ios"
+<<<<<<< HEAD
+=======
+  flutter_plugin_record:
+    :path: ".symlinks/plugins/flutter_plugin_record/ios"
+>>>>>>> origin/develop-master
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_cropper:
@@ -356,11 +374,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_thumbnail/ios"
 
 SPEC CHECKSUMS:
-  agora_rtc_engine: 4e1678a60aeb2c868cb37181eeb79f9e8788306d
-  AgoraRtcEngine_iOS_Crypto: c2bca616406c6dda9ae254d59637a18ba0fae8f0
+  agora_rtc_engine: 5efb18877a0423b88081edb1b8625db6625fd43c
+  AgoraRtcEngine_iOS_Crypto: 42a7a2142317c588f1b5c2e74b98fd01d73f8f60
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
-  audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
+  audioplayers: 53f0f30789b10ab2009771c6c79def00980945e4
   camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
@@ -381,10 +399,14 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 29543feb343b09546ab3aa04d008ee8595b43c44
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
-  flutter_ffmpeg: cf0a6941ef67e88248c998cc3e34f8acb0b4e454
+  flutter_ffmpeg: 657ce8a1502c3d25bf34efc58b380b248836f772
   flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
-  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_native_admob: 384f39f8b8dc0a96624c7cfa4cd255205e7c3da5
+<<<<<<< HEAD
+=======
+  flutter_plugin_record: 562ded56f3a109d769e72c3ef52ef20d835493d4
+>>>>>>> origin/develop-master
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Google-Mobile-Ads-SDK: 8b58584890539de4527c47ef01e4da941a10bc8a
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
@@ -400,7 +422,11 @@ SPEC CHECKSUMS:
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
+<<<<<<< HEAD
   mobile-ffmpeg-min: d5d22dcef5c8ec56f771258f1f5be245d914f193
+=======
+  mobile-ffmpeg-min: dd2fd38da2788ccb7be5720fc308cb69160820e7
+>>>>>>> origin/develop-master
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

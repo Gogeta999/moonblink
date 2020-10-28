@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -191,6 +192,7 @@ class GameModeListTile extends StatefulWidget {
 class _GameModeListTileState extends State<GameModeListTile> {
   TextEditingController _gamePriceController;
   int _defaultPrice = 0;
+  final int myUserType = StorageManager.sharedPreferences.getInt(mUserType);
 
   @override
   void initState() {
@@ -208,6 +210,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
   }
 
   _showMaterialDialog(BuildContext context, TextEditingController controller) {
+    print("Showing Cupertino");
     showDialog(
         context: context,
         builder: (context) {
@@ -236,27 +239,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
                 child: Text(G.of(context).cancel),
               ),
               FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    GameMode item = widget.gameModeList[widget.index];
-                    widget.selectedGameModeIndex.forEach((element) {
-                      if (element.containsKey(item.id.toString())) {
-                        int price = int.tryParse(controller.text);
-                        if (price >= _defaultPrice) {
-                          element[item.id.toString()] =
-                              int.tryParse(controller.text);
-                        } else {
-                          controller.text = item.price.toString();
-                          element[item.id.toString()] = item.price;
-                          showToast(
-                              "Can't update price. It's lower than the default");
-                        }
-                        return;
-                      }
-                    });
-                  });
-                },
+                onPressed: () => _onTapSubmit(controller),
                 child: Text(G.of(context).submit),
               )
             ],
@@ -265,6 +248,9 @@ class _GameModeListTileState extends State<GameModeListTile> {
   }
 
   _showCupertinoDialog(BuildContext context, TextEditingController controller) {
+    print('Showing Cupertino');
+    print('MyUserType == $myUserType');
+    print('Default Price is $_defaultPrice');
     showCupertinoDialog(
         context: context,
         builder: (context) {
@@ -293,27 +279,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
                 child: Text(G.of(context).cancel),
               ),
               CupertinoButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    GameMode item = widget.gameModeList[widget.index];
-                    widget.selectedGameModeIndex.forEach((element) {
-                      if (element.containsKey(item.id.toString())) {
-                        int price = int.tryParse(controller.text);
-                        if (price >= _defaultPrice) {
-                          element[item.id.toString()] =
-                              int.tryParse(controller.text);
-                        } else {
-                          controller.text = item.price.toString();
-                          element[item.id.toString()] = item.price;
-                          showToast(
-                              "Can't update price. it's lower than the default");
-                        }
-                        return;
-                      }
-                    });
-                  });
-                },
+                onPressed: () => _onTapSubmit(controller),
                 child: Text(G.of(context).submit),
               )
             ],
@@ -339,10 +305,7 @@ class _GameModeListTileState extends State<GameModeListTile> {
           children: [
             Text('Price - ${_gamePriceController.text} Coins'),
             SizedBox(width: 10),
-            if (StorageManager.sharedPreferences.getInt(mUserType) == 2 ||
-                StorageManager.sharedPreferences.getInt(mUserType) == 3 ||
-                StorageManager.sharedPreferences.getInt(mUserType) == 4)
-              InkWell(onTap: () => _onTapEditPrice(), child: Icon(Icons.edit))
+            isSelected ? InkWell(onTap: () => _onTapEditPrice(), child: Icon(Icons.edit)) : Container()
           ],
         ),
         onTap: () => _onTapGameModeListTile(
@@ -355,6 +318,42 @@ class _GameModeListTileState extends State<GameModeListTile> {
         selected: isSelected,
       ),
     );
+  }
+
+  _onTapSubmit(TextEditingController controller) {
+    Navigator.pop(context);
+    setState(() {
+      GameMode item = widget.gameModeList[widget.index];
+      widget.selectedGameModeIndex.forEach((element) {
+        if (element.containsKey(item.id.toString())) {
+          int price = int.tryParse(controller.text);
+          if (myUserType == kCoPlayer) {
+            if (price < _defaultPrice) {
+              controller.text = item.price.toString();
+              element[item.id.toString()] = item.price;
+              showToast("Price should be higher than the min price");
+            } else if (price > _defaultPrice * 3) {
+              controller.text = item.price.toString();
+              element[item.id.toString()] = item.price;
+              showToast("Price should be lower the the max price");
+            } else {
+              element[item.id.toString()] =
+                  int.tryParse(controller.text);
+            }
+          }
+          if (price >= _defaultPrice) {
+            element[item.id.toString()] =
+                int.tryParse(controller.text);
+          } else {
+            controller.text = item.price.toString();
+            element[item.id.toString()] = item.price;
+            showToast(
+                "Can't update price. It's lower than the default");
+          }
+          return;
+        }
+      });
+    });
   }
 
   _onTapGameModeListTile(int id, int price, bool isSelected) {

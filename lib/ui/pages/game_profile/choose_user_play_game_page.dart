@@ -5,8 +5,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -58,18 +60,20 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                             builder: (context, snapshot) {
                               return IconSlideAction(
                                 closeOnTap: false,
-                                color: Theme.of(context).scaffoldBackgroundColor,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 caption: snapshot.data == DeselectState.loading
                                     ? G.of(context).loading
                                     : G.of(context).deselect,
-                                iconWidget: snapshot.data == DeselectState.loading
+                                iconWidget: snapshot.data ==
+                                        DeselectState.loading
                                     ? CupertinoActivityIndicator()
                                     : Icon(Icons.remove_circle,
-                                    color: Theme.of(context).accentColor),
+                                        color: Theme.of(context).accentColor),
                                 onTap: () =>
-                                snapshot.data == DeselectState.loading
-                                    ? {}
-                                    : _onTapDeselect(item),
+                                    snapshot.data == DeselectState.loading
+                                        ? {}
+                                        : _onTapDeselect(item),
                               );
                             }),
                       )
@@ -91,10 +95,14 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                           ),
                           placeholder: (context, url) =>
                               CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                         title: Text(item.name),
-                        subtitle: item.description == null || item.description.isEmpty ? null : Text(item.description),
+                        subtitle:
+                            item.description == null || item.description.isEmpty
+                                ? null
+                                : Text(item.description),
                         trailing: Icon(
                           Icons.check_box,
                           color: item.isPlay == 0
@@ -130,6 +138,10 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
     MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then(
         (value) {
       _deselectSubject.add(DeselectState.initial);
+      StorageManager.sharedPreferences.setInt(mgameprofile,
+          StorageManager.sharedPreferences.getInt(mgameprofile) - 1);
+      print("GAMEPROFILE COUNT IS " +
+          StorageManager.sharedPreferences.getInt(mgameprofile).toString());
 
       ///After delete, fetch data from server again
       setState(() {});

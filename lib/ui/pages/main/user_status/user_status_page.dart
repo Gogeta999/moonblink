@@ -10,7 +10,6 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
-import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -18,6 +17,7 @@ import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
+import 'package:moonblink/ui/pages/main/user_status/userlevel.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -147,11 +147,71 @@ class _UserListWidgetState extends State<UserListWidget> {
     super.initState();
   }
 
+  //level dialog
+  leveldialog(OwnProfile profile) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Okay"),
+            ),
+          ],
+          content: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Text("Level ${profile.level}",
+                      style: Theme.of(context).textTheme.headline6),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 15.0,
+                    horizontal: 20,
+                  ),
+                  child: new LinearPercentIndicator(
+                    // width: MediaQuery.of(context).size.width - 40,
+                    animation: true,
+                    animationDuration: 1000,
+                    lineHeight: 12.0,
+                    leading: Text("Exp"),
+                    percent: profile != null
+                        ? double.parse(profile.levelpercent)
+                        : 0,
+                    linearStrokeCap: LinearStrokeCap.roundAll,
+                    progressColor: Theme.of(context).accentColor,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                    "Need ${profile.leftorder} matches to be level ${(int.parse(profile.level) + 1).toString()}"),
+                SizedBox(
+                  height: 20,
+                ),
+                Text("Note: Will expired on ${profile.levelresettime}"),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   init() async {
     OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
       this.profile = user;
     });
+    print(profile.wallet.value);
     print(profile.level);
     print(profile.levelpercent);
     print(
@@ -207,13 +267,40 @@ class _UserListWidgetState extends State<UserListWidget> {
                   ),
                 ),
                 title: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  padding: const EdgeInsets.only(bottom: 20, top: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Row(
                       //   children: [
-                      Text(name, style: Theme.of(context).textTheme.headline6),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(name,
+                                style: Theme.of(context).textTheme.headline6),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          if (usertype != 0)
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserLevelPage()));
+                              },
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  "Lv ${profile != null ? profile.level : "."}",
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                       // SizedBox(width: 20),
                       // Icon(
                       //   FontAwesomeIcons.coins,
@@ -261,39 +348,47 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
 
         //Level Indicator
-        if (usertype != 0 && profile != null && profile.levelpercent != null && profile.level != null)
+        if (usertype != 0 &&
+            profile != null &&
+            profile.levelpercent != null &&
+            profile.level != null)
           Card(
             margin: EdgeInsets.only(bottom: 15),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Level ${profile != null ? profile.level : "."}",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 15.0,
-                      horizontal: 20,
+            child: InkWell(
+              onTap: () {
+                leveldialog(profile);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Level ${profile != null ? profile.level : "."}",
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                    child: new LinearPercentIndicator(
-                      // width: MediaQuery.of(context).size.width - 40,
-                      animation: true,
-                      animationDuration: 1000,
-                      lineHeight: 12.0,
-                      leading: Text("Exp"),
-                      percent: profile != null
-                          ? double.parse(profile.levelpercent)
-                          : 0,
-                      linearStrokeCap: LinearStrokeCap.roundAll,
-                      progressColor: Theme.of(context).accentColor,
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 15.0,
+                        horizontal: 20,
+                      ),
+                      child: new LinearPercentIndicator(
+                        // width: MediaQuery.of(context).size.width - 40,
+                        animation: true,
+                        animationDuration: 1000,
+                        lineHeight: 12.0,
+                        leading: Text("Exp"),
+                        percent: profile != null
+                            ? double.parse(profile.levelpercent)
+                            : 0,
+                        linearStrokeCap: LinearStrokeCap.roundAll,
+                        progressColor: Theme.of(context).accentColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                      "Need 2 matches to be level ${profile != null ? (int.parse(profile.level) + 1).toString() : "."}")
-                ],
+                    // Text(
+                    //     "Need ${profile != null ? profile.leftorder : "."} matches to be level ${profile != null ? (int.parse(profile.level) + 1).toString() : "."}"),
+                  ],
+                ),
               ),
             ),
           ),

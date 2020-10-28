@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,18 +10,15 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
-import 'package:moonblink/global/router_manager.dart' as Nav;
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
-import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/local_model.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 import 'bloc_pattern/simple_bloc_observer.dart';
 import 'bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
@@ -32,6 +30,7 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
   InAppPurchaseConnection.enablePendingPurchases();
+  Firebase.initializeApp();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
@@ -51,7 +50,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('$state');
@@ -115,8 +113,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               GlobalWidgetsLocalizations.delegate
             ],
             supportedLocales: G.delegate.supportedLocales,
-            onGenerateRoute: Nav.Router.generateRoute,
-            initialRoute: Nav.RouteName.splash,
+            onGenerateRoute: MoonGoRouter.generateRoute,
+            initialRoute: RouteName.splash,
             navigatorKey: locator<NavigationService>().navigatorKey,
           );
         }),

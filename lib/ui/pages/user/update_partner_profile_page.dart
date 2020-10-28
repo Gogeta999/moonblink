@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
@@ -116,33 +117,57 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                     /// [make cover in a simple container, onpress or ontap u can use pickcoverfrom gallery directly]
                     child: Stack(
                       children: <Widget>[
-                        GestureDetector(
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 240,
+                          child: Stack(
+                            children: [
+                              GestureDetector(
 
-                            /// [You need to put before OnTap]
-                            onTap: () {
-                              CustomBottomSheet.show(
-                                  requestType: RequestType.image,
-                                  popAfterBtnPressed: true,
-                                  buttonText: G.of(context).choose,
-                                  buildContext: context,
-                                  limit: 1,
-                                  onPressed: (File file) {
-                                    setState(() {
-                                      _cover = file;
-                                    });
+                                  /// [You need to put before OnTap]
+
+                                  onTap: () {
+                                    CustomBottomSheet.show(
+                                        requestType: RequestType.image,
+                                        popAfterBtnPressed: true,
+                                        buttonText: G.of(context).choose,
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _cover = file;
+                                          });
+                                        },
+                                        body: G.of(context).partnercover,
+                                        willCrop: true,
+                                        compressQuality:
+                                            NORMAL_COMPRESS_QUALITY);
                                   },
-                                  body: G.of(context).partnercover,
-                                  willCrop: true,
-                                  compressQuality: NORMAL_COMPRESS_QUALITY);
-                            },
-                            child: AspectRatio(
-                              aspectRatio: 100 / 60,
-                              child: PartnerCoverWidget(
-                                  _cover,
-                                  partnermodel,
-                                  widget.partnerUser.prfoileFromPartner
-                                      .coverImage),
-                            )),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 240,
+                                    child: PartnerCoverWidget(
+                                        _cover,
+                                        partnermodel,
+                                        widget.partnerUser.prfoileFromPartner
+                                            .coverImage),
+                                  )),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white70,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Icon(
+                                    IconFonts.cameraIcon,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
                         /// [same as profile image too, if null asset local image if u can click at partnerprofilewidget then click F12 to see code template]
                         Padding(
@@ -175,26 +200,45 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         compressQuality:
                                             NORMAL_COMPRESS_QUALITY);
                                   },
-                                  child: CircleAvatar(
-                                    radius: 75,
-                                    child: CircleAvatar(
-                                      radius: 72,
-                                      backgroundColor:
-                                          Theme.of(context).primaryColor,
-                                      child: ClipOval(
-                                        child: new SizedBox(
-                                          width: 150.0,
-                                          height: 150.0,
-                                          child: PartnerProfileWidget(
-                                              _profile,
-                                              partnermodel,
-                                              widget
-                                                  .partnerUser
-                                                  .prfoileFromPartner
-                                                  .profileImage),
+                                  child: Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 75,
+                                        child: CircleAvatar(
+                                          radius: 72,
+                                          backgroundColor:
+                                              Theme.of(context).primaryColor,
+                                          child: ClipOval(
+                                            child: new SizedBox(
+                                              width: 150.0,
+                                              height: 150.0,
+                                              child: PartnerProfileWidget(
+                                                  _profile,
+                                                  partnermodel,
+                                                  widget
+                                                      .partnerUser
+                                                      .prfoileFromPartner
+                                                      .profileImage),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        bottom: 18,
+                                        right: 18,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white70,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: Icon(
+                                            IconFonts.cameraIcon,
+                                            color: Colors.purple,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 )),
                           ),

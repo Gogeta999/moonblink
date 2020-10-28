@@ -24,3 +24,11 @@ const int VIDEO = 2;
 const int AUDIO = 3;
 const int CALL = 4;
 const int REQUEST = 7;
+//Reocrd Status
+const String onStop = "onStop";
+const String onStart = "onStart";
+
+const int kCoPlayer = 1;
+const int kStreamer = 2;
+const int kCele = 3;
+const int kPro = 4;

@@ -169,7 +169,7 @@ class PushNotificationsManager {
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
   }
@@ -502,8 +502,8 @@ class PushNotificationsManager {
         'Moon Blink',
         largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
         playSound: true,
-        importance: Importance.Max,
-        priority: Priority.High,
+        importance: Importance.max,
+        priority: Priority.high,
         ongoing: true,
         sound: RawResourceAndroidNotificationSound('moonblink_noti'),
         autoCancel: false);
@@ -511,7 +511,8 @@ class PushNotificationsManager {
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
         presentAlert: true, presentBadge: true, presentSound: true);
     var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
 
     await _flutterLocalNotificationsPlugin.show(
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
@@ -547,8 +548,8 @@ class PushNotificationsManager {
         playSound: true,
         sound: RawResourceAndroidNotificationSound('$song'),
         enableVibration: true,
-        importance: Importance.Max,
-        priority: Priority.High,
+        importance: Importance.max,
+        priority: Priority.high,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
           presentAlert: true,
@@ -556,7 +557,8 @@ class PushNotificationsManager {
           presentSound: true,
           sound: 'moonblink_noti.m4r');
       var platformChannelSpecifics = NotificationDetails(
-          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+          android: androidPlatformChannelSpecifics,
+          iOS: iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
     } else {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -566,8 +568,8 @@ class PushNotificationsManager {
         playSound: true,
 
         enableVibration: true,
-        importance: Importance.Max,
-        priority: Priority.High,
+        importance: Importance.max,
+        priority: Priority.high,
       );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
         presentAlert: true,
@@ -575,7 +577,8 @@ class PushNotificationsManager {
         presentSound: true,
       );
       var platformChannelSpecifics = NotificationDetails(
-          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+          android: androidPlatformChannelSpecifics,
+          iOS: iOSPlatformChannelSpecifics);
       return platformChannelSpecifics;
     }
   }

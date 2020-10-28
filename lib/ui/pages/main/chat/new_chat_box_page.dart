@@ -14,7 +14,10 @@ import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/imageview.dart';
+import 'package:moonblink/base_widget/new_voice_message_widget.dart';
+import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
+import 'package:moonblink/base_widget/voice_messages_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -122,6 +125,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - End
 
   ///Private UI Widgets - Start
+  ///ToDo - Send audio test and build widget to play audio and call
   Widget _buildMessageOnType(LastMessage lastMessage) {
     switch (lastMessage.type) {
       case MESSAGE:
@@ -131,7 +135,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       case VIDEO:
         return VideoPlayerWidget(videoUrl: lastMessage.attach);
       case AUDIO:
-        return Text('Audio');
+        return _buildAudioMessage(lastMessage);
       case CALL:
         return Text('Call');
       case REQUEST:
@@ -232,6 +236,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                 child: Image.file(File(lastMessage.attach))),
       ),
     );
+  }
+
+  Widget _buildAudioMessage(LastMessage lastMessage) {
+    return _buildBasicMessageWidget(
+        lastMessage: lastMessage,
+        child: lastMessage.attach.contains('http')
+            ? PlayerWidget(url: lastMessage.attach)
+            : LocalPlayerWidget(path: lastMessage.attach));
   }
 
   Widget _buildRequestMessage(LastMessage lastMessage) {
@@ -482,8 +494,17 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   Widget _buildVoiceRecorderIcon() {
     return Container(
-      margin: const EdgeInsets.all(4),
-    );
+        margin: const EdgeInsets.all(4),
+        child: InkResponse(
+          onTap: () => _rotate(),
+          child: NewVoiceMessage(
+            onSend: (String audio) {
+              _chatBoxBloc.add(ChatBoxSendAudio(File(audio)));
+            },
+            //onInit: _sendMessageWidgetUp,
+            //onDismiss: _sendMessageWidgetDown,
+          ),
+        ));
   }
 
   Widget _buildBookingCancelButton() {

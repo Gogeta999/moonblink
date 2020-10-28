@@ -73,6 +73,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       yield* _mapSendMessageToState(currentState);
     if (event is ChatBoxSendImage)
       yield* _mapSendImageToState(currentState, event.image);
+    if (event is ChatBoxSendAudio)
+      yield* _mapSendAudioToState(currentState, event.audio);
     if (event is ChatBoxReceiveMessage)
       yield* _mapReceiveMessageToState(
           currentState,
@@ -234,8 +236,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       ChatBoxState currentState, File image) async* {
     if (currentState is ChatBoxSuccess) {
       messageController.clear();
-      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-      final now = dateFormat.format(DateTime.now());
+      final now = DateTime.now().millisecondsSinceEpoch.toString();
       String fileName = myId.toString() + now + ".jpg";
       WebSocketService()
           .sendImage(fileName, image.readAsBytesSync(), partnerId);
@@ -243,6 +244,24 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final roomId = currentState.data.last.roomId;
       final lastMessage = LastMessage(id, roomId, myId, partnerId, '', IMAGE,
           image.absolute.path, now, now);
+      final List<LastMessage> data = List.from(currentState.data);
+      data.insert(0, lastMessage);
+      yield currentState.copyWith(data: data);
+    }
+  }
+
+  Stream<ChatBoxState> _mapSendAudioToState(
+      ChatBoxState currentState, File audio) async* {
+    if (currentState is ChatBoxSuccess) {
+      messageController.clear();
+      final now = DateTime.now().millisecondsSinceEpoch.toString();
+      String fileName = myId.toString() + now + ".wav";
+      WebSocketService()
+          .sendAudio(fileName, audio.readAsBytesSync(), partnerId);
+      final id = currentState.data.last.id + 1;
+      final roomId = currentState.data.last.roomId;
+      final lastMessage = LastMessage(id, roomId, myId, partnerId, '', AUDIO,
+          audio.absolute.path, now, now);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);

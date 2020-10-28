@@ -34,11 +34,8 @@ if (keystorePropertiesFile.exists()) {
 }
 // to read android/key.properties
 android {
-    //  here is for background fetch
-    // compileSdkVersion rootProject.ext.compileSdkVersion
-    //  here is for background fetch
     compileSdkVersion 29
-    // buildToolsVersion "30.0.0"
+   
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -54,16 +51,9 @@ android {
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // ndk {
-        //     abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86'
-        // }
-        //multiDex
         multiDexEnabled true
-        // Here is for background fetch
-        // targetSdkVersion rootProject.ext.targetSdkVersion
-        // Here is for background fetch
+        
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     // for upload to playstore
@@ -105,11 +95,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    // here is for background fetch
-    // testImplementation 'junit:junit:4.12'
-    // // androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    // // androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    // androidTestImplementation 'androidx.test:runner:1.1.1'                   // or higher
-    // androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'   // or higher
-    // here is for background fetch
 }
