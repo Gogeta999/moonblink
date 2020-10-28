@@ -28,7 +28,7 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
-import 'package:moonblink/ui/pages/call/voice_call_pageNew.dart';
+import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/call_model.dart';

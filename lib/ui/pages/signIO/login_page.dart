@@ -9,10 +9,8 @@ import 'package:moonblink/base_widget/sign_IO_widgets/signupwidget.dart';
 import 'package:moonblink/base_widget/thirdLogin.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/helper/agreement.dart';
-import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 
@@ -159,10 +157,6 @@ class LoginButton extends StatelessWidget {
                         mailController.text, passwordController.text, 'email')
                     .then((value) {
                   if (value) {
-                    int gameprofile =
-                        StorageManager.sharedPreferences.getInt(mgameprofile);
-                    int type =
-                        StorageManager.sharedPreferences.getInt(mUserType);
                     // print('User\'s type: is $type and Profile is $gameprofile');
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
