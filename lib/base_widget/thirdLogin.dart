@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
@@ -37,17 +39,17 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'google').then((value) {
                     if (value) {
-                      // int gameprofile =
-                      //     StorageManager.sharedPreferences.getInt(mgameprofile);
-                      // int type =
-                      //     StorageManager.sharedPreferences.getInt(mUserType);
-                      // print(
-                      //     'User\'s type: is $type and Profile is $gameprofile');
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
+                      print(
+                          'User\'s type: is $type and Profile is $gameprofile');
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
-                      // if (gameprofile == 0 && type != 0) {
-                      //   gameProfileSetUp();
-                      // }
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
                     } else {
                       model.showErrorMessage(context);
                     }
@@ -63,15 +65,15 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 onTap: () {
                   model.login(null, null, 'facebook').then((value) {
                     if (value) {
-                      // int gameprofile =
-                      //     StorageManager.sharedPreferences.getInt(mgameprofile);
-                      // int type =
-                      //     StorageManager.sharedPreferences.getInt(mUserType);
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
-                      // if (gameprofile == 0 && type != 0) {
-                      //   gameProfileSetUp();
-                      // }
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
                     } else {
                       model.showErrorMessage(context);
                     }
