@@ -38,11 +38,11 @@ class _ChatListPageState extends State<ChatListPage>
     ScopedModel.of<ChatModel>(context).init();
   }
 
-  String finalmsg(String lastmsg) {
-    if (lastmsg.length > 15) {
-      return lastmsg.substring(0, 15) + '...';
+  String shorternString(String string, int length) {
+    if (string.length > length) {
+      return string.substring(0, length) + '...';
     } else {
-      return lastmsg;
+      return string;
     }
   }
 
@@ -56,7 +56,7 @@ class _ChatListPageState extends State<ChatListPage>
 
   //Chat Tile
   buildtile(Chatlist chat) {
-    String msg = finalmsg(chat.lastmsg);
+    String msg = shorternString(chat.lastmsg, 15);
     return Column(children: <Widget>[
       ChatTile(
         image: CachedNetworkImage(
@@ -73,7 +73,7 @@ class _ChatListPageState extends State<ChatListPage>
           ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-        name: Text(chat.name),
+        name: Text(shorternString(chat.name, 20)),
 
         ///[Last Message]
         lastmsg: Text(msg, maxLines: 1),
