@@ -385,8 +385,10 @@ class _UserListWidgetState extends State<UserListWidget> {
                         progressColor: Theme.of(context).accentColor,
                       ),
                     ),
-                    // Text(
-                    //     "Need ${profile != null ? profile.leftorder : "."} matches to be level ${profile != null ? (int.parse(profile.level) + 1).toString() : "."}"),
+                    Text(
+                      "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                   ],
                 ),
               ),
