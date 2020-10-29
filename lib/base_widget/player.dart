@@ -11,9 +11,13 @@ enum PlayingRouteState { speakers, earpiece }
 class PlayerWidget extends StatefulWidget {
   final String url;
   final PlayerMode mode;
+  final isLocal;
 
   PlayerWidget(
-      {Key key, @required this.url, this.mode = PlayerMode.MEDIA_PLAYER})
+      {Key key,
+      @required this.url,
+      this.mode = PlayerMode.MEDIA_PLAYER,
+      this.isLocal})
       : super(key: key);
 
   @override
@@ -89,7 +93,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               // ? Theme.of(context).scaffoldBackgroundColor
               : Theme.of(context).accentColor,
           borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
+            Radius.circular(10.0),
           ),
         ),
         child: Row(
@@ -212,7 +216,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         ? _position
         : null;
 
-    final result = await _audioPlayer.play(url, position: playPosition);
+    final result = await _audioPlayer.play(url,
+        position: playPosition, isLocal: widget.isLocal);
     if (result == 1) {
       _playerState = PlayerState.playing;
     }
@@ -333,7 +338,7 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
             // ? Theme.of(context).scaffoldBackgroundColor
             : Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
-          Radius.circular(20.0),
+          Radius.circular(10.0),
         ),
       ),
       child: Row(

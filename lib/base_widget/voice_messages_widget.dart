@@ -89,88 +89,91 @@ class _VoicemsgState extends State<Voicemsg> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
-      // this.chatModel = model;
-      return IconButton(
-        icon: SvgPicture.asset(
-          microphone,
-          color: Colors.black,
-          semanticsLabel: 'mircophone',
-          width: 30,
-          height: 30,
-        ),
-        onPressed: () async {
-          widget.rotate();
-          _init();
+    return ScopedModel(
+      model: ChatModel()..init(),
+      child: ScopedModelDescendant<ChatModel>(builder: (context, child, model) {
+        // this.chatModel = model;
+        return IconButton(
+          icon: SvgPicture.asset(
+            microphone,
+            color: Colors.black,
+            semanticsLabel: 'mircophone',
+            width: 30,
+            height: 30,
+          ),
+          onPressed: () async {
+            widget.rotate();
+            _init();
 
-          ///Init Listening
-          recordPlugin.responseFromInit.listen((data) {
-            if (data) {
-              print("Init Sucess");
-            } else {
-              print("Init Fails");
-            }
-          });
-
-          /// Start Record and End Record
-          recordPlugin.response.listen((data) {
-            if (data.msg == "onStart") {
-              print("onStart --");
-            } else if (data.msg == "onStop") {
-              print("onStop  Path" + data.path);
-              print("++++++++++++++++++++++++++++++++++++++++++++++++R");
-              setState(() {
-                String currentTime =
-                    DateTime.now().millisecondsSinceEpoch.toString();
-
-                filePath = data.path;
-                print("filePath + $filePath ");
-                // filePath = appDocDirectory.absolute.path + '/' + currentTime;
-                filename = widget.id.toString() + currentTime + ".wav";
-                _file = widget.localFileSystem.file(filePath);
-
-                bytes = _file.readAsBytesSync();
-                // print("File Bytes: $bytes");
-                // print(bytes);
-              });
-              // print("onStop " + data.audioTimeLength.toString());
-              print("NOT SENT YET +++++++++++++++++++++++++++++++");
-              print(sent);
-              if (sent == false) {
-                model.sendaudio(
-                    filename, bytes, widget.id, 3, widget.messages, filePath);
-                print(filePath);
-                print(filename);
-                print("Sent ___________________________________");
-                // recordPlugin.dispose();
-                sent = true;
+            ///Init Listening
+            recordPlugin.responseFromInit.listen((data) {
+              if (data) {
+                print("Init Sucess");
+              } else {
+                print("Init Fails");
               }
-            } else {
-              print("--" + data.msg);
-            }
-          });
+            });
 
-          ///Vibration Response
-          recordPlugin.responseFromAmplitude.listen((data) {
-            // var voiceData = double.parse(data.msg);
-            // // print("Vibration----------" + voiceData.toString());
-          });
-          // recordPlugin.responsePlayStateController.listen((data) {
-          //   print("PlayPath   " + data.playPath);
-          //   print("PlayState   " + data.playState);
-          // });
-          CustomBottomSheet.showNewVoiceSheet(
-              buildContext: context,
-              send: () => _send(),
-              cancel: () {
-                recordPlugin.stop();
-              },
-              start: () => _start(),
-              restart: () => _restart(),
-              onInit: widget.onInit,
-              onDismiss: widget.onDismiss);
-        },
-      );
-    });
+            /// Start Record and End Record
+            recordPlugin.response.listen((data) {
+              if (data.msg == "onStart") {
+                print("onStart --");
+              } else if (data.msg == "onStop") {
+                print("onStop  Path" + data.path);
+                print("++++++++++++++++++++++++++++++++++++++++++++++++R");
+                setState(() {
+                  String currentTime =
+                      DateTime.now().millisecondsSinceEpoch.toString();
+
+                  filePath = data.path;
+                  print("filePath + $filePath ");
+                  // filePath = appDocDirectory.absolute.path + '/' + currentTime;
+                  filename = widget.id.toString() + currentTime + ".wav";
+                  _file = widget.localFileSystem.file(filePath);
+
+                  bytes = _file.readAsBytesSync();
+                  // print("File Bytes: $bytes");
+                  // print(bytes);
+                });
+                // print("onStop " + data.audioTimeLength.toString());
+                print("NOT SENT YET +++++++++++++++++++++++++++++++");
+                print(sent);
+                if (sent == false) {
+                  model.sendaudio(
+                      filename, bytes, widget.id, 3, widget.messages, filePath);
+                  print(filePath);
+                  print(filename);
+                  print("Sent ___________________________________");
+                  // recordPlugin.dispose();
+                  sent = true;
+                }
+              } else {
+                print("--" + data.msg);
+              }
+            });
+
+            ///Vibration Response
+            recordPlugin.responseFromAmplitude.listen((data) {
+              // var voiceData = double.parse(data.msg);
+              // // print("Vibration----------" + voiceData.toString());
+            });
+            // recordPlugin.responsePlayStateController.listen((data) {
+            //   print("PlayPath   " + data.playPath);
+            //   print("PlayState   " + data.playState);
+            // });
+            CustomBottomSheet.showNewVoiceSheet(
+                buildContext: context,
+                send: () => _send(),
+                cancel: () {
+                  recordPlugin.stop();
+                },
+                start: () => _start(),
+                restart: () => _restart(),
+                onInit: widget.onInit,
+                onDismiss: widget.onDismiss);
+          },
+        );
+      }),
+    );
   }
 }

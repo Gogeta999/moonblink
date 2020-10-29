@@ -12,12 +12,15 @@ import 'package:permission_handler/permission_handler.dart';
 // final String microphone = 'assets/icons/microphone.svg';
 
 class NewVoiceMessage extends StatefulWidget {
+  @required
+  final Function rotate;
+  @required
   final Function onSend;
   @required
   final Function onDismiss;
   @required
   final Function onInit;
-  NewVoiceMessage({localFileSystem, this.onSend, this.onDismiss, this.onInit});
+  NewVoiceMessage({this.onSend, this.onDismiss, this.onInit, this.rotate});
 
   @override
   _NewVoiceMessageState createState() => _NewVoiceMessageState();
@@ -64,13 +67,8 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: SvgPicture.asset(
-        microphone,
-        color: Colors.black,
-        semanticsLabel: 'mircophone',
-      ),
-      onPressed: () async {
+    return InkResponse(
+      onTap: () {
         _init();
 
         ///Init Listening
@@ -92,6 +90,9 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
             setState(() {
               filePath = data.path;
             });
+            if (sent == false) {
+              widget.onSend(filePath);
+            }
             // // print("onStop " + data.audioTimeLength.toString());
             // print("NOT SENT YET +++++++++++++++++++++++++++++++");
             // print(sent);
@@ -122,7 +123,6 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
             buildContext: context,
             send: () {
               _send();
-              widget.onSend(filePath);
             },
             cancel: () {
               recordPlugin.stop();
@@ -132,6 +132,11 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
             onInit: widget.onInit,
             onDismiss: widget.onDismiss);
       },
+      child: SvgPicture.asset(
+        microphone,
+        color: Colors.black,
+        semanticsLabel: 'mircophone',
+      ),
     );
   }
 }

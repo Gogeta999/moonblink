@@ -98,16 +98,13 @@ class WebSocketService {
 
   void initWithChatBoxBloc(ChatBoxBloc chatBoxBloc) {
     this._chatBoxBloc = chatBoxBloc;
-    final myId = StorageManager.sharedPreferences.getInt(mUserId);
     _socket.on(EventsToListen.chatUpdated, (data) {
       print('Booking Status: $data');
       final bookingStatus = BookingStatus.fromJson(data);
       _chatBoxBloc.bookingStatusSubject.add(bookingStatus);
     });
 
-    _socket.emit(EventsToEmit.chatUpdating, [
-      {'sender_id': myId, 'receiver_id': _chatBoxBloc.partnerId}
-    ]);
+    updateChat();
 
     _socket.on(EventsToListen.receiveMessage, (data) {
       _chatBoxBloc.add(ChatBoxReceiveMessage(data['message'], data['sender_id'],
@@ -117,6 +114,13 @@ class WebSocketService {
       _chatBoxBloc.add(ChatBoxReceiveMessage('', data['sender_id'],
           data['receiver_id'], data['time'], data['attach'], data['type']));
     });
+  }
+
+  void updateChat() {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    _socket.emit(EventsToEmit.chatUpdating, [
+      {'sender_id': myId, 'receiver_id': _chatBoxBloc.partnerId}
+    ]);
   }
 
   void sendMessage(String message, int receiverId) {
@@ -133,7 +137,6 @@ class WebSocketService {
 
   void sendImage(String fileName, Uint8List file, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
-    print('Emitted Successfully');
     _socket.emit(EventsToEmit.uploadAttach, [
       {
         'name': fileName,
@@ -147,7 +150,6 @@ class WebSocketService {
 
   void sendAudio(String fileName, Uint8List file, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
-    print('Emitted Successfully');
     _socket.emit(EventsToEmit.uploadAttach, [
       {
         'name': fileName,

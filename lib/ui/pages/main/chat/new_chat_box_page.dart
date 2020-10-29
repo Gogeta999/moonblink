@@ -98,17 +98,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
     ///[Chat Data]
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
-    print(
-        'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
-
     super.initState();
   }
 
   @override
   void dispose() {
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, false);
-    print(
-        'isUserAtChatBox --- ${StorageManager.sharedPreferences.get(isUserAtChatBox)}');
     WebSocketService().disposeWithChatBoxBloc();
     _debounce?.cancel();
     _animationController.dispose();
@@ -125,19 +120,20 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - End
 
   ///Private UI Widgets - Start
-  ///ToDo - Send audio test and build widget to play audio and call
   Widget _buildMessageOnType(LastMessage lastMessage) {
     switch (lastMessage.type) {
       case MESSAGE:
-        return _buildSingleMessage(lastMessage);
+        return _buildTextMessage(lastMessage);
       case IMAGE:
         return _buildImageMessage(lastMessage);
       case VIDEO:
+
+        ///Not using
         return VideoPlayerWidget(videoUrl: lastMessage.attach);
       case AUDIO:
         return _buildAudioMessage(lastMessage);
       case CALL:
-        return Text('Call');
+        return _buildCallMessage(lastMessage);
       case REQUEST:
         return _buildRequestMessage(lastMessage);
       default:
@@ -174,7 +170,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
-  Widget _buildSingleMessage(LastMessage lastMessage) {
+  Widget _buildTextMessage(LastMessage lastMessage) {
     return _buildBasicMessageWidget(
       lastMessage: lastMessage,
       child: Padding(
@@ -242,8 +238,42 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     return _buildBasicMessageWidget(
         lastMessage: lastMessage,
         child: lastMessage.attach.contains('http')
-            ? PlayerWidget(url: lastMessage.attach)
-            : LocalPlayerWidget(path: lastMessage.attach));
+            ? PlayerWidget(url: lastMessage.attach, isLocal: false)
+            : PlayerWidget(url: lastMessage.attach, isLocal: true));
+  }
+
+  Widget _buildCallMessage(LastMessage lastMesage) {
+    return _buildBasicMessageWidget(
+      lastMessage: lastMesage,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: StreamBuilder<BookingStatus>(
+            initialData: null,
+            stream: _chatBoxBloc.bookingStatusSubject,
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return CupertinoActivityIndicator();
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    G.of(context).someoneCallingYou,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  if (snapshot.data.status == 1)
+                    CupertinoButton(
+                      child: Text(G.of(context).enterCall),
+                      onPressed: () => _handleVoiceCall(lastMesage.attach),
+                    )
+                  else
+                    Text(G.of(context).bookingEnded,
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                ],
+              );
+            }),
+      ),
+    );
   }
 
   Widget _buildRequestMessage(LastMessage lastMessage) {
@@ -494,17 +524,15 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   Widget _buildVoiceRecorderIcon() {
     return Container(
-        margin: const EdgeInsets.all(4),
-        child: InkResponse(
-          onTap: () => _rotate(),
-          child: NewVoiceMessage(
-            onSend: (String audio) {
-              _chatBoxBloc.add(ChatBoxSendAudio(File(audio)));
-            },
-            //onInit: _sendMessageWidgetUp,
-            //onDismiss: _sendMessageWidgetDown,
-          ),
-        ));
+      margin: const EdgeInsets.all(4),
+      child: NewVoiceMessage(
+          rotate: () => _rotate(),
+          onSend: (String audio) {
+            _chatBoxBloc.add(ChatBoxSendAudio(File(audio)));
+          },
+          onInit: () => print('Initing'),
+          onDismiss: () => print('Dismissing')),
+    );
   }
 
   Widget _buildBookingCancelButton() {

@@ -155,11 +155,7 @@
 			buildPhases = (
 				93640A8527A0C5FD3CD6BCA7 /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
-<<<<<<< HEAD
-				A04469411F597085B50A23D7 /* [CP] Prepare Artifacts */,
-=======
 				EDC1DE4DEAAD892E4AA74AA5 /* [CP] Prepare Artifacts */,
->>>>>>> origin/develop-master
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
@@ -311,11 +307,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-<<<<<<< HEAD
-		A04469411F597085B50A23D7 /* [CP] Prepare Artifacts */ = {
-=======
 		EDC1DE4DEAAD892E4AA74AA5 /* [CP] Prepare Artifacts */ = {
->>>>>>> origin/develop-master
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -426,11 +418,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 29;
-=======
 				CURRENT_PROJECT_VERSION = 30;
->>>>>>> origin/develop-master
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -447,11 +435,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-<<<<<<< HEAD
-				MARKETING_VERSION = 2.2.0;
-=======
 				MARKETING_VERSION = 2.2.1;
->>>>>>> origin/develop-master
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -580,11 +564,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 29;
-=======
 				CURRENT_PROJECT_VERSION = 30;
->>>>>>> origin/develop-master
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -601,11 +581,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-<<<<<<< HEAD
-				MARKETING_VERSION = 2.2.0;
-=======
 				MARKETING_VERSION = 2.2.1;
->>>>>>> origin/develop-master
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -626,11 +602,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 29;
-=======
 				CURRENT_PROJECT_VERSION = 30;
->>>>>>> origin/develop-master
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -647,11 +619,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-<<<<<<< HEAD
-				MARKETING_VERSION = 2.2.0;
-=======
 				MARKETING_VERSION = 2.2.1;
->>>>>>> origin/develop-master
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

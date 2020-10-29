@@ -50,6 +50,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     ];
     messageController.dispose();
     Future.wait(futures);
+    print('Disposing ChatBoxBloc Success');
   }
 
   @override
@@ -89,16 +90,17 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapFetchedToState(ChatBoxState currentState) async* {
     if (currentState is ChatBoxInitial) {
       List<LastMessage> data = [];
-      List<Future> futures = [
-        _fetchLastMessages(limit: _limit, page: 1),
-      ];
       MoonBlinkRepository.fetchPartner(partnerId)
-          .then((value) => partnerUserSubject.add(value));
-      Future.wait(futures).then((results) async* {
-        data = results.first;
+          .then((value) => partnerUserSubject.add(value), onError: (e) async* {
+        yield ChatBoxFailure(error: e);
+      });
+      try {
+        data = await _fetchLastMessages(limit: _limit, page: 1);
         bool hasReachedMax = data.length < _limit ? true : false;
         yield ChatBoxSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
-      });
+      } catch (e) {
+        yield ChatBoxSuccess(data: data, hasReachedMax: true, page: 1);
+      }
     }
     if (currentState is ChatBoxSuccess) {
       final nextPage = currentState.page + 1;
@@ -291,7 +293,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       state is ChatBoxSuccess && state.hasReachedMax;
 
   Future<List<LastMessage>> _fetchLastMessages({int limit, int page}) async {
-    return await MoonBlinkRepository.getLastMessages(
+    return MoonBlinkRepository.getLastMessages(
         id: partnerId, limit: limit, page: page);
   }
 }
