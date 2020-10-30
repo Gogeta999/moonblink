@@ -386,10 +386,10 @@ class _UserListWidgetState extends State<UserListWidget> {
                       ),
                     ),
                     //TODO: Allow Later
-                    // Text(
-                    //   "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
-                    //   style: Theme.of(context).textTheme.bodyText1,
-                    // ),
+                    Text(
+                      "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                   ],
                 ),
               ),
