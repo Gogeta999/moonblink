@@ -301,20 +301,20 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     );
   }
 
-  Widget _buildSubmitButton() {
-    return Container(
-      width: double.infinity,
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-        ),
-        color: Theme.of(context).backgroundColor,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text(G.of(context).submit),
-        onPressed: () {},
-      ),
-    );
-  }
+  // Widget _buildSubmitButton() {
+  //   return Container(
+  //     width: double.infinity,
+  //     child: RaisedButton(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.zero,
+  //       ),
+  //       color: Theme.of(context).backgroundColor,
+  //       padding: const EdgeInsets.symmetric(vertical: 16),
+  //       child: Text(G.of(context).submit),
+  //       onPressed: () {},
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

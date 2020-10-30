@@ -5,7 +5,6 @@ import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/chat_service.dart';
-import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';

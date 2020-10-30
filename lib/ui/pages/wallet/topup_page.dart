@@ -197,6 +197,7 @@ class _NewTopUpPage extends State<NewTopUpPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     List<Widget> stack = [];
     if (_queryProductError == null) {
       stack.add(
