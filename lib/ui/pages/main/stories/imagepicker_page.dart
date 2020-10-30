@@ -40,7 +40,6 @@ class _ImagePickerState extends State<ImagePickerPage> {
   String _filePath;
   int _fileType;
   bool _uploadDone = false;
-  int duration;
 
   @override
   void dispose() {
@@ -273,9 +272,9 @@ class _ImagePickerState extends State<ImagePickerPage> {
       print("Getting info of video");
       await trimv.loadVideo(videoFile: File(video.path));
       //TODO:
-      print(info.getStreams());
-      duration = info.getStreams().length;
-      if (duration > 10500) {
+      // print(info.getStreams());
+      var duration = double.parse(info.getMediaProperties()['duration']);
+      if (duration > 10.5) {
         Navigator.push(
             context,
             MaterialPageRoute(
