@@ -364,16 +364,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
         finished = !finished;
       });
       var userid = StorageManager.sharedPreferences.getInt(mUserId);
-      // var coverPath = _cover.absolute.path;
-      // var profilePath = _profile.absolute.path;
       FormData formData = FormData.fromMap({
-        // 'cover_image': await MultipartFile.fromFile(
-        //   coverPath,
-        //   filename: 'cover.jpg',
-        // ),
-        // 'profile_image': await MultipartFile.fromFile(
-        //     profilePath,
-        //     filename: 'profile.jpg'),
         'nrc_front_image': await MultipartFile.fromFile(_nrcFront.absolute.path,
             filename: 'nrc_front_image.jpg'),
         'nrc_back_image': await MultipartFile.fromFile(_nrcBack.absolute.path,
@@ -435,9 +426,9 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                 Navigator.pop(context);
               }),
           CupertinoButton(
-            child: Text(G.of(context).imagePickerCamera),
-            onPressed: () => _pickNrcFromCamera(type),
-          ),
+              child: Text(G.of(context).imagePickerCamera),
+              onPressed: () =>
+                  {_pickNrcFromCamera(type), Navigator.pop(context)}),
           CupertinoButton(
             child: Text(G.of(context).cancel),
             onPressed: () => Navigator.pop(context),
