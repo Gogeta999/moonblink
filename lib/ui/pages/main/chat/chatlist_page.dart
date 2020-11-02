@@ -117,47 +117,49 @@ class _ChatListPageState extends State<ChatListPage>
         builder: (context, child, model) {
           model.connection();
           chatlist = model.conversationlist();
-          if (chatlist.isEmpty) {
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: StatusBarUtils.systemUiOverlayStyle(context),
-                child: SmartRefresher(
-                  controller: refreshController,
-                  header: WaterDropHeader(),
-                  onRefresh: () {
-                    model.init();
-                    chatlist = model.conversationlist();
-                    refreshController.refreshCompleted();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                              ImageHelper.wrapAssetsImage('noFollowing.jpg'),
+          return ProviderWidget<StoryModel>(
+            model: StoryModel(),
+            onModelReady: (model) {
+              model.fetchStory();
+            },
+            builder: (context, storymodel, child) {
+              if (chatlist.isEmpty && storymodel.isEmpty) {
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: StatusBarUtils.systemUiOverlayStyle(context),
+                    child: SmartRefresher(
+                      controller: refreshController,
+                      header: WaterDropHeader(),
+                      onRefresh: () {
+                        model.init();
+                        chatlist = model.conversationlist();
+                        refreshController.refreshCompleted();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                  ImageHelper.wrapAssetsImage(
+                                      'noFollowing.jpg'),
+                                ),
+                                fit: BoxFit.cover)),
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                              top: 200,
+                              child: Text(
+                                G.of(context).noChatHistory,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 20),
+                              ),
                             ),
-                            fit: BoxFit.cover)),
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Positioned(
-                          top: 200,
-                          child: Text(
-                            G.of(context).noChatHistory,
-                            style: TextStyle(color: Colors.black, fontSize: 20),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ));
-          } else {
-            return ProviderWidget<StoryModel>(
-              model: StoryModel(),
-              onModelReady: (model) {
-                model.fetchStory();
-              },
-              builder: (context, storymodel, child) {
+                      ),
+                    ));
+              } else {
                 // print(storymodel.stories);
                 return SmartRefresher(
                   controller: refreshController,
@@ -167,25 +169,27 @@ class _ChatListPageState extends State<ChatListPage>
                     model.init();
                     chatlist = model.conversationlist();
                   },
-                  child: CustomScrollView(slivers: <Widget>[
-                    if (storymodel.stories.isNotEmpty)
-                      StoryList(
-                        stories: storymodel.stories,
-                      ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          Chatlist chat = chatlist[index];
-                          return buildtile(chat);
-                        },
-                        childCount: chatlist?.length ?? 0,
-                      ),
-                    )
-                  ]),
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      if (storymodel.stories.isNotEmpty)
+                        StoryList(
+                          stories: storymodel.stories,
+                        ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            Chatlist chat = chatlist[index];
+                            return buildtile(chat);
+                          },
+                          childCount: chatlist?.length ?? 0,
+                        ),
+                      )
+                    ],
+                  ),
                 );
-              },
-            );
-          }
+              }
+            },
+          );
         },
       ),
     );

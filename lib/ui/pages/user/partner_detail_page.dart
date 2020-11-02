@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/api/moonblink_api.dart';
@@ -114,7 +115,19 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
               children: [
                 Text(G.of(context).playerid),
                 Text(":"),
-                Text(partnerModel.gameprofile[index].playerId)
+                GestureDetector(
+                  onTap: () {
+                    FlutterClipboard.copy(
+                            partnerModel.gameprofile[index].playerId)
+                        .then(
+                      (value) {
+                        showToast(G.of(context).toastcopy);
+                        print('copied');
+                      },
+                    );
+                  },
+                  child: Text(partnerModel.gameprofile[index].playerId),
+                )
               ],
             ),
             SizedBox(
