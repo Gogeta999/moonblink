@@ -236,37 +236,36 @@ class _ImagePickerState extends State<ImagePickerPage> {
   }
 
   _openGallery() async {
-/*    PickedFile pickedFile = await _picker.getImage(
-        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);*/
-/*    File image = File(pickedFile.path);
+    PickedFile pickedFile = await _picker.getImage(
+        source: ImageSource.gallery, maxWidth: 300, maxHeight: 600);
+    File image = File(pickedFile.path);
     File temporaryImage = await _getLocalFile();
     File compressedImage =
-        await _compressAndGetFile(image, temporaryImage.absolute.path);*/
-    CustomBottomSheet.show(
-        buildContext: context,
-        limit: 1,
-        body: G.of(context).pickimage,
-        onPressed: (File file) {
-          setState(() {
-            _chossingItem = file;
-            _fileType = 1;
-          });
-        },
-        buttonText: 'Pick',
-        popAfterBtnPressed: true,
-        requestType: RequestType.image,
-        willCrop: true,
-        compressQuality: NORMAL_COMPRESS_QUALITY);
-    /*setState(() {
+        await _compressAndGetFile(image, temporaryImage.absolute.path);
+    // CustomBottomSheet.show(
+    //     buildContext: context,
+    //     limit: 1,
+    //     body: G.of(context).pickimage,
+    //     onPressed: (File file) {
+    //       setState(() {
+    //         _chossingItem = file;
+    //         _fileType = 1;
+    //       });
+    //     },
+    //     buttonText: 'Pick',
+    //     popAfterBtnPressed: true,
+    //     requestType: RequestType.image,
+    //     willCrop: true,
+    //     compressQuality: NORMAL_COMPRESS_QUALITY);
+    setState(() {
       // this._uploadImage(image);
       _chossingItem = compressedImage;
       _fileType = 1;
-    });*/
+    });
   }
 
   _pickVideo() async {
-    PickedFile video = await _picker.getVideo(
-        source: ImageSource.gallery, maxDuration: Duration(seconds: 10));
+    PickedFile video = await _picker.getVideo(source: ImageSource.gallery);
     //Getting info of video
     detail.getMediaInformation(video.path).then((info) async {
       print("Getting info of video");

@@ -716,33 +716,45 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : Colors.black,
-      onPressed: () {
+      onPressed: () async {
         rotate();
-        CustomBottomSheet.show(
-            popAfterBtnPressed: true,
-            requestType: RequestType.image,
-            buttonText: G.of(context).sendbutton,
-            buildContext: context,
-            limit: 1,
-            body: G.of(context).labelimageselect,
-            onPressed: (File file) async {
-              setState(() {
-                _file = file;
-              });
+        PickedFile image = await _picker.getImage(source: ImageSource.gallery);
+        setState(() {
+          _file = File(image.path);
+        });
+        await getImage();
+        String now = DateTime.now().toString();
+        String filename = selfId.toString() + now + ".png";
+        model.sendfile(filename, bytes, id, 1, messages);
+        setState(() {
+          textEditingController.text = '';
+          bytes = null;
+        });
+        // CustomBottomSheet.show(
+        //     popAfterBtnPressed: true,
+        //     requestType: RequestType.image,
+        //     buttonText: G.of(context).sendbutton,
+        //     buildContext: context,
+        //     limit: 1,
+        //     body: G.of(context).labelimageselect,
+        //     onPressed: (File file) async {
+        //       setState(() {
+        //         _file = file;
+        //       });
 
-              await getImage();
-              String now = DateTime.now().toString();
-              String filename = selfId.toString() + now + ".png";
-              model.sendfile(filename, bytes, id, 1, messages);
-              setState(() {
-                textEditingController.text = '';
-                bytes = null;
-              });
-            },
-            onInit: _sendMessageWidgetUp,
-            onDismiss: _sendMessageWidgetDown,
-            willCrop: false,
-            compressQuality: NORMAL_COMPRESS_QUALITY);
+        //       await getImage();
+        //       String now = DateTime.now().toString();
+        //       String filename = selfId.toString() + now + ".png";
+        //       model.sendfile(filename, bytes, id, 1, messages);
+        //       setState(() {
+        //         textEditingController.text = '';
+        //         bytes = null;
+        //       });
+        //     },
+        //     onInit: _sendMessageWidgetUp,
+        //     onDismiss: _sendMessageWidgetDown,
+        //     willCrop: false,
+        //     compressQuality: NORMAL_COMPRESS_QUALITY);
       },
     );
   }
