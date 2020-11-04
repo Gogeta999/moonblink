@@ -5,24 +5,16 @@ import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
 import 'package:moonblink/models/chat_models/new_chat.dart';
-import 'package:moonblink/models/message.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
-import '../models/message.dart';
 
 //Production URL
 const String proSocketurl = 'https://chat.moonblinkuniverse.com';
 const String devSocketUrl = 'http://157.230.35.18:8000/';
 const String oldDevSocketUrl = 'http://54.179.117.84/';
 String now = DateTime.now().toString();
-
-// List<Message> messages = List<Message>();
-// List<Files> files = List<Files>();
-// List<Chatlist> chatlist = List<Chatlist>();
-// Bookingstatus bookingdata;
 
 class DefaultEvents {
   ///Defaults Events to listen
