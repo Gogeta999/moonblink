@@ -23,7 +23,7 @@ dependencies:
   package_info: ^0.4.3
   clipboard: ^0.1.2+8
   grouped_list: ^3.5.0
-  linkwell: ^0.1.9
+  selectable_autolink_text: ^1.3.5
   #Base UI
   shimmer: ^1.1.2
   flutter_holo_date_picker: ^0.2.1

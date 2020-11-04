@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:linkwell/linkwell.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -42,6 +40,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:selectable_autolink_text/selectable_autolink_text.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
@@ -599,10 +600,17 @@ class _ChatBoxPageState extends State<ChatBoxPage>
           Radius.circular(15.0),
         ),
       ),
-      child: LinkWell(
+      child: SelectableAutoLinkText(
         msg.text,
-        style: TextStyle(color: Colors.white, fontSize: 14),
-        linkStyle: TextStyle(fontSize: 14, color: Colors.blue),
+        linkStyle: TextStyle(color: Colors.blueAccent),
+        highlightedLinkStyle: TextStyle(
+          color: Colors.blueAccent,
+          backgroundColor: Colors.blueAccent.withAlpha(0x33),
+        ),
+        onTap: (url) {
+          alerturl(url);
+        },
+        onLongPress: (url) => Share.share(url),
       ),
       // child: SelectableText(
       //   msg.text,
@@ -612,6 +620,34 @@ class _ChatBoxPageState extends State<ChatBoxPage>
       //   cursorColor: Colors.white,
       //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
       // ),
+    );
+  }
+
+  alerturl(url) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          title: Text("Alert URL"),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            FlatButton(
+              onPressed: () => launch(url),
+              child: Text("View URL"),
+            ),
+          ],
+          content: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text("BLah Blah Blah dfdlkfheofdos"),
+          ),
+        );
+      },
     );
   }
 
