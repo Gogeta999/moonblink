@@ -305,7 +305,10 @@ class _GameModeListTileState extends State<GameModeListTile> {
           children: [
             Text('Price - ${_gamePriceController.text} Coins'),
             SizedBox(width: 10),
-            isSelected ? InkWell(onTap: () => _onTapEditPrice(), child: Icon(Icons.edit)) : Container()
+            isSelected
+                ? InkWell(
+                    onTap: () => _onTapEditPrice(), child: Icon(Icons.edit))
+                : Container()
           ],
         ),
         onTap: () => _onTapGameModeListTile(
@@ -337,18 +340,15 @@ class _GameModeListTileState extends State<GameModeListTile> {
               element[item.id.toString()] = item.price;
               showToast("Price should be lower the the max price");
             } else {
-              element[item.id.toString()] =
-                  int.tryParse(controller.text);
+              element[item.id.toString()] = int.tryParse(controller.text);
             }
           }
           if (price >= _defaultPrice) {
-            element[item.id.toString()] =
-                int.tryParse(controller.text);
+            element[item.id.toString()] = int.tryParse(controller.text);
           } else {
             controller.text = item.price.toString();
             element[item.id.toString()] = item.price;
-            showToast(
-                "Can't update price. It's lower than the default");
+            showToast("Can't update price. It's lower than the default");
           }
           return;
         }

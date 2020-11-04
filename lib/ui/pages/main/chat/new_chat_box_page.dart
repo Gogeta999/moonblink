@@ -17,7 +17,6 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/new_voice_message_widget.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
-import 'package:moonblink/base_widget/voice_messages_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
