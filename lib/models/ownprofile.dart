@@ -27,6 +27,7 @@ class OwnProfile {
   double rating;
   String level;
   String leftorder;
+  String ordercount;
   String ordertaking;
   String levelpercent;
   String levelresettime;
@@ -58,6 +59,7 @@ class OwnProfile {
     this.rating,
     this.level,
     this.leftorder,
+    this.ordercount,
     this.ordertaking,
     this.levelpercent,
     this.levelresettime,
@@ -89,6 +91,7 @@ class OwnProfile {
       updatedAt: map['updated_at'],
       level: map['account_level'],
       leftorder: map['need_to_take_order'],
+      ordercount: map['next_level_order_count'],
       ordertaking: map['order_taking'],
       levelpercent: map['level_percentage'],
       levelresettime: map['level_reset_time'],
