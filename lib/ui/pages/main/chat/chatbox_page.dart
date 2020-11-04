@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:linkwell/linkwell.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -597,14 +599,19 @@ class _ChatBoxPageState extends State<ChatBoxPage>
           Radius.circular(15.0),
         ),
       ),
-      child: SelectableText(
+      child: LinkWell(
         msg.text,
-        style: TextStyle(color: Colors.white),
-        autofocus: true,
-        cursorRadius: Radius.circular(50),
-        cursorColor: Colors.white,
-        toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+        style: TextStyle(color: Colors.white, fontSize: 14),
+        linkStyle: TextStyle(fontSize: 14, color: Colors.blue),
       ),
+      // child: SelectableText(
+      //   msg.text,
+      //   style: TextStyle(color: Colors.white),
+      //   autofocus: true,
+      //   cursorRadius: Radius.circular(50),
+      //   cursorColor: Colors.white,
+      //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+      // ),
     );
   }
 
