@@ -40,6 +40,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:selectable_autolink_text/selectable_autolink_text.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../models/message.dart';
 import '../../../../services/chat_service.dart';
@@ -597,14 +600,48 @@ class _ChatBoxPageState extends State<ChatBoxPage>
           Radius.circular(15.0),
         ),
       ),
-      child: SelectableText(
+      child: SelectableAutoLinkText(
         msg.text,
-        style: TextStyle(color: Colors.white),
-        autofocus: true,
-        cursorRadius: Radius.circular(50),
-        cursorColor: Colors.white,
-        toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+        linkStyle: TextStyle(color: Colors.blueAccent),
+        highlightedLinkStyle: TextStyle(
+          color: Colors.blueAccent,
+          backgroundColor: Colors.blueAccent.withAlpha(0x33),
+        ),
+        onTap: (url) {
+          alerturl(url);
+        },
+        onLongPress: (url) => Share.share(url),
       ),
+      // child: SelectableText(
+      //   msg.text,
+      //   style: TextStyle(color: Colors.white),
+      //   autofocus: true,
+      //   cursorRadius: Radius.circular(50),
+      //   cursorColor: Colors.white,
+      //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+      // ),
+    );
+  }
+
+  //Alert URL
+  alerturl(url) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return CustomDialog(
+          title: "Alert URL",
+          row2Content: Container(
+            child: Text(
+                "This url is not our support url. We can't provide security for you.Make sure you want to open or not?"),
+          ),
+          cancelColor: Theme.of(context).accentColor,
+          confirmButtonColor: Theme.of(context).accentColor,
+          confirmContent: "Confirm",
+          confirmCallback: () {
+            launch(url);
+          },
+        );
+      },
     );
   }
 
