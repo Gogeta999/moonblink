@@ -14,7 +14,6 @@ import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/imageview.dart';
-import 'package:moonblink/base_widget/new_voice_message_widget.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
@@ -541,7 +540,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Colors.black,
+          color: Theme.of(context).accentColor,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -582,7 +581,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Colors.black,
+          color: Theme.of(context).accentColor,
           semanticsLabel: 'camera',
         ),
       ),
@@ -591,15 +590,22 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   Widget _buildVoiceRecorderIcon() {
     return Container(
-      margin: const EdgeInsets.all(4),
-      child: NewVoiceMessage(
-          rotate: () => _rotate(),
-          onSend: (String audio) {
-            _chatBoxBloc.add(ChatBoxSendAudio(File(audio)));
+        margin: const EdgeInsets.all(4),
+        child: InkResponse(
+          onTap: () {
+            _rotate();
+            CustomBottomSheet.showNewVoiceSheet(
+                buildContext: context,
+                send: (File audio) {
+                  _chatBoxBloc.add(ChatBoxSendAudio(audio));
+                });
           },
-          onInit: () => print('Initing'),
-          onDismiss: () => print('Dismissing')),
-    );
+          child: SvgPicture.asset(
+            microphone,
+            color: Theme.of(context).accentColor,
+            semanticsLabel: 'microphone',
+          ),
+        ));
   }
 
   Widget _buildBookingCancelButton() {

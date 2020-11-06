@@ -1,8 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:file/file.dart';
-import 'package:file/local.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
@@ -117,18 +113,18 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
         //   print("PlayPath   " + data.playPath);
         //   print("PlayState   " + data.playState);
         // });
-        CustomBottomSheet.showNewVoiceSheet(
-            buildContext: context,
-            send: () {
-              _send();
-            },
-            cancel: () {
-              recordPlugin.stop();
-            },
-            start: () => _start(),
-            restart: () => _restart(),
-            onInit: widget.onInit,
-            onDismiss: widget.onDismiss);
+        // CustomBottomSheet.showNewVoiceSheet(
+        //     buildContext: context,
+        //     send: () {
+        //       _send();
+        //     },
+        //     cancel: () {
+        //       recordPlugin.stop();
+        //     },
+        //     start: () => _start(),
+        //     restart: () => _restart(),
+        //     onInit: widget.onInit,
+        //     onDismiss: widget.onDismiss);
       },
       child: SvgPicture.asset(
         microphone,

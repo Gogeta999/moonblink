@@ -1,18 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/chat/chattile.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/chat_models/new_chat.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/stories/storylist.dart';
-import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/story_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
