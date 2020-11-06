@@ -123,7 +123,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         Container(
           width: 100,
           child: LinearProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black26,
+            valueColor: Theme.of(context).brightness == Brightness.dark
+                ? AlwaysStoppedAnimation<Color>(Colors.grey)
+                : AlwaysStoppedAnimation<Color>(Colors.grey),
             value: (_position != null &&
                     _duration != null &&
                     _position.inMilliseconds > 0 &&
