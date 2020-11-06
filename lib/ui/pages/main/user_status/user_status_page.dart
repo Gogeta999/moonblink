@@ -315,6 +315,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 if (usertype != 0 &&
                     profile != null &&
                     profile.levelpercent != null &&
+                    profile.ordercount != null &&
+                    profile.leftorder != null &&
                     profile.level != null)
                   Card(
                     margin: EdgeInsets.only(bottom: 15),

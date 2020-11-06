@@ -1,60 +1,36 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/bloc_pattern/update_game_profile/bloc/update_game_profile_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/game_profile.dart';
-import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
-import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:rxdart/rxdart.dart';
-
-enum UpdateOrSubmitButtonState { initial, loading }
 
 class UpdateGameProfilePage extends StatefulWidget {
-  final GameProfile gameProfile;
-
-  const UpdateGameProfilePage({Key key, @required this.gameProfile})
-      : super(key: key);
-
   @override
   _UpdateGameProfilePageState createState() => _UpdateGameProfilePageState();
 }
 
 class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
-  ///will send back to server
-  TextEditingController _gameIdController = TextEditingController();
-  String _level = '';
-  String _gameMode = '';
-  List<GameMode> _gameModeList = [];
-  List<Map<String, int>> _selectedGameModeIndex = [];
-  File _skillCoverPhoto;
-
-  ///UI properties
-  bool _isUILocked = false;
-  BehaviorSubject<UpdateOrSubmitButtonState> _submitOrUpdateSubject =
-      BehaviorSubject(onCancel: () => print('Cancelling'))
-        ..add(UpdateOrSubmitButtonState.initial);
-  TextStyle _textStyle;
-  List<Widget> _cupertinoActionSheet = [];
+  UpdateGameProfileBloc _updateGameProfileBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textStyle = Theme.of(context).textTheme.bodyText1;
+    _updateGameProfileBloc.textStyle = Theme.of(context).textTheme.bodyText1;
   }
 
   @override
   void initState() {
-    _initWithRemoteData();
+    _updateGameProfileBloc = BlocProvider.of<UpdateGameProfileBloc>(context);
+    _updateGameProfileBloc.initWithRemoteData();
     super.initState();
   }
 
@@ -63,55 +39,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     super.dispose();
   }
 
-  _initWithRemoteData() {
-    _gameModeList = List.unmodifiable(widget.gameProfile.gameModeList);
-    _gameIdController.text = widget.gameProfile.playerId;
-    _level = widget.gameProfile.level;
-    for (int i = 0; i < _gameModeList.length; ++i) {
-      if (_gameModeList[i].selected == 1) {
-        _selectedGameModeIndex
-            .add({_gameModeList[i].id.toString(): _gameModeList[i].price});
-      }
-    }
-
-    _updateGameMode();
-
-    widget.gameProfile.gameRankList.forEach((element) {
-      _cupertinoActionSheet.add(
-        CupertinoActionSheetAction(
-            onPressed: () {
-              setState(() {
-                _level = element;
-              });
-              Navigator.pop(context);
-            },
-            child: Text(element, style: _textStyle)),
-      );
-    });
-  }
-
-  _updateGameMode() {
-    _gameMode = '';
-    for (int i = 0; i < _gameModeList.length; ++i) {
-      bool isSelected = false;
-      _selectedGameModeIndex.forEach((element) {
-        if (element.containsKey(_gameModeList[i].id.toString())) {
-          isSelected = true;
-          return;
-        }
-      });
-      if (isSelected) {
-        _gameMode += _gameModeList[i].mode;
-
-        if (i >= _selectedGameModeIndex.length - 1)
-          continue;
-        else
-          _gameMode += ', ';
-      }
-    }
-  }
-
-  _showMaterialDialog(BuildContext context, TextEditingController controller) {
+  _showMaterialDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (context) {
@@ -120,7 +48,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
-              controller: controller,
+              controller: _updateGameProfileBloc.gameIdController,
               textAlign: TextAlign.center,
             ),
             actions: <Widget>[
@@ -131,7 +59,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  setState(() {});
                 },
                 child: Text(G.of(context).submit),
               )
@@ -140,7 +67,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         });
   }
 
-  _showCupertinoDialog(BuildContext context, TextEditingController controller) {
+  _showCupertinoDialog(BuildContext context) {
     showCupertinoDialog(
         context: context,
         builder: (context) {
@@ -149,7 +76,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             content: CupertinoTextField(
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
-              controller: controller,
+              controller: _updateGameProfileBloc.gameIdController,
               textAlign: TextAlign.center,
             ),
             actions: <Widget>[
@@ -160,7 +87,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               CupertinoButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  setState(() {});
                 },
                 child: Text(G.of(context).submit),
               )
@@ -175,7 +101,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         builder: (context) {
           return CupertinoActionSheet(
             title: Text(G.of(context).selectgamerank),
-            actions: _cupertinoActionSheet,
+            actions: _updateGameProfileBloc.cupertinoActionSheet,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
               child: Text(G.of(context).cancel),
@@ -218,7 +144,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   Card _buildGameProfilePhotoCard() {
-    String gameProfileSample = widget.gameProfile.gameProfileSample;
+    String gameProfileSample =
+        _updateGameProfileBloc.gameProfile.gameProfileSample;
     return Card(
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
@@ -231,23 +158,36 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                 _buildCachedNetworkImage(
                     imageUrl:
                         gameProfileSample.isEmpty || gameProfileSample == null
-                            ? widget.gameProfile.skillCoverImage
+                            ? _updateGameProfileBloc.gameProfile.skillCoverImage
                             : gameProfileSample,
                     isSample: true,
                     onTap: null),
-                _skillCoverPhoto == null &&
-                        (widget.gameProfile.skillCoverImage == null ||
-                            widget.gameProfile.skillCoverImage.isEmpty)
-                    ? Expanded(
-                        child: InkResponse(
-                            onTap: _onTapImage,
-                            child: Container(
-                                margin: const EdgeInsets.all(16),
-                                child: Icon(Icons.add_box, size: 52))))
-                    : _buildCachedNetworkImage(
-                        imageUrl: widget.gameProfile.skillCoverImage,
-                        isSample: false,
-                        onTap: _onTapImage)
+                StreamBuilder<File>(
+                  initialData: null,
+                  stream: _updateGameProfileBloc.skillCoverPhotoSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    } else if (snapshot.data == null &&
+                        (_updateGameProfileBloc.gameProfile.skillCoverImage ==
+                                null ||
+                            _updateGameProfileBloc
+                                .gameProfile.skillCoverImage.isEmpty)) {
+                      return Expanded(
+                          child: InkResponse(
+                              onTap: _onTapImage,
+                              child: Container(
+                                  margin: const EdgeInsets.all(16),
+                                  child: Icon(Icons.add_box, size: 52))));
+                    } else {
+                      return _buildCachedNetworkImage(
+                          imageUrl: _updateGameProfileBloc
+                              .gameProfile.skillCoverImage,
+                          isSample: false,
+                          onTap: _onTapImage);
+                    }
+                  },
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -271,9 +211,17 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
         onTap: onTap,
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 16, 16, 2),
-          child: _skillCoverPhoto != null && isSample == false
-              ? Image.file(_skillCoverPhoto, height: 150, fit: BoxFit.cover)
-              : CachedNetworkImage(
+          child: StreamBuilder<File>(
+            initialData: null,
+            stream: _updateGameProfileBloc.skillCoverPhotoSubject,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              } else if (snapshot.data != null && isSample == false) {
+                return Image.file(snapshot.data,
+                    height: 150, fit: BoxFit.cover);
+              } else {
+                return CachedNetworkImage(
                   imageUrl: imageUrl,
                   imageBuilder: (context, imageProvider) => Container(
                     height: 150,
@@ -285,7 +233,10 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   ),
                   placeholder: (context, url) => CupertinoActivityIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -301,27 +252,12 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     );
   }
 
-  // Widget _buildSubmitButton() {
-  //   return Container(
-  //     width: double.infinity,
-  //     child: RaisedButton(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.zero,
-  //       ),
-  //       color: Theme.of(context).backgroundColor,
-  //       padding: const EdgeInsets.symmetric(vertical: 16),
-  //       child: Text(G.of(context).submit),
-  //       onPressed: () {},
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text(widget.gameProfile.gameName),
+          title: Text(_updateGameProfileBloc.gameProfile.gameName),
           leading: IconButton(
               icon: Icon(CupertinoIcons.back),
               onPressed: () {
@@ -329,13 +265,13 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               }),
           actions: <Widget>[
             StreamBuilder<UpdateOrSubmitButtonState>(
-                stream: _submitOrUpdateSubject.stream,
+                stream: _updateGameProfileBloc.submitOrUpdateSubject.stream,
                 builder: (context, snapshot) {
                   if (snapshot.data == UpdateOrSubmitButtonState.initial) {
                     return CupertinoButton(
                       child: Text(
-                          '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
-                      onPressed: _onSubmitOrUpdate,
+                          '${_updateGameProfileBloc.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      onPressed: _updateGameProfileBloc.onSubmitOrUpdate,
                     );
                   } else if (snapshot.data ==
                       UpdateOrSubmitButtonState.loading) {
@@ -346,8 +282,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   } else {
                     return CupertinoButton(
                       child: Text(
-                          '${widget.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
-                      onPressed: _onSubmitOrUpdate,
+                          '${_updateGameProfileBloc.gameProfile.isPlay == 0 ? 'Submit' : 'Update'}'),
+                      onPressed: _updateGameProfileBloc.onSubmitOrUpdate,
                     );
                   }
                 })
@@ -370,14 +306,19 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               _buildTitleWidget(title: G.of(context).fillgameinfo),
               _buildGameProfileCard(
                   title: G.of(context).gameid,
-                  subtitle: _gameIdController.text,
+                  subtitle: _updateGameProfileBloc.gameIdController.text,
                   iconData: Icons.edit,
                   onTap: _onTapGameID),
-              _buildGameProfileCard(
-                  title: G.of(context).gamerank,
-                  subtitle: _level,
-                  iconData: Icons.edit,
-                  onTap: _onTapLevel),
+              StreamBuilder<String>(
+                  initialData: '',
+                  stream: _updateGameProfileBloc.levelSubject,
+                  builder: (context, snapshot) {
+                    return _buildGameProfileCard(
+                        title: G.of(context).gamerank,
+                        subtitle: snapshot.data,
+                        iconData: Icons.edit,
+                        onTap: _onTapLevel);
+                  }),
               _buildDivider(),
               Card(
                 margin: EdgeInsets.zero,
@@ -387,17 +328,21 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   onTap: null,
                   title: Text(
                     G.current.alarmRatio,
-                    // style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               ),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).gamemodedescript),
-              _buildGameProfileCard(
-                  title: G.of(context).gamemode,
-                  subtitle: _gameMode,
-                  iconData: Icons.edit,
-                  onTap: _onTapGameMode),
+              StreamBuilder<String>(
+                  initialData: '',
+                  stream: _updateGameProfileBloc.gameModeSubject,
+                  builder: (context, snapshot) {
+                    return _buildGameProfileCard(
+                        title: G.of(context).gamemode,
+                        subtitle: snapshot.data,
+                        iconData: Icons.edit,
+                        onTap: _onTapGameMode);
+                  }),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
@@ -408,111 +353,46 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   }
 
   ///update game mode
-  _onDone(List<Map<String, int>> newSelectedGameModeIndex) {
-    _selectedGameModeIndex = List.from(newSelectedGameModeIndex);
-    setState(() {
-      _updateGameMode();
-    });
-  }
-
-  _onSubmitOrUpdate() async {
-    if (_gameIdController.text.isEmpty) {
-      showToast('Game ID ${G.of(context).cannotblank}');
-      return;
-    }
-    if (_level.isEmpty) {
-      showToast('Level ${G.of(context).cannotblank}');
-      return;
-    }
-    if (_gameMode.isEmpty) {
-      showToast('Game Mode ${G.of(context).cannotblank}');
-      return;
-    }
-    if (widget.gameProfile.isPlay == 0 && _skillCoverPhoto == null) {
-      showToast('ScreenShot ${G.of(context).cannotblank}');
-      return;
-    }
-    _freezeUI();
-
-    ///validation success. send data to server.
-    MultipartFile skillCoverImage;
-    if (_skillCoverPhoto != null) {
-      skillCoverImage = await MultipartFile.fromFile(_skillCoverPhoto.path);
-    }
-    List<String> mapKeys = [
-      'game_id',
-      'player_id',
-      'level',
-      if (skillCoverImage != null) 'skill_cover_image',
-      'about_order_taking',
-      'types'
-    ];
-    List<dynamic> mapValues = [
-      widget.gameProfile.gameId,
-      _gameIdController.text,
-      _level,
-      if (skillCoverImage != null) skillCoverImage,
-      '',
-      _selectedGameModeIndex
-    ];
-    Map<String, dynamic> gameProfileMap = Map.fromIterables(mapKeys, mapValues);
-    gameProfileMap.forEach((key, value) {
-      print(key + ': ' + '$value');
-    });
-    MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
-      showToast(G.of(context).toastsuccess);
-      if (widget.gameProfile.isPlay == 0) {
-        StorageManager.sharedPreferences.setInt(mgameprofile,
-            StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
-        print("GAMEPROFILE COUNT IS " +
-            StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-      }
-      Navigator.pop(context, true);
-    }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
-  }
-
-  _freezeUI() {
-    setState(() {
-      _isUILocked = true;
-      _submitOrUpdateSubject.add(UpdateOrSubmitButtonState.loading);
-    });
-  }
-
-  _unfreezeUI() {
-    setState(() {
-      _isUILocked = false;
-      _submitOrUpdateSubject.add(UpdateOrSubmitButtonState.initial);
-    });
-  }
+  // _onDone(List<Map<String, int>> newSelectedGameModeIndex) {
+  //   _selectedGameModeIndex = List.from(newSelectedGameModeIndex);
+  //   setState(() {
+  //     _updateGameMode();
+  //   });
+  // }
 
   _onTapGameID() {
-    if (_isUILocked) return;
+    if (_updateGameProfileBloc.isUILocked) return;
     if (Platform.isAndroid) {
-      _showMaterialDialog(context, _gameIdController);
+      _showMaterialDialog(context);
     } else if (Platform.isIOS) {
-      _showCupertinoDialog(context, _gameIdController);
+      _showCupertinoDialog(context);
     } else {
       showToast(G.of(context).toastplatformnotsupport);
     }
   }
 
   _onTapLevel() {
-    if (_isUILocked) return;
+    if (_updateGameProfileBloc.isUILocked) return;
     _showCupertinoBottomSheet(context);
   }
 
   _onTapGameMode() {
-    if (_isUILocked) return;
+    if (_updateGameProfileBloc.isUILocked) return;
     CustomBottomSheet.showGameModeBottomSheet(
         buildContext: context,
-        gameModeList: List.from(_gameModeList),
-        selectedGameModeIndex: List.from(_selectedGameModeIndex),
-        onDone: (newSelectedGameModeIndex) =>
-            _onDone(newSelectedGameModeIndex));
+        onDismiss: () {
+          if (_updateGameProfileBloc.selectedGameModeIndex.isNotEmpty) {
+            _updateGameProfileBloc.selectedGameModeIndex.sort((a, b) =>
+                int.tryParse(a.keys.first) > int.tryParse(b.keys.first)
+                    ? 1
+                    : 0);
+          }
+          _updateGameProfileBloc.updateGameMode();
+        });
   }
 
   _onTapImage() {
-    if (_isUILocked) return;
+    if (_updateGameProfileBloc.isUILocked) return;
     return showCupertinoDialog(
       context: context,
       builder: (builder) => CupertinoAlertDialog(
@@ -526,9 +406,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                     limit: 1,
                     body: G.of(context).skillcover,
                     onPressed: (File file) {
-                      setState(() {
-                        _skillCoverPhoto = file;
-                      });
+                      _updateGameProfileBloc.skillCoverPhotoSubject.add(file);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
@@ -557,9 +435,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     PickedFile pickedFile =
         await ImagePicker().getImage(source: ImageSource.camera);
     File compressedImage = await CompressUtils.compressAndGetFile(
-        File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
-    setState(() {
-      _skillCoverPhoto = compressedImage;
-    });
+        File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 500, 500);
+    _updateGameProfileBloc.skillCoverPhotoSubject.add(compressedImage);
   }
 }

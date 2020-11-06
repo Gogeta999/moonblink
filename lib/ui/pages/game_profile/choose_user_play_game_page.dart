@@ -3,16 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/bloc_pattern/game_profile/bloc/game_profile_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
-import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
-import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/view_model/login_model.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:rxdart/rxdart.dart';
-
-enum DeselectState { initial, loading }
 
 class ChooseUserPlayGamePage extends StatefulWidget {
   @override
@@ -20,12 +13,18 @@ class ChooseUserPlayGamePage extends StatefulWidget {
 }
 
 class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
-  BehaviorSubject<DeselectState> _deselectSubject = BehaviorSubject()
-    ..add(DeselectState.initial);
+  final _gameProfileBloc = GameProfileBloc();
 
   @override
   void initState() {
+    _gameProfileBloc.fetchGameProfile();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _gameProfileBloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,13 +32,18 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
     return Scaffold(
       appBar: AppbarWidget(),
       body: SafeArea(
-        child: FutureBuilder<UserPlayGameList>(
-          future: MoonBlinkRepository.getUserPlayGameList(),
+        child: StreamBuilder<UserPlayGameList>(
+          initialData: null,
+          stream: _gameProfileBloc.userPlayGameListSubject,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.hasError) {
+              return Center(
+                child: CupertinoButton(
+                    child: Text('Something went wrong! Retry'),
+                    onPressed: () => _gameProfileBloc.fetchGameProfile()),
+              );
+            } else if (snapshot.data == null) {
               return Center(child: CupertinoActivityIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('${snapshot.error}'));
             } else if (snapshot.hasData &&
                 snapshot.data.userPlayGameList.isNotEmpty) {
               return ListView.builder(
@@ -56,7 +60,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                       Card(
                         elevation: 8,
                         child: StreamBuilder<DeselectState>(
-                            stream: _deselectSubject.stream,
+                            stream: _gameProfileBloc.deselectSubject.stream,
                             builder: (context, snapshot) {
                               return IconSlideAction(
                                 closeOnTap: false,
@@ -73,7 +77,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                                 onTap: () =>
                                     snapshot.data == DeselectState.loading
                                         ? {}
-                                        : _onTapDeselect(item),
+                                        : _gameProfileBloc.onTapDeselect(item),
                               );
                             }),
                       )
@@ -81,7 +85,8 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                     child: Card(
                       elevation: 8,
                       child: ListTile(
-                        onTap: () => _onTapListTile(item),
+                        onTap: () => 
+                        _gameProfileBloc.onTapListTile(item, _gameProfileBloc),
                         leading: CachedNetworkImage(
                           imageUrl: item.gameIcon,
                           imageBuilder: (context, imageProvider) => Container(
@@ -122,32 +127,5 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
         ),
       ),
     );
-  }
-
-  _onTapListTile(UserPlayGame item) {
-    Navigator.pushNamed(context, RouteName.updateGameProfile,
-            arguments: item.gameProfile)
-        .then((value) {
-      if (value != null && value) setState(() {});
-    });
-  }
-
-  _onTapDeselect(UserPlayGame item) {
-    ///call delete api
-    _deselectSubject.add(DeselectState.loading);
-    MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then(
-        (value) {
-      _deselectSubject.add(DeselectState.initial);
-      StorageManager.sharedPreferences.setInt(mgameprofile,
-          StorageManager.sharedPreferences.getInt(mgameprofile) - 1);
-      print("GAMEPROFILE COUNT IS " +
-          StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-
-      ///After delete, fetch data from server again
-      setState(() {});
-    }, onError: (err) {
-      _deselectSubject.add(DeselectState.initial);
-      showToast(err.toString());
-    });
   }
 }

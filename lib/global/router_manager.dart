@@ -152,10 +152,10 @@ class MoonGoRouter {
                     : 'Unknown Channel'));
       case RouteName.chooseUserPlayGames:
         return CupertinoPageRoute(builder: (_) => ChooseUserPlayGamePage());
-      case RouteName.updateGameProfile:
-        return CupertinoPageRoute(
-            builder: (_) =>
-                UpdateGameProfilePage(gameProfile: settings.arguments ?? null));
+      //case RouteName.updateGameProfile:
+      //  return CupertinoPageRoute(
+      //      builder: (_) =>
+      //          UpdateGameProfilePage(gameProfile: settings.arguments ?? null));
       // case RouteName.applyForQualification:
       //   return CupertinoPageRoute(builder: (_) => ApplyForQualification());
       // case RouteName.pubgMobile:
