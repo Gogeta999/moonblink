@@ -159,7 +159,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     setState(() {
                                       _cover = File(image.path);
                                     });
-                                    await cropImage(_cover, true);
+                                    cropImage(_cover, true);
                                     File temporaryImage = await _getLocalFile();
                                     File _compressedImage =
                                         await _compressAndGetFile(_cover,
@@ -224,7 +224,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                     setState(() {
                                       _profile = File(image.path);
                                     });
-                                    await cropImage(_cover, false);
+                                    cropImage(_profile, false);
                                     File temporaryImage = await _getLocalFile();
                                     File _compressedImage =
                                         await _compressAndGetFile(_profile,

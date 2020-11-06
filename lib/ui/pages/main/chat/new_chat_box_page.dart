@@ -660,8 +660,36 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         if (snapshot.data.status == ACCEPTED) {
           return _buildBookingEndButton();
         }
-        return Container();
+        return blockbtn();
       },
+    );
+  }
+
+  //Block Button
+  Widget blockbtn() {
+    return IconButton(
+      icon: Icon(Icons.info),
+      onPressed: () => CustomBottomSheet.showUserManageContent(
+          buildContext: context,
+          onReport: () async {
+            ///Reporting user
+            try {
+              await MoonBlinkRepository.reportUser(widget.partnerId);
+
+              ///Api call success
+              showToast(
+                  'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+              Navigator.pop(context);
+            } catch (e) {
+              showToast('Sorry, $e');
+            }
+          },
+          onBlock: () async {
+            ///Blocking user
+
+            Navigator.pop(context);
+          },
+          onDismiss: () => print('Dismissing BottomSheet')),
     );
   }
 
