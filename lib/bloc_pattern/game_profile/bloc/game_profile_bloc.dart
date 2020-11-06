@@ -29,7 +29,10 @@ class GameProfileBloc extends Bloc<GameProfileEvent, GameProfileState> {
   final deselectSubject = BehaviorSubject.seeded(DeselectState.initial);
 
   void dispose() {
+    userPlayGameListSubject.close();
+    deselectSubject.close();
     this.close();
+    print('Disposing GameProfileBloc Success');
   }
 
   @override

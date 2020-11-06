@@ -36,6 +36,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
 
   @override
   void dispose() {
+    _updateGameProfileBloc.dispose();
     super.dispose();
   }
 

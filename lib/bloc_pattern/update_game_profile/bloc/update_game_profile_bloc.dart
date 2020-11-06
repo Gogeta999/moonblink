@@ -42,7 +42,16 @@ class UpdateGameProfileBloc
   List<Widget> cupertinoActionSheet = [];
   TextStyle textStyle;
 
-  void dispose() {}
+  void dispose() {
+    gameIdController.clear();
+    levelSubject.close();
+    gameModeSubject.close();
+    gameModeListSubject.close();
+    skillCoverPhotoSubject.close();
+    submitOrUpdateSubject.close();
+    this.close();
+    print('Disposing UpdateGameProfile Success');
+  }
 
   @override
   Stream<UpdateGameProfileState> mapEventToState(
