@@ -36,6 +36,9 @@ import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:selectable_autolink_text/selectable_autolink_text.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewChatBoxPage extends StatefulWidget {
   final int partnerId;
@@ -174,17 +177,64 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       lastMessage: lastMessage,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: SelectableText(
+        child: SelectableAutoLinkText(
           lastMessage.message,
+          toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+          cursorRadius: Radius.circular(50),
+          cursorColor: Colors.white,
+          autofocus: true,
           style: TextStyle(
               color: _isDark() ? Colors.white : Colors.black,
               fontWeight: FontWeight.w500),
-          autofocus: true,
-          cursorRadius: Radius.circular(50),
-          cursorColor: Colors.white,
-          toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+          linkStyle: TextStyle(color: Colors.blue),
+          highlightedLinkStyle: TextStyle(
+            color: Colors.blue,
+            backgroundColor: Colors.blueAccent.withAlpha(0x33),
+          ),
+          onTap: (url) {
+            alerturl(url);
+          },
+          onLongPress: (url) => Share.share(url),
         ),
+        // child: SelectableText(
+        //   lastMessage.message,
+        //   style: TextStyle(
+        //       color: _isDark() ? Colors.white : Colors.black,
+        //       fontWeight: FontWeight.w500),
+        //   autofocus: true,
+        //   cursorRadius: Radius.circular(50),
+        //   cursorColor: Colors.white,
+        //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+        // ),
       ),
+    );
+  }
+
+  alerturl(url) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          title: Text("Alert URL"),
+          content: Container(
+            child: Text(
+                "This url is not our support url. We can't provide security for you.Make sure you want to open or not?"),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            FlatButton(
+              onPressed: () => launch(url),
+              child: Text("View URL"),
+            ),
+          ],
+        );
+      },
     );
   }
 
