@@ -51,8 +51,6 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
   }
 
   _restart() async {
-    recordPlugin.stop();
-
     ///stop success
     _init();
   }

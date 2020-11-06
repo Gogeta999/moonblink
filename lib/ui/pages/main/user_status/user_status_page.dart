@@ -597,7 +597,7 @@ class _LogoutState extends State<Logout> {
                   style: Theme.of(context).textTheme.bodyText1),
               onTap: () {
                 model.logout();
-                ScopedModel.of<ChatModel>(context).disconnect();
+                // ScopedModel.of<ChatModel>(context).disconnect();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
               },
