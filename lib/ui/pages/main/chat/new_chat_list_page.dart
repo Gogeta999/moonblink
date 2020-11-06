@@ -86,9 +86,6 @@ class _NewChatListPageState extends State<NewChatListPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.grey[200]
-          : null,
       appBar: AppbarWidget(),
       body: BlocProvider.value(
         value: _chatListBloc,

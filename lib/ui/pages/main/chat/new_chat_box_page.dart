@@ -660,8 +660,35 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         if (snapshot.data.status == ACCEPTED) {
           return _buildBookingEndButton();
         }
-        return Container();
+        return blockbtn();
       },
+    );
+  }
+
+  //Block Button
+  Widget blockbtn() {
+    return IconButton(
+      icon: Icon(Icons.info),
+      onPressed: () => CustomBottomSheet.showUserManageContent(
+          buildContext: context,
+          onReport: () async {
+            ///Reporting user
+            try {
+              await MoonBlinkRepository.reportUser(widget.partnerId);
+
+              ///Api call success
+              showToast(
+                  'Thanks for making our MoonBlink\'s Universe clean and tidy. We will act on this user within 24 hours.');
+              Navigator.pop(context);
+            } catch (e) {
+              showToast('Sorry, $e');
+            }
+          },
+          onBlock: () async {
+            ///Blocking user
+            Navigator.pop(context);
+          },
+          onDismiss: () => print('Dismissing BottomSheet')),
     );
   }
 
@@ -689,9 +716,16 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     return Column(
       children: [
         if (state is ChatBoxInitial)
-          Expanded(child: CupertinoActivityIndicator()),
+          Expanded(
+              child: Center(
+            child: CupertinoActivityIndicator(),
+          )),
         if (state is ChatBoxFailure)
-          Expanded(child: Text(state.error.toString())),
+          Expanded(
+              child: Center(
+                  child: Text(
+            state.error.toString(),
+          ))),
         if (state is ChatBoxSuccess)
 
           ///Chat messages list
@@ -721,7 +755,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => _chatBoxBloc,
-      child: BlocConsumer<ChatBoxBloc, ChatBoxState>(
+      child: BlocListener<ChatBoxBloc, ChatBoxState>(
+        listenWhen: (previous, current) {
+          return !(current is ChatBoxInitial) &&
+              !(current is ChatBoxFailure) &&
+              !(current is ChatBoxSuccess);
+        },
         listener: (context, state) {
           if (state is ChatBoxCancelBookingSuccess) {
             showToast('Booking Cancelled');
@@ -751,133 +790,132 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             showToast(state.error.toString());
           }
         },
-        buildWhen: (previous, current) {
-          return current is ChatBoxInitial ||
-              current is ChatBoxFailure ||
-              current is ChatBoxSuccess;
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  icon: SvgPicture.asset(
-                    back,
-                    semanticsLabel: 'back',
-                    color: Theme.of(context).accentColor,
-                    width: 30,
-                    height: 30,
-                  ),
-                  onPressed: () => Navigator.pop(context)),
-              backgroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.black,
-              title: StreamBuilder<PartnerUser>(
-                  initialData: null,
-                  stream: _chatBoxBloc.partnerUserSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return CupertinoActivityIndicator();
-                    }
-                    return GestureDetector(
-                        child: Row(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl:
-                                  snapshot.data.prfoileFromPartner.profileImage,
-                              imageBuilder: (context, item) {
-                                return CircleAvatar(
-                                  backgroundImage: item,
-                                );
-                              },
-                              placeholder: (_, __) =>
-                                  CupertinoActivityIndicator(),
-                              errorWidget: (_, __, ___) => Icon(Icons.error),
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+                icon: SvgPicture.asset(
+                  back,
+                  semanticsLabel: 'back',
+                  color: Theme.of(context).accentColor,
+                  width: 30,
+                  height: 30,
+                ),
+                onPressed: () => Navigator.pop(context)),
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.black,
+            title: StreamBuilder<PartnerUser>(
+                initialData: null,
+                stream: _chatBoxBloc.partnerUserSubject,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return CupertinoActivityIndicator();
+                  }
+                  return GestureDetector(
+                      child: Row(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl:
+                                snapshot.data.prfoileFromPartner.profileImage,
+                            imageBuilder: (context, item) {
+                              return CircleAvatar(
+                                backgroundImage: item,
+                              );
+                            },
+                            placeholder: (_, __) =>
+                                CupertinoActivityIndicator(),
+                            errorWidget: (_, __, ___) => Icon(Icons.error),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              snapshot.data.partnerName,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                snapshot.data.partnerName,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onTap: snapshot.data.type != 0
-                            ? () {
-                                Navigator.pushReplacementNamed(
-                                        context, RouteName.partnerDetail,
-                                        arguments: widget.partnerId)
-                                    .then((value) async {
-                                  if (value != null) {
-                                    ///Block Uesrs
-                                    try {
-                                      await MoonBlinkRepository.blockOrUnblock(
-                                          value, BLOCK);
-                                      showToast(G.of(context).toastsuccess);
-                                    } catch (e) {
-                                      print(e.toString());
-                                    }
+                          ),
+                        ],
+                      ),
+                      onTap: snapshot.data.type != 0
+                          ? () {
+                              Navigator.pushReplacementNamed(
+                                      context, RouteName.partnerDetail,
+                                      arguments: widget.partnerId)
+                                  .then((value) async {
+                                if (value != null) {
+                                  ///Block Uesrs
+                                  try {
+                                    await MoonBlinkRepository.blockOrUnblock(
+                                        value, BLOCK);
+                                    showToast(G.of(context).toastsuccess);
+                                  } catch (e) {
+                                    print(e.toString());
                                   }
-                                });
-                              }
-                            : null);
-                  }),
-              actions: <Widget>[
-                //   action2(model),
-                _buildFirstAction(),
-                _buildSecondAction()
+                                }
+                              });
+                            }
+                          : null);
+                }),
+            actions: <Widget>[
+              //   action2(model),
+              _buildFirstAction(),
+              _buildSecondAction()
+            ],
+          ),
+          body: SafeArea(
+            child: Stack(
+              children: [
+                BlocBuilder<ChatBoxBloc, ChatBoxState>(
+                    buildWhen: (previous, current) {
+                      return current is ChatBoxInitial ||
+                          current is ChatBoxFailure ||
+                          current is ChatBoxSuccess;
+                    },
+                    builder: (context, state) => _buildChatBoxBody(state)),
+                StreamBuilder<bool>(
+                    initialData: true,
+                    stream: _rotatedSubject,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        return FloatingButton(
+                          bottom: 80,
+                          left: 10,
+                          scale: _animation,
+                          child: _buildPickImageIcon(),
+                        );
+                      }
+                      return Container();
+                    }),
+                StreamBuilder<bool>(
+                    initialData: true,
+                    stream: _rotatedSubject,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        return FloatingButton(
+                          bottom: 140,
+                          left: 30,
+                          scale: _animation2,
+                          child: _buildVoiceRecorderIcon(),
+                        );
+                      }
+                      return Container();
+                    }),
+                StreamBuilder<bool>(
+                    initialData: true,
+                    stream: _rotatedSubject,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        return FloatingButton(
+                            bottom: 200,
+                            left: 10,
+                            scale: _animation3,
+                            child: _buildCameraIcon());
+                      }
+                      return Container();
+                    }),
               ],
             ),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  _buildChatBoxBody(state),
-                  StreamBuilder<bool>(
-                      initialData: true,
-                      stream: _rotatedSubject,
-                      builder: (context, snapshot) {
-                        if (!snapshot.data) {
-                          return FloatingButton(
-                            bottom: 80,
-                            left: 10,
-                            scale: _animation,
-                            child: _buildPickImageIcon(),
-                          );
-                        }
-                        return Container();
-                      }),
-                  StreamBuilder<bool>(
-                      initialData: true,
-                      stream: _rotatedSubject,
-                      builder: (context, snapshot) {
-                        if (!snapshot.data) {
-                          return FloatingButton(
-                            bottom: 140,
-                            left: 30,
-                            scale: _animation2,
-                            child: _buildVoiceRecorderIcon(),
-                          );
-                        }
-                        return Container();
-                      }),
-                  StreamBuilder<bool>(
-                      initialData: true,
-                      stream: _rotatedSubject,
-                      builder: (context, snapshot) {
-                        if (!snapshot.data) {
-                          return FloatingButton(
-                              bottom: 200,
-                              left: 10,
-                              scale: _animation3,
-                              child: _buildCameraIcon());
-                        }
-                        return Container();
-                      }),
-                ],
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
