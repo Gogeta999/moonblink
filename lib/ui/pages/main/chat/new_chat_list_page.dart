@@ -39,47 +39,47 @@ class _NewChatListPageState extends State<NewChatListPage>
   void onRefresh(StoryModel storyModel) async {
     await storyModel.fetchStory().then((value) {
       refreshController.refreshCompleted();
-    }, onError: (e) => refreshController.refreshFailed()
-    );
+    }, onError: (e) => refreshController.refreshFailed());
   }
 
   //Chat Tile
   _buildChatTile(NewChat chat) {
     return ChatTile(
-      image: CachedNetworkImage(
-        imageUrl: chat.profileImage,
-        imageBuilder: (context, imageProvider) => CircleAvatar(
-          radius: 33,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          backgroundImage: imageProvider,
+        image: CachedNetworkImage(
+          imageUrl: chat.profileImage,
+          imageBuilder: (context, imageProvider) => CircleAvatar(
+            radius: 33,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundImage: imageProvider,
+          ),
+          placeholder: (context, url) => CircleAvatar(
+            radius: 33,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            // backgroundImage: ,
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-        placeholder: (context, url) => CircleAvatar(
-          radius: 33,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          // backgroundImage: ,
-        ),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-      ),
-      name: Text(chat.name),
+        name: Text(chat.name),
 
-      ///[Last Message]
-      lastmsg: Text(chat.lastMessage, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing:
-      Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Text(
-            timeAgo.format(DateTime.parse(chat.updatedAt), allowFromNow: true)),
-        if (chat.unread != 0)
-          CircleAvatar(
-            radius: 10,
-            backgroundColor: Theme.of(context).accentColor,
-            child: Text(
-              chat.unread.toString(),
-              style: TextStyle(fontSize: 14, color: Colors.white),
-            ),
-          )
-      ]),
-      onTap: () => Navigator.pushNamed(context, RouteName.chatBox, arguments: chat.userId)
-    );
+        ///[Last Message]
+        lastmsg: Text(chat.lastMessage,
+            maxLines: 1, overflow: TextOverflow.ellipsis),
+        trailing:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text(timeAgo.format(DateTime.parse(chat.updatedAt),
+              allowFromNow: true)),
+          if (chat.unread != 0)
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Theme.of(context).accentColor,
+              child: Text(
+                chat.unread.toString(),
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            )
+        ]),
+        onTap: () => Navigator.pushNamed(context, RouteName.chatBox,
+            arguments: chat.userId));
   }
 
   @override
@@ -95,77 +95,76 @@ class _NewChatListPageState extends State<NewChatListPage>
         child: BlocBuilder<ChatListBloc, ChatListState>(
           builder: (context, state) {
             return StreamBuilder<List<NewChat>>(
-                      initialData: null,
-                      stream: _chatListBloc.chatsSubject,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Center(child: CupertinoActivityIndicator());
-                        }
-                        if (snapshot.data.isEmpty) {
-                          return AnnotatedRegion<SystemUiOverlayStyle>(
-                              value: StatusBarUtils.systemUiOverlayStyle(context),
-                              child: SmartRefresher(
-                                controller: refreshController,
-                                header: WaterDropHeader(),
-                                onRefresh: () {
-                                  refreshController.refreshCompleted();
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                            ImageHelper.wrapAssetsImage('noFollowing.jpg'),
-                                          ),
-                                          fit: BoxFit.cover)),
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Positioned(
-                                        top: 200,
-                                        child: Text(
-                                          G.of(context).noChatHistory,
-                                          style: TextStyle(color: Colors.black, fontSize: 20),
-                                        ),
-                                      ),
-                                    ],
+                initialData: null,
+                stream: _chatListBloc.chatsSubject,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return Center(child: CupertinoActivityIndicator());
+                  }
+                  if (snapshot.data.isEmpty) {
+                    return AnnotatedRegion<SystemUiOverlayStyle>(
+                        value: StatusBarUtils.systemUiOverlayStyle(context),
+                        child: SmartRefresher(
+                          controller: refreshController,
+                          header: WaterDropHeader(),
+                          onRefresh: () {
+                            refreshController.refreshCompleted();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                      ImageHelper.wrapAssetsImage(
+                                          'noFollowing.jpg'),
+                                    ),
+                                    fit: BoxFit.cover)),
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned(
+                                  top: 200,
+                                  child: Text(
+                                    G.of(context).noChatHistory,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20),
                                   ),
                                 ),
-                              ));
-                        }
-                        return ProviderWidget<StoryModel>(
-                          model: StoryModel(),
-                          onModelReady: (model) {
-                            model.fetchStory();
-                          },
-                          builder: (context, storyModel, child) {
-                            return SmartRefresher(
-                              controller: refreshController,
-                              header: WaterDropHeader(),
-                              onRefresh: () {
-                                onRefresh(storyModel);
-                              },
-                              child: CustomScrollView(slivers: <Widget>[
-                                if (storyModel.stories.isNotEmpty)
-                                  StoryList(
-                                    stories: storyModel.stories,
-                                  ),
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                          (context, index) {
-                                        NewChat chat = snapshot.data[index];
-                                        return _buildChatTile(chat);
-                                      },
-                                      childCount: snapshot.data.length
-                                  ),
-                                )
-                              ]),
-                            );
-                          },
-                        );
-                      }
-                    );
+                              ],
+                            ),
+                          ),
+                        ));
+                  }
+                  return ProviderWidget<StoryModel>(
+                    model: StoryModel(),
+                    onModelReady: (model) {
+                      model.fetchStory();
+                    },
+                    builder: (context, storyModel, child) {
+                      return SmartRefresher(
+                        controller: refreshController,
+                        header: WaterDropHeader(),
+                        onRefresh: () {
+                          onRefresh(storyModel);
+                        },
+                        child: CustomScrollView(slivers: <Widget>[
+                          if (storyModel.stories.isNotEmpty)
+                            StoryList(
+                              stories: storyModel.stories,
+                            ),
+                          SliverList(
+                            delegate:
+                                SliverChildBuilderDelegate((context, index) {
+                              NewChat chat = snapshot.data[index];
+                              return _buildChatTile(chat);
+                            }, childCount: snapshot.data.length),
+                          )
+                        ]),
+                      );
+                    },
+                  );
+                });
           },
         ),
       ),
