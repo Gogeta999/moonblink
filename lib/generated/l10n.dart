@@ -14,23 +14,22 @@ import 'intl/messages_all.dart';
 
 class G {
   G();
-
+  
   static G current;
-
-  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
+  
+  static const AppLocalizationDelegate delegate =
+    AppLocalizationDelegate();
 
   static Future<G> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name);
+    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       G.current = G();
-
+      
       return G.current;
     });
-  }
+  } 
 
   static G of(BuildContext context) {
     return Localizations.of<G>(context, G);
@@ -209,7 +208,7 @@ class G {
   /// `Booking End`
   String get bookingEnded {
     return Intl.message(
-      'Booking Ended',
+      'Booking End',
       name: 'bookingEnded',
       desc: '',
       args: [],
