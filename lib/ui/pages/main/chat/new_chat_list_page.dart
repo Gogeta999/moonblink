@@ -56,7 +56,11 @@ class _NewChatListPageState extends State<NewChatListPage>
           ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-        name: Text(chat.name),
+        name: Text(
+          chat.name,
+          style: TextStyle(
+              color: chat.userId == 48 ? Theme.of(context).accentColor : null),
+        ),
 
         ///[Last Message]
         lastmsg: Text(chat.lastMessage,

@@ -164,8 +164,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       margin: EdgeInsets.all(10.0),
       child: Container(
           constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.6,
-              maxHeight: MediaQuery.of(context).size.height * 0.3),
+            maxWidth: MediaQuery.of(context).size.width * 0.6,
+          ),
+          // maxHeight: MediaQuery.of(context).size.height * 0.3),
           decoration: BoxDecoration(
               color: _senderIsMe(lastMessage.senderId)
                   ? _isDark()
@@ -543,7 +544,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               //     )
               //   ],
               // ),
-              // SizedBox(height: 4),
+              //SizedBox(height: 4),
               Row(
                 children: <Widget>[
                   IconButton(
@@ -638,7 +639,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -679,7 +683,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'camera',
         ),
       ),
@@ -700,7 +707,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           child: SvgPicture.asset(
             microphone,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).brightness == Brightness.dark
+                // ? Colors.grey
+                ? Theme.of(context).accentColor
+                : Colors.black,
             semanticsLabel: 'microphone',
           ),
         ));
@@ -772,7 +782,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   //Block Button
   Widget blockbtn() {
     return IconButton(
-      icon: Icon(Icons.info),
+      icon: Icon(FontAwesomeIcons.info),
+      color: Theme.of(context).accentColor,
       onPressed: () => CustomBottomSheet.showUserManageContent(
           buildContext: context,
           onReport: () async {
@@ -849,7 +860,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   : state.data.length + 1,
             ),
           ),
-        _buildActionBottomBar(),
+        if (widget.partnerId != 48) _buildActionBottomBar(),
       ],
     );
   }
@@ -936,6 +947,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             child: Text(
                               snapshot.data.partnerName,
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: widget.partnerId == 48
+                                      ? Theme.of(context).accentColor
+                                      : Colors.white),
                             ),
                           ),
                         ],
