@@ -675,7 +675,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   //Block Button
   Widget blockbtn() {
     return IconButton(
-      icon: Icon(Icons.info),
+      icon: Icon(FontAwesomeIcons.info),
+      color: Theme.of(context).accentColor,
       onPressed: () => CustomBottomSheet.showUserManageContent(
           buildContext: context,
           onReport: () async {
