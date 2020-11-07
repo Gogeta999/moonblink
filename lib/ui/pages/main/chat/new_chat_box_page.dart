@@ -417,6 +417,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             ),
           );
         }
+
+        ///[for future]
+        // if (snapshot.data.status == 0) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
@@ -449,6 +452,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               //   ],
               // ),
               SizedBox(height: 4),
+
               Row(
                 children: <Widget>[
                   IconButton(
@@ -517,6 +521,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             ],
           ),
         );
+        // }
+        // return Container();
       },
     );
   }
@@ -543,10 +549,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Theme.of(context).brightness == Brightness.dark
-              // ? Colors.grey
-              ? Theme.of(context).accentColor
-              : Colors.black,
+          color: Theme.of(context).accentColor,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -587,10 +590,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Theme.of(context).brightness == Brightness.dark
-              // ? Colors.grey
-              ? Theme.of(context).accentColor
-              : Colors.black,
+          color: Theme.of(context).accentColor,
           semanticsLabel: 'camera',
         ),
       ),
@@ -611,10 +611,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           child: SvgPicture.asset(
             microphone,
-            color: Theme.of(context).brightness == Brightness.dark
-                // ? Colors.grey
-                ? Theme.of(context).accentColor
-                : Colors.black,
+            color: Theme.of(context).accentColor,
             semanticsLabel: 'microphone',
           ),
         ));
@@ -705,7 +702,13 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           onBlock: () async {
             ///Blocking user
-            Navigator.pop(context);
+            MoonBlinkRepository.blockOrUnblock(widget.partnerId, 1)
+                .then((value) {
+              int count = 0;
+              Navigator.popUntil(context, (route) {
+                return count++ == 2;
+              });
+            });
           },
           onDismiss: () => print('Dismissing BottomSheet')),
     );
