@@ -5,7 +5,7 @@ import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
-import 'package:moonblink/ui/pages/main/chat/new_chat_box_page.dart';
+import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
