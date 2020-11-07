@@ -76,3 +76,18 @@ class ChatBoxAcceptBooking extends ChatBoxEvent {
   @override
   List<Object> get props => [];
 }
+
+class ChatBoxCheckAvailable extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxSecondButton extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxThirdButton extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}

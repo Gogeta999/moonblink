@@ -78,9 +78,10 @@ class MoonBlinkRepository {
   }
 
   // get last messages
-  static Future<List<LastMessage>> getLastMessages({int id, int limit, int page}) async {
+  static Future<List<LastMessage>> getLastMessages(
+      {int id, int limit, int page}) async {
     var response =
-    await DioUtils().get(Api.Messages + '$id/messages', queryParameters: {
+        await DioUtils().get(Api.Messages + '$id/messages', queryParameters: {
       'limit': limit,
       'page': page,
     });

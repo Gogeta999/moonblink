@@ -19,9 +19,52 @@ part 'chat_box_event.dart';
 part 'chat_box_state.dart';
 
 const int _limit = 20;
+const int _buttonSeconds = 300;
 
 class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   ChatBoxBloc(this.partnerId) : super(ChatBoxInitial());
+
+  ChatBoxBloc.initNormal(this.partnerId) : super(ChatBoxInitial()) {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final firstBefore =
+        (StorageManager.sharedPreferences.getInt(firstKey) ?? 0) ~/ 1000;
+    final firstLeftTime =
+        StorageManager.sharedPreferences.getInt(firstLeftKey) ?? 0;
+    print(
+        'Disposing - now-firstBefore: ${now - firstBefore} firstLeftTime:$firstLeftTime');
+    if (firstLeftTime > now - firstBefore) {
+      _firstTotal = firstLeftTime - (now - firstBefore);
+      _firstStartCounting();
+    } else {
+      firstButtonSubject.add('');
+    }
+
+    final secondBefore =
+        (StorageManager.sharedPreferences.getInt(secondKey) ?? 0) ~/ 1000;
+    final secondLeftTime =
+        StorageManager.sharedPreferences.getInt(secondLeftKey) ?? 0;
+    print(
+        'Disposing - now-secondBefore: ${now - secondBefore} secondLeftTime:$secondLeftTime');
+    if (secondLeftTime > now - secondBefore) {
+      _secondTotal = secondLeftTime - (now - secondBefore);
+      _secondStartCounting();
+    } else {
+      secondButtonSubject.add('');
+    }
+
+    final thirdBefore =
+        (StorageManager.sharedPreferences.getInt(thirdKey) ?? 0) ~/ 1000;
+    final thirdLeftTime =
+        StorageManager.sharedPreferences.getInt(thirdLeftKey) ?? 0;
+    print(
+        'Disposing - now-thidBefore: ${now - thirdBefore} thirdLeftTime:$thirdLeftTime');
+    if (thirdLeftTime > now - thirdBefore) {
+      _thirdTotal = thirdLeftTime - (now - thirdBefore);
+      _thirdStartCounting();
+    } else {
+      thirdButtonSubject.add('');
+    }
+  }
 
   /// it's also other user id
   final int partnerId;
@@ -35,10 +78,29 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   final callButtonSubject = BehaviorSubject.seeded(false);
   final rejectButtonSubject = BehaviorSubject.seeded(false);
   final acceptButtonSubject = BehaviorSubject.seeded(false);
+  final firstButtonSubject = BehaviorSubject<String>.seeded(null);
+  final secondButtonSubject = BehaviorSubject<String>.seeded(null);
+  final thirdButtonSubject = BehaviorSubject<String>.seeded(null);
+  Timer _firstTimer;
+  Timer _secondTimer;
+  Timer _thirdTimer;
+
+  int _firstTotal = -1;
+  int _secondTotal = -1;
+  int _thirdTotal = -1;
 
   final TextEditingController messageController = TextEditingController();
 
-  void dispose() async {
+  //Staring time
+  String get firstKey => 'first_' + kPartnerId + '_$partnerId';
+  //Remaining time
+  String get firstLeftKey => 'first_left' + kPartnerId + '_$partnerId';
+  String get secondKey => 'second_' + kPartnerId + '_$partnerId';
+  String get secondLeftKey => 'second_left' + kPartnerId + '_$partnerId';
+  String get thirdKey => 'third_' + kPartnerId + '_$partnerId';
+  String get thirdLeftKey => 'third_left' + kPartnerId + '_$partnerId';
+
+  void dispose() {
     List<Future> futures = [
       bookingStatusSubject.close(),
       partnerUserSubject.close(),
@@ -46,11 +108,48 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       callButtonSubject.close(),
       rejectButtonSubject.close(),
       acceptButtonSubject.close(),
+      firstButtonSubject.close(),
+      secondButtonSubject.close(),
+      thirdButtonSubject.close(),
       this.close()
     ];
+    _firstTimer?.cancel();
+    _secondTimer?.cancel();
+    _thirdTimer?.cancel();
     messageController.dispose();
     Future.wait(futures);
+    saveTimer();
     print('Disposing ChatBoxBloc Success');
+  }
+
+  void saveTimer() {
+    if (_firstTotal > 0) {
+      StorageManager.sharedPreferences
+          .setInt(firstKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(firstLeftKey, _firstTotal);
+    } else {
+      StorageManager.sharedPreferences
+          .setInt(firstKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(firstLeftKey, -1);
+    }
+    if (_secondTotal > 0) {
+      StorageManager.sharedPreferences
+          .setInt(secondKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(secondLeftKey, _secondTotal);
+    } else {
+      StorageManager.sharedPreferences
+          .setInt(secondKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(secondLeftKey, -1);
+    }
+    if (_thirdTotal > 0) {
+      StorageManager.sharedPreferences
+          .setInt(thirdKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(thirdLeftKey, _thirdTotal);
+    } else {
+      StorageManager.sharedPreferences
+          .setInt(thirdKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(thirdLeftKey, -1);
+    }
   }
 
   @override
@@ -85,6 +184,9 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
           event.time,
           event.attach,
           event.type);
+    if (event is ChatBoxCheckAvailable) yield* _mapCheckAvailableToState();
+    if (event is ChatBoxSecondButton) yield* _mapSecondButtonToState();
+    if (event is ChatBoxThirdButton) yield* _mapThirdButtonToState();
   }
 
   Stream<ChatBoxState> _mapFetchedToState(ChatBoxState currentState) async* {
@@ -287,6 +389,66 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
     }
+  }
+
+  Stream<ChatBoxState> _mapCheckAvailableToState() async* {
+    _firstTotal = _buttonSeconds;
+    firstButtonSubject.add('5 : 00');
+    _firstStartCounting();
+  }
+
+  Stream<ChatBoxState> _mapSecondButtonToState() async* {
+    _secondTotal = _buttonSeconds;
+    secondButtonSubject.add('5 : 00');
+    _secondStartCounting();
+  }
+
+  Stream<ChatBoxState> _mapThirdButtonToState() async* {
+    _thirdTotal = _buttonSeconds;
+    thirdButtonSubject.add('5 : 00');
+    _thirdStartCounting();
+  }
+
+  void _firstStartCounting() {
+    _firstTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _firstTotal--;
+      int minutes = _firstTotal ~/ 60;
+      String seconds = (_firstTotal % 60).toString().padLeft(2, '0');
+      if (_firstTotal < 0) {
+        _firstTotal = -1;
+        _firstTimer.cancel();
+        firstButtonSubject.add('');
+      } else
+        firstButtonSubject.add('$minutes : $seconds');
+    });
+  }
+
+  void _secondStartCounting() {
+    _secondTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _secondTotal--;
+      int minutes = _secondTotal ~/ 60;
+      String seconds = (_secondTotal % 60).toString().padLeft(2, '0');
+      if (_secondTotal < 0) {
+        _secondTotal = -1;
+        _secondTimer.cancel();
+        secondButtonSubject.add('');
+      } else
+        secondButtonSubject.add('$minutes : $seconds');
+    });
+  }
+
+  void _thirdStartCounting() {
+    _thirdTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _thirdTotal--;
+      int minutes = _thirdTotal ~/ 60;
+      String seconds = (_thirdTotal % 60).toString().padLeft(2, '0');
+      if (_thirdTotal < 0) {
+        _thirdTotal = -1;
+        _thirdTimer.cancel();
+        thirdButtonSubject.add('');
+      } else
+        thirdButtonSubject.add('$minutes : $seconds');
+    });
   }
 
   bool _hasReachedMax(ChatBoxState state) =>
