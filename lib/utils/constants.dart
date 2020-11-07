@@ -28,7 +28,15 @@ const int REQUEST = 7;
 const String onStop = "onStop";
 const String onStart = "onStart";
 
+const int kNormal = 0;
 const int kCoPlayer = 1;
 const int kStreamer = 2;
 const int kCele = 3;
 const int kPro = 4;
+
+///3 buttons
+const String kFirstButton = 'kFirstButton';
+const String kSecondButton = 'kSecondButton';
+const String kThirdButton = 'kThirdButton';
+
+const String kPartnerId = 'kPartnerId';

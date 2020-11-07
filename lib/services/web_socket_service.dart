@@ -58,7 +58,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(oldDevSocketUrl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000

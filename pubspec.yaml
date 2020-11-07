@@ -76,7 +76,7 @@ dependencies:
   # DateFormat
   timeago: ^2.0.28
   # Bloc Pattern
-  flutter_bloc: ^6.0.6
+  flutter_bloc: ^6.1.0
   # RxDart
   rxdart: ^0.24.1
   # Simplify Equality Comparisons
