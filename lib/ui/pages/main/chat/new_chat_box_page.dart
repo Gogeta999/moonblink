@@ -151,8 +151,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       margin: EdgeInsets.all(10.0),
       child: Container(
           constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.6,
-              maxHeight: MediaQuery.of(context).size.height * 0.3),
+            maxWidth: MediaQuery.of(context).size.width * 0.6,
+          ),
+          // maxHeight: MediaQuery.of(context).size.height * 0.3),
           decoration: BoxDecoration(
               color: _senderIsMe(lastMessage.senderId)
                   ? _isDark()
@@ -428,24 +429,25 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           ),
           child: Column(
             children: [
-              SizedBox(height: 4),
-              Row(
-                children: [
-                  SizedBox(width: 15),
-                  InkWell(
-                    onTap: () => print("I got tapped AH."),
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: Colors.black54),
-                          borderRadius: BorderRadius.circular(8),
-                          shape: BoxShape.rectangle),
-                      child: Text('Are you available',
-                          style: TextStyle(color: Colors.white, fontSize: 14)),
-                    ),
-                  )
-                ],
-              ),
+              ///[Are you available]
+              // SizedBox(height: 4),
+              // Row(
+              //   children: [
+              //     SizedBox(width: 15),
+              //     InkWell(
+              //       onTap: () => print("I got tapped AH."),
+              //       child: Container(
+              //         padding: const EdgeInsets.all(2),
+              //         decoration: BoxDecoration(
+              //             border: Border.all(width: 2, color: Colors.black54),
+              //             borderRadius: BorderRadius.circular(8),
+              //             shape: BoxShape.rectangle),
+              //         child: Text('Are you available',
+              //             style: TextStyle(color: Colors.white, fontSize: 14)),
+              //       ),
+              //     )
+              //   ],
+              // ),
               SizedBox(height: 4),
               Row(
                 children: <Widget>[
@@ -752,7 +754,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   : state.data.length + 1,
             ),
           ),
-        _buildActionBottomBar(),
+        if (widget.partnerId != 48) _buildActionBottomBar(),
       ],
     );
   }
@@ -839,6 +841,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             child: Text(
                               snapshot.data.partnerName,
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: widget.partnerId == 48
+                                      ? Theme.of(context).accentColor
+                                      : Colors.white),
                             ),
                           ),
                         ],
