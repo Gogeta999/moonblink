@@ -16,7 +16,6 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
-import 'package:moonblink/base_widget/voice_message_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -48,11 +47,12 @@ class NewChatBoxPage extends StatefulWidget {
 }
 
 class _NewChatBoxPageState extends State<NewChatBoxPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
   Timer _debounce;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+  final int myType = StorageManager.sharedPreferences.getInt(mUserType);
 
   final _scrollThreshold = 200.0;
   final ScrollController _scrollController = ScrollController();
@@ -70,7 +70,11 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    _chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    if (myType == kNormal) {
+      _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
+    } else {
+      _chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    }
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
@@ -100,7 +104,15 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
     ///[Chat Data]
     StorageManager.sharedPreferences.setBool(isUserAtChatBox, true);
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      _chatBoxBloc.saveTimer();
+    }
   }
 
   @override
@@ -116,6 +128,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     ];
     Future.wait(futures);
     _chatBoxBloc.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -389,6 +402,90 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   Widget _buildActionBottomBar() {
+    if (myType == kNormal) {
+      return Container(
+        height: 40,
+        child: ListView(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          children: [
+            SizedBox(width: 10),
+            StreamBuilder<String>(
+                initialData: null,
+                stream: _chatBoxBloc.firstButtonSubject,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return CupertinoButton(
+                      padding: const EdgeInsets.all(4),
+                      child: CupertinoActivityIndicator(),
+                      onPressed: () {},
+                    );
+                  }
+                  if (snapshot.data.isNotEmpty) {
+                    return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('${snapshot.data}'),
+                      onPressed: () {},
+                    );
+                  }
+                  return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('Are you available?'),
+                      onPressed: () =>
+                          _chatBoxBloc.add(ChatBoxCheckAvailable()));
+                }),
+            SizedBox(width: 10),
+            StreamBuilder<String>(
+                initialData: null,
+                stream: _chatBoxBloc.secondButtonSubject,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return CupertinoButton(
+                      padding: const EdgeInsets.all(4),
+                      child: CupertinoActivityIndicator(),
+                      onPressed: () {},
+                    );
+                  }
+                  if (snapshot.data.isNotEmpty) {
+                    return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('${snapshot.data}'),
+                      onPressed: () {},
+                    );
+                  }
+                  return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('Second Button'),
+                      onPressed: () => _chatBoxBloc.add(ChatBoxSecondButton()));
+                }),
+            SizedBox(width: 10),
+            StreamBuilder<String>(
+                initialData: null,
+                stream: _chatBoxBloc.thirdButtonSubject,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return CupertinoButton(
+                      padding: const EdgeInsets.all(4),
+                      child: CupertinoActivityIndicator(),
+                      onPressed: () {},
+                    );
+                  }
+                  if (snapshot.data.isNotEmpty) {
+                    return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('${snapshot.data}'),
+                      onPressed: () {},
+                    );
+                  }
+                  return CupertinoButton.filled(
+                      padding: const EdgeInsets.all(4),
+                      child: Text('Third Button'),
+                      onPressed: () => _chatBoxBloc.add(ChatBoxThirdButton()));
+                }),
+          ],
+        ),
+      );
+    }
     return StreamBuilder<BookingStatus>(
       initialData: null,
       stream: _chatBoxBloc.bookingStatusSubject,
@@ -429,8 +526,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           ),
           child: Column(
             children: [
-              ///[Are you available]
-              // SizedBox(height: 4),
+              SizedBox(height: 4),
               // Row(
               //   children: [
               //     SizedBox(width: 15),
@@ -448,7 +544,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               //     )
               //   ],
               // ),
-              SizedBox(height: 4),
+              //SizedBox(height: 4),
               Row(
                 children: <Widget>[
                   IconButton(
@@ -733,6 +829,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   Widget _buildChatBoxBody(ChatBoxState state) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (state is ChatBoxInitial)
           Expanded(
@@ -878,11 +975,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             }
                           : null);
                 }),
-            actions: <Widget>[
-              //   action2(model),
-              _buildFirstAction(),
-              _buildSecondAction()
-            ],
+            actions: <Widget>[_buildFirstAction(), _buildSecondAction()],
           ),
           body: SafeArea(
             child: Stack(
