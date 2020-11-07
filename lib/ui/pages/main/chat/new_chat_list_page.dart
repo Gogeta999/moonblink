@@ -59,9 +59,7 @@ class _NewChatListPageState extends State<NewChatListPage>
         name: Text(
           chat.name,
           style: TextStyle(
-              color: chat.userId == 48
-                  ? Theme.of(context).accentColor
-                  : Colors.white),
+              color: chat.userId == 48 ? Theme.of(context).accentColor : null),
         ),
 
         ///[Last Message]

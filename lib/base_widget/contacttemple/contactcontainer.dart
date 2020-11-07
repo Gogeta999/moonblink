@@ -161,7 +161,7 @@ class _ContactContainerState extends State<ContactContainer> {
                             //     minWidth: double.infinity,
                             //     maxWidth: double.infinity),
                             child: CachedNetworkImage(
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                               imageUrl:
                                   widget.contact.contactUser.contactUserCover,
                               placeholder: (context, url) => CachedLoader(

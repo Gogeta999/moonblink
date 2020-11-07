@@ -543,7 +543,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -584,7 +587,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              // ? Colors.grey
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'camera',
         ),
       ),
@@ -605,7 +611,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           child: SvgPicture.asset(
             microphone,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).brightness == Brightness.dark
+                // ? Colors.grey
+                ? Theme.of(context).accentColor
+                : Colors.black,
             semanticsLabel: 'microphone',
           ),
         ));
