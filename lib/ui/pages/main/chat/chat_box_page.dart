@@ -71,11 +71,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    if (myType == kNormal) {
-      _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
-    } else {
-      _chatBoxBloc = ChatBoxBloc(widget.partnerId);
-    }
+    // if (myType == kNormal) {
+    //   _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
+    // } else {
+    //   _chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    // }
+    _chatBoxBloc = ChatBoxBloc(widget.partnerId);
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
@@ -403,7 +404,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   Widget _buildActionBottomBar() {
-    if (myType == kNormal) {
+    if (false) {
+      //if (myType == kNormal) {
       return Container(
         height: 40,
         child: ListView(
@@ -778,7 +780,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return _buildBookingEndButton();
         }
-        return blockbtn();
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
+        }
+        return Container();
       },
     );
   }
