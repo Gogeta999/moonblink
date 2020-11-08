@@ -1072,15 +1072,16 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   Future<void> _handleVoiceCall(String voiceChannelName) async {
+    final otherProfile = await _chatBoxBloc.partnerUserSubject.first;
+    final otherProfileImage = otherProfile.prfoileFromPartner.profileImage;
     await [Permission.microphone].request();
     if (await Permission.microphone.request().isGranted) {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VoiceCallWidget(
-              channelName: voiceChannelName,
-            ),
-          ));
+              builder: (context) => VoiceCallWidget(
+                  channelName: voiceChannelName,
+                  otherUserProfile: otherProfileImage)));
     } else if (await Permission.microphone.request().isDenied) {
       showDialog(
         context: context,
