@@ -778,7 +778,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return _buildBookingEndButton();
         }
-        return blockbtn();
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
+        }
+        return Container();
       },
     );
   }
