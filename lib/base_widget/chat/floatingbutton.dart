@@ -22,18 +22,16 @@ class FloatingButton extends StatelessWidget {
             new ScaleTransition(
               scale: scale,
               alignment: FractionalOffset.center,
-              child: new InkWell(
-                child: ClipOval(
-                  child: new Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(120),
-                    ),
-                    width: 45.0,
-                    height: 45.0,
-                    child: child,
+              child: ClipOval(
+                child: new Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(120),
                   ),
+                  width: 45.0,
+                  height: 45.0,
+                  child: child,
                 ),
               ),
             ),

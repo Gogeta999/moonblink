@@ -11,9 +11,13 @@ enum PlayingRouteState { speakers, earpiece }
 class PlayerWidget extends StatefulWidget {
   final String url;
   final PlayerMode mode;
+  final isLocal;
 
   PlayerWidget(
-      {Key key, @required this.url, this.mode = PlayerMode.MEDIA_PLAYER})
+      {Key key,
+      @required this.url,
+      this.mode = PlayerMode.MEDIA_PLAYER,
+      this.isLocal})
       : super(key: key);
 
   @override
@@ -81,73 +85,65 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).accentColor
-              // ? Theme.of(context).scaffoldBackgroundColor
-              : Theme.of(context).accentColor,
-          borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        (() {
+          if (_isPlaying == true && _isLoading == false) {
+            return CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _pause(),
+              child: Icon(Icons.pause),
+            );
+          } else if (_isLoading == true) {
+            return CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: CupertinoActivityIndicator(),
+              onPressed: () {},
+            );
+          } else if (_isFailed) {
+            return CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: Text(
+                'failed',
+                style: TextStyle(fontSize: 10),
+              ),
+              onPressed: () {},
+            );
+          } else if (_isPlaying == false) {
+            return CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _play(),
+              child: Icon(Icons.play_arrow),
+            );
+          } else {
+            return Container(height: 0, width: 0);
+          }
+        }()),
+        Container(
+          width: 100,
+          child: LinearProgressIndicator(
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black26,
+            valueColor: Theme.of(context).brightness == Brightness.dark
+                ? AlwaysStoppedAnimation<Color>(Colors.grey)
+                : AlwaysStoppedAnimation<Color>(Colors.grey),
+            value: (_position != null &&
+                    _duration != null &&
+                    _position.inMilliseconds > 0 &&
+                    _position.inMilliseconds < _duration.inMilliseconds)
+                ? _position.inMilliseconds / _duration.inMilliseconds
+                : 0.0,
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            (() {
-              if (_isPlaying == true && _isLoading == false) {
-                return IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => _pause(),
-                  icon: Icon(Icons.pause),
-                  iconSize: 20.0,
-                );
-              } else if (_isLoading == true) {
-                return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: CupertinoActivityIndicator(),
-                    ));
-              } else if (_isFailed) {
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    'failed',
-                    style: TextStyle(fontSize: 10),
-                  ),
-                );
-              } else if (_isPlaying == false) {
-                return IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => _play(),
-                  icon: Icon(Icons.play_arrow),
-                  iconSize: 20.0,
-                );
-              } else {
-                return Container(height: 0, width: 0);
-              }
-            }()),
-            Container(
-              width: 100,
-              child: LinearProgressIndicator(
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
-                value: (_position != null &&
-                        _duration != null &&
-                        _position.inMilliseconds > 0 &&
-                        _position.inMilliseconds < _duration.inMilliseconds)
-                    ? _position.inMilliseconds / _duration.inMilliseconds
-                    : 0.0,
-              ),
-            ),
 
-            /// can't get max duration at start
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-            ),
-          ],
-        ));
+        /// can't get max duration at start
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+        ),
+      ],
+    );
   }
 
   void _initAudioPlayer() async {
@@ -212,7 +208,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         ? _position
         : null;
 
-    final result = await _audioPlayer.play(url, position: playPosition);
+    final result = await _audioPlayer.play(url,
+        position: playPosition, isLocal: widget.isLocal);
     if (result == 1) {
       _playerState = PlayerState.playing;
     }
@@ -333,7 +330,7 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
             // ? Theme.of(context).scaffoldBackgroundColor
             : Theme.of(context).accentColor,
         borderRadius: BorderRadius.all(
-          Radius.circular(20.0),
+          Radius.circular(10.0),
         ),
       ),
       child: Row(

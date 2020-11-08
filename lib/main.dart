@@ -7,26 +7,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/local_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 import 'bloc_pattern/simple_bloc_observer.dart';
 import 'bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
-
-// String usertoken = StorageManager.sharedPreferences.getString(token);
 
 main() async {
   Provider.debugCheckInvalidValueType = null;
@@ -39,6 +36,9 @@ main() async {
       BlocProvider(
         create: (_) => UserNewNotificationBloc(),
       ),
+      BlocProvider(
+        create: (_) => ChatListBloc(),
+      )
     ],
     child: MyApp(),
   ));
@@ -101,24 +101,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         providers: providers,
         child: Consumer2<ThemeModel, LocaleModel>(
             builder: (context, themeModel, localModel, child) {
-          return ScopedModel(
-              model: ChatModel(),
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: themeModel.themeData(),
-                darkTheme: themeModel.themeData(platformDarkMode: true),
-                locale: localModel.locale,
-                localizationsDelegates: const [
-                  G.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate
-                ],
-                supportedLocales: G.delegate.supportedLocales,
-                onGenerateRoute: MoonGoRouter.generateRoute,
-                initialRoute: RouteName.splash,
-                navigatorKey: locator<NavigationService>().navigatorKey,
-              ));
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: themeModel.themeData(),
+            darkTheme: themeModel.themeData(platformDarkMode: true),
+            locale: localModel.locale,
+            localizationsDelegates: const [
+              G.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            supportedLocales: G.delegate.supportedLocales,
+            onGenerateRoute: MoonGoRouter.generateRoute,
+            initialRoute: RouteName.splash,
+            navigatorKey: locator<NavigationService>().navigatorKey,
+          );
         }),
       ),
     );

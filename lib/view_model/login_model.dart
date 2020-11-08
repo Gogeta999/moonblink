@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -13,6 +14,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
+import 'package:moonblink/services/web_socket_service.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';
@@ -69,32 +71,36 @@ class LoginModel extends ViewStateModel {
             print('case loggedIn');
             final FacebookAccessToken accessToken = result.accessToken;
             user = await MoonBlinkRepository.loginWithFacebook(
-                accessToken.token, fcmToken).catchError((e) {
-                  showCupertinoDialog(
-                    context: locator<NavigationService>().navigatorKey.currentState.overlay.context,
-                    builder: (context) {
-                      return CupertinoAlertDialog(
-                        title: Text('Sign In Failed\n'),
-                        content: Text('Having trouble signing in using Facebook? '
-                            'Would you like to view the instructions that we prepared for you.'),
-                        actions: [
-                          CupertinoButton(
-                            child: Text('No, it\'s okay'),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          CupertinoButton(
-                            child: Text('Yes, show me'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, RouteName.facebookLoginError);
-                            },
-                          )
-                        ],
-                      );
-                    }
-                  );
-                }
-            );
+                    accessToken.token, fcmToken)
+                .catchError((e) {
+              showCupertinoDialog(
+                  context: locator<NavigationService>()
+                      .navigatorKey
+                      .currentState
+                      .overlay
+                      .context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                      title: Text('Sign In Failed\n'),
+                      content: Text('Having trouble signing in using Facebook? '
+                          'Would you like to view the instructions that we prepared for you.'),
+                      actions: [
+                        CupertinoButton(
+                          child: Text('No, it\'s okay'),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        CupertinoButton(
+                          child: Text('Yes, show me'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                                context, RouteName.facebookLoginError);
+                          },
+                        )
+                      ],
+                    );
+                  });
+            });
             break;
           case FacebookLoginStatus.cancelledByUser:
             print('case cancelledByUser');
@@ -169,18 +175,22 @@ class LoginModel extends ViewStateModel {
     }
     setBusy();
     try {
-      await MoonBlinkRepository.logout(); ///to notify server to remove fcm token.
       PushNotificationsManager().dispose();
-      DioUtils().initWithoutAuthorization();
+      WebSocketService().dispose();
       final context = locator<NavigationService>().navigatorKey.currentContext;
       BlocProvider.of<UserNewNotificationBloc>(context)
           .add(UserNewNotificationCleared());
+      BlocProvider.of<ChatListBloc>(context).chatsSubject.add([]);
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn
           .isSignedIn()
           .then((value) async => value ? await _googleSignIn.signOut() : null);
       userModel.clearUser();
+      await MoonBlinkRepository.logout();
+      DioUtils().initWithoutAuthorization();
+
+      ///to notify server to remove fcm token.
       setIdle();
       return true;
     } catch (e, s) {

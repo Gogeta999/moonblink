@@ -13,8 +13,7 @@ class StoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     print("----------------------------------------------");
     // HomeModel homeModel = Provider.of(context);
-    return SliverToBoxAdapter(
-        child: Column(
+    return Column(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
@@ -60,6 +59,6 @@ class StoryList extends StatelessWidget {
           color: Colors.black,
         ),
       ],
-    ));
+    );
   }
 }

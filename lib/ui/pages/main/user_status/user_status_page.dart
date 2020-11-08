@@ -11,7 +11,6 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/encrypt.dart';
 import 'package:moonblink/ui/helper/icons.dart';
@@ -25,7 +24,6 @@ import 'package:oktoast/oktoast.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class UserStatusPage extends StatefulWidget {
   @override
@@ -315,8 +313,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 if (usertype != 0 &&
                     profile != null &&
                     profile.levelpercent != null &&
-                    profile.ordercount != null &&
                     profile.leftorder != null &&
+                    profile.ordercount != null &&
                     profile.level != null)
                   Card(
                     margin: EdgeInsets.only(bottom: 15),
@@ -597,7 +595,7 @@ class _LogoutState extends State<Logout> {
                   style: Theme.of(context).textTheme.bodyText1),
               onTap: () {
                 model.logout();
-                ScopedModel.of<ChatModel>(context).disconnect();
+                // ScopedModel.of<ChatModel>(context).disconnect();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(RouteName.login, (route) => false);
               },

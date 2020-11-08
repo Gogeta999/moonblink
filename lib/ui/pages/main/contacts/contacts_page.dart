@@ -122,67 +122,6 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  // contactTile(user) {
-  //   return isBlocking
-  //       ? CupertinoActivityIndicator()
-  //       :
-  //       // ListTile(
-  //       //     leading: CachedNetworkImage(
-  //       //       imageUrl: user.contactUser.contactUserProfile,
-  //       //       imageBuilder: (context, imageProvider) => CircleAvatar(
-  //       //         radius: 28,
-  //       //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-  //       //         backgroundImage: imageProvider,
-  //       //       ),
-  //       //       placeholder: (context, url) => CircleAvatar(
-  //       //         radius: 28,
-  //       //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-  //       //         // backgroundImage: ,
-  //       //       ),
-  //       //       errorWidget: (context, url, error) => Icon(Icons.error),
-  //       //     ),
-  //       //     // leading: CircleAvatar(
-  //       //     //   radius: 28,
-  //       //     //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-  //       //     //   backgroundImage:
-  //       //     //       NetworkImage(user.contactUser.contactUserProfile),
-  //       //     // ),
-  //       //     title: Text(user.contactUser.contactUserName),
-  //       //     onTap: () {
-  //       //       int detailPageId = user.contactUser.contactUserId;
-  //       //       // int index = users.indexOf(user);
-  //       //       // print(index);
-  //       //       Navigator.push(
-  //       //           context,
-  //       //           MaterialPageRoute(
-  //       //               builder: (context) =>
-  //       //                   PartnerDetailPage(detailPageId))).then(
-  //       //         (value) async {
-  //       //           if (value != null) {
-  //       //             setState(() {
-  //       //               isBlocking = true;
-  //       //             });
-
-  //       //             ///Block Uesrs
-  //       //             try {
-  //       //               await MoonBlinkRepository.blockOrUnblock(value, BLOCK);
-  //       //               await _contactModel.initData();
-  //       //               setState(() {
-  //       //                 isBlocking = false;
-  //       //               });
-  //       //             } catch (e) {
-  //       //               print(e.toString());
-  //       //               setState(() {
-  //       //                 isBlocking = false;
-  //       //               });
-  //       //             }
-  //       //           }
-  //       //         },
-  //       //       );
-  //       //     },
-  //       //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     // super.build(context);

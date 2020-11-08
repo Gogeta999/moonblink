@@ -5,10 +5,10 @@ import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
+import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
-import 'package:moonblink/ui/pages/main/chat/chatbox_page.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
@@ -123,7 +123,7 @@ class MoonGoRouter {
             builder: (_) => PartnerDetailPage(settings.arguments));
       case RouteName.chatBox:
         return CupertinoPageRoute(
-            builder: (_) => ChatBoxPage(settings.arguments));
+            builder: (_) => NewChatBoxPage(settings.arguments));
       case RouteName.blockedUsers:
         return CupertinoPageRoute(builder: (_) => BlockedUserPage());
 
