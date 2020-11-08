@@ -14,7 +14,6 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 const String proSocketurl = 'https://chat.moonblinkuniverse.com';
 const String devSocketUrl = 'http://157.230.35.18:8000/';
 const String oldDevSocketUrl = 'http://54.179.117.84/';
-String now = DateTime.now().toString();
 
 class DefaultEvents {
   ///Defaults Events to listen
@@ -73,7 +72,7 @@ class WebSocketService {
       print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
       _chatBoxBloc?.add(
-          ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from serve again.
+          ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
     });
     _socket.once(EventsToListen.connectedUsers, (data) {
