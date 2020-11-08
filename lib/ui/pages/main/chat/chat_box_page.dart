@@ -50,6 +50,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
+
   Timer _debounce;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
   final int myType = StorageManager.sharedPreferences.getInt(mUserType);
@@ -644,7 +645,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -685,7 +688,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'camera',
         ),
       ),
@@ -706,7 +711,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           child: SvgPicture.asset(
             microphone,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).accentColor
+                : Colors.black,
             semanticsLabel: 'microphone',
           ),
         ));
@@ -1058,18 +1065,18 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   //bottom widget up
   ///not using now
-  _sendMessageWidgetUp() {
-    _upWidgetSubject.add(true);
-    _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
+  // _sendMessageWidgetUp() {
+  //   _upWidgetSubject.add(true);
+  //   _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
+  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
+  // }
 
   //bottom widget down
-  _sendMessageWidgetDown() {
-    _upWidgetSubject.add(false);
-    _scrollController.animateTo(0.0,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
+  // _sendMessageWidgetDown() {
+  //   _upWidgetSubject.add(false);
+  //   _scrollController.animateTo(0.0,
+  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
+  // }
 
   Future<void> _handleVoiceCall(String voiceChannelName) async {
     await [Permission.microphone].request();

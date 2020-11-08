@@ -154,34 +154,35 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   /// [You need to put before OnTap]
 
                                   onTap: () async {
-                                    PickedFile image = await _picker.getImage(
-                                        source: ImageSource.gallery);
-                                    setState(() {
-                                      _cover = File(image.path);
-                                    });
-                                    cropImage(_cover, true);
-                                    File temporaryImage = await _getLocalFile();
-                                    File _compressedImage =
-                                        await _compressAndGetFile(_cover,
-                                            temporaryImage.absolute.path);
-                                    setState(() async {
-                                      _cover = _compressedImage;
-                                    });
-                                    // CustomBottomSheet.show(
-                                    //     requestType: RequestType.image,
-                                    //     popAfterBtnPressed: true,
-                                    //     buttonText: G.of(context).choose,
-                                    //     buildContext: context,
-                                    //     limit: 1,
-                                    //     onPressed: (File file) {
-                                    //       setState(() {
-                                    //         _cover = file;
-                                    //       });
-                                    //     },
-                                    //     body: G.of(context).partnercover,
-                                    //     willCrop: true,
-                                    //     compressQuality:
-                                    //         NORMAL_COMPRESS_QUALITY);
+                                    // PickedFile image = await _picker.getImage(
+                                    //     source: ImageSource.gallery);
+                                    // setState(() {
+                                    //   _cover = File(image.path);
+                                    // });
+                                    // cropImage(_cover, true);
+                                    // File temporaryImage = await _getLocalFile();
+                                    // File _compressedImage =
+                                    //     await _compressAndGetFile(_cover,
+                                    //         temporaryImage.absolute.path);
+                                    // setState(() async {
+                                    //   _cover = _compressedImage;
+                                    // });
+
+                                    CustomBottomSheet.show(
+                                        requestType: RequestType.image,
+                                        popAfterBtnPressed: true,
+                                        buttonText: G.of(context).choose,
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _cover = file;
+                                          });
+                                        },
+                                        body: G.of(context).partnercover,
+                                        willCrop: true,
+                                        compressQuality:
+                                            NORMAL_COMPRESS_QUALITY);
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
@@ -219,39 +220,40 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                 child: GestureDetector(
                                   /// [You need to put before OnTap]
                                   onTap: () async {
-                                    PickedFile image = await _picker.getImage(
-                                        source: ImageSource.gallery);
-                                    setState(() {
-                                      _profile = File(image.path);
-                                    });
-                                    cropImage(_profile, false);
-                                    File temporaryImage = await _getLocalFile();
-                                    File _compressedImage =
-                                        await _compressAndGetFile(_profile,
-                                            temporaryImage.absolute.path);
-                                    setState(() async {
-                                      _profile = _compressedImage;
-                                    });
-                                    // CustomBottomSheet.show(
+                                    // PickedFile image = await _picker.getImage(
+                                    //     source: ImageSource.gallery);
+                                    // setState(() {
+                                    //   _profile = File(image.path);
+                                    // });
+                                    // cropImage(_profile, false);
+                                    // File temporaryImage = await _getLocalFile();
+                                    // File _compressedImage =
+                                    //     await _compressAndGetFile(_profile,
+                                    //         temporaryImage.absolute.path);
+                                    // setState(() async {
+                                    //   _profile = _compressedImage;
+                                    // });
 
-                                    //     ///profile is small
-                                    //     popAfterBtnPressed: true,
-                                    //     requestType: RequestType.image,
-                                    //     minWidth: 480,
-                                    //     minHeight: 480,
-                                    //     buttonText: G.of(context).choose,
-                                    //     buildContext: context,
-                                    //     limit: 1,
-                                    //     onPressed: (File file) {
-                                    //       setState(() {
-                                    //         _profile = file;
-                                    //       });
-                                    //     },
-                                    //     body: G.of(context).partnerprofile,
-                                    //     willCrop: true,
-                                    //     defaultCropStyle: false,
-                                    //     compressQuality:
-                                    //         NORMAL_COMPRESS_QUALITY);
+                                    CustomBottomSheet.show(
+
+                                        ///profile is small
+                                        popAfterBtnPressed: true,
+                                        requestType: RequestType.image,
+                                        minWidth: 480,
+                                        minHeight: 480,
+                                        buttonText: G.of(context).choose,
+                                        buildContext: context,
+                                        limit: 1,
+                                        onPressed: (File file) {
+                                          setState(() {
+                                            _profile = file;
+                                          });
+                                        },
+                                        body: G.of(context).partnerprofile,
+                                        willCrop: true,
+                                        defaultCropStyle: false,
+                                        compressQuality:
+                                            NORMAL_COMPRESS_QUALITY);
                                   },
                                   child: Stack(
                                     children: [

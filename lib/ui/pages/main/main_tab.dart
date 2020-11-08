@@ -9,7 +9,6 @@ import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/icons.dart';
-import 'package:moonblink/ui/pages/main/chat/chatlist_page.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_list_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
