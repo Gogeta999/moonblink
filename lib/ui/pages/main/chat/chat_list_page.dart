@@ -24,6 +24,7 @@ class _NewChatListPageState extends State<NewChatListPage>
   @override
   bool get wantKeepAlive => true;
 
+  // ignore: close_sinks
   ChatListBloc _chatListBloc;
   RefreshController refreshController = RefreshController();
 

@@ -50,6 +50,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
+
   Timer _debounce;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
   final int myType = StorageManager.sharedPreferences.getInt(mUserType);
@@ -75,7 +76,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     } else {
       _chatBoxBloc = ChatBoxBloc(widget.partnerId);
     }
-    _chatBoxBloc.add(ChatBoxFetched());
+    //_chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
     _scrollController.addListener(_onScroll);
@@ -644,7 +645,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       child: InkResponse(
         child: SvgPicture.asset(
           gallery,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'gallery',
         ),
         onTap: () {
@@ -685,7 +688,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: SvgPicture.asset(
           camera,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).accentColor
+              : Colors.black,
           semanticsLabel: 'camera',
         ),
       ),
@@ -706,7 +711,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           child: SvgPicture.asset(
             microphone,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).accentColor
+                : Colors.black,
             semanticsLabel: 'microphone',
           ),
         ));
@@ -764,10 +771,11 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           return CupertinoActivityIndicator();
         }
         if (snapshot.data.status == PENDING &&
-            _bookingUserIsMe(snapshot.data.booingUserId)) {
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return WaitingTimeLeft(createat: snapshot.data.createdAt);
         }
-        if (snapshot.data.status == ACCEPTED) {
+        if (snapshot.data.status == ACCEPTED &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return _buildBookingEndButton();
         }
         return blockbtn();
@@ -818,7 +826,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           return CupertinoActivityIndicator();
         }
         if (snapshot.data.status == PENDING &&
-            _bookingUserIsMe(snapshot.data.booingUserId)) {
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return _buildBookingCancelButton();
         }
         if (snapshot.data.status == ACCEPTED) {
@@ -1058,18 +1066,18 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   //bottom widget up
   ///not using now
-  _sendMessageWidgetUp() {
-    _upWidgetSubject.add(true);
-    _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
+  // _sendMessageWidgetUp() {
+  //   _upWidgetSubject.add(true);
+  //   _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
+  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
+  // }
 
   //bottom widget down
-  _sendMessageWidgetDown() {
-    _upWidgetSubject.add(false);
-    _scrollController.animateTo(0.0,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
+  // _sendMessageWidgetDown() {
+  //   _upWidgetSubject.add(false);
+  //   _scrollController.animateTo(0.0,
+  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
+  // }
 
   Future<void> _handleVoiceCall(String voiceChannelName) async {
     final otherProfile = await _chatBoxBloc.partnerUserSubject.first;
@@ -1148,12 +1156,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         builder: (_) {
           return CustomDialog(
             title: G.of(context).bookingEnded,
-            row1Content: G.of(context).timeleft,
-            row2Content: BookingTimeLeft(
-              count: bookingStatus.count,
-              upadateat: bookingStatus.updatedAt,
-              timeleft: bookingStatus.minutePerSection,
-            ),
+            simpleContent: 'Do You sure to end this order?',
+            // row2Content: BookingTimeLeft(
+            //   count: bookingStatus.count,
+            //   upadateat: bookingStatus.updatedAt,
+            //   timeleft: bookingStatus.minutePerSection,
+            // ),
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
             confirmContent: G.of(context).end,
