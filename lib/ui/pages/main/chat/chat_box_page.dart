@@ -76,7 +76,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     } else {
       _chatBoxBloc = ChatBoxBloc(widget.partnerId);
     }
-    //_chatBoxBloc.add(ChatBoxFetched());
+    _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
     _scrollController.addListener(_onScroll);
@@ -403,96 +403,132 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   Widget _buildActionBottomBar() {
-    if (myType == kNormal) {
-      return Container(
-        height: 40,
-        child: ListView(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          children: [
-            SizedBox(width: 10),
-            StreamBuilder<String>(
-                initialData: null,
-                stream: _chatBoxBloc.firstButtonSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return CupertinoButton(
-                      padding: const EdgeInsets.all(4),
-                      child: CupertinoActivityIndicator(),
-                      onPressed: () {},
-                    );
-                  }
-                  if (snapshot.data.isNotEmpty) {
-                    return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('${snapshot.data}'),
-                      onPressed: () {},
-                    );
-                  }
-                  return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('Are you available?'),
-                      onPressed: () =>
-                          _chatBoxBloc.add(ChatBoxCheckAvailable()));
-                }),
-            SizedBox(width: 10),
-            StreamBuilder<String>(
-                initialData: null,
-                stream: _chatBoxBloc.secondButtonSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return CupertinoButton(
-                      padding: const EdgeInsets.all(4),
-                      child: CupertinoActivityIndicator(),
-                      onPressed: () {},
-                    );
-                  }
-                  if (snapshot.data.isNotEmpty) {
-                    return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('${snapshot.data}'),
-                      onPressed: () {},
-                    );
-                  }
-                  return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('Second Button'),
-                      onPressed: () => _chatBoxBloc.add(ChatBoxSecondButton()));
-                }),
-            SizedBox(width: 10),
-            StreamBuilder<String>(
-                initialData: null,
-                stream: _chatBoxBloc.thirdButtonSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return CupertinoButton(
-                      padding: const EdgeInsets.all(4),
-                      child: CupertinoActivityIndicator(),
-                      onPressed: () {},
-                    );
-                  }
-                  if (snapshot.data.isNotEmpty) {
-                    return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('${snapshot.data}'),
-                      onPressed: () {},
-                    );
-                  }
-                  return CupertinoButton.filled(
-                      padding: const EdgeInsets.all(4),
-                      child: Text('Third Button'),
-                      onPressed: () => _chatBoxBloc.add(ChatBoxThirdButton()));
-                }),
-          ],
-        ),
-      );
-    }
     return StreamBuilder<BookingStatus>(
       initialData: null,
       stream: _chatBoxBloc.bookingStatusSubject,
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return CupertinoActivityIndicator();
+        }
+
+        if (snapshot.data.status != ACCEPTED && myType == kNormal) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color: _isDark() ? Colors.white24 : Colors.black26),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                      'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: _isDark() ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w300))),
+              Container(
+                height: 40,
+                child: ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    SizedBox(width: 10),
+                    StreamBuilder<String>(
+                        initialData: null,
+                        stream: _chatBoxBloc.firstButtonSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return CupertinoButton(
+                              padding: const EdgeInsets.all(4),
+                              child: CupertinoActivityIndicator(),
+                              onPressed: () {},
+                            );
+                          }
+                          if (snapshot.data.isNotEmpty) {
+                            return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('${snapshot.data}'),
+                              ),
+                              onPressed: () {},
+                            );
+                          }
+                          return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Text('Are you available?'),
+                              onPressed: () =>
+                                  _chatBoxBloc.add(ChatBoxCheckAvailable()));
+                        }),
+                    SizedBox(width: 10),
+                    StreamBuilder<String>(
+                        initialData: null,
+                        stream: _chatBoxBloc.secondButtonSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return CupertinoButton(
+                              padding: const EdgeInsets.all(4),
+                              child: CupertinoActivityIndicator(),
+                              onPressed: () {},
+                            );
+                          }
+                          if (snapshot.data.isNotEmpty) {
+                            return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('${snapshot.data}'),
+                              ),
+                              onPressed: () {},
+                            );
+                          }
+                          return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Text('Second Button'),
+                              onPressed: () =>
+                                  _chatBoxBloc.add(ChatBoxSecondButton()));
+                        }),
+                    SizedBox(width: 10),
+                    StreamBuilder<String>(
+                        initialData: null,
+                        stream: _chatBoxBloc.thirdButtonSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return CupertinoButton(
+                              padding: const EdgeInsets.all(4),
+                              child: CupertinoActivityIndicator(),
+                              onPressed: () {},
+                            );
+                          }
+                          if (snapshot.data.isNotEmpty) {
+                            return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('${snapshot.data}'),
+                              ),
+                              onPressed: () {},
+                            );
+                          }
+                          return CupertinoButton.filled(
+                              padding: const EdgeInsets.all(4),
+                              child: Text('Third Button'),
+                              onPressed: () =>
+                                  _chatBoxBloc.add(ChatBoxThirdButton()));
+                        }),
+                  ],
+                ),
+              ),
+            ],
+          );
         }
 
         ///Blocked
@@ -515,9 +551,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             ),
           );
         }
-
-        ///[for future]
-        // if (snapshot.data.status == 0) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
@@ -528,97 +561,69 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               top: Radius.circular(30.0),
             ),
           ),
-          child: Column(
-            children: [
-              SizedBox(height: 4),
-              // Row(
-              //   children: [
-              //     SizedBox(width: 15),
-              //     InkWell(
-              //       onTap: () => print("I got tapped AH."),
-              //       child: Container(
-              //         padding: const EdgeInsets.all(2),
-              //         decoration: BoxDecoration(
-              //             border: Border.all(width: 2, color: Colors.black54),
-              //             borderRadius: BorderRadius.circular(8),
-              //             shape: BoxShape.rectangle),
-              //         child: Text('Are you available',
-              //             style: TextStyle(color: Colors.white, fontSize: 14)),
-              //       ),
-              //     )
-              //   ],
-              // ),
-              //SizedBox(height: 4),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    iconSize: 35,
-                    icon: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        border: Border.all(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.grey
-                                    : Colors.black),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: StreamBuilder<bool>(
-                          initialData: true,
-                          stream: _rotatedSubject,
-                          builder: (context, snapshot) {
-                            return Icon(
-                              snapshot.data
-                                  ? Icons.arrow_drop_up
-                                  : Icons.arrow_drop_down,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                            );
-                          }),
-                    ),
-                    onPressed: () => _rotate(),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                iconSize: 35,
+                icon: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey
+                            : Colors.black),
+                    borderRadius: BorderRadius.circular(100),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 2),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.grey
-                                  : Colors.black),
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: TextField(
-                        minLines: 1,
-                        maxLines: 3,
-                        maxLength: 150,
-                        keyboardType: TextInputType.multiline,
-                        textCapitalization: TextCapitalization.sentences,
-                        textInputAction: TextInputAction.newline,
-                        controller: _chatBoxBloc.messageController,
-                        decoration: InputDecoration(
-                          hintText: G.of(context).labelmsg,
-                          counterText: "",
-                        ),
-                      ),
-                    ),
-                  ),
-                  _buildSendButton(),
-                ],
+                  child: StreamBuilder<bool>(
+                      initialData: true,
+                      stream: _rotatedSubject,
+                      builder: (context, snapshot) {
+                        return Icon(
+                          snapshot.data
+                              ? Icons.arrow_drop_up
+                              : Icons.arrow_drop_down,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        );
+                      }),
+                ),
+                onPressed: () => _rotate(),
               ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey
+                              : Colors.black),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: TextField(
+                    minLines: 1,
+                    maxLines: 3,
+                    maxLength: 150,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.newline,
+                    controller: _chatBoxBloc.messageController,
+                    decoration: InputDecoration(
+                      hintText: G.of(context).labelmsg,
+                      counterText: "",
+                    ),
+                  ),
+                ),
+              ),
+              _buildSendButton(),
             ],
           ),
         );
-        // }
-        // return Container();
       },
     );
   }
@@ -1156,7 +1161,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         builder: (_) {
           return CustomDialog(
             title: G.of(context).bookingEnded,
-            simpleContent: 'Do You sure to end this order?',
+            simpleContent: 'Do you sure to end this order?',
             // row2Content: BookingTimeLeft(
             //   count: bookingStatus.count,
             //   upadateat: bookingStatus.updatedAt,
@@ -1186,7 +1191,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     if (maxScroll - currentScroll <= _scrollThreshold) {
       if (_debounce?.isActive ?? false) _debounce.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
-        _chatBoxBloc.add(ChatBoxFetched());
+        _chatBoxBloc.add(ChatBoxFetchedMore());
       });
     }
   }

@@ -14,7 +14,6 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 const String proSocketurl = 'https://chat.moonblinkuniverse.com';
 const String devSocketUrl = 'http://157.230.35.18:8000/';
 const String oldDevSocketUrl = 'http://54.179.117.84/';
-String now = DateTime.now().toString();
 
 class DefaultEvents {
   ///Defaults Events to listen

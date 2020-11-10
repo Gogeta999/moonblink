@@ -15,7 +15,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A704A2B424EE63EE0028AF54 /* moonblink_noti.m4r in Resources */ = {isa = PBXBuildFile; fileRef = A704A2B324EE63EE0028AF54 /* moonblink_noti.m4r */; };
-		A73AB46C25009A0000040B6F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A73AB46B25009A0000040B6F /* StoreKit.framework */; };
+		A74E38162557E2600030580D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A74E38152557E2600030580D /* StoreKit.framework */; };
 		A79D83F524EBAA8300869A41 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A79D83F424EBAA8300869A41 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -50,7 +50,7 @@
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A704A2B324EE63EE0028AF54 /* moonblink_noti.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = moonblink_noti.m4r; sourceTree = "<group>"; };
 		A71F7CBD24FA3DFA006A73F4 /* Runner copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Runner copy-Info.plist"; path = "/Users/kalay/GitHub_Projects/FlutterApp/moonblink-thirdlogin/moonblink/ios/Runner copy-Info.plist"; sourceTree = "<absolute>"; };
-		A73AB46B25009A0000040B6F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A74E38152557E2600030580D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A79D83F424EBAA8300869A41 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/iOS-Configuration/Config/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A7F346A824E0E60000C398C0 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		F0273574A011F4C392C9B1DB /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -63,7 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C009AA5992B6FCE2959C553 /* Pods_Runner.framework in Frameworks */,
-				A73AB46C25009A0000040B6F /* StoreKit.framework in Frameworks */,
+				A74E38162557E2600030580D /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 		CB9ED5A8BE25FDB93BDEAEA6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A73AB46B25009A0000040B6F /* StoreKit.framework */,
+				A74E38152557E2600030580D /* StoreKit.framework */,
 				34FDE6CBF7AA0FC3AC8378B1 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -418,7 +418,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -435,7 +435,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.2.2;
+				MARKETING_VERSION = 2.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -564,7 +564,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -581,7 +581,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.2.2;
+				MARKETING_VERSION = 2.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -602,7 +602,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = WCHQ7B9SLR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -619,7 +619,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.2.2;
+				MARKETING_VERSION = 2.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moonuniverse.moonblink.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
