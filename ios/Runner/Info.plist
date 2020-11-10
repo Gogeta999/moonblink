@@ -73,7 +73,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To record your voice using your device microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>This app uses the devices&apos;s acclerometer to measure performance.</string>
+	<string>This app uses the devices's acclerometer to measure performance.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This allows us to show your photos and albums within the app so you can easily choose and upload them conveniently.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

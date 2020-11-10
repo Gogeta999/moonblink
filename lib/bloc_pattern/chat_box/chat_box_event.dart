@@ -9,6 +9,11 @@ class ChatBoxFetched extends ChatBoxEvent {
   List<Object> get props => [];
 }
 
+class ChatBoxFetchedMore extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class ChatBoxSendMessage extends ChatBoxEvent {
   @override
   List<Object> get props => [];
