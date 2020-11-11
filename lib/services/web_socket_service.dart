@@ -71,7 +71,7 @@ class WebSocketService {
     _socket.on(DefaultEvents.connect, (data) {
       print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
-      _chatBoxBloc.add(ChatBoxFetched());
+      _chatBoxBloc?.add(ChatBoxFetched());
       showToast('Connected');
     });
     _socket.once(EventsToListen.connectedUsers, (data) {

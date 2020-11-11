@@ -441,21 +441,20 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapSecondButtonToState(
       ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
-      final newMessage = 'Second Button';
-      WebSocketService().sendMessage(newMessage, partnerId);
-
       _secondTotal = _buttonSeconds;
       secondButtonSubject.add('5 : 00');
       _secondStartCounting();
 
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
+      final newMessage =
+          'Auto-Reply\nကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ ဝယ်ယူပါ။\nPlease go to MoonGo page and buy coin.\nhttps://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =
       //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
-      final senderId = myId;
-      final receiverId = partnerId;
+      final senderId = partnerId;
+      final receiverId = myId;
       final type = MESSAGE;
       final attach = '';
       final createdAt = now;
@@ -471,21 +470,20 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapThirdButtonToState(
       ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
-      final newMessage = 'Third Button';
-      WebSocketService().sendMessage(newMessage, partnerId);
-
       _thirdTotal = _buttonSeconds;
       thirdButtonSubject.add('5 : 00');
       _thirdStartCounting();
 
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
+      final newMessage =
+          'Auto-Reply\nကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ လေ့လာပေးပါ။\nPlease go to MoonGo page and check how to book.\nhttps://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =
       //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
-      final senderId = myId;
-      final receiverId = partnerId;
+      final senderId = partnerId;
+      final receiverId = myId;
       final type = MESSAGE;
       final attach = '';
       final createdAt = now;

@@ -207,7 +207,16 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             backgroundColor: Colors.blueAccent.withAlpha(0x33),
           ),
           onTap: (url) {
-            alerturl(url);
+            ///Checking if the url is our video link or not. if true launch directly without showing warning since it's our supported url.
+            if (url ==
+                "https://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/") {
+              launch(url);
+            } else if (url ==
+                "https://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/") {
+              launch(url);
+            } else {
+              alerturl(url);
+            }
           },
           onLongPress: (url) => Share.share(url),
         ),
@@ -432,7 +441,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           color: _isDark() ? Colors.white : Colors.black,
                           fontWeight: FontWeight.w300))),
               Container(
-                height: 40,
+                height: 80,
                 child: ListView(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -462,7 +471,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           }
                           return CupertinoButton.filled(
                               padding: const EdgeInsets.all(4),
-                              child: Text('Are you available?'),
+                              child: Text(
+                                  'Are you available?\nသင်နဲ့ Gameအတူတူဆော့ဖို့ အားနေလား။'),
                               onPressed: () =>
                                   _chatBoxBloc.add(ChatBoxCheckAvailable()));
                         }),
@@ -491,7 +501,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           }
                           return CupertinoButton.filled(
                               padding: const EdgeInsets.all(4),
-                              child: Text('Second Button'),
+                              child: Text(
+                                  'I want to play with you, where can I buy coin?\nသင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။'),
                               onPressed: () =>
                                   _chatBoxBloc.add(ChatBoxSecondButton()));
                         }),
@@ -520,7 +531,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           }
                           return CupertinoButton.filled(
                               padding: const EdgeInsets.all(4),
-                              child: Text('Third Button'),
+                              child: Text(
+                                  'What should i do to play with you?\nသင်နဲ့ဆော့ရအောင်ကျန်တော်ဘာကိုလုပ်ရမှာလဲ။'),
                               onPressed: () =>
                                   _chatBoxBloc.add(ChatBoxThirdButton()));
                         }),
