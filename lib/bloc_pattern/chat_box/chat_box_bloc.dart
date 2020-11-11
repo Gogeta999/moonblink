@@ -157,8 +157,11 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     ChatBoxEvent event,
   ) async* {
     final currentState = state;
-    if (event is ChatBoxFetched && !_hasReachedMax(currentState)) {
+    if (event is ChatBoxFetched) {
       yield* _mapFetchedToState(currentState);
+    }
+    if (event is ChatBoxFetchedMore && !_hasReachedMax(currentState)) {
+      yield* _mapFetchedMoreToState(currentState);
     }
     if (event is ChatBoxCancelBooking)
       yield* _mapCancelBookingToState(currentState);
@@ -184,26 +187,31 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
           event.time,
           event.attach,
           event.type);
-    if (event is ChatBoxCheckAvailable) yield* _mapCheckAvailableToState();
-    if (event is ChatBoxSecondButton) yield* _mapSecondButtonToState();
-    if (event is ChatBoxThirdButton) yield* _mapThirdButtonToState();
+    if (event is ChatBoxCheckAvailable)
+      yield* _mapCheckAvailableToState(currentState);
+    if (event is ChatBoxSecondButton)
+      yield* _mapSecondButtonToState(currentState);
+    if (event is ChatBoxThirdButton)
+      yield* _mapThirdButtonToState(currentState);
   }
 
   Stream<ChatBoxState> _mapFetchedToState(ChatBoxState currentState) async* {
-    if (currentState is ChatBoxInitial) {
-      List<LastMessage> data = [];
-      MoonBlinkRepository.fetchPartner(partnerId)
-          .then((value) => partnerUserSubject.add(value), onError: (e) async* {
-        yield ChatBoxFailure(error: e);
-      });
-      try {
-        data = await _fetchLastMessages(limit: _limit, page: 1);
-        bool hasReachedMax = data.length < _limit ? true : false;
-        yield ChatBoxSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
-      } catch (e) {
-        yield ChatBoxSuccess(data: data, hasReachedMax: true, page: 1);
-      }
+    List<LastMessage> data = [];
+    MoonBlinkRepository.fetchPartner(partnerId)
+        .then((value) => partnerUserSubject.add(value), onError: (e) async* {
+      yield ChatBoxFailure(error: e);
+    });
+    try {
+      data = await _fetchLastMessages(limit: _limit, page: 1);
+      bool hasReachedMax = data.length < _limit ? true : false;
+      yield ChatBoxSuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
+    } catch (e) {
+      yield ChatBoxSuccess(data: data, hasReachedMax: true, page: 1);
     }
+  }
+
+  Stream<ChatBoxState> _mapFetchedMoreToState(
+      ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
       final nextPage = currentState.page + 1;
       try {
@@ -319,8 +327,10 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       WebSocketService().sendMessage(text, partnerId);
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
-      final id = currentState.data.last.id + 1;
-      final roomId = currentState.data.last.roomId;
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
       final senderId = myId;
       final receiverId = partnerId;
       final newMessage = text;
@@ -328,8 +338,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final attach = '';
       final createdAt = now;
       final updatedAt = now;
-      final lastMessage = LastMessage(id, roomId, senderId, receiverId,
-          newMessage, type, attach, createdAt, updatedAt);
+      final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
+          type, attach, createdAt, updatedAt);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
@@ -344,10 +354,12 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       String fileName = myId.toString() + now + ".jpg";
       WebSocketService()
           .sendImage(fileName, image.readAsBytesSync(), partnerId);
-      final id = currentState.data.last.id + 1;
-      final roomId = currentState.data.last.roomId;
-      final lastMessage = LastMessage(id, roomId, myId, partnerId, '', IMAGE,
-          image.absolute.path, now, now);
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
+      final lastMessage = LastMessage(
+          1, 0, myId, partnerId, '', IMAGE, image.absolute.path, now, now);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
@@ -362,10 +374,12 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       String fileName = myId.toString() + now + ".wav";
       WebSocketService()
           .sendAudio(fileName, audio.readAsBytesSync(), partnerId);
-      final id = currentState.data.last.id + 1;
-      final roomId = currentState.data.last.roomId;
-      final lastMessage = LastMessage(id, roomId, myId, partnerId, '', AUDIO,
-          audio.absolute.path, now, now);
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
+      final lastMessage = LastMessage(
+          1, 0, myId, partnerId, '', AUDIO, audio.absolute.path, now, now);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
@@ -381,32 +395,107 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       String attach,
       int type) async* {
     if (currentState is ChatBoxSuccess) {
-      final id = currentState.data.last.id + 1;
-      final roomId = currentState.data.last.roomId;
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
       final lastMessage = LastMessage(
-          id, roomId, senderId, receiverId, message, type, attach, time, time);
+          1, 0, senderId, receiverId, message, type, attach, time, time);
       final List<LastMessage> data = List.from(currentState.data);
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
     }
   }
 
-  Stream<ChatBoxState> _mapCheckAvailableToState() async* {
-    _firstTotal = _buttonSeconds;
-    firstButtonSubject.add('5 : 00');
-    _firstStartCounting();
+  Stream<ChatBoxState> _mapCheckAvailableToState(
+      ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      final newMessage = 'Are you available?';
+      WebSocketService().sendMessage(newMessage, partnerId);
+
+      _firstTotal = _buttonSeconds;
+      firstButtonSubject.add('5 : 00');
+      _firstStartCounting();
+
+      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+      final now = dateFormat.format(DateTime.now());
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
+      final senderId = myId;
+      final receiverId = partnerId;
+      final type = MESSAGE;
+      final attach = '';
+      final createdAt = now;
+      final updatedAt = now;
+      print('%id');
+      final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
+          type, attach, createdAt, updatedAt);
+      final List<LastMessage> data = List.from(currentState.data);
+      data.insert(0, lastMessage);
+      yield currentState.copyWith(data: data);
+    }
   }
 
-  Stream<ChatBoxState> _mapSecondButtonToState() async* {
-    _secondTotal = _buttonSeconds;
-    secondButtonSubject.add('5 : 00');
-    _secondStartCounting();
+  Stream<ChatBoxState> _mapSecondButtonToState(
+      ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      final newMessage = 'Second Button';
+      WebSocketService().sendMessage(newMessage, partnerId);
+
+      _secondTotal = _buttonSeconds;
+      secondButtonSubject.add('5 : 00');
+      _secondStartCounting();
+
+      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+      final now = dateFormat.format(DateTime.now());
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
+      final senderId = myId;
+      final receiverId = partnerId;
+      final type = MESSAGE;
+      final attach = '';
+      final createdAt = now;
+      final updatedAt = now;
+      final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
+          type, attach, createdAt, updatedAt);
+      final List<LastMessage> data = List.from(currentState.data);
+      data.insert(0, lastMessage);
+      yield currentState.copyWith(data: data);
+    }
   }
 
-  Stream<ChatBoxState> _mapThirdButtonToState() async* {
-    _thirdTotal = _buttonSeconds;
-    thirdButtonSubject.add('5 : 00');
-    _thirdStartCounting();
+  Stream<ChatBoxState> _mapThirdButtonToState(
+      ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      final newMessage = 'Third Button';
+      WebSocketService().sendMessage(newMessage, partnerId);
+
+      _thirdTotal = _buttonSeconds;
+      thirdButtonSubject.add('5 : 00');
+      _thirdStartCounting();
+
+      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+      final now = dateFormat.format(DateTime.now());
+      // final id =
+      //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
+      // final roomId =
+      //     currentState.data.isNotEmpty ? currentState.data.last.roomId : 0;
+      final senderId = myId;
+      final receiverId = partnerId;
+      final type = MESSAGE;
+      final attach = '';
+      final createdAt = now;
+      final updatedAt = now;
+      final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
+          type, attach, createdAt, updatedAt);
+      final List<LastMessage> data = List.from(currentState.data);
+      data.insert(0, lastMessage);
+      yield currentState.copyWith(data: data);
+    }
   }
 
   void _firstStartCounting() {

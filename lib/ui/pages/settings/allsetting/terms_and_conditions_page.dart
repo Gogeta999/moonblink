@@ -227,8 +227,7 @@ class TermsAndConditions extends StatelessWidget {
                       // }
                       StorageManager.sharedPreferences
                           .setBool(isNewUser, false);
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, RouteName.login, (route) => false);
+                      Navigator.pushNamed(context, RouteName.language);
                     },
                   ),
                 ),
