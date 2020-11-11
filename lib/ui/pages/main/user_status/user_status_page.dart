@@ -112,6 +112,19 @@ class _UserStatusPageState extends State<UserStatusPage> {
                     animationDuration: 1000,
                     lineHeight: 12.0,
                     leading: Text("Exp"),
+                    trailing: InkWell(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 5),
+                        width: 10,
+                        child: Text("?"),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserLevelPage()));
+                      },
+                    ),
                     percent: profile != null
                         ? double.parse(profile.levelpercent)
                         : 0,
