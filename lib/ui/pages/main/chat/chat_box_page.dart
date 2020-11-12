@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
@@ -221,16 +220,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           },
           onLongPress: (url) => Share.share(url),
         ),
-        // child: SelectableText(
-        //   lastMessage.message,
-        //   style: TextStyle(
-        //       color: _isDark() ? Colors.white : Colors.black,
-        //       fontWeight: FontWeight.w500),
-        //   autofocus: true,
-        //   cursorRadius: Radius.circular(50),
-        //   cursorColor: Colors.white,
-        //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
-        // ),
       ),
     );
   }
@@ -590,7 +579,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                         padding: const EdgeInsets.all(4),
                         child: Center(
                           child: Text(
-                              '$firstButtonMessage\nသင်နဲ့ Gameအတူတူဆော့ဖို့ အားနေလား။',
+                              '$firstButtonMessage\nကျွန်တော်နင့် ဂိမ်းတူတူဆော့ရန် အားပါသလား။',
                               textAlign: TextAlign.center),
                         ),
                       ),
@@ -686,7 +675,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                         padding: const EdgeInsets.all(4),
                         child: Center(
                           child: Text(
-                              '$thirdButtonMessage\nသင်နဲ့ဆော့ရအောင်ကျန်တော်ဘာကိုလုပ်ရမှာလဲ။',
+                              '$thirdButtonMessage\nသင်နဲ့ဆော့ရအောင်ကျွန်တော်ဘာကိုလုပ်ရမှာလဲ။',
                               textAlign: TextAlign.center),
                         ),
                       ),
