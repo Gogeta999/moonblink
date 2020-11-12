@@ -57,7 +57,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(oldDevSocketUrl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000
@@ -71,7 +71,8 @@ class WebSocketService {
     _socket.on(DefaultEvents.connect, (data) {
       print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
-      _chatBoxBloc?.add(ChatBoxFetched());
+      _chatBoxBloc?.add(
+          ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
     });
     _socket.once(EventsToListen.connectedUsers, (data) {

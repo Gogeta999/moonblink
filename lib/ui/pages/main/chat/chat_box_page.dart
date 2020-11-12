@@ -70,7 +70,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    //_chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
     if (myType == kNormal) {
       _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
     } else {
@@ -844,7 +843,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             _bookingUserIsMe(snapshot.data.bookingUserId)) {
           return _buildBookingEndButton();
         }
-        return blockbtn();
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
+        }
+        return Container();
       },
     );
   }
