@@ -57,7 +57,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(oldDevSocketUrl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000
@@ -117,6 +117,7 @@ class WebSocketService {
 
   void sendMessage(String message, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    print('Message Sent - $message');
     _socket.emit(EventsToEmit.chatMessage, [
       {
         'message': message,

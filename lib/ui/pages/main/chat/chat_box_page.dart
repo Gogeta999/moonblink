@@ -71,6 +71,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
+    //_chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
     if (myType == kNormal) {
       _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
     } else {
@@ -112,7 +113,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      _chatBoxBloc.saveTimer();
+      if (myType == kNormal) _chatBoxBloc.saveTimer();
     }
   }
 
@@ -421,126 +422,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
 
         if (snapshot.data.status != ACCEPTED && myType == kNormal) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color: _isDark() ? Colors.white24 : Colors.black26),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Text(
-                      'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: _isDark() ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w300))),
-              Container(
-                height: 80,
-                child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    SizedBox(width: 10),
-                    StreamBuilder<String>(
-                        initialData: null,
-                        stream: _chatBoxBloc.firstButtonSubject,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return CupertinoButton(
-                              padding: const EdgeInsets.all(4),
-                              child: CupertinoActivityIndicator(),
-                              onPressed: () {},
-                            );
-                          }
-                          if (snapshot.data.isNotEmpty) {
-                            return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('${snapshot.data}'),
-                              ),
-                              onPressed: () {},
-                            );
-                          }
-                          return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Text(
-                                  'Are you available?\nသင်နဲ့ Gameအတူတူဆော့ဖို့ အားနေလား။'),
-                              onPressed: () =>
-                                  _chatBoxBloc.add(ChatBoxCheckAvailable()));
-                        }),
-                    SizedBox(width: 10),
-                    StreamBuilder<String>(
-                        initialData: null,
-                        stream: _chatBoxBloc.secondButtonSubject,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return CupertinoButton(
-                              padding: const EdgeInsets.all(4),
-                              child: CupertinoActivityIndicator(),
-                              onPressed: () {},
-                            );
-                          }
-                          if (snapshot.data.isNotEmpty) {
-                            return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('${snapshot.data}'),
-                              ),
-                              onPressed: () {},
-                            );
-                          }
-                          return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Text(
-                                  'I want to play with you, where can I buy coin?\nသင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။'),
-                              onPressed: () =>
-                                  _chatBoxBloc.add(ChatBoxSecondButton()));
-                        }),
-                    SizedBox(width: 10),
-                    StreamBuilder<String>(
-                        initialData: null,
-                        stream: _chatBoxBloc.thirdButtonSubject,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return CupertinoButton(
-                              padding: const EdgeInsets.all(4),
-                              child: CupertinoActivityIndicator(),
-                              onPressed: () {},
-                            );
-                          }
-                          if (snapshot.data.isNotEmpty) {
-                            return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('${snapshot.data}'),
-                              ),
-                              onPressed: () {},
-                            );
-                          }
-                          return CupertinoButton.filled(
-                              padding: const EdgeInsets.all(4),
-                              child: Text(
-                                  'What should i do to play with you?\nသင်နဲ့ဆော့ရအောင်ကျန်တော်ဘာကိုလုပ်ရမှာလဲ။'),
-                              onPressed: () =>
-                                  _chatBoxBloc.add(ChatBoxThirdButton()));
-                        }),
-                  ],
-                ),
-              ),
-            ],
-          );
+          return _buildNormalUserButtons();
         }
 
         ///Blocked
@@ -637,6 +519,184 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNormalUserButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            decoration: BoxDecoration(
+                border: Border.all(
+                    width: 1,
+                    color: _isDark() ? Colors.white24 : Colors.black26),
+                borderRadius: BorderRadius.circular(10)),
+            child: Text(
+                'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: _isDark() ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w300))),
+        Container(
+          height: 60,
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            physics: ClampingScrollPhysics(),
+            children: [
+              SizedBox(width: 10),
+
+              ///First
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.firstButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$firstButtonMessage\nသင်နဲ့ Gameအတူတူဆော့ဖို့ အားနေလား။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+
+              ///Second
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.secondButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$secondButtonMessage\nသင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+
+              ///Third
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.thirdButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$thirdButtonMessage\nသင်နဲ့ဆော့ရအောင်ကျန်တော်ဘာကိုလုပ်ရမှာလဲ။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1173,7 +1233,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         builder: (_) {
           return CustomDialog(
             title: G.of(context).bookingEnded,
-            simpleContent: 'Do you sure to end this order?',
+            simpleContent: 'Are you sure to end this order?',
             // row2Content: BookingTimeLeft(
             //   count: bookingStatus.count,
             //   upadateat: bookingStatus.updatedAt,

@@ -410,7 +410,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapCheckAvailableToState(
       ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
-      final newMessage = 'Are you available?';
+      final newMessage = firstButtonMessage;
       WebSocketService().sendMessage(newMessage, partnerId);
 
       _firstTotal = _buttonSeconds;
@@ -429,7 +429,6 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final attach = '';
       final createdAt = now;
       final updatedAt = now;
-      print('%id');
       final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
           type, attach, createdAt, updatedAt);
       final List<LastMessage> data = List.from(currentState.data);
@@ -441,6 +440,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapSecondButtonToState(
       ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
+      WebSocketService().sendMessage(secondButtonMessage, partnerId);
+
       _secondTotal = _buttonSeconds;
       secondButtonSubject.add('5 : 00');
       _secondStartCounting();
@@ -448,7 +449,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
       final newMessage =
-          'Auto-Reply\nကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ ဝယ်ယူပါ။\nPlease go to MoonGo page and buy coin.\nhttps://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/';
+          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ ဝယ်ယူပါ။Please go to MoonGo page and buy coin,https://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =
@@ -462,6 +463,10 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
           type, attach, createdAt, updatedAt);
       final List<LastMessage> data = List.from(currentState.data);
+      data.insert(
+          0,
+          LastMessage(1, 0, myId, partnerId, secondButtonMessage, type, attach,
+              createdAt, updatedAt));
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
     }
@@ -470,6 +475,8 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   Stream<ChatBoxState> _mapThirdButtonToState(
       ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
+      WebSocketService().sendMessage(thirdButtonMessage, partnerId);
+
       _thirdTotal = _buttonSeconds;
       thirdButtonSubject.add('5 : 00');
       _thirdStartCounting();
@@ -477,7 +484,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
       final newMessage =
-          'Auto-Reply\nကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ လေ့လာပေးပါ။\nPlease go to MoonGo page and check how to book.\nhttps://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/';
+          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ လေ့လာပေးပါ။Please go to MoonGo page and check how to book.https://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =
@@ -491,6 +498,10 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       final lastMessage = LastMessage(1, 0, senderId, receiverId, newMessage,
           type, attach, createdAt, updatedAt);
       final List<LastMessage> data = List.from(currentState.data);
+      data.insert(
+          0,
+          LastMessage(1, 0, myId, partnerId, thirdButtonMessage, type, attach,
+              createdAt, updatedAt));
       data.insert(0, lastMessage);
       yield currentState.copyWith(data: data);
     }
