@@ -16,6 +16,7 @@ class TopUpBottomSheet extends StatefulWidget {
 class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
   ///Constants
   final bool kAutoConsume = true;
+  final String coin100Consumable = 'coin_100';
   final String coin200Consumable =
       Platform.isAndroid ? 'coin_200' : 'coin_200_ios';
   final String coin500Consumable = 'coin_500';
@@ -40,6 +41,9 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
 
   @override
   void initState() {
+    if (Platform.isIOS) {
+      _kProductIds.insert(0, 'coin_100');
+    }
     Stream purchaseUpdated =
         InAppPurchaseConnection.instance.purchaseUpdatedStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
@@ -228,8 +232,11 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  productDetails.title ?? (){
-                    if (productDetails.id == coin200Consumable) {
+                  //productDetails.title ??
+                  () {
+                    if (productDetails.id == coin100Consumable) {
+                      return '100 Moon Go Coins';
+                    } else if (productDetails.id == coin200Consumable) {
                       return '200 Moon Go Coins';
                     } else if (productDetails.id == coin500Consumable) {
                       return '500 Moon Go Coins';
@@ -241,9 +248,6 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
                   }(),
                 ),
               ),
-              // Text(
-              //   productDetails.description,
-              // ),
               previousPurchase != null
                   ? Icon(Icons.check)
                   : ShadedContainer(
@@ -255,7 +259,8 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
 
                             ///production sandboxTesting false
                             sandboxTesting: false);
-                        if (productDetails.id == coin200Consumable ||
+                        if (productDetails.id == coin100Consumable ||
+                            productDetails.id == coin200Consumable ||
                             productDetails.id == coin500Consumable ||
                             productDetails.id == coin1000Consumable) {
                           _connection.buyConsumable(
@@ -372,7 +377,8 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
 
   void deliverProduct(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase purchase details before delivering the product.
-    if (purchaseDetails.productID == coin200Consumable ||
+    if (purchaseDetails.productID == coin100Consumable ||
+        purchaseDetails.productID == coin200Consumable ||
         purchaseDetails.productID == coin500Consumable ||
         purchaseDetails.productID == coin1000Consumable) {
       userTopUp(purchaseDetails.productID);
@@ -420,7 +426,8 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
           }
         }
         if (Platform.isAndroid) {
-          if (!kAutoConsume && purchaseDetails.productID == coin200Consumable ||
+          if (!kAutoConsume && purchaseDetails.productID == coin100Consumable ||
+              purchaseDetails.productID == coin200Consumable ||
               purchaseDetails.productID == coin500Consumable ||
               purchaseDetails.productID == coin1000Consumable) {
             await InAppPurchaseConnection.instance
