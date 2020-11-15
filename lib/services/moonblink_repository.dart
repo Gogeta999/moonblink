@@ -122,6 +122,15 @@ class MoonBlinkRepository {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     // var userToken = StorageManager.sharedPreferences.getString(token);
     var response =
+        await DioUtils().get(Api.SimpleRequestApi + '$userId/follow');
+    return response.data
+        .map<Contact>((item) => Contact.fromJson(item))
+        .toList();
+  }
+
+  ///[Get follower list]
+  static Future getFollowerList(int userId) async {
+    var response =
         await DioUtils().get(Api.SimpleRequestApi + '$userId/following');
     return response.data
         .map<Contact>((item) => Contact.fromJson(item))
