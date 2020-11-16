@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moonblink/bloc_pattern/update_game_profile/bloc/update_game_profile_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
@@ -11,33 +13,34 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 
 class GameModeBottomSheet extends StatefulWidget {
-  final List<GameMode> gameModeList;
-  final List<Map<String, int>> selectedGameModeIndex;
-  final Function(List<Map<String, int>> newSelectedGameModeIndex) onDone;
-
-  const GameModeBottomSheet(
-      {Key key,
-      @required this.gameModeList,
-      this.onDone,
-      this.selectedGameModeIndex})
-      : super(key: key);
+  const GameModeBottomSheet({Key key}) : super(key: key);
 
   @override
   _GameModeBottomSheet createState() => _GameModeBottomSheet();
 }
 
 class _GameModeBottomSheet extends State<GameModeBottomSheet> {
-  TextStyle _textStyle;
+  UpdateGameProfileBloc _updateGameProfileBloc;
+  List<Map<String, int>> copySelected;
 
   @override
   void initState() {
+    _updateGameProfileBloc = BlocProvider.of<UpdateGameProfileBloc>(context);
+    copySelected =
+        List.unmodifiable(_updateGameProfileBloc.selectedGameModeIndex);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textStyle = TextStyle(color: Theme.of(context).accentColor);
+    _updateGameProfileBloc.textStyle =
+        TextStyle(color: Theme.of(context).accentColor);
   }
 
   _buildCharge() {
@@ -136,21 +139,21 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
               CupertinoButton(
                 onPressed: () {
                   Navigator.pop(context);
+                  _updateGameProfileBloc.selectedGameModeIndex.clear();
+                  _updateGameProfileBloc.selectedGameModeIndex
+                      .addAll(copySelected);
                 },
-                child: Text(G.of(context).cancel, style: _textStyle),
+                child: Text(G.of(context).cancel,
+                    style: _updateGameProfileBloc.textStyle),
               ),
               Text(G.current.selectgameMode,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               CupertinoButton(
                 onPressed: () {
-                  widget.selectedGameModeIndex.sort((a, b) =>
-                      int.tryParse(a.keys.first) > int.tryParse(b.keys.first)
-                          ? 1
-                          : 0);
-                  widget.onDone(widget.selectedGameModeIndex);
                   Navigator.pop(context);
                 },
-                child: Text(G.current.done, style: _textStyle),
+                child: Text(G.current.done,
+                    style: _updateGameProfileBloc.textStyle),
               ),
             ],
           ),
@@ -160,15 +163,26 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
         Container(
           constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.8),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            itemCount: widget.gameModeList.length,
-            itemBuilder: (context, index) {
-              return GameModeListTile(
-                  widget.gameModeList, widget.selectedGameModeIndex, index);
-            },
-          ),
+          child: StreamBuilder<List<GameMode>>(
+              initialData: null,
+              stream: _updateGameProfileBloc.gameModeListSubject,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else if (snapshot.data == null) {
+                  return CupertinoActivityIndicator();
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GameModeListTile(snapshot.data,
+                          _updateGameProfileBloc.selectedGameModeIndex, index);
+                    },
+                  );
+                }
+              }),
         )
       ],
     );
@@ -210,7 +224,6 @@ class _GameModeListTileState extends State<GameModeListTile> {
   }
 
   _showMaterialDialog(BuildContext context, TextEditingController controller) {
-    print("Showing Cupertino");
     showDialog(
         context: context,
         builder: (context) {
@@ -248,9 +261,6 @@ class _GameModeListTileState extends State<GameModeListTile> {
   }
 
   _showCupertinoDialog(BuildContext context, TextEditingController controller) {
-    print('Showing Cupertino');
-    print('MyUserType == $myUserType');
-    print('Default Price is $_defaultPrice');
     showCupertinoDialog(
         context: context,
         builder: (context) {

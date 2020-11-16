@@ -83,50 +83,55 @@ class MB2StateButtonWidget extends StatelessWidget {
 }
 
 class MBBoxWidget extends StatelessWidget {
-  MBBoxWidget({Key key, this.text, this.followers}) : super(key: key);
+  MBBoxWidget({Key key, this.ontap, this.text, this.followers})
+      : super(key: key);
+  final ontap;
   final text;
   final followers;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 160,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          // Icon(
-          //   iconData,
-          //   color: Colors.white,
-          //   size: 30.0,
-          // ),
-          Center(
-            child: Text(text,
-                style: Theme.of(context).textTheme.bodyText1,
-                // TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
-                softWrap: true),
-          ),
-          Text(
-            followers,
-            style: Theme.of(context).textTheme.button,
-            softWrap: true,
-          )
-        ],
-      ),
-      decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          border: Border.all(width: 1, color: Colors.black),
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.black,
-              spreadRadius: 2,
-              // blurRadius: 2,
-              offset: Offset(-8, 7), // changes position of shadow
+    return InkWell(
+      onTap: ontap,
+      child: Container(
+        height: 100,
+        width: 160,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            // Icon(
+            //   iconData,
+            //   color: Colors.white,
+            //   size: 30.0,
+            // ),
+            Center(
+              child: Text(text,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  // TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+                  softWrap: true),
             ),
-          ]),
+            Text(
+              followers,
+              style: Theme.of(context).textTheme.button,
+              softWrap: true,
+            )
+          ],
+        ),
+        decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            border: Border.all(width: 1, color: Colors.black),
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.black,
+                spreadRadius: 2,
+                // blurRadius: 2,
+                offset: Offset(-8, 7), // changes position of shadow
+              ),
+            ]),
+      ),
     );
   }
 }

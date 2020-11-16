@@ -8,6 +8,7 @@ import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
@@ -125,6 +126,14 @@ class MoonBlinkRepository {
         await DioUtils().get(Api.SimpleRequestApi + '$userId/following');
     return response.data
         .map<Contact>((item) => Contact.fromJson(item))
+        .toList();
+  }
+
+  ///[Get follower list]
+  static Future getFollowerList(int userId) async {
+    var response = await DioUtils().get(Api.Follower + '$userId/follow');
+    return response.data
+        .map<Follower>((item) => Follower.fromJson(item))
         .toList();
   }
 
@@ -376,6 +385,13 @@ class MoonBlinkRepository {
       'is_archive': 1
     });
     return UserMessageNotificationResponse.fromJson(response.data);
+  }
+
+  static markAllNotificationReadState() async {
+    int userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .patch(Api.UserNotificationRead + '$userId/notification/read');
+    return response;
   }
 
   //change message notification to read state

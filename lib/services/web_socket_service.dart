@@ -71,7 +71,8 @@ class WebSocketService {
     _socket.on(DefaultEvents.connect, (data) {
       print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
-      _chatBoxBloc?.add(ChatBoxFetched());
+      _chatBoxBloc?.add(
+          ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
     });
     _socket.once(EventsToListen.connectedUsers, (data) {
@@ -117,6 +118,7 @@ class WebSocketService {
 
   void sendMessage(String message, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    print('Message Sent - $message');
     _socket.emit(EventsToEmit.chatMessage, [
       {
         'message': message,

@@ -41,7 +41,7 @@ class UserTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [name],
                     ),
-                    trailing
+                    trailing != null ? trailing : Container(),
                   ],
                 ),
               ),

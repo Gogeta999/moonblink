@@ -13,6 +13,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/helper/agreement.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 
@@ -166,6 +167,7 @@ class LoginButton extends StatelessWidget {
                     // print('User\'s type: is $type and Profile is $gameprofile');
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
+                    tutorialOn();
                     if (gameprofile == 0 && type != 0) {
                       gameProfileSetUp();
                     }

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -18,7 +21,9 @@ import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -41,6 +46,38 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   // int detailPageId;
   final RefreshController _refreshController = RefreshController();
   // final ScrollController _scrollController = ScrollController();
+  Intro intro;
+  bool tuto = false;
+
+  _PartnerDetailPageState() {
+    intro = Intro(
+      stepCount: 6,
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          'Click Follow to see this player story and updates',
+          'Click Followers to see followers of this player',
+          'This is the rating of this player',
+          'Click Booking to book playtime with this player',
+          'Click Chat to go to chatbox of this player',
+          'Click this Icon to report or block this player',
+        ],
+        btnLabel: 'Next',
+        showStepLabel: false,
+      ),
+    );
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    bool showtuto = StorageManager.sharedPreferences.getBool(userdetailtuto);
+    setState(() {
+      tuto = showtuto;
+    });
+  }
+
   @override
   void dispose() {
     _refreshController.dispose();
@@ -164,6 +201,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         width: 30,
         height: 30,
         child: IconButton(
+          key: intro.keys[5],
           // iconSize: 40,
           //splashRadius: 20,
           icon: SvgPicture.asset(
@@ -240,6 +278,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
+            if (tuto) {
+              Timer(Duration(microseconds: 0), () {
+                intro.start(context);
+              });
+              StorageManager.sharedPreferences.setBool(userdetailtuto, false);
+            }
             void followingRequest(bool newValue) async {
               print('status is 0 so bool is' +
                   followButtonClicked.toString() +
@@ -495,6 +539,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                             ///[Follow Button]
                             MB2StateButtonWidget(
+                              key: intro.keys[0],
                               active: partnerModel.partnerData.isFollow == 0
                                   ? true
                                   : false,
@@ -512,6 +557,15 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                             ///[Followers total]
                             MBBoxWidget(
+                              key: intro.keys[1],
+                              ontap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FollowerPage(
+                                      partnerModel.partnerId,
+                                      partnerModel.partnerData.partnerName),
+                                ),
+                              ),
                               text: G.of(context).follower,
                               followers: partnerModel.partnerData.followerCount
                                   .toString(),
@@ -519,6 +573,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           ],
                         ),
                         MBAverageWidget(
+                          key: intro.keys[2],
                           title: G.of(context).averageRating,
                           averageRating: partnerModel.partnerData.rating,
                         )
@@ -535,6 +590,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                         ///StaticButton
                         MBButtonWidget(
+                            key: intro.keys[3],
                             title: G.of(context).booking,
                             onTap: widget.detailPageId == ownId
                                 ? () {
@@ -547,6 +603,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                   }),
 
                         MBButtonWidget(
+                            key: intro.keys[4],
                             title: G.of(context).tabChat,
                             onTap: widget.detailPageId == ownId
                                 ? () {

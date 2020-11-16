@@ -19,13 +19,6 @@ class UserMessageNotificationFailure extends UserMessageNotificationState {
 
   @override
   List<Object> get props => [error];
-
-}
-
-class UserMessageNotificationNoData extends UserMessageNotificationState {
-  @override
-  List<Object> get props => [];
-
 }
 
 class UserMessageNotificationSuccess extends UserMessageNotificationState {
@@ -33,19 +26,21 @@ class UserMessageNotificationSuccess extends UserMessageNotificationState {
   final bool hasReachedMax;
   final int page;
 
-  const UserMessageNotificationSuccess({this.data, this.hasReachedMax, this.page});
+  const UserMessageNotificationSuccess(
+      {this.data, this.hasReachedMax, this.page});
 
-  UserMessageNotificationSuccess copyWith({List<UserMessageNotificationData> data, bool hasReachedMax, int page}) {
+  UserMessageNotificationSuccess copyWith(
+      {List<UserMessageNotificationData> data, bool hasReachedMax, int page}) {
     return UserMessageNotificationSuccess(
         data: data ?? this.data,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-        page: page ?? this.page
-    );
+        page: page ?? this.page);
   }
 
   @override
   List<Object> get props => [data, hasReachedMax, page];
 
   @override
-  String toString() => 'UserNewNotificationSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
+  String toString() =>
+      'UserNewNotificationSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }

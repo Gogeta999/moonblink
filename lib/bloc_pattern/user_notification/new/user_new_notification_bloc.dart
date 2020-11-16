@@ -28,6 +28,13 @@ class UserNewNotificationBloc
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
 
+  final markAllReadSubject = BehaviorSubject.seeded(false);
+
+  void dispose() {
+    markAllReadSubject.close();
+    this.close();
+  }
+
   @override
   Stream<UserNewNotificationState> mapEventToState(
     UserNewNotificationEvent event,
@@ -44,6 +51,9 @@ class UserNewNotificationBloc
     }
     if (event is UserNewNotificationChangeToRead) {
       yield* _mapChangeToReadToState(currentState, event.notificationId);
+    }
+    if (event is UserNewNotificationMarkAllRead) {
+      yield* _mapMarkAllReadToState(currentState);
     }
     if (event is UserNewNotificationDelete) {
       yield* _mapDeleteToState(currentState, event.notificationId);
@@ -115,13 +125,11 @@ class UserNewNotificationBloc
       return;
     }
     bool hasReachedMax = data.length < notificationLimit ? true : false;
-    yield data.isEmpty
-        ? UserNewNotificationNoData()
-        : UserNewNotificationSuccess(
-            data: data,
-            hasReachedMax: hasReachedMax,
-            page: 1,
-            unreadCount: unreadCount);
+    yield UserNewNotificationSuccess(
+        data: data,
+        hasReachedMax: hasReachedMax,
+        page: 1,
+        unreadCount: unreadCount);
   }
 
   ///Refresh from start page to current page
@@ -144,20 +152,36 @@ class UserNewNotificationBloc
     }
     bool hasReachedMax =
         data.length < notificationLimit * currentPage ? true : false;
-    yield data.isEmpty
-        ? UserNewNotificationNoData()
-        : UserNewNotificationSuccess(
-            data: data,
-            hasReachedMax: hasReachedMax,
-            page: currentPage,
-            unreadCount: unreadCount);
+    yield UserNewNotificationSuccess(
+        data: data,
+        hasReachedMax: hasReachedMax,
+        page: currentPage,
+        unreadCount: unreadCount);
+  }
+
+  Stream<UserNewNotificationState> _mapMarkAllReadToState(
+      UserNewNotificationState currentState) async* {
+    if (currentState is UserNewNotificationSuccess) {
+      markAllReadSubject.add(true);
+      try {
+        MoonBlinkRepository.markAllNotificationReadState();
+        List<UserNewNotificationData> newData = List.from(currentState.data);
+        newData.forEach((element) {
+          element.isRead = 1;
+        });
+        yield currentState.copyWith(data: newData, unreadCount: 0);
+        markAllReadSubject.add(false);
+      } catch (e) {
+        markAllReadSubject.add(false);
+      }
+    }
   }
 
   ///Notification change to read
   Stream<UserNewNotificationState> _mapChangeToReadToState(
       UserNewNotificationState currentState, int notificationId) async* {
     if (currentState is UserNewNotificationSuccess) {
-      List<UserNewNotificationData> currentData = currentState.data;
+      List<UserNewNotificationData> currentData = List.from(currentState.data);
       var newData;
       int index = 0;
       currentData.forEach((element) {
@@ -169,24 +193,18 @@ class UserNewNotificationBloc
       if (currentData[index].fcmType == 'booking') {
         /// ----- Booking -----
         final data = currentData[index].data as UserBookingNotificationData;
-        if (data.fcmData.status == PENDING) {
-          await locator<NavigationService>().navigateTo(RouteName.chatBox,
+        if (data.fcmData.status == PENDING || data.fcmData.status == ACCEPTED) {
+          locator<NavigationService>().navigateTo(RouteName.chatBox,
               arguments: data.fcmData.bookingUserId);
         } else {
           showToast("Booking Request is expired");
         }
-
         if (currentData[index].isRead == 1 &&
             (data.fcmData.status == REJECT ||
                 data.fcmData.status == DONE ||
                 data.fcmData.status == EXPIRED ||
                 data.fcmData.status == UNAVAILABLE ||
                 data.fcmData.status == CANCEL)) {
-          ///old booking notification and already read
-          yield UserNewNotificationSuccess(
-              data: currentData,
-              hasReachedMax: currentState.hasReachedMax,
-              page: currentState.page);
           return;
         }
         try {
@@ -206,7 +224,8 @@ class UserNewNotificationBloc
               data: bookingData.fcmData);
           newData = data;
         } catch (error) {
-          yield UserNewNotificationFailure(error: error);
+          //yield UserNewNotificationFailure(error: error);
+          showToast(error.toString());
           return;
         }
         currentData[index] = newData;
@@ -238,7 +257,8 @@ class UserNewNotificationBloc
               data: messageData.messageData);
           newData = data;
         } catch (error) {
-          yield UserNewNotificationFailure(error: error);
+          //yield UserNewNotificationFailure(error: error);
+          showToast(error.toString());
           return;
         }
         currentData[index] = newData;
@@ -261,7 +281,7 @@ class UserNewNotificationBloc
   Stream<UserNewNotificationState> _mapDeleteToState(
       UserNewNotificationState currentState, int notificationId) async* {
     if (currentState is UserNewNotificationSuccess) {
-      List<UserNewNotificationData> currentData = currentState.data;
+      List<UserNewNotificationData> currentData = List.from(currentState.data);
       int index = 0;
       currentData.forEach((element) {
         if (element.id == notificationId) {
@@ -279,7 +299,6 @@ class UserNewNotificationBloc
           yield UserNewNotificationDeleteSuccess();
         } catch (error) {
           yield UserNewNotificationDeleteFailure(error: error);
-          return;
         }
         yield UserNewNotificationSuccess(
             data: currentData,
@@ -295,7 +314,6 @@ class UserNewNotificationBloc
           yield UserNewNotificationDeleteSuccess();
         } catch (error) {
           yield UserNewNotificationDeleteFailure(error: error);
-          return;
         }
         yield UserNewNotificationSuccess(
             data: currentData,
