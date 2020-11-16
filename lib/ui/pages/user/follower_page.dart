@@ -2,12 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/usercontainer.dart';
+import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/follower_model.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class FollowerPage extends StatefulWidget {
   final String name;
@@ -18,16 +25,23 @@ class FollowerPage extends StatefulWidget {
 }
 
 class _FollowerPageState extends State<FollowerPage> {
-  List<Contact> followers = [];
+  List<Follower> followers = [];
+  int usertype;
+  int ownId;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      usertype = StorageManager.sharedPreferences.getInt(mUserType);
+      ownId = StorageManager.sharedPreferences.getInt(mUserId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppbarWidget(
         title: Text(widget.name),
-        actions: [
-          AppbarLogo(),
-        ],
       ),
       body: ProviderWidget<FollowersModel>(
         model: FollowersModel(widget.id),
@@ -101,18 +115,31 @@ class _FollowerPageState extends State<FollowerPage> {
           }
           followers.clear();
           for (var i = 0; i < followerModel.list.length; i++) {
-            Contact follower = followerModel.list[i];
+            Follower follower = followerModel.list[i];
             followers.add(follower);
           }
           return ListView.builder(
             itemBuilder: (context, index) {
-              Contact follower = followers[index];
-              return ListTile(
+              Follower follower = followers[index];
+              print(follower.profileimage);
+              print("++++++++++++++++++++++++++++++++++++++++++++++++++");
+              return UserTile(
                 onTap: () {
-                  print(follower.contactUser.contactUserId);
+                  if (ownId == follower.userId) {
+                    showToast("You can\'t talk with yourself");
+                  } else if (usertype != 0 || follower.type != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewChatBoxPage(follower.userId),
+                      ),
+                    );
+                  } else {
+                    showToast("You can\'t talk with normal user");
+                  }
                 },
-                leading: CachedNetworkImage(
-                  imageUrl: follower.contactUser.contactUserProfile,
+                image: CachedNetworkImage(
+                  imageUrl: follower.profileimage,
                   imageBuilder: (context, imageProvider) => CircleAvatar(
                     radius: 33,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -125,7 +152,7 @@ class _FollowerPageState extends State<FollowerPage> {
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                title: Text(follower.contactUser.contactUserName),
+                name: Text(follower.name),
               );
             },
             itemCount: followerModel.list.length,

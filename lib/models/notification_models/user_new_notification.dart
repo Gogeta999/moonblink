@@ -11,8 +11,7 @@ class UserNewNotificationResponse {
     List<dynamic> dataJson = json['data'];
     int unread = json['unread_count'];
 
-    List<UserNewNotificationData> dataList =
-    dataJson.map((e) {
+    List<UserNewNotificationData> dataList = dataJson.map((e) {
       final temp = UserNewNotificationData.fromJson(e);
       temp.decodeData(e);
       return temp;
@@ -28,12 +27,21 @@ class UserNewNotificationData {
   final String fcmType;
   final String title;
   final String message;
-  final int isRead;
+  int isRead;
   final String createdAt;
   final String updatedAt;
   var data;
 
-  UserNewNotificationData({this.id, this.userId, this.fcmType, this.title, this.message, this.isRead, this.createdAt, this.updatedAt, this.data});
+  UserNewNotificationData(
+      {this.id,
+      this.userId,
+      this.fcmType,
+      this.title,
+      this.message,
+      this.isRead,
+      this.createdAt,
+      this.updatedAt,
+      this.data});
 
   UserNewNotificationData.fromJson(Map<String, dynamic> json)
       : id = json['id'],

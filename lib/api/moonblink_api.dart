@@ -61,10 +61,12 @@ class Api {
       'moonblink/api/v1/user/'; //moonblink/api/v1/user/{user_id}/block
 
   // Notification List
-  static const String UserNotifications = 'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/5/notification
+  static const String UserNotifications =
+      'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/5/notification
 
   //Notification read/unread
-  static const String UserNotificationRead = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/{user_id}/notification/{notification_id}
+  static const String UserNotificationRead =
+      'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/{user_id}/notification/{notification_id}
 
   // report user
   static const String ReportUser =
@@ -138,4 +140,7 @@ class Api {
 
   //UserRating
   static const String UserRating = 'moonblink/api/v1/social/rating';
+
+  //Follower
+  static const String Follower = 'moonblink/api/v1/social/user/';
 }

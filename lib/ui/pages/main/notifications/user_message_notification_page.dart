@@ -29,13 +29,13 @@ class _UserMessageNotificationPageState
     _userNotificationBloc.add(UserMessageNotificationFetched());
     _scrollController.addListener(_onScroll);
     _refreshCompleter = Completer<void>();
-    print('Initing');
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _userNotificationBloc.dispose();
     super.dispose();
   }
 
@@ -47,8 +47,6 @@ class _UserMessageNotificationPageState
         onRefresh: _onRefresh,
         child: BlocProvider.value(
             value: _userNotificationBloc,
-            //create: (_) =>
-            //_userNotificationBloc..add(UserNotificationFetched()),
             child: BlocConsumer<UserMessageNotificationBloc,
                 UserMessageNotificationState>(
               listener: (context, state) {
@@ -66,7 +64,6 @@ class _UserMessageNotificationPageState
                   return Center(child: CupertinoActivityIndicator());
                 }
                 if (state is UserMessageNotificationFailure) {
-                  print('${state.error}');
                   return ListView(
                     physics: ScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(
@@ -77,25 +74,7 @@ class _UserMessageNotificationPageState
                       ),
                       Center(
                         child: Text(
-                          'You have no notifications',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      )
-                    ],
-                  );
-                }
-                if (state is UserMessageNotificationNoData) {
-                  return ListView(
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    children: [
-                      SizedBox(
-                        height: 220,
-                      ),
-                      Center(
-                        child: Text(
-                          'You have no notifications',
+                          state.error.toString(),
                           style: TextStyle(fontSize: 20),
                         ),
                       )
@@ -114,7 +93,7 @@ class _UserMessageNotificationPageState
                         ),
                         Center(
                           child: Text(
-                            'You have no notifications',
+                            'You have no notification',
                             style: TextStyle(fontSize: 20),
                           ),
                         )
@@ -215,8 +194,5 @@ class NotificationListTile extends StatelessWidget {
     );
   }
 
-  _onTapListTile(BuildContext context, UserMessageNotificationData data) {
-    BlocProvider.of<UserMessageNotificationBloc>(context)
-        .add(UserMessageNotificationChangeToRead(data.id));
-  }
+  _onTapListTile(BuildContext context, UserMessageNotificationData data) {}
 }
