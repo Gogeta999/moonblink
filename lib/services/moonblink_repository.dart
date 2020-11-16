@@ -8,6 +8,7 @@ import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/models/message.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
@@ -122,7 +123,7 @@ class MoonBlinkRepository {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     // var userToken = StorageManager.sharedPreferences.getString(token);
     var response =
-        await DioUtils().get(Api.SimpleRequestApi + '$userId/follow');
+        await DioUtils().get(Api.SimpleRequestApi + '$userId/following');
     return response.data
         .map<Contact>((item) => Contact.fromJson(item))
         .toList();
@@ -130,10 +131,9 @@ class MoonBlinkRepository {
 
   ///[Get follower list]
   static Future getFollowerList(int userId) async {
-    var response =
-        await DioUtils().get(Api.SimpleRequestApi + '$userId/following');
+    var response = await DioUtils().get(Api.Follower + '$userId/follow');
     return response.data
-        .map<Contact>((item) => Contact.fromJson(item))
+        .map<Follower>((item) => Follower.fromJson(item))
         .toList();
   }
 

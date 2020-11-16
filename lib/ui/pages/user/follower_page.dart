@@ -3,9 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/container/usercontainer.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/follower_model.dart';
 
@@ -18,7 +21,7 @@ class FollowerPage extends StatefulWidget {
 }
 
 class _FollowerPageState extends State<FollowerPage> {
-  List<Contact> followers = [];
+  List<Follower> followers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -101,17 +104,23 @@ class _FollowerPageState extends State<FollowerPage> {
           }
           followers.clear();
           for (var i = 0; i < followerModel.list.length; i++) {
-            Contact follower = followerModel.list[i];
+            Follower follower = followerModel.list[i];
             followers.add(follower);
           }
           return ListView.builder(
             itemBuilder: (context, index) {
-              Contact follower = followers[index];
-              return ListTile(
+              Follower follower = followers[index];
+              return UserTile(
                 onTap: () {
-                  print(follower.contactUser.contactUserId);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          PartnerDetailPage(follower.contactUser.contactUserId),
+                    ),
+                  );
                 },
-                leading: CachedNetworkImage(
+                image: CachedNetworkImage(
                   imageUrl: follower.contactUser.contactUserProfile,
                   imageBuilder: (context, imageProvider) => CircleAvatar(
                     radius: 33,
@@ -125,7 +134,7 @@ class _FollowerPageState extends State<FollowerPage> {
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                title: Text(follower.contactUser.contactUserName),
+                name: Text(follower.contactUser.contactUserName),
               );
             },
             itemCount: followerModel.list.length,
