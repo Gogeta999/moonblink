@@ -58,6 +58,12 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
   Future<void> initStoreInfo() async {
     setState(() {
       _notFoundIds = [];
@@ -232,20 +238,20 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  //productDetails.title ??
-                  () {
-                    if (productDetails.id == coin100Consumable) {
-                      return '100 Moon Go Coins';
-                    } else if (productDetails.id == coin200Consumable) {
-                      return '200 Moon Go Coins';
-                    } else if (productDetails.id == coin500Consumable) {
-                      return '500 Moon Go Coins';
-                    } else if (productDetails.id == coin1000Consumable) {
-                      return '1000 Moon Go Coins';
-                    } else {
-                      return 'Moon Go Coins';
-                    }
-                  }(),
+                  productDetails.title ??
+                      () {
+                        if (productDetails.id == coin100Consumable) {
+                          return '100 Moon Go Coins';
+                        } else if (productDetails.id == coin200Consumable) {
+                          return '200 Moon Go Coins';
+                        } else if (productDetails.id == coin500Consumable) {
+                          return '500 Moon Go Coins';
+                        } else if (productDetails.id == coin1000Consumable) {
+                          return '1000 Moon Go Coins';
+                        } else {
+                          return 'Moon Go Coins';
+                        }
+                      }(),
                 ),
               ),
               previousPurchase != null
@@ -295,7 +301,9 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   ShadedContainer(
-                    ontap: () => Navigator.pop(context),
+                    ontap: () {
+                      if (!_purchasePending) Navigator.pop(context);
+                    },
                     child: Text('Done'),
                   ),
                 ],
@@ -340,8 +348,11 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
       );
     }
 
-    return Stack(
-      children: stack,
+    return WillPopScope(
+      onWillPop: () => Future.value(!_purchasePending),
+      child: Stack(
+        children: stack,
+      ),
     );
   }
 

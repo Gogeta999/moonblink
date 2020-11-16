@@ -70,6 +70,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
+    //_chatBoxBloc = ChatBoxBloc(widget.partnerId);
     if (myType == kNormal) {
       _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
     } else {
@@ -111,7 +112,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      if (myType == kNormal) _chatBoxBloc.saveTimer();
+      //if (myType == kNormal) _chatBoxBloc.saveTimer();
     }
   }
 
