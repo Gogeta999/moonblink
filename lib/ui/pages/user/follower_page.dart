@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/usercontainer.dart';
 import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
@@ -26,22 +27,21 @@ class FollowerPage extends StatefulWidget {
 class _FollowerPageState extends State<FollowerPage> {
   List<Follower> followers = [];
   int usertype;
+  int ownId;
   @override
   void initState() {
     super.initState();
     setState(() {
       usertype = StorageManager.sharedPreferences.getInt(mUserType);
+      ownId = StorageManager.sharedPreferences.getInt(mUserId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppbarWidget(
         title: Text(widget.name),
-        actions: [
-          AppbarLogo(),
-        ],
       ),
       body: ProviderWidget<FollowersModel>(
         model: FollowersModel(widget.id),
@@ -120,13 +120,14 @@ class _FollowerPageState extends State<FollowerPage> {
           }
           return ListView.builder(
             itemBuilder: (context, index) {
-              
               Follower follower = followers[index];
               print(follower.profileimage);
               print("++++++++++++++++++++++++++++++++++++++++++++++++++");
               return UserTile(
                 onTap: () {
-                  if (usertype != 0 || follower.type != 0) {
+                  if (ownId == follower.userId) {
+                    showToast("You can\'t talk with yourself");
+                  } else if (usertype != 0 || follower.type != 0) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -134,7 +135,7 @@ class _FollowerPageState extends State<FollowerPage> {
                       ),
                     );
                   } else {
-                    showToast("This user is Normal");
+                    showToast("You can\'t talk with normal user");
                   }
                 },
                 image: CachedNetworkImage(

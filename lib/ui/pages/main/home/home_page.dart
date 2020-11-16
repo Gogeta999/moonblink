@@ -46,12 +46,12 @@ class _HomePageState extends State<HomePage>
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'This TabBar is to choose player type u want to play',
-          'This is to select gender of player',
-          'Double tap to get to top',
+          G.current.tutorialHome1,
+          G.current.tutorialHome2,
+          G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
-        btnLabel: 'Next',
+        btnLabel: G.current.next,
         showStepLabel: true,
       ),
     );

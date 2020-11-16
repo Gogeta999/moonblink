@@ -56,14 +56,14 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'Click Follow to see this player story and updates',
-          'Click Followers to see followers of this player',
-          'This is the rating of this player',
-          'Click Booking to book playtime with this player',
-          'Click Chat to go to chatbox of this player',
-          'Click this Icon to report or block this player',
+          G.current.tutorialDetail1,
+          G.current.tutorialDetail2,
+          G.current.tutorialDetail3,
+          G.current.tutorialDetail4,
+          G.current.tutorialDetail5,
+          G.current.tutorialDetail6,
         ],
-        btnLabel: 'Next',
+        btnLabel: G.current.next,
         showStepLabel: false,
       ),
     );

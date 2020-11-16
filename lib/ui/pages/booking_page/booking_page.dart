@@ -56,14 +56,14 @@ class _BookingPageState extends State<BookingPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'This is to select game',
-          'This is to select game type',
-          'This is to select match u want to play',
-          'This is the total cost of your booking',
-          'This is your current coin',
-          'Click Confirm to book the player u want to paly'
+          G.current.tutorialBooking1,
+          G.current.tutorialBooking2,
+          G.current.tutorialBooking3,
+          G.current.tutorialBooking4,
+          G.current.tutorialBooking5,
+          G.current.tutorialBooking6,
         ],
-        btnLabel: 'Next',
+        btnLabel: G.current.next,
         showStepLabel: false,
       ),
     );

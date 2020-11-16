@@ -115,7 +115,7 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
                         child: CupertinoButton(
                           padding: const EdgeInsets.symmetric(
                               vertical: 0, horizontal: 12),
-                          child: Text('Mark all as read'),
+                          child: Text(G.current.markAllAsRead),
                           onPressed: () => _userNotificationBloc
                               .add(UserNewNotificationMarkAllRead()),
                         ));
