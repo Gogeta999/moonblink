@@ -19,6 +19,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
+import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_detail_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -512,6 +513,14 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                             ///[Followers total]
                             MBBoxWidget(
+                              // ontap: () => Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => FollowerPage(
+                              //         partnerModel.partnerId,
+                              //         partnerModel.partnerData.partnerName),
+                              //   ),
+                              // ),
                               text: G.of(context).follower,
                               followers: partnerModel.partnerData.followerCount
                                   .toString(),

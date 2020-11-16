@@ -40,3 +40,8 @@ const String kSecondButton = 'kSecondButton';
 const String kThirdButton = 'kThirdButton';
 
 const String kPartnerId = 'kPartnerId';
+
+const String firstButtonMessage = 'Are you available for booking ?';
+const String secondButtonMessage =
+    'I want to play with you , where can I buy coin?';
+const String thirdButtonMessage = 'What should I do to play with you?';

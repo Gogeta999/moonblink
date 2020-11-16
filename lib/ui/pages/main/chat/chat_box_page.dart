@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moonblink/base_widget/chat/bookingtimeleft.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
@@ -71,12 +70,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    // if (myType == kNormal) {
-    //   _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
-    // } else {
-    //   _chatBoxBloc = ChatBoxBloc(widget.partnerId);
-    // }
-    _chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    //_chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    if (myType == kNormal) {
+      _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
+    } else {
+      _chatBoxBloc = ChatBoxBloc(widget.partnerId);
+    }
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
@@ -110,12 +109,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     super.initState();
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.inactive) {
-  //     _chatBoxBloc.saveTimer();
-  //   }
-  // }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      //if (myType == kNormal) _chatBoxBloc.saveTimer();
+    }
+  }
 
   @override
   void dispose() {
@@ -208,20 +207,19 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             backgroundColor: Colors.blueAccent.withAlpha(0x33),
           ),
           onTap: (url) {
-            alerturl(url);
+            ///Checking if the url is our video link or not. if true launch directly without showing warning since it's our supported url.
+            if (url ==
+                "https://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/") {
+              launch(url);
+            } else if (url ==
+                "https://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/") {
+              launch(url);
+            } else {
+              alerturl(url);
+            }
           },
           onLongPress: (url) => Share.share(url),
         ),
-        // child: SelectableText(
-        //   lastMessage.message,
-        //   style: TextStyle(
-        //       color: _isDark() ? Colors.white : Colors.black,
-        //       fontWeight: FontWeight.w500),
-        //   autofocus: true,
-        //   cursorRadius: Radius.circular(50),
-        //   cursorColor: Colors.white,
-        //   toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
-        // ),
       ),
     );
   }
@@ -412,125 +410,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           return CupertinoActivityIndicator();
         }
 
-        // if (snapshot.data.status != ACCEPTED && myType == kNormal) {
-        //   return Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-        //       Container(
-        //           margin:
-        //               const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-        //           padding:
-        //               const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        //           decoration: BoxDecoration(
-        //               border: Border.all(
-        //                   width: 1,
-        //                   color: _isDark() ? Colors.white24 : Colors.black26),
-        //               borderRadius: BorderRadius.circular(10)),
-        //           child: Text(
-        //               'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
-        //               textAlign: TextAlign.center,
-        //               style: TextStyle(
-        //                   color: _isDark() ? Colors.white : Colors.black,
-        //                   fontWeight: FontWeight.w300))),
-        //       Container(
-        //         height: 40,
-        //         child: ListView(
-        //           shrinkWrap: true,
-        //           scrollDirection: Axis.horizontal,
-        //           children: [
-        //             SizedBox(width: 10),
-        //             StreamBuilder<String>(
-        //                 initialData: null,
-        //                 stream: _chatBoxBloc.firstButtonSubject,
-        //                 builder: (context, snapshot) {
-        //                   if (snapshot.data == null) {
-        //                     return CupertinoButton(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: CupertinoActivityIndicator(),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   if (snapshot.data.isNotEmpty) {
-        //                     return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Padding(
-        //                         padding:
-        //                             const EdgeInsets.symmetric(horizontal: 12),
-        //                         child: Text('${snapshot.data}'),
-        //                       ),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Text('Are you available?'),
-        //                       onPressed: () =>
-        //                           _chatBoxBloc.add(ChatBoxCheckAvailable()));
-        //                 }),
-        //             SizedBox(width: 10),
-        //             StreamBuilder<String>(
-        //                 initialData: null,
-        //                 stream: _chatBoxBloc.secondButtonSubject,
-        //                 builder: (context, snapshot) {
-        //                   if (snapshot.data == null) {
-        //                     return CupertinoButton(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: CupertinoActivityIndicator(),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   if (snapshot.data.isNotEmpty) {
-        //                     return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Padding(
-        //                         padding:
-        //                             const EdgeInsets.symmetric(horizontal: 12),
-        //                         child: Text('${snapshot.data}'),
-        //                       ),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Text('Second Button'),
-        //                       onPressed: () =>
-        //                           _chatBoxBloc.add(ChatBoxSecondButton()));
-        //                 }),
-        //             SizedBox(width: 10),
-        //             StreamBuilder<String>(
-        //                 initialData: null,
-        //                 stream: _chatBoxBloc.thirdButtonSubject,
-        //                 builder: (context, snapshot) {
-        //                   if (snapshot.data == null) {
-        //                     return CupertinoButton(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: CupertinoActivityIndicator(),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   if (snapshot.data.isNotEmpty) {
-        //                     return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Padding(
-        //                         padding:
-        //                             const EdgeInsets.symmetric(horizontal: 12),
-        //                         child: Text('${snapshot.data}'),
-        //                       ),
-        //                       onPressed: () {},
-        //                     );
-        //                   }
-        //                   return CupertinoButton.filled(
-        //                       padding: const EdgeInsets.all(4),
-        //                       child: Text('Third Button'),
-        //                       onPressed: () =>
-        //                           _chatBoxBloc.add(ChatBoxThirdButton()));
-        //                 }),
-        //           ],
-        //         ),
-        //       ),
-        //     ],
-        //   );
-        // }
+        if (snapshot.data.status != ACCEPTED && myType == kNormal) {
+          return _buildNormalUserButtons();
+        }
 
         ///Blocked
         if (snapshot.data.isBlock == 1) {
@@ -626,6 +508,184 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNormalUserButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            decoration: BoxDecoration(
+                border: Border.all(
+                    width: 1,
+                    color: _isDark() ? Colors.white24 : Colors.black26),
+                borderRadius: BorderRadius.circular(10)),
+            child: Text(
+                'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: _isDark() ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w300))),
+        Container(
+          height: 60,
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            physics: ClampingScrollPhysics(),
+            children: [
+              SizedBox(width: 10),
+
+              ///First
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.firstButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$firstButtonMessage\nကျွန်တော်နင့် ဂိမ်းတူတူဆော့ရန် အားပါသလား။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+
+              ///Second
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.secondButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$secondButtonMessage\nသင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+
+              ///Third
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.thirdButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
+                      onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text(
+                              '$thirdButtonMessage\nသင်နဲ့ဆော့ရအောင်ကျွန်တော်ဘာကိုလုပ်ရမှာလဲ။',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1165,7 +1225,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         builder: (_) {
           return CustomDialog(
             title: G.of(context).bookingEnded,
-            simpleContent: 'Do you sure to end this order?',
+            simpleContent: 'Are you sure to end this order?',
             // row2Content: BookingTimeLeft(
             //   count: bookingStatus.count,
             //   upadateat: bookingStatus.updatedAt,

@@ -118,6 +118,7 @@ class WebSocketService {
 
   void sendMessage(String message, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+    print('Message Sent - $message');
     _socket.emit(EventsToEmit.chatMessage, [
       {
         'message': message,
