@@ -2,7 +2,7 @@ name: moonblink
 description: MoonBlink Universe's app
 publish_to: 'none'
 
-version: 2.2.2+34
+version: 2.2.3+34
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
@@ -103,6 +103,9 @@ dependencies:
   flutter_svg: ^0.19.1
   font_awesome_flutter: ^8.10.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   percent_indicator: 2.1.7+4
+  flutter_intro: ^0.6.0
+
+
   
 dev_dependencies:
   flutter_test:
