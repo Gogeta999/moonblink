@@ -387,6 +387,13 @@ class MoonBlinkRepository {
     return UserMessageNotificationResponse.fromJson(response.data);
   }
 
+  static markAllNotificationReadState() async {
+    int userId = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils()
+        .patch(Api.UserNotificationRead + '$userId/notification/read');
+    return response;
+  }
+
   //change message notification to read state
   static Future<UserMessageNotificationData>
       changeUserMessageNotificationReadState(int notificationId,

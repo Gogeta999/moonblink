@@ -29,13 +29,13 @@ class _UserBookingNotificationPageState
     _userNotificationBloc.add(UserBookingNotificationFetched());
     _scrollController.addListener(_onScroll);
     _refreshCompleter = Completer<void>();
-    print('Initing');
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _userNotificationBloc.dispose();
     super.dispose();
   }
 
@@ -47,8 +47,6 @@ class _UserBookingNotificationPageState
         onRefresh: _onRefresh,
         child: BlocProvider.value(
             value: _userNotificationBloc,
-            //create: (_) =>
-            //_userNotificationBloc..add(UserNotificationFetched()),
             child: BlocConsumer<UserBookingNotificationBloc,
                 UserBookingNotificationState>(
               listener: (context, state) {
@@ -61,15 +59,11 @@ class _UserBookingNotificationPageState
                   _refreshCompleter = Completer();
                 }
               },
-              // buildWhen: (previous, current) {
-              //   return !(current is UserBookingNotificationUpdating);
-              // },
               builder: (context, state) {
                 if (state is UserBookingNotificationInitial) {
                   return Center(child: CupertinoActivityIndicator());
                 }
                 if (state is UserBookingNotificationFailure) {
-                  print('${state.error}');
                   return ListView(
                     physics: ScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(
@@ -80,25 +74,7 @@ class _UserBookingNotificationPageState
                       ),
                       Center(
                         child: Text(
-                          'You have no history',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      )
-                    ],
-                  );
-                }
-                if (state is UserBookingNotificationNoData) {
-                  return ListView(
-                    physics: ScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(
-                            parent: ClampingScrollPhysics())),
-                    children: [
-                      SizedBox(
-                        height: 220,
-                      ),
-                      Center(
-                        child: Text(
-                          'You have no history',
+                          state.error.toString(),
                           style: TextStyle(fontSize: 20),
                         ),
                       )
@@ -176,7 +152,6 @@ class NotificationListTile extends StatelessWidget {
         UserBookingNotificationState>(
       listener: (context, state) {},
       builder: (context, state) {
-        ///Same with update
         if (state is UserBookingNotificationSuccess) {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 6),
@@ -186,14 +161,6 @@ class NotificationListTile extends StatelessWidget {
                   : Theme.of(context).accentColor,
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(10),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.black,
-              //     spreadRadius: 0.5,
-              //     // blurRadius: 2,
-              //     offset: Offset(-3, 3), // changes position of shadow
-              //   ),
-              // ],
             ),
             child: Card(
               child: InkWell(
@@ -227,8 +194,5 @@ class NotificationListTile extends StatelessWidget {
     );
   }
 
-  _onTapListTile(BuildContext context, UserBookingNotificationData data) {
-    BlocProvider.of<UserBookingNotificationBloc>(context)
-        .add(UserBookingNotificationChangeToRead(data.id));
-  }
+  _onTapListTile(BuildContext context, UserBookingNotificationData data) {}
 }

@@ -19,13 +19,6 @@ class UserBookingNotificationFailure extends UserBookingNotificationState {
 
   @override
   List<Object> get props => [error];
-
-}
-
-class UserBookingNotificationNoData extends UserBookingNotificationState {
-  @override
-  List<Object> get props => [];
-
 }
 
 class UserBookingNotificationSuccess extends UserBookingNotificationState {
@@ -33,19 +26,21 @@ class UserBookingNotificationSuccess extends UserBookingNotificationState {
   final bool hasReachedMax;
   final int page;
 
-  const UserBookingNotificationSuccess({this.data, this.hasReachedMax, this.page});
+  const UserBookingNotificationSuccess(
+      {this.data, this.hasReachedMax, this.page});
 
-  UserBookingNotificationSuccess copyWith({List<UserBookingNotificationData> data, bool hasReachedMax, int page}) {
+  UserBookingNotificationSuccess copyWith(
+      {List<UserBookingNotificationData> data, bool hasReachedMax, int page}) {
     return UserBookingNotificationSuccess(
         data: data ?? this.data,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-        page: page ?? this.page
-    );
+        page: page ?? this.page);
   }
 
   @override
   List<Object> get props => [data, hasReachedMax, page];
 
   @override
-  String toString() => 'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
+  String toString() =>
+      'UserTransactionSuccess: ${data.length}, hasReachedMax: $hasReachedMax';
 }
