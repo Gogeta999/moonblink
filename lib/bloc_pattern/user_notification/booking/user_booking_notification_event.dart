@@ -12,15 +12,3 @@ class UserBookingNotificationFetched extends UserBookingNotificationEvent {}
 class UserBookingNotificationCleared extends UserBookingNotificationEvent {}
 
 class UserBookingNotificationRefreshed extends UserBookingNotificationEvent {}
-
-class UserBookingNotificationRefreshedFromStartPageToCurrentPage
-    extends UserBookingNotificationEvent {}
-
-class UserBookingNotificationChangeToRead extends UserBookingNotificationEvent {
-  final int notificationId;
-
-  const UserBookingNotificationChangeToRead(this.notificationId);
-
-  @override
-  List<Object> get props => [notificationId];
-}

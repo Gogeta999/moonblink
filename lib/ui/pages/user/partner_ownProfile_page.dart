@@ -14,6 +14,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 
@@ -236,6 +237,14 @@ class _PartnerOwnProfilePageState extends State<PartnerOwnProfilePage>
 
                         ///[Followers total]
                         MBBoxWidget(
+                          ontap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FollowerPage(
+                                  partnerModel.partnerData.partnerId,
+                                  partnerModel.partnerData.partnerName),
+                            ),
+                          ),
                           text: G.of(context).follower,
                           followers:
                               partnerModel.partnerData.followerCount.toString(),

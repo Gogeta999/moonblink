@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
+import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
@@ -33,22 +38,49 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  Intro intro;
+  _HomePageState() {
+    intro = Intro(
+      stepCount: 3,
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          G.current.tutorialHome1,
+          G.current.tutorialHome2,
+          G.current.tutorialHome3,
+          // 'Tap to get into user detail',
+        ],
+        btnLabel: G.current.next,
+        showStepLabel: true,
+      ),
+    );
+  }
   @override
   bool get wantKeepAlive => true;
   var _pageController;
   int catagories = 1;
   // String gender = "All";
   String gender = "Male";
+  bool tuto = true;
   @override
   void initState() {
     super.initState();
+    // tutorialOn();
+    bool showtuto = StorageManager.sharedPreferences.getBool(hometuto);
+    if (showtuto == null) {
+      tutorialOn();
+      showtuto = StorageManager.sharedPreferences.getBool(hometuto);
+    }
     setState(() {
+      tuto = showtuto;
       _pageController = PageController(initialPage: 0);
     });
   }
 
   topTabs(homeController) {
     return Container(
+      key: intro.keys[0],
       height: 40,
       child: Stack(
         children: [
@@ -62,6 +94,7 @@ class _HomePageState extends State<HomePage>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SmallShadedContainer(
+                key: intro.keys[2],
                 onDoubletap: () {
                   homeController.animateTo(
                     0.0,
@@ -166,6 +199,7 @@ class _HomePageState extends State<HomePage>
 
   malefemaletabs() {
     return Container(
+      key: intro.keys[1],
       decoration: BoxDecoration(
         border: Border.all(width: 1.5, color: Colors.black
             // top: BorderSide(
@@ -272,6 +306,17 @@ class _HomePageState extends State<HomePage>
                     // tapToTopModel.init(() => homeModel.loadMore());
                   },
                   builder: (context, homeModel, tapToTopModel, child) {
+                    if (tuto) {
+                      Timer(Duration(microseconds: 0), () {
+                        /// start the intro
+                        intro.start(context);
+                        setState(() {
+                          tuto = false;
+                        });
+                        StorageManager.sharedPreferences
+                            .setBool(hometuto, false);
+                      });
+                    }
                     return MediaQuery.removePadding(
                       context: context,
                       removeTop: false,

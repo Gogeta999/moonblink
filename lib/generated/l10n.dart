@@ -1035,6 +1035,16 @@ class G {
     );
   }
 
+  /// `Mark all as read`
+  String get markAllAsRead {
+    return Intl.message(
+      'Mark all as read',
+      name: 'markAllAsRead',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Match`
   String get match {
     return Intl.message(
@@ -1060,6 +1070,16 @@ class G {
     return Intl.message(
       'Enter New Password',
       name: 'newpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get next {
+    return Intl.message(
+      'Next',
+      name: 'next',
       desc: '',
       args: [],
     );
@@ -1220,6 +1240,156 @@ class G {
     return Intl.message(
       'No porn, abusive or illegal contents are allowed in the audio.',
       name: 'rule1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to select game`
+  String get tutorialBooking1 {
+    return Intl.message(
+      'This is to select game',
+      name: 'tutorialBooking1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to select game type`
+  String get tutorialBooking2 {
+    return Intl.message(
+      'This is to select game type',
+      name: 'tutorialBooking2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to select match u want to play`
+  String get tutorialBooking3 {
+    return Intl.message(
+      'This is to select match u want to play',
+      name: 'tutorialBooking3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is the total cost of your booking`
+  String get tutorialBooking4 {
+    return Intl.message(
+      'This is the total cost of your booking',
+      name: 'tutorialBooking4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is your current coin`
+  String get tutorialBooking5 {
+    return Intl.message(
+      'This is your current coin',
+      name: 'tutorialBooking5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click Confirm to book the player u want to paly`
+  String get tutorialBooking6 {
+    return Intl.message(
+      'Click Confirm to book the player u want to paly',
+      name: 'tutorialBooking6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click Follow to see this player's story and updates`
+  String get tutorialDetail1 {
+    return Intl.message(
+      'Click Follow to see this player\'s story and updates',
+      name: 'tutorialDetail1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click Followers to see followers of this player`
+  String get tutorialDetail2 {
+    return Intl.message(
+      'Click Followers to see followers of this player',
+      name: 'tutorialDetail2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is the rating of this player`
+  String get tutorialDetail3 {
+    return Intl.message(
+      'This is the rating of this player',
+      name: 'tutorialDetail3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click Booking to book playtime with this player`
+  String get tutorialDetail4 {
+    return Intl.message(
+      'Click Booking to book playtime with this player',
+      name: 'tutorialDetail4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click Chat to go to chatbox of this player`
+  String get tutorialDetail5 {
+    return Intl.message(
+      'Click Chat to go to chatbox of this player',
+      name: 'tutorialDetail5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click this Icon to report or block this player`
+  String get tutorialDetail6 {
+    return Intl.message(
+      'Click this Icon to report or block this player',
+      name: 'tutorialDetail6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This TabBar is to choose player type u want to play`
+  String get tutorialHome1 {
+    return Intl.message(
+      'This TabBar is to choose player type u want to play',
+      name: 'tutorialHome1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to select gender of player`
+  String get tutorialHome2 {
+    return Intl.message(
+      'This is to select gender of player',
+      name: 'tutorialHome2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Double tap to get to top`
+  String get tutorialHome3 {
+    return Intl.message(
+      'Double tap to get to top',
+      name: 'tutorialHome3',
       desc: '',
       args: [],
     );

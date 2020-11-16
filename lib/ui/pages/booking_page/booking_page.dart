@@ -1,17 +1,22 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -24,6 +29,7 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   int _price = 0;
+  Intro intro;
   List<Widget> _gameNameList = [];
   List<Widget> _gameModeList = [];
   BookingPartnerGameList _data;
@@ -43,9 +49,37 @@ class _BookingPageState extends State<BookingPage> {
   ///send back to server
   int _gameTypeId = 0;
 
+  _BookingPageState() {
+    intro = Intro(
+      stepCount: 6,
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          G.current.tutorialBooking1,
+          G.current.tutorialBooking2,
+          G.current.tutorialBooking3,
+          G.current.tutorialBooking4,
+          G.current.tutorialBooking5,
+          G.current.tutorialBooking6,
+        ],
+        btnLabel: G.current.next,
+        showStepLabel: false,
+      ),
+    );
+  }
+
   @override
   void initState() {
     _initData();
+    bool tuto = StorageManager.sharedPreferences.getBool(bookingtuto);
+    if (tuto) {
+      Timer(Duration(microseconds: 0), () {
+        /// start the intro
+        intro.start(context);
+      });
+      StorageManager.sharedPreferences.setBool(bookingtuto, false);
+    }
     super.initState();
   }
 
@@ -330,6 +364,7 @@ class _BookingPageState extends State<BookingPage> {
                 ///[Game]
                 Card(
                   child: ListTile(
+                    key: intro.keys[0],
                     // leading: Text('Choose Game'),
                     title: Text(
                       G.of(context).selectgame,
@@ -352,6 +387,7 @@ class _BookingPageState extends State<BookingPage> {
                 ///[Game's Mode]
                 Card(
                   child: ListTile(
+                    key: intro.keys[1],
                     // leading: Text('Choose Game'),
                     title: Text(
                       G.of(context).selectgameMode,
@@ -374,6 +410,7 @@ class _BookingPageState extends State<BookingPage> {
                 ///[Match Count]
                 Card(
                   child: Container(
+                    key: intro.keys[2],
                     height: 60,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -452,6 +489,7 @@ class _BookingPageState extends State<BookingPage> {
 
                 Card(
                   child: Container(
+                    key: intro.keys[3],
                     height: 60,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -504,6 +542,7 @@ class _BookingPageState extends State<BookingPage> {
           ],
         ),
         bottomNavigationBar: Container(
+          key: intro.keys[4],
           width: MediaQuery.of(context).size.width,
           height: 68,
           decoration: BoxDecoration(
@@ -534,6 +573,7 @@ class _BookingPageState extends State<BookingPage> {
                           : InkWell(
                               onTap: _onTapConfirm,
                               child: Container(
+                                key: intro.keys[5],
                                 child: _isConfirmLoading
                                     ? CupertinoActivityIndicator()
                                     : Center(
