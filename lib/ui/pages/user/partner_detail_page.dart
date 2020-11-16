@@ -557,16 +557,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
 
                             ///[Followers total]
                             MBBoxWidget(
-<<<<<<< HEAD
-                              // ontap: () => Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => FollowerPage(
-                              //         partnerModel.partnerId,
-                              //         partnerModel.partnerData.partnerName),
-                              //   ),
-                              // ),
-=======
                               key: intro.keys[1],
                               ontap: () => Navigator.push(
                                 context,
@@ -576,7 +566,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                       partnerModel.partnerData.partnerName),
                                 ),
                               ),
->>>>>>> dev-bloc-chat
                               text: G.of(context).follower,
                               followers: partnerModel.partnerData.followerCount
                                   .toString(),
