@@ -5,17 +5,14 @@ import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/services/chat_service.dart';
 import 'package:moonblink/services/web_socket_service.dart';
-import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_list_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
-import 'package:moonblink/ui/pages/main/notifications/user_notifications_tab.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;
@@ -43,17 +40,13 @@ class _MainTabPageState extends State<MainTabPage>
   @override
   void initState() {
     WebSocketService().init(BlocProvider.of<ChatListBloc>(context));
-    if (StorageManager.sharedPreferences.getString(token) != null)
+    if (usertoken != null)
       BlocProvider.of<UserNewNotificationBloc>(context)
           .add(UserNewNotificationFetched());
     setState(() {
       _pageController = PageController(initialPage: initPage);
       _selectedIndex = initPage;
     });
-    if (StorageManager.sharedPreferences.getString(token) != null)
-      BlocProvider.of<UserNewNotificationBloc>(context)
-          .add(UserNewNotificationFetched());
-
     super.initState();
   }
 
@@ -63,7 +56,7 @@ class _MainTabPageState extends State<MainTabPage>
       HomePage(homeController),
       NewChatListPage(), //ChatListPage(),
       ContactsPage(),
-      UserNotificationTab(),
+      UserNewNotificationPage(),
       UserStatusPage(),
     ];
 
