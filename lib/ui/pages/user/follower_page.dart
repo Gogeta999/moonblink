@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/usercontainer.dart';
+import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/global/resources_manager.dart';
-import 'package:moonblink/models/contact.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/provider/provider_widget.dart';
-import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/utils/status_bar_utils.dart';
 import 'package:moonblink/view_model/follower_model.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class FollowerPage extends StatefulWidget {
   final String name;
@@ -22,6 +25,14 @@ class FollowerPage extends StatefulWidget {
 
 class _FollowerPageState extends State<FollowerPage> {
   List<Follower> followers = [];
+  int usertype;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      usertype = StorageManager.sharedPreferences.getInt(mUserType);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,19 +120,25 @@ class _FollowerPageState extends State<FollowerPage> {
           }
           return ListView.builder(
             itemBuilder: (context, index) {
+              
               Follower follower = followers[index];
+              print(follower.profileimage);
+              print("++++++++++++++++++++++++++++++++++++++++++++++++++");
               return UserTile(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          PartnerDetailPage(follower.contactUser.contactUserId),
-                    ),
-                  );
+                  if (usertype != 0 || follower.type != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewChatBoxPage(follower.userId),
+                      ),
+                    );
+                  } else {
+                    showToast("This user is Normal");
+                  }
                 },
                 image: CachedNetworkImage(
-                  imageUrl: follower.contactUser.contactUserProfile,
+                  imageUrl: follower.profileimage,
                   imageBuilder: (context, imageProvider) => CircleAvatar(
                     radius: 33,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -134,7 +151,7 @@ class _FollowerPageState extends State<FollowerPage> {
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                name: Text(follower.contactUser.contactUserName),
+                name: Text(follower.name),
               );
             },
             itemCount: followerModel.list.length,
