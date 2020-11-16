@@ -22,7 +22,7 @@ class MainTabPage extends StatefulWidget {
   MainTabPage({Key key, this.initPage}) : super(key: key);
 
   @override
-  _MainTabPageState createState() => _MainTabPageState(initPage);
+  _MainTabPageState createState() => _MainTabPageState();
 }
 
 class _MainTabPageState extends State<MainTabPage>
@@ -32,16 +32,19 @@ class _MainTabPageState extends State<MainTabPage>
   var _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
   // ignore: unused_field
-  final int initPage;
+  int initPage;
   // ignore: unused_field
   int _selectedIndex = 0;
   DateTime _lastPressed;
   ScrollController homeController = ScrollController();
 
-  _MainTabPageState(this.initPage);
+  _MainTabPageState();
 
   @override
   void initState() {
+    setState(() {
+      initPage = widget.initPage;
+    });
     WebSocketService().init(BlocProvider.of<ChatListBloc>(context));
     if (StorageManager.sharedPreferences.getString(token) != null)
       BlocProvider.of<UserNewNotificationBloc>(context)

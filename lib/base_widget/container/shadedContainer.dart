@@ -43,11 +43,13 @@ class SmallShadedContainer extends StatelessWidget {
   final Function onDoubletap;
   final bool selected;
   SmallShadedContainer(
-      {this.child,
+      {Key key,
+      this.child,
       this.height,
       this.ontap,
       this.onDoubletap,
-      this.selected = false});
+      this.selected = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
