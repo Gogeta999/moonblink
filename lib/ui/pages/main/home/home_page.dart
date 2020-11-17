@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
@@ -76,6 +77,155 @@ class _HomePageState extends State<HomePage>
       tuto = showtuto;
       _pageController = PageController(initialPage: 0);
     });
+  }
+
+  newtopTabs(homeController) {
+    return Container(
+      key: intro.keys[0],
+      height: 60,
+      child: Stack(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                key: intro.keys[2],
+                child: Column(
+                  children: [
+                    InkWell(
+                      onDoubleTap: () {
+                        homeController.animateTo(
+                          0.0,
+                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 300),
+                        );
+                      },
+                      onTap: () {
+                        if (catagories != 1) {
+                          setState(() {
+                            catagories = 1;
+                            _pageController.jumpToPage(0);
+                          });
+                        } else {
+                          print("Already");
+                        }
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: GradientColors.indigo,
+                            )),
+                        child: Icon(Icons.cached, color: Colors.white),
+                      ),
+                    ),
+                    Text("Coplayer"),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (catagories != 3) {
+                          setState(() {
+                            catagories = 3;
+                            _pageController.jumpToPage(1);
+                          });
+                        } else {
+                          print("Already");
+                        }
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: GradientColors.gradeGrey,
+                            )),
+                        child: Icon(Icons.baby_changing_station,
+                            color: Colors.white),
+                      ),
+                    ),
+                    Text("Cele"),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (catagories != 4) {
+                          setState(() {
+                            catagories = 4;
+                            _pageController.jumpToPage(2);
+                          });
+                        } else {
+                          print("Already");
+                        }
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: GradientColors.radish,
+                            )),
+                        child: Icon(Icons.keyboard, color: Colors.white),
+                      ),
+                    ),
+                    Text("Pro"),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (catagories != 2) {
+                          setState(() {
+                            catagories = 2;
+                            _pageController.jumpToPage(3);
+                          });
+                        } else {
+                          print("Already");
+                        }
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: GradientColors.darkOcean,
+                            )),
+                        child: Icon(Icons.radio, color: Colors.white),
+                      ),
+                    ),
+                    Text("Streamer"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   topTabs(homeController) {
@@ -193,6 +343,98 @@ class _HomePageState extends State<HomePage>
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  newmalefemale() {
+    return Container(
+      key: intro.keys[1],
+      decoration: BoxDecoration(
+        border: Border.all(width: 1.5, color: Colors.grey),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(top: 10, bottom: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      if (gender != "Male") {
+                        setState(
+                          () {
+                            gender = "Male";
+                            _pageController.jumpToPage(5);
+                          },
+                        );
+                      } else {
+                        setState(() {
+                          gender = "All";
+                          _pageController.jumpToPage(4);
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: GradientColors.eveningSunshine,
+                          )),
+                      child: Icon(Icons.gradient_outlined, color: Colors.white),
+                    ),
+                  ),
+                  Text("Male"),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      if (gender != "Female") {
+                        setState(
+                          () {
+                            gender = "Female";
+                            _pageController.jumpToPage(7);
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            gender = "All";
+                            _pageController.jumpToPage(4);
+                          },
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: GradientColors.juicyOrange,
+                          )),
+                      child: Icon(Icons.dangerous, color: Colors.white),
+                    ),
+                  ),
+                  Text("Female"),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -370,7 +612,7 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SliverToBoxAdapter(
-                                child: topTabs(widget.homecontroller),
+                                child: newtopTabs(widget.homecontroller),
                               ),
                               SliverToBoxAdapter(
                                 child: SizedBox(
@@ -378,7 +620,7 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SliverToBoxAdapter(
-                                child: malefemaletabs(),
+                                child: newmalefemale(),
                               ),
                               SliverToBoxAdapter(
                                 child: SizedBox(

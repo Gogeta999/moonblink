@@ -319,6 +319,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  flutter_gradient_colors:
+    dependency: "direct main"
+    description:
+      name: flutter_gradient_colors
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   flutter_holo_date_picker:
     dependency: "direct main"
     description:
