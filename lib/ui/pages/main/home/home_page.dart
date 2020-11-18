@@ -43,18 +43,17 @@ class _HomePageState extends State<HomePage>
   Intro intro;
   _HomePageState() {
     intro = Intro(
-      stepCount: 3,
+      stepCount: 2,
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
           G.current.tutorialHome1,
           G.current.tutorialHome2,
-          G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
         btnLabel: G.current.next,
-        showStepLabel: true,
+        showStepLabel: false,
       ),
     );
   }
@@ -90,7 +89,6 @@ class _HomePageState extends State<HomePage>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                key: intro.keys[2],
                 child: Column(
                   children: [
                     InkWell(

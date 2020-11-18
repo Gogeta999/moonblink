@@ -25,6 +25,7 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -618,6 +619,61 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                       );
                     }
                     return InkResponse(
+                      onTap: () async {
+                        StorageManager.sharedPreferences
+                            .setBool(bookingtuto, true);
+                        PartnerUser partnerData =
+                            await MoonBlinkRepository.fetchPartner(
+                                widget.partnerId);
+                        Navigator.pushNamed(context, RouteName.booking,
+                            arguments: partnerData);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Text('How to Book\nBooking လုပ်နည်း',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(width: 10),
+
+              ///Third
+              StreamBuilder<String>(
+                  initialData: null,
+                  stream: _chatBoxBloc.secondButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(12),
+                        child: Center(child: CupertinoActivityIndicator()),
+                      );
+                    }
+                    if (snapshot.data.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Theme.of(context).accentColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('${snapshot.data}'),
+                          ),
+                        ),
+                      );
+                    }
+                    return InkResponse(
                       onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
                       child: Container(
                         decoration: BoxDecoration(
@@ -635,7 +691,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                   }),
               SizedBox(width: 10),
 
-              ///Third
+              ///Fourth
               StreamBuilder<String>(
                   initialData: null,
                   stream: _chatBoxBloc.thirdButtonSubject,
