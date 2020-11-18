@@ -122,8 +122,12 @@ class DioUtils {
   get(url, {queryParameters, options}) async {
     print('get---request---from--->$url');
     Response response;
-    response =
-        await _dio.get(url, queryParameters: queryParameters, options: options);
+    try {
+      response = await _dio.get(url,
+          queryParameters: queryParameters, options: options);
+    } catch (e) {
+      throw 'No Internet Connection';
+    }
     ResponseData respData = ResponseData.fromJson(response.data);
     // debugPrint('debug code error--- ${respData.data}');
     if (respData.success) {
@@ -216,7 +220,8 @@ class DioUtils {
 
   //delete request
   delete(url, {queryParameters, options}) async {
-    print('post request path ------$url-------queryParameters$queryParameters');
+    print(
+        'delete request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.delete(url,
         queryParameters: queryParameters, options: options);
@@ -260,7 +265,8 @@ class DioUtils {
 
   //delete request
   patch(url, {queryParameters, options}) async {
-    print('post request path ------$url-------queryParameters$queryParameters');
+    print(
+        'patch request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.patch(url,
         queryParameters: queryParameters, options: options);

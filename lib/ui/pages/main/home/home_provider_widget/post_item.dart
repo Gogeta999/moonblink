@@ -20,7 +20,7 @@ import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class PostItemWidget extends StatefulWidget {
-  PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.userID));
+  PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.id));
 
   final int index;
   final Post posts;
@@ -63,7 +63,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       showToast(G.of(context).loginFirst);
                     }
                   : () {
-                      int detailPageId = widget.posts.userID;
+                      int detailPageId = widget.posts.id;
                       Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -79,7 +79,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                           await homeModel
                               .removeItem(
                                   index: widget.index,
-                                  blockUserId: widget.posts.userID)
+                                  blockUserId: widget.posts.id)
                               .then((value) {
                             value
                                 ? showToast('Successfully Blocked')
@@ -95,16 +95,22 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           ),
         ),
       ),
-      placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) => Container(
-        color: Colors.grey.shade600,
-        child: IconButton(
-          onPressed: () {
-            showToast('Refresh Again');
-          },
-          icon: Icon(
-            Icons.refresh,
-            color: Colors.grey.shade300,
+      placeholder: (context, url) => Padding(
+        padding: const EdgeInsets.only(top: 12, left: 15),
+        child: CupertinoActivityIndicator(),
+      ),
+      errorWidget: (context, url, error) => Padding(
+        padding: const EdgeInsets.only(top: 12, left: 15),
+        child: Container(
+          color: Colors.grey.shade600,
+          child: IconButton(
+            onPressed: () {
+              showToast('Refresh Again');
+            },
+            icon: Icon(
+              Icons.refresh,
+              color: Colors.grey.shade300,
+            ),
           ),
         ),
       ),
@@ -120,7 +126,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           onReport: () async {
             ///Reporting user
             try {
-              await MoonBlinkRepository.reportUser(widget.posts.userID);
+              await MoonBlinkRepository.reportUser(widget.posts.id);
 
               ///Api call success
               showToast(
@@ -133,8 +139,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           onBlock: () async {
             ///Blocking user
             await homeModel
-                .removeItem(
-                    index: widget.index, blockUserId: widget.posts.userID)
+                .removeItem(index: widget.index, blockUserId: widget.posts.id)
                 .then((value) {
               value
                   ? showToast('Successfully Blocked')
@@ -157,7 +162,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PartnerDetailPage(widget.posts.userID),
+                builder: (context) => PartnerDetailPage(widget.posts.id),
               ),
             ),
             child: Container(
@@ -227,10 +232,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                             //         .size
                                             //         .height /
                                             //     2.5,
-                                            // maxHeight: MediaQuery.of(context)
-                                            //         .size
-                                            //         .height /
-                                            //     1.5,
+                                            maxHeight: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.5,
                                             minWidth: double.infinity,
                                             maxWidth: double.infinity),
                                         child: CachedNetworkImage(
@@ -257,7 +262,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           ? () {
                                               reactModel
                                                   .reactProfile(
-                                                      widget.posts.userID, 1)
+                                                      widget.posts.id, 1)
                                                   .then(
                                                 (value) {
                                                   if (value) {
@@ -280,7 +285,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           : () {
                                               reactModel
                                                   .reactProfile(
-                                                      widget.posts.userID, 0)
+                                                      widget.posts.id, 0)
                                                   .then(
                                                 (value) {
                                                   if (value) {
@@ -331,8 +336,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                                   ? () {
                                                       reactModel
                                                           .reactProfile(
-                                                              widget
-                                                                  .posts.userID,
+                                                              widget.posts.id,
                                                               1)
                                                           .then((value) {
                                                         if (value) {
@@ -355,8 +359,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                                   : () {
                                                       reactModel
                                                           .reactProfile(
-                                                              widget
-                                                                  .posts.userID,
+                                                              widget.posts.id,
                                                               0)
                                                           .then((value) {
                                                         if (value) {

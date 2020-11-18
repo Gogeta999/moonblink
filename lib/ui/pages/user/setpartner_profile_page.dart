@@ -61,7 +61,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
   Future<File> _compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
         file.absolute.path, targetPath,
-        quality: 70, minWidth: 500, minHeight: 500);
+        quality: 50, minWidth: 400, minHeight: 300);
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -419,10 +419,10 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.image,
-                    minWidth: 500,
-                    minHeight: 500,
+                    minWidth: 400,
+                    minHeight: 300,
                     willCrop: false,
-                    compressQuality: 70);
+                    compressQuality: 50);
                 Navigator.pop(context);
               }),
           CupertinoButton(

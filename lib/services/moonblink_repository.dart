@@ -24,6 +24,7 @@ import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
+import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
@@ -35,20 +36,18 @@ class MoonBlinkRepository {
   // home page's post data
 
   static Future fetchPosts({int pageNum, int type, String gender}) async {
-    // await Future.delayed(Duration(seconds: 1));
-    var response = await DioUtils().get(
-        Api.HOME /*+ 'limit=5&type=$type&page=$pageNum&gender=$gender'*/,
-        queryParameters: {
-          'limit': 5,
-          'type': type,
-          'page': pageNum,
-          'gender': gender
-        });
-    print(
-        '000000000000000000000000000000000000000000000QueryPareameters$type,$pageNum,$gender');
-    return response.data['data']
-        .map<Post>((item) => Post.fromMap(item))
-        .toList();
+    var response = await DioUtils().get(Api.HOME, queryParameters: {
+      'limit': 5,
+      'type': type,
+      'page': pageNum,
+      'gender': gender
+    });
+    print('Pareameters----$type,$pageNum,$gender');
+    return response.data['data'].map<Post>((item) {
+      final Post post = Post.fromJson(item);
+      MoonGoDB().insertPost(post);
+      return post;
+    }).toList();
   }
 
   //Call other user
