@@ -117,10 +117,10 @@ class _HomePageState extends State<HomePage>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: GradientColors.indigo,
+                              colors: MoreGradientColors.azureLane,
                             )),
-                        child: Icon(Icons.airline_seat_recline_normal,
-                            color: Colors.white),
+                        child: Icon(Icons.supervisor_account,
+                            size: 23, color: Colors.white),
                       ),
                     ),
                     Text(G.current.usertypecoplayer),
@@ -149,10 +149,13 @@ class _HomePageState extends State<HomePage>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: GradientColors.gradeGrey,
+                              colors: MoreGradientColors.orangePinkTeal,
                             )),
-                        child:
-                            Icon(FontAwesomeIcons.crown, color: Colors.white),
+                        child: Icon(
+                          FontAwesomeIcons.star,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                     Text(G.current.usertypecele),
@@ -181,10 +184,13 @@ class _HomePageState extends State<HomePage>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: GradientColors.radish,
+                              colors: MoreGradientColors.lunada,
                             )),
-                        child:
-                            Icon(FontAwesomeIcons.gamepad, color: Colors.white),
+                        child: Icon(
+                          FontAwesomeIcons.gamepad,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                     Text(G.current.usertypepro),
@@ -213,10 +219,13 @@ class _HomePageState extends State<HomePage>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: GradientColors.darkOcean,
+                              colors: MoreGradientColors.hazel,
                             )),
-                        child:
-                            Icon(FontAwesomeIcons.twitch, color: Colors.white),
+                        child: Icon(
+                          FontAwesomeIcons.twitch,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                     Text(G.current.usertypestreamer),
@@ -388,7 +397,7 @@ class _HomePageState extends State<HomePage>
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: GradientColors.eveningSunshine,
+                            colors: MoreGradientColors.darkSkyBlue,
                           )),
                       child: Icon(FontAwesomeIcons.mars, color: Colors.white),
                     ),
@@ -426,7 +435,7 @@ class _HomePageState extends State<HomePage>
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: GradientColors.juicyOrange,
+                            colors: MoreGradientColors.instagram,
                           )),
                       child: Icon(FontAwesomeIcons.venus, color: Colors.white),
                     ),
