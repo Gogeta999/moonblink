@@ -80,161 +80,221 @@ class _HomePageState extends State<HomePage>
   }
 
   newtopTabs(homeController) {
-    return Container(
-      key: intro.keys[0],
-      height: 60,
-      child: Stack(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(10.0),
+          ),
+        ),
+        shadowColor: Colors.grey,
+        child: Container(
+          padding: EdgeInsets.only(top: 4, bottom: 4),
+          key: intro.keys[0],
+          height: 80,
+          child: Stack(
             children: [
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onDoubleTap: () {
-                        homeController.animateTo(
-                          0.0,
-                          curve: Curves.easeOut,
-                          duration: const Duration(milliseconds: 300),
-                        );
-                      },
-                      onTap: () {
-                        if (catagories != 1) {
-                          setState(() {
-                            catagories = 1;
-                            _pageController.jumpToPage(0);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.azureLane,
-                            )),
-                        child: Icon(Icons.supervisor_account,
-                            size: 23, color: Colors.white),
-                      ),
-                    ),
-                    Text(G.current.usertypecoplayer),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 3) {
-                          setState(() {
-                            catagories = 3;
-                            _pageController.jumpToPage(1);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.orangePinkTeal,
-                            )),
-                        child: Icon(
-                          FontAwesomeIcons.star,
-                          color: Colors.white,
-                          size: 20,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onDoubleTap: () {
+                            homeController.animateTo(
+                              0.0,
+                              curve: Curves.easeOut,
+                              duration: const Duration(milliseconds: 300),
+                            );
+                          },
+                          onTap: () {
+                            if (catagories != 1) {
+                              setState(() {
+                                catagories = 1;
+                                _pageController.jumpToPage(0);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.azureLane,
+                                )),
+                            child: Icon(Icons.supervisor_account,
+                                size: 23, color: Colors.white),
+                          ),
                         ),
-                      ),
-                    ),
-                    Text(G.current.usertypecele),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 4) {
-                          setState(() {
-                            catagories = 4;
-                            _pageController.jumpToPage(2);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.lunada,
-                            )),
-                        child: Icon(
-                          FontAwesomeIcons.gamepad,
-                          color: Colors.white,
-                          size: 20,
+                        SizedBox(
+                          height: 4,
                         ),
-                      ),
+                        Text(G.current.usertypecoplayer),
+                      ],
                     ),
-                    Text(G.current.usertypepro),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 2) {
-                          setState(() {
-                            catagories = 2;
-                            _pageController.jumpToPage(3);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.hazel,
-                            )),
-                        child: Icon(
-                          FontAwesomeIcons.twitch,
-                          color: Colors.white,
-                          size: 20,
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 3) {
+                              setState(() {
+                                catagories = 3;
+                                _pageController.jumpToPage(1);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.orangePinkTeal,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.star,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypecele),
+                      ],
                     ),
-                    Text(G.current.usertypestreamer),
-                  ],
-                ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 4) {
+                              setState(() {
+                                catagories = 4;
+                                _pageController.jumpToPage(2);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.lunada,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.gamepad,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypepro),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 2) {
+                              setState(() {
+                                catagories = 2;
+                                _pageController.jumpToPage(3);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.hazel,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.twitch,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypestreamer),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -359,92 +419,149 @@ class _HomePageState extends State<HomePage>
   }
 
   newmalefemale() {
-    return Container(
-      key: intro.keys[1],
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.grey),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      if (gender != "Male") {
-                        setState(
-                          () {
-                            gender = "Male";
-                            _pageController.jumpToPage(5);
-                          },
-                        );
-                      } else {
-                        setState(() {
-                          gender = "All";
-                          _pageController.jumpToPage(4);
-                        });
-                      }
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: MoreGradientColors.darkSkyBlue,
-                          )),
-                      child: Icon(FontAwesomeIcons.mars, color: Colors.white),
-                    ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        shadowColor: Colors.grey,
+        child: Container(
+          key: intro.keys[1],
+          // decoration: BoxDecoration(
+          //   // color: Colors.white,
+          //   // border: Border.all(width: 1.5, color: Colors.grey),
+          //   borderRadius: BorderRadius.circular(15),
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.grey,
+          //       // spreadRadius: 1,
+          //       blurRadius: 4,
+          //       offset: Offset(0, 0), // changes position of shadow
+          //     ),
+          //   ],
+          // ),
+          child: Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (gender != "Male") {
+                            setState(
+                              () {
+                                gender = "Male";
+                                _pageController.jumpToPage(5);
+                              },
+                            );
+                          } else {
+                            setState(() {
+                              gender = "All";
+                              _pageController.jumpToPage(4);
+                            });
+                          }
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  // spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: Offset(
+                                      -2, 2), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              // shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: MoreGradientColors.darkSkyBlue,
+                              )),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.mars, color: Colors.white),
+                              Text(G.current.genderMale)
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 5),
+                      //   child: Text(G.current.genderMale),
+                      // ),
+                    ],
                   ),
-                  Text(G.current.genderMale),
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      if (gender != "Female") {
-                        setState(
-                          () {
-                            gender = "Female";
-                            _pageController.jumpToPage(7);
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            gender = "All";
-                            _pageController.jumpToPage(4);
-                          },
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: MoreGradientColors.instagram,
-                          )),
-                      child: Icon(FontAwesomeIcons.venus, color: Colors.white),
-                    ),
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (gender != "Female") {
+                            setState(
+                              () {
+                                gender = "Female";
+                                _pageController.jumpToPage(7);
+                              },
+                            );
+                          } else {
+                            setState(
+                              () {
+                                gender = "All";
+                                _pageController.jumpToPage(4);
+                              },
+                            );
+                          }
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  // spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: Offset(
+                                      -2, 2), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              // shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: MoreGradientColors.instagram,
+                              )),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.venus, color: Colors.white),
+                              Text(G.current.genderFemale)
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 5),
+                      //   child: Text(G.current.genderFemale),
+                      // ),
+                    ],
                   ),
-                  Text(G.current.genderFemale),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -617,17 +734,17 @@ class _HomePageState extends State<HomePage>
                             controller: widget.homecontroller,
                             // controller: tapToTopModel.scrollController,
                             slivers: <Widget>[
-                              SliverToBoxAdapter(
-                                child: SizedBox(
-                                  height: 8,
-                                ),
-                              ),
+                              // SliverToBoxAdapter(
+                              //   child: SizedBox(
+                              //     height: 8,
+                              //   ),
+                              // ),
                               SliverToBoxAdapter(
                                 child: newtopTabs(widget.homecontroller),
                               ),
                               SliverToBoxAdapter(
                                 child: SizedBox(
-                                  height: 8,
+                                  height: 12,
                                 ),
                               ),
                               SliverToBoxAdapter(
