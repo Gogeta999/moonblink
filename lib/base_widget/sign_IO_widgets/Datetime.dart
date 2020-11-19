@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class BasicDateField extends StatelessWidget {
   final _dob;
   BasicDateField(this._dob);
-  final format = DateFormat("dd-MM-yyyy");
+  final format = DateFormat("dd-MM-yyyy", 'en_us');
   @override
   Widget build(BuildContext context) {
     return Padding(

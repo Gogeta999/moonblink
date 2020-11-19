@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:moonblink/bloc_pattern/blocked_users/unblock_button/bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_booking_notification.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
@@ -15,7 +16,7 @@ import 'package:rxdart/rxdart.dart';
 part 'user_new_notification_event.dart';
 part 'user_new_notification_state.dart';
 
-const int notificationLimit = 10;
+const int notificationLimit = 20;
 
 class UserNewNotificationBloc
     extends Bloc<UserNewNotificationEvent, UserNewNotificationState> {
@@ -66,7 +67,8 @@ class UserNewNotificationBloc
   ///Initial Fetched
   Stream<UserNewNotificationState> _mapFetchedToState(
       UserNewNotificationState currentState) async* {
-    if (currentState is UserNewNotificationInitial) {
+    if (currentState is UserNewNotificationInitial ||
+        currentState is UserNewNotificationFailure) {
       List<UserNewNotificationData> data = [];
       int unreadCount = 0;
       try {
@@ -75,9 +77,8 @@ class UserNewNotificationBloc
         data = response.data;
         unreadCount = response.unreadCount;
       } catch (e) {
-        //yield UserNotificationFailure(error: e);
-        //return;
-        print('$e');
+        yield UserNewNotificationFailure(error: e);
+        return;
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield UserNewNotificationSuccess(
@@ -106,7 +107,6 @@ class UserNewNotificationBloc
               hasReachedMax: hasReachedMax,
               page: nextPage,
               unreadCount: unreadCount);
-      if (data.isEmpty) showToast('You have reached the end of the list');
     }
   }
 

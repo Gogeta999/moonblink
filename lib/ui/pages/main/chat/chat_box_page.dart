@@ -113,7 +113,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      //if (myType == kNormal) _chatBoxBloc.saveTimer();
+      if (myType == kNormal) _chatBoxBloc.saveTimer();
     }
   }
 
@@ -244,7 +244,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               child: Text("Cancel"),
             ),
             FlatButton(
-              onPressed: () => launch(url),
+              onPressed: () {
+                launch(url);
+                Navigator.pop(context);
+              },
               child: Text("View URL"),
             ),
           ],

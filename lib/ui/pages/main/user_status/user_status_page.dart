@@ -151,7 +151,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    int status = StorageManager.sharedPreferences.getInt(mstatus);
+    int status = 1; //StorageManager.sharedPreferences.getInt(mstatus);
     String name = StorageManager.sharedPreferences.getString(mLoginName);
     // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
     return Scaffold(
