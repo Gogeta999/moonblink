@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/contacttemple/contactcontainer.dart';
 import 'package:moonblink/base_widget/container/roundedContainer.dart';
@@ -38,30 +39,51 @@ class _ContactsPageState extends State<ContactsPage> {
   int count = -1;
   double itemExtent = 415;
   ScrollController listController = ScrollController();
+  double _listPosition = 0;
 
   ContactModel _contactModel;
   bool isBlocking = false;
+  _listListener() {
+    setState(() {
+      _listPosition = listController.position.pixels;
+    });
+  }
 
   @override
   initState() {
     _contactModel = ContactModel();
+    listController.addListener(_listListener);
     super.initState();
   }
 
   titlebox(String title, double index) {
-    return Center(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-        child: GestureDetector(
-          onTap: () {
-            listController.animateTo(
-              itemExtent * (index),
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          },
-          child: Text(title),
-        ),
+    return Container(
+      height: 30,
+      width: 30,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: () {
+            if (itemExtent * (index) <= _listPosition &&
+                itemExtent * (index + 1) > _listPosition) {
+              return LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: MoreGradientColors.azureLane,
+              );
+            } else {
+              return null;
+            }
+          }()),
+      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+      child: GestureDetector(
+        onTap: () {
+          listController.animateTo(
+            itemExtent * (index),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        },
+        child: Center(child: Text(title)),
       ),
     );
   }
@@ -89,7 +111,7 @@ class _ContactsPageState extends State<ContactsPage> {
     // alphabetList.add(tempList[0]);
     for (var i = 0; i < tempList.length; i++) {
       var currentStr = tempList[i][0];
-      print(currentStr.codeUnitAt(0));
+      // print(currentStr.codeUnitAt(0));
       // strMap[currentStr] = i;
       count += 1;
       if (currentStr.codeUnitAt(0) < 65 || currentStr.codeUnitAt(0) > 122) {
@@ -106,8 +128,8 @@ class _ContactsPageState extends State<ContactsPage> {
       }
     }
     count = -1;
-    print(alphabetList.toString());
-    print(scrollindex.toString());
+    // print(alphabetList.toString());
+    // print(scrollindex.toString());
   }
 
   ///[Tiles]
@@ -230,17 +252,15 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: RoundedContainer(
                   height: 50,
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: Center(
-                    child: Container(
-                      constraints: BoxConstraints(minWidth: 0, minHeight: 10),
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return titlebox(
-                              alphabetList[index], scrollindex[index]);
-                        },
-                        itemCount: alphabetList.length,
-                      ),
+                  child: Container(
+                    constraints: BoxConstraints(minWidth: 0, minHeight: 10),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return titlebox(
+                            alphabetList[index], scrollindex[index]);
+                      },
+                      itemCount: alphabetList.length,
                     ),
                   ),
                 ),

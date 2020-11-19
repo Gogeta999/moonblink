@@ -14,6 +14,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/view_model/partner_ownProfile_model.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -179,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 if (usertype == 0) space(),
-                if (usertype == 0)
+                if (usertype == 0 && usermodel.partnerData.typestatus != -1)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
@@ -187,6 +188,20 @@ class _SettingsPageState extends State<SettingsPage> {
                       ontap: () => Navigator.pushNamed(context, RouteName.otp),
                       child: Center(
                         child: Text(G.of(context).settingsSignAsPartner),
+                      ),
+                    ),
+                  ),
+                if (usermodel.partnerData.typestatus == -1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: ShadedContainer(
+                      height: 50,
+                      ontap: () => showToast("Pending to be partner"),
+                      child: Center(
+                        child: Text(
+                          "Pending to be Partner",
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
                   ),

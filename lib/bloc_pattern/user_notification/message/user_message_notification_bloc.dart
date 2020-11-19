@@ -4,13 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:moonblink/models/notification_models/user_message_notification.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'user_message_notification_event.dart';
 part 'user_message_notification_state.dart';
-
-const int notificationLimit = 10;
 
 class UserMessageNotificationBloc
     extends Bloc<UserMessageNotificationEvent, UserMessageNotificationState> {
@@ -23,6 +20,8 @@ class UserMessageNotificationBloc
     return super.transformEvents(
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
+
+  final int _notificationLimit = 10;
 
   void dispose() {
     this.close();
@@ -48,15 +47,16 @@ class UserMessageNotificationBloc
   ///Initial Fetched
   Stream<UserMessageNotificationState> _mapFetchedToState(
       UserMessageNotificationState currentState) async* {
-    if (currentState is UserMessageNotificationInitial) {
+    if (currentState is UserMessageNotificationInitial ||
+        currentState is UserMessageNotificationFailure) {
       List<UserMessageNotificationData> data = [];
       try {
-        data = await _fetchUserNotification(limit: notificationLimit, page: 1);
+        data = await _fetchUserNotification(limit: _notificationLimit, page: 1);
       } catch (e) {
         yield UserMessageNotificationFailure(error: e);
         return;
       }
-      bool hasReachedMax = data.length < notificationLimit ? true : false;
+      bool hasReachedMax = data.length < _notificationLimit ? true : false;
       yield UserMessageNotificationSuccess(
           data: data, hasReachedMax: hasReachedMax, page: 1);
     }
@@ -65,12 +65,12 @@ class UserMessageNotificationBloc
       List<UserMessageNotificationData> data = [];
       try {
         data = await _fetchUserNotification(
-            limit: notificationLimit, page: nextPage);
+            limit: _notificationLimit, page: nextPage);
       } catch (error) {
-        print(error);
-        //yield UserMessageNotificationFailure(error: error);
+        yield UserMessageNotificationFailure(error: error);
+        return;
       }
-      bool hasReachedMax = data.length < notificationLimit ? true : false;
+      bool hasReachedMax = data.length < _notificationLimit ? true : false;
       yield data.isEmpty
           ? currentState.copyWith(hasReachedMax: true)
           : UserMessageNotificationSuccess(
@@ -85,12 +85,12 @@ class UserMessageNotificationBloc
       UserMessageNotificationState currentState) async* {
     List<UserMessageNotificationData> data = [];
     try {
-      data = await _fetchUserNotification(limit: notificationLimit, page: 1);
+      data = await _fetchUserNotification(limit: _notificationLimit, page: 1);
     } catch (error) {
       yield UserMessageNotificationFailure(error: error);
       return;
     }
-    bool hasReachedMax = data.length < notificationLimit ? true : false;
+    bool hasReachedMax = data.length < _notificationLimit ? true : false;
     yield UserMessageNotificationSuccess(
         data: data, hasReachedMax: hasReachedMax, page: 1);
   }
