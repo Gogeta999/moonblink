@@ -47,7 +47,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   final RefreshController _refreshController = RefreshController();
   // final ScrollController _scrollController = ScrollController();
   Intro intro;
-  bool tuto = false;
 
   _PartnerDetailPageState() {
     intro = Intro(
@@ -67,15 +66,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
         showStepLabel: false,
       ),
     );
-  }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    bool showtuto = StorageManager.sharedPreferences.getBool(userdetailtuto);
-    setState(() {
-      tuto = showtuto;
-    });
   }
 
   @override
@@ -278,7 +268,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
-            if (tuto) {
+            bool showtuto =
+                StorageManager.sharedPreferences.getBool(userdetailtuto);
+            if (showtuto) {
               Timer(Duration(microseconds: 0), () {
                 intro.start(context);
               });

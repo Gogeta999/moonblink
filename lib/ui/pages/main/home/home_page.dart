@@ -79,19 +79,23 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  //new TopTabs
   newtopTabs(homeController) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Card(
+        key: intro.keys[0],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(10.0),
           ),
         ),
-        shadowColor: Colors.grey,
+        elevation: 4,
+        shadowColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.grey,
         child: Container(
           padding: EdgeInsets.only(top: 4, bottom: 4),
-          key: intro.keys[0],
           height: 80,
           child: Stack(
             children: [
@@ -129,7 +133,7 @@ class _HomePageState extends State<HomePage>
                                     // spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: Offset(
-                                        -2, 2), // changes position of shadow
+                                        -3, 3), // changes position of shadow
                                   ),
                                 ],
                                 shape: BoxShape.circle,
@@ -173,7 +177,7 @@ class _HomePageState extends State<HomePage>
                                     // spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: Offset(
-                                        -2, 2), // changes position of shadow
+                                        -3, 3), // changes position of shadow
                                   ),
                                 ],
                                 shape: BoxShape.circle,
@@ -184,7 +188,9 @@ class _HomePageState extends State<HomePage>
                                 )),
                             child: Icon(
                               FontAwesomeIcons.star,
-                              color: Colors.white,
+                              color: catagories == 3
+                                  ? Theme.of(context).accentColor
+                                  : Colors.white,
                               size: 20,
                             ),
                           ),
@@ -220,7 +226,7 @@ class _HomePageState extends State<HomePage>
                                     // spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: Offset(
-                                        -2, 2), // changes position of shadow
+                                        -3, 3), // changes position of shadow
                                   ),
                                 ],
                                 shape: BoxShape.circle,
@@ -267,7 +273,7 @@ class _HomePageState extends State<HomePage>
                                     // spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: Offset(
-                                        -2, 2), // changes position of shadow
+                                        -3, 3), // changes position of shadow
                                   ),
                                 ],
                                 shape: BoxShape.circle,
@@ -299,344 +305,332 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  topTabs(homeController) {
-    return Container(
-      key: intro.keys[0],
-      height: 40,
-      child: Stack(
-        children: [
-          Center(
-            child: Divider(
-              thickness: 2,
-              color: Colors.black,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SmallShadedContainer(
-                key: intro.keys[2],
-                onDoubletap: () {
-                  homeController.animateTo(
-                    0.0,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                },
-                selected: catagories == 1 ? true : false,
-                ontap: () {
-                  if (catagories != 1) {
-                    setState(() {
-                      catagories = 1;
-                      _pageController.jumpToPage(0);
-                    });
-                  } else {
-                    print("Already");
-                  }
-                },
-                child: Text(
-                  G.of(context).usertypecoplayer,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SmallShadedContainer(
-                selected: catagories == 3 ? true : false,
-                onDoubletap: () {
-                  homeController.animateTo(
-                    0.0,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                },
-                ontap: () {
-                  if (catagories != 3) {
-                    setState(() {
-                      catagories = 3;
-                      _pageController.jumpToPage(1);
-                    });
-                  } else {
-                    print("Already");
-                  }
-                },
-                child: Text(
-                  G.of(context).usertypecele,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SmallShadedContainer(
-                selected: catagories == 4 ? true : false,
-                onDoubletap: () {
-                  homeController.animateTo(
-                    0.0,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                },
-                ontap: () {
-                  if (catagories != 4) {
-                    setState(() {
-                      catagories = 4;
-                      _pageController.jumpToPage(2);
-                    });
-                  } else {
-                    print("Already");
-                  }
-                },
-                child: Text(
-                  G.of(context).usertypepro,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SmallShadedContainer(
-                selected: catagories == 2 ? true : false,
-                onDoubletap: () {
-                  homeController.animateTo(
-                    0.0,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                },
-                ontap: () {
-                  if (catagories != 2) {
-                    setState(() {
-                      catagories = 2;
-                      _pageController.jumpToPage(3);
-                    });
-                  } else {
-                    print("Already");
-                  }
-                },
-                child: Text(
-                  G.of(context).usertypestreamer,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // topTabs(homeController) {
+  //   return Container(
+  //     key: intro.keys[0],
+  //     height: 40,
+  //     child: Stack(
+  //       children: [
+  //         Center(
+  //           child: Divider(
+  //             thickness: 2,
+  //             color: Colors.black,
+  //           ),
+  //         ),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //           children: [
+  //             SmallShadedContainer(
+  //               key: intro.keys[2],
+  //               onDoubletap: () {
+  //                 homeController.animateTo(
+  //                   0.0,
+  //                   curve: Curves.easeOut,
+  //                   duration: const Duration(milliseconds: 300),
+  //                 );
+  //               },
+  //               selected: catagories == 1 ? true : false,
+  //               ontap: () {
+  //                 if (catagories != 1) {
+  //                   setState(() {
+  //                     catagories = 1;
+  //                     _pageController.jumpToPage(0);
+  //                   });
+  //                 } else {
+  //                   print("Already");
+  //                 }
+  //               },
+  //               child: Text(
+  //                 G.of(context).usertypecoplayer,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //             SmallShadedContainer(
+  //               selected: catagories == 3 ? true : false,
+  //               onDoubletap: () {
+  //                 homeController.animateTo(
+  //                   0.0,
+  //                   curve: Curves.easeOut,
+  //                   duration: const Duration(milliseconds: 300),
+  //                 );
+  //               },
+  //               ontap: () {
+  //                 if (catagories != 3) {
+  //                   setState(() {
+  //                     catagories = 3;
+  //                     _pageController.jumpToPage(1);
+  //                   });
+  //                 } else {
+  //                   print("Already");
+  //                 }
+  //               },
+  //               child: Text(
+  //                 G.of(context).usertypecele,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //             SmallShadedContainer(
+  //               selected: catagories == 4 ? true : false,
+  //               onDoubletap: () {
+  //                 homeController.animateTo(
+  //                   0.0,
+  //                   curve: Curves.easeOut,
+  //                   duration: const Duration(milliseconds: 300),
+  //                 );
+  //               },
+  //               ontap: () {
+  //                 if (catagories != 4) {
+  //                   setState(() {
+  //                     catagories = 4;
+  //                     _pageController.jumpToPage(2);
+  //                   });
+  //                 } else {
+  //                   print("Already");
+  //                 }
+  //               },
+  //               child: Text(
+  //                 G.of(context).usertypepro,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //             SmallShadedContainer(
+  //               selected: catagories == 2 ? true : false,
+  //               onDoubletap: () {
+  //                 homeController.animateTo(
+  //                   0.0,
+  //                   curve: Curves.easeOut,
+  //                   duration: const Duration(milliseconds: 300),
+  //                 );
+  //               },
+  //               ontap: () {
+  //                 if (catagories != 2) {
+  //                   setState(() {
+  //                     catagories = 2;
+  //                     _pageController.jumpToPage(3);
+  //                   });
+  //                 } else {
+  //                   print("Already");
+  //                 }
+  //               },
+  //               child: Text(
+  //                 G.of(context).usertypestreamer,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   newmalefemale() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       child: Card(
+        key: intro.keys[1],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        shadowColor: Colors.grey,
-        child: Container(
-          key: intro.keys[1],
-          // decoration: BoxDecoration(
-          //   // color: Colors.white,
-          //   // border: Border.all(width: 1.5, color: Colors.grey),
-          //   borderRadius: BorderRadius.circular(15),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.grey,
-          //       // spreadRadius: 1,
-          //       blurRadius: 4,
-          //       offset: Offset(0, 0), // changes position of shadow
-          //     ),
-          //   ],
-          // ),
-          child: Padding(
-            padding: EdgeInsets.only(top: 15, bottom: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          if (gender != "Male") {
-                            setState(
-                              () {
-                                gender = "Male";
-                                _pageController.jumpToPage(5);
-                              },
-                            );
-                          } else {
-                            setState(() {
+        shadowColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.grey,
+        elevation: 4,
+        child: Padding(
+          padding: EdgeInsets.only(top: 15, bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (gender != "Male") {
+                          setState(
+                            () {
+                              gender = "Male";
+                              _pageController.jumpToPage(5);
+                            },
+                          );
+                        } else {
+                          setState(() {
+                            gender = "All";
+                            _pageController.jumpToPage(4);
+                          });
+                        }
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                // spreadRadius: 1,
+                                blurRadius: 4,
+                                offset:
+                                    Offset(-3, 3), // changes position of shadow
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(10),
+                            // shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: MoreGradientColors.darkSkyBlue,
+                            )),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(FontAwesomeIcons.mars, color: Colors.white),
+                            Text(G.current.genderMale)
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 5),
+                    //   child: Text(G.current.genderMale),
+                    // ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (gender != "Female") {
+                          setState(
+                            () {
+                              gender = "Female";
+                              _pageController.jumpToPage(7);
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
                               gender = "All";
                               _pageController.jumpToPage(4);
-                            });
-                          }
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  // spreadRadius: 1,
-                                  blurRadius: 4,
-                                  offset: Offset(
-                                      -2, 2), // changes position of shadow
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(10),
-                              // shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: MoreGradientColors.darkSkyBlue,
-                              )),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(FontAwesomeIcons.mars, color: Colors.white),
-                              Text(G.current.genderMale)
+                            },
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                // spreadRadius: 1,
+                                blurRadius: 4,
+                                offset:
+                                    Offset(-3, 3), // changes position of shadow
+                              ),
                             ],
-                          ),
+                            borderRadius: BorderRadius.circular(10),
+                            // shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: MoreGradientColors.instagram,
+                            )),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(FontAwesomeIcons.venus, color: Colors.white),
+                            Text(G.current.genderFemale)
+                          ],
                         ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 5),
-                      //   child: Text(G.current.genderMale),
-                      // ),
-                    ],
-                  ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 5),
+                    //   child: Text(G.current.genderFemale),
+                    // ),
+                  ],
                 ),
-                Container(
-                  child: Column(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          if (gender != "Female") {
-                            setState(
-                              () {
-                                gender = "Female";
-                                _pageController.jumpToPage(7);
-                              },
-                            );
-                          } else {
-                            setState(
-                              () {
-                                gender = "All";
-                                _pageController.jumpToPage(4);
-                              },
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  // spreadRadius: 1,
-                                  blurRadius: 4,
-                                  offset: Offset(
-                                      -2, 2), // changes position of shadow
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(10),
-                              // shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: MoreGradientColors.instagram,
-                              )),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(FontAwesomeIcons.venus, color: Colors.white),
-                              Text(G.current.genderFemale)
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 5),
-                      //   child: Text(G.current.genderFemale),
-                      // ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  malefemaletabs() {
-    return Container(
-      key: intro.keys[1],
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.black
-            // top: BorderSide(
-            //   width: 2,
-            //   color: Colors.black,
-            // ),
-            // bottom: BorderSide(
-            //   width: 2,
-            //   color: Colors.black,
-            // ),
-            ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            MediumShadedContainer(
-              selected: gender == "Male" ? true : false,
-              ontap: () {
-                if (gender != "Male") {
-                  setState(
-                    () {
-                      gender = "Male";
-                      _pageController.jumpToPage(5);
-                    },
-                  );
-                } else {
-                  setState(() {
-                    gender = "All";
-                    _pageController.jumpToPage(4);
-                  });
-                }
-              },
-              child: Center(
-                child: Text(G.of(context).genderMale),
-              ),
-            ),
-            MediumShadedContainer(
-              selected: gender == "Female" ? true : false,
-              ontap: () {
-                if (gender != "Female") {
-                  setState(
-                    () {
-                      gender = "Female";
-                      _pageController.jumpToPage(7);
-                    },
-                  );
-                } else {
-                  setState(
-                    () {
-                      gender = "All";
-                      _pageController.jumpToPage(4);
-                    },
-                  );
-                }
-              },
-              child: Center(
-                child: Text(G.of(context).genderFemale),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // malefemaletabs() {
+  //   return Container(
+  //     key: intro.keys[1],
+  //     decoration: BoxDecoration(
+  //       border: Border.all(width: 1.5, color: Colors.black
+  //           // top: BorderSide(
+  //           //   width: 2,
+  //           //   color: Colors.black,
+  //           // ),
+  //           // bottom: BorderSide(
+  //           //   width: 2,
+  //           //   color: Colors.black,
+  //           // ),
+  //           ),
+  //       borderRadius: BorderRadius.circular(15),
+  //     ),
+  //     child: Padding(
+  //       padding: EdgeInsets.only(top: 10, bottom: 15),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: [
+  //           MediumShadedContainer(
+  //             selected: gender == "Male" ? true : false,
+  //             ontap: () {
+  //               if (gender != "Male") {
+  //                 setState(
+  //                   () {
+  //                     gender = "Male";
+  //                     _pageController.jumpToPage(5);
+  //                   },
+  //                 );
+  //               } else {
+  //                 setState(() {
+  //                   gender = "All";
+  //                   _pageController.jumpToPage(4);
+  //                 });
+  //               }
+  //             },
+  //             child: Center(
+  //               child: Text(G.of(context).genderMale),
+  //             ),
+  //           ),
+  //           MediumShadedContainer(
+  //             selected: gender == "Female" ? true : false,
+  //             ontap: () {
+  //               if (gender != "Female") {
+  //                 setState(
+  //                   () {
+  //                     gender = "Female";
+  //                     _pageController.jumpToPage(7);
+  //                   },
+  //                 );
+  //               } else {
+  //                 setState(
+  //                   () {
+  //                     gender = "All";
+  //                     _pageController.jumpToPage(4);
+  //                   },
+  //                 );
+  //               }
+  //             },
+  //             child: Center(
+  //               child: Text(G.of(context).genderFemale),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -136,7 +136,9 @@ class _MainTabPageState extends State<MainTabPage>
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.grey,
               // spreadRadius: 1,
               blurRadius: 4,
               offset: Offset(0, 0), // changes position of shadow

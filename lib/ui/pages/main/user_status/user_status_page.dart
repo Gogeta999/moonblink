@@ -204,7 +204,11 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   builder: (context, model, child) {
                     return Card(
                       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      // elevation: 3,
+                      elevation: 4,
+                      shadowColor:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black
+                              : Colors.grey,
                       child: ListTile(
                         leading: InkResponse(
                           onTap: () => Navigator.of(context)
@@ -331,6 +335,10 @@ class _UserStatusPageState extends State<UserStatusPage> {
                     profile.level != null)
                   Card(
                     margin: EdgeInsets.only(bottom: 15),
+                    elevation: 4,
+                    shadowColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.grey,
                     child: InkWell(
                       onTap: () {
                         leveldialog(profile);
@@ -423,7 +431,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 if (usertype != 0)
                   Card(
                     margin: EdgeInsets.zero,
-                    // elevation: 8,
+                    // elevation: 4,
                     child: ListTile(
                         leading: SvgPicture.asset(
                           gameProfile,
@@ -441,6 +449,10 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ///OwnProfile
                 Card(
                   margin: EdgeInsets.only(bottom: 15),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
                   child: ListTile(
                       leading: SvgPicture.asset(
                         profileEdit,
@@ -535,6 +547,10 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ///check app update
                 Card(
                   margin: EdgeInsets.only(bottom: 15),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
                   child: ListTile(
                       leading: SvgPicture.asset(
                         checkUpdate,
@@ -551,6 +567,10 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ///Settings
                 Card(
                   margin: EdgeInsets.only(bottom: 10),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
                   child: ListTile(
                       leading: SvgPicture.asset(
                         setting,
@@ -597,6 +617,10 @@ class _LogoutState extends State<Logout> {
       builder: (context, model, child) {
         return Card(
             margin: EdgeInsets.zero,
+            shadowColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.grey,
+            elevation: 4,
             child: ListTile(
               leading: SvgPicture.asset(
                 logout,

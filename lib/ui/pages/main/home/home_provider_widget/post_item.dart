@@ -164,7 +164,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40.0),
               ),
-              shadowColor: Colors.grey,
+              shadowColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.grey,
+              elevation: 4,
               child: Stack(
                 children: [
                   Column(
