@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.0
+  font_awesome_flutter: ^8.10.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   # State Management
   provider: ^4.3.2+2
   path_provider: ^1.6.21
@@ -101,7 +102,6 @@ dependencies:
   # swipe list tile to show more options
   flutter_slidable: ^0.5.7
   flutter_svg: ^0.19.1
-  font_awesome_flutter: ^8.10.0 #The Font Awesome Icon pack available as set of Flutter Icons.
   percent_indicator: 2.1.7+4
   flutter_intro: ^0.6.0
   flutter_gradient_colors: ^1.0.0

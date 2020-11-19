@@ -119,10 +119,10 @@ class _HomePageState extends State<HomePage>
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: GradientColors.indigo,
+                              colors: MoreGradientColors.azureLane,
                             )),
-                        child: Icon(Icons.airline_seat_recline_normal,
-                            color: Colors.white),
+                        child:
+                            Icon(Icons.supervisor_account, color: Colors.white),
                       ),
                     ),
                     Text(G.current.usertypecoplayer),
