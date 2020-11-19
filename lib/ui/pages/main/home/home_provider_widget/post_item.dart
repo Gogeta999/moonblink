@@ -12,6 +12,7 @@ import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/home_model.dart';
@@ -153,6 +154,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final ownId = StorageManager.sharedPreferences.getInt(mUserId);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
@@ -303,10 +305,10 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                   height: 30,
                                   width: double.infinity,
                                   margin: EdgeInsets.all(8.0),
-                                  child: Stack(
+                                  child: Row(
                                     children: <Widget>[
-                                      Align(
-                                        alignment: Alignment.centerLeft,
+                                      Expanded(
+                                        flex: 1,
                                         child: InkWell(
                                           child: Icon(
                                               widget.posts.isReacted == 0
@@ -367,12 +369,13 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                                 },
                                         ),
                                       ),
-                                      Positioned(
-                                          left: 40,
-                                          bottom: 5,
-                                          child: Text(
-                                              '${widget.posts.reactionCount} ${G.of(context).likes}')),
-                                      Center(
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                            '${widget.posts.reactionCount} ${G.of(context).likes}'),
+                                      ),
+                                      Expanded(
+                                        flex: 4,
                                         child: Container(
                                           margin: EdgeInsets.only(
                                               left: 5.0, top: 3, bottom: 5),
@@ -391,8 +394,38 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           ),
                                         ),
                                       ),
-                                      Align(
-                                        alignment: Alignment.centerRight,
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: Icon(FontAwesomeIcons.book),
+                                          onPressed: widget.posts.id == ownId
+                                              ? () {
+                                                  showToast(G
+                                                      .of(context)
+                                                      .cannotbookself);
+                                                }
+                                              : () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              BookingPage(
+                                                                partnerId:
+                                                                    widget.posts
+                                                                        .id,
+                                                                partnerName:
+                                                                    widget.posts
+                                                                        .userName,
+                                                                partnerBios:
+                                                                    'Tell Ko TLW pass name on Post',
+                                                                partnerProfile:
+                                                                    widget.posts
+                                                                        .profileImage,
+                                                              )));
+                                                },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
                                         child: IconButton(
                                           icon: Icon(FontAwesomeIcons.share),
                                           onPressed: () {

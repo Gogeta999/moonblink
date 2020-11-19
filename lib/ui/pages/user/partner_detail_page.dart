@@ -22,6 +22,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -589,9 +590,27 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                     showToast(G.of(context).cannotbookself);
                                   }
                                 : () {
-                                    Navigator.pushNamed(
-                                        context, RouteName.booking,
-                                        arguments: partnerModel.partnerData);
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => BookingPage(
+                                                  partnerId: partnerModel
+                                                      .partnerData.partnerId,
+                                                  partnerName: partnerModel
+                                                      .partnerData.partnerName,
+                                                  partnerBios: partnerModel
+                                                      .partnerData
+                                                      .prfoileFromPartner
+                                                      .bios,
+                                                  partnerProfile: partnerModel
+                                                      .partnerData
+                                                      .prfoileFromPartner
+                                                      .profileImage,
+                                                  // partnerUser:
+                                                  //     partnerModel.partnerData,
+                                                )));
+                                    // Navigator.pushNamed(
+                                    //     context, RouteName.booking,
+                                    //     arguments: partnerModel.partnerData);
                                   }),
 
                         MBButtonWidget(

@@ -28,7 +28,6 @@ class _MainTabPageState extends State<MainTabPage>
   int type = StorageManager.sharedPreferences.getInt(mUserType);
   var _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
-  // ignore: unused_field
   int initPage;
   // ignore: unused_field
   int _selectedIndex = 0;

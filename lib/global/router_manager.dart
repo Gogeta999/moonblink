@@ -77,8 +77,13 @@ class MoonGoRouter {
         return NoAnimRouteBuilder(SplashPage());
       case RouteName.booking:
         return CupertinoPageRoute(
-            builder: (_) =>
-                BookingPage(partnerUser: settings.arguments ?? 'Unknown data'));
+            builder: (_) => BookingPage(
+                // partnerUser: settings.arguments,
+                // partnerId: settings.arguments,
+                // partnerBios: settings.arguments,
+                // partnerName: settings.arguments,
+                // partnerProfile: settings.arguments,
+                ));
       case RouteName.termsAndConditionsPage:
         return CupertinoPageRoute(
             builder: (_) =>
