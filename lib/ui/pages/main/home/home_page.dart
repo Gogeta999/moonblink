@@ -48,18 +48,17 @@ class _HomePageState extends State<HomePage>
   Intro intro;
   _HomePageState() {
     intro = Intro(
-      stepCount: 3,
+      stepCount: 2,
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
           G.current.tutorialHome1,
           G.current.tutorialHome2,
-          G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
         btnLabel: G.current.next,
-        showStepLabel: true,
+        showStepLabel: false,
       ),
     );
   }
@@ -101,161 +100,225 @@ class _HomePageState extends State<HomePage>
   }
 
   newtopTabs(homeController) {
-    return Container(
-      key: intro.keys[0],
-      height: 60,
-      child: Stack(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(10.0),
+          ),
+        ),
+        shadowColor: Colors.grey,
+        child: Container(
+          padding: EdgeInsets.only(top: 4, bottom: 4),
+          key: intro.keys[0],
+          height: 80,
+          child: Stack(
             children: [
-              Container(
-                key: intro.keys[2],
-                child: Column(
-                  children: [
-                    InkWell(
-                      onDoubleTap: () {
-                        homeController.animateTo(
-                          0.0,
-                          curve: Curves.easeOut,
-                          duration: const Duration(milliseconds: 300),
-                        );
-                      },
-                      onTap: () {
-                        if (catagories != 1) {
-                          setState(() {
-                            catagories = 1;
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(0);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: GradientColors.indigo,
-                            )),
-                        child: Icon(Icons.airline_seat_recline_normal,
-                            color: Colors.white),
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onDoubleTap: () {
+                            homeController.animateTo(
+                              0.0,
+                              curve: Curves.easeOut,
+                              duration: const Duration(milliseconds: 300),
+                            );
+                          },
+                          onTap: () {
+                            if (catagories != 1) {
+                              setState(() {
+                                catagories = 1;
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.azureLane,
+                                )),
+                            child: Icon(Icons.supervisor_account,
+                                size: 23, color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypecoplayer),
+                      ],
                     ),
-                    Text(G.current.usertypecoplayer),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 3) {
-                          setState(() {
-                            catagories = 3;
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(1);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: GradientColors.gradeGrey,
-                            )),
-                        child:
-                            Icon(FontAwesomeIcons.crown, color: Colors.white),
-                      ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 3) {
+                              setState(() {
+                                catagories = 3;
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.orangePinkTeal,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.star,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypecele),
+                      ],
                     ),
-                    Text(G.current.usertypecele),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 4) {
-                          setState(() {
-                            catagories = 4;
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(2);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: GradientColors.radish,
-                            )),
-                        child:
-                            Icon(FontAwesomeIcons.gamepad, color: Colors.white),
-                      ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 4) {
+                              setState(() {
+                                catagories = 4;
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.lunada,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.gamepad,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypepro),
+                      ],
                     ),
-                    Text(G.current.usertypepro),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (catagories != 2) {
-                          setState(() {
-                            catagories = 2;
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(3);
-                          });
-                        } else {
-                          print("Already");
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: GradientColors.darkOcean,
-                            )),
-                        child:
-                            Icon(FontAwesomeIcons.twitch, color: Colors.white),
-                      ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (catagories != 2) {
+                              setState(() {
+                                catagories = 2;
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              });
+                            } else {
+                              print("Already");
+                            }
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    // spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(
+                                        -2, 2), // changes position of shadow
+                                  ),
+                                ],
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.hazel,
+                                )),
+                            child: Icon(
+                              FontAwesomeIcons.twitch,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(G.current.usertypestreamer),
+                      ],
                     ),
-                    Text(G.current.usertypestreamer),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -380,99 +443,135 @@ class _HomePageState extends State<HomePage>
   }
 
   newmalefemale() {
-    return Container(
-      key: intro.keys[1],
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.5, color: Colors.grey),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      if (gender != "Male") {
-                        setState(
-                          () {
-                            gender = "Male";
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(5);
-                          },
-                        );
-                      } else {
-                        setState(() {
-                          gender = "All";
-                          _homeBloc.fetchData(type: catagories, gender: gender);
-                          //pageController.jumpToPage(4);
-                        });
-                      }
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: GradientColors.eveningSunshine,
-                          )),
-                      child: Icon(FontAwesomeIcons.mars, color: Colors.white),
-                    ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        shadowColor: Colors.grey,
+        child: Container(
+          key: intro.keys[1],
+          child: Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (gender != "Male") {
+                            setState(
+                              () {
+                                gender = "Male";
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              },
+                            );
+                          } else {
+                            setState(() {
+                              gender = "All";
+                              _homeBloc.fetchData(
+                                  type: catagories, gender: gender);
+                            });
+                          }
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  // spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: Offset(
+                                      -2, 2), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              // shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: MoreGradientColors.darkSkyBlue,
+                              )),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.mars, color: Colors.white),
+                              Text(G.current.genderMale)
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 5),
+                      //   child: Text(G.current.genderMale),
+                      // ),
+                    ],
                   ),
-                  Text(G.current.genderMale),
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      if (gender != "Female") {
-                        setState(
-                          () {
-                            gender = "Female";
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(7);
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            gender = "All";
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                            //_pageController.jumpToPage(4);
-                          },
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: GradientColors.juicyOrange,
-                          )),
-                      child: Icon(FontAwesomeIcons.venus, color: Colors.white),
-                    ),
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (gender != "Female") {
+                            setState(
+                              () {
+                                gender = "Female";
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              },
+                            );
+                          } else {
+                            setState(
+                              () {
+                                gender = "All";
+                                _homeBloc.fetchData(
+                                    type: catagories, gender: gender);
+                              },
+                            );
+                          }
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  // spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: Offset(
+                                      -2, 2), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              // shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: MoreGradientColors.instagram,
+                              )),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.venus, color: Colors.white),
+                              Text(G.current.genderFemale)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(G.current.genderFemale),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -551,62 +650,51 @@ class _HomePageState extends State<HomePage>
         body: BlocProvider.value(
           value: _homeBloc,
           child: SafeArea(
-            child: ProviderWidget2<HomeModel, TapToTopModel>(
-                autoDispose: true,
-                model1: HomeModel(),
-                model2: TapToTopModel(PrimaryScrollController.of(context),
-                    height: kToolbarHeight),
-                onModelReady: (homeModel, tapToTopModel) {
-                  //homeModel.initData();
-                },
-                builder: (context, homeModel, tapToTopModel, child) {
-                  return SmartRefresher(
-                    controller: _homeBloc.refreshController,
-                    header: WaterDropHeader(),
-                    footer: ShimmerFooter(
-                      text: CupertinoActivityIndicator(),
+            child: SmartRefresher(
+              controller: _homeBloc.refreshController,
+              header: WaterDropHeader(),
+              footer: ShimmerFooter(
+                text: CupertinoActivityIndicator(),
+              ),
+              enablePullDown: true,
+              onRefresh: () {
+                // await homeModel.refresh();
+                // homeModel.showErrorMessage(context);
+                _homeBloc.refreshData();
+              },
+              //enablePullUp: true,
+              // onLoading: () {
+              //   print('Loading');
+              //   _homeBloc.fetchMoreData();
+              // },
+              child: CustomScrollView(
+                  controller: widget.homecontroller..addListener(_onScroll),
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      sliver: SliverToBoxAdapter(
+                        child: newtopTabs(widget.homecontroller),
+                      ),
                     ),
-                    enablePullDown: true,
-                    onRefresh: () {
-                      // await homeModel.refresh();
-                      // homeModel.showErrorMessage(context);
-                      _homeBloc.refreshData();
-                    },
-                    //enablePullUp: true,
-                    // onLoading: () {
-                    //   print('Loading');
-                    //   _homeBloc.fetchMoreData();
-                    // },
-                    child: CustomScrollView(
-                        controller: widget.homecontroller
-                          ..addListener(_onScroll),
-                        slivers: [
-                          SliverPadding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            sliver: SliverToBoxAdapter(
-                              child: newtopTabs(widget.homecontroller),
-                            ),
-                          ),
-                          SliverPadding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            sliver: SliverToBoxAdapter(
-                              child: newmalefemale(),
-                            ),
-                          ),
-                          // if (homeModel.isError && homeModel.list.isEmpty)
-                          //   SliverToBoxAdapter(
-                          //     child: AnnotatedRegion<SystemUiOverlayStyle>(
-                          //         value:
-                          //             StatusBarUtils.systemUiOverlayStyle(
-                          //                 context),
-                          //         child: ViewStateErrorWidget(
-                          //             error: homeModel.viewStateError,
-                          //             onPressed: homeModel.initData)),
-                          //   ),
-                          HomePostList()
-                        ]),
-                  );
-                }),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      sliver: SliverToBoxAdapter(
+                        child: newmalefemale(),
+                      ),
+                    ),
+                    // if (homeModel.isError && homeModel.list.isEmpty)
+                    //   SliverToBoxAdapter(
+                    //     child: AnnotatedRegion<SystemUiOverlayStyle>(
+                    //         value:
+                    //             StatusBarUtils.systemUiOverlayStyle(
+                    //                 context),
+                    //         child: ViewStateErrorWidget(
+                    //             error: homeModel.viewStateError,
+                    //             onPressed: homeModel.initData)),
+                    //   ),
+                    HomePostList()
+                  ]),
+            ),
           ),
         ));
   }
@@ -835,17 +923,17 @@ return Scaffold(
                             controller: widget.homecontroller,
                             // controller: tapToTopModel.scrollController,
                             slivers: <Widget>[
-                              SliverToBoxAdapter(
-                                child: SizedBox(
-                                  height: 8,
-                                ),
-                              ),
+                              // SliverToBoxAdapter(
+                              //   child: SizedBox(
+                              //     height: 8,
+                              //   ),
+                              // ),
                               SliverToBoxAdapter(
                                 child: newtopTabs(widget.homecontroller),
                               ),
                               SliverToBoxAdapter(
                                 child: SizedBox(
-                                  height: 8,
+                                  height: 12,
                                 ),
                               ),
                               SliverToBoxAdapter(

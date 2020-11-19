@@ -104,20 +104,31 @@ class _ContactContainerState extends State<ContactContainer> {
             Column(
               children: <Widget>[
                 /// [user_Profile]
-                Container(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 80.0),
-                        child: Text(widget.contact.contactUser.contactUserName),
-                      ),
-                      Spacer(),
-                      // Align(
-                      //     alignment: Alignment.centerRight,
-                      //     child: blockbtn(homeModel)),
-                    ],
+                InkWell(
+                  onTap: () {
+                    int detailPageId = widget.contact.contactUser.contactUserId;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PartnerDetailPage(detailPageId)));
+                  },
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 80.0),
+                          child:
+                              Text(widget.contact.contactUser.contactUserName),
+                        ),
+                        Spacer(),
+                        // Align(
+                        //     alignment: Alignment.centerRight,
+                        //     child: blockbtn(homeModel)),
+                      ],
+                    ),
                   ),
                 ),
 

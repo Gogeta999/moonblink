@@ -52,6 +52,7 @@ class _BookingPageState extends State<BookingPage> {
   _BookingPageState() {
     intro = Intro(
       stepCount: 6,
+      borderRadius: BorderRadius.circular(15),
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(

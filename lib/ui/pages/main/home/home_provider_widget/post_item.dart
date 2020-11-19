@@ -154,7 +154,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
           InkWell(
@@ -164,16 +164,11 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                 builder: (context) => PartnerDetailPage(widget.posts.id),
               ),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2.0,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey
-                      : Colors.black,
-                ),
-                borderRadius: BorderRadius.circular(40),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
               ),
+              shadowColor: Colors.grey,
               child: Stack(
                 children: [
                   Column(
