@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
@@ -12,7 +14,6 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/view_model/home_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -34,16 +35,15 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   var usertoken = StorageManager.sharedPreferences.getString(token);
   bool isBlocking = false;
   bool isRetying = false;
-  // var _coverUrl;
-  // var _profileUrl;
+  HomeBloc _homeBloc;
+
   @override
   void initState() {
-    // _profileUrl = widget.posts.profileImage;
-    // _coverUrl = widget.posts.coverImage;
+    _homeBloc = BlocProvider.of<HomeBloc>(context);
     super.initState();
   }
 
-  Widget postprofile(HomeModel homeModel) {
+  Widget postprofile() {
     return CachedNetworkImage(
       imageUrl: widget.posts.profileImage,
       imageBuilder: (context, imageProvider) => Padding(
@@ -76,7 +76,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                           });
 
                           ///Blocking user
-                          await homeModel
+                          await _homeBloc
                               .removeItem(
                                   index: widget.index,
                                   blockUserId: widget.posts.id)
@@ -108,7 +108,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
               showToast('Refresh Again');
             },
             icon: Icon(
-              Icons.refresh,
+              Icons.error,
               color: Colors.grey.shade300,
             ),
           ),
@@ -118,7 +118,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
   }
 
   //Block Button
-  Widget blockbtn(homeModel) {
+  Widget blockbtn() {
     return IconButton(
       icon: Icon(Icons.more_vert),
       onPressed: () => CustomBottomSheet.showUserManageContent(
@@ -138,7 +138,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
           },
           onBlock: () async {
             ///Blocking user
-            await homeModel
+            await _homeBloc
                 .removeItem(index: widget.index, blockUserId: widget.posts.id)
                 .then((value) {
               value
@@ -153,7 +153,6 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    HomeModel homeModel = Provider.of<HomeModel>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -192,7 +191,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                             Spacer(),
                             Align(
                                 alignment: Alignment.centerRight,
-                                child: blockbtn(homeModel)),
+                                child: blockbtn()),
                           ],
                         ),
                       ),
@@ -200,246 +199,231 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                       /// [User_Image]
                       isBlocking
                           ? CupertinoActivityIndicator()
-                          : ProviderWidget(
-                              model: HomeModel(),
-                              builder: (context, reactModel, child) {
-                                return Column(
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.grey
-                                                  : Colors.black,
-                                            ),
-                                            bottom: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.grey
-                                                  : Colors.black,
-                                            ),
-                                          ),
+                          : Column(
+                              children: <Widget>[
+                                InkWell(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          width: 2,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.grey
+                                              : Colors.black,
                                         ),
-                                        constraints: BoxConstraints(
-                                            // minHeight: MediaQuery.of(context)
-                                            //         .size
-                                            //         .height /
-                                            //     2.5,
-                                            maxHeight: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                1.5,
-                                            minWidth: double.infinity,
-                                            maxWidth: double.infinity),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.fill,
-                                          imageUrl: widget.posts.coverImage,
-                                          placeholder: (context, url) =>
-                                              CachedLoader(
-                                            containerHeight: 200,
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              CachedError(
-                                            containerHeight: 200,
-                                          ),
+                                        bottom: BorderSide(
+                                          width: 2,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.grey
+                                              : Colors.black,
                                         ),
                                       ),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) => ImageView(
-                                                    widget.posts.coverImage)));
-                                        print('object');
-                                      },
-                                      onDoubleTap: widget.posts.isReacted == 0
-                                          ? () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.id, 1)
-                                                  .then(
-                                                (value) {
-                                                  if (value) {
-                                                    showToast(G
-                                                        .of(context)
-                                                        .toastlikesuccess);
-                                                    setState(() {
-                                                      widget.posts.isReacted =
-                                                          1;
-                                                      widget.posts
-                                                          .reactionCount += 1;
-                                                    });
-                                                  } else {
-                                                    reactModel.showErrorMessage(
-                                                        context);
-                                                  }
-                                                },
-                                              );
-                                            }
-                                          : () {
-                                              reactModel
-                                                  .reactProfile(
-                                                      widget.posts.id, 0)
-                                                  .then(
-                                                (value) {
-                                                  if (value) {
-                                                    showToast(G
-                                                        .of(context)
-                                                        .toastunlikesuccess);
-                                                    setState(
-                                                      () {
+                                    ),
+                                    constraints: BoxConstraints(
+                                        // minHeight: MediaQuery.of(context)
+                                        //         .size
+                                        //         .height /
+                                        //     2.5,
+                                        maxHeight:
+                                            MediaQuery.of(context).size.height /
+                                                1.5,
+                                        minWidth: double.infinity,
+                                        maxWidth: double.infinity),
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.fill,
+                                      imageUrl: widget.posts.coverImage,
+                                      placeholder: (context, url) =>
+                                          CachedLoader(
+                                        containerHeight: 200,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          CachedError(
+                                        containerHeight: 200,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => ImageView(
+                                                widget.posts.coverImage)));
+                                    print('object');
+                                  },
+                                  onDoubleTap: widget.posts.isReacted == 0
+                                      ? () {
+                                          _homeBloc
+                                              .reactProfile(widget.posts.id, 1)
+                                              .then(
+                                            (value) {
+                                              if (value) {
+                                                showToast(G
+                                                    .of(context)
+                                                    .toastlikesuccess);
+                                                setState(() {
+                                                  widget.posts.isReacted = 1;
+                                                  widget.posts.reactionCount +=
+                                                      1;
+                                                });
+                                              }
+                                              // else {
+                                              //   _homeBloc
+                                              //       .showErrorMessage(context);
+                                              // }
+                                            },
+                                          );
+                                        }
+                                      : () {
+                                          _homeBloc
+                                              .reactProfile(widget.posts.id, 0)
+                                              .then(
+                                            (value) {
+                                              if (value) {
+                                                showToast(G
+                                                    .of(context)
+                                                    .toastunlikesuccess);
+                                                setState(
+                                                  () {
+                                                    widget.posts.isReacted = 0;
+                                                    widget.posts
+                                                        .reactionCount -= 1;
+                                                  },
+                                                );
+                                              }
+                                              // else {
+                                              //   reactModel
+                                              //       .showErrorMessage(context);
+                                              // }
+                                            },
+                                          );
+                                        },
+                                ),
+
+                                /// [User_bottom data]
+                                Container(
+                                  height: 30,
+                                  width: double.infinity,
+                                  margin: EdgeInsets.all(8.0),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: InkWell(
+                                          child: Icon(
+                                              widget.posts.isReacted == 0
+                                                  ? FontAwesomeIcons.heart
+                                                  : FontAwesomeIcons.solidHeart,
+                                              size: 30,
+                                              color: widget.posts.isReacted == 0
+                                                  ? Theme.of(context)
+                                                      .iconTheme
+                                                      .color
+                                                  : Colors.red[400]),
+                                          onTap: widget.posts.isReacted == 0
+                                              ? () {
+                                                  _homeBloc
+                                                      .reactProfile(
+                                                          widget.posts.id, 1)
+                                                      .then((value) {
+                                                    if (value) {
+                                                      showToast(G
+                                                          .of(context)
+                                                          .toastlikesuccess);
+                                                      setState(() {
+                                                        widget.posts.isReacted =
+                                                            1;
+                                                        widget.posts
+                                                            .reactionCount += 1;
+                                                      });
+                                                    }
+                                                    // else {
+                                                    //   reactModel
+                                                    //       .showErrorMessage(
+                                                    //           context);
+                                                    // }
+                                                  });
+                                                }
+                                              : () {
+                                                  _homeBloc
+                                                      .reactProfile(
+                                                          widget.posts.id, 0)
+                                                      .then((value) {
+                                                    if (value) {
+                                                      showToast(G
+                                                          .of(context)
+                                                          .toastunlikesuccess);
+                                                      setState(() {
                                                         widget.posts.isReacted =
                                                             0;
                                                         widget.posts
                                                             .reactionCount -= 1;
-                                                      },
-                                                    );
-                                                  } else {
-                                                    reactModel.showErrorMessage(
-                                                        context);
-                                                  }
-                                                },
-                                              );
-                                            },
-                                    ),
-
-                                    /// [User_bottom data]
-                                    Container(
-                                      height: 30,
-                                      width: double.infinity,
-                                      margin: EdgeInsets.all(8.0),
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: InkWell(
-                                              child: Icon(
-                                                  widget.posts.isReacted == 0
-                                                      ? FontAwesomeIcons.heart
-                                                      : FontAwesomeIcons
-                                                          .solidHeart,
-                                                  size: 30,
-                                                  color:
-                                                      widget.posts.isReacted ==
-                                                              0
-                                                          ? Theme.of(context)
-                                                              .iconTheme
-                                                              .color
-                                                          : Colors.red[400]),
-                                              onTap: widget.posts.isReacted == 0
-                                                  ? () {
-                                                      reactModel
-                                                          .reactProfile(
-                                                              widget.posts.id,
-                                                              1)
-                                                          .then((value) {
-                                                        if (value) {
-                                                          showToast(G
-                                                              .of(context)
-                                                              .toastlikesuccess);
-                                                          setState(() {
-                                                            widget.posts
-                                                                .isReacted = 1;
-                                                            widget.posts
-                                                                .reactionCount += 1;
-                                                          });
-                                                        } else {
-                                                          reactModel
-                                                              .showErrorMessage(
-                                                                  context);
-                                                        }
                                                       });
                                                     }
-                                                  : () {
-                                                      reactModel
-                                                          .reactProfile(
-                                                              widget.posts.id,
-                                                              0)
-                                                          .then((value) {
-                                                        if (value) {
-                                                          showToast(G
-                                                              .of(context)
-                                                              .toastunlikesuccess);
-                                                          setState(() {
-                                                            widget.posts
-                                                                .isReacted = 0;
-                                                            widget.posts
-                                                                .reactionCount -= 1;
-                                                          });
-                                                        } else {
-                                                          reactModel
-                                                              .showErrorMessage(
-                                                                  context);
-                                                        }
-                                                      });
-                                                    },
-                                            ),
-                                          ),
-                                          Positioned(
-                                              left: 40,
-                                              bottom: 5,
-                                              child: Text(
-                                                  '${widget.posts.reactionCount} ${G.of(context).likes}')),
-                                          Center(
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                  left: 5.0, top: 3, bottom: 5),
-                                              // padding:
-                                              //     EdgeInsets.symmetric(vertical: 6),
-                                              child: Text(
-                                                G.of(context).becomePartnerAt +
-                                                    //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
-                                                    timeAgo.format(
-                                                        DateTime.parse(widget
-                                                            .posts.createdAt),
-                                                        allowFromNow: true),
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12.0),
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: IconButton(
-                                              icon:
-                                                  Icon(FontAwesomeIcons.share),
-                                              onPressed: () {
-                                                final RenderBox box =
-                                                    context.findRenderObject();
-                                                Share.share(
-                                                    'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
-                                                    subject:
-                                                        'Please download our app',
-                                                    sharePositionOrigin:
-                                                        box.localToGlobal(
-                                                                Offset.zero) &
-                                                            box.size);
-                                              },
-                                            ),
-                                          )
-                                        ],
+                                                    // else {
+                                                    //   reactModel
+                                                    //       .showErrorMessage(
+                                                    //           context);
+                                                    // }
+                                                  });
+                                                },
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                );
-                              },
+                                      Positioned(
+                                          left: 40,
+                                          bottom: 5,
+                                          child: Text(
+                                              '${widget.posts.reactionCount} ${G.of(context).likes}')),
+                                      Center(
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 5.0, top: 3, bottom: 5),
+                                          // padding:
+                                          //     EdgeInsets.symmetric(vertical: 6),
+                                          child: Text(
+                                            G.of(context).becomePartnerAt +
+                                                //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
+                                                timeAgo.format(
+                                                    DateTime.parse(
+                                                        widget.posts.createdAt),
+                                                    allowFromNow: true),
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: IconButton(
+                                          icon: Icon(FontAwesomeIcons.share),
+                                          onPressed: () {
+                                            final RenderBox box =
+                                                context.findRenderObject();
+                                            Share.share(
+                                                'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
+                                                subject:
+                                                    'Please download our app',
+                                                sharePositionOrigin:
+                                                    box.localToGlobal(
+                                                            Offset.zero) &
+                                                        box.size);
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
 
                       /// [bottom date]
-
                       Divider(
                         height: 5,
                       ),
                     ],
                   ),
-                  postprofile(homeModel),
+                  postprofile(),
                 ],
               ),
             ),

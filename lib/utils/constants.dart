@@ -34,6 +34,8 @@ const int kStreamer = 2;
 const int kCele = 3;
 const int kPro = 4;
 
+const int kHomePostLimit = 10;
+
 ///3 buttons
 const String kFirstButton = 'kFirstButton';
 const String kSecondButton = 'kSecondButton';

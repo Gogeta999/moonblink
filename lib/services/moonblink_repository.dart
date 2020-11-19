@@ -25,6 +25,7 @@ import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moongo_database.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 
@@ -37,7 +38,7 @@ class MoonBlinkRepository {
 
   static Future fetchPosts({int pageNum, int type, String gender}) async {
     var response = await DioUtils().get(Api.HOME, queryParameters: {
-      'limit': 5,
+      'limit': kHomePostLimit,
       'type': type,
       'page': pageNum,
       'gender': gender

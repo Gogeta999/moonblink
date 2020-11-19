@@ -16,6 +16,7 @@ class MoonGoDB {
 
   init() async {
     String _path = await getDatabasesPath();
+    print(join(_path, _dbName));
     _db = await openDatabase(
       join(_path, _dbName),
       onCreate: (db, version) {
