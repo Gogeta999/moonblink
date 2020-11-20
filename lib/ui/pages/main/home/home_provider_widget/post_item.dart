@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
+import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
@@ -393,7 +395,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                       ),
                                       Expanded(
                                         flex: 2,
-                                        child: IconButton(
+                                        child: InkWell(
                                           // child: Padding(
                                           //   padding: const EdgeInsets.symmetric(
                                           //       horizontal: 10),
@@ -425,17 +427,23 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           //   color:
                                           //       Theme.of(context).accentColor,
                                           // ),
-                                          icon: BlinkWidget(
-                                            children: [
-                                              Icon(FontAwesomeIcons.book),
-                                              Icon(
-                                                FontAwesomeIcons.book,
-                                                color: Theme.of(context)
-                                                    .accentColor,
-                                              )
-                                            ],
+                                          child: Container(
+                                            child: BlinkWidget(
+                                              children: [
+                                                Icon(FontAwesomeIcons.book),
+                                                RadiantGradientMask(
+                                                  child: Icon(
+                                                    FontAwesomeIcons.book,
+                                                    // size: 30,
+                                                    color: Colors.white,
+                                                  ),
+                                                  colors:
+                                                      MoreGradientColors.hazel,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          onPressed: widget.posts.id == ownId
+                                          onTap: widget.posts.id == ownId
                                               ? () {
                                                   showToast(G
                                                       .of(context)
