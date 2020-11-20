@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage>
             : Colors.grey,
         child: Container(
           padding: EdgeInsets.only(top: 4, bottom: 4),
-          height: 80,
+          height: 85,
           child: Stack(
             children: [
               Row(
