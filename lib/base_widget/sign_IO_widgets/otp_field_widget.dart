@@ -120,7 +120,7 @@ class TimerCountDownWidgetState extends State<OtpCountDownWidget> {
             var formState = Form.of(context);
             if (formState.validate()) {
               print(
-                  '------------------------------------------\n=\n${widget.phoneNumber.text}');
+                  '------------------------------------------${widget.phoneNumber.text}');
               model
                   //getOtpCodeAgain(phoneController.text)
                   .getFirebaseOtp(phone: widget.phoneNumber.text)

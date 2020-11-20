@@ -251,12 +251,16 @@ class _UserStatusPageState extends State<UserStatusPage> {
                               //   children: [
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Text(name,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Text(
+                                        name,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .headline6,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 4,

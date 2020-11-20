@@ -14,6 +14,13 @@ class OtpModel extends ViewStateModel {
   String _phone;
   OtpModel(this.userModel) : assert(userModel != null);
   Future<bool> getFirebaseOtp({String phone, bool retry = false}) async {
+    if (_firebaseAuth.currentUser != null) {
+      try {
+        await _firebaseAuth.currentUser.delete();
+      } catch (e) {
+        print(e.toString());
+      }
+    }
     setBusy();
     this._phone = phone;
     try {
@@ -29,7 +36,8 @@ class OtpModel extends ViewStateModel {
       }
 
       void verificationFailed(FirebaseAuthException authException) async {
-        print(authException.message);
+        print(
+            'Exception: ${authException.message} ${authException.code} ${authException.phoneNumber}');
       }
 
       void codeSent(String verificationId, [int forceResendingToken]) {
