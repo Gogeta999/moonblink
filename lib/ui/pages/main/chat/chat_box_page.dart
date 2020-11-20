@@ -26,6 +26,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -1399,8 +1400,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             StorageManager.sharedPreferences.setBool(bookingtuto, true);
             PartnerUser partnerData =
                 await MoonBlinkRepository.fetchPartner(widget.partnerId);
-            Navigator.pushNamed(context, RouteName.booking,
-                arguments: partnerData);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BookingPage(
+                      partnerId: partnerData.partnerId,
+                      partnerName: partnerData.partnerName,
+                      partnerBios: partnerData.prfoileFromPartner.bios,
+                      partnerProfile:
+                          partnerData.prfoileFromPartner.profileImage,
+                    )));
           },
           child: Container(
             decoration: BoxDecoration(
