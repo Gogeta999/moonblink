@@ -180,17 +180,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 if (usertype == 0) space(),
-                //if (usertype == 0 && usermodel.partnerData.typestatus != -1)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: ShadedContainer(
-                    height: 50,
-                    ontap: () => Navigator.pushNamed(context, RouteName.otp),
-                    child: Center(
-                      child: Text(G.of(context).settingsSignAsPartner),
+                if (usertype == 0 && usermodel.partnerData.typestatus != -1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: ShadedContainer(
+                      height: 50,
+                      ontap: () => Navigator.pushNamed(context, RouteName.otp),
+                      child: Center(
+                        child: Text(G.of(context).settingsSignAsPartner),
+                      ),
                     ),
                   ),
-                ),
                 if (usermodel.partnerData.typestatus == -1)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
