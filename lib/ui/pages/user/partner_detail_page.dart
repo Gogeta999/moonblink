@@ -72,6 +72,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   @override
   void dispose() {
     _refreshController.dispose();
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
     // _scrollController.dispose();
     super.dispose();
   }

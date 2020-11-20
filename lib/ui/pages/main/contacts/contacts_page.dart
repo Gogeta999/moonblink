@@ -68,7 +68,7 @@ class _ContactsPageState extends State<ContactsPage> {
               return LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: MoreGradientColors.azureLane,
+                colors: MoreGradientColors.jShine,
               );
             } else {
               return null;

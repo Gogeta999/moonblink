@@ -48,13 +48,14 @@ class _HomePageState extends State<HomePage>
   Intro intro;
   _HomePageState() {
     intro = Intro(
-      stepCount: 2,
+      stepCount: 3,
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
           G.current.tutorialHome1,
           G.current.tutorialHome2,
+          G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
         btnLabel: G.current.next,
@@ -95,6 +96,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
+    Future.delayed(Duration.zero, () => intro.dispose());
     _debounce?.cancel();
     super.dispose();
   }
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage>
             ? Colors.black
             : Colors.grey,
         child: Container(
-          padding: EdgeInsets.only(top: 4, bottom: 4),
+          padding: EdgeInsets.only(top: 8, bottom: 4),
           height: 85,
           child: Stack(
             children: [
@@ -122,6 +124,7 @@ class _HomePageState extends State<HomePage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
+                    key: intro.keys[2],
                     child: Column(
                       children: [
                         InkWell(
@@ -681,12 +684,24 @@ class _HomePageState extends State<HomePage>
               child: CustomScrollView(
                   controller: widget.homecontroller..addListener(_onScroll),
                   slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      sliver: SliverToBoxAdapter(
-                        child: newtopTabs(widget.homecontroller),
+                    SliverAppBar(
+                      floating: true,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      collapsedHeight: 100,
+                      // title: newtopTabs(widget.homecontroller),
+                      // expandedHeight: 210,
+                      flexibleSpace: Expanded(
+                        child: 
+                            newtopTabs(widget.homecontroller),
                       ),
                     ),
+                    // SliverPadding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 4),
+                    //   sliver: SliverToBoxAdapter(
+                    //     child: newtopTabs(widget.homecontroller),
+                    //   ),
+                    // ),
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       sliver: SliverToBoxAdapter(

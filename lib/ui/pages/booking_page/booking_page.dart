@@ -96,6 +96,14 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   @override
+  void dispose() {
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _textStyle = Theme.of(context).textTheme.bodyText2;
     super.didChangeDependencies();

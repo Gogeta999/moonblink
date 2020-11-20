@@ -8,6 +8,7 @@ class Post {
   final String coverImage;
   int isReacted;
   final int type;
+  final String bios;
   final String gender;
 
   Post.fromJson(Map<String, dynamic> json)
@@ -20,6 +21,7 @@ class Post {
         coverImage = json['cover_image'],
         isReacted = json['is_reacted'],
         type = json['type'],
+        bios = json['bios'],
         gender = json['gender'] ?? "";
 
   Post.fromMap(Map<String, dynamic> json)
@@ -32,6 +34,7 @@ class Post {
         coverImage = json['cover_image'],
         isReacted = json['is_reacted'],
         type = json['type'],
+        bios = json['bios'],
         gender = json['gender'] ?? "";
 
   Map<String, dynamic> toMap() => {
@@ -44,6 +47,7 @@ class Post {
         'cover_image': coverImage,
         'is_reacted': isReacted,
         'type': type,
+        'bios': bios,
         'gender': gender
       };
 }
