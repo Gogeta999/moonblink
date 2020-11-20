@@ -26,6 +26,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -59,7 +60,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   final ScrollController _scrollController = ScrollController();
 
   final _rotatedSubject = BehaviorSubject.seeded(true);
-  final _rotatedSubject2 = BehaviorSubject.seeded(true);
+  final _rotatedSubject2 = BehaviorSubject.seeded(false);
   final _upWidgetSubject = BehaviorSubject.seeded(false);
 
   AnimationController _animationController;
@@ -1208,10 +1209,11 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
                 ///bot messages
                 StreamBuilder<bool>(
-                  initialData: true,
+                  initialData: false,
                   stream: _rotatedSubject2,
                   builder: (context, snapshot) {
                     if (!snapshot.data) {
+                      _animationController2.forward();
                       return Positioned(
                         bottom: 80,
                         left: 10,
@@ -1233,7 +1235,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                   firstbotmsg(),
                                   SizedBox(height: 10),
                                   secbotmsg(),
-                                  SizedBox(height: 10),
                                   thirdbotmsg(),
                                   SizedBox(height: 10),
                                   fourthbotmsg(),
@@ -1365,9 +1366,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
 
   ///Second Bot Message
   secbotmsg() {
-    return StreamBuilder<String>(
+    return StreamBuilder<PartnerUser>(
       initialData: null,
-      stream: _chatBoxBloc.secondButtonSubject,
+      stream: _chatBoxBloc.partnerUserSubject,
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return Container(
@@ -1379,38 +1380,40 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             child: Center(child: CupertinoActivityIndicator()),
           );
         }
-        if (snapshot.data.isNotEmpty) {
-          return Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-                border:
-                    Border.all(width: 1, color: Theme.of(context).accentColor),
-                borderRadius: BorderRadius.circular(8)),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text('${snapshot.data}'),
-              ),
-            ),
-          );
+        if (snapshot.data.type == kNormal) {
+          return Container();
         }
         return InkResponse(
           onTap: () async {
             StorageManager.sharedPreferences.setBool(bookingtuto, true);
             PartnerUser partnerData =
-                await MoonBlinkRepository.fetchPartner(widget.partnerId);
-            Navigator.pushNamed(context, RouteName.booking,
-                arguments: partnerData);
+                await _chatBoxBloc.partnerUserSubject.first;
+            // await MoonBlinkRepository.fetchPartner(widget.partnerId);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BookingPage(
+                  partnerId: partnerData.partnerId,
+                  partnerName: partnerData.partnerName,
+                  partnerBios: partnerData.prfoileFromPartner.bios,
+                  partnerProfile: partnerData.prfoileFromPartner.profileImage,
+                ),
+              ),
+            );
           },
-          child: Container(
-            decoration: BoxDecoration(
-                border:
-                    Border.all(width: 1, color: Theme.of(context).accentColor),
-                borderRadius: BorderRadius.circular(8)),
-            padding: const EdgeInsets.all(4),
-            child: Center(
-              child: Text(G.current.chatbook, textAlign: TextAlign.center),
-            ),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).accentColor),
+                    borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.all(4),
+                child: Center(
+                  child: Text(G.current.chatbook, textAlign: TextAlign.center),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
           ),
         );
       },

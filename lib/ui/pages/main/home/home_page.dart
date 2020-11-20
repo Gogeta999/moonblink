@@ -48,13 +48,14 @@ class _HomePageState extends State<HomePage>
   Intro intro;
   _HomePageState() {
     intro = Intro(
-      stepCount: 2,
+      stepCount: 3,
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
           G.current.tutorialHome1,
           G.current.tutorialHome2,
+          G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
         btnLabel: G.current.next,
@@ -95,13 +96,14 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
+    Future.delayed(Duration.zero, () => intro.dispose());
     _debounce?.cancel();
     super.dispose();
   }
 
   newtopTabs(homeController) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Card(
         key: intro.keys[0],
         shape: RoundedRectangleBorder(
@@ -114,209 +116,237 @@ class _HomePageState extends State<HomePage>
             ? Colors.black
             : Colors.grey,
         child: Container(
-          padding: EdgeInsets.only(top: 4, bottom: 4),
-          height: 80,
+          padding: EdgeInsets.only(top: 8, bottom: 4),
+          height: 85,
           child: Stack(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onDoubleTap: () {
-                            homeController.animateTo(
-                              0.0,
-                              curve: Curves.easeOut,
-                              duration: const Duration(milliseconds: 300),
-                            );
-                          },
-                          onTap: () {
-                            if (catagories != 1) {
-                              setState(() {
-                                catagories = 1;
-                                _homeBloc.fetchData(
-                                    type: catagories, gender: gender);
-                              });
-                            } else {
-                              print("Already");
-                            }
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    // spreadRadius: 1,
-                                    blurRadius: 4,
-                                    offset: Offset(
-                                        -3, 3), // changes position of shadow
-                                  ),
-                                ],
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: MoreGradientColors.azureLane,
-                                )),
-                            child: Icon(Icons.supervisor_account,
-                                size: 23, color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(G.current.usertypecoplayer),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            if (catagories != 3) {
-                              setState(() {
-                                catagories = 3;
-                                _homeBloc.fetchData(
-                                    type: catagories, gender: gender);
-                              });
-                            } else {
-                              print("Already");
-                            }
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    // spreadRadius: 1,
-                                    blurRadius: 4,
-                                    offset: Offset(
-                                        -3, 3), // changes position of shadow
-                                  ),
-                                ],
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: MoreGradientColors.orangePinkTeal,
-                                )),
-                            child: Icon(
-                              FontAwesomeIcons.star,
-                              color: catagories == 3
-                                  ? Theme.of(context).accentColor
-                                  : Colors.white,
-                              size: 20,
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      key: intro.keys[2],
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onDoubleTap: () {
+                                homeController.animateTo(
+                                  0.0,
+                                  curve: Curves.easeOut,
+                                  duration: const Duration(milliseconds: 300),
+                                );
+                              },
+                              onTap: () {
+                                if (catagories != 1) {
+                                  setState(() {
+                                    catagories = 1;
+                                    _homeBloc.fetchData(
+                                        type: catagories, gender: gender);
+                                  });
+                                } else {
+                                  print("Already");
+                                }
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        // spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: Offset(-3,
+                                            3), // changes position of shadow
+                                      ),
+                                    ],
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: MoreGradientColors.azureLane,
+                                    )),
+                                child: Icon(Icons.supervisor_account,
+                                    size: 23, color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(G.current.usertypecele),
-                      ],
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(
+                              flex: 1, child: Text(G.current.usertypecoplayer)),
+                        ],
+                      ),
                     ),
                   ),
-                  Container(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            if (catagories != 4) {
-                              setState(() {
-                                catagories = 4;
-                                _homeBloc.fetchData(
-                                    type: catagories, gender: gender);
-                              });
-                            } else {
-                              print("Already");
-                            }
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    // spreadRadius: 1,
-                                    blurRadius: 4,
-                                    offset: Offset(
-                                        -3, 3), // changes position of shadow
-                                  ),
-                                ],
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: MoreGradientColors.lunada,
-                                )),
-                            child: Icon(
-                              FontAwesomeIcons.gamepad,
-                              color: Colors.white,
-                              size: 20,
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                if (catagories != 3) {
+                                  setState(() {
+                                    catagories = 3;
+                                    _homeBloc.fetchData(
+                                        type: catagories, gender: gender);
+                                  });
+                                } else {
+                                  print("Already");
+                                }
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        // spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: Offset(-3,
+                                            3), // changes position of shadow
+                                      ),
+                                    ],
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: MoreGradientColors.orangePinkTeal,
+                                    )),
+                                child: Icon(
+                                  FontAwesomeIcons.star,
+                                  color: catagories == 3
+                                      ? Theme.of(context).accentColor
+                                      : Colors.white,
+                                  size: 20,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(G.current.usertypepro),
-                      ],
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(
+                              flex: 1, child: Text(G.current.usertypecele)),
+                        ],
+                      ),
                     ),
                   ),
-                  Container(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            if (catagories != 2) {
-                              setState(() {
-                                catagories = 2;
-                                _homeBloc.fetchData(
-                                    type: catagories, gender: gender);
-                              });
-                            } else {
-                              print("Already");
-                            }
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    // spreadRadius: 1,
-                                    blurRadius: 4,
-                                    offset: Offset(
-                                        -3, 3), // changes position of shadow
-                                  ),
-                                ],
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: MoreGradientColors.hazel,
-                                )),
-                            child: Icon(
-                              FontAwesomeIcons.twitch,
-                              color: Colors.white,
-                              size: 20,
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                if (catagories != 4) {
+                                  setState(() {
+                                    catagories = 4;
+                                    _homeBloc.fetchData(
+                                        type: catagories, gender: gender);
+                                  });
+                                } else {
+                                  print("Already");
+                                }
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        // spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: Offset(-3,
+                                            3), // changes position of shadow
+                                      ),
+                                    ],
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: MoreGradientColors.lunada,
+                                    )),
+                                child: Icon(
+                                  FontAwesomeIcons.gamepad,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(G.current.usertypestreamer),
-                      ],
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(flex: 1, child: Text(G.current.usertypepro)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                if (catagories != 2) {
+                                  setState(() {
+                                    catagories = 2;
+                                    _homeBloc.fetchData(
+                                        type: catagories, gender: gender);
+                                  });
+                                } else {
+                                  print("Already");
+                                }
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        // spreadRadius: 1,
+                                        blurRadius: 4,
+                                        offset: Offset(-3,
+                                            3), // changes position of shadow
+                                      ),
+                                    ],
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: MoreGradientColors.hazel,
+                                    )),
+                                child: Icon(
+                                  FontAwesomeIcons.twitch,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(
+                              flex: 1, child: Text(G.current.usertypestreamer)),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -681,12 +711,23 @@ class _HomePageState extends State<HomePage>
               child: CustomScrollView(
                   controller: widget.homecontroller..addListener(_onScroll),
                   slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      sliver: SliverToBoxAdapter(
+                    SliverAppBar(
+                      floating: true,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      collapsedHeight: 100,
+                      // title: newtopTabs(widget.homecontroller),
+                      // expandedHeight: 210,
+                      flexibleSpace: Expanded(
                         child: newtopTabs(widget.homecontroller),
                       ),
                     ),
+                    // SliverPadding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 4),
+                    //   sliver: SliverToBoxAdapter(
+                    //     child: newtopTabs(widget.homecontroller),
+                    //   ),
+                    // ),
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       sliver: SliverToBoxAdapter(

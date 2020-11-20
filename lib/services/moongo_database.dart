@@ -21,7 +21,7 @@ class MoonGoDB {
       join(_path, _dbName),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at INTEGER, reaction_count INTEGER, profile_image TEXT, cover_image TEXT, is_reacted INTEGER, type INTEGER, gender TEXT)",
+          "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at INTEGER, reaction_count INTEGER, profile_image TEXT, cover_image TEXT, is_reacted INTEGER, type INTEGER, gender TEXT, bios TEXT)",
         );
       },
       version: 1,
