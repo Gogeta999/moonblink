@@ -305,6 +305,56 @@ class G {
     );
   }
 
+  /// `Dear user, If you want to chat or play with a co-player, please place your order first.`
+  String get chatwelcome {
+    return Intl.message(
+      'Dear user, If you want to chat or play with a co-player, please place your order first.',
+      name: 'chatwelcome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you available?`
+  String get chatavailable {
+    return Intl.message(
+      'Are you available?',
+      name: 'chatavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to Book`
+  String get chatbook {
+    return Intl.message(
+      'How to Book',
+      name: 'chatbook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I want to play with you, where can I buy coin?`
+  String get chatbuycoin {
+    return Intl.message(
+      'I want to play with you, where can I buy coin?',
+      name: 'chatbuycoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What should i do to play with you`
+  String get chathowtoplay {
+    return Intl.message(
+      'What should i do to play with you',
+      name: 'chathowtoplay',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cash Out`
   String get cashout {
     return Intl.message(

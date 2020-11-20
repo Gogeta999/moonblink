@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*We will charge 30% of the price*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*We will charge 50% of the price*"),
     "chargeForPro" : MessageLookupByLibrary.simpleMessage("*We will charge 40% of the price*"),
+    "chatwelcome" : MessageLookupByLibrary.simpleMessage("Dear user, If you want to chat or play with a co-player, please place your order first."),
     "china" : MessageLookupByLibrary.simpleMessage("Chinese"),
     "choose" : MessageLookupByLibrary.simpleMessage("Choose"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("Choose Game You Play"),
