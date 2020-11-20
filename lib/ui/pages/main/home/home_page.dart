@@ -728,9 +728,7 @@ class _HomePageState extends State<HomePage>
                       collapsedHeight: 100,
                       // title: newtopTabs(widget.homecontroller),
                       // expandedHeight: 210,
-                      flexibleSpace: Expanded(
-                        child: newtopTabs(widget.homecontroller),
-                      ),
+                      flexibleSpace: newtopTabs(widget.homecontroller),
                     ),
                     // SliverPadding(
                     //   padding: const EdgeInsets.symmetric(vertical: 4),

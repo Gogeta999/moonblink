@@ -6,9 +6,9 @@ import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
+import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/base_widget/postWidget/gradient_icon.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -395,7 +395,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                       ),
                                       Expanded(
                                         flex: 2,
-                                        child: IconButton(
+                                        child: InkWell(
                                           // child: Padding(
                                           //   padding: const EdgeInsets.symmetric(
                                           //       horizontal: 10),
@@ -427,27 +427,23 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                           //   color:
                                           //       Theme.of(context).accentColor,
                                           // ),
-                                          icon: BlinkWidget(
-                                            // interval: 30000,
-                                            children: [
-                                              Icon(FontAwesomeIcons.book),
-                                              // Icon(
-                                              //   FontAwesomeIcons.book,
-                                              //   color: Theme.of(context)
-                                              //       .accentColor,
-                                              // )
-                                              GradientIcon(
-                                                  FontAwesomeIcons.book,
-                                                  24,
-                                                  LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: MoreGradientColors
-                                                        .instagram,
-                                                  ))
-                                            ],
+                                          child: Container(
+                                            child: BlinkWidget(
+                                              children: [
+                                                Icon(FontAwesomeIcons.book),
+                                                RadiantGradientMask(
+                                                  child: Icon(
+                                                    FontAwesomeIcons.book,
+                                                    // size: 30,
+                                                    color: Colors.white,
+                                                  ),
+                                                  colors: MoreGradientColors
+                                                      .instagram,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          onPressed: widget.posts.id == ownId
+                                          onTap: widget.posts.id == ownId
                                               ? () {
                                                   showToast(G
                                                       .of(context)

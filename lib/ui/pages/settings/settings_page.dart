@@ -180,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 if (usertype == 0) space(),
-                if (usertype == 0 && usermodel.partnerData.typestatus != -1)
+                if (usertype == 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
@@ -191,20 +191,20 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                if (usermodel.partnerData.typestatus == -1)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: ShadedContainer(
-                      height: 50,
-                      ontap: () => showToast("Pending to be partner"),
-                      child: Center(
-                        child: Text(
-                          "Pending to be Partner",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                  ),
+                // if (usermodel.partnerData.typestatus == -1)
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                //     child: ShadedContainer(
+                //       height: 50,
+                //       ontap: () => showToast("Pending to be partner"),
+                //       child: Center(
+                //         child: Text(
+                //           "Pending to be Partner",
+                //           style: TextStyle(color: Colors.blue),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
                 space(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
