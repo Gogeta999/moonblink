@@ -335,7 +335,7 @@ class _CustomNavigationBarTile extends StatelessWidget {
       scale: 1.0 + scale,
       child: GestureDetector(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          padding: EdgeInsets.all(12),
           child: SvgPicture.asset(
             selected ? item.selectedIcon : item.icon,
             color: selected
