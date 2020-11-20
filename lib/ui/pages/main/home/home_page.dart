@@ -155,13 +155,15 @@ class _HomePageState extends State<HomePage>
                                 height: 50,
                                 decoration: BoxDecoration(
                                     boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        // spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: Offset(-3,
-                                            3), // changes position of shadow
-                                      ),
+                                      catagories == 1
+                                          ? BoxShadow(
+                                              color: Colors.black,
+                                              // spreadRadius: 1,
+                                              blurRadius: 4,
+                                              offset: Offset(-3,
+                                                  3), // changes position of shadow
+                                            )
+                                          : BoxShadow(),
                                     ],
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -207,13 +209,15 @@ class _HomePageState extends State<HomePage>
                                 height: 50,
                                 decoration: BoxDecoration(
                                     boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        // spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: Offset(-3,
-                                            3), // changes position of shadow
-                                      ),
+                                      catagories == 3
+                                          ? BoxShadow(
+                                              color: Colors.black,
+                                              // spreadRadius: 1,
+                                              blurRadius: 4,
+                                              offset: Offset(-3,
+                                                  3), // changes position of shadow
+                                            )
+                                          : BoxShadow(),
                                     ],
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -223,9 +227,7 @@ class _HomePageState extends State<HomePage>
                                     )),
                                 child: Icon(
                                   FontAwesomeIcons.star,
-                                  color: catagories == 3
-                                      ? Theme.of(context).accentColor
-                                      : Colors.white,
+                                  color: Colors.white,
                                   size: 20,
                                 ),
                               ),
@@ -264,13 +266,15 @@ class _HomePageState extends State<HomePage>
                                 height: 50,
                                 decoration: BoxDecoration(
                                     boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        // spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: Offset(-3,
-                                            3), // changes position of shadow
-                                      ),
+                                      catagories == 4
+                                          ? BoxShadow(
+                                              color: Colors.black,
+                                              // spreadRadius: 1,
+                                              blurRadius: 4,
+                                              offset: Offset(-3,
+                                                  3), // changes position of shadow
+                                            )
+                                          : BoxShadow(),
                                     ],
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -318,13 +322,15 @@ class _HomePageState extends State<HomePage>
                                 height: 50,
                                 decoration: BoxDecoration(
                                     boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        // spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: Offset(-3,
-                                            3), // changes position of shadow
-                                      ),
+                                      catagories == 2
+                                          ? BoxShadow(
+                                              color: Colors.black,
+                                              // spreadRadius: 1,
+                                              blurRadius: 4,
+                                              offset: Offset(-3,
+                                                  3), // changes position of shadow
+                                            )
+                                          : BoxShadow(),
                                     ],
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -521,13 +527,15 @@ class _HomePageState extends State<HomePage>
                         height: 60,
                         decoration: BoxDecoration(
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.black,
-                                // spreadRadius: 1,
-                                blurRadius: 4,
-                                offset:
-                                    Offset(-3, 3), // changes position of shadow
-                              ),
+                              gender == "Male"
+                                  ? BoxShadow(
+                                      color: Colors.black,
+                                      // spreadRadius: 1,
+                                      blurRadius: 4,
+                                      offset: Offset(
+                                          -3, 3), // changes position of shadow
+                                    )
+                                  : BoxShadow(),
                             ],
                             borderRadius: BorderRadius.circular(10),
                             // shape: BoxShape.circle,
@@ -580,13 +588,15 @@ class _HomePageState extends State<HomePage>
                         height: 60,
                         decoration: BoxDecoration(
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.black,
-                                // spreadRadius: 1,
-                                blurRadius: 4,
-                                offset:
-                                    Offset(-3, 3), // changes position of shadow
-                              ),
+                              gender == "Female"
+                                  ? BoxShadow(
+                                      color: Colors.black,
+                                      // spreadRadius: 1,
+                                      blurRadius: 4,
+                                      offset: Offset(
+                                          -3, 3), // changes position of shadow
+                                    )
+                                  : BoxShadow(),
                             ],
                             borderRadius: BorderRadius.circular(10),
                             // shape: BoxShape.circle,
