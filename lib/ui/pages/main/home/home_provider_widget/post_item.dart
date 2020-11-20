@@ -377,10 +377,6 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                       Expanded(
                                         flex: 4,
                                         child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 5.0, top: 3, bottom: 5),
-                                          // padding:
-                                          //     EdgeInsets.symmetric(vertical: 6),
                                           child: Text(
                                             G.of(context).becomePartnerAt +
                                                 //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
@@ -396,63 +392,64 @@ class _PostItemWidgetState extends State<PostItemWidget> {
                                       ),
                                       Expanded(
                                         flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: InkWell(
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                border: Border.all(width: 1),
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  ),
-                                                ],
-                                              ),
-                                              child:
-                                                  Center(child: Text("Order")),
-                                            ),
-                                            // icon: Icon(FontAwesomeIcons.book),
-                                            onTap: widget.posts.id == ownId
-                                                ? () {
-                                                    showToast(G
-                                                        .of(context)
-                                                        .cannotbookself);
-                                                  }
-                                                : () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    BookingPage(
-                                                                      partnerId:
-                                                                          widget
-                                                                              .posts
-                                                                              .id,
-                                                                      partnerName: widget
-                                                                          .posts
-                                                                          .userName,
-                                                                      partnerBios: widget
-                                                                          .posts
-                                                                          .bios,
-                                                                      partnerProfile: widget
-                                                                          .posts
-                                                                          .profileImage,
-                                                                    )));
-                                                  },
+                                        child: IconButton(
+                                          // child: Padding(
+                                          //   padding: const EdgeInsets.symmetric(
+                                          //       horizontal: 10),
+                                          //   child: InkWell(
+                                          //     child: Container(
+                                          //       padding: EdgeInsets.symmetric(
+                                          //           horizontal: 8, vertical: 4),
+                                          //       decoration: BoxDecoration(
+                                          //         color: Theme.of(context)
+                                          //             .scaffoldBackgroundColor,
+                                          //         border: Border.all(width: 1),
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(20),
+                                          //         // boxShadow: [
+                                          //         //   BoxShadow(
+                                          //         //     color: Colors.black,
+                                          //         //     // spreadRadius: 1,
+                                          //         //     blurRadius: 4,
+                                          //         //     offset: Offset(-3,
+                                          //         //         3), // changes position of shadow
+                                          //         //   ),
+                                          //         // ],
+                                          //       ),
+                                          //       child:
+                                          //           Center(child: Text("Order")),
+                                          //     ),
+                                          icon: Icon(
+                                            FontAwesomeIcons.book,
+                                            color:
+                                                Theme.of(context).accentColor,
                                           ),
+                                          onPressed: widget.posts.id == ownId
+                                              ? () {
+                                                  showToast(G
+                                                      .of(context)
+                                                      .cannotbookself);
+                                                }
+                                              : () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          BookingPage(
+                                                        partnerId:
+                                                            widget.posts.id,
+                                                        partnerName: widget
+                                                            .posts.userName,
+                                                        partnerBios:
+                                                            widget.posts.bios,
+                                                        partnerProfile: widget
+                                                            .posts.profileImage,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
                                         ),
                                       ),
+                                      // ),
                                       Expanded(
                                         flex: 1,
                                         child: IconButton(
