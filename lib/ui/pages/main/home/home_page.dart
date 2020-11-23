@@ -70,6 +70,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     _homeBloc.fetchData();
+    print('Initing');
 
     super.initState();
     // tutorialOn();
@@ -579,35 +580,85 @@ class _HomePageState extends State<HomePage>
         body: BlocProvider.value(
           value: _homeBloc,
           child: SafeArea(
-            child: SmartRefresher(
-              controller: _homeBloc.refreshController,
-              header: WaterDropHeader(),
-              footer: ShimmerFooter(
-                text: CupertinoActivityIndicator(),
-              ),
-              enablePullDown: true,
-              onRefresh: () {
-                _homeBloc.refreshData();
-              },
-              child: CustomScrollView(
-                  controller: widget.homecontroller..addListener(_onScroll),
-                  slivers: [
-                    SliverAppBar(
-                      floating: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      collapsedHeight: 100,
-                      flexibleSpace: newtopTabs(widget.homecontroller),
+            child: StreamBuilder<List<Post>>(
+                initialData: [],
+                stream: _homeBloc.postsSubject,
+                builder: (context, snapshot) {
+                  print('Rebuilding');
+                  return SmartRefresher(
+                    controller: _homeBloc.refreshController,
+                    header: WaterDropHeader(),
+                    footer: ShimmerFooter(
+                      text: CupertinoActivityIndicator(),
                     ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      sliver: SliverToBoxAdapter(
-                        child: newmalefemale(),
-                      ),
-                    ),
-                    HomePostList()
-                  ]),
-            ),
+                    enablePullDown: true,
+                    onRefresh: () {
+                      _homeBloc.refreshData();
+                    },
+                    child: CustomScrollView(
+                        controller: widget.homecontroller
+                          ..addListener(_onScroll),
+                        physics: AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          SliverAppBar(
+                            floating: true,
+                            backgroundColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            collapsedHeight: 100,
+                            flexibleSpace: newtopTabs(widget.homecontroller),
+                          ),
+                          SliverPadding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            sliver: SliverToBoxAdapter(
+                              child: newmalefemale(),
+                            ),
+                          ),
+                          if (snapshot.hasError)
+                            SliverToBoxAdapter(
+                              child: SizedBox(
+                                  child: ViewStateErrorWidget(
+                                error: ViewStateError(
+                                    snapshot.error == "No Internet Connection"
+                                        ? ViewStateErrorType.networkTimeOutError
+                                        : ViewStateErrorType.defaultError,
+                                    errorMessage: snapshot.error),
+                                onPressed: () {
+                                  _homeBloc.refreshData();
+                                  _homeBloc.postsSubject.add([]);
+                                },
+                              )),
+                            ),
+                          if (snapshot.data.isEmpty)
+                            SliverToBoxAdapter(
+                              child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  child: Center(
+                                      child: CupertinoActivityIndicator())),
+                            ),
+                          if (snapshot.data.isNotEmpty)
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                if (index >= snapshot.data.length) {
+                                  return Center(
+                                      child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 12.0),
+                                    child: CupertinoActivityIndicator(),
+                                  ));
+                                }
+                                Post item = snapshot.data[index];
+                                return PostItemWidget(item, index: index);
+                              },
+                                  childCount: _homeBloc.hasReachedMax
+                                      ? snapshot.data.length
+                                      : snapshot.data.length + 1),
+                            ),
+                          //HomePostList()
+                        ]),
+                  );
+                }),
           ),
         ));
   }
@@ -616,18 +667,9 @@ class _HomePageState extends State<HomePage>
     final maxScroll = widget.homecontroller.position.maxScrollExtent;
     final currentScroll = widget.homecontroller.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _homeBloc.hasReachedMaxSubject.first.then((value) {
-        if (value) {
-          if (_debounce?.isActive ?? false) _debounce.cancel();
-          _debounce = Timer(const Duration(milliseconds: 5000), () {
-            _homeBloc.fetchMoreData();
-          });
-        } else {
-          if (_debounce?.isActive ?? false) _debounce.cancel();
-          _debounce = Timer(const Duration(milliseconds: 500), () {
-            _homeBloc.fetchMoreData();
-          });
-        }
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        _homeBloc.fetchMoreData();
       });
     }
   }
@@ -711,36 +753,22 @@ class HomePostList extends StatelessWidget {
               }
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
+                addAutomaticKeepAlives: true,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  Post item = snapshot.data[index];
-                  if (index == snapshot.data.length - 1) {
-                    return Column(
-                      children: [
-                        PostItemWidget(item, index: index),
-                        StreamBuilder<bool>(
-                            initialData: false,
-                            stream: BlocProvider.of<HomeBloc>(context)
-                                .hasReachedMaxSubject,
-                            builder: (context, snapshot2) {
-                              if (!snapshot2.data) {
-                                print('Loading new posts');
-                                return Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 12.0),
-                                  child: CupertinoActivityIndicator(),
-                                ));
-                              } else {
-                                return Container();
-                              }
-                            })
-                      ],
-                    );
-                  } else {
-                    return PostItemWidget(item, index: index);
+                  if (index >= snapshot.data.length) {
+                    return Center(
+                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: CupertinoActivityIndicator(),
+                    ));
                   }
+                  Post item = snapshot.data[index];
+                  return PostItemWidget(item, index: index);
                 },
-                itemCount: snapshot.data.length,
+                itemCount: BlocProvider.of<HomeBloc>(context).hasReachedMax
+                    ? snapshot.data.length
+                    : snapshot.data.length + 1,
               );
             }),
       ),

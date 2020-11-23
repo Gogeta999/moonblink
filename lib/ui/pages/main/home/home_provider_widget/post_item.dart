@@ -34,12 +34,16 @@ class PostItemWidget extends StatefulWidget {
   _PostItemWidgetState createState() => _PostItemWidgetState();
 }
 
-class _PostItemWidgetState extends State<PostItemWidget> {
+class _PostItemWidgetState extends State<PostItemWidget>
+    with AutomaticKeepAliveClientMixin {
   bool isLiked = false;
   var usertoken = StorageManager.sharedPreferences.getString(token);
   bool isBlocking = false;
   bool isRetying = false;
   HomeBloc _homeBloc;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -157,6 +161,7 @@ class _PostItemWidgetState extends State<PostItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),

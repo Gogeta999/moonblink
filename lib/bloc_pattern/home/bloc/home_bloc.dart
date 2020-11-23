@@ -19,13 +19,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final refreshController = RefreshController();
 
-  final postsSubject = BehaviorSubject.seeded(<Post>[]);
+  final postsSubject = BehaviorSubject.seeded(<Post>[])..distinct();
 
   final _typeSubject = BehaviorSubject.seeded(1);
   final _genderSubject = BehaviorSubject.seeded('All');
   final _pageSubject = BehaviorSubject.seeded(1);
 
-  final hasReachedMaxSubject = BehaviorSubject.seeded(false);
+  bool hasReachedMax = false;
+  //final hasReachedMaxSubject = BehaviorSubject.seeded(false);
 
   @override
   Stream<HomeState> mapEventToState(
@@ -51,15 +52,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       data.forEach((element) {
         print('Compare Remote: ${element.updatedAt} ${element.id}');
       });
-      hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      //hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      hasReachedMax = data.length < kHomePostLimit;
       postsSubject.add(data);
     } catch (e) {
-      hasReachedMaxSubject.add(false);
+      //hasReachedMaxSubject.add(false);
+      hasReachedMax = false;
       postsSubject.addError(e);
     }
   }
 
   Future<void> fetchMoreData() async {
+    if (hasReachedMax) return;
     print('Fetching More');
     final int type = await _typeSubject.first;
     final String gender = await _genderSubject.first;
@@ -80,9 +84,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           pageNum: nextPage, type: type, gender: gender);
       postsSubject.add(previousPosts + data);
       _pageSubject.add(nextPage);
-      hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      //hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      hasReachedMax = data.length < kHomePostLimit;
     } catch (e) {
-      hasReachedMaxSubject.add(true);
+      hasReachedMax = true;
+      //hasReachedMaxSubject.add(true);
     }
   }
 
@@ -96,11 +102,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           pageNum: page, type: type, gender: gender);
       _pageSubject.add(1);
       postsSubject.add(data);
-      hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      //hasReachedMaxSubject.add(data.length < kHomePostLimit);
+      hasReachedMax = data.length < kHomePostLimit;
       refreshController.refreshCompleted();
     } catch (e) {
       postsSubject.addError(e);
-      hasReachedMaxSubject.add(true);
+      //hasReachedMaxSubject.add(true);
+      hasReachedMax = true;
       refreshController.refreshFailed();
     }
   }
