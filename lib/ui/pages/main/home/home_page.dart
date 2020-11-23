@@ -584,7 +584,6 @@ class _HomePageState extends State<HomePage>
                 initialData: [],
                 stream: _homeBloc.postsSubject,
                 builder: (context, snapshot) {
-                  print('Rebuilding');
                   return SmartRefresher(
                     controller: _homeBloc.refreshController,
                     header: WaterDropHeader(),
@@ -628,33 +627,35 @@ class _HomePageState extends State<HomePage>
                                 },
                               )),
                             ),
-                          if (snapshot.data.isEmpty)
-                            SliverToBoxAdapter(
-                              child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
-                                  child: Center(
-                                      child: CupertinoActivityIndicator())),
-                            ),
-                          if (snapshot.data.isNotEmpty)
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                if (index >= snapshot.data.length) {
-                                  return Center(
-                                      child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 12.0),
-                                    child: CupertinoActivityIndicator(),
-                                  ));
-                                }
-                                Post item = snapshot.data[index];
-                                return PostItemWidget(item, index: index);
-                              },
-                                  childCount: _homeBloc.hasReachedMax
-                                      ? snapshot.data.length
-                                      : snapshot.data.length + 1),
-                            ),
+                          if (snapshot.hasData)
+                            if (snapshot.data.isEmpty)
+                              SliverToBoxAdapter(
+                                child: SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: Center(
+                                        child: CupertinoActivityIndicator())),
+                              ),
+                          if (snapshot.hasData)
+                            if (snapshot.data.isNotEmpty)
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                  if (index >= snapshot.data.length) {
+                                    return Center(
+                                        child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12.0),
+                                      child: CupertinoActivityIndicator(),
+                                    ));
+                                  }
+                                  Post item = snapshot.data[index];
+                                  return PostItemWidget(item, index: index);
+                                },
+                                    childCount: _homeBloc.hasReachedMax
+                                        ? snapshot.data.length
+                                        : snapshot.data.length + 1),
+                              ),
                           //HomePostList()
                         ]),
                   );
