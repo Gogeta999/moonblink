@@ -187,14 +187,17 @@ class PushNotificationsManager {
     _firebaseMessaging.configure(
       onBackgroundMessage: myBackgroundMessageHandler,
       onMessage: (Map<String, dynamic> message) {
+        print('UnregisterNotification');
         print(message);
         return;
       },
       onLaunch: (Map<String, dynamic> message) {
+        print('UnregisterNotification');
         print(message);
         return;
       },
       onResume: (Map<String, dynamic> message) {
+        print('UnregisterNotification');
         print(message);
         return;
       },

@@ -24,7 +24,7 @@ const int _buttonSeconds = 300;
 class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   ChatBoxBloc(this.partnerId) : super(ChatBoxInitial());
 
-  ChatBoxBloc.initNormal(this.partnerId) : super(ChatBoxInitial()) {
+  ChatBoxBloc.init(this.partnerId) : super(ChatBoxInitial()) {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final firstBefore =
         (StorageManager.sharedPreferences.getInt(firstKey) ?? 0) ~/ 1000;

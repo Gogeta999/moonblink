@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:moonblink/global/provider_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
+import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/local_model.dart';
@@ -30,7 +32,7 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageManager.init();
   InAppPurchaseConnection.enablePendingPurchases();
-  Firebase.initializeApp();
+  await MoonGoDB().init();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
@@ -73,6 +75,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     print('Disposing main app');
+    MoonGoDB().dispose();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
@@ -86,6 +89,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         statusBarBrightness: Brightness.light));
     PushNotificationsManager().init();
     restartConstants();
+    await Firebase.initializeApp();
     FirebaseAdMob.instance.initialize(appId: AdManager.adMobAppId);
   }
 

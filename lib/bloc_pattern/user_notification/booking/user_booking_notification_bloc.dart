@@ -52,7 +52,8 @@ class UserBookingNotificationBloc
   ///Initial Fetched
   Stream<UserBookingNotificationState> _mapFetchedToState(
       UserBookingNotificationState currentState) async* {
-    if (currentState is UserBookingNotificationInitial) {
+    if (currentState is UserBookingNotificationInitial ||
+        currentState is UserBookingNotificationFailure) {
       List<UserBookingNotificationData> data = [];
       try {
         data = await _fetchUserNotification(limit: notificationLimit, page: 1);
@@ -71,8 +72,8 @@ class UserBookingNotificationBloc
         data = await _fetchUserNotification(
             limit: notificationLimit, page: nextPage);
       } catch (error) {
-        print(error);
-        //yield UserBookingNotificationFailure(error: error);
+        yield UserBookingNotificationFailure(error: error);
+        return;
       }
       bool hasReachedMax = data.length < notificationLimit ? true : false;
       yield data.isEmpty

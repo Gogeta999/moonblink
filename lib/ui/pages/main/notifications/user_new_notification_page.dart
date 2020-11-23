@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -13,6 +11,7 @@ import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -26,7 +25,7 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
     with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   final _scrollThreshold = 600.0;
-  Completer<void> _refreshCompleter;
+  RefreshController _refreshController = RefreshController();
   UserNewNotificationBloc _userNotificationBloc;
 
   @override
@@ -36,7 +35,6 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
   void initState() {
     _userNotificationBloc = BlocProvider.of<UserNewNotificationBloc>(context);
     _scrollController.addListener(_onScroll);
-    _refreshCompleter = Completer<void>();
     super.initState();
   }
 
@@ -53,12 +51,11 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
     return Scaffold(
       appBar: AppbarWidget(),
       body: SafeArea(
-        child: RefreshIndicator(
+        child: SmartRefresher(
           onRefresh: _onRefresh,
+          controller: _refreshController,
           child: ListView(
             controller: _scrollController,
-            physics:
-                AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
             children: [
               Card(
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -126,13 +123,11 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
                       UserNewNotificationState>(
                     listener: (context, state) {
                       if (state is UserNewNotificationSuccess) {
-                        _refreshCompleter.complete();
-                        _refreshCompleter = Completer();
+                        _refreshController.refreshCompleted();
                       }
                       if (state is UserNewNotificationFailure) {
                         showToast(state.error.toString());
-                        _refreshCompleter.completeError(state.error);
-                        _refreshCompleter = Completer();
+                        _refreshController.refreshFailed();
                       }
                     },
                     buildWhen: (previousState, currentState) =>
@@ -202,9 +197,8 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
     }
   }
 
-  Future<void> _onRefresh() {
+  _onRefresh() {
     _userNotificationBloc.add(UserNewNotificationRefreshed());
-    return _refreshCompleter.future;
   }
 }
 

@@ -88,36 +88,45 @@ class _ContactContainerState extends State<ContactContainer> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 2.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey
-                : Colors.black,
-          ),
-          borderRadius: BorderRadius.circular(40),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40.0),
         ),
+        shadowColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.grey,
+        elevation: 4,
         child: Stack(
           children: [
             Column(
               children: <Widget>[
                 /// [user_Profile]
-                Container(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 80.0),
-                        child: Text(widget.contact.contactUser.contactUserName),
-                      ),
-                      Spacer(),
-                      // Align(
-                      //     alignment: Alignment.centerRight,
-                      //     child: blockbtn(homeModel)),
-                    ],
+                InkWell(
+                  onTap: () {
+                    int detailPageId = widget.contact.contactUser.contactUserId;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PartnerDetailPage(detailPageId)));
+                  },
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 80.0),
+                          child:
+                              Text(widget.contact.contactUser.contactUserName),
+                        ),
+                        Spacer(),
+                        // Align(
+                        //     alignment: Alignment.centerRight,
+                        //     child: blockbtn(homeModel)),
+                      ],
+                    ),
                   ),
                 ),
 

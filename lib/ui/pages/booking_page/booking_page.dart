@@ -21,8 +21,19 @@ import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
 class BookingPage extends StatefulWidget {
-  BookingPage({Key key, this.partnerUser}) : super(key: key);
-  final PartnerUser partnerUser;
+  final int partnerId;
+  final String partnerName;
+  final String partnerProfile;
+  final String partnerBios;
+  BookingPage(
+      {Key key,
+      // this.partnerUser,
+      this.partnerId,
+      this.partnerName,
+      this.partnerProfile,
+      this.partnerBios})
+      : super(key: key);
+  // final PartnerUser partnerUser;
   @override
   _BookingPageState createState() => _BookingPageState();
 }
@@ -52,6 +63,7 @@ class _BookingPageState extends State<BookingPage> {
   _BookingPageState() {
     intro = Intro(
       stepCount: 6,
+      borderRadius: BorderRadius.circular(15),
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
@@ -84,14 +96,21 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   @override
+  void dispose() {
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _textStyle = Theme.of(context).textTheme.bodyText2;
     super.didChangeDependencies();
   }
 
   Future _initGameList() {
-    return MoonBlinkRepository.getGameList(widget.partnerUser.partnerId)
-        .then((value) {
+    return MoonBlinkRepository.getGameList(widget.partnerId).then((value) {
       if (value is BookingPartnerGameList) {
         setState(() {
           this._data = value;
@@ -196,7 +215,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   _onTapConfirm() {
-    int partnerId = widget.partnerUser.partnerId;
+    int partnerId = widget.partnerId;
     _totalPriceSubject.first.then((value) {
       if (value != 0) {
         if (_wallet.value < value) return _showNotEnoughCoin();
@@ -331,8 +350,7 @@ class _BookingPageState extends State<BookingPage> {
               child: Card(
                 child: ListTile(
                   leading: CachedNetworkImage(
-                    imageUrl:
-                        widget.partnerUser.prfoileFromPartner.profileImage,
+                    imageUrl: widget.partnerProfile,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       radius: 30,
                       backgroundColor:
@@ -347,11 +365,11 @@ class _BookingPageState extends State<BookingPage> {
                     errorWidget: (context, url, error) => CachedError(),
                   ),
                   title: Text(
-                    widget.partnerUser.partnerName,
+                    widget.partnerName,
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
                   subtitle: Text(
-                    widget.partnerUser.prfoileFromPartner.bios,
+                    widget.partnerBios,
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                   isThreeLine: true,

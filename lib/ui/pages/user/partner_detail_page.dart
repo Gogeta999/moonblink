@@ -22,6 +22,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -47,7 +48,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
   final RefreshController _refreshController = RefreshController();
   // final ScrollController _scrollController = ScrollController();
   Intro intro;
-  bool tuto = false;
 
   _PartnerDetailPageState() {
     intro = Intro(
@@ -68,19 +68,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
       ),
     );
   }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    bool showtuto = StorageManager.sharedPreferences.getBool(userdetailtuto);
-    setState(() {
-      tuto = showtuto;
-    });
-  }
 
   @override
   void dispose() {
     _refreshController.dispose();
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
     // _scrollController.dispose();
     super.dispose();
   }
@@ -278,7 +272,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             partnerModel.initData();
           },
           builder: (context, partnerModel, child) {
-            if (tuto) {
+            bool showtuto =
+                StorageManager.sharedPreferences.getBool(userdetailtuto);
+            if (showtuto) {
               Timer(Duration(microseconds: 0), () {
                 intro.start(context);
               });
@@ -597,9 +593,27 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                     showToast(G.of(context).cannotbookself);
                                   }
                                 : () {
-                                    Navigator.pushNamed(
-                                        context, RouteName.booking,
-                                        arguments: partnerModel.partnerData);
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => BookingPage(
+                                                  partnerId: partnerModel
+                                                      .partnerData.partnerId,
+                                                  partnerName: partnerModel
+                                                      .partnerData.partnerName,
+                                                  partnerBios: partnerModel
+                                                      .partnerData
+                                                      .prfoileFromPartner
+                                                      .bios,
+                                                  partnerProfile: partnerModel
+                                                      .partnerData
+                                                      .prfoileFromPartner
+                                                      .profileImage,
+                                                  // partnerUser:
+                                                  //     partnerModel.partnerData,
+                                                )));
+                                    // Navigator.pushNamed(
+                                    //     context, RouteName.booking,
+                                    //     arguments: partnerModel.partnerData);
                                   }),
 
                         MBButtonWidget(

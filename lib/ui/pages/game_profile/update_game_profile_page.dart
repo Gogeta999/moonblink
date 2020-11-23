@@ -412,6 +412,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.image,
+                    minHeight: 500,
+                    minWidth: 500,
                     willCrop: false,
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);

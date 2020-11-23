@@ -3,14 +3,15 @@ import 'package:moonblink/provider/view_state_list_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // Base on
-abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T>{
+abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T> {
   /// First page
   static const pageNumFirst = 1;
+
   /// Post limit
   static const postlimt = 5;
 
-  RefreshController _refreshController = 
-    RefreshController(initialRefresh: false);
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   RefreshController get refreshController => _refreshController;
 
@@ -21,11 +22,11 @@ abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T>{
   /// [init] loadmore at init or not
   /// true: Error, need to jump page
   /// false: Error, doesn't jump and showing error
-  Future<List<T>> refresh({bool init = false }) async {
+  Future<List<T>> refresh({bool init = false}) async {
     try {
       _currentPageNum = pageNumFirst;
       var data = await loadData(pageNum: pageNumFirst);
-      if (data.isEmpty){
+      if (data.isEmpty) {
         refreshController.refreshCompleted(resetFooterState: true);
         list.clear();
         setEmpty();
@@ -44,7 +45,7 @@ abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T>{
         setIdle();
       }
       return data;
-    } catch (e, s){
+    } catch (e, s) {
       /// catch to debug
       if (init) list.clear();
       refreshController.refreshFailed();

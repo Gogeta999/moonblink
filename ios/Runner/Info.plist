@@ -45,6 +45,8 @@
 	<string>217943735875327</string>
 	<key>FacebookDisplayName</key>
 	<string>moonblink</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-2553224590005557~4787287702</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

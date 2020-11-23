@@ -25,6 +25,8 @@ import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/web_socket_service.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -46,7 +48,7 @@ class NewChatBoxPage extends StatefulWidget {
 }
 
 class _NewChatBoxPageState extends State<NewChatBoxPage>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   ///Private Properties - Start
   ChatBoxBloc _chatBoxBloc;
 
@@ -58,9 +60,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   final ScrollController _scrollController = ScrollController();
 
   final _rotatedSubject = BehaviorSubject.seeded(true);
+  final _rotatedSubject2 = BehaviorSubject.seeded(false);
   final _upWidgetSubject = BehaviorSubject.seeded(false);
 
   AnimationController _animationController;
+  AnimationController _animationController2;
+  Animation<double> _animationbotmsg;
   Animation<double> _animation;
   Animation<double> _animation2;
   Animation<double> _animation3;
@@ -70,12 +75,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    //_chatBoxBloc = ChatBoxBloc(widget.partnerId);
-    if (myType == kNormal) {
-      _chatBoxBloc = ChatBoxBloc.initNormal(widget.partnerId);
-    } else {
-      _chatBoxBloc = ChatBoxBloc(widget.partnerId);
-    }
+    _chatBoxBloc = ChatBoxBloc.init(widget.partnerId);
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
 
@@ -85,6 +85,16 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 180),
+    );
+
+    _animationController2 = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+
+    _animationbotmsg = CurvedAnimation(
+      parent: _animationController2,
+      curve: Interval(0.0, 1.0, curve: Curves.linear),
     );
 
     _animation = CurvedAnimation(
@@ -112,7 +122,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      //if (myType == kNormal) _chatBoxBloc.saveTimer();
+      if (myType == kNormal) _chatBoxBloc.saveTimer();
     }
   }
 
@@ -122,6 +132,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     WebSocketService().disposeWithChatBoxBloc();
     _debounce?.cancel();
     _animationController.dispose();
+    _animationController2.dispose();
     _scrollController.dispose();
     List<Future> futures = [
       _rotatedSubject.close(),
@@ -243,7 +254,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               child: Text("Cancel"),
             ),
             FlatButton(
-              onPressed: () => launch(url),
+              onPressed: () {
+                launch(url);
+                Navigator.pop(context);
+              },
               child: Text("View URL"),
             ),
           ],
@@ -410,10 +424,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           return CupertinoActivityIndicator();
         }
 
-        if (snapshot.data.status != ACCEPTED && myType == kNormal) {
-          return _buildNormalUserButtons();
-        }
-
         ///Blocked
         if (snapshot.data.isBlock == 1) {
           return Container(
@@ -434,78 +444,111 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             ),
           );
         }
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Theme.of(context).accentColor
-                : Colors.black,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30.0),
-            ),
-          ),
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                iconSize: 35,
-                icon: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.grey
-                            : Colors.black),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: StreamBuilder<bool>(
-                      initialData: true,
-                      stream: _rotatedSubject,
-                      builder: (context, snapshot) {
-                        return Icon(
-                          snapshot.data
-                              ? Icons.arrow_drop_up
-                              : Icons.arrow_drop_down,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
-                        );
-                      }),
+
+        return Column(
+          children: [
+            if (myType == kNormal) _buildNormalUserButtons(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).accentColor
+                    : Colors.black,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(30.0),
                 ),
-                onPressed: () => _rotate(),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 2),
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.grey
-                              : Colors.black),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: TextField(
-                    minLines: 1,
-                    maxLines: 3,
-                    maxLength: 150,
-                    keyboardType: TextInputType.multiline,
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputAction: TextInputAction.newline,
-                    controller: _chatBoxBloc.messageController,
-                    decoration: InputDecoration(
-                      hintText: G.of(context).labelmsg,
-                      counterText: "",
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                      iconSize: 35,
+                      icon: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          border: Border.all(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey
+                                  : Colors.black),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.menu,
+                            size: 30,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
+                        ),
+                      ),
+                      onPressed: () => _rotate2()),
+                  IconButton(
+                    iconSize: 35,
+                    icon: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        border: Border.all(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey
+                                    : Colors.black),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: StreamBuilder<bool>(
+                          initialData: true,
+                          stream: _rotatedSubject,
+                          builder: (context, snapshot) {
+                            return Icon(
+                              snapshot.data
+                                  ? Icons.arrow_drop_up
+                                  : Icons.arrow_drop_down,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            );
+                          }),
+                    ),
+                    onPressed: () => _rotate(),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey
+                                  : Colors.black),
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: TextField(
+                        minLines: 1,
+                        maxLines: 3,
+                        maxLength: 150,
+                        keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputAction: TextInputAction.newline,
+                        controller: _chatBoxBloc.messageController,
+                        decoration: InputDecoration(
+                          hintText: G.of(context).labelmsg,
+                          counterText: "",
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  _buildSendButton(),
+                ],
               ),
-              _buildSendButton(),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -523,168 +566,219 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     width: 1,
                     color: _isDark() ? Colors.white24 : Colors.black26),
                 borderRadius: BorderRadius.circular(10)),
-            child: Text(
-                'Dear user, If you want to chat or play with a co-player, please place your order first.\nမင်္ဂလာပါ သင်ကြိုက်နှစ်သက်သော Co-Player နှင့်အတူတူ gameဆော့ပြီးစကားပြောလိုလျှင် booking(Order)အရင်လုပ်ပေးပါ။',
+            child: Text(G.current.chatwelcome,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: _isDark() ? Colors.white : Colors.black,
                     fontWeight: FontWeight.w300))),
-        Container(
-          height: 60,
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            physics: ClampingScrollPhysics(),
-            children: [
-              SizedBox(width: 10),
+        // Container(
+        //   height: 60,
+        //   margin: const EdgeInsets.symmetric(vertical: 4),
+        //   child: ListView(
+        //     shrinkWrap: true,
+        //     scrollDirection: Axis.horizontal,
+        //     physics: ClampingScrollPhysics(),
+        //     children: [
+        //       SizedBox(width: 10),
 
-              ///First
-              StreamBuilder<String>(
-                  initialData: null,
-                  stream: _chatBoxBloc.firstButtonSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(12),
-                        child: Center(child: CupertinoActivityIndicator()),
-                      );
-                    }
-                    if (snapshot.data.isNotEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('${snapshot.data}'),
-                          ),
-                        ),
-                      );
-                    }
-                    return InkResponse(
-                      onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(4),
-                        child: Center(
-                          child: Text(
-                              '$firstButtonMessage\nကျွန်တော်နင့် ဂိမ်းတူတူဆော့ရန် အားပါသလား။',
-                              textAlign: TextAlign.center),
-                        ),
-                      ),
-                    );
-                  }),
-              SizedBox(width: 10),
+        //       ///First
+        //       StreamBuilder<String>(
+        //           initialData: null,
+        //           stream: _chatBoxBloc.firstButtonSubject,
+        //           builder: (context, snapshot) {
+        //             if (snapshot.data == null) {
+        //               return Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(12),
+        //                 child: Center(child: CupertinoActivityIndicator()),
+        //               );
+        //             }
+        //             if (snapshot.data.isNotEmpty) {
+        //               return Container(
+        //                 padding: const EdgeInsets.all(4),
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 child: Center(
+        //                   child: Padding(
+        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
+        //                     child: Text('${snapshot.data}'),
+        //                   ),
+        //                 ),
+        //               );
+        //             }
+        //             return InkResponse(
+        //               onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
+        //               child: Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(4),
+        //                 child: Center(
+        //                   child: Text(G.current.chatavailable,
+        //                       textAlign: TextAlign.center),
+        //                 ),
+        //               ),
+        //             );
+        //           }),
+        //       SizedBox(width: 10),
 
-              ///Second
-              StreamBuilder<String>(
-                  initialData: null,
-                  stream: _chatBoxBloc.secondButtonSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(12),
-                        child: Center(child: CupertinoActivityIndicator()),
-                      );
-                    }
-                    if (snapshot.data.isNotEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('${snapshot.data}'),
-                          ),
-                        ),
-                      );
-                    }
-                    return InkResponse(
-                      onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(4),
-                        child: Center(
-                          child: Text(
-                              '$secondButtonMessage\nသင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။',
-                              textAlign: TextAlign.center),
-                        ),
-                      ),
-                    );
-                  }),
-              SizedBox(width: 10),
+        //       ///Second
+        //       StreamBuilder<String>(
+        //           initialData: null,
+        //           stream: _chatBoxBloc.secondButtonSubject,
+        //           builder: (context, snapshot) {
+        //             if (snapshot.data == null) {
+        //               return Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(12),
+        //                 child: Center(child: CupertinoActivityIndicator()),
+        //               );
+        //             }
+        //             if (snapshot.data.isNotEmpty) {
+        //               return Container(
+        //                 padding: const EdgeInsets.all(4),
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 child: Center(
+        //                   child: Padding(
+        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
+        //                     child: Text('${snapshot.data}'),
+        //                   ),
+        //                 ),
+        //               );
+        //             }
+        //             return InkResponse(
+        //               onTap: () async {
+        //                 StorageManager.sharedPreferences
+        //                     .setBool(bookingtuto, true);
+        //                 PartnerUser partnerData =
+        //                     await MoonBlinkRepository.fetchPartner(
+        //                         widget.partnerId);
+        //                 Navigator.pushNamed(context, RouteName.booking,
+        //                     arguments: partnerData);
+        //               },
+        //               child: Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(4),
+        //                 child: Center(
+        //                   child: Text(G.current.chatbook,
+        //                       textAlign: TextAlign.center),
+        //                 ),
+        //               ),
+        //             );
+        //           }),
+        //       SizedBox(width: 10),
 
-              ///Third
-              StreamBuilder<String>(
-                  initialData: null,
-                  stream: _chatBoxBloc.thirdButtonSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(12),
-                        child: Center(child: CupertinoActivityIndicator()),
-                      );
-                    }
-                    if (snapshot.data.isNotEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('${snapshot.data}'),
-                          ),
-                        ),
-                      );
-                    }
-                    return InkResponse(
-                      onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Theme.of(context).accentColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(4),
-                        child: Center(
-                          child: Text(
-                              '$thirdButtonMessage\nသင်နဲ့ဆော့ရအောင်ကျွန်တော်ဘာကိုလုပ်ရမှာလဲ။',
-                              textAlign: TextAlign.center),
-                        ),
-                      ),
-                    );
-                  }),
-              SizedBox(width: 10),
-            ],
-          ),
-        ),
+        //       ///Third
+        //       StreamBuilder<String>(
+        //           initialData: null,
+        //           stream: _chatBoxBloc.secondButtonSubject,
+        //           builder: (context, snapshot) {
+        //             if (snapshot.data == null) {
+        //               return Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(12),
+        //                 child: Center(child: CupertinoActivityIndicator()),
+        //               );
+        //             }
+        //             if (snapshot.data.isNotEmpty) {
+        //               return Container(
+        //                 padding: const EdgeInsets.all(4),
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 child: Center(
+        //                   child: Padding(
+        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
+        //                     child: Text('${snapshot.data}'),
+        //                   ),
+        //                 ),
+        //               );
+        //             }
+        //             return InkResponse(
+        //               onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
+        //               child: Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(4),
+        //                 child: Center(
+        //                   child: Text(G.current.chatbuycoin,
+        //                       textAlign: TextAlign.center),
+        //                 ),
+        //               ),
+        //             );
+        //           }),
+        //       SizedBox(width: 10),
+
+        //       ///Fourth
+        //       StreamBuilder<String>(
+        //           initialData: null,
+        //           stream: _chatBoxBloc.thirdButtonSubject,
+        //           builder: (context, snapshot) {
+        //             if (snapshot.data == null) {
+        //               return Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(12),
+        //                 child: Center(child: CupertinoActivityIndicator()),
+        //               );
+        //             }
+        //             if (snapshot.data.isNotEmpty) {
+        //               return Container(
+        //                 padding: const EdgeInsets.all(4),
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 child: Center(
+        //                   child: Padding(
+        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
+        //                     child: Text('${snapshot.data}'),
+        //                   ),
+        //                 ),
+        //               );
+        //             }
+        //             return InkResponse(
+        //               onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
+        //               child: Container(
+        //                 decoration: BoxDecoration(
+        //                     border: Border.all(
+        //                         width: 1, color: Theme.of(context).accentColor),
+        //                     borderRadius: BorderRadius.circular(8)),
+        //                 padding: const EdgeInsets.all(4),
+        //                 child: Center(
+        //                   child: Text(G.current.chathowtoplay,
+        //                       textAlign: TextAlign.center),
+        //                 ),
+        //               ),
+        //             );
+        //           }),
+        //       SizedBox(width: 10),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }
@@ -1102,16 +1196,318 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                         return FloatingButton(
                             bottom: 200,
                             left: 10,
-                            scale: _animation3,
+                            scale: _animation,
                             child: _buildCameraIcon());
                       }
                       return Container();
                     }),
+
+                ///bot messages
+                StreamBuilder<bool>(
+                  initialData: false,
+                  stream: _rotatedSubject2,
+                  builder: (context, snapshot) {
+                    if (!snapshot.data) {
+                      _animationController2.forward();
+                      return Positioned(
+                        bottom: 80,
+                        left: 10,
+                        child: new ScaleTransition(
+                          scale: _animationbotmsg,
+                          alignment: FractionalOffset.center,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 4,
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  firstbotmsg(),
+                                  SizedBox(height: 10),
+                                  secbotmsg(),
+                                  thirdbotmsg(),
+                                  SizedBox(height: 10),
+                                  fourthbotmsg(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+                // StreamBuilder<bool>(
+                //   initialData: true,
+                //   stream: _rotatedSubject2,
+                //   builder: (context, snapshot) {
+                //     if (!snapshot.data) {
+                //       return Positioned(
+                //         bottom: 140,
+                //         left: 10,
+                //         child: new Container(
+                //           child: new ScaleTransition(
+                //             scale: _animation,
+                //             alignment: FractionalOffset.center,
+                //             child: thirdbotmsg(),
+                //           ),
+                //         ),
+                //       );
+                //     }
+                //     return Container();
+                //   },
+                // ),
+                // StreamBuilder<bool>(
+                //   initialData: true,
+                //   stream: _rotatedSubject2,
+                //   builder: (context, snapshot) {
+                //     if (!snapshot.data) {
+                //       return Positioned(
+                //         bottom: 200,
+                //         left: 10,
+                //         child: new Container(
+                //           child: new ScaleTransition(
+                //             scale: _animation,
+                //             alignment: FractionalOffset.center,
+                //             child: fourthbotmsg(),
+                //           ),
+                //         ),
+                //       );
+                //     }
+                //     return Container();
+                //   },
+                // ),
+                // StreamBuilder<bool>(
+                //   initialData: true,
+                //   stream: _rotatedSubject2,
+                //   builder: (context, snapshot) {
+                //     if (!snapshot.data) {
+                //       return Positioned(
+                //         bottom: 260,
+                //         left: 10,
+                //         child: new Container(
+                //           child: new ScaleTransition(
+                //             scale: _animation,
+                //             alignment: FractionalOffset.center,
+                //             child: secbotmsg(),
+                //           ),
+                //         ),
+                //       );
+                //     }
+                //     return Container();
+                //   },
+                // ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  ///First Bot Message
+  firstbotmsg() {
+    return StreamBuilder<String>(
+        initialData: null,
+        stream: _chatBoxBloc.firstButtonSubject,
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 1, color: Theme.of(context).accentColor),
+                  borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.all(12),
+              child: Center(child: CupertinoActivityIndicator()),
+            );
+          }
+          if (snapshot.data.isNotEmpty) {
+            return Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 1, color: Theme.of(context).accentColor),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text('${snapshot.data}'),
+                ),
+              ),
+            );
+          }
+          return InkResponse(
+            onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 1, color: Theme.of(context).accentColor),
+                  borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.all(4),
+              child: Center(
+                child:
+                    Text(G.current.chatavailable, textAlign: TextAlign.center),
+              ),
+            ),
+          );
+        });
+  }
+
+  ///Second Bot Message
+  secbotmsg() {
+    return StreamBuilder<PartnerUser>(
+      initialData: null,
+      stream: _chatBoxBloc.partnerUserSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return Container(
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.all(12),
+            child: Center(child: CupertinoActivityIndicator()),
+          );
+        }
+        if (snapshot.data.type == kNormal) {
+          return Container();
+        }
+        return InkResponse(
+          onTap: () async {
+            StorageManager.sharedPreferences.setBool(bookingtuto, true);
+            PartnerUser partnerData =
+                await _chatBoxBloc.partnerUserSubject.first;
+            // await MoonBlinkRepository.fetchPartner(widget.partnerId);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BookingPage(
+                  partnerId: partnerData.partnerId,
+                  partnerName: partnerData.partnerName,
+                  partnerBios: partnerData.prfoileFromPartner.bios,
+                  partnerProfile: partnerData.prfoileFromPartner.profileImage,
+                ),
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).accentColor),
+                    borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.all(4),
+                child: Center(
+                  child: Text(G.current.chatbook, textAlign: TextAlign.center),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  ///Third Bot Msg
+  thirdbotmsg() {
+    return StreamBuilder<String>(
+      initialData: null,
+      stream: _chatBoxBloc.secondButtonSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return Container(
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.all(12),
+            child: Center(child: CupertinoActivityIndicator()),
+          );
+        }
+        if (snapshot.data.isNotEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text('${snapshot.data}'),
+              ),
+            ),
+          );
+        }
+        return InkResponse(
+          onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
+          child: Container(
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.all(4),
+            child: Center(
+              child: Text(G.current.chatbuycoin, textAlign: TextAlign.center),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ///Fourth Bot Message
+  fourthbotmsg() {
+    return StreamBuilder<String>(
+      initialData: null,
+      stream: _chatBoxBloc.thirdButtonSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return Container(
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.all(12),
+            child: Center(child: CupertinoActivityIndicator()),
+          );
+        }
+        if (snapshot.data.isNotEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text('${snapshot.data}'),
+              ),
+            ),
+          );
+        }
+        return InkResponse(
+          onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
+          child: Container(
+            decoration: BoxDecoration(
+                border:
+                    Border.all(width: 1, color: Theme.of(context).accentColor),
+                borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.all(4),
+            child: Center(
+              child: Text(G.current.chathowtoplay, textAlign: TextAlign.center),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -1122,9 +1518,28 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       if (rotated) {
         _rotatedSubject.add(false);
         _animationController.forward();
+        _rotatedSubject2.add(true);
+        _animationController2.reverse();
       } else {
         _rotatedSubject.add(true);
         _animationController.reverse();
+      }
+    });
+  }
+
+  /// For bot messages
+  ///Private Methods - Start
+  void _rotate2() {
+    //Animate Icon
+    _rotatedSubject2.first.then((rotated) {
+      if (rotated) {
+        _rotatedSubject2.add(false);
+        _animationController2.forward();
+        _rotatedSubject.add(true);
+        _animationController.reverse();
+      } else {
+        _rotatedSubject2.add(true);
+        _animationController2.reverse();
       }
     });
   }

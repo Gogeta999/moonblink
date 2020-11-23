@@ -28,7 +28,6 @@ class _MainTabPageState extends State<MainTabPage>
   int type = StorageManager.sharedPreferences.getInt(mUserType);
   var _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
-  // ignore: unused_field
   int initPage;
   // ignore: unused_field
   int _selectedIndex = 0;
@@ -134,11 +133,21 @@ class _MainTabPageState extends State<MainTabPage>
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-              width: 1,
+          boxShadow: [
+            BoxShadow(
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.black
-                  : Colors.black),
+                  : Colors.grey,
+              // spreadRadius: 1,
+              blurRadius: 4,
+              offset: Offset(0, 0), // changes position of shadow
+            ),
+          ],
+          // border: Border.all(
+          //     width: 1,
+          //     color: Theme.of(context).brightness == Brightness.dark
+          //         ? Colors.black
+          //         : Colors.black),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(10.0),
           ),
