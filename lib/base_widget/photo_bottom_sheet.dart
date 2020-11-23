@@ -36,7 +36,7 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.minWidth,
       @required this.minHeight,
       @required this.willCrop,
-      @required  this.defaultCropStyle,
+      @required this.defaultCropStyle,
       @required this.compressQuality})
       : super(key: key);
 
@@ -184,7 +184,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(G.of(context).albums),
+                        Expanded(child: Text(G.of(context).albums)),
                         SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_down)
                       ],
@@ -305,7 +305,8 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
 
   Future<File> _cropImage(File imageFile) async {
     File croppedFile = await ImageCropper.cropImage(
-        cropStyle: widget.defaultCropStyle ? CropStyle.rectangle : CropStyle.circle,
+        cropStyle:
+            widget.defaultCropStyle ? CropStyle.rectangle : CropStyle.circle,
         sourcePath: imageFile.path,
         compressFormat: ImageCompressFormat.jpg,
         aspectRatioPresets: Platform.isAndroid
