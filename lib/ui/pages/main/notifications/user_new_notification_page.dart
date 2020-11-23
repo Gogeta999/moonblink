@@ -41,7 +41,7 @@ class _UserNewNotificationPageState extends State<UserNewNotificationPage>
   @override
   void dispose() {
     _scrollController.dispose();
-    _userNotificationBloc.dispose();
+    //_userNotificationBloc.dispose(); should not dispose even logout
     super.dispose();
   }
 

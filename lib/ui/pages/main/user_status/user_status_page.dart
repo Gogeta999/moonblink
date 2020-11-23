@@ -151,9 +151,9 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    int status = 1; //StorageManager.sharedPreferences.getInt(mstatus);
+    int status = StorageManager.sharedPreferences.getInt(mstatus);
     String name = StorageManager.sharedPreferences.getString(mLoginName);
-    // int usertype = StorageManager.sharedPreferences.getInt(mUserType);
+
     return Scaffold(
       appBar: AppBar(
         ///[Appbar]
@@ -284,20 +284,6 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                     ),
                                 ],
                               ),
-                              // SizedBox(width: 20),
-                              // Icon(
-                              //   FontAwesomeIcons.coins,
-                              //   color: Colors.amber[500],
-                              //   size: 20,
-                              // ),
-                              // SizedBox(width: 5.0),
-                              // userWallet != null
-                              //     ? Text(
-                              //         '${userWallet.value} ${userWallet.value > 1 ? 'coins' : 'coin'}',
-                              //         style: TextStyle(fontSize: 16))
-                              //     : CupertinoActivityIndicator()
-                              //   ],
-                              // ),
                               SizedBox(height: 5),
                               InkResponse(
                                 onTap: () {

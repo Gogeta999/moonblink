@@ -91,6 +91,7 @@ class _UserMessageNotificationPageState
                     }
                     return ListView.builder(
                       padding: EdgeInsets.all(10),
+                      shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
                         return index >= state.data.length

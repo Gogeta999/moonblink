@@ -180,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 if (usertype == 0) space(),
-                if (usertype == 0)
+                if (usertype == 0 && usermodel.partnerData.typestatus != -1)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
@@ -191,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                if (usermodel.partnerData.typestatus == -1)
+                if (usertype == 0 && usermodel.partnerData.typestatus == -1)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(

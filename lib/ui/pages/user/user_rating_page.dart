@@ -263,8 +263,10 @@ class RatingListTile extends StatelessWidget {
                   rating: state.data[index].star,
                   size: 20),
               SizedBox(height: 5),
-              Text(DateFormat.yMd()
-                  .format(DateTime.parse(state.data[index].updatedAt)))
+              Expanded(
+                child: Text(DateFormat.yMd()
+                    .format(DateTime.parse(state.data[index].updatedAt))),
+              )
             ],
           )),
     );

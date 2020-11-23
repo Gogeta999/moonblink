@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _scrollThreshold = MediaQuery.of(context).size.height * 5;
+    _scrollThreshold = MediaQuery.of(context).size.height * 3;
   }
 
   @override
@@ -721,9 +721,9 @@ class HomePostList extends StatelessWidget {
                         StreamBuilder<bool>(
                             initialData: false,
                             stream: BlocProvider.of<HomeBloc>(context)
-                                .loadingSubject,
+                                .hasReachedMaxSubject,
                             builder: (context, snapshot2) {
-                              if (snapshot2.data) {
+                              if (!snapshot2.data) {
                                 print('Loading new posts');
                                 return Center(
                                     child: Padding(

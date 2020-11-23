@@ -20,7 +20,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final refreshController = RefreshController();
 
   final postsSubject = BehaviorSubject.seeded(<Post>[]);
-  final loadingSubject = BehaviorSubject.seeded(false);
 
   final _typeSubject = BehaviorSubject.seeded(1);
   final _genderSubject = BehaviorSubject.seeded('All');
@@ -52,14 +51,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       data.forEach((element) {
         print('Compare Remote: ${element.updatedAt} ${element.id}');
       });
+      hasReachedMaxSubject.add(data.length < kHomePostLimit);
       postsSubject.add(data);
     } catch (e) {
+      hasReachedMaxSubject.add(false);
       postsSubject.addError(e);
     }
   }
 
   Future<void> fetchMoreData() async {
-    loadingSubject.add(true);
     print('Fetching More');
     final int type = await _typeSubject.first;
     final String gender = await _genderSubject.first;
@@ -73,7 +73,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         .then((posts) {
       print('Local Fetch More: ${posts.length}');
       postsSubject.add(previousPosts + posts);
-      //loadingSubject.add(false);
     });
 
     try {
@@ -81,10 +80,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           pageNum: nextPage, type: type, gender: gender);
       postsSubject.add(previousPosts + data);
       _pageSubject.add(nextPage);
-      loadingSubject.add(false);
       hasReachedMaxSubject.add(data.length < kHomePostLimit);
     } catch (e) {
-      loadingSubject.add(false);
       hasReachedMaxSubject.add(true);
     }
   }
@@ -99,10 +96,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           pageNum: page, type: type, gender: gender);
       _pageSubject.add(1);
       postsSubject.add(data);
-      hasReachedMaxSubject.add(false);
+      hasReachedMaxSubject.add(data.length < kHomePostLimit);
       refreshController.refreshCompleted();
     } catch (e) {
       postsSubject.addError(e);
+      hasReachedMaxSubject.add(true);
       refreshController.refreshFailed();
     }
   }
