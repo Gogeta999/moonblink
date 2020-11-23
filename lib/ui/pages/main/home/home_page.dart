@@ -9,23 +9,21 @@ import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
-import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
-import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/home/home_provider_widget/post_item.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/search/search_page.dart';
-import 'package:moonblink/utils/status_bar_utils.dart';
-import 'package:moonblink/view_model/home_model.dart';
-import 'package:moonblink/view_model/scroll_controller_model.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rxdart/subjects.dart';
 
 ///coplayer = 1
 ///streamer = 2
@@ -65,10 +63,8 @@ class _HomePageState extends State<HomePage>
   }
   @override
   bool get wantKeepAlive => true;
-  PageController _pageController;
-  int catagories = 1;
-  // String gender = "All";
-  String gender = "All";
+  final catagories = BehaviorSubject.seeded(1);
+  final gender = BehaviorSubject.seeded("All");
   bool tuto = true;
 
   @override
@@ -84,14 +80,13 @@ class _HomePageState extends State<HomePage>
     }
     setState(() {
       tuto = showtuto;
-      _pageController = PageController(initialPage: 0);
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _scrollThreshold = MediaQuery.of(context).size.height * 3;
+    _scrollThreshold = MediaQuery.of(context).size.height * 5;
   }
 
   @override
@@ -123,6 +118,7 @@ class _HomePageState extends State<HomePage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  //CoPlayer
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -131,7 +127,7 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Expanded(
                             flex: 2,
-                            child: InkWell(
+                            child: GestureDetector(
                               onDoubleTap: () {
                                 homeController.animateTo(
                                   0.0,
@@ -140,40 +136,52 @@ class _HomePageState extends State<HomePage>
                                 );
                               },
                               onTap: () {
-                                if (catagories != 1) {
-                                  setState(() {
-                                    catagories = 1;
+                                catagories.first.then((value) async {
+                                  if (value != kCoPlayer) {
+                                    catagories.add(kCoPlayer);
+                                    final cata = await catagories.first;
+                                    final gen = await gender.first;
                                     _homeBloc.fetchData(
-                                        type: catagories, gender: gender);
-                                  });
-                                } else {
-                                  print("Already");
-                                }
+                                        type: cata, gender: gen);
+                                  }
+                                });
+                                // if (catagories != 1) {
+                                //   catagories = 1;
+                                //   _homeBloc.fetchData(
+                                //       type: catagories, gender: gender);
+                                // } else {
+                                //   print("Already");
+                                // }
                               },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      catagories == 1
-                                          ? BoxShadow(
-                                              color: Colors.black,
-                                              // spreadRadius: 1,
-                                              blurRadius: 4,
-                                              offset: Offset(-3,
-                                                  3), // changes position of shadow
-                                            )
-                                          : BoxShadow(),
-                                    ],
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: MoreGradientColors.azureLane,
-                                    )),
-                                child: Icon(Icons.supervisor_account,
-                                    size: 23, color: Colors.white),
-                              ),
+                              child: StreamBuilder<int>(
+                                  stream: catagories,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            snapshot.data == kCoPlayer
+                                                ? BoxShadow(
+                                                    color: Colors.black,
+                                                    // spreadRadius: 1,
+                                                    blurRadius: 4,
+                                                    offset: Offset(-3,
+                                                        3), // changes position of shadow
+                                                  )
+                                                : BoxShadow(),
+                                          ],
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors:
+                                                MoreGradientColors.azureLane,
+                                          )),
+                                      child: Icon(Icons.supervisor_account,
+                                          size: 23, color: Colors.white),
+                                    );
+                                  }),
                             ),
                           ),
                           SizedBox(
@@ -185,6 +193,8 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                   ),
+
+                  ///Cele
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -192,45 +202,57 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Expanded(
                             flex: 2,
-                            child: InkWell(
+                            child: GestureDetector(
                               onTap: () {
-                                if (catagories != 3) {
-                                  setState(() {
-                                    catagories = 3;
+                                catagories.first.then((value) async {
+                                  if (value != kCele) {
+                                    catagories.add(kCele);
+                                    final cata = await catagories.first;
+                                    final gen = await gender.first;
                                     _homeBloc.fetchData(
-                                        type: catagories, gender: gender);
-                                  });
-                                } else {
-                                  print("Already");
-                                }
+                                        type: cata, gender: gen);
+                                  }
+                                });
+                                // if (catagories != 3) {
+                                //   catagories = 3;
+                                //   _homeBloc.fetchData(
+                                //       type: catagories, gender: gender);
+                                // } else {
+                                //   print("Already");
+                                // }
                               },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      catagories == 3
-                                          ? BoxShadow(
-                                              color: Colors.black,
-                                              // spreadRadius: 1,
-                                              blurRadius: 4,
-                                              offset: Offset(-3,
-                                                  3), // changes position of shadow
-                                            )
-                                          : BoxShadow(),
-                                    ],
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: MoreGradientColors.orangePinkTeal,
-                                    )),
-                                child: Icon(
-                                  FontAwesomeIcons.star,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
+                              child: StreamBuilder<int>(
+                                  stream: catagories,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            snapshot.data == kCele
+                                                ? BoxShadow(
+                                                    color: Colors.black,
+                                                    // spreadRadius: 1,
+                                                    blurRadius: 4,
+                                                    offset: Offset(-3,
+                                                        3), // changes position of shadow
+                                                  )
+                                                : BoxShadow(),
+                                          ],
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: MoreGradientColors
+                                                .orangePinkTeal,
+                                          )),
+                                      child: Icon(
+                                        FontAwesomeIcons.star,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    );
+                                  }),
                             ),
                           ),
                           SizedBox(
@@ -242,6 +264,8 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                   ),
+
+                  ///Pro
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -249,45 +273,56 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Expanded(
                             flex: 2,
-                            child: InkWell(
+                            child: GestureDetector(
                               onTap: () {
-                                if (catagories != 4) {
-                                  setState(() {
-                                    catagories = 4;
+                                catagories.first.then((value) async {
+                                  if (value != kPro) {
+                                    catagories.add(kPro);
+                                    final cata = await catagories.first;
+                                    final gen = await gender.first;
                                     _homeBloc.fetchData(
-                                        type: catagories, gender: gender);
-                                  });
-                                } else {
-                                  print("Already");
-                                }
+                                        type: cata, gender: gen);
+                                  }
+                                });
+                                // if (catagories != 4) {
+                                //   catagories = 4;
+                                //   _homeBloc.fetchData(
+                                //       type: catagories, gender: gender);
+                                // } else {
+                                //   print("Already");
+                                // }
                               },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      catagories == 4
-                                          ? BoxShadow(
-                                              color: Colors.black,
-                                              // spreadRadius: 1,
-                                              blurRadius: 4,
-                                              offset: Offset(-3,
-                                                  3), // changes position of shadow
-                                            )
-                                          : BoxShadow(),
-                                    ],
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: MoreGradientColors.lunada,
-                                    )),
-                                child: Icon(
-                                  FontAwesomeIcons.gamepad,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
+                              child: StreamBuilder<int>(
+                                  stream: catagories,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            snapshot.data == kPro
+                                                ? BoxShadow(
+                                                    color: Colors.black,
+                                                    // spreadRadius: 1,
+                                                    blurRadius: 4,
+                                                    offset: Offset(-3,
+                                                        3), // changes position of shadow
+                                                  )
+                                                : BoxShadow(),
+                                          ],
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: MoreGradientColors.lunada,
+                                          )),
+                                      child: Icon(
+                                        FontAwesomeIcons.gamepad,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    );
+                                  }),
                             ),
                           ),
                           SizedBox(
@@ -298,6 +333,8 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                   ),
+
+                  ///Streamer
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -305,45 +342,56 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Expanded(
                             flex: 2,
-                            child: InkWell(
+                            child: GestureDetector(
                               onTap: () {
-                                if (catagories != 2) {
-                                  setState(() {
-                                    catagories = 2;
+                                catagories.first.then((value) async {
+                                  if (value != kStreamer) {
+                                    catagories.add(kStreamer);
+                                    final cata = await catagories.first;
+                                    final gen = await gender.first;
                                     _homeBloc.fetchData(
-                                        type: catagories, gender: gender);
-                                  });
-                                } else {
-                                  print("Already");
-                                }
+                                        type: cata, gender: gen);
+                                  }
+                                });
+                                // if (catagories != 2) {
+                                //   catagories = 2;
+                                //   _homeBloc.fetchData(
+                                //       type: catagories, gender: gender);
+                                // } else {
+                                //   print("Already");
+                                // }
                               },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      catagories == 2
-                                          ? BoxShadow(
-                                              color: Colors.black,
-                                              // spreadRadius: 1,
-                                              blurRadius: 4,
-                                              offset: Offset(-3,
-                                                  3), // changes position of shadow
-                                            )
-                                          : BoxShadow(),
-                                    ],
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: MoreGradientColors.hazel,
-                                    )),
-                                child: Icon(
-                                  FontAwesomeIcons.twitch,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
+                              child: StreamBuilder<int>(
+                                  stream: catagories,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            snapshot.data == kStreamer
+                                                ? BoxShadow(
+                                                    color: Colors.black,
+                                                    // spreadRadius: 1,
+                                                    blurRadius: 4,
+                                                    offset: Offset(-3,
+                                                        3), // changes position of shadow
+                                                  )
+                                                : BoxShadow(),
+                                          ],
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: MoreGradientColors.hazel,
+                                          )),
+                                      child: Icon(
+                                        FontAwesomeIcons.twitch,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    );
+                                  }),
                             ),
                           ),
                           SizedBox(
@@ -363,125 +411,6 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
-
-  // topTabs(homeController) {
-  //   return Container(
-  //     key: intro.keys[0],
-  //     height: 40,
-  //     child: Stack(
-  //       children: [
-  //         Center(
-  //           child: Divider(
-  //             thickness: 2,
-  //             color: Colors.black,
-  //           ),
-  //         ),
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //           children: [
-  //             SmallShadedContainer(
-  //               key: intro.keys[2],
-  //               onDoubletap: () {
-  //                 homeController.animateTo(
-  //                   0.0,
-  //                   curve: Curves.easeOut,
-  //                   duration: const Duration(milliseconds: 300),
-  //                 );
-  //               },
-  //               selected: catagories == 1 ? true : false,
-  //               ontap: () {
-  //                 if (catagories != 1) {
-  //                   setState(() {
-  //                     catagories = 1;
-  //                     _pageController.jumpToPage(0);
-  //                   });
-  //                 } else {
-  //                   print("Already");
-  //                 }
-  //               },
-  //               child: Text(
-  //                 G.of(context).usertypecoplayer,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //             SmallShadedContainer(
-  //               selected: catagories == 3 ? true : false,
-  //               onDoubletap: () {
-  //                 homeController.animateTo(
-  //                   0.0,
-  //                   curve: Curves.easeOut,
-  //                   duration: const Duration(milliseconds: 300),
-  //                 );
-  //               },
-  //               ontap: () {
-  //                 if (catagories != 3) {
-  //                   setState(() {
-  //                     catagories = 3;
-  //                     _pageController.jumpToPage(1);
-  //                   });
-  //                 } else {
-  //                   print("Already");
-  //                 }
-  //               },
-  //               child: Text(
-  //                 G.of(context).usertypecele,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //             SmallShadedContainer(
-  //               selected: catagories == 4 ? true : false,
-  //               onDoubletap: () {
-  //                 homeController.animateTo(
-  //                   0.0,
-  //                   curve: Curves.easeOut,
-  //                   duration: const Duration(milliseconds: 300),
-  //                 );
-  //               },
-  //               ontap: () {
-  //                 if (catagories != 4) {
-  //                   setState(() {
-  //                     catagories = 4;
-  //                     _pageController.jumpToPage(2);
-  //                   });
-  //                 } else {
-  //                   print("Already");
-  //                 }
-  //               },
-  //               child: Text(
-  //                 G.of(context).usertypepro,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //             SmallShadedContainer(
-  //               selected: catagories == 2 ? true : false,
-  //               onDoubletap: () {
-  //                 homeController.animateTo(
-  //                   0.0,
-  //                   curve: Curves.easeOut,
-  //                   duration: const Duration(milliseconds: 300),
-  //                 );
-  //               },
-  //               ontap: () {
-  //                 if (catagories != 2) {
-  //                   setState(() {
-  //                     catagories = 2;
-  //                     _pageController.jumpToPage(3);
-  //                   });
-  //                 } else {
-  //                   print("Already");
-  //                 }
-  //               },
-  //               child: Text(
-  //                 G.of(context).usertypestreamer,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   newmalefemale() {
     return Padding(
@@ -504,120 +433,131 @@ class _HomePageState extends State<HomePage>
                 child: Column(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    InkWell(
+                    //Male
+                    GestureDetector(
                       onTap: () {
-                        if (gender != "Male") {
-                          setState(
-                            () {
-                              gender = "Male";
-                              _homeBloc.fetchData(
-                                  type: catagories, gender: gender);
-                            },
-                          );
-                        } else {
-                          setState(() {
-                            gender = "All";
-                            _homeBloc.fetchData(
-                                type: catagories, gender: gender);
-                          });
-                        }
+                        gender.first.then((value) async {
+                          if (value != "Male") {
+                            gender.add("Male");
+                            final cata = await catagories.first;
+                            final gen = await gender.first;
+                            _homeBloc.fetchData(type: cata, gender: gen);
+                          } else {
+                            gender.add("All");
+                            final cata = await catagories.first;
+                            final gen = await gender.first;
+                            _homeBloc.fetchData(type: cata, gender: gen);
+                          }
+                        });
+                        // if (gender != "Male") {
+                        //   gender = "Male";
+                        //   _homeBloc.fetchData(type: catagories, gender: gender);
+                        // } else {
+                        //   gender = "All";
+                        //   _homeBloc.fetchData(type: catagories, gender: gender);
+                        // }
                       },
-                      child: Container(
-                        width: 100,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            boxShadow: [
-                              gender == "Male"
-                                  ? BoxShadow(
-                                      color: Colors.black,
-                                      // spreadRadius: 1,
-                                      blurRadius: 4,
-                                      offset: Offset(
-                                          -3, 3), // changes position of shadow
-                                    )
-                                  : BoxShadow(),
-                            ],
-                            borderRadius: BorderRadius.circular(10),
-                            // shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.darkSkyBlue,
-                            )),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(FontAwesomeIcons.mars, color: Colors.white),
-                            Text(G.current.genderMale)
-                          ],
-                        ),
-                      ),
+                      child: StreamBuilder<String>(
+                          stream: gender,
+                          builder: (context, snapshot) {
+                            return Container(
+                              width: 100,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    snapshot.data == "Male"
+                                        ? BoxShadow(
+                                            color: Colors.black,
+                                            // spreadRadius: 1,
+                                            blurRadius: 4,
+                                            offset: Offset(-3,
+                                                3), // changes position of shadow
+                                          )
+                                        : BoxShadow(),
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  // shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: MoreGradientColors.darkSkyBlue,
+                                  )),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(FontAwesomeIcons.mars,
+                                      color: Colors.white),
+                                  Text(G.current.genderMale)
+                                ],
+                              ),
+                            );
+                          }),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(top: 5),
-                    //   child: Text(G.current.genderMale),
-                    // ),
                   ],
                 ),
               ),
               Container(
                 child: Column(
                   children: [
-                    InkWell(
+                    GestureDetector(
                       onTap: () {
-                        if (gender != "Female") {
-                          setState(
-                            () {
-                              gender = "Female";
-                              _homeBloc.fetchData(
-                                  type: catagories, gender: gender);
-                            },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              gender = "All";
-                              _homeBloc.fetchData(
-                                  type: catagories, gender: gender);
-                            },
-                          );
-                        }
+                        gender.first.then((value) async {
+                          if (value != "Female") {
+                            gender.add("Female");
+                            final cata = await catagories.first;
+                            final gen = await gender.first;
+                            _homeBloc.fetchData(type: cata, gender: gen);
+                          } else {
+                            gender.add("All");
+                            final cata = await catagories.first;
+                            final gen = await gender.first;
+                            _homeBloc.fetchData(type: cata, gender: gen);
+                          }
+                        });
+                        // if (gender != "Female") {
+                        //   gender = "Female";
+                        //   _homeBloc.fetchData(type: catagories, gender: gender);
+                        // } else {
+                        //   gender = "All";
+                        //   _homeBloc.fetchData(type: catagories, gender: gender);
+                        // }
                       },
-                      child: Container(
-                        width: 100,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            boxShadow: [
-                              gender == "Female"
-                                  ? BoxShadow(
-                                      color: Colors.black,
-                                      // spreadRadius: 1,
-                                      blurRadius: 4,
-                                      offset: Offset(
-                                          -3, 3), // changes position of shadow
-                                    )
-                                  : BoxShadow(),
-                            ],
-                            borderRadius: BorderRadius.circular(10),
-                            // shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: MoreGradientColors.instagram,
-                            )),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(FontAwesomeIcons.venus, color: Colors.white),
-                            Text(G.current.genderFemale)
-                          ],
-                        ),
-                      ),
+                      child: StreamBuilder<String>(
+                          stream: gender,
+                          builder: (context, snapshot) {
+                            return Container(
+                              width: 100,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    snapshot.data == "Female"
+                                        ? BoxShadow(
+                                            color: Colors.black,
+                                            // spreadRadius: 1,
+                                            blurRadius: 4,
+                                            offset: Offset(-3,
+                                                3), // changes position of shadow
+                                          )
+                                        : BoxShadow(),
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  // shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: MoreGradientColors.instagram,
+                                  )),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(FontAwesomeIcons.venus,
+                                      color: Colors.white),
+                                  Text(G.current.genderFemale)
+                                ],
+                              ),
+                            );
+                          }),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(top: 5),
-                    //   child: Text(G.current.genderFemale),
-                    // ),
                   ],
                 ),
               ),
@@ -627,68 +567,6 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
-
-  // malefemaletabs() {
-  //   return Container(
-  //     key: intro.keys[1],
-  //     decoration: BoxDecoration(
-  //       border: Border.all(width: 1.5, color: Colors.black),
-  //       borderRadius: BorderRadius.circular(15),
-  //     ),
-  //     child: Padding(
-  //       padding: EdgeInsets.only(top: 10, bottom: 15),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: [
-  //           MediumShadedContainer(
-  //             selected: gender == "Male" ? true : false,
-  //             ontap: () {
-  //               if (gender != "Male") {
-  //                 setState(
-  //                   () {
-  //                     gender = "Male";
-  //                     _pageController.jumpToPage(5);
-  //                   },
-  //                 );
-  //               } else {
-  //                 setState(() {
-  //                   gender = "All";
-  //                   _pageController.jumpToPage(4);
-  //                 });
-  //               }
-  //             },
-  //             child: Center(
-  //               child: Text(G.of(context).genderMale),
-  //             ),
-  //           ),
-  //           MediumShadedContainer(
-  //             selected: gender == "Female" ? true : false,
-  //             ontap: () {
-  //               if (gender != "Female") {
-  //                 setState(
-  //                   () {
-  //                     gender = "Female";
-  //                     _pageController.jumpToPage(7);
-  //                   },
-  //                 );
-  //               } else {
-  //                 setState(
-  //                   () {
-  //                     gender = "All";
-  //                     _pageController.jumpToPage(4);
-  //                   },
-  //                 );
-  //               }
-  //             },
-  //             child: Center(
-  //               child: Text(G.of(context).genderFemale),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -709,15 +587,8 @@ class _HomePageState extends State<HomePage>
               ),
               enablePullDown: true,
               onRefresh: () {
-                // await homeModel.refresh();
-                // homeModel.showErrorMessage(context);
                 _homeBloc.refreshData();
               },
-              //enablePullUp: true,
-              // onLoading: () {
-              //   print('Loading');
-              //   _homeBloc.fetchMoreData();
-              // },
               child: CustomScrollView(
                   controller: widget.homecontroller..addListener(_onScroll),
                   slivers: [
@@ -726,32 +597,14 @@ class _HomePageState extends State<HomePage>
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                       collapsedHeight: 100,
-                      // title: newtopTabs(widget.homecontroller),
-                      // expandedHeight: 210,
                       flexibleSpace: newtopTabs(widget.homecontroller),
                     ),
-                    // SliverPadding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 4),
-                    //   sliver: SliverToBoxAdapter(
-                    //     child: newtopTabs(widget.homecontroller),
-                    //   ),
-                    // ),
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       sliver: SliverToBoxAdapter(
                         child: newmalefemale(),
                       ),
                     ),
-                    // if (homeModel.isError && homeModel.list.isEmpty)
-                    //   SliverToBoxAdapter(
-                    //     child: AnnotatedRegion<SystemUiOverlayStyle>(
-                    //         value:
-                    //             StatusBarUtils.systemUiOverlayStyle(
-                    //                 context),
-                    //         child: ViewStateErrorWidget(
-                    //             error: homeModel.viewStateError,
-                    //             onPressed: homeModel.initData)),
-                    //   ),
                     HomePostList()
                   ]),
             ),
@@ -839,23 +692,17 @@ class HomePostList extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    child: Center(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(snapshot.error.toString()),
-                        SizedBox(height: 5),
-                        CupertinoButton(
-                            child: Text('Retry'),
-                            onPressed: () {
-                              BlocProvider.of<HomeBloc>(context).refreshData();
-                              BlocProvider.of<HomeBloc>(context)
-                                  .postsSubject
-                                  .add([]);
-                            })
-                      ],
-                    )));
+                    child: ViewStateErrorWidget(
+                  error: ViewStateError(
+                      snapshot.error == "No Internet Connection"
+                          ? ViewStateErrorType.networkTimeOutError
+                          : ViewStateErrorType.defaultError,
+                      errorMessage: snapshot.error),
+                  onPressed: () {
+                    BlocProvider.of<HomeBloc>(context).refreshData();
+                    BlocProvider.of<HomeBloc>(context).postsSubject.add([]);
+                  },
+                ));
               }
               if (snapshot.data.isEmpty) {
                 return SizedBox(
@@ -900,133 +747,3 @@ class HomePostList extends StatelessWidget {
     );
   }
 }
-
-/*
-return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.grey[200]
-          : null,
-      appBar: HomeAppBar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              itemCount: 8,
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ProviderWidget2<HomeModel, TapToTopModel>(
-                  autoDispose: true,
-                  model1: HomeModel(type: catagories, gender: gender),
-                  model2: TapToTopModel(PrimaryScrollController.of(context),
-                      height: kToolbarHeight),
-                  onModelReady: (homeModel, tapToTopModel) {
-                    homeModel.initData();
-                    // tapToTopModel.init(() => homeModel.loadMore());
-                  },
-                  builder: (context, homeModel, tapToTopModel, child) {
-                    if (tuto) {
-                      Timer(Duration(microseconds: 0), () {
-                        /// start the intro
-                        intro.start(context);
-                        setState(() {
-                          tuto = false;
-                        });
-                        StorageManager.sharedPreferences
-                            .setBool(hometuto, false);
-                      });
-                    }
-                    return MediaQuery.removePadding(
-                      context: context,
-                      removeTop: false,
-                      child: Builder(builder: (_) {
-                        // if (homeModel.isBusy &&
-                        //     Theme.of(context).brightness == Brightness.light) {
-                        //   return Container(
-                        //     height: double.infinity,
-                        //     decoration: BoxDecoration(
-                        //         image: DecorationImage(
-                        //             image: AssetImage(
-                        //               ImageHelper.wrapAssetsImage(
-                        //                   'bookingWaiting.gif'),
-                        //             ),
-                        //             fit: BoxFit.fill)),
-                        //   );
-                        // }
-                        // if (homeModel.isBusy &&
-                        //     Theme.of(context).brightness == Brightness.dark) {
-                        //   return Container(
-                        //     height: double.infinity,
-                        //     decoration: BoxDecoration(
-                        //         image: DecorationImage(
-                        //             image: AssetImage(
-                        //               ImageHelper.wrapAssetsImage(
-                        //                   'moonblinkWaitingDark.gif'),
-                        //             ),
-                        //             fit: BoxFit.fill)),
-                        //   );
-                        // }
-                        return SmartRefresher(
-                          controller: homeModel.refreshController,
-                          header: WaterDropHeader(),
-                          footer: ShimmerFooter(
-                            text: CupertinoActivityIndicator(),
-                          ),
-                          enablePullDown: homeModel.list.isNotEmpty,
-                          onRefresh: () async {
-                            await homeModel.refresh();
-                            homeModel.showErrorMessage(context);
-                          },
-                          enablePullUp: homeModel.list.isNotEmpty,
-                          onLoading: homeModel.loadMore,
-                          child: CustomScrollView(
-                            controller: widget.homecontroller,
-                            // controller: tapToTopModel.scrollController,
-                            slivers: <Widget>[
-                              // SliverToBoxAdapter(
-                              //   child: SizedBox(
-                              //     height: 8,
-                              //   ),
-                              // ),
-                              SliverToBoxAdapter(
-                                child: newtopTabs(widget.homecontroller),
-                              ),
-                              SliverToBoxAdapter(
-                                child: SizedBox(
-                                  height: 12,
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: newmalefemale(),
-                              ),
-                              SliverToBoxAdapter(
-                                child: SizedBox(
-                                  height: 8,
-                                ),
-                              ),
-                              if (homeModel.isError && homeModel.list.isEmpty)
-                                SliverToBoxAdapter(
-                                  child: AnnotatedRegion<SystemUiOverlayStyle>(
-                                      value:
-                                          StatusBarUtils.systemUiOverlayStyle(
-                                              context),
-                                      child: ViewStateErrorWidget(
-                                          error: homeModel.viewStateError,
-                                          onPressed: homeModel.initData)),
-                                ),
-                              HomePostList(),
-                            ],
-                          ),
-                        );
-                      }),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-
-*/

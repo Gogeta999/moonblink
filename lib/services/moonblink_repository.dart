@@ -44,11 +44,10 @@ class MoonBlinkRepository {
       'gender': gender
     });
     print('Pareameters----$type,$pageNum,$gender');
-    return response.data['data'].map<Post>((item) {
-      final Post post = Post.fromJson(item);
-      MoonGoDB().insertPost(post);
-      return post;
-    }).toList();
+    List<Post> posts =
+        response.data['data'].map<Post>((item) => Post.fromJson(item)).toList();
+    MoonGoDB().insertPosts(posts);
+    return posts;
   }
 
   //Call other user

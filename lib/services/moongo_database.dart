@@ -36,9 +36,13 @@ class MoonGoDB {
   }
 
   insertPosts(List<Post> posts) {
-    posts.forEach((element) async {
-      _db.insert(_tableName, element.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
+    _db.transaction((txn) {
+      posts.forEach((element) async {
+        int id = await txn.insert(_tableName, element.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+        print('Inserted Id: $id');
+      });
+      return Future.value(true);
     });
   }
 
