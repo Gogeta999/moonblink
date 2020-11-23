@@ -29,18 +29,6 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
   }
 
-  // Widget typestatus(int status) {
-  //   switch (status) {
-  //     case (-1):
-  //       return Icon(Icons.chevron_right);
-  //     case (0):
-  //       return Text(
-  //         "Pending",
-  //         style: TextStyle(color: Theme.of(context).accentColor),
-  //       );
-  //   }
-  // }
-
   space() {
     return SizedBox(
       height: 30,
@@ -179,8 +167,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
+                //Not Pending
                 if (usertype == 0) space(),
-                if (usertype == 0 && usermodel.partnerData.typestatus != -1)
+                if (usertype == 0 && usermodel.partnerData.typestatus != 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
@@ -191,7 +180,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                if (usertype == 0 && usermodel.partnerData.typestatus == -1)
+                //Pending
+                if (usertype == 0 && usermodel.partnerData.typestatus == 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
