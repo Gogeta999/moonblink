@@ -194,7 +194,11 @@ class _PostItemWidgetState extends State<PostItemWidget>
                           children: [
                             Padding(
                               padding: EdgeInsets.only(left: 80.0),
-                              child: Text(widget.posts.userName),
+                              child: Text(widget.posts.userName,
+                                  style: widget.posts.id == 62
+                                      ? TextStyle(
+                                          color: Theme.of(context).accentColor)
+                                      : null),
                             ),
                             Spacer(),
                             Align(

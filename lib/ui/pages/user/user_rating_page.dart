@@ -42,6 +42,7 @@ class _UserRatingPageState extends State<UserRatingPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    _usersRatingBloc.dispose();
     super.dispose();
   }
 

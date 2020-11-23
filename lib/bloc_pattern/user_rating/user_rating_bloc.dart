@@ -23,6 +23,10 @@ class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
         events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
   }
 
+  void dispose() {
+    this.close();
+  }
+
   @override
   Stream<UserRatingState> mapEventToState(
     UserRatingEvent event,

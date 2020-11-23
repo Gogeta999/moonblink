@@ -33,6 +33,7 @@ class _UserTransactionPageState extends State<UserTransactionPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    userTransactionBloc.dispose();
     super.dispose();
   }
 

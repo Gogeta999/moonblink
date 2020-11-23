@@ -16,11 +16,23 @@ const TextStyle subtitleTextStyle =
     TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 const TextStyle contentTextStyle = TextStyle(fontWeight: FontWeight.w300);
 
-class TermsAndConditions extends StatelessWidget {
+class TermsAndConditions extends StatefulWidget {
   final bool showAccept;
-  final ScrollController _scrollController = ScrollController();
 
   TermsAndConditions({Key key, this.showAccept = true}) : super(key: key);
+
+  @override
+  _TermsAndConditionsState createState() => _TermsAndConditionsState();
+}
+
+class _TermsAndConditionsState extends State<TermsAndConditions> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +214,7 @@ class TermsAndConditions extends StatelessWidget {
                   ),
                 ),
               ),
-              if (hasUser == null && showAccept)
+              if (hasUser == null && widget.showAccept)
                 Container(
                   margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
                   width: double.infinity,

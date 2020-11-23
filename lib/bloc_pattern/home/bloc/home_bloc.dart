@@ -28,6 +28,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   bool hasReachedMax = false;
   //final hasReachedMaxSubject = BehaviorSubject.seeded(false);
 
+  void dispose() {
+    refreshController.dispose();
+    postsSubject.close();
+    _typeSubject.close();
+    _genderSubject.close();
+    _pageSubject.close();
+    this.close();
+  }
+
   @override
   Stream<HomeState> mapEventToState(
     HomeEvent event,

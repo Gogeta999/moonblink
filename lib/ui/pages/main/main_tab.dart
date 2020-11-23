@@ -26,7 +26,7 @@ class _MainTabPageState extends State<MainTabPage>
     with SingleTickerProviderStateMixin {
   int gameprofile = StorageManager.sharedPreferences.getInt(mgameprofile);
   int type = StorageManager.sharedPreferences.getInt(mUserType);
-  var _pageController;
+  PageController _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
   int initPage;
   // ignore: unused_field
@@ -50,6 +50,13 @@ class _MainTabPageState extends State<MainTabPage>
       _selectedIndex = initPage;
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    homeController.dispose();
+    super.dispose();
   }
 
   @override

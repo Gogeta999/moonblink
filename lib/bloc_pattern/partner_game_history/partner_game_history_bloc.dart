@@ -7,15 +7,22 @@ import 'bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 const int historyLimit = 5;
-class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHistoryState> {
+
+class PartnerGameHistoryBloc
+    extends Bloc<PartnerGameHistoryEvent, PartnerGameHistoryState> {
   final int partnerId;
 
   PartnerGameHistoryBloc({this.partnerId}) : super(PartnerGameHistoryInitial());
 
   @override
-  Stream<Transition<PartnerGameHistoryEvent, PartnerGameHistoryState>> transformEvents(
-      Stream<PartnerGameHistoryEvent> events, transitionFn) {
-    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
+  Stream<Transition<PartnerGameHistoryEvent, PartnerGameHistoryState>>
+      transformEvents(Stream<PartnerGameHistoryEvent> events, transitionFn) {
+    return super.transformEvents(
+        events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
+  }
+
+  void dispose() {
+    this.close();
   }
 
   @override
@@ -29,11 +36,12 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
         try {
           data = await _fetchPartnerGameHistory(
               partnerId: partnerId, limit: historyLimit, page: 1);
-        } catch(_) {
+        } catch (_) {
           yield PartnerGameHistoryNoData();
         }
         bool hasReachedMax = data.length < historyLimit ? true : false;
-        yield PartnerGameHistorySuccess(data: data, hasReachedMax: hasReachedMax, page: 1);
+        yield PartnerGameHistorySuccess(
+            data: data, hasReachedMax: hasReachedMax, page: 1);
         return;
       }
       if (currentState is PartnerGameHistorySuccess) {
@@ -42,14 +50,16 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
         try {
           data = await _fetchPartnerGameHistory(
               partnerId: partnerId, limit: historyLimit, page: nextPage);
-        } catch(error){
+        } catch (error) {
           yield PartnerGameHistoryFailure(error: error);
         }
         bool hasReachedMax = data.length < historyLimit ? true : false;
         yield data.isEmpty
             ? currentState.copyWith(hasReachedMax: true)
             : PartnerGameHistorySuccess(
-            data: currentState.data + data, hasReachedMax: hasReachedMax, page: nextPage);
+                data: currentState.data + data,
+                hasReachedMax: hasReachedMax,
+                page: nextPage);
         return;
       }
     }
@@ -83,7 +93,8 @@ class PartnerGameHistoryBloc extends Bloc<PartnerGameHistoryEvent, PartnerGameHi
   bool _hasReachedMax(PartnerGameHistoryState state) =>
       state is PartnerGameHistorySuccess && state.hasReachedMax;
 
-  Future<List<Transaction>> _fetchPartnerGameHistory({int partnerId, int limit, int page}) async {
+  Future<List<Transaction>> _fetchPartnerGameHistory(
+      {int partnerId, int limit, int page}) async {
     UserHistory userHistory = await MoonBlinkRepository.getUserHistory(
         partnerId: partnerId, limit: limit, page: page);
     return userHistory.data;

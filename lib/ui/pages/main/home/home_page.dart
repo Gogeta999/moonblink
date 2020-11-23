@@ -42,6 +42,9 @@ class _HomePageState extends State<HomePage>
   final _homeBloc = HomeBloc();
   double _scrollThreshold = 800.0;
   Timer _debounce;
+  final catagories = BehaviorSubject.seeded(1);
+  final gender = BehaviorSubject.seeded("All");
+  bool tuto = true;
 
   Intro intro;
   _HomePageState() {
@@ -63,13 +66,11 @@ class _HomePageState extends State<HomePage>
   }
   @override
   bool get wantKeepAlive => true;
-  final catagories = BehaviorSubject.seeded(1);
-  final gender = BehaviorSubject.seeded("All");
-  bool tuto = true;
 
   @override
   void initState() {
     _homeBloc.fetchData();
+    widget.homecontroller.addListener(_onScroll);
     print('Initing');
 
     super.initState();
@@ -94,6 +95,9 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     Future.delayed(Duration.zero, () => intro.dispose());
     _debounce?.cancel();
+    catagories.close();
+    gender.close();
+    _homeBloc.dispose();
     super.dispose();
   }
 
@@ -595,8 +599,7 @@ class _HomePageState extends State<HomePage>
                       _homeBloc.refreshData();
                     },
                     child: CustomScrollView(
-                        controller: widget.homecontroller
-                          ..addListener(_onScroll),
+                        controller: widget.homecontroller,
                         physics: AlwaysScrollableScrollPhysics(),
                         slivers: [
                           SliverAppBar(

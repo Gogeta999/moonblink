@@ -16,6 +16,7 @@ class PartnerOwnProfileModel extends ViewStateModel {
     setBusy();
     try {
       partnerData = await MoonBlinkRepository.fetchOwnProfile();
+      notifyListeners();
       setIdle();
     } catch (e, s) {
       refreshController.refreshFailed();
