@@ -1203,106 +1203,47 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     }),
 
                 ///bot messages
-                StreamBuilder<bool>(
-                  initialData: false,
-                  stream: _rotatedSubject2,
-                  builder: (context, snapshot) {
-                    if (!snapshot.data) {
-                      _animationController2.forward();
-                      return Positioned(
-                        bottom: 80,
-                        left: 10,
-                        child: new ScaleTransition(
-                          scale: _animationbotmsg,
-                          alignment: FractionalOffset.center,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  firstbotmsg(),
-                                  SizedBox(height: 10),
-                                  secbotmsg(),
-                                  thirdbotmsg(),
-                                  SizedBox(height: 10),
-                                  fourthbotmsg(),
-                                ],
+                if (widget.partnerId != 48)
+                  StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _rotatedSubject2,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        _animationController2.forward();
+                        return Positioned(
+                          bottom: 80,
+                          left: 10,
+                          child: new ScaleTransition(
+                            scale: _animationbotmsg,
+                            alignment: FractionalOffset.center,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 4,
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    firstbotmsg(),
+                                    SizedBox(height: 10),
+                                    secbotmsg(),
+                                    thirdbotmsg(),
+                                    SizedBox(height: 10),
+                                    fourthbotmsg(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 140,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: thirdbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 200,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: fourthbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 260,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: secbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
               ],
             ),
           ),
