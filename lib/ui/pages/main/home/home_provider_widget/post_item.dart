@@ -398,37 +398,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                       Expanded(
                                         flex: 2,
                                         child: InkWell(
-                                          // child: Padding(
-                                          //   padding: const EdgeInsets.symmetric(
-                                          //       horizontal: 10),
-                                          //   child: InkWell(
-                                          //     child: Container(
-                                          //       padding: EdgeInsets.symmetric(
-                                          //           horizontal: 8, vertical: 4),
-                                          //       decoration: BoxDecoration(
-                                          //         color: Theme.of(context)
-                                          //             .scaffoldBackgroundColor,
-                                          //         border: Border.all(width: 1),
-                                          //         borderRadius:
-                                          //             BorderRadius.circular(20),
-                                          //         // boxShadow: [
-                                          //         //   BoxShadow(
-                                          //         //     color: Colors.black,
-                                          //         //     // spreadRadius: 1,
-                                          //         //     blurRadius: 4,
-                                          //         //     offset: Offset(-3,
-                                          //         //         3), // changes position of shadow
-                                          //         //   ),
-                                          //         // ],
-                                          //       ),
-                                          //       child:
-                                          //           Center(child: Text("Order")),
-                                          //     ),
-                                          // icon: Icon(
-                                          //   FontAwesomeIcons.book,
-                                          //   color:
-                                          //       Theme.of(context).accentColor,
-                                          // ),
+                                          
                                           child: Container(
                                             child: BlinkWidget(
                                               children: [
