@@ -5,13 +5,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
@@ -923,25 +926,61 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   }
 
   Widget _buildFirstAction() {
-    return StreamBuilder<BookingStatus>(
+    return StreamBuilder<PartnerUser>(
       initialData: null,
-      stream: _chatBoxBloc.bookingStatusSubject,
-      builder: (context, snapshot) {
-        if (snapshot.data == null) {
+      stream: _chatBoxBloc.partnerUserSubject,
+      builder: (context, partnerdata) {
+        if (partnerdata.data == null) {
           return CupertinoActivityIndicator();
         }
-        if (snapshot.data.status == PENDING &&
-            _bookingUserIsMe(snapshot.data.bookingUserId)) {
-          return WaitingTimeLeft(createat: snapshot.data.createdAt);
-        }
-        if (snapshot.data.status == ACCEPTED &&
-            _bookingUserIsMe(snapshot.data.bookingUserId)) {
-          return _buildBookingEndButton();
-        }
-        if (snapshot.data.status != ACCEPTED) {
-          return blockbtn();
-        }
-        return Container();
+        print("Success getting data");
+        return StreamBuilder<BookingStatus>(
+          initialData: null,
+          stream: _chatBoxBloc.bookingStatusSubject,
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return CupertinoActivityIndicator();
+            }
+            if (snapshot.data.status == PENDING &&
+                _bookingUserIsMe(snapshot.data.bookingUserId)) {
+              return WaitingTimeLeft(createat: snapshot.data.createdAt);
+            }
+            if (snapshot.data.status == ACCEPTED &&
+                _bookingUserIsMe(snapshot.data.bookingUserId)) {
+              return _buildBookingEndButton();
+            }
+            if (snapshot.data.status != ACCEPTED) {
+              return InkWell(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Icon(
+                    FontAwesomeIcons.book,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+                onTap: widget.partnerId == myId
+                    ? () {
+                        showToast(G.of(context).cannotbookself);
+                      }
+                    : () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BookingPage(
+                              partnerId: widget.partnerId,
+                              partnerName: partnerdata.data.partnerName,
+                              partnerBios:
+                                  partnerdata.data.prfoileFromPartner.bios,
+                              partnerProfile: partnerdata
+                                  .data.prfoileFromPartner.profileImage,
+                            ),
+                          ),
+                        );
+                      },
+              );
+            }
+            return Container();
+          },
+        );
       },
     );
   }
@@ -994,6 +1033,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == ACCEPTED) {
           return _buildPhoneButton(snapshot.data.userId);
+        }
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
         }
         return Container();
       },
@@ -1203,106 +1245,47 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     }),
 
                 ///bot messages
-                StreamBuilder<bool>(
-                  initialData: false,
-                  stream: _rotatedSubject2,
-                  builder: (context, snapshot) {
-                    if (!snapshot.data) {
-                      _animationController2.forward();
-                      return Positioned(
-                        bottom: 80,
-                        left: 10,
-                        child: new ScaleTransition(
-                          scale: _animationbotmsg,
-                          alignment: FractionalOffset.center,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  firstbotmsg(),
-                                  SizedBox(height: 10),
-                                  secbotmsg(),
-                                  thirdbotmsg(),
-                                  SizedBox(height: 10),
-                                  fourthbotmsg(),
-                                ],
+                if (widget.partnerId != 48)
+                  StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _rotatedSubject2,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        _animationController2.forward();
+                        return Positioned(
+                          bottom: 80,
+                          left: 10,
+                          child: new ScaleTransition(
+                            scale: _animationbotmsg,
+                            alignment: FractionalOffset.center,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 4,
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    firstbotmsg(),
+                                    SizedBox(height: 10),
+                                    secbotmsg(),
+                                    thirdbotmsg(),
+                                    SizedBox(height: 10),
+                                    fourthbotmsg(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 140,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: thirdbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 200,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: fourthbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 260,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: secbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
               ],
             ),
           ),
