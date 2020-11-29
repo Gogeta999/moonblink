@@ -15,6 +15,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:moonblink/ui/helper/openfacebook.dart';
 
 ///Emulators are always treated as test devices
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
@@ -162,15 +163,14 @@ class _WalletPageState extends State<WalletPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           ShadedContainer(
-                            ontap: () {
-                              _showTopUpBtmSheet();
-                            },
+                            // ontap: () {
+                            //   _showTopUpBtmSheet();
+                            // },
+                            ontap: openCustomerServicePage,
                             child: Text(G.of(context).topup),
                           ),
                           ShadedContainer(
-                            ontap: () {
-                              print("cash");
-                            },
+                            ontap: openCustomerServicePage,
                             child: Text(G.of(context).cashout),
                           ),
                           // ShadedContainer(
