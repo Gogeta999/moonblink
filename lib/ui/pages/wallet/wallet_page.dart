@@ -14,6 +14,7 @@ import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///Emulators are always treated as test devices
@@ -258,8 +259,9 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   _showTopUpBtmSheet() {
-    CustomBottomSheet.showTopUpBottomSheet(buildContext: context)
-        .whenComplete(() => getUserWallet());
+    showToast('This Service is not available right now');
+    // CustomBottomSheet.showTopUpBottomSheet(buildContext: context)
+    //     .whenComplete(() => getUserWallet());
   }
 
   userReward() async {

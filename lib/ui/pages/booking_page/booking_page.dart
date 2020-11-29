@@ -244,27 +244,28 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   _showNotEnoughCoin() {
-    showCupertinoDialog(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-              title: Text(G.of(context).notenoughcoin),
+    showToast('Not Enough Coin');
+    // showCupertinoDialog(
+    //     context: context,
+    //     builder: (context) => CupertinoAlertDialog(
+    //           title: Text(G.of(context).notenoughcoin),
 
-              ///later change booking to something meaningful
-              actions: <Widget>[
-                CupertinoButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(G.of(context).cancel),
-                ),
-                CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      CustomBottomSheet.showTopUpBottomSheet(
-                              buildContext: context)
-                          .whenComplete(() => Future.wait([_initUserWallet()]));
-                    },
-                    child: Text(G.of(context).topup))
-              ],
-            ));
+    //           ///later change booking to something meaningful
+    //           actions: <Widget>[
+    //             CupertinoButton(
+    //               onPressed: () => Navigator.pop(context),
+    //               child: Text(G.of(context).cancel),
+    //             ),
+    //             CupertinoButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   CustomBottomSheet.showTopUpBottomSheet(
+    //                           buildContext: context)
+    //                       .whenComplete(() => Future.wait([_initUserWallet()]));
+    //                 },
+    //                 child: Text(G.of(context).topup))
+    //           ],
+    //         ));
   }
 
   _showGameNameSheet(BuildContext context) {

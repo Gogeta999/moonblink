@@ -140,25 +140,26 @@ class _BoostingPageState extends State<BoostingPage> {
   }
 
   _showNotEnoughCoin() {
-    showCupertinoDialog(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-              title: Text(G.of(context).notenoughcoin),
-              actions: <Widget>[
-                CupertinoButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(G.of(context).cancel),
-                ),
-                CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      CustomBottomSheet.showTopUpBottomSheet(
-                              buildContext: context)
-                          .whenComplete(() => _initUserWallet());
-                    },
-                    child: Text(G.of(context).topup))
-              ],
-            ));
+    showToast('Not Enough Coin');
+    // showCupertinoDialog(
+    //     context: context,
+    //     builder: (context) => CupertinoAlertDialog(
+    //           title: Text(G.of(context).notenoughcoin),
+    //           actions: <Widget>[
+    //             CupertinoButton(
+    //               onPressed: () => Navigator.pop(context),
+    //               child: Text(G.of(context).cancel),
+    //             ),
+    //             CupertinoButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   CustomBottomSheet.showTopUpBottomSheet(
+    //                           buildContext: context)
+    //                       .whenComplete(() => _initUserWallet());
+    //                 },
+    //                 child: Text(G.of(context).topup))
+    //           ],
+    //         ));
   }
 
   _showDurationPicker() {
