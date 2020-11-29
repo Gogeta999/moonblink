@@ -13,7 +13,6 @@ class GameList {
   String toString() => 'gameList: ${gameList[0].gameType}';
 }
 
-///GameId and GameTypeId only can get from dev server.
 class Game {
   final int gameId;
   final int gameTypeId;

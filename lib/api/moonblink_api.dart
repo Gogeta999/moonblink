@@ -143,4 +143,7 @@ class Api {
 
   //Follower
   static const String Follower = 'moonblink/api/v1/social/user/';
+
+  static const String BoostingRequest =
+      'moonblink/api/v1/social/user/'; //eg-moonblink/api/v1/social/user/1/boost
 }

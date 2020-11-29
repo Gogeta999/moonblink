@@ -8,7 +8,7 @@ class PartnerDetailModel extends ViewStateModel {
   PartnerUser partnerData;
   int partnerId;
 
-  initData() async {
+  Future<void> initData() async {
     setBusy();
     try {
       partnerData = await MoonBlinkRepository.fetchPartner(partnerId);

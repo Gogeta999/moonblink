@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/gradient.dart';
@@ -18,9 +19,7 @@ import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
-import 'package:moonblink/view_model/home_model.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -236,18 +235,21 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                     constraints: BoxConstraints(
                                         minWidth: double.infinity,
                                         maxWidth: double.infinity),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.fill,
-                                      imageUrl: widget.posts.coverImage,
-                                      placeholder: (context, url) =>
-                                          CachedLoader(
-                                        containerHeight: 200,
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          CachedError(
-                                        containerHeight: 200,
-                                      ),
-                                    ),
+                                    child: isDev
+                                        ? Icon(Icons.image)
+                                        : CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            imageUrl: widget.posts.coverImage,
+                                            placeholder: (context, url) =>
+                                                CachedLoader(
+                                              containerHeight: 200,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    CachedError(
+                                              containerHeight: 200,
+                                            ),
+                                          ),
                                   ),
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -384,7 +386,6 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                         child: Container(
                                           child: Text(
                                             G.of(context).becomePartnerAt +
-                                                //DateFormat.jm().format(DateTime.parse(widget.posts.createdAt)),
                                                 timeAgo.format(
                                                     DateTime.parse(
                                                         widget.posts.createdAt),
@@ -398,37 +399,6 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                       Expanded(
                                         flex: 2,
                                         child: InkWell(
-                                          // child: Padding(
-                                          //   padding: const EdgeInsets.symmetric(
-                                          //       horizontal: 10),
-                                          //   child: InkWell(
-                                          //     child: Container(
-                                          //       padding: EdgeInsets.symmetric(
-                                          //           horizontal: 8, vertical: 4),
-                                          //       decoration: BoxDecoration(
-                                          //         color: Theme.of(context)
-                                          //             .scaffoldBackgroundColor,
-                                          //         border: Border.all(width: 1),
-                                          //         borderRadius:
-                                          //             BorderRadius.circular(20),
-                                          //         // boxShadow: [
-                                          //         //   BoxShadow(
-                                          //         //     color: Colors.black,
-                                          //         //     // spreadRadius: 1,
-                                          //         //     blurRadius: 4,
-                                          //         //     offset: Offset(-3,
-                                          //         //         3), // changes position of shadow
-                                          //         //   ),
-                                          //         // ],
-                                          //       ),
-                                          //       child:
-                                          //           Center(child: Text("Order")),
-                                          //     ),
-                                          // icon: Icon(
-                                          //   FontAwesomeIcons.book,
-                                          //   color:
-                                          //       Theme.of(context).accentColor,
-                                          // ),
                                           child: Container(
                                             child: BlinkWidget(
                                               children: [
@@ -501,7 +471,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                       ),
                     ],
                   ),
-                  postprofile(),
+                  isDev ? Icon(Icons.image) : postprofile(),
                 ],
               ),
             ),
@@ -518,29 +488,4 @@ class _PostItemWidgetState extends State<PostItemWidget>
       ),
     );
   }
-
-  // //For cached network
-  // Widget _loader(BuildContext context, String url) {
-  //   return Container(
-  //       height: 200,
-  //       child: Stack(
-  //         children: <Widget>[
-  //           BlurHash(hash: 'L07-Zwofj[oft7fQj[fQayfQfQfQ'),
-  //           Center(
-  //             child: const Center(
-  //               child: CircularProgressIndicator(
-  //                   // valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-  //                   ),
-  //             ),
-  //           ),
-  //         ],
-  //       ));
-  // }
-
-  // Widget _error(BuildContext context, String url, dynamic error) {
-  //   print(error);
-  //   return Container(
-  //       height: 200,
-  //       child: InkWell(child: const Center(child: Icon(Icons.error))));
-  // }
 }

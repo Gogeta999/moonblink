@@ -392,6 +392,16 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
         purchaseDetails.productID == coin200Consumable ||
         purchaseDetails.productID == coin500Consumable ||
         purchaseDetails.productID == coin1000Consumable) {
+      ///verification
+      if (purchaseDetails.verificationData.source == IAPSource.GooglePlay) {
+        ///Call Api For GooglePlay
+      } else if (purchaseDetails.verificationData.source ==
+          IAPSource.AppStore) {
+        ///Call Api For AppStore
+      } else {
+        showToast('This Platform is not supported for now');
+        return;
+      }
       userTopUp(purchaseDetails.productID);
       setState(() {
         _purchasePending = false;

@@ -449,7 +449,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
       final newMessage =
-          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ ဝယ်ယူပါ။Please go to MoonGo page and buy coin,https://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/';
+          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ ဝယ်ယူပါ။Please go to MoonGo page and buy coin,\nhttps://www.facebook.com/MoonblinkUniverse/videos/3552024048229706/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =
@@ -484,7 +484,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       final now = dateFormat.format(DateTime.now());
       final newMessage =
-          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ လေ့လာပေးပါ။Please go to MoonGo page and check how to book.https://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/';
+          'ကျေးဇူးပြု၍ အောက်ကLink ကိုနှိပ်ပြီး Moon Go pageမှ လေ့လာပေးပါ။Please go to MoonGo page and check how to book,\nhttps://www.facebook.com/MoonblinkUniverse/videos/1359862744362719/';
       // final id =
       //     currentState.data.isNotEmpty ? currentState.data.last.id + 1 : 1;
       // final roomId =

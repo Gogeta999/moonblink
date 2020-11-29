@@ -46,6 +46,7 @@ class EventsToListen {
   static const chatUpdated = 'chat-updated';
   static const receiveMessage = 'receiver-peer';
   static const receiveAttach = 'receiver-attach';
+  static const sendLastBoostOrder = 'send-last-boost-order';
 }
 
 class WebSocketService {
@@ -57,7 +58,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(devSocketUrl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000
@@ -67,7 +68,8 @@ class WebSocketService {
   void init(ChatListBloc chatListBloc) {
     this._chatListBloc = chatListBloc;
     final userToken = StorageManager.sharedPreferences.getString(token);
-    _socket.connect();
+
+    ///Register events
     _socket.on(DefaultEvents.connect, (data) {
       print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
@@ -75,9 +77,23 @@ class WebSocketService {
           ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
     });
+    _socket.on(DefaultEvents.connectError, (data) {
+      print('Web Socket Service - Connect Error $data');
+    });
+    _socket.on(DefaultEvents.connectTimeout, (data) {
+      print('Web Socket Service - ConnectTimeout $data');
+    });
+    _socket.on(DefaultEvents.connecting, (data) {
+      print('Web Socket Service - Connecting $data');
+    });
     _socket.once(EventsToListen.connectedUsers, (data) {
       print('Connected Users: $data');
     });
+
+    _socket.on(DefaultEvents.disconnect, (data) => showToast('Disconnected'));
+
+    ///Socket connect
+    _socket.connect();
     _socket.on(EventsToListen.conversation, (data) {
       final List<NewChat> chats = [];
       final response = ResponseData.fromJson(data).data as List;
@@ -86,7 +102,6 @@ class WebSocketService {
       }
       _chatListBloc.chatsSubject.add(chats);
     });
-    _socket.on(DefaultEvents.disconnect, (data) => showToast('Disconnected'));
   }
 
   void initWithChatBoxBloc(ChatBoxBloc chatBoxBloc) {
@@ -95,6 +110,11 @@ class WebSocketService {
       print('Booking Status: $data');
       final bookingStatus = BookingStatus.fromJson(data);
       _chatBoxBloc.bookingStatusSubject.add(bookingStatus);
+    });
+    _socket.on(EventsToListen.sendLastBoostOrder, (data) {
+      print('Last Boost Order: $data');
+
+      ///do something;
     });
 
     updateChat();
@@ -158,6 +178,7 @@ class WebSocketService {
   void disposeWithChatBoxBloc() {
     this._chatBoxBloc = null;
     _socket.off(EventsToListen.chatUpdated);
+    _socket.off(EventsToListen.sendLastBoostOrder);
     _socket.off(EventsToListen.receiveAttach);
     _socket.off(EventsToListen.receiveMessage);
   }

@@ -10,6 +10,8 @@ class GameProfile {
   final String skillCoverImage;
   final String aboutOrderTaking;
   final int isPlay;
+  final int boostable;
+  final String upToRank;
   List<GameMode> gameModeList;
   List<String> gameRankList;
   final String gameProfileSample;
@@ -26,6 +28,8 @@ class GameProfile {
       this.skillCoverImage,
       this.aboutOrderTaking,
       this.isPlay,
+      this.boostable,
+      this.upToRank,
       this.gameModeList,
       this.gameRankList,
       this.gameProfileSample,
@@ -42,6 +46,8 @@ class GameProfile {
         skillCoverImage = json['skill_cover_image'],
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
+        boostable = json['boostable'],
+        upToRank = json['up_to_rank'],
         gameModeList = List.unmodifiable(
             json['types'].map<GameMode>((e) => GameMode.fromJson(e)).toList()),
         gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
@@ -59,6 +65,8 @@ class GameProfile {
         'skill_cover_image': skillCoverImage,
         'about_order_taking': aboutOrderTaking,
         'is_play': isPlay,
+        'boostable': boostable,
+        'up_to_rank': upToRank,
         'types':
             gameModeList.map<Map<String, dynamic>>((e) => e.toJson()).toList(),
         'levels': gameRankList.map<String>((e) => jsonEncode(e)).toList(),

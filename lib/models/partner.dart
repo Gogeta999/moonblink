@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class PartnerUser {
   int partnerId;
   String partnerName;
@@ -160,76 +162,6 @@ class PartnerProfile {
   }
 }
 
-// PartnerUser.fromJsonMap(Map <String, dynamic> map) :
-
-// partnerId = map['id'],
-// partnerName = map['name'],
-// partnerLastName = map['last_name'],
-// partnerEmail = map['email'],
-// partnerProfile = map['profile_image'],
-// partnerCover = map['cover_image'],
-// partnerBios = map['bios'],
-// verified = map['verified'],
-// verifiedAt = map['verified_at'],
-// createdAt = map['created_at'],
-// updatedAt = map['updated_at'],
-// type = map['type'],
-// followerCount = map['follower_count'],
-// isFollow = map['is_follow'],
-// prfoileFromPartner = map['profile'];
-// // partnerProfileImage = map['profile'],
-
-// Map<String, dynamic> toJson(){
-//   final Map<String, dynamic> data = new Map<String, dynamic>();
-//   data['id'] = partnerId;
-//   data['name'] = partnerName;
-//   data['last_name'] = partnerLastName;
-//   data['email'] = partnerEmail;
-//   data['profile_image'] = partnerProfile;
-//   data['cover_image'] = partnerCover;
-//   data['bios'] = partnerBios;
-//   data['verified'] = verified;
-//   data['verified_at'] = verifiedAt;
-//   data['created_at'] = createdAt;
-//   data['updated_at'] = updatedAt;
-//   data['type'] = type;
-//   data['follower_count'] = followerCount;
-//   data['is_follow'] = isFollow;
-//   // data['profile'] = profileFromPartner;
-//   // 'profile'] =partnerProfileImage;
-//   return data;
-// }
-
-//   PartnerProfile.fromJsonMap(Map <String, dynamic> map) :
-//   partnerId = map['id'],
-//   userId = map['user_id'],
-//   phone = map['phone'],
-//   mail = map['mail'],
-//   address = map['address'],
-//   profileImage = map['profile_image'],
-//   coverImage = map['cover_image'],
-//   dob = map['dob'],
-//   gender = map['gender'],
-//   nrc = map['nrc'],
-//   bios = map['bios'],
-//   createdAt = map['created_at'],
-//   updatedAt = map['updated_at'];
-//   Map<String, dynamic> toJson(){
-//   final Map<String, dynamic> data = new Map<String, dynamic>();
-//   data['id'] = partnerId;
-//   data['user_id'] = userId;
-//   data['phone'] = phone;
-//   data['mail'] = mail;
-//   data['address'] = address;
-//   data['profile_image'] = profileImage;
-//   data['cover_image'] = coverImage;
-//   data['dob'] = dob;
-//   data['gender'] = gender;
-//   data['nrc'] = nrc;
-//   data['bios'] = bios;
-//   data['created_at'] = createdAt;
-//   data['updated_at'] = updatedAt;
-// }
 class PartnerGameProfile {
   final int id;
   final int userId;
@@ -240,24 +172,29 @@ class PartnerGameProfile {
   final String skillCoverImage;
   final String aboutOrderTaking;
   final int isPlay;
+  final int boostable;
   final String createdAt;
   final String updatedAt;
   final String gameicon;
+  final String upToRank;
+  List<String> gameRankList;
 
-  PartnerGameProfile({
-    this.id,
-    this.userId,
-    this.gameId,
-    this.gameName,
-    this.playerId,
-    this.level,
-    this.skillCoverImage,
-    this.aboutOrderTaking,
-    this.isPlay,
-    this.createdAt,
-    this.updatedAt,
-    this.gameicon,
-  });
+  PartnerGameProfile(
+      {this.id,
+      this.userId,
+      this.gameId,
+      this.gameName,
+      this.playerId,
+      this.level,
+      this.skillCoverImage,
+      this.aboutOrderTaking,
+      this.isPlay,
+      this.boostable,
+      this.createdAt,
+      this.updatedAt,
+      this.gameicon,
+      this.upToRank,
+      this.gameRankList});
 
   PartnerGameProfile.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -269,8 +206,11 @@ class PartnerGameProfile {
         skillCoverImage = json['skill_cover_image'],
         aboutOrderTaking = json['about_order_taking'],
         isPlay = json['is_play'],
+        boostable = json['boostable'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
+        upToRank = json['up_to_rank'],
+        gameRankList = json['levels'].map<String>((e) => e.toString()).toList(),
         gameicon = json["game_icon"];
 
   Map<String, dynamic> toJson() => {
@@ -283,8 +223,11 @@ class PartnerGameProfile {
         'skill_cover_image': skillCoverImage,
         'about_order_taking': aboutOrderTaking,
         'is_play': isPlay,
+        'boostable': boostable,
         'created_at': createdAt,
         'updated_at': updatedAt,
+        'up_to_rank': upToRank,
+        'levels': gameRankList.map<String>((e) => jsonEncode(e)).toList(),
         'game_icon': gameicon,
       };
 }

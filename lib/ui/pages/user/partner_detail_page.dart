@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,6 +24,7 @@ import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -41,12 +43,8 @@ class PartnerDetailPage extends StatefulWidget {
 
 class _PartnerDetailPageState extends State<PartnerDetailPage> {
   bool followButtonClicked = false;
-  // Following state controll
-  // bool isFollowIn1 = false;
   PartnerUser partnerData;
-  // int detailPageId;
   final RefreshController _refreshController = RefreshController();
-  // final ScrollController _scrollController = ScrollController();
   Intro intro;
 
   _PartnerDetailPageState() {
@@ -111,41 +109,41 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   ),
                 );
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                width: MediaQuery.of(context).size.width,
-                height: 250,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    partnerModel.gameprofile[index].skillCoverImage,
-                    fit: BoxFit.fill,
+              child: CachedNetworkImage(
+                imageUrl: partnerModel.gameprofile[index].skillCoverImage,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                    maxHeight: 250,
+                    minHeight: 50,
+                  ),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
+                placeholder: (_, __) => CupertinoActivityIndicator(),
+                errorWidget: (_, __, ___) => Icon(Icons.error),
               ),
             ),
             SizedBox(
               height: 10,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(G.of(context).rank),
-                Text(":"),
-                Text(partnerModel.gameprofile[index].level)
+                Text(G.of(context).rank + ":"),
+                Text("   " + partnerModel.gameprofile[index].level,
+                    style: TextStyle(color: Theme.of(context).accentColor))
               ],
             ),
             SizedBox(
               height: 10,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(G.of(context).playerid),
-                Text(":"),
+                Text(G.of(context).playerid + ":"),
                 GestureDetector(
                   onTap: () {
                     FlutterClipboard.copy(
@@ -157,10 +155,22 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       },
                     );
                   },
-                  child: Text(partnerModel.gameprofile[index].playerId),
+                  child: Text("    " + partnerModel.gameprofile[index].playerId,
+                      style: TextStyle(color: Theme.of(context).accentColor)),
                 )
               ],
             ),
+            SizedBox(height: 20),
+            if (partnerModel.gameprofile[index].isPlay == 1)
+              Text(
+                'Provide Booking Service',
+                textAlign: TextAlign.center,
+              ),
+            if (partnerModel.gameprofile[index].boostable == 1)
+              Text(
+                'Provide Boosting Service',
+                textAlign: TextAlign.center,
+              ),
             SizedBox(
               height: 20,
             ),
@@ -333,13 +343,11 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             return SmartRefresher(
               enablePullUp: false,
               controller: _refreshController,
-              header: ShimmerHeader(
-                  text: Text(G.of(context).pullDownToRefresh,
-                      style: TextStyle(color: Colors.grey, fontSize: 22))),
-              enablePullDown: false,
+              header: ShimmerHeader(text: CupertinoActivityIndicator()),
+              enablePullDown: true,
               onRefresh: () async {
                 // await Future.delayed(Duration(milliseconds: 300));
-                partnerModel.initData();
+                await partnerModel.initData();
                 _refreshController.refreshCompleted();
                 partnerModel.showErrorMessage(context);
               },
@@ -378,11 +386,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       preferredSize: Size.fromHeight(8),
                     ),
                     backgroundColor: Colors.black,
-                    //toolbarHeight: kToolbarHeight - 5,
-                    // leading: IconButton(
-                    //   icon: Icon(Icons.backspace),
-                    //   onPressed: () => Navigator.pop(context),
-                    // ),
                     actions: [
                       AppbarLogo(),
                     ],
@@ -581,10 +584,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ///[Real Button]
-                        // BookingButton(),
-
-                        ///StaticButton
                         MBButtonWidget(
                             key: intro.keys[3],
                             title: G.of(context).booking,
@@ -608,14 +607,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                                       .partnerData
                                                       .prfoileFromPartner
                                                       .profileImage,
-                                                  // partnerUser:
-                                                  //     partnerModel.partnerData,
                                                 )));
-                                    // Navigator.pushNamed(
-                                    //     context, RouteName.booking,
-                                    //     arguments: partnerModel.partnerData);
                                   }),
-
                         MBButtonWidget(
                             key: intro.keys[4],
                             title: G.of(context).tabChat,
@@ -636,33 +629,39 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       height: 20,
                     ),
                   ),
-                  // SliverToBoxAdapter(
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 30),
-                  //     child: MBButtonWidget(
-                  //       title: "Game Profile",
-                  //       onTap: () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //             builder: (context) => PartnerGameProfilePage(
-                  //               gameprofile:
-                  //                   partnerModel.partnerData.gameprofile,
-                  //             ),
-                  //           ),
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  // SliverToBoxAdapter(
-                  //   child: SizedBox(
-                  //     height: 20,
-                  //   ),
-                  // ),
-
-                  /// [user bio]
-                  // if (partnerModel.partnerData.prfoileFromPartner.bios != "")
+                  if (isDev)
+                    SliverToBoxAdapter(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        child: MBButtonWidget(
+                            title: "Order Boosting",
+                            onTap: () {
+                              widget.detailPageId == ownId
+                                  ? showToast('You can\'t boost yourself')
+                                  : Navigator.of(context)
+                                      .push(CupertinoPageRoute(
+                                          builder: (context) => BoostingPage(
+                                                partnerId: partnerModel
+                                                    .partnerData.partnerId,
+                                                partnerName: partnerModel
+                                                    .partnerData.partnerName,
+                                                partnerBios: partnerModel
+                                                    .partnerData
+                                                    .prfoileFromPartner
+                                                    .bios,
+                                                partnerProfile: partnerModel
+                                                    .partnerData
+                                                    .prfoileFromPartner
+                                                    .profileImage,
+                                                gameProfiles: partnerModel
+                                                    .partnerData.gameprofile,
+                                              )));
+                            }),
+                      ),
+                    ),
+                  if (isDev)
+                    SliverPadding(
+                        padding: const EdgeInsets.symmetric(vertical: 10)),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
@@ -733,8 +732,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                           SizedBox(
                                             height: 5,
                                           ),
-                                          Text(partnerModel.partnerData
-                                              .gameprofile[index].gameName),
+                                          Expanded(
+                                            child: Text(partnerModel.partnerData
+                                                .gameprofile[index].gameName),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -751,29 +752,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                           partnerModel.partnerData.partnerName,
                           partnerModel.partnerData.partnerId,
                           partnerModel.partnerData.rating,
-                          partnerModel.partnerData
-                              .ordertaking) /*Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(G.of(context).history,
-                                    style: Theme.of(context).textTheme.button),
-                              ),
-                              Divider(thickness: 2, color: Colors.black),
-                              Expanded(
-                                child: PartnerGameHistoryWidget(
-                                    partnerModel.partnerData.partnerName,
-                                    partnerModel.partnerData.partnerId),
-                              ),
-                            ],
-                          ))*/ /*Feed(
-                          partnerModel.partnerData.partnerName,
-                          partnerModel.partnerData.partnerId,
-                          partnerModel.partnerData.rating)*/
-                      ),
+                          partnerModel.partnerData.ordertaking)),
                 ],
               ),
             );

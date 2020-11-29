@@ -47,6 +47,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
           return AlertDialog(
             title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
+              autofocus: true,
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: _updateGameProfileBloc.gameIdController,
@@ -54,11 +55,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             ),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(G.of(context).cancel),
-              ),
-              FlatButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   Navigator.pop(context);
                 },
                 child: Text(G.of(context).submit),
@@ -75,6 +73,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
           return CupertinoAlertDialog(
             title: Text(G.of(context).labelid, textAlign: TextAlign.center),
             content: CupertinoTextField(
+              autofocus: true,
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: _updateGameProfileBloc.gameIdController,
@@ -82,11 +81,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
             ),
             actions: <Widget>[
               CupertinoButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(G.of(context).cancel),
-              ),
-              CupertinoButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   Navigator.pop(context);
                 },
                 child: Text(G.of(context).submit),
@@ -103,6 +99,21 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
           return CupertinoActionSheet(
             title: Text(G.of(context).selectgamerank),
             actions: _updateGameProfileBloc.cupertinoActionSheet,
+            cancelButton: CupertinoButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(G.of(context).cancel),
+            ),
+          );
+        });
+  }
+
+  _showCupertinoBottomSheetForBoosting(BuildContext context) {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return CupertinoActionSheet(
+            title: Text(G.of(context).selectgamerank),
+            actions: _updateGameProfileBloc.cupertinoActionSheetForBoosting,
             cancelButton: CupertinoButton(
               onPressed: () => Navigator.pop(context),
               child: Text(G.of(context).cancel),
@@ -253,6 +264,100 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
     );
   }
 
+  Widget _buildBookingSwitch() {
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      elevation: 8,
+      child: ListTile(
+        title: Text("Want to provide Booking Service"),
+        trailing: StreamBuilder<bool>(
+            initialData: false,
+            stream: _updateGameProfileBloc.bookingSwitchSubject,
+            builder: (context, snapshot) {
+              return CupertinoSwitch(
+                value: snapshot.data,
+                onChanged: (value) =>
+                    _updateGameProfileBloc.onChangedBookingSwitch(value),
+              );
+            }),
+      ),
+    );
+  }
+
+  Widget _buildBookingService() {
+    return StreamBuilder<bool>(
+        initialData: false,
+        stream: _updateGameProfileBloc.bookingSwitchSubject,
+        builder: (context, snapshot) {
+          if (!snapshot.data) return Container();
+          return Column(
+            children: [
+              SizedBox(height: 5),
+              _buildTitleWidget(title: G.of(context).gamemodedescript),
+              StreamBuilder<String>(
+                  initialData: '',
+                  stream: _updateGameProfileBloc.gameModeSubject,
+                  builder: (context, snapshot) {
+                    return _buildGameProfileCard(
+                        title: G.of(context).gamemode,
+                        subtitle: snapshot.data,
+                        iconData: Icons.edit,
+                        onTap: _onTapGameMode);
+                  }),
+            ],
+          );
+        });
+  }
+
+  Widget _buildBoostingSwitch() {
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      elevation: 8,
+      child: ListTile(
+        title: Text("Want to provide Boosting Service"),
+        trailing: StreamBuilder<bool>(
+            initialData: false,
+            stream: _updateGameProfileBloc.boostingSwitchSubject,
+            builder: (context, snapshot) {
+              return CupertinoSwitch(
+                value: snapshot.data,
+                onChanged: (value) =>
+                    _updateGameProfileBloc.onChangedBoostingSwitch(value),
+              );
+            }),
+      ),
+    );
+  }
+
+  Widget _buildBoostingService() {
+    return StreamBuilder<bool>(
+        initialData: false,
+        stream: _updateGameProfileBloc.boostingSwitchSubject,
+        builder: (context, snapshot) {
+          if (!snapshot.data) return Container();
+          return Column(
+            children: [
+              SizedBox(height: 5),
+              _buildTitleWidget(
+                  title:
+                      "Highest rank that you are ready to provide Boosting Service"),
+              StreamBuilder<String>(
+                  initialData: '',
+                  stream: _updateGameProfileBloc.boostingLevelSubject,
+                  builder: (context, snapshot) {
+                    return _buildGameProfileCard(
+                        title: "Highest Rank",
+                        subtitle: snapshot.data,
+                        iconData: Icons.edit,
+                        onTap: _onTapHighestLevel);
+                  }),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -289,8 +394,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                   }
                 })
           ],
-          // elevation: 15,
-          // shadowColor: Colors.blue,
           bottom: PreferredSize(
               child: Container(
                 height: 10,
@@ -298,7 +401,6 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               ),
               preferredSize: Size.fromHeight(10)),
         ),
-//        backgroundColor: Colors.grey[200],
         body: SafeArea(
           child: ListView(
             physics: ClampingScrollPhysics(),
@@ -333,17 +435,11 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                 ),
               ),
               _buildDivider(),
-              _buildTitleWidget(title: G.of(context).gamemodedescript),
-              StreamBuilder<String>(
-                  initialData: '',
-                  stream: _updateGameProfileBloc.gameModeSubject,
-                  builder: (context, snapshot) {
-                    return _buildGameProfileCard(
-                        title: G.of(context).gamemode,
-                        subtitle: snapshot.data,
-                        iconData: Icons.edit,
-                        onTap: _onTapGameMode);
-                  }),
+              _buildBookingSwitch(),
+              _buildBookingService(),
+              _buildDivider(),
+              _buildBoostingSwitch(),
+              _buildBoostingService(),
               _buildDivider(),
               _buildTitleWidget(title: G.of(context).titlescreenshot),
               _buildGameProfilePhotoCard(),
@@ -375,6 +471,11 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
   _onTapLevel() {
     if (_updateGameProfileBloc.isUILocked) return;
     _showCupertinoBottomSheet(context);
+  }
+
+  _onTapHighestLevel() {
+    if (_updateGameProfileBloc.isUILocked) return;
+    _showCupertinoBottomSheetForBoosting(context);
   }
 
   _onTapGameMode() {

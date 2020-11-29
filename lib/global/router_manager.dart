@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
-import 'package:moonblink/ui/pages/game_profile/update_game_profile_page.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
@@ -68,6 +68,7 @@ class RouteName {
   static const String userMessageHistory = 'userMessageHistory';
   static const String userBookingHistory = 'userBookingHistory';
   static const String facebookLoginError = 'facebookLoginError';
+  static const String boostingPage = "boostingPage";
 }
 
 class MoonGoRouter {
@@ -84,6 +85,8 @@ class MoonGoRouter {
                 // partnerName: settings.arguments,
                 // partnerProfile: settings.arguments,
                 ));
+      case RouteName.boostingPage:
+        return CupertinoPageRoute(builder: (_) => BoostingPage());
       case RouteName.termsAndConditionsPage:
         return CupertinoPageRoute(
             builder: (_) =>
@@ -99,16 +102,10 @@ class MoonGoRouter {
       //   return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
-      // case RouteName.comment:
-      //   return CupertinoPageRoute(builder: (_) => CommentsPage());
-      // case RouteName.search:
-      //   return CupertinoPageRoute(builder: (_) => SearchPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
       case RouteName.otp:
         return CupertinoPageRoute(builder: (_) => OtpPage());
-      // case RouteName.story:
-      //   return CupertinoPageRoute(builder: (_) => StoriesPage());
       case RouteName.login:
         return CupertinoPageRoute(
             fullscreenDialog: true, builder: (_) => LoginPage());

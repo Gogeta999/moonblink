@@ -122,7 +122,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      if (myType == kNormal) _chatBoxBloc.saveTimer();
+      _chatBoxBloc.saveTimer();
     }
   }
 
@@ -1081,6 +1081,29 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         child: Scaffold(
           appBar: AppBar(
+            bottom: PreferredSize(
+              child: Column(
+                children: [
+                  Divider(
+                    color: Colors.white,
+                  ),
+                  Row(
+                    children: [
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: Text('Click Me1'),
+                        onPressed: () {},
+                      ),
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: Text('Click Me2'),
+                          onPressed: () {})
+                    ],
+                  ),
+                ],
+              ),
+              preferredSize: Size.fromHeight(55),
+            ),
             leading: IconButton(
                 icon: SvgPicture.asset(
                   back,

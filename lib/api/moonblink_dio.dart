@@ -28,6 +28,10 @@ parseJson(String text) {
   return compute(_parseAndDecode, text);
 }
 
+const bool isDev = true;
+
+///for boosting page testing
+
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
   static final String baseAppKey =
@@ -39,13 +43,13 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: devUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
       //Default necessary header
       //MoonBlink AppKey
-      'app-key': baseAppKey
+      'app-key': devAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,

@@ -53,7 +53,9 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                 itemBuilder: (context, index) {
                   UserPlayGame item = snapshot.data.userPlayGameList[index];
                   return Slidable(
-                    enabled: item.isPlay == 0 ? false : true,
+                    enabled: (item.isPlay == 0 && item.boostable == 0)
+                        ? false
+                        : true,
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
@@ -85,8 +87,8 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                     child: Card(
                       elevation: 8,
                       child: ListTile(
-                        onTap: () => 
-                        _gameProfileBloc.onTapListTile(item, _gameProfileBloc),
+                        onTap: () => _gameProfileBloc.onTapListTile(
+                            item, _gameProfileBloc),
                         leading: CachedNetworkImage(
                           imageUrl: item.gameIcon,
                           imageBuilder: (context, imageProvider) => Container(
@@ -114,7 +116,9 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                               ? Colors.transparent
                               : Theme.of(context).accentColor,
                         ),
-                        selected: item.isPlay == 0 ? false : true,
+                        selected: (item.isPlay == 0 && item.boostable == 0)
+                            ? false
+                            : true,
                       ),
                     ),
                   );

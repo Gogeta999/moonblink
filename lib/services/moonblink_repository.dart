@@ -565,4 +565,19 @@ class MoonBlinkRepository {
         queryParameters: {'user_id': userId, 'limit': limit, 'page': page});
     return UserRatingList.fromJson(response.data['data']);
   }
+
+  static Future requestBoosting(int partnerId, int gameId, String rankFrom,
+      String upToRank, int estimateHour, int estimateCost) async {
+    final map = {
+      'game_id': gameId,
+      'rank_from': rankFrom,
+      'up_to_rank': upToRank,
+      'estimate_hour': estimateHour,
+      'estimate_cost': estimateCost
+    };
+    final formData = FormData.fromMap(map);
+    final response = await DioUtils()
+        .postwithData(Api.BoostingRequest + '$partnerId/boost', data: formData);
+    return response.data;
+  }
 }
