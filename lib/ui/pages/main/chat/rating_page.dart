@@ -81,9 +81,9 @@ class _RatingPageState extends State<RatingPage> {
             return false;
           },
           child: Scaffold(
-            key: intro.keys[0],
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
+              key: intro.keys[0],
               leading: Container(),
               backgroundColor: Colors.black,
               actions: [
