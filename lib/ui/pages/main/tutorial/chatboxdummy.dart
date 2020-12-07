@@ -32,9 +32,9 @@ class _ChatBoxDummyPageState extends State<ChatBoxDummyPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "When you book with someone, these button will appear",
-          "This button enable you to end booking with the player you play",
-          "This button will allow you to call voice to voice with the player",
+          G.current.tutorialBookingEnd1,
+          G.current.tutorialBookingEnd2,
+          G.current.tutorialBookingEnd3
         ],
         buttonTextBuilder: (curr, total) {
           return curr < total - 1 ? 'Next' : 'Finish';

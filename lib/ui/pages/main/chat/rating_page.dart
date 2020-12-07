@@ -37,11 +37,11 @@ class _RatingPageState extends State<RatingPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "This Page will appear when you end booking with the player. This allow you to rate the player and share your opinion on this player.",
-          "Choose star to rate for the booking",
-          "This will show your satification level depend on the star you choose",
-          "Write some comment to recommend other users",
-          "This button to submit your rating for the play",
+          G.current.tutorialRating1,
+          G.current.tutorialRating2,
+          G.current.tutorialRating3,
+          G.current.tutorialRating4,
+          G.current.tutorialRating5,
         ],
         buttonTextBuilder: (curr, total) {
           return curr < total - 1 ? 'Next' : 'Finish';
@@ -81,9 +81,9 @@ class _RatingPageState extends State<RatingPage> {
             return false;
           },
           child: Scaffold(
-            key: intro.keys[0],
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
+              key: intro.keys[0],
               leading: Container(),
               backgroundColor: Colors.black,
               actions: [

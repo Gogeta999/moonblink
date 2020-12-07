@@ -1355,6 +1355,36 @@ class G {
     );
   }
 
+  /// `When you book with someone, these button will appear`
+  String get tutorialBookingEnd1 {
+    return Intl.message(
+      'When you book with someone, these button will appear',
+      name: 'tutorialBookingEnd1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This button enable you to end booking with the player you play`
+  String get tutorialBookingEnd2 {
+    return Intl.message(
+      'This button enable you to end booking with the player you play',
+      name: 'tutorialBookingEnd2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This button will allow you to call voice to voice with the player`
+  String get tutorialBookingEnd3 {
+    return Intl.message(
+      'This button will allow you to call voice to voice with the player',
+      name: 'tutorialBookingEnd3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Click Follow to see this player's story and updates`
   String get tutorialDetail1 {
     return Intl.message(
@@ -1440,6 +1470,56 @@ class G {
     return Intl.message(
       'Double tap to get to top',
       name: 'tutorialHome3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This Page will appear when you end booking with the player. This allow you to rate the player and share your opinion on this player`
+  String get tutorialRating1 {
+    return Intl.message(
+      'This Page will appear when you end booking with the player. This allow you to rate the player and share your opinion on this player',
+      name: 'tutorialRating1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose star to rate for the booking`
+  String get tutorialRating2 {
+    return Intl.message(
+      'Choose star to rate for the booking',
+      name: 'tutorialRating2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will show your satification level depend on the star you choose`
+  String get tutorialRating3 {
+    return Intl.message(
+      'This will show your satification level depend on the star you choose',
+      name: 'tutorialRating3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write some comment to recommend other users`
+  String get tutorialRating4 {
+    return Intl.message(
+      'Write some comment to recommend other users',
+      name: 'tutorialRating4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This button to submit your rating for the play`
+  String get tutorialRating5 {
+    return Intl.message(
+      'This button to submit your rating for the play',
+      name: 'tutorialRating5',
       desc: '',
       args: [],
     );
