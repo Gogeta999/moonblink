@@ -10,4 +10,5 @@ void tutorialOn() {
   StorageManager.sharedPreferences.setBool(hometuto, true);
   StorageManager.sharedPreferences.setBool(bookingtuto, true);
   StorageManager.sharedPreferences.setBool(userdetailtuto, true);
+  StorageManager.sharedPreferences.setBool(chatboxtuto, true);
 }

@@ -7,7 +7,13 @@ class ShadedContainer extends StatelessWidget {
   final bool selected;
   final Color color;
   ShadedContainer(
-      {this.child, this.height, this.ontap, this.color, this.selected = false});
+      {Key key,
+      this.child,
+      this.height,
+      this.ontap,
+      this.color,
+      this.selected = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -32,6 +32,7 @@ import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
+import 'package:moonblink/ui/pages/main/tutorial/chatboxdummy.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -78,6 +79,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
+    bool bookingendtuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
+    if (bookingendtuto) {
+      Timer(Duration(microseconds: 0), () {
+        /// start the intro
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ChatBoxDummyPage()));
+      });
+    }
     _chatBoxBloc = ChatBoxBloc.init(widget.partnerId);
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
@@ -562,226 +571,20 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            decoration: BoxDecoration(
-                border: Border.all(
-                    width: 1,
-                    color: _isDark() ? Colors.white24 : Colors.black26),
-                borderRadius: BorderRadius.circular(10)),
-            child: Text(G.current.chatwelcome,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: _isDark() ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w300))),
-        // Container(
-        //   height: 60,
-        //   margin: const EdgeInsets.symmetric(vertical: 4),
-        //   child: ListView(
-        //     shrinkWrap: true,
-        //     scrollDirection: Axis.horizontal,
-        //     physics: ClampingScrollPhysics(),
-        //     children: [
-        //       SizedBox(width: 10),
-
-        //       ///First
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.firstButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatavailable,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Second
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.secondButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () async {
-        //                 StorageManager.sharedPreferences
-        //                     .setBool(bookingtuto, true);
-        //                 PartnerUser partnerData =
-        //                     await MoonBlinkRepository.fetchPartner(
-        //                         widget.partnerId);
-        //                 Navigator.pushNamed(context, RouteName.booking,
-        //                     arguments: partnerData);
-        //               },
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatbook,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Third
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.secondButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatbuycoin,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Fourth
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.thirdButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chathowtoplay,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-        //     ],
-        //   ),
-        // ),
+          margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          decoration: BoxDecoration(
+              border: Border.all(
+                  width: 1, color: _isDark() ? Colors.white24 : Colors.black26),
+              borderRadius: BorderRadius.circular(10)),
+          child: Text(
+            G.current.chatwelcome,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: _isDark() ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w300),
+          ),
+        ),
       ],
     );
   }
