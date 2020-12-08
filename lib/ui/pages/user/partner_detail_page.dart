@@ -394,13 +394,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             bool showtuto =
                 StorageManager.sharedPreferences.getBool(userdetailtuto);
             // if (showtuto) {
-            if (!isDev) {
+            if (isDev) {
               Timer(Duration(microseconds: 0), () {
               intro.start(context);
               });
-            }
             // StorageManager.sharedPreferences.setBool(userdetailtuto, false);
-            // }
+            }
             void followingRequest(bool newValue) async {
               print('status is 0 so bool is' +
                   followButtonClicked.toString() +
