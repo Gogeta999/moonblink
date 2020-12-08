@@ -80,14 +80,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
-    bool bookingendtuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
-    if (bookingendtuto) {
-      Timer(Duration(microseconds: 0), () {
-        /// start the intro
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ChatBoxDummyPage()));
-      });
-    }
+    // bool bookingendtuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
+    // if (bookingendtuto) {
+    //   Timer(Duration(microseconds: 0), () {
+    //     /// start the intro
+    //     Navigator.push(context,
+    //         MaterialPageRoute(builder: (context) => ChatBoxDummyPage()));
+    //   });
+    // }
     _chatBoxBloc = ChatBoxBloc.init(widget.partnerId);
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
@@ -543,9 +543,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Theme.of(context).accentColor),
-                        borderRadius: BorderRadius.all(Radius.circular(20))
-                      ),
+                          border: Border.all(
+                              width: 1, color: Theme.of(context).accentColor),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
                       child: WaitingTimeLeft(
                           createat: snapshot.data.startTime,
                           leftTime: estimateSecond),
