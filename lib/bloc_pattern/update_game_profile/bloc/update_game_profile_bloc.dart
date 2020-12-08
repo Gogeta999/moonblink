@@ -29,25 +29,17 @@ class UpdateGameProfileBloc
   ///will send back to server
   ///Booking
   final TextEditingController gameIdController = TextEditingController();
-  final bookingSwitchSubject = BehaviorSubject.seeded(false);
   final levelSubject = BehaviorSubject<String>.seeded('');
   final gameModeSubject = BehaviorSubject<String>.seeded('');
   final gameModeListSubject = BehaviorSubject<List<GameMode>>.seeded(null);
   final List<Map<String, int>> selectedGameModeIndex = [];
   final skillCoverPhotoSubject = BehaviorSubject<File>.seeded(null);
 
-  ///Boosting
-  final boostingSwitchSubject = BehaviorSubject.seeded(false);
-  final boostingLevelSubject = BehaviorSubject.seeded('');
-
-  ///Up_To_Rank
-
   ///UI properties
   bool isUILocked = false;
   final submitOrUpdateSubject =
       BehaviorSubject.seeded(UpdateOrSubmitButtonState.initial);
   List<Widget> cupertinoActionSheet = [];
-  List<Widget> cupertinoActionSheetForBoosting = [];
   TextStyle textStyle;
 
   void dispose() {
@@ -57,9 +49,6 @@ class UpdateGameProfileBloc
     gameModeListSubject.close();
     skillCoverPhotoSubject.close();
     submitOrUpdateSubject.close();
-    bookingSwitchSubject.close();
-    boostingSwitchSubject.close();
-    boostingLevelSubject.close();
     this.close();
     print('Disposing UpdateGameProfile Success');
   }
@@ -71,26 +60,10 @@ class UpdateGameProfileBloc
 
   get context => locator<NavigationService>().navigatorKey.currentContext;
 
-  void onChangedBookingSwitch(bool value) {
-    if (isUILocked) return;
-    bookingSwitchSubject.add(value);
-  }
-
-  void onChangedBoostingSwitch(bool value) {
-    if (isUILocked) return;
-    boostingSwitchSubject.add(value);
-  }
-
   void initWithRemoteData() {
     gameModeListSubject.add(gameProfile.gameModeList);
     gameIdController.text = gameProfile.playerId;
     levelSubject.add(gameProfile.level);
-    boostingLevelSubject.add(gameProfile.upToRank);
-
-    ///booking level
-    if (gameProfile.isPlay == 1) bookingSwitchSubject.add(true);
-    //boosting
-    if (gameProfile.boostable == 1) boostingSwitchSubject.add(true);
 
     gameModeListSubject.first.then((value) {
       for (int i = 0; i < value.length; ++i) {
@@ -106,15 +79,6 @@ class UpdateGameProfileBloc
           CupertinoActionSheetAction(
               onPressed: () {
                 levelSubject.add(element);
-                Navigator.pop(context);
-              },
-              child: Text(element, style: textStyle)),
-        );
-
-        cupertinoActionSheetForBoosting.add(
-          CupertinoActionSheetAction(
-              onPressed: () {
-                boostingLevelSubject.add(element);
                 Navigator.pop(context);
               },
               child: Text(element, style: textStyle)),
@@ -152,176 +116,55 @@ class UpdateGameProfileBloc
       return;
     }
 
+    if (selectedGameModeIndex.isEmpty) {
+      showToast('Game Mode ${G.of(context).cannotblank} for Booking service');
+      return;
+    }
+
     final skillCoverPhoto = await skillCoverPhotoSubject.first;
-    if ((gameProfile.isPlay == 0 && gameProfile.boostable == 0) && skillCoverPhoto == null) {
+    if (gameProfile.isPlay == 0 && skillCoverPhoto == null) {
       showToast('ScreenShot ${G.of(context).cannotblank}');
       return;
     }
 
     MultipartFile skillCoverImage;
+
     if (skillCoverPhoto != null) {
       skillCoverImage = await MultipartFile.fromFile(skillCoverPhoto.path);
     }
 
-    final bool bookable = await bookingSwitchSubject.first;
-    final bool boostable = await boostingSwitchSubject.first;
-
-    //No service provided show error
-    if (!bookable && !boostable) {
-      showToast('You need to provide at least one service');
-      return;
-    }
-
-    ///Will provide only booking service
-    if (bookable && !boostable) {
-      if (selectedGameModeIndex.isEmpty) {
-        showToast('Game Mode ${G.of(context).cannotblank} for Booking service');
-        return;
+    ///validation success. send data to server.
+    _freezeUI();
+    List<String> mapKeys = [
+      'game_id',
+      'player_id',
+      'level',
+      if (skillCoverImage != null) 'skill_cover_image',
+      'about_order_taking',
+      'types',
+    ];
+    List<dynamic> mapValues = [
+      gameProfile.gameId,
+      gameIdController.text,
+      level,
+      if (skillCoverImage != null) skillCoverImage,
+      '',
+      selectedGameModeIndex,
+    ];
+    Map<String, dynamic> gameProfileMap = Map.fromIterables(mapKeys, mapValues);
+    gameProfileMap.forEach((key, value) {
+      print(key + ': ' + '$value');
+    });
+    MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
+      showToast(G.of(context).toastsuccess);
+      if (gameProfile.isPlay == 0) {
+        StorageManager.sharedPreferences.setInt(mgameprofile,
+            StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
+        print("GAMEPROFILE COUNT IS " +
+            StorageManager.sharedPreferences.getInt(mgameprofile).toString());
       }
-
-      ///validation success. send data to server.
-      _freezeUI();
-      List<String> mapKeys = [
-        'game_id',
-        'player_id',
-        'level',
-        if (skillCoverImage != null) 'skill_cover_image',
-        'about_order_taking',
-        'types',
-        'boostable',
-        'is_play',
-        'up_to_rank'
-      ];
-      List<dynamic> mapValues = [
-        gameProfile.gameId,
-        gameIdController.text,
-        level,
-        if (skillCoverImage != null) skillCoverImage,
-        '',
-        selectedGameModeIndex,
-        boostable ? 1 : 0,
-        bookable ? 1 : 0,
-        ''
-      ];
-      Map<String, dynamic> gameProfileMap =
-          Map.fromIterables(mapKeys, mapValues);
-      gameProfileMap.forEach((key, value) {
-        print(key + ': ' + '$value');
-      });
-      MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
-        showToast(G.of(context).toastsuccess);
-        if (gameProfile.isPlay == 0) {
-          StorageManager.sharedPreferences.setInt(mgameprofile,
-              StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
-          print("GAMEPROFILE COUNT IS " +
-              StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-        }
-        Navigator.pop(context, true);
-      }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
-    }
-
-    ///Will provide only boosting service
-    if (!bookable && boostable) {
-      final boostingLevel = await boostingLevelSubject.first;
-      if (boostingLevel == null || boostingLevel.isEmpty) {
-        showToast(
-            'Highest Rank ${G.of(context).cannotblank} for Boosting service');
-        return;
-      }
-
-      ///validation success. send data to server.
-      _freezeUI();
-      List<String> mapKeys = [
-        'game_id',
-        'player_id',
-        'level',
-        if (skillCoverImage != null) 'skill_cover_image',
-        'about_order_taking',
-        'types',
-        'boostable',
-        'is_play',
-        'up_to_rank'
-      ];
-      List<dynamic> mapValues = [
-        gameProfile.gameId,
-        gameIdController.text,
-        level,
-        if (skillCoverImage != null) skillCoverImage,
-        '',
-        [],
-        boostable ? 1 : 0,
-        bookable ? 1 : 0,
-        boostingLevel
-      ];
-      Map<String, dynamic> gameProfileMap =
-          Map.fromIterables(mapKeys, mapValues);
-      gameProfileMap.forEach((key, value) {
-        print(key + ': ' + '$value');
-      });
-      MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
-        showToast(G.of(context).toastsuccess);
-        if (gameProfile.isPlay == 0) {
-          StorageManager.sharedPreferences.setInt(mgameprofile,
-              StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
-          print("GAMEPROFILE COUNT IS " +
-              StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-        }
-        Navigator.pop(context, true);
-      }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
-    }
-    //Will provide both services
-    if (bookable && boostable) {
-      if (selectedGameModeIndex.isEmpty) {
-        showToast('Game Mode ${G.of(context).cannotblank} for Booking service');
-        return;
-      }
-      final boostingLevel = await boostingLevelSubject.first;
-      if (boostingLevel == null || boostingLevel.isEmpty) {
-        showToast(
-            'Highest Rank ${G.of(context).cannotblank} for Boosting service');
-        return;
-      }
-
-      ///validation success. send data to server.
-      _freezeUI();
-      List<String> mapKeys = [
-        'game_id',
-        'player_id',
-        'level',
-        if (skillCoverImage != null) 'skill_cover_image',
-        'about_order_taking',
-        'types',
-        'boostable',
-        'is_play',
-        'up_to_rank'
-      ];
-      List<dynamic> mapValues = [
-        gameProfile.gameId,
-        gameIdController.text,
-        level,
-        if (skillCoverImage != null) skillCoverImage,
-        '',
-        selectedGameModeIndex,
-        boostable ? 1 : 0,
-        bookable ? 1 : 0,
-        boostingLevel
-      ];
-      Map<String, dynamic> gameProfileMap =
-          Map.fromIterables(mapKeys, mapValues);
-      gameProfileMap.forEach((key, value) {
-        print(key + ': ' + '$value');
-      });
-      MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
-        showToast(G.of(context).toastsuccess);
-        if (gameProfile.isPlay == 0) {
-          StorageManager.sharedPreferences.setInt(mgameprofile,
-              StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
-          print("GAMEPROFILE COUNT IS " +
-              StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-        }
-        Navigator.pop(context, true);
-      }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
-    }
+      Navigator.pop(context, true);
+    }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});
   }
 
   _freezeUI() {

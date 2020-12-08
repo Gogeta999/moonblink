@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/BoostGame.dart';
+import 'package:moonblink/models/UserBoostingGamePrice.dart';
 import 'package:moonblink/models/adModel.dart';
 import 'package:moonblink/models/blocked_user.dart';
 import 'package:moonblink/models/booking_partner_game_list.dart';
@@ -322,6 +324,20 @@ class MoonBlinkRepository {
     return BookingPartnerGameList.fromJson(response.data);
   }
 
+  //Game List for boosting
+  static Future<List<UserBoostingGamePrice>> getBoostingGameList(int partnerId) async {
+    final response = await DioUtils().get(Api.BoostingGameList + '$partnerId/boost');
+    return response.data.map<UserBoostingGamePrice>((e) => UserBoostingGamePrice.fromJson(e)).toList();
+  }
+
+  static Future setBoostingStatus(int boostingId, int status) async {
+    final userId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().patch(Api.SetBoostingStatus + '$userId/boost/$boostingId', queryParameters: {
+      'status': status
+    });
+    return response.data;
+  }
+
   // User Play Game List
   static Future<UserPlayGameList> getUserPlayGameList() async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
@@ -433,6 +449,21 @@ class MoonBlinkRepository {
       return null;
     }
     return UserBookingNotificationData.fromJson(response.data);
+  }
+
+  // Get Boost game
+  static Future<List<BoostGame>> getBoostGame(int id) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().get(Api.BoostGameList + '$userId/game/$id/boost/profile');
+    return response.data.map<BoostGame>((e) => BoostGame.fromJson(e)).toList();
+  }
+
+  //Set Boost Game
+  static Future setBoostGameProfile(List<Map<String, dynamic>> json, int id) async {
+    var userId = StorageManager.sharedPreferences.getInt(mUserId);
+    final data = {'boost_profile': json};
+    final response = await DioUtils().postwithData(Api.BoostGameList + '$userId/game/$id/boost/profile', data: data);
+    return response.data;
   }
 
   // Booking
@@ -567,11 +598,12 @@ class MoonBlinkRepository {
   }
 
   static Future requestBoosting(int partnerId, int gameId, String rankFrom,
-      String upToRank, int estimateHour, int estimateCost) async {
+      String upToRank, int estimateDay, int estimateHour, int estimateCost) async {
     final map = {
       'game_id': gameId,
       'rank_from': rankFrom,
       'up_to_rank': upToRank,
+      'estimate_day': estimateDay,
       'estimate_hour': estimateHour,
       'estimate_cost': estimateCost
     };

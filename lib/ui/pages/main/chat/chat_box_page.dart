@@ -20,6 +20,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
+import 'package:moonblink/models/chat_models/last_boost_order.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -163,6 +164,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         return _buildCallMessage(lastMessage);
       case REQUEST:
         return _buildRequestMessage(lastMessage);
+      case BOOSTING_REQUEST:
+        return _buildBoostingRequestMessage(lastMessage);
       default:
         return Text('This message type is not supported');
     }
@@ -373,7 +376,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ///Reject
+                  /// Reject
                   StreamBuilder<bool>(
                       initialData: false,
                       stream: _chatBoxBloc.rejectButtonSubject,
@@ -390,7 +393,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                 _chatBoxBloc.add(ChatBoxRejectBooking()));
                       }),
 
-                  ///Accept
+                  /// Accept
                   StreamBuilder<bool>(
                       initialData: false,
                       stream: _chatBoxBloc.acceptButtonSubject,
@@ -405,6 +408,70 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                           child: Text(G.of(context).accept),
                           onPressed: () =>
                               _chatBoxBloc.add(ChatBoxAcceptBooking()),
+                        );
+                      })
+                ],
+              )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBoostingRequestMessage(LastMessage lastMessage) {
+    return _buildBasicMessageWidget(
+      lastMessage: lastMessage,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SelectableText(
+              lastMessage.message,
+              style: TextStyle(
+                  color: _isDark() ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.w500),
+              autofocus: true,
+              cursorRadius: Radius.circular(50),
+              cursorColor: Colors.white,
+              toolbarOptions: ToolbarOptions(copy: true, selectAll: true),
+            ),
+            if (lastMessage.senderId == widget.partnerId)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ///Boosting Reject
+                  StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _chatBoxBloc.rejectButtonSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data) {
+                          return CupertinoButton(
+                            child: CupertinoActivityIndicator(),
+                            onPressed: () {},
+                          );
+                        }
+                        return CupertinoButton(
+                            child: Text(G.of(context).reject),
+                            onPressed: () =>
+                                _chatBoxBloc.add(ChatBoxRejectBoosting()));
+                      }),
+
+                  ///Boosting Accept
+                  StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _chatBoxBloc.acceptButtonSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data) {
+                          return CupertinoButton(
+                            child: CupertinoActivityIndicator(),
+                            onPressed: () {},
+                          );
+                        }
+                        return CupertinoButton(
+                          child: Text(G.of(context).accept),
+                          onPressed: () =>
+                              _chatBoxBloc.add(ChatBoxAcceptBoosting()),
                         );
                       })
                 ],
@@ -448,6 +515,34 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         return Column(
           children: [
             if (myType == kNormal) _buildNormalUserButtons(),
+            StreamBuilder<LastBoostOrder>(
+              initialData: null,
+              stream: _chatBoxBloc.boostingStatusSubject,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Container();
+                }
+                int estimateHour =
+                    snapshot.data.estimateHour + snapshot.data.estimateDay * 24;
+                int estimateMinute = estimateHour * 60;
+                int estimateSecond = estimateMinute * 60;
+                return Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Theme.of(context).accentColor),
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                      ),
+                      child: WaitingTimeLeft(
+                          createat: snapshot.data.startTime,
+                          leftTime: estimateSecond),
+                    ),
+                    SizedBox(height: 5),
+                  ],
+                );
+              },
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
@@ -571,214 +666,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                 style: TextStyle(
                     color: _isDark() ? Colors.white : Colors.black,
                     fontWeight: FontWeight.w300))),
-        // Container(
-        //   height: 60,
-        //   margin: const EdgeInsets.symmetric(vertical: 4),
-        //   child: ListView(
-        //     shrinkWrap: true,
-        //     scrollDirection: Axis.horizontal,
-        //     physics: ClampingScrollPhysics(),
-        //     children: [
-        //       SizedBox(width: 10),
-
-        //       ///First
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.firstButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxCheckAvailable()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatavailable,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Second
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.secondButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () async {
-        //                 StorageManager.sharedPreferences
-        //                     .setBool(bookingtuto, true);
-        //                 PartnerUser partnerData =
-        //                     await MoonBlinkRepository.fetchPartner(
-        //                         widget.partnerId);
-        //                 Navigator.pushNamed(context, RouteName.booking,
-        //                     arguments: partnerData);
-        //               },
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatbook,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Third
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.secondButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxSecondButton()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chatbuycoin,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-
-        //       ///Fourth
-        //       StreamBuilder<String>(
-        //           initialData: null,
-        //           stream: _chatBoxBloc.thirdButtonSubject,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.data == null) {
-        //               return Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(12),
-        //                 child: Center(child: CupertinoActivityIndicator()),
-        //               );
-        //             }
-        //             if (snapshot.data.isNotEmpty) {
-        //               return Container(
-        //                 padding: const EdgeInsets.all(4),
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 child: Center(
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                     child: Text('${snapshot.data}'),
-        //                   ),
-        //                 ),
-        //               );
-        //             }
-        //             return InkResponse(
-        //               onTap: () => _chatBoxBloc.add(ChatBoxThirdButton()),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                     border: Border.all(
-        //                         width: 1, color: Theme.of(context).accentColor),
-        //                     borderRadius: BorderRadius.circular(8)),
-        //                 padding: const EdgeInsets.all(4),
-        //                 child: Center(
-        //                   child: Text(G.current.chathowtoplay,
-        //                       textAlign: TextAlign.center),
-        //                 ),
-        //               ),
-        //             );
-        //           }),
-        //       SizedBox(width: 10),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }
@@ -899,6 +786,26 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
+  Widget _buildBoostingCancelButton() {
+    return StreamBuilder<bool>(
+      initialData: false,
+      stream: _chatBoxBloc.boostingCancelButtonSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data) {
+          return CupertinoButton(
+              child: CupertinoActivityIndicator(), onPressed: () {});
+        }
+        return CupertinoButton(
+          child: Text(
+            G.of(context).cancel,
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () => _chatBoxBloc.add(ChatBoxCancelBoosting()),
+        );
+      },
+    );
+  }
+
   Widget _buildPhoneButton(int receiverId) {
     String voiceChannelName = 'UserId($myId)CallToUserId($receiverId)';
     return IconButton(
@@ -910,40 +817,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         onPressed: () {
           _chatBoxBloc.add(ChatBoxCall(voiceChannelName, receiverId));
         });
-  }
-
-  Widget _buildBookingEndButton() {
-    return CupertinoButton(
-        child: Text(
-          G.of(context).end,
-          style: TextStyle(color: Colors.white),
-        ),
-        onPressed: () => _chatBoxBloc.bookingStatusSubject.first
-            .then((value) => _showBookingEndDialog(value)));
-  }
-
-  Widget _buildFirstAction() {
-    return StreamBuilder<BookingStatus>(
-      initialData: null,
-      stream: _chatBoxBloc.bookingStatusSubject,
-      builder: (context, snapshot) {
-        if (snapshot.data == null) {
-          return CupertinoActivityIndicator();
-        }
-        if (snapshot.data.status == PENDING &&
-            _bookingUserIsMe(snapshot.data.bookingUserId)) {
-          return WaitingTimeLeft(createat: snapshot.data.createdAt);
-        }
-        if (snapshot.data.status == ACCEPTED &&
-            _bookingUserIsMe(snapshot.data.bookingUserId)) {
-          return _buildBookingEndButton();
-        }
-        if (snapshot.data.status != ACCEPTED) {
-          return blockbtn();
-        }
-        return Container();
-      },
-    );
   }
 
   //Block Button
@@ -980,6 +853,50 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
     );
   }
 
+  Widget _buildBookingEndButton() {
+    return CupertinoButton(
+        child: Text(
+          G.of(context).end,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => _chatBoxBloc.bookingStatusSubject.first
+            .then((value) => _showBookingEndDialog(value)));
+  }
+
+  Widget _buildBoostingEndButton() {
+    return CupertinoButton(
+        child: Text(
+          G.of(context).end,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: () => _chatBoxBloc.boostingStatusSubject.first
+            .then((value) => _showBoostingEndDialog(value)));
+  }
+
+  Widget _buildFirstAction() {
+    return StreamBuilder<BookingStatus>(
+      initialData: null,
+      stream: _chatBoxBloc.bookingStatusSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.data.status == PENDING &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
+          return WaitingTimeLeft(createat: snapshot.data.createdAt);
+        }
+        if (snapshot.data.status == ACCEPTED &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
+          return _buildBookingEndButton();
+        }
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
+        }
+        return Container();
+      },
+    );
+  }
+
   Widget _buildSecondAction() {
     return StreamBuilder<BookingStatus>(
       initialData: null,
@@ -994,6 +911,46 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == ACCEPTED) {
           return _buildPhoneButton(snapshot.data.userId);
+        }
+        return Container();
+      },
+    );
+  }
+
+  ///Boosting
+  Widget _buildThirdAction() {
+    return StreamBuilder<LastBoostOrder>(
+      initialData: null,
+      stream: _chatBoxBloc.boostingStatusSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.data.status == PENDING &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
+          return WaitingTimeLeft(createat: snapshot.data.createdAt);
+        }
+        if (snapshot.data.status == ACCEPTED &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
+          return _buildBoostingEndButton();
+        }
+        return Container();
+      },
+    );
+  }
+
+  ///Boosting
+  Widget _buildFourthAction() {
+    return StreamBuilder<LastBoostOrder>(
+      initialData: null,
+      stream: _chatBoxBloc.boostingStatusSubject,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.data.status == BOOST_PENDING &&
+            _bookingUserIsMe(snapshot.data.bookingUserId)) {
+          return _buildBoostingCancelButton();
         }
         return Container();
       },
@@ -1052,9 +1009,15 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         },
         listener: (context, state) {
           if (state is ChatBoxCancelBookingSuccess) {
-            showToast('Booking Cancelled');
+            showToast('Booking Request Cancelled');
           }
           if (state is ChatBoxCancelBookingFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxCancelBoostingSuccess) {
+            showToast('Boosting Request Cancelled');
+          }
+          if (state is ChatBoxCancelBoostingFailure) {
             showToast(state.error.toString());
           }
           if (state is ChatBoxCallFailure) {
@@ -1069,42 +1032,30 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
           if (state is ChatBoxEndBookingFailure) {
             showToast(state.error.toString());
           }
+          if (state is ChatBoxEndBoostingSuccess) {
+            showToast('Boosting Ended');
+          }
+          if (state is ChatBoxEndBoostingFailure) {
+            showToast(state.error.toString());
+          }
           if (state is ChatBoxRejectBookingSuccess) {
             showToast('Booking Rejected');
           }
           if (state is ChatBoxRejectBookingFailure) {
             showToast(state.error.toString());
           }
+          if (state is ChatBoxRejectBoostingFailure) {
+            showToast(state.error.toString());
+          }
           if (state is ChatBoxAcceptBookingFailure) {
+            showToast(state.error.toString());
+          }
+          if (state is ChatBoxAcceptBoostingFailure) {
             showToast(state.error.toString());
           }
         },
         child: Scaffold(
           appBar: AppBar(
-            ///for Boosting
-            // bottom: PreferredSize(
-            //   child: Column(
-            //     children: [
-            //       Divider(
-            //         color: Colors.white,
-            //       ),
-            //       Row(
-            //         children: [
-            //           CupertinoButton(
-            //             padding: EdgeInsets.zero,
-            //             child: Text('Click Me1'),
-            //             onPressed: () {},
-            //           ),
-            //           CupertinoButton(
-            //               padding: EdgeInsets.zero,
-            //               child: Text('Click Me2'),
-            //               onPressed: () {})
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            //   preferredSize: Size.fromHeight(55),
-            // ),
             leading: IconButton(
                 icon: SvgPicture.asset(
                   back,
@@ -1172,7 +1123,12 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             }
                           : null);
                 }),
-            actions: <Widget>[_buildFirstAction(), _buildSecondAction()],
+            actions: <Widget>[
+              _buildFirstAction(),
+              _buildSecondAction(),
+              _buildThirdAction(),
+              _buildFourthAction()
+            ],
           ),
           body: SafeArea(
             child: Stack(
@@ -1267,66 +1223,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     return Container();
                   },
                 ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 140,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: thirdbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 200,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: fourthbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
-                // StreamBuilder<bool>(
-                //   initialData: true,
-                //   stream: _rotatedSubject2,
-                //   builder: (context, snapshot) {
-                //     if (!snapshot.data) {
-                //       return Positioned(
-                //         bottom: 260,
-                //         left: 10,
-                //         child: new Container(
-                //           child: new ScaleTransition(
-                //             scale: _animation,
-                //             alignment: FractionalOffset.center,
-                //             child: secbotmsg(),
-                //           ),
-                //         ),
-                //       );
-                //     }
-                //     return Container();
-                //   },
-                // ),
               ],
             ),
           ),
@@ -1572,21 +1468,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   bool _bookingUserIsMe(int booingUserId) => myId == booingUserId;
   bool _isDark() => Theme.of(context).brightness == Brightness.dark;
 
-  //bottom widget up
-  ///not using now
-  // _sendMessageWidgetUp() {
-  //   _upWidgetSubject.add(true);
-  //   _scrollController.animateTo(MediaQuery.of(context).size.height * 0.4,
-  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
-  // }
-
-  //bottom widget down
-  // _sendMessageWidgetDown() {
-  //   _upWidgetSubject.add(false);
-  //   _scrollController.animateTo(0.0,
-  //       duration: Duration(milliseconds: 300), curve: Curves.ease);
-  // }
-
   Future<void> _handleVoiceCall(String voiceChannelName) async {
     final otherProfile = await _chatBoxBloc.partnerUserSubject.first;
     final otherProfileImage = otherProfile.prfoileFromPartner.profileImage;
@@ -1683,6 +1564,36 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                       RatingPage(bookingStatus.bookingId, widget.partnerId),
                 ),
               );
+            },
+          );
+        });
+  }
+
+  void _showBoostingEndDialog(LastBoostOrder lastBoostOrder) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: G.of(context).bookingEnded,
+            simpleContent: 'Are you sure to end this order?',
+            // row2Content: BookingTimeLeft(
+            //   count: bookingStatus.count,
+            //   upadateat: bookingStatus.updatedAt,
+            //   timeleft: bookingStatus.minutePerSection,
+            // ),
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.of(context).end,
+            confirmCallback: () {
+              _chatBoxBloc.add(ChatBoxEndBoosting());
+              Navigator.pop(context);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) =>
+              //         RatingPage(lastBoostOrder.bookingId, widget.partnerId),
+              //   ),
+              // );
             },
           );
         });

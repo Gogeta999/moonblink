@@ -5,64 +5,77 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/bloc_pattern/game_profile/bloc/game_profile_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:rxdart/subjects.dart';
 
-class ChooseUserPlayGamePage extends StatefulWidget {
+class BoostingGameListPage extends StatefulWidget {
   @override
-  _ChooseUserPlayGamePageState createState() => _ChooseUserPlayGamePageState();
+  _BoostingGameListPageState createState() => _BoostingGameListPageState();
 }
 
-class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
-  final _gameProfileBloc = GameProfileBloc();
+class _BoostingGameListPageState extends State<BoostingGameListPage> {
+  ///ViewModel and Controller in one page coz its simple
+  final _bookingGameListSubject = BehaviorSubject<List<UserPlayGame>>.seeded(null);
+  final deselectSubject = BehaviorSubject.seeded(DeselectState.initial);
 
   @override
   void initState() {
-    _gameProfileBloc.fetchGameProfile();
+    MoonBlinkRepository.getUserPlayGameList().then((value) {
+      final List<UserPlayGame> data = [];
+      value.userPlayGameList.forEach((element) {
+        if (element.isBoostable == 1) data.add(element);
+      });
+      _bookingGameListSubject.add(data);
+    }, onError: (e) => _bookingGameListSubject.addError(e));
     super.initState();
   }
 
   @override
   void dispose() {
-    _gameProfileBloc.dispose();
+    _bookingGameListSubject.close();
+    deselectSubject.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppbarWidget(),
-      body: SafeArea(
-        child: StreamBuilder<UserPlayGameList>(
+    return SafeArea(
+          child: Scaffold(
+        appBar: AppbarWidget(),
+        body: StreamBuilder<List<UserPlayGame>>(
           initialData: null,
-          stream: _gameProfileBloc.userPlayGameListSubject,
+          stream: _bookingGameListSubject,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
-                child: CupertinoButton(
-                    child: Text('Something went wrong! Retry'),
-                    onPressed: () => _gameProfileBloc.fetchGameProfile()),
-              );
-            } else if (snapshot.data == null) {
+              debugPrint(snapshot.error.toString());
+              return Center(child: Text('Something Went Wrong!'));
+            }
+            if (snapshot.data == null) {
               return Center(child: CupertinoActivityIndicator());
-            } else if (snapshot.hasData &&
-                snapshot.data.userPlayGameList.isNotEmpty) {
-              return ListView.builder(
+            }
+            if (snapshot.data.isEmpty) {
+              return Center(child: Text('No Data To Show!!'));
+            }
+            return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 physics: ClampingScrollPhysics(),
-                itemCount: snapshot.data.userPlayGameList.length,
+                itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
-                  UserPlayGame item = snapshot.data.userPlayGameList[index];
+                  UserPlayGame item = snapshot.data[index];
                   return Slidable(
-                    enabled: item.isPlay == 0
-                        ? false
-                        : true,
+                    // enabled: item.isPlay == 0
+                    //     ? false
+                    //     : true,
+                    enabled: false,///false for now no flag include in response
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
                       Card(
                         elevation: 8,
                         child: StreamBuilder<DeselectState>(
-                            stream: _gameProfileBloc.deselectSubject.stream,
+                            stream: deselectSubject.stream,
                             builder: (context, snapshot) {
                               return IconSlideAction(
                                 closeOnTap: false,
@@ -79,7 +92,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                                 onTap: () =>
                                     snapshot.data == DeselectState.loading
                                         ? {}
-                                        : _gameProfileBloc.onTapDeselect(item),
+                                        : {},//_gameProfileBloc.onTapDeselect(item),
                               );
                             }),
                       )
@@ -87,8 +100,7 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                     child: Card(
                       elevation: 8,
                       child: ListTile(
-                        onTap: () => _gameProfileBloc.onTapListTile(
-                            item, _gameProfileBloc),
+                        onTap: () => onTapListTile(item),
                         leading: CachedNetworkImage(
                           imageUrl: item.gameIcon,
                           imageBuilder: (context, imageProvider) => Container(
@@ -112,24 +124,55 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
                                 : Text(item.description),
                         trailing: Icon(
                           Icons.check_box,
-                          color: item.isPlay == 0
+                          color: true//item.isPlay == 0
                               ? Colors.transparent
                               : Theme.of(context).accentColor,
                         ),
-                        selected: item.isPlay == 0
-                            ? false
-                            : true,
+                        selected: false,
+                        // selected: item.isPlay == 0
+                        //     ? false
+                        //     : true,
                       ),
                     ),
                   );
                 },
               );
-            } else {
-              return Center(child: Text(G.of(context).toasterror));
-            }
+
           },
-        ),
+        )
       ),
     );
+  }
+
+  // void onTapDeselect(UserPlayGame item) {
+  //   ///call delete api
+  //   deselectSubject.add(DeselectState.loading);
+  //   MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then(
+  //       (value) {
+  //     deselectSubject.add(DeselectState.initial);
+  //     StorageManager.sharedPreferences.setInt(mgameprofile,
+  //         StorageManager.sharedPreferences.getInt(mgameprofile) - 1);
+  //     print("GAMEPROFILE COUNT IS " +
+  //         StorageManager.sharedPreferences.getInt(mgameprofile).toString());
+
+  //     ///After delete, fetch data from server again
+  //     this.fetchGameProfile();
+  //   }, onError: (err) {
+  //     deselectSubject.add(DeselectState.initial);
+  //     showToast(err.toString());
+  //   });
+  // }
+
+  void onTapListTile(UserPlayGame item) {
+    Navigator.pushNamed(context, RouteName.boostingGameDetailPage, arguments: {'id': item.id, 'game_name': item.name}).then((value) {
+       if (value != null && value) 
+        MoonBlinkRepository.getUserPlayGameList().then((value) {
+      final List<UserPlayGame> data = [];
+      value.userPlayGameList.forEach((element) {
+        if (element.isBoostable == 1) data.add(element);
+      });
+      _bookingGameListSubject.add(data);
+    }, onError: (e) => _bookingGameListSubject.addError(e));
+    });
   }
 }

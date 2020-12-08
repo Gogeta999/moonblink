@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
-import 'package:moonblink/ui/pages/boosting_page/boosting_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_game_detail_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_game_list_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_request_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
@@ -69,6 +71,8 @@ class RouteName {
   static const String userBookingHistory = 'userBookingHistory';
   static const String facebookLoginError = 'facebookLoginError';
   static const String boostingPage = "boostingPage";
+  static const String boostingGameListPage = 'BoostingGameListPage';
+  static const String boostingGameDetailPage = 'BoostingGameDetailPage';
 }
 
 class MoonGoRouter {
@@ -85,8 +89,12 @@ class MoonGoRouter {
                 // partnerName: settings.arguments,
                 // partnerProfile: settings.arguments,
                 ));
+      case RouteName.boostingGameListPage:
+        return CupertinoPageRoute(builder: (_) => BoostingGameListPage());
+      case RouteName.boostingGameDetailPage:
+        return CupertinoPageRoute(builder: (_) => BoostingGameDetailPage(data: settings.arguments));
       case RouteName.boostingPage:
-        return CupertinoPageRoute(builder: (_) => BoostingPage());
+        return CupertinoPageRoute(builder: (_) => BoostingRequestPage());
       case RouteName.termsAndConditionsPage:
         return CupertinoPageRoute(
             builder: (_) =>

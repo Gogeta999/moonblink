@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class WaitingTimeLeft extends StatefulWidget {
   final String createat;
-  WaitingTimeLeft({this.createat});
+  final int leftTime;
+  WaitingTimeLeft({this.createat, this.leftTime});
 
   @override
   _WaitingTimeLeftState createState() => _WaitingTimeLeftState();
@@ -30,11 +31,19 @@ class _WaitingTimeLeftState extends State<WaitingTimeLeft> {
     int nowsec = (now / 1000).round();
     int atsec = (at / 1000).round();
     int left = nowsec - atsec;
-    setState(() {
-      lefttime = 300 - left;
-      print(lefttime);
-    });
-    timerCountDown(lefttime);
+    if (widget.leftTime != null) {
+      setState(() {
+        lefttime = widget.leftTime - left;
+        print(lefttime);
+      });
+      timerCountDown(lefttime);
+    }  else {
+      setState(() {
+        lefttime = 300 - left;
+        print(lefttime);
+      });
+      timerCountDown(lefttime);
+    }
     print("=======================================================");
   }
 
@@ -44,7 +53,7 @@ class _WaitingTimeLeftState extends State<WaitingTimeLeft> {
       oneSec,
       (Timer timer) => setState(
         () {
-          if (countdown < 1) {
+          if (countdown < 0) {
             timer.cancel();
           } else {
             countdown = countdown - 1;

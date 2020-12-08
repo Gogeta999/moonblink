@@ -25,7 +25,7 @@ class UserPlayGame {
   final String createdAt;
   final String updatedAt;
   final int isPlay;
-  final int boostable;
+  final int isBoostable;
   final GameProfile gameProfile;
 
   UserPlayGame(
@@ -37,7 +37,7 @@ class UserPlayGame {
       this.createdAt,
       this.updatedAt,
       this.isPlay,
-      this.boostable,
+      this.isBoostable,
       this.gameProfile});
 
   UserPlayGame.fromJson(Map<String, dynamic> json)
@@ -49,7 +49,7 @@ class UserPlayGame {
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
         isPlay = json['is_play'],
-        boostable = json['boostable'],
+        isBoostable = json['is_boostable'],
         gameProfile = GameProfile.fromJson(json['game_profile']);
 
   Map<String, dynamic> toJson() => {
@@ -61,7 +61,7 @@ class UserPlayGame {
         'created_at': createdAt,
         'updated_at': updatedAt,
         'is_play': isPlay,
-        'boostable': boostable,
-        'gameProfile': gameProfile.toJson()
+        'is_boostable': isBoostable,
+        'game_profile': gameProfile.toJson()
       };
 }

@@ -4,6 +4,7 @@ import 'package:moonblink/bloc_pattern/chat_box/chat_box_bloc.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
+import 'package:moonblink/models/chat_models/last_boost_order.dart';
 import 'package:moonblink/models/chat_models/new_chat.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -58,7 +59,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(devSocketUrl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000
@@ -113,8 +114,8 @@ class WebSocketService {
     });
     _socket.on(EventsToListen.sendLastBoostOrder, (data) {
       print('Last Boost Order: $data');
-
-      ///do something;
+      final lastBoostOrder = LastBoostOrder.fromJson(data);
+      _chatBoxBloc.boostingStatusSubject.add(lastBoostOrder);
     });
 
     updateChat();

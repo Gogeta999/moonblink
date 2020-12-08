@@ -24,7 +24,7 @@ import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
-import 'package:moonblink/ui/pages/boosting_page/boosting_page.dart';
+import 'package:moonblink/ui/pages/boosting_page/boosting_request_page.dart';
 import 'package:moonblink/ui/pages/main/home/shimmer_indicator.dart';
 import 'package:moonblink/ui/pages/user/follower_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -166,8 +166,116 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                 'Provide Booking Service',
                 textAlign: TextAlign.center,
               ),
-            if (partnerModel.gameprofile[index].boostable == 1)
-              Text(
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15.0),
+                    bottomRight: Radius.circular(15.0),
+                  ),
+                ),
+                child: Text(
+                  G.of(context).okay,
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void boostingGameProfileDialog(PartnerUser partnerModel, index) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(15.0),
+          ),
+        ),
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text(partnerModel.boostableGameList[index].name),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageView(
+                        partnerModel.boostableGameList[index].gameIcon),
+                  ),
+                );
+              },
+              child: CachedNetworkImage(
+                imageUrl: partnerModel.boostableGameList[index].gameIcon,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                    maxHeight: 250,
+                    minHeight: 50,
+                  ),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (_, __) => CupertinoActivityIndicator(),
+                errorWidget: (_, __, ___) => Icon(Icons.error),
+              ),
+            ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(G.of(context).rank + ":"),
+            //     Text("   " +partnerModel.boostableGameList[index].type, ///ToDo - Add up_to_rank later
+            //         style: TextStyle(color: Theme.of(context).accentColor))
+            //   ],
+            // ),
+            SizedBox(
+              height: 10,
+            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(G.of(context).playerid + ":"),
+            //     GestureDetector(
+            //       onTap: () {
+            //         FlutterClipboard.copy(
+            //                 partnerModel.gameprofile[index].playerId)
+            //             .then(
+            //           (value) {
+            //             showToast(G.of(context).toastcopy);
+            //             print('copied');
+            //           },
+            //         );
+            //       },
+            //       child: Text("    " + partnerModel.gameprofile[index].playerId,
+            //           style: TextStyle(color: Theme.of(context).accentColor)),
+            //     )
+            //   ],
+            // ),
+            // SizedBox(height: 20),
+            Text(
                 'Provide Boosting Service',
                 textAlign: TextAlign.center,
               ),
@@ -441,8 +549,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    // crossAxisAlignment:
-                                    //     CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -496,7 +602,6 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                         width: 2, color: Colors.black),
                                     boxShadow: [
                                       BoxShadow(
-                                          // blurRadius: 10,
                                           color: Colors.black,
                                           offset: Offset(0, 5),
                                           spreadRadius: 2)
@@ -632,7 +737,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                   if (isDev)
                     SliverToBoxAdapter(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        margin: const EdgeInsets.symmetric(horizontal: 36),
                         child: MBButtonWidget(
                             title: "Order Boosting",
                             onTap: () {
@@ -640,7 +745,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                   ? showToast('You can\'t boost yourself')
                                   : Navigator.of(context)
                                       .push(CupertinoPageRoute(
-                                          builder: (context) => BoostingPage(
+                                          builder: (context) => BoostingRequestPage(
                                                 partnerId: partnerModel
                                                     .partnerData.partnerId,
                                                 partnerName: partnerModel
@@ -653,8 +758,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                                     .partnerData
                                                     .prfoileFromPartner
                                                     .profileImage,
-                                                gameProfiles: partnerModel
-                                                    .partnerData.gameprofile,
+                                                boostableGameList: partnerModel
+                                                    .partnerData.boostableGameList,
                                               )));
                             }),
                       ),
@@ -735,6 +840,63 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                           Expanded(
                                             child: Text(partnerModel.partnerData
                                                 .gameprofile[index].gameName),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                          ///Boostable Profile
+                          if (partnerModel.partnerData.boostableGameList?.isNotEmpty) 
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom:
+                                    BorderSide(width: 1, color: Colors.black),
+                              ),
+                            ),
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount:
+                                    partnerModel.partnerData.boostableGameList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 15),
+                                    child: GestureDetector(
+                                      onTap: () => boostingGameProfileDialog(
+                                          partnerModel.partnerData, index),
+                                      child: Column(
+                                        children: [
+                                          CachedNetworkImage(
+                                            imageUrl: partnerModel.partnerData
+                                                .boostableGameList[index].gameIcon,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    CircleAvatar(
+                                              radius: 33,
+                                              backgroundColor: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              child: CircleAvatar(
+                                                radius: 32,
+                                                backgroundColor:
+                                                    Colors.grey[300],
+                                                backgroundImage: imageProvider,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Expanded(
+                                            child: Text(partnerModel.partnerData
+                                                .boostableGameList[index].name),
                                           ),
                                         ],
                                       ),

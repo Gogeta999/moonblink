@@ -88,6 +88,8 @@ class Api {
   //Game List
   static const String GameList = 'moonblink/api/v1/social/game/price';
 
+  static const String BoostingGameList = 'moonblink/api/v1/social/user/';
+
   //for choose_user_play_game_page
   static const String UserPlayGame =
       '/moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/5/profile/game
@@ -141,9 +143,14 @@ class Api {
   //UserRating
   static const String UserRating = 'moonblink/api/v1/social/rating';
 
+  //BoostGameList
+  static const String BoostGameList = 'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/1/game/14/boost/profile
+
   //Follower
   static const String Follower = 'moonblink/api/v1/social/user/';
 
   static const String BoostingRequest =
       'moonblink/api/v1/social/user/'; //eg-moonblink/api/v1/social/user/1/boost
+  
+  static const String SetBoostingStatus = 'moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/1/boost/13
 }

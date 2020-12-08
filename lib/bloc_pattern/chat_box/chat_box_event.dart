@@ -57,7 +57,17 @@ class ChatBoxCancelBooking extends ChatBoxEvent {
   List<Object> get props => [];
 }
 
+class ChatBoxCancelBoosting extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class ChatBoxEndBooking extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxEndBoosting extends ChatBoxEvent {
   @override
   List<Object> get props => [];
 }
@@ -78,6 +88,16 @@ class ChatBoxRejectBooking extends ChatBoxEvent {
 }
 
 class ChatBoxAcceptBooking extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxRejectBoosting extends ChatBoxEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ChatBoxAcceptBoosting extends ChatBoxEvent {
   @override
   List<Object> get props => [];
 }

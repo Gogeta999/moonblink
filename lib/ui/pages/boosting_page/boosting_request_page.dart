@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/UserBoostingGamePrice.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -15,102 +12,153 @@ import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
 
-class BoostingPage extends StatefulWidget {
+class BoostingRequestPage extends StatefulWidget {
   final int partnerId;
   final String partnerName;
   final String partnerProfile;
   final String partnerBios;
-  final List<PartnerGameProfile> gameProfiles;
-  BoostingPage(
+  final List<BoostableGame> boostableGameList;
+  BoostingRequestPage(
       {Key key,
       this.partnerId,
       this.partnerName,
       this.partnerProfile,
       this.partnerBios,
-      this.gameProfiles})
+      this.boostableGameList})
       : super(key: key);
 
   @override
-  _BoostingPageState createState() => _BoostingPageState();
+  _BoostingRequestPageState createState() => _BoostingRequestPageState();
 }
 
-class _BoostingPageState extends State<BoostingPage> {
+class _BoostingRequestPageState extends State<BoostingRequestPage> {
+  ///UI
   TextStyle _textStyle;
   var error;
   bool _isPageLoading = true;
   bool _isPageError = false;
   bool _isConfirmLoading = false;
+  ///UI
+  
+  ///Bottom Sheet
   List<Widget> _boostingGameNames = [];
   List<Widget> _gameRankFrom = [];
   List<Widget> _gameUpToRank = [];
-  List<PartnerGameProfile> _boostingGames = [];
+  ///Bottom Sheet
+  
+  ///Remote Data
+  //List<BoostableGame> _boostingGames = [];
+  List<UserBoostingGamePrice> _userBoostingGamePrice = [];
   Wallet _wallet = Wallet(value: 0);
+  ///Remote Data
+  
+  ///Data to send back
   int _selectedGameId = -1;
   String _selectedGameName = '';
-  String _selectedRankFrom = 'Select';
-  String _selectedUpToRank = 'Select';
-  int _selectedDays = 0;
-  int _selectedHours = 0;
+  int _selectedRankFromIndex = -1; //for validation
+  String _selectedRankFrom = '???';
+  int _selectedUpToRankIndex = 100000; //for validation
+  String _selectedUpToRank = '???';
+  int _estimateFinishedDays = 0;
+  int _estimateFinishedHours = 0;
+  int _totalPrice = 0;
   String _boostingUpTo = '';
-  final _priceController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  int _boostingUpToIndex = 0;
+  ///Data to send back
+
+  //final _priceController = TextEditingController();
+  //final _descriptionController = TextEditingController();
 
   void _initData() {
-    _initUserWallet();
-    widget.gameProfiles.forEach((element) {
-      if (element.boostable == 1) {
-        _boostingGames.add(element);
-        _boostingGameNames.add(CupertinoActionSheetAction(
-          onPressed: () {
-            setState(() {
-              _boostingUpTo = element.upToRank;
-              _selectedGameName = '${element.gameName}';
-              _selectedGameId = element.gameId;
-              _gameRankFrom.clear();
-              _gameUpToRank.clear();
-              element.gameRankList.forEach((e) {
-                _gameRankFrom.add(CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      this._selectedRankFrom = e;
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text(e, style: Theme.of(context).textTheme.button),
-                ));
-                _gameUpToRank.add(CupertinoActionSheetAction(
-                  onPressed: () {
-                    setState(() {
-                      this._selectedUpToRank = e;
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text(e, style: Theme.of(context).textTheme.button),
-                ));
-              });
-            });
-            Navigator.pop(context);
-          },
-          child: Text(
-            '${element.gameName}',
-            style: _textStyle,
-          ),
-        ));
-      }
-    });
-    if (_boostingGames.isEmpty) {
+    Future.wait([_initUserWallet(), _initBoostingGamePrice()], eagerError: true)
+        .then((value) {
       setState(() {
-        this.error = "This user does not provide Boosting Service";
-        this._isPageError = true;
+        _isPageLoading = false;
       });
-    }
+    });
   }
 
   Future<void> _initUserWallet() async {
     MoonBlinkRepository.getUserWallet().then((value) {
       setState(() {
         this._wallet = value;
-        _isPageLoading = false;
+      });
+    }, onError: (e) {
+      setState(() {
+        this.error = e;
+        _isPageError = true;
+      });
+    });
+  }
+
+  Future<void> _initBoostingGamePrice() async {
+    MoonBlinkRepository.getBoostingGameList(widget.partnerId).then((value) {
+      setState(() {
+        this._userBoostingGamePrice = value;
+      });
+      for (int i = 0; i < _userBoostingGamePrice.length; ++i) {
+        if (widget.boostableGameList[i].id == _userBoostingGamePrice[i].id) {
+          _userBoostingGamePrice[i].levels =
+              widget.boostableGameList[i].gameRankList;
+        }
+      }
+      _userBoostingGamePrice.forEach((element) {
+        _boostingGameNames.add(CupertinoActionSheetAction(
+          child: Text(element.name, style: _textStyle),
+          onPressed: () {
+            setState(() {
+              _boostingUpTo = element.boostOrderPrice.last.upToRank;
+              _boostingUpToIndex = element.levels.indexOf(_boostingUpTo);
+              _selectedGameName = element.name;
+              _selectedGameId = element.id;
+              _gameRankFrom.clear();
+              _gameUpToRank.clear();
+              _selectedRankFromIndex = -1; //for validation
+              _selectedRankFrom = '???';
+              _selectedUpToRankIndex = 100000; //for validation
+              _selectedUpToRank = '???';
+              _totalPrice = 0;
+              _estimateFinishedDays = 0;
+              _estimateFinishedHours = 0;
+              for (int i = 0; i <= _boostingUpToIndex; ++i) {
+                _gameRankFrom.add(CupertinoActionSheetAction(
+                  onPressed: () {
+                    if (this._selectedUpToRankIndex > i) {
+                      setState(() {
+                        this._selectedRankFromIndex = i;
+                        this._selectedRankFrom = element.levels[i];
+                      });
+                      _calculateTotalPriceAndDuration();
+                    } else {
+                      showToast('Current rank should be lower than To Rank');
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Text(element.levels[i],
+                      style: Theme.of(context).textTheme.button),
+                ));
+
+                _gameUpToRank.add(CupertinoActionSheetAction(
+                  onPressed: () {
+                    if (this._selectedRankFromIndex < i) {
+                      setState(() {
+                        this._selectedUpToRankIndex = i;
+                        this._selectedUpToRank = element.levels[i];
+                      });
+                      _calculateTotalPriceAndDuration();
+                    } else {
+                      showToast('Current rank should be lower than To Rank');
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Text(element.levels[i],
+                      style: Theme.of(context).textTheme.button),
+                ));
+              }
+              Navigator.pop(context);
+            });
+          },
+        ));
       });
     }, onError: (e) {
       setState(() {
@@ -128,8 +176,8 @@ class _BoostingPageState extends State<BoostingPage> {
 
   @override
   void dispose() {
-    _priceController.dispose();
-    _descriptionController.dispose();
+    //_priceController.dispose();
+    //_descriptionController.dispose();
     super.dispose();
   }
 
@@ -137,6 +185,43 @@ class _BoostingPageState extends State<BoostingPage> {
   void didChangeDependencies() {
     _textStyle = Theme.of(context).textTheme.bodyText2;
     super.didChangeDependencies();
+  }
+
+  _calculateTotalPriceAndDuration() {
+    if (_selectedRankFromIndex == -1 || _selectedUpToRankIndex == 100000) {
+      return;
+    } else {
+      _userBoostingGamePrice.forEach((element) {
+        if (element.id == _selectedGameId) {
+          int tempPrice = 0;
+          int tempDay = 0;
+          int tempHour = 0;
+          element.boostOrderPrice.forEach((e) {
+            if (_selectedRankFromIndex <=
+                    element
+                        .levels
+                        .indexOf(e.rankFrom) &&
+                _selectedUpToRankIndex >=
+                    element
+                        .levels
+                        .indexOf(e.upToRank)) {
+              tempPrice += e.estimateCost;
+              tempDay += e.estimateDay;
+              tempHour += e.estimateHour;
+            }
+          });
+          if (tempHour > 23) {
+            tempDay += tempHour ~/ 24;
+            tempHour %= 24;
+          }
+          setState(() {
+            this._totalPrice = tempPrice;
+            this._estimateFinishedDays = tempDay;
+            this._estimateFinishedHours = tempHour;
+          });
+        }
+      });
+    }
   }
 
   _showNotEnoughCoin() {
@@ -162,92 +247,98 @@ class _BoostingPageState extends State<BoostingPage> {
     //         ));
   }
 
-  _showDurationPicker() {
-    Picker(
-      selecteds: [this._selectedDays, this._selectedHours],
-      textStyle: TextStyle(color: Colors.white, fontSize: 20),
-      containerColor: Theme.of(context).scaffoldBackgroundColor,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      adapter: NumberPickerAdapter(data: <NumberPickerColumn>[
-        NumberPickerColumn(begin: 0, end: 999, suffix: Text(' Days')),
-        NumberPickerColumn(begin: 0, end: 23, suffix: Text(' Hours')),
-      ]),
-      hideHeader: true,
-      confirmText: 'Select',
-      cancelTextStyle: TextStyle(fontSize: 16),
-      confirmTextStyle:
-          TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
-      title: Center(child: const Text('Select Estimate duration')),
-      selectedTextStyle:
-          TextStyle(color: Theme.of(context).accentColor, fontSize: 22),
-      onConfirm: (Picker picker, List<int> value) {
-        // // You get your duration here
-        // Duration _duration = Duration(
-        //     hours: picker.getSelectedValues()[0],
-        //     minutes: picker.getSelectedValues()[1]);
-        setState(() {
-          this._selectedDays = value[0];
-          this._selectedHours = value[1];
-        });
-      },
-    ).showDialog(context, barrierDismissible: false);
-  }
+  // _showDurationPicker() {
+  //   Picker(
+  //       selecteds: [this._selectedDays, this._selectedHours],
+  //       backgroundColor: Theme.of(context).backgroundColor,
+  //       height: MediaQuery.of(context).size.height * 0.3,
+  //       title: Text('Select'),
+  //       selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
+  //       adapter: PickerDataAdapter<String>(pickerdata: [
+  //         List.generate(
+  //             1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
+  //         List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+  //       ], isArray: true),
+  //       delimiter: [
+  //         PickerDelimiter(
+  //             child: Container(
+  //                 width: 30.0,
+  //                 alignment: Alignment.center,
+  //                 color: Theme.of(context).backgroundColor,
+  //                 child: Text(' : ',
+  //                     style: TextStyle(
+  //                         color: Theme.of(context).accentColor,
+  //                         fontSize: 32,
+  //                         fontWeight: FontWeight.bold))))
+  //       ],
+  //       onCancel: () {
+  //         debugPrint('Cancelling');
+  //       },
+  //       onConfirm: (picker, ints) {
+  //         setState(() {
+  //           this._selectedDays = ints.first;
+  //           this._selectedHours = ints.last;
+  //         });
+  //       }).showModal(this.context);
+  // }
 
-  _showEstimatePrice() {
-    if (Platform.isAndroid) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Estimate Price", textAlign: TextAlign.center),
-              content: CupertinoTextField(
-                autofocus: true,
-                decoration:
-                    BoxDecoration(color: Theme.of(context).backgroundColor),
-                controller: _priceController,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    Navigator.pop(context);
-                  },
-                  child: Text(G.of(context).submit),
-                )
-              ],
-            );
-          });
-    }
+  // _showEstimatePrice() {
+  //   if (Platform.isAndroid) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             title: Text("Estimate Price", textAlign: TextAlign.center),
+  //             content: CupertinoTextField(
+  //               autofocus: true,
+  //               decoration:
+  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
+  //               controller: _priceController,
+  //               textAlign: TextAlign.center,
+  //               keyboardType: TextInputType.number,
+  //             ),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                 onPressed: () {
+  //                   FocusScope.of(context).unfocus();
+  //                   setState(() {});
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: Text(G.of(context).submit),
+  //               )
+  //             ],
+  //           );
+  //         });
+  //   }
 
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text("Estimate Price", textAlign: TextAlign.center),
-              content: CupertinoTextField(
-                autofocus: true,
-                decoration:
-                    BoxDecoration(color: Theme.of(context).backgroundColor),
-                controller: _priceController,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-              ),
-              actions: <Widget>[
-                CupertinoButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    Navigator.pop(context);
-                  },
-                  child: Text(G.of(context).submit),
-                )
-              ],
-            );
-          });
-    }
-  }
+  //   if (Platform.isIOS) {
+  //     showCupertinoDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return CupertinoAlertDialog(
+  //             title: Text("Total Price", textAlign: TextAlign.center),
+  //             content: CupertinoTextField(
+  //               autofocus: true,
+  //               decoration:
+  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
+  //               controller: _priceController,
+  //               textAlign: TextAlign.center,
+  //               keyboardType: TextInputType.number,
+  //             ),
+  //             actions: <Widget>[
+  //               CupertinoButton(
+  //                 onPressed: () {
+  //                   FocusScope.of(context).unfocus();
+  //                   setState(() {});
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: Text(G.of(context).submit),
+  //               )
+  //             ],
+  //           );
+  //         });
+  //   }
+  // }
 
   _showRankFrom(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
@@ -288,7 +379,7 @@ class _BoostingPageState extends State<BoostingPage> {
   }
 
   _showGameNameSheet(BuildContext context) {
-    if (_boostingGames.isEmpty) return;
+    if (_userBoostingGamePrice.isEmpty) return;
     showCupertinoModalPopup(
         context: context,
         builder: (context) {
@@ -309,29 +400,29 @@ class _BoostingPageState extends State<BoostingPage> {
       showToast('Please select a game');
       return;
     }
-    if (_selectedRankFrom == "Select" || _selectedRankFrom.isEmpty) {
+    if (_selectedRankFrom == "???" || _selectedRankFrom.isEmpty) {
       showToast('Please select rank from');
       return;
     }
-    if (_selectedUpToRank == "Select" || _selectedUpToRank.isEmpty) {
+    if (_selectedUpToRank == "???" || _selectedUpToRank.isEmpty) {
       showToast('Please select up to rank');
       return;
     }
-    final totalHours = (_selectedDays * 24) + _selectedHours;
-    if (totalHours <= 0) {
-      showToast('Estimate Duration can\'t be blanked');
-      return;
-    }
-    final totalPrice = int.tryParse(_priceController.text) ?? 0;
-    if (_wallet.value < totalPrice) {
+    if (_wallet.value < _totalPrice) {
       _showNotEnoughCoin();
       return;
     }
     setState(() {
       _isConfirmLoading = true;
     });
-    MoonBlinkRepository.requestBoosting(widget.partnerId, _selectedGameId,
-            _selectedRankFrom, _selectedUpToRank, totalHours, totalPrice)
+    MoonBlinkRepository.requestBoosting(
+            widget.partnerId,
+            _selectedGameId,
+            _selectedRankFrom,
+            _selectedUpToRank,
+            _estimateFinishedDays,
+            _estimateFinishedHours,
+            _totalPrice)
         .then((value) {
       setState(() {
         _isConfirmLoading = false;
@@ -381,6 +472,8 @@ class _BoostingPageState extends State<BoostingPage> {
               child: Card(
                 child: ListTile(
                   leading: CachedNetworkImage(
+                    width: 50,
+                    height: 50,
                     imageUrl: widget.partnerProfile,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       radius: 30,
@@ -443,34 +536,61 @@ class _BoostingPageState extends State<BoostingPage> {
             Card(
                 child: Container(
               margin: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Column(
                 children: [
-                  InkWell(
-                    onTap: () => _showRankFrom(context),
-                    child: Column(
-                      children: [
-                        Text('Rank From'),
-                        SizedBox(height: 5),
-                        Text('$_selectedRankFrom',
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 16))
-                      ],
-                    ),
+                  Text(
+                    'Boost Rank',
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  InkWell(
-                    onTap: () => _showUpToRank(context),
-                    child: Column(
-                      children: [
-                        Text('Up To Rank'),
-                        SizedBox(height: 5),
-                        Text('$_selectedUpToRank',
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 16))
-                      ],
-                    ),
+                  SizedBox(height: 5),
+                  Text('$_selectedRankFrom  to  $_selectedUpToRank'),
+                  SizedBox(height: 5),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showRankFrom(context),
+                        child: Container(
+                            width: 70,
+                            height: 70,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).accentColor,
+                                  width: 1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${_selectedRankFrom == '???' ? "Current\nRank" : _selectedRankFrom.split(" ").join("\n")}',
+                              overflow: TextOverflow.fade,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12),
+                            )),
+                      ),
+                      Icon(Icons.forward_sharp, size: 40),
+                      GestureDetector(
+                        onTap: () => _showUpToRank(context),
+                        child: Container(
+                            width: 70,
+                            height: 70,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).accentColor,
+                                  width: 1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${_selectedUpToRank == '???' ? "To\nRank" : _selectedUpToRank.split(" ").join("\n")}',
+                              overflow: TextOverflow.fade,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12),
+                            )),
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -480,19 +600,19 @@ class _BoostingPageState extends State<BoostingPage> {
             Card(
               child: ListTile(
                 title: Text(
-                  "Estimate Duration",
+                  "Estimate Finished Time",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  ('$_selectedDays Days, $_selectedHours Hours'),
+                  ('$_estimateFinishedDays Days, $_estimateFinishedHours Hours'),
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
                     ? CupertinoActivityIndicator()
-                    : Icon(Icons.chevron_right),
-                onTap: () {
-                  _showDurationPicker();
-                },
+                    : null, //Icon(Icons.chevron_right),
+                // onTap: () {
+                //   _showDurationPicker();
+                // },
               ),
             ),
 
@@ -500,36 +620,19 @@ class _BoostingPageState extends State<BoostingPage> {
             Card(
               child: ListTile(
                 title: Text(
-                  "Estimate Price",
+                  "Total Price",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  '${int.tryParse(_priceController.text) ?? 0} Coins',
+                  '$_totalPrice Coins',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
                     ? CupertinoActivityIndicator()
-                    : Icon(Icons.chevron_right),
-                onTap: () {
-                  _showEstimatePrice();
-                },
-              ),
-            ),
-
-            ///[Description]
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoTextField(
-                  decoration: BoxDecoration(color: Colors.transparent),
-                  minLines: 3,
-                  maxLines: 3,
-                  clearButtonMode: OverlayVisibilityMode.editing,
-                  style: TextStyle(color: Colors.white),
-                  textInputAction: TextInputAction.done,
-                  placeholder:
-                      "Description your requirement so our CoPlayer can decide they will taking your order or not.",
-                ),
+                    : null,//Icon(Icons.chevron_right),
+                // onTap: () {
+                //   _showEstimatePrice();
+                // },
               ),
             ),
 
@@ -538,7 +641,7 @@ class _BoostingPageState extends State<BoostingPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Note: Sometime our CoPlayer may need a little more time than your estimate duraion, please be understand. But if they pass your expected duration more than 3 or 4 days than you can report to our customer service and we will give them punishment",
+                  "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
                   textAlign: TextAlign.justify,
                 ),
               ),

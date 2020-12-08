@@ -17,6 +17,16 @@ const int EXPIRED = 4;
 const int UNAVAILABLE = 5;
 const int CANCEL = 6;
 
+///Boosting Status
+const int BOOST_UNKNOWN = -1;
+const int BOOST_PENDING = 0;
+const int BOOST_ACCEPTED = 1;
+const int BOOST_REJECT = 2;
+const int BOOST_DONE = 3;
+const int BOOST_EXPIRED = 4;
+const int BOOST_UNAVAILABLE = 5;
+const int BOOST_CANCEL = 6;
+
 ///Message Type
 const int MESSAGE = 0;
 const int IMAGE = 1;
@@ -24,6 +34,7 @@ const int VIDEO = 2;
 const int AUDIO = 3;
 const int CALL = 4;
 const int REQUEST = 7;
+const int BOOSTING_REQUEST = 8;
 //Reocrd Status
 const String onStop = "onStop";
 const String onStart = "onStart";
@@ -36,7 +47,7 @@ const int kPro = 4;
 
 const int kHomePostLimit = 10;
 
-///3 buttons
+///3 buttons for normal users
 const String kFirstButton = 'kFirstButton';
 const String kSecondButton = 'kSecondButton';
 const String kThirdButton = 'kThirdButton';

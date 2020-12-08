@@ -436,6 +436,25 @@ class _UserStatusPageState extends State<UserStatusPage> {
                             .pushNamed(RouteName.chooseUserPlayGames)),
                   ),
 
+                ///Boosting Profile
+                if (usertype != 0)
+                  Card(
+                    margin: EdgeInsets.zero,
+                    // elevation: 4,
+                    child: ListTile(
+                        leading: SvgPicture.asset(
+                          gameProfile, //change icon later
+                          // color: Colors.blueGrey,
+                          height: 30,
+                          width: 30,
+                          fit: BoxFit.contain,
+                        ),
+                        title: Text('Boosting Profile',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(RouteName.boostingGameListPage)),
+                  ),
+
                 ///OwnProfile
                 Card(
                   margin: EdgeInsets.only(bottom: 15),

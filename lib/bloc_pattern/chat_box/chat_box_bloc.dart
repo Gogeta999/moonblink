@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
+import 'package:moonblink/models/chat_models/last_boost_order.dart';
 import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -71,16 +72,20 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
 
   final bookingStatusSubject = BehaviorSubject<BookingStatus>.seeded(null);
+  final boostingStatusSubject = BehaviorSubject<LastBoostOrder>.seeded(null);
   final partnerUserSubject = BehaviorSubject<PartnerUser>.seeded(null);
 
   ///Button State
   final bookingCancelButtonSubject = BehaviorSubject.seeded(false);
+  final boostingCancelButtonSubject = BehaviorSubject.seeded(false);
   final callButtonSubject = BehaviorSubject.seeded(false);
   final rejectButtonSubject = BehaviorSubject.seeded(false);
   final acceptButtonSubject = BehaviorSubject.seeded(false);
   final firstButtonSubject = BehaviorSubject<String>.seeded(null);
   final secondButtonSubject = BehaviorSubject<String>.seeded(null);
   final thirdButtonSubject = BehaviorSubject<String>.seeded(null);
+  final boostingAcceptButtonSubject = BehaviorSubject.seeded(false);
+  final boostingRejectButtonSubject = BehaviorSubject.seeded(false);
   Timer _firstTimer;
   Timer _secondTimer;
   Timer _thirdTimer;
@@ -103,14 +108,18 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   void dispose() {
     List<Future> futures = [
       bookingStatusSubject.close(),
+      boostingStatusSubject.close(),
       partnerUserSubject.close(),
       bookingCancelButtonSubject.close(),
+      boostingCancelButtonSubject.close(),
       callButtonSubject.close(),
       rejectButtonSubject.close(),
       acceptButtonSubject.close(),
       firstButtonSubject.close(),
       secondButtonSubject.close(),
       thirdButtonSubject.close(),
+      boostingAcceptButtonSubject.close(),
+      boostingRejectButtonSubject.close(),
       this.close()
     ];
     _firstTimer?.cancel();
@@ -165,19 +174,38 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     }
     if (event is ChatBoxCancelBooking)
       yield* _mapCancelBookingToState(currentState);
+
+    if (event is ChatBoxCancelBoosting)
+      yield* _mapCancelBoostingToState(currentState);
+
     if (event is ChatBoxCall)
       yield* _mapCallToState(currentState, event.channel, event.receiverId);
+
     if (event is ChatBoxEndBooking) yield* _mapEndBookingToState(currentState);
+
+    if (event is ChatBoxEndBoosting) yield* _mapEndBoostingToState(currentState);
+
     if (event is ChatBoxRejectBooking)
       yield* _mapRejectBookingToState(currentState);
+
     if (event is ChatBoxAcceptBooking)
       yield* _mapAcceptBookingToState(currentState);
+
+    if (event is ChatBoxRejectBoosting)
+      yield* _mapRejectBoostingToState(currentState);
+
+    if (event is ChatBoxAcceptBoosting)
+      yield* _mapAcceptBoostingToState(currentState);
+
     if (event is ChatBoxSendMessage)
       yield* _mapSendMessageToState(currentState);
+
     if (event is ChatBoxSendImage)
       yield* _mapSendImageToState(currentState, event.image);
+
     if (event is ChatBoxSendAudio)
       yield* _mapSendAudioToState(currentState, event.audio);
+
     if (event is ChatBoxReceiveMessage)
       yield* _mapReceiveMessageToState(
           currentState,
@@ -249,6 +277,24 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     }
   }
 
+  Stream<ChatBoxState> _mapCancelBoostingToState(
+      ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      try {
+        boostingCancelButtonSubject.add(true);
+        final boostingStatus = await boostingStatusSubject.first;
+        await MoonBlinkRepository.setBoostingStatus(boostingStatus.boostOrderId, BOOST_CANCEL);
+        yield ChatBoxCancelBoostingSuccess();
+        boostingCancelButtonSubject.add(false);
+        yield currentState.copyWith();
+      } catch (e) {
+        yield ChatBoxCancelBoostingFailure(e);
+        boostingCancelButtonSubject.add(false);
+        yield currentState.copyWith();
+      }
+    }
+  }
+
   Stream<ChatBoxState> _mapEndBookingToState(ChatBoxState currentState) async* {
     if (currentState is ChatBoxSuccess) {
       try {
@@ -263,6 +309,21 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       }
     }
   }
+
+  Stream<ChatBoxState> _mapEndBoostingToState(ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      try {
+        final boostingStatus = await boostingStatusSubject.first;
+        await MoonBlinkRepository.setBoostingStatus(boostingStatus.boostOrderId, BOOST_DONE);
+        yield ChatBoxEndBoostingSuccess();
+        yield currentState.copyWith();
+      } catch (e) {
+        yield ChatBoxEndBoostingFailure(e);
+        yield currentState.copyWith();
+      }
+    }
+  }
+
 
   Stream<ChatBoxState> _mapRejectBookingToState(
       ChatBoxState currentState) async* {
@@ -297,6 +358,42 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       } catch (e) {
         yield ChatBoxAcceptBookingFailure(e);
         acceptButtonSubject.add(false);
+        yield currentState.copyWith();
+      }
+    }
+  }
+
+  Stream<ChatBoxState> _mapAcceptBoostingToState(
+      ChatBoxState currentState) async* {
+    if (currentState is ChatBoxSuccess) {
+      try {
+        boostingAcceptButtonSubject.add(true);
+        final boostingStatus = await boostingStatusSubject.first;
+        await MoonBlinkRepository.setBoostingStatus(boostingStatus.boostOrderId, BOOST_ACCEPTED);
+        yield ChatBoxAcceptBoostingSuccess();
+        boostingAcceptButtonSubject.add(false);
+        yield currentState.copyWith();
+      } catch (e) {
+        yield ChatBoxAcceptBoostingFailure(e);
+        boostingAcceptButtonSubject.add(false);
+        yield currentState.copyWith();
+      }
+    }
+  }
+
+  Stream<ChatBoxState> _mapRejectBoostingToState(
+      ChatBoxState currentState) async* {
+     if (currentState is ChatBoxSuccess) {
+      try {
+        boostingRejectButtonSubject.add(true);
+        final boostingStatus = await boostingStatusSubject.first;
+        await MoonBlinkRepository.setBoostingStatus(boostingStatus.boostOrderId, BOOST_REJECT);
+        yield ChatBoxRejectBoostingSuccess();
+        boostingRejectButtonSubject.add(false);
+        yield currentState.copyWith();
+      } catch (e) {
+        yield ChatBoxRejectBoostingFailure(e);
+        boostingRejectButtonSubject.add(false);
         yield currentState.copyWith();
       }
     }

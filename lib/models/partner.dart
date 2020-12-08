@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class PartnerUser {
   int partnerId;
   String partnerName;
@@ -27,6 +25,7 @@ class PartnerUser {
   String ordertaking;
   PartnerProfile prfoileFromPartner;
   List<PartnerGameProfile> gameprofile;
+  List<BoostableGame> boostableGameList;
 
   // String partnerProfileImage;
   // String partnerBackendImage;
@@ -54,6 +53,7 @@ class PartnerUser {
     this.ordertaking,
     this.prfoileFromPartner,
     this.gameprofile,
+    this.boostableGameList,
   });
 
   factory PartnerUser.fromJson(Map<String, dynamic> map) {
@@ -85,6 +85,7 @@ class PartnerUser {
       gameprofile: map['game_profile']
           .map<PartnerGameProfile>((e) => PartnerGameProfile.fromJson(e))
           .toList(),
+      boostableGameList: map['boostable_game_list'].map<BoostableGame>((e) => BoostableGame.fromJson(e)).toList(),
     );
   }
 
@@ -227,7 +228,22 @@ class PartnerGameProfile {
         'created_at': createdAt,
         'updated_at': updatedAt,
         'up_to_rank': upToRank,
-        'levels': gameRankList.map<String>((e) => jsonEncode(e)).toList(),
+        'levels': gameRankList.map<String>((e) => e.toString()).toList(),
         'game_icon': gameicon,
       };
+}
+
+class BoostableGame {
+  final int id;
+  final String name;
+  final String type;
+  final String gameIcon;
+  final List<String> gameRankList;
+
+  BoostableGame.fromJson(Map<String, dynamic> json) 
+    : id = json['id'],
+      name = json['name'],
+      type = json['type'],
+      gameIcon = json['game_icon'],
+      gameRankList = json['levels'].map<String>((e) => e.toString()).toList();
 }

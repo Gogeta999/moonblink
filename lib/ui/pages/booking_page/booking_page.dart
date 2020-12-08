@@ -350,6 +350,8 @@ class _BookingPageState extends State<BookingPage> {
               child: Card(
                 child: ListTile(
                   leading: CachedNetworkImage(
+                    width: 50,
+                    height: 50,
                     imageUrl: widget.partnerProfile,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       radius: 30,
