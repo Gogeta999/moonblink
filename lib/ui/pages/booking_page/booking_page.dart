@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -74,8 +74,9 @@ class _BookingPageState extends State<BookingPage> {
           G.current.tutorialBooking5,
           G.current.tutorialBooking6,
         ],
-        btnLabel: G.current.next,
-        showStepLabel: false,
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
       ),
     );
   }
@@ -86,7 +87,6 @@ class _BookingPageState extends State<BookingPage> {
     bool tuto = StorageManager.sharedPreferences.getBool(bookingtuto);
     if (tuto) {
       Timer(Duration(microseconds: 0), () {
-        /// start the intro
         intro.start(context);
       });
       StorageManager.sharedPreferences.setBool(bookingtuto, false);

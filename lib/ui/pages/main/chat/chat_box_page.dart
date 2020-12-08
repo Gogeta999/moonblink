@@ -5,13 +5,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/player.dart';
 import 'package:moonblink/base_widget/video_player_widget.dart';
@@ -30,6 +33,7 @@ import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/main/chat/rating_page.dart';
+import 'package:moonblink/ui/pages/main/tutorial/chatboxdummy.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -76,6 +80,14 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   ///Lifecycle - Start
   @override
   void initState() {
+    bool bookingendtuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
+    if (bookingendtuto) {
+      Timer(Duration(microseconds: 0), () {
+        /// start the intro
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ChatBoxDummyPage()));
+      });
+    }
     _chatBoxBloc = ChatBoxBloc.init(widget.partnerId);
     _chatBoxBloc.add(ChatBoxFetched());
     WebSocketService().initWithChatBoxBloc(_chatBoxBloc);
@@ -654,18 +666,20 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            decoration: BoxDecoration(
-                border: Border.all(
-                    width: 1,
-                    color: _isDark() ? Colors.white24 : Colors.black26),
-                borderRadius: BorderRadius.circular(10)),
-            child: Text(G.current.chatwelcome,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: _isDark() ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w300))),
+          margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          decoration: BoxDecoration(
+              border: Border.all(
+                  width: 1, color: _isDark() ? Colors.white24 : Colors.black26),
+              borderRadius: BorderRadius.circular(10)),
+          child: Text(
+            G.current.chatwelcome,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: _isDark() ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w300),
+          ),
+        ),
       ],
     );
   }
@@ -911,6 +925,9 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == ACCEPTED) {
           return _buildPhoneButton(snapshot.data.userId);
+        }
+        if (snapshot.data.status != ACCEPTED) {
+          return blockbtn();
         }
         return Container();
       },
@@ -1183,46 +1200,47 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                     }),
 
                 ///bot messages
-                StreamBuilder<bool>(
-                  initialData: false,
-                  stream: _rotatedSubject2,
-                  builder: (context, snapshot) {
-                    if (!snapshot.data) {
-                      _animationController2.forward();
-                      return Positioned(
-                        bottom: 80,
-                        left: 10,
-                        child: new ScaleTransition(
-                          scale: _animationbotmsg,
-                          alignment: FractionalOffset.center,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  firstbotmsg(),
-                                  SizedBox(height: 10),
-                                  secbotmsg(),
-                                  thirdbotmsg(),
-                                  SizedBox(height: 10),
-                                  fourthbotmsg(),
-                                ],
+                if (widget.partnerId != 48)
+                  StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _rotatedSubject2,
+                    builder: (context, snapshot) {
+                      if (!snapshot.data) {
+                        _animationController2.forward();
+                        return Positioned(
+                          bottom: 80,
+                          left: 10,
+                          child: new ScaleTransition(
+                            scale: _animationbotmsg,
+                            alignment: FractionalOffset.center,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 4,
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    firstbotmsg(),
+                                    SizedBox(height: 10),
+                                    secbotmsg(),
+                                    thirdbotmsg(),
+                                    SizedBox(height: 10),
+                                    fourthbotmsg(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
-                ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
               ],
             ),
           ),

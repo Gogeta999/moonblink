@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -12,6 +11,7 @@ import 'package:moonblink/base_widget/MoonBlink_Box_widget.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/base_widget/userfeed.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -61,8 +61,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
           G.current.tutorialDetail5,
           G.current.tutorialDetail6,
         ],
-        btnLabel: G.current.next,
-        showStepLabel: false,
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
       ),
     );
   }
@@ -392,12 +393,12 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
           builder: (context, partnerModel, child) {
             bool showtuto =
                 StorageManager.sharedPreferences.getBool(userdetailtuto);
-            if (showtuto) {
-              Timer(Duration(microseconds: 0), () {
-                intro.start(context);
-              });
-              StorageManager.sharedPreferences.setBool(userdetailtuto, false);
-            }
+            // if (showtuto) {
+            Timer(Duration(microseconds: 0), () {
+              intro.start(context);
+            });
+            // StorageManager.sharedPreferences.setBool(userdetailtuto, false);
+            // }
             void followingRequest(bool newValue) async {
               print('status is 0 so bool is' +
                   followButtonClicked.toString() +

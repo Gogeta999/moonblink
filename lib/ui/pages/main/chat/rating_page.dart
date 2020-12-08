@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/view_model/rate_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -17,11 +22,52 @@ class RatingPage extends StatefulWidget {
 }
 
 class _RatingPageState extends State<RatingPage> {
+  Intro intro;
   double rate = 0;
   TextEditingController comment = TextEditingController();
 
+  _RatingPageState() {
+    intro = Intro(
+      stepCount: 5,
+      onfinish: () {
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(15),
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          G.current.tutorialRating1,
+          G.current.tutorialRating2,
+          G.current.tutorialRating3,
+          G.current.tutorialRating4,
+          G.current.tutorialRating5,
+        ],
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    bool tuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
+    if (tuto) {
+      Timer(Duration(microseconds: 0), () {
+        intro.start(context);
+      });
+      StorageManager.sharedPreferences.setBool(chatboxtuto, false);
+    }
+    super.initState();
+  }
+
   @override
   void dispose() {
+    Timer(Duration(microseconds: 0), () {
+      /// start the intro
+      intro.dispose();
+    });
     super.dispose();
   }
 
@@ -37,6 +83,7 @@ class _RatingPageState extends State<RatingPage> {
           child: Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
+              key: intro.keys[0],
               leading: Container(),
               backgroundColor: Colors.black,
               actions: [
@@ -80,6 +127,7 @@ class _RatingPageState extends State<RatingPage> {
                         child: Column(
                           children: [
                             Container(
+                              key: intro.keys[1],
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
@@ -111,6 +159,7 @@ class _RatingPageState extends State<RatingPage> {
                               height: 50,
                             ),
                             Row(
+                              key: intro.keys[2],
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 SmallShadedContainer(
@@ -137,6 +186,7 @@ class _RatingPageState extends State<RatingPage> {
                               height: 20,
                             ),
                             Container(
+                              key: intro.keys[3],
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 18),
                               decoration: BoxDecoration(
@@ -181,6 +231,7 @@ class _RatingPageState extends State<RatingPage> {
                       width: 30,
                     ),
                     ShadedContainer(
+                      key: intro.keys[4],
                       ontap: () {
                         // Navigator.pop(context);
                         model

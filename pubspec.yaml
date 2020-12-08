@@ -2,7 +2,7 @@ name: moonblink
 description: MoonBlink Universe's app
 publish_to: 'none'
 
-version: 2.2.5+34
+version: 2.2.7+39
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
@@ -101,7 +101,7 @@ dependencies:
   flutter_slidable: ^0.5.7
   flutter_svg: ^0.19.1
   percent_indicator: 2.1.7+4
-  flutter_intro: ^0.6.0
+  # flutter_intro: ^0.7.0
   flutter_gradient_colors: ^1.0.0
   # flutter sqlite local database
   sqflite: ^1.3.2+1

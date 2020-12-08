@@ -399,6 +399,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                       Expanded(
                                         flex: 2,
                                         child: InkWell(
+                                          
                                           child: Container(
                                             child: BlinkWidget(
                                               children: [

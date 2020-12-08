@@ -5,11 +5,11 @@ import 'package:flutter/material.dart' hide showSearch;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
-import 'package:flutter_intro/flutter_intro.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/custom_flutter_src/search.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -59,8 +59,9 @@ class _HomePageState extends State<HomePage>
           G.current.tutorialHome3,
           // 'Tap to get into user detail',
         ],
-        btnLabel: G.current.next,
-        showStepLabel: false,
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
       ),
     );
   }
