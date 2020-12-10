@@ -20,7 +20,7 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
-  bool tuto = false;
+  bool tuto;
   Intro intro;
   _BoostingGameDetailPageState() {
     intro = Intro(
@@ -268,9 +268,9 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               if (snapshot.data == null) {
                 return _loading;
               }
-              tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
+              // tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
               print(tuto);
-              if (tuto) {
+              if (tuto == null) {
                 Timer(Duration(microseconds: 0), () {
                   intro.start(context);
                 });
