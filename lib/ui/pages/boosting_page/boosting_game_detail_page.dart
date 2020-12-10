@@ -155,14 +155,19 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${item.rankFrom}  To  ${item.upToRank}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      '${item.rankFrom} ' +
+                          G.current.boostTo +
+                          ' ${item.upToRank}',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    Text('Price - ${item.estimateCost} Coins'),
+                    Text(G.current.boostPrice +
+                        '${item.estimateCost}' +
+                        G.current.boostCoin),
                     SizedBox(height: 5),
-                    Text(
-                        'Duration - ${item.estimateDay} ${item.estimateDay > 0 ?  "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
+                    Text(G.current.boostDuration +
+                        ' - ${item.estimateDay} ${item.estimateDay > 0 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
                   ],
                 ),
               ),
@@ -170,11 +175,11 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                 children: [
                   CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: Text('Edit Price'),
+                      child: Text(G.current.boostEditPrice),
                       onPressed: () => _showPriceDialog(index)),
                   CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: Text('Edit Duration'),
+                      child: Text(G.current.boostEditDuration),
                       onPressed: () => _showDurationPicker(index)),
                 ],
               )
@@ -200,7 +205,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               }),
           actions: <Widget>[
             CupertinoButton(
-              child: Text('Submit'),
+              child: Text(G.current.submit),
               onPressed: () {
                 this._bloc.submit();
               },
@@ -222,10 +227,22 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               }
               return Column(
                 children: [
-                  _buildTitleWidget(title: 'Fill Your Time & Price'),
+                  _buildTitleWidget(title: G.current.boostFillYourThings),
+                  Card(
+                    margin: EdgeInsets.zero,
+                    shape:
+                        RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    elevation: 8,
+                    child: ListTile(
+                      onTap: null,
+                      title: Text(
+                        G.current.alarmRatio,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 20),
                   Expanded(
-                                      child: ListView.builder(
+                    child: ListView.builder(
                       physics: ClampingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -249,7 +266,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text('Edit Price', textAlign: TextAlign.center),
+            title: Text(G.current.boostEditPrice, textAlign: TextAlign.center),
             content: CupertinoTextField(
               autofocus: true,
               decoration:
@@ -283,11 +300,13 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         selecteds: [days, hours],
         backgroundColor: Theme.of(context).backgroundColor,
         height: MediaQuery.of(context).size.height * 0.3,
-        title: Text('Select'),
+        title: Text(G.current.select),
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
-        adapter: PickerDataAdapter<String>(
-            pickerdata: [List.generate(1000, (index) => '$index ${index > 0 ? "days" : "day"}'), List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')],
-            isArray: true),
+        adapter: PickerDataAdapter<String>(pickerdata: [
+          List.generate(
+              1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
+          List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+        ], isArray: true),
         delimiter: [
           PickerDelimiter(
               child: Container(

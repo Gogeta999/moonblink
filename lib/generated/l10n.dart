@@ -265,6 +265,196 @@ class G {
     );
   }
 
+  /// `Coins`
+  String get boostCoin {
+    return Intl.message(
+      'Coins',
+      name: 'boostCoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Boosting`
+  String get boostConfirmBoosting {
+    return Intl.message(
+      'Confirm Boosting',
+      name: 'boostConfirmBoosting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Days`
+  String get boostDays {
+    return Intl.message(
+      'Days',
+      name: 'boostDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration`
+  String get boostDuration {
+    return Intl.message(
+      'Duration',
+      name: 'boostDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Duration`
+  String get boostEditDuration {
+    return Intl.message(
+      'Edit Duration',
+      name: 'boostEditDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Price`
+  String get boostEditPrice {
+    return Intl.message(
+      'Edit Price',
+      name: 'boostEditPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Estimate Finished Time`
+  String get boostEstimateTime {
+    return Intl.message(
+      'Estimate Finished Time',
+      name: 'boostEstimateTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill Your Time & Price`
+  String get boostFillYourThings {
+    return Intl.message(
+      'Fill Your Time & Price',
+      name: 'boostFillYourThings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hours`
+  String get boostHours {
+    return Intl.message(
+      'Hours',
+      name: 'boostHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get boostPrice {
+    return Intl.message(
+      'Price',
+      name: 'boostPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Provide Boosting up to `
+  String get boostProvideTo {
+    return Intl.message(
+      'Provide Boosting up to ',
+      name: 'boostProvideTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boost Rank`
+  String get boostRank {
+    return Intl.message(
+      'Boost Rank',
+      name: 'boostRank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current rank should be lower than To Rank`
+  String get boostReverseRankToastError {
+    return Intl.message(
+      'Current rank should be lower than To Rank',
+      name: 'boostReverseRankToastError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand`
+  String get boostNote {
+    return Intl.message(
+      'Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand',
+      name: 'boostNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Enough Coin`
+  String get boostNoEnoughCoins {
+    return Intl.message(
+      'No Enough Coin',
+      name: 'boostNoEnoughCoins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a game first`
+  String get boostSelectGameFirst {
+    return Intl.message(
+      'Please select a game first',
+      name: 'boostSelectGameFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select Current Rank`
+  String get boostSelectCurrentRank {
+    return Intl.message(
+      'Please select Current Rank',
+      name: 'boostSelectCurrentRank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select Up to Rank`
+  String get boostSelectUptoRank {
+    return Intl.message(
+      'Please select Up to Rank',
+      name: 'boostSelectUptoRank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To`
+  String get boostTo {
+    return Intl.message(
+      'To',
+      name: 'boostTo',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restart`
   String get buttonrestart {
     return Intl.message(
@@ -2790,6 +2980,16 @@ class G {
     return Intl.message(
       'Watch an Ad to get free coins.',
       name: 'watchadfreecoins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have `
+  String get youHave {
+    return Intl.message(
+      'You have ',
+      name: 'youHave',
       desc: '',
       args: [],
     );

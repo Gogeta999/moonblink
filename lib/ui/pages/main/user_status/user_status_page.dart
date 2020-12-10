@@ -17,6 +17,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/helper/openfacebook.dart';
 import 'package:moonblink/ui/helper/openstore.dart';
 import 'package:moonblink/ui/pages/main/user_status/userlevel.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -360,7 +361,6 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                 progressColor: Theme.of(context).accentColor,
                               ),
                             ),
-                            //TODO: Allow Later
                             Text(
                               "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
                               style: Theme.of(context).textTheme.bodyText1,
@@ -449,10 +449,12 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           width: 30,
                           fit: BoxFit.contain,
                         ),
+                        trailing: (StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true) ? Icon(Icons.star_border_outlined) : null,
                         title: Text('Boosting Profile',
                             style: Theme.of(context).textTheme.bodyText1),
                         onTap: () => Navigator.of(context)
                             .pushNamed(RouteName.boostingGameListPage)),
+
                   ),
 
                 ///OwnProfile
