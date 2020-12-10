@@ -9,6 +9,7 @@ import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/chat/floatingbutton.dart';
 import 'package:moonblink/base_widget/chat/waitingtimeleft.dart';
@@ -525,6 +526,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (myType == kNormal) _buildNormalUserButtons(),
             StreamBuilder<LastBoostOrder>(
@@ -534,25 +536,49 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                 if (snapshot.data == null) {
                   return Container();
                 }
-                int estimateHour =
-                    snapshot.data.estimateHour + snapshot.data.estimateDay * 24;
-                int estimateMinute = estimateHour * 60;
-                int estimateSecond = estimateMinute * 60;
-                return Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1, color: Theme.of(context).accentColor),
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: WaitingTimeLeft(
-                          createat: snapshot.data.startTime,
-                          leftTime: estimateSecond),
-                    ),
-                    SizedBox(height: 5),
-                  ],
-                );
+                return StreamBuilder<String>(
+                    initialData: null,
+                    stream: _chatBoxBloc.boostingTimeSubject,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return Container();
+                      }
+                      if (snapshot.data.isNotEmpty) {
+                        return Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: Theme.of(context).accentColor),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text('${snapshot.data}'),
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    });
+                // int estimateHour =
+                //     snapshot.data.estimateHour + snapshot.data.estimateDay * 24;
+                // int estimateMinute = estimateHour * 60;
+                // int estimateSecond = estimateMinute * 60;
+                // return Column(
+                //   children: [
+                //     Container(
+                //       padding: const EdgeInsets.all(8.0),
+                //       decoration: BoxDecoration(
+                //         border: Border.all(width: 1, color: Theme.of(context).accentColor),
+                //         borderRadius: BorderRadius.all(Radius.circular(20))
+                //       ),
+                //       child: Text('2387:45'),
+                //     ),
+                //     SizedBox(height: 5),
+                //   ],
+                // );
               },
             ),
             Container(
@@ -723,8 +749,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               onPressed: (File file) {
                 _chatBoxBloc.add(ChatBoxSendImage(file));
               },
-              //onInit: _sendMessageWidgetUp,
-              //onDismiss: _sendMessageWidgetDown,
               minWidth: 500,
               minHeight: 500,
               willCrop: false,
@@ -925,9 +949,6 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         }
         if (snapshot.data.status == ACCEPTED) {
           return _buildPhoneButton(snapshot.data.userId);
-        }
-        if (snapshot.data.status != ACCEPTED) {
-          return blockbtn();
         }
         return Container();
       },

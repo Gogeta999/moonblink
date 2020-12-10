@@ -277,9 +277,9 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             // ),
             // SizedBox(height: 20),
             Text(
-                'Provide Boosting Service',
-                textAlign: TextAlign.center,
-              ),
+              'Provide Boosting Service',
+              textAlign: TextAlign.center,
+            ),
             SizedBox(
               height: 20,
             ),
@@ -393,12 +393,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
           builder: (context, partnerModel, child) {
             bool showtuto =
                 StorageManager.sharedPreferences.getBool(userdetailtuto);
-            // if (showtuto) {
-            Timer(Duration(microseconds: 0), () {
-              intro.start(context);
-            });
-            // StorageManager.sharedPreferences.setBool(userdetailtuto, false);
-            // }
+            if (showtuto) {
+              // if (isDev) {
+              Timer(Duration(microseconds: 0), () {
+                intro.start(context);
+              });
+              StorageManager.sharedPreferences.setBool(userdetailtuto, false);
+            }
             void followingRequest(bool newValue) async {
               print('status is 0 so bool is' +
                   followButtonClicked.toString() +
@@ -744,9 +745,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             onTap: () {
                               widget.detailPageId == ownId
                                   ? showToast('You can\'t boost yourself')
-                                  : Navigator.of(context)
-                                      .push(CupertinoPageRoute(
-                                          builder: (context) => BoostingRequestPage(
+                                  : Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              BoostingRequestPage(
                                                 partnerId: partnerModel
                                                     .partnerData.partnerId,
                                                 partnerName: partnerModel
@@ -760,7 +762,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                                     .prfoileFromPartner
                                                     .profileImage,
                                                 boostableGameList: partnerModel
-                                                    .partnerData.boostableGameList,
+                                                    .partnerData
+                                                    .boostableGameList,
                                               )));
                             }),
                       ),
@@ -848,8 +851,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                   );
                                 }),
                           ),
-                          ///Boostable Profile
-                          if (partnerModel.partnerData.boostableGameList?.isNotEmpty) 
+
+                        ///Boostable Profile
+                        if (partnerModel
+                            .partnerData.boostableGameList?.isNotEmpty)
                           Container(
                             width: MediaQuery.of(context).size.width,
                             height: 120,
@@ -861,8 +866,8 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             ),
                             child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount:
-                                    partnerModel.partnerData.boostableGameList.length,
+                                itemCount: partnerModel
+                                    .partnerData.boostableGameList.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: EdgeInsets.symmetric(
@@ -873,8 +878,10 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                                       child: Column(
                                         children: [
                                           CachedNetworkImage(
-                                            imageUrl: partnerModel.partnerData
-                                                .boostableGameList[index].gameIcon,
+                                            imageUrl: partnerModel
+                                                .partnerData
+                                                .boostableGameList[index]
+                                                .gameIcon,
                                             imageBuilder:
                                                 (context, imageProvider) =>
                                                     CircleAvatar(

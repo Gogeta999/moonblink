@@ -443,7 +443,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                     // elevation: 4,
                     child: ListTile(
                         leading: SvgPicture.asset(
-                          gameProfile, //change icon later
+                          boostProfile, //change icon later
                           // color: Colors.blueGrey,
                           height: 30,
                           width: 30,

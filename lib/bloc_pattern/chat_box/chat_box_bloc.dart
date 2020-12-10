@@ -31,8 +31,6 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
         (StorageManager.sharedPreferences.getInt(firstKey) ?? 0) ~/ 1000;
     final firstLeftTime =
         StorageManager.sharedPreferences.getInt(firstLeftKey) ?? 0;
-    print(
-        'Disposing - now-firstBefore: ${now - firstBefore} firstLeftTime:$firstLeftTime');
     if (firstLeftTime > now - firstBefore) {
       _firstTotal = firstLeftTime - (now - firstBefore);
       _firstStartCounting();
@@ -44,8 +42,6 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
         (StorageManager.sharedPreferences.getInt(secondKey) ?? 0) ~/ 1000;
     final secondLeftTime =
         StorageManager.sharedPreferences.getInt(secondLeftKey) ?? 0;
-    print(
-        'Disposing - now-secondBefore: ${now - secondBefore} secondLeftTime:$secondLeftTime');
     if (secondLeftTime > now - secondBefore) {
       _secondTotal = secondLeftTime - (now - secondBefore);
       _secondStartCounting();
@@ -57,22 +53,31 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
         (StorageManager.sharedPreferences.getInt(thirdKey) ?? 0) ~/ 1000;
     final thirdLeftTime =
         StorageManager.sharedPreferences.getInt(thirdLeftKey) ?? 0;
-    print(
-        'Disposing - now-thidBefore: ${now - thirdBefore} thirdLeftTime:$thirdLeftTime');
     if (thirdLeftTime > now - thirdBefore) {
       _thirdTotal = thirdLeftTime - (now - thirdBefore);
       _thirdStartCounting();
     } else {
       thirdButtonSubject.add('');
     }
+
+    this.boostingStatusSubject = BehaviorSubject<LastBoostOrder>.seeded(null)..listen((value) {
+      print('Listening');
+    if (value?.status == BOOST_ACCEPTED) {
+      print('Listening: ${value.status}');
+      final boostEndTime = ((value.estimateHour + value.estimateDay * 24) * 360) + DateTime.parse(value.startTime).millisecondsSinceEpoch ~/ 1000;
+      _boostingTotal = boostEndTime - now;
+      _boostingStartCounting();
+    }
+  });
   }
+
+  BehaviorSubject<LastBoostOrder> boostingStatusSubject;
 
   /// it's also other user id
   final int partnerId;
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
 
   final bookingStatusSubject = BehaviorSubject<BookingStatus>.seeded(null);
-  final boostingStatusSubject = BehaviorSubject<LastBoostOrder>.seeded(null);
   final partnerUserSubject = BehaviorSubject<PartnerUser>.seeded(null);
 
   ///Button State
@@ -86,6 +91,11 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
   final thirdButtonSubject = BehaviorSubject<String>.seeded(null);
   final boostingAcceptButtonSubject = BehaviorSubject.seeded(false);
   final boostingRejectButtonSubject = BehaviorSubject.seeded(false);
+
+  final boostingTimeSubject = BehaviorSubject<String>.seeded(null);
+  Timer _boostingTimer;
+  int _boostingTotal = -1;
+
   Timer _firstTimer;
   Timer _secondTimer;
   Timer _thirdTimer;
@@ -120,6 +130,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
       thirdButtonSubject.close(),
       boostingAcceptButtonSubject.close(),
       boostingRejectButtonSubject.close(),
+      boostingTimeSubject.close(),
       this.close()
     ];
     _firstTimer?.cancel();
@@ -643,6 +654,22 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
         thirdButtonSubject.add('');
       } else
         thirdButtonSubject.add('$minutes : $seconds');
+    });
+  }
+
+  void _boostingStartCounting() {
+    _boostingTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _boostingTotal--;
+      String days = ((_boostingTotal ~/ (360 * 24)) % (360 * 24)).toString().padLeft(2, '0');
+      String hours = ((_boostingTotal ~/ 360) % 24).toString().padLeft(2, '0');
+      String minutes = ((_boostingTotal ~/ 60) % 60).toString().padLeft(2, '0');
+      String seconds = (_boostingTotal % 60).toString().padLeft(2, '0');
+      if (_boostingTotal < 0) {
+        _boostingTotal = -1;
+        _boostingTimer.cancel();
+        boostingTimeSubject.add('');
+      } else
+        boostingTimeSubject.add('$days: $hours: $minutes : $seconds');
     });
   }
 
