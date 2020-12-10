@@ -244,7 +244,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               });
               _calculateTotalPriceAndDuration();
             } else {
-              showToast('Current rank should be lower than To Rank');
+              showToast(G.current.boostReverseRankToastError);
             }
             Navigator.pop(context);
           },
@@ -319,7 +319,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   }
 
   _showNotEnoughCoin() {
-    showToast('Not Enough Coin');
+    showToast(G.current.boostNoEnoughCoins);
     // showCupertinoDialog(
     //     context: context,
     //     builder: (context) => CupertinoAlertDialog(
@@ -343,7 +343,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _showRankFrom(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
-      showToast('Please select a game first');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     showCupertinoModalPopup(
@@ -362,11 +362,11 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _showUpToRank(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
-      showToast('Please select a game first');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     if (_selectedRankFromIndex == -1) {
-      showToast('Please select Current Rank');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     showCupertinoModalPopup(
@@ -402,15 +402,15 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _onTapConfirm() {
     if (_selectedGameName.isEmpty || _selectedGameId == -1) {
-      showToast('Please select a game');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     if (_selectedRankFrom == "???" || _selectedRankFrom.isEmpty) {
-      showToast('Please select Current Rank');
+      showToast(G.current.boostSelectCurrentRank);
       return;
     }
     if (_selectedUpToRank == "???" || _selectedUpToRank.isEmpty) {
-      showToast('Please select Up to Rank');
+      showToast(G.current.boostSelectUptoRank);
       return;
     }
     if (_wallet.value < _totalPrice) {
@@ -485,7 +485,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               ),
               onPressed: () => Navigator.pop(context)),
           backgroundColor: Colors.black,
-          title: Text("Confirm Boosting"),
+          title: Text(G.current.boostConfirmBoosting),
           bottom: PreferredSize(
               child: Container(
                 height: 10,
@@ -535,7 +535,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                         height: 5,
                       ),
                       if (_boostingUpTo.isNotEmpty)
-                        Text('Provide Boosting up to $_boostingUpTo'),
+                        Text(G.current.boostProvideTo + '$_boostingUpTo'),
                     ],
                   ),
                   isThreeLine: true,
@@ -574,11 +574,13 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               child: Column(
                 children: [
                   Text(
-                    'Boost Rank',
+                    G.current.boostRank,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   SizedBox(height: 5),
-                  Text('$_selectedRankFrom  to  $_selectedUpToRank'),
+                  Text('$_selectedRankFrom  ' +
+                      G.current.boostTo +
+                      '  $_selectedUpToRank'),
                   SizedBox(height: 5),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -653,11 +655,14 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               key: intro.keys[4],
               child: ListTile(
                 title: Text(
-                  "Estimate Finished Time",
+                  G.current.boostEstimateTime,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  ('$_estimateFinishedDays Days, $_estimateFinishedHours Hours'),
+                  ('$_estimateFinishedDays ' +
+                      G.current.boostDays +
+                      ', $_estimateFinishedHours ' +
+                      G.current.boostHours),
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
@@ -674,11 +679,11 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               key: intro.keys[5],
               child: ListTile(
                 title: Text(
-                  "Total Price",
+                  G.current.totalprice,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  '$_totalPrice Coins',
+                  '$_totalPrice ' + G.current.boostCoin,
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
@@ -691,11 +696,12 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
             ),
 
             ///[Note]
-            const Card(
+            Card(
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+                  // "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+                  G.current.boostNote,
                   textAlign: TextAlign.justify,
                 ),
               ),
@@ -720,7 +726,8 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                           child: _wallet == null
                               ? CupertinoActivityIndicator()
                               : Text(
-                                  'You have ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
+                                  G.current.youHave +
+                                      ' ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
                                   style:
                                       Theme.of(context).textTheme.subtitle1)),
                       _isPageLoading
