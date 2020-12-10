@@ -449,12 +449,14 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           width: 30,
                           fit: BoxFit.contain,
                         ),
-                        trailing: (StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true) ? Icon(Icons.star_border_outlined) : null,
+                        trailing: StorageManager.sharedPreferences
+                                .getBool(kNewToBoosting)
+                            ? Icon(Icons.star_border_outlined)
+                            : null,
                         title: Text('Boosting Profile',
                             style: Theme.of(context).textTheme.bodyText1),
                         onTap: () => Navigator.of(context)
                             .pushNamed(RouteName.boostingGameListPage)),
-
                   ),
 
                 ///OwnProfile

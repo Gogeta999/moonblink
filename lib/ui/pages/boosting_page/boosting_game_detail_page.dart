@@ -20,7 +20,7 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
-  bool tuto;
+  bool tuto = true;
   Intro intro;
   _BoostingGameDetailPageState() {
     intro = Intro(
@@ -270,7 +270,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               }
               // tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
               print(tuto);
-              if (tuto == null) {
+              if (tuto) {
                 Timer(Duration(microseconds: 0), () {
                   intro.start(context);
                 });
@@ -291,9 +291,69 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       ),
                     ),
                   ),
+                  if (tuto)
+                    Column(
+                      children: [
+                        SizedBox(height: 20),
+                        _buildCard(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      key: intro.keys[0],
+                                      padding: EdgeInsets.zero,
+                                      child: Text(
+                                        'Rank ' + G.current.boostTo + ' Rank ',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Container(
+                                      key: intro.keys[1],
+                                      child: Text(G.current.boostPrice +
+                                          '100' +
+                                          G.current.boostCoin),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      key: intro.keys[2],
+                                      child: Text(G.current.boostDuration +
+                                          ' - 10 days, 0 hour'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    key: intro.keys[3],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Text(G.current.boostEditPrice),
+                                        onPressed: () {}),
+                                  ),
+                                  Container(
+                                    key: intro.keys[4],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child:
+                                            Text(G.current.boostEditDuration),
+                                        onPressed: () {}),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   Expanded(
                     child: ListView.builder(
-                      // key: intro.keys[0],
                       physics: ClampingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {

@@ -1,4 +1,5 @@
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/utils/constants.dart';
 
 String hometuto = 'hometuto';
 String userstatustuto = 'userstatustuto';
@@ -13,4 +14,5 @@ void tutorialOn() {
   StorageManager.sharedPreferences.setBool(userdetailtuto, true);
   StorageManager.sharedPreferences.setBool(chatboxtuto, true);
   StorageManager.sharedPreferences.setBool(boostingrequesttuto, true);
+  StorageManager.sharedPreferences.setBool(kNewToBoosting, false);
 }
