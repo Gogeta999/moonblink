@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/bloc_pattern/boosting_game_detail/bloc/boosting_game_detail_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/BoostGame.dart';
+import 'package:moonblink/utils/constants.dart';
 
 class BoostingGameDetailPage extends StatefulWidget {
   final Map data;
@@ -15,6 +20,35 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
+  bool tuto = false;
+  Intro intro;
+  _BoostingGameDetailPageState() {
+    intro = Intro(
+      stepCount: 6,
+      borderRadius: BorderRadius.circular(15),
+      onfinish: () {
+        intro.dispose();
+        setState(() {
+          tuto = false;
+        });
+      },
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          "This show which rank you need to boost.",
+          "This is current price for your service. This can be edit as you like",
+          "This is current duration for your service. This can be edit as you like",
+          "Press this to Edit your price",
+          "Press this to Edit your duration",
+          "Finally press submit to confirm your setting",
+        ],
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
+      ),
+    );
+  }
   // ignore: close_sinks
   BoostingGameDetailBloc _bloc;
 
@@ -22,11 +56,17 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
   void initState() {
     this._bloc = BoostingGameDetailBloc(widget.data['id']);
     this._bloc.init();
+
+    ///[to test]
+    // StorageManager.sharedPreferences.setBool(kNewToBoosting, true);
     super.initState();
   }
 
   @override
   void dispose() {
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
     this._bloc.dispose();
     super.dispose();
   }
@@ -200,11 +240,14 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                 Navigator.pop(context);
               }),
           actions: <Widget>[
-            CupertinoButton(
-              child: Text('Submit'),
-              onPressed: () {
-                this._bloc.submit();
-              },
+            Container(
+              key: intro.keys[5],
+              child: CupertinoButton(
+                child: Text('Submit'),
+                onPressed: () {
+                  this._bloc.submit();
+                },
+              ),
             )
           ],
           bottom: PreferredSize(
@@ -220,6 +263,14 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
             builder: (context, snapshot) {
               if (snapshot.data == null) {
                 return _loading;
+              }
+              tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
+              print(tuto);
+              if (tuto) {
+                Timer(Duration(microseconds: 0), () {
+                  intro.start(context);
+                });
+                StorageManager.sharedPreferences.setBool(kNewToBoosting, false);
               }
               return Column(
                 children: [
@@ -237,8 +288,66 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  if (tuto)
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildCard(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      key: intro.keys[0],
+                                      child: Text(
+                                        "Normal  To  Rank",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Container(
+                                      key: intro.keys[1],
+                                      child: Text('Price - 100 Coins'),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      key: intro.keys[2],
+                                      child: Text('Duration - 10 days, 0 hour'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    key: intro.keys[3],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Text('Edit Price'),
+                                        onPressed: () {}),
+                                  ),
+                                  Container(
+                                    key: intro.keys[4],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Text('Edit Duration'),
+                                        onPressed: () {}),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                      ],
+                    ),
                   Expanded(
                     child: ListView.builder(
+                      // key: intro.keys[0],
                       physics: ClampingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {

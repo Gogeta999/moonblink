@@ -17,7 +17,8 @@ class BoostingGameListPage extends StatefulWidget {
 
 class _BoostingGameListPageState extends State<BoostingGameListPage> {
   ///ViewModel and Controller in one page coz its simple
-  final _bookingGameListSubject = BehaviorSubject<List<UserPlayGame>>.seeded(null);
+  final _bookingGameListSubject =
+      BehaviorSubject<List<UserPlayGame>>.seeded(null);
   final deselectSubject = BehaviorSubject.seeded(DeselectState.initial);
 
   @override
@@ -42,23 +43,23 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Scaffold(
-        appBar: AppbarWidget(),
-        body: StreamBuilder<List<UserPlayGame>>(
-          initialData: null,
-          stream: _bookingGameListSubject,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              debugPrint(snapshot.error.toString());
-              return Center(child: Text('Something Went Wrong!'));
-            }
-            if (snapshot.data == null) {
-              return Center(child: CupertinoActivityIndicator());
-            }
-            if (snapshot.data.isEmpty) {
-              return Center(child: Text('No Data To Show!!'));
-            }
-            return ListView.builder(
+      child: Scaffold(
+          appBar: AppbarWidget(),
+          body: StreamBuilder<List<UserPlayGame>>(
+            initialData: null,
+            stream: _bookingGameListSubject,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error.toString());
+                return Center(child: Text('Something Went Wrong!'));
+              }
+              if (snapshot.data == null) {
+                return Center(child: CupertinoActivityIndicator());
+              }
+              if (snapshot.data.isEmpty) {
+                return Center(child: Text('No Data To Show!!'));
+              }
+              return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 physics: ClampingScrollPhysics(),
                 itemCount: snapshot.data.length,
@@ -68,7 +69,9 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                     // enabled: item.isPlay == 0
                     //     ? false
                     //     : true,
-                    enabled: false,///false for now no flag include in response
+                    enabled: false,
+
+                    ///false for now no flag include in response
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
@@ -89,10 +92,10 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                                     ? CupertinoActivityIndicator()
                                     : Icon(Icons.remove_circle,
                                         color: Theme.of(context).accentColor),
-                                onTap: () =>
-                                    snapshot.data == DeselectState.loading
-                                        ? {}
-                                        : {},//_gameProfileBloc.onTapDeselect(item),
+                                onTap: () => snapshot.data ==
+                                        DeselectState.loading
+                                    ? {}
+                                    : {}, //_gameProfileBloc.onTapDeselect(item),
                               );
                             }),
                       )
@@ -124,7 +127,7 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                                 : Text(item.description),
                         trailing: Icon(
                           Icons.check_box,
-                          color: true//item.isPlay == 0
+                          color: true //item.isPlay == 0
                               ? Colors.transparent
                               : Theme.of(context).accentColor,
                         ),
@@ -137,10 +140,8 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                   );
                 },
               );
-
-          },
-        )
-      ),
+            },
+          )),
     );
   }
 
@@ -164,15 +165,16 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
   // }
 
   void onTapListTile(UserPlayGame item) {
-    Navigator.pushNamed(context, RouteName.boostingGameDetailPage, arguments: {'id': item.id, 'game_name': item.name}).then((value) {
-       if (value != null && value) 
+    Navigator.pushNamed(context, RouteName.boostingGameDetailPage,
+        arguments: {'id': item.id, 'game_name': item.name}).then((value) {
+      if (value != null && value)
         MoonBlinkRepository.getUserPlayGameList().then((value) {
-      final List<UserPlayGame> data = [];
-      value.userPlayGameList.forEach((element) {
-        if (element.isBoostable == 1) data.add(element);
-      });
-      _bookingGameListSubject.add(data);
-    }, onError: (e) => _bookingGameListSubject.addError(e));
+          final List<UserPlayGame> data = [];
+          value.userPlayGameList.forEach((element) {
+            if (element.isBoostable == 1) data.add(element);
+          });
+          _bookingGameListSubject.add(data);
+        }, onError: (e) => _bookingGameListSubject.addError(e));
     });
   }
 }

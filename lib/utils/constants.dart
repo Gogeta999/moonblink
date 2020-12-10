@@ -48,6 +48,7 @@ const int kPro = 4;
 const int kHomePostLimit = 10;
 
 const String kNewToBoosting = 'kNewToBoosting';
+const String firsttimeboosting = 'firsttimeboosting';
 
 ///3 buttons for normal users
 const String kFirstButton = 'kFirstButton';
