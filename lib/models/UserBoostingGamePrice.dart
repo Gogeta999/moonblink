@@ -4,8 +4,7 @@ class UserBoostingGamePrice {
   final String type;
   final String gameIcon;
   final String description;
-  List<String> levels;
-  //final String levels;
+  final List<String> levels;
   final String createdAt;
   final String updatedAt;
   final String gameProfileSample;
@@ -18,8 +17,7 @@ class UserBoostingGamePrice {
       type = json['type'],
       gameIcon = json['game_icon'],
       description = json['description'],
-      //levels = json['levels'].map<String>((e) => e.toString()).toList(),
-      //levels = json['levels'],
+      levels = json['levels'].map<String>((e) => e.toString()).toList(),
       createdAt = json['created_at'],
       updatedAt = json['updated_at'],
       gameProfileSample = json['game_profile_sample'],

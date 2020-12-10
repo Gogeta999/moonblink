@@ -555,30 +555,34 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('${snapshot.data}'),
+                              child: Text('${snapshot.data}', textAlign: TextAlign.center,),
                             ),
                           ),
                         );
                       }
                       return Container();
                     });
-                // int estimateHour =
-                //     snapshot.data.estimateHour + snapshot.data.estimateDay * 24;
-                // int estimateMinute = estimateHour * 60;
-                // int estimateSecond = estimateMinute * 60;
-                // return Column(
-                //   children: [
-                //     Container(
-                //       padding: const EdgeInsets.all(8.0),
-                //       decoration: BoxDecoration(
-                //         border: Border.all(width: 1, color: Theme.of(context).accentColor),
-                //         borderRadius: BorderRadius.all(Radius.circular(20))
-                //       ),
-                //       child: Text('2387:45'),
-                //     ),
-                //     SizedBox(height: 5),
-                //   ],
-                // );
+              },
+            ),
+            StreamBuilder<LastBoostOrder>(
+              initialData: null,
+              stream: _chatBoxBloc.boostingStatusSubject,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Container();
+                }
+                return StreamBuilder<String>(
+                    initialData: null,
+                    stream: _chatBoxBloc.boostingTimeSubject,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return Container();
+                      }
+                      if (snapshot.data.isNotEmpty) {
+                        return SizedBox(height: 10);
+                      }
+                      return Container();
+                    });
               },
             ),
             Container(
@@ -1613,7 +1617,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
         context: context,
         builder: (_) {
           return CustomDialog(
-            title: G.of(context).bookingEnded,
+            title: 'Boosting End',
             simpleContent: 'Are you sure to end this order?',
             // row2Content: BookingTimeLeft(
             //   count: bookingStatus.count,
@@ -1625,7 +1629,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
             confirmContent: G.of(context).end,
             confirmCallback: () {
               _chatBoxBloc.add(ChatBoxEndBoosting());
-              Navigator.pop(context);
+              //Navigator.pop(context);
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(

@@ -38,20 +38,23 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   bool _isPageLoading = true;
   bool _isPageError = false;
   bool _isConfirmLoading = false;
+
   ///UI
-  
+
   ///Bottom Sheet
   List<Widget> _boostingGameNames = [];
   List<Widget> _gameRankFrom = [];
   List<Widget> _gameUpToRank = [];
+
   ///Bottom Sheet
-  
+
   ///Remote Data
   //List<BoostableGame> _boostingGames = [];
   List<UserBoostingGamePrice> _userBoostingGamePrice = [];
   Wallet _wallet = Wallet(value: 0);
+
   ///Remote Data
-  
+
   ///Data to send back
   int _selectedGameId = -1;
   String _selectedGameName = '';
@@ -63,7 +66,8 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   int _estimateFinishedHours = 0;
   int _totalPrice = 0;
   String _boostingUpTo = '';
-  int _boostingUpToIndex = 0;
+  //int _boostingUpToIndex = 0;
+
   ///Data to send back
 
   //final _priceController = TextEditingController();
@@ -96,65 +100,47 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
       setState(() {
         this._userBoostingGamePrice = value;
       });
-      for (int i = 0; i < _userBoostingGamePrice.length; ++i) {
-        if (widget.boostableGameList[i].id == _userBoostingGamePrice[i].id) {
-          _userBoostingGamePrice[i].levels =
-              widget.boostableGameList[i].gameRankList;
-        }
-      }
       _userBoostingGamePrice.forEach((element) {
         _boostingGameNames.add(CupertinoActionSheetAction(
           child: Text(element.name, style: _textStyle),
           onPressed: () {
             setState(() {
-              _boostingUpTo = element.boostOrderPrice.last.upToRank;
-              _boostingUpToIndex = element.levels.indexOf(_boostingUpTo);
-              _selectedGameName = element.name;
-              _selectedGameId = element.id;
-              _gameRankFrom.clear();
-              _gameUpToRank.clear();
-              _selectedRankFromIndex = -1; //for validation
-              _selectedRankFrom = '???';
-              _selectedUpToRankIndex = 100000; //for validation
-              _selectedUpToRank = '???';
-              _totalPrice = 0;
-              _estimateFinishedDays = 0;
-              _estimateFinishedHours = 0;
-              for (int i = 0; i <= _boostingUpToIndex; ++i) {
-                _gameRankFrom.add(CupertinoActionSheetAction(
-                  onPressed: () {
-                    if (this._selectedUpToRankIndex > i) {
-                      setState(() {
-                        this._selectedRankFromIndex = i;
-                        this._selectedRankFrom = element.levels[i];
-                      });
-                      _calculateTotalPriceAndDuration();
-                    } else {
-                      showToast('Current rank should be lower than To Rank');
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Text(element.levels[i],
-                      style: Theme.of(context).textTheme.button),
-                ));
+              _addGameRankFrom(element);
+              // for (int i = 0; i < element.boostOrderPrice.length; ++i) {
+              //   _gameRankFrom.add(CupertinoActionSheetAction(
+              //     onPressed: () {
+              //       if (this._selectedUpToRankIndex > i) {
+              //         setState(() {
+              //           this._selectedRankFromIndex = i;
+              //           this._selectedRankFrom = element.levels[i];
+              //         });
+              //         _calculateTotalPriceAndDuration();
+              //       } else {
+              //         showToast('Current rank should be lower than To Rank');
+              //       }
+              //       Navigator.pop(context);
+              //     },
+              //     child: Text(element.levels[i],
+              //         style: Theme.of(context).textTheme.button),
+              //   ));
 
-                _gameUpToRank.add(CupertinoActionSheetAction(
-                  onPressed: () {
-                    if (this._selectedRankFromIndex < i) {
-                      setState(() {
-                        this._selectedUpToRankIndex = i;
-                        this._selectedUpToRank = element.levels[i];
-                      });
-                      _calculateTotalPriceAndDuration();
-                    } else {
-                      showToast('Current rank should be lower than To Rank');
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Text(element.levels[i],
-                      style: Theme.of(context).textTheme.button),
-                ));
-              }
+              //   _gameUpToRank.add(CupertinoActionSheetAction(
+              //     onPressed: () {
+              //       if (this._selectedRankFromIndex < i) {
+              //         setState(() {
+              //           this._selectedUpToRankIndex = i;
+              //           this._selectedUpToRank = element.levels[i];
+              //         });
+              //         _calculateTotalPriceAndDuration();
+              //       } else {
+              //         showToast('Current rank should be lower than To Rank');
+              //       }
+              //       Navigator.pop(context);
+              //     },
+              //     child: Text(element.levels[i],
+              //         style: Theme.of(context).textTheme.button),
+              //   ));
+              // }
               Navigator.pop(context);
             });
           },
@@ -166,6 +152,72 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
         _isPageError = true;
       });
     });
+  }
+
+  void _addGameRankFrom(UserBoostingGamePrice element) {
+    //_boostingUpTo = element.boostOrderPrice.last.upToRank;
+    //_boostingUpToIndex = element.levels.indexOf(_boostingUpTo);
+    _selectedGameName = element.name;
+    _selectedGameId = element.id;
+    _gameRankFrom.clear();
+    _gameUpToRank.clear();
+    _selectedRankFromIndex = -1; //for validation
+    _selectedRankFrom = '???';
+    _selectedUpToRankIndex = 100000; //for validation
+    _selectedUpToRank = '???';
+    _totalPrice = 0;
+    _estimateFinishedDays = 0;
+    _estimateFinishedHours = 0;
+    element.boostOrderPrice.asMap().forEach((i, e) {
+      if (e.isAccept == 1) {
+        _gameRankFrom.add(CupertinoActionSheetAction(
+          onPressed: () {
+            setState(() {
+              this._selectedRankFromIndex = i;
+              this._selectedRankFrom = element.levels[i];
+              this._selectedUpToRankIndex = 100000;
+              this._selectedUpToRank = '???';
+              _totalPrice = 0;
+              _estimateFinishedDays = 0;
+              _estimateFinishedHours = 0;
+            });
+            _addGameRankTo(element);
+            //_calculateTotalPriceAndDuration();
+            Navigator.pop(context);
+          },
+          child: Text(element.levels[i],
+              style: Theme.of(context).textTheme.button),
+        ));
+      }
+    });
+  }
+
+  void _addGameRankTo(UserBoostingGamePrice element) {
+    _gameUpToRank.clear();
+    for (int i = _selectedRankFromIndex;
+        i < element.boostOrderPrice.length;
+        ++i) {
+      if (element.boostOrderPrice[i].isAccept == 1) {
+        _gameUpToRank.add(CupertinoActionSheetAction(
+          onPressed: () {
+            if (this._selectedRankFromIndex < i + 1) {
+              setState(() {
+                this._selectedUpToRankIndex = i + 1;
+                this._selectedUpToRank = element.levels[i + 1];
+              });
+              _calculateTotalPriceAndDuration();
+            } else {
+              showToast('Current rank should be lower than To Rank');
+            }
+            Navigator.pop(context);
+          },
+          child: Text(element.levels[i + 1],
+              style: Theme.of(context).textTheme.button),
+        ));
+      } else {
+        break;
+      }
+    }
   }
 
   @override
@@ -197,14 +249,8 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
           int tempDay = 0;
           int tempHour = 0;
           element.boostOrderPrice.forEach((e) {
-            if (_selectedRankFromIndex <=
-                    element
-                        .levels
-                        .indexOf(e.rankFrom) &&
-                _selectedUpToRankIndex >=
-                    element
-                        .levels
-                        .indexOf(e.upToRank)) {
+            if (_selectedRankFromIndex <= element.levels.indexOf(e.rankFrom) &&
+                _selectedUpToRankIndex >= element.levels.indexOf(e.upToRank)) {
               tempPrice += e.estimateCost;
               tempDay += e.estimateDay;
               tempHour += e.estimateHour;
@@ -247,99 +293,6 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
     //         ));
   }
 
-  // _showDurationPicker() {
-  //   Picker(
-  //       selecteds: [this._selectedDays, this._selectedHours],
-  //       backgroundColor: Theme.of(context).backgroundColor,
-  //       height: MediaQuery.of(context).size.height * 0.3,
-  //       title: Text('Select'),
-  //       selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
-  //       adapter: PickerDataAdapter<String>(pickerdata: [
-  //         List.generate(
-  //             1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
-  //         List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
-  //       ], isArray: true),
-  //       delimiter: [
-  //         PickerDelimiter(
-  //             child: Container(
-  //                 width: 30.0,
-  //                 alignment: Alignment.center,
-  //                 color: Theme.of(context).backgroundColor,
-  //                 child: Text(' : ',
-  //                     style: TextStyle(
-  //                         color: Theme.of(context).accentColor,
-  //                         fontSize: 32,
-  //                         fontWeight: FontWeight.bold))))
-  //       ],
-  //       onCancel: () {
-  //         debugPrint('Cancelling');
-  //       },
-  //       onConfirm: (picker, ints) {
-  //         setState(() {
-  //           this._selectedDays = ints.first;
-  //           this._selectedHours = ints.last;
-  //         });
-  //       }).showModal(this.context);
-  // }
-
-  // _showEstimatePrice() {
-  //   if (Platform.isAndroid) {
-  //     showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: Text("Estimate Price", textAlign: TextAlign.center),
-  //             content: CupertinoTextField(
-  //               autofocus: true,
-  //               decoration:
-  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
-  //               controller: _priceController,
-  //               textAlign: TextAlign.center,
-  //               keyboardType: TextInputType.number,
-  //             ),
-  //             actions: <Widget>[
-  //               FlatButton(
-  //                 onPressed: () {
-  //                   FocusScope.of(context).unfocus();
-  //                   setState(() {});
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: Text(G.of(context).submit),
-  //               )
-  //             ],
-  //           );
-  //         });
-  //   }
-
-  //   if (Platform.isIOS) {
-  //     showCupertinoDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return CupertinoAlertDialog(
-  //             title: Text("Total Price", textAlign: TextAlign.center),
-  //             content: CupertinoTextField(
-  //               autofocus: true,
-  //               decoration:
-  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
-  //               controller: _priceController,
-  //               textAlign: TextAlign.center,
-  //               keyboardType: TextInputType.number,
-  //             ),
-  //             actions: <Widget>[
-  //               CupertinoButton(
-  //                 onPressed: () {
-  //                   FocusScope.of(context).unfocus();
-  //                   setState(() {});
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: Text(G.of(context).submit),
-  //               )
-  //             ],
-  //           );
-  //         });
-  //   }
-  // }
-
   _showRankFrom(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
       showToast('Please select a game first');
@@ -362,6 +315,10 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   _showUpToRank(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
       showToast('Please select a game first');
+      return;
+    }
+    if (_selectedRankFromIndex == -1) {
+      showToast('Please select Current Rank');
       return;
     }
     showCupertinoModalPopup(
@@ -401,11 +358,11 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
       return;
     }
     if (_selectedRankFrom == "???" || _selectedRankFrom.isEmpty) {
-      showToast('Please select rank from');
+      showToast('Please select Current Rank');
       return;
     }
     if (_selectedUpToRank == "???" || _selectedUpToRank.isEmpty) {
-      showToast('Please select up to rank');
+      showToast('Please select Up to Rank');
       return;
     }
     if (_wallet.value < _totalPrice) {
@@ -629,7 +586,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                 ),
                 trailing: _isPageLoading
                     ? CupertinoActivityIndicator()
-                    : null,//Icon(Icons.chevron_right),
+                    : null, //Icon(Icons.chevron_right),
                 // onTap: () {
                 //   _showEstimatePrice();
                 // },
@@ -712,3 +669,96 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
     );
   }
 }
+
+ // _showDurationPicker() {
+  //   Picker(
+  //       selecteds: [this._selectedDays, this._selectedHours],
+  //       backgroundColor: Theme.of(context).backgroundColor,
+  //       height: MediaQuery.of(context).size.height * 0.3,
+  //       title: Text('Select'),
+  //       selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
+  //       adapter: PickerDataAdapter<String>(pickerdata: [
+  //         List.generate(
+  //             1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
+  //         List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+  //       ], isArray: true),
+  //       delimiter: [
+  //         PickerDelimiter(
+  //             child: Container(
+  //                 width: 30.0,
+  //                 alignment: Alignment.center,
+  //                 color: Theme.of(context).backgroundColor,
+  //                 child: Text(' : ',
+  //                     style: TextStyle(
+  //                         color: Theme.of(context).accentColor,
+  //                         fontSize: 32,
+  //                         fontWeight: FontWeight.bold))))
+  //       ],
+  //       onCancel: () {
+  //         debugPrint('Cancelling');
+  //       },
+  //       onConfirm: (picker, ints) {
+  //         setState(() {
+  //           this._selectedDays = ints.first;
+  //           this._selectedHours = ints.last;
+  //         });
+  //       }).showModal(this.context);
+  // }
+
+  // _showEstimatePrice() {
+  //   if (Platform.isAndroid) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             title: Text("Estimate Price", textAlign: TextAlign.center),
+  //             content: CupertinoTextField(
+  //               autofocus: true,
+  //               decoration:
+  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
+  //               controller: _priceController,
+  //               textAlign: TextAlign.center,
+  //               keyboardType: TextInputType.number,
+  //             ),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                 onPressed: () {
+  //                   FocusScope.of(context).unfocus();
+  //                   setState(() {});
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: Text(G.of(context).submit),
+  //               )
+  //             ],
+  //           );
+  //         });
+  //   }
+
+  //   if (Platform.isIOS) {
+  //     showCupertinoDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return CupertinoAlertDialog(
+  //             title: Text("Total Price", textAlign: TextAlign.center),
+  //             content: CupertinoTextField(
+  //               autofocus: true,
+  //               decoration:
+  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
+  //               controller: _priceController,
+  //               textAlign: TextAlign.center,
+  //               keyboardType: TextInputType.number,
+  //             ),
+  //             actions: <Widget>[
+  //               CupertinoButton(
+  //                 onPressed: () {
+  //                   FocusScope.of(context).unfocus();
+  //                   setState(() {});
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: Text(G.of(context).submit),
+  //               )
+  //             ],
+  //           );
+  //         });
+  //   }
+  // }
