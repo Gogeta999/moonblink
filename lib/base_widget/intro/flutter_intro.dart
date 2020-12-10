@@ -48,7 +48,7 @@ class Intro {
   List<GlobalKey> _globalKeys = [];
   final Color _maskColor = Colors.black.withOpacity(.6);
   final Duration _animationDuration = Duration(milliseconds: 300);
-  final _th = _Throttling(duration: Duration(milliseconds: 500));
+  final _th = _Throttling(duration: Duration(milliseconds: 100));
   Size _lastScreenSize;
 
   /// get current step page index

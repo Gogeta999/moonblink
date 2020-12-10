@@ -82,7 +82,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
   @override
   void initState() {
     bool bookingendtuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
-    if (bookingendtuto && !isDev) {
+    if (bookingendtuto) {
       Timer(Duration(microseconds: 0), () {
         /// start the intro
         Navigator.push(context,
