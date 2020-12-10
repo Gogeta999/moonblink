@@ -40,15 +40,26 @@ class BoostingGameDetailBloc extends Bloc<BoostingGameDetailEvent, BoostingGameD
 
   void submit() {
     gameListSubject.first.then((value) {
+      bool valid = false;
       List<Map<String, dynamic>> jsonList = [];
-      value.forEach((element) { 
+      value.forEach((element) {
+        if(!valid) {
+          valid = !(element.estimateCost == 0 && element.estimateDay == 0 && element.estimateHour == 0);
+        }
         jsonList.add(element.toJson());
       });
+      if (!valid) {
+        showToast('At leat one rank need to proceed');
+        return;
+      }
       MoonBlinkRepository.setBoostGameProfile(jsonList, id).then((value) {
         debugPrint('Upload success');
         showToast('Upload Success');
         Navigator.pop(context, true);
-      }, onError: (e) => debugPrint('Upload Failed: $e'));
+      }, onError: (e) {
+        debugPrint('Upload Failed: $e');
+        showToast('$e');
+      });
     });
   }
 }

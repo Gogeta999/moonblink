@@ -40,7 +40,10 @@ class _ChooseUserPlayGamePageState extends State<ChooseUserPlayGamePage> {
               return Center(
                 child: CupertinoButton(
                     child: Text('Something went wrong! Retry'),
-                    onPressed: () => _gameProfileBloc.fetchGameProfile()),
+                    onPressed: () {
+                      _gameProfileBloc.fetchGameProfile();
+                      _gameProfileBloc.userPlayGameListSubject.add(null);
+                    }),
               );
             } else if (snapshot.data == null) {
               return Center(child: CupertinoActivityIndicator());

@@ -329,6 +329,13 @@ class MoonBlinkRepository {
     final response = await DioUtils().get(Api.BoostingGameList + '$partnerId/boost');
     return response.data.map<UserBoostingGamePrice>((e) => UserBoostingGamePrice.fromJson(e)).toList();
   }
+  
+  //Delete Boosting Game Profile
+  static Future deleteBoostingGameProfile(int gameId) async {
+    final userId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().delete(Api.DeleteBoostingProfile + '$userId/game/$gameId/boost/profile');
+    return response.data;
+  }
 
   static Future setBoostingStatus(int boostingId, int status) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);

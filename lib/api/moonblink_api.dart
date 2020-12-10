@@ -90,6 +90,8 @@ class Api {
 
   static const String BoostingGameList = 'moonblink/api/v1/social/user/';
 
+  static const String DeleteBoostingProfile = 'moonblink/api/v1/user/'; //eg-moonblink/api/v1/user/24/game/3/boost/profile
+
   //for choose_user_play_game_page
   static const String UserPlayGame =
       '/moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/5/profile/game

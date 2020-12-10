@@ -147,6 +147,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
   Widget _buildListItem(BoostGame item, int index) {
     return Column(
       children: [
+        SizedBox(height: 20),
         _buildCard(
           child: Row(
             children: [
@@ -182,7 +183,6 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
             ],
           ),
         ),
-        SizedBox(height: 15),
       ],
     );
   }
@@ -236,7 +236,6 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
                   Expanded(
                     child: ListView.builder(
                       physics: ClampingScrollPhysics(),
@@ -296,7 +295,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         selecteds: [days, hours],
         backgroundColor: Theme.of(context).backgroundColor,
         height: MediaQuery.of(context).size.height * 0.3,
-        title: Text('Select'),
+        title: Text('Duration'),
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
         adapter: PickerDataAdapter<String>(pickerdata: [
           List.generate(

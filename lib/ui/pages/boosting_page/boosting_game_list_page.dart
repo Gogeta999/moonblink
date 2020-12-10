@@ -22,13 +22,7 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
 
   @override
   void initState() {
-    MoonBlinkRepository.getUserPlayGameList().then((value) {
-      final List<UserPlayGame> data = [];
-      value.userPlayGameList.forEach((element) {
-        if (element.isBoostable == 1) data.add(element);
-      });
-      _bookingGameListSubject.add(data);
-    }, onError: (e) => _bookingGameListSubject.addError(e));
+    _fetchData();
     super.initState();
   }
 
@@ -50,7 +44,10 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               debugPrint(snapshot.error.toString());
-              return Center(child: Text('Something Went Wrong!'));
+              return Center(child: CupertinoButton(child: Text('Something Went Wrong!'), onPressed: (){
+                _bookingGameListSubject.add(null);
+                _fetchData();
+              },));
             }
             if (snapshot.data == null) {
               return Center(child: CupertinoActivityIndicator());
@@ -65,10 +62,9 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                 itemBuilder: (context, index) {
                   UserPlayGame item = snapshot.data[index];
                   return Slidable(
-                    // enabled: item.isPlay == 0
-                    //     ? false
-                    //     : true,
-                    enabled: false,///false for now no flag include in response
+                    enabled: item.boostable == 0
+                        ? false
+                        : true,
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
@@ -92,7 +88,7 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                                 onTap: () =>
                                     snapshot.data == DeselectState.loading
                                         ? {}
-                                        : {},//_gameProfileBloc.onTapDeselect(item),
+                                        : onTapDeselect(item),
                               );
                             }),
                       )
@@ -124,55 +120,59 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                                 : Text(item.description),
                         trailing: Icon(
                           Icons.check_box,
-                          color: true//item.isPlay == 0
+                          color: item.boostable == 0
                               ? Colors.transparent
                               : Theme.of(context).accentColor,
                         ),
-                        selected: false,
-                        // selected: item.isPlay == 0
-                        //     ? false
-                        //     : true,
+                        selected: item.boostable == 0
+                            ? false
+                            : true,
                       ),
                     ),
                   );
                 },
               );
-
           },
         )
       ),
     );
   }
 
-  // void onTapDeselect(UserPlayGame item) {
-  //   ///call delete api
-  //   deselectSubject.add(DeselectState.loading);
-  //   MoonBlinkRepository.deleteGameProfile(item.gameProfile.gameId).then(
-  //       (value) {
-  //     deselectSubject.add(DeselectState.initial);
-  //     StorageManager.sharedPreferences.setInt(mgameprofile,
-  //         StorageManager.sharedPreferences.getInt(mgameprofile) - 1);
-  //     print("GAMEPROFILE COUNT IS " +
-  //         StorageManager.sharedPreferences.getInt(mgameprofile).toString());
-
-  //     ///After delete, fetch data from server again
-  //     this.fetchGameProfile();
-  //   }, onError: (err) {
-  //     deselectSubject.add(DeselectState.initial);
-  //     showToast(err.toString());
-  //   });
-  // }
-
-  void onTapListTile(UserPlayGame item) {
-    Navigator.pushNamed(context, RouteName.boostingGameDetailPage, arguments: {'id': item.id, 'game_name': item.name}).then((value) {
-       if (value != null && value) 
-        MoonBlinkRepository.getUserPlayGameList().then((value) {
+  void _fetchData() {
+    MoonBlinkRepository.getUserPlayGameList().then((value) {
       final List<UserPlayGame> data = [];
       value.userPlayGameList.forEach((element) {
         if (element.isBoostable == 1) data.add(element);
       });
       _bookingGameListSubject.add(data);
     }, onError: (e) => _bookingGameListSubject.addError(e));
+  }
+
+  void onTapDeselect(UserPlayGame item) {
+    ///call delete api
+    deselectSubject.add(DeselectState.loading);
+    MoonBlinkRepository.deleteBoostingGameProfile(item.gameProfile.gameId).then(
+        (value) {
+      deselectSubject.add(DeselectState.initial);
+
+      ///After delete, fetch data from server again
+      MoonBlinkRepository.getUserPlayGameList().then((value) {
+      final List<UserPlayGame> data = [];
+      value.userPlayGameList.forEach((element) {
+        if (element.isBoostable == 1) data.add(element);
+      });
+      _bookingGameListSubject.add(data);
+    }, onError: (e) {
+      deselectSubject.add(DeselectState.initial);
+      _bookingGameListSubject.addError(e);
+    });
+    });
+  }
+
+  void onTapListTile(UserPlayGame item) {
+    Navigator.pushNamed(context, RouteName.boostingGameDetailPage, arguments: {'id': item.id, 'game_name': item.name}).then((value) {
+       if (value ?? false) 
+        _fetchData();
     });
   }
 }

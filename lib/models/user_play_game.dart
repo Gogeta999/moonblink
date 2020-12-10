@@ -26,6 +26,7 @@ class UserPlayGame {
   final String updatedAt;
   final int isPlay;
   final int isBoostable;
+  final int boostable;
   final GameProfile gameProfile;
 
   UserPlayGame(
@@ -37,6 +38,7 @@ class UserPlayGame {
       this.createdAt,
       this.updatedAt,
       this.isPlay,
+      this.boostable,
       this.isBoostable,
       this.gameProfile});
 
@@ -49,6 +51,7 @@ class UserPlayGame {
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
         isPlay = json['is_play'],
+        boostable = json['boostable'],
         isBoostable = json['is_boostable'],
         gameProfile = GameProfile.fromJson(json['game_profile']);
 

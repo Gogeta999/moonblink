@@ -598,7 +598,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+                  "Note: Sometimes our CoPlayer may need a little more time than your expected finished duration, please try to understand",
                   textAlign: TextAlign.justify,
                 ),
               ),
