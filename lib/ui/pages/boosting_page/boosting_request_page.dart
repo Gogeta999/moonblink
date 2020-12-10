@@ -1,15 +1,23 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/UserBoostingGamePrice.dart';
 import 'package:moonblink/models/partner.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/cached_helper.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
 
 class BoostingRequestPage extends StatefulWidget {
@@ -32,6 +40,35 @@ class BoostingRequestPage extends StatefulWidget {
 }
 
 class _BoostingRequestPageState extends State<BoostingRequestPage> {
+  Intro intro;
+  _BoostingRequestPageState() {
+    intro = Intro(
+      stepCount: 7,
+      borderRadius: BorderRadius.circular(15),
+      onfinish: () {
+        Timer(Duration(microseconds: 0), () {
+          intro.dispose();
+        });
+      },
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          "This is to choose game",
+          "This is to choose rank",
+          "Press here to choose your current rank",
+          "Press here to choose the rank which you want to boost",
+          "This will show estimated duration by the player",
+          "This is the price issued by the player",
+          "Press confirm to request boosting service",
+        ],
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
+      ),
+    );
+  }
+
   ///UI
   TextStyle _textStyle;
   var error;
@@ -207,7 +244,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               });
               _calculateTotalPriceAndDuration();
             } else {
-              showToast('Current rank should be lower than To Rank');
+              showToast(G.current.boostReverseRankToastError);
             }
             Navigator.pop(context);
           },
@@ -223,11 +260,22 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   @override
   void initState() {
     _initData();
+    bool tuto = StorageManager.sharedPreferences.getBool(boostingrequesttuto);
+    // bool tuto = true;
+    if (tuto) {
+      Timer(Duration(microseconds: 0), () {
+        intro.start(context);
+      });
+      StorageManager.sharedPreferences.setBool(boostingrequesttuto, false);
+    }
     super.initState();
   }
 
   @override
   void dispose() {
+    Timer(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
     //_priceController.dispose();
     //_descriptionController.dispose();
     super.dispose();
@@ -271,7 +319,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   }
 
   _showNotEnoughCoin() {
-    showToast('Not Enough Coin');
+    showToast(G.current.boostNoEnoughCoins);
     // showCupertinoDialog(
     //     context: context,
     //     builder: (context) => CupertinoAlertDialog(
@@ -295,7 +343,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _showRankFrom(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
-      showToast('Please select a game first');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     showCupertinoModalPopup(
@@ -314,11 +362,11 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _showUpToRank(BuildContext context) {
     if (_gameRankFrom.isEmpty) {
-      showToast('Please select a game first');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     if (_selectedRankFromIndex == -1) {
-      showToast('Please select Current Rank');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     showCupertinoModalPopup(
@@ -354,15 +402,15 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
   _onTapConfirm() {
     if (_selectedGameName.isEmpty || _selectedGameId == -1) {
-      showToast('Please select a game');
+      showToast(G.current.boostSelectGameFirst);
       return;
     }
     if (_selectedRankFrom == "???" || _selectedRankFrom.isEmpty) {
-      showToast('Please select Current Rank');
+      showToast(G.current.boostSelectCurrentRank);
       return;
     }
     if (_selectedUpToRank == "???" || _selectedUpToRank.isEmpty) {
-      showToast('Please select Up to Rank');
+      showToast(G.current.boostSelectUptoRank);
       return;
     }
     if (_wallet.value < _totalPrice) {
@@ -394,6 +442,32 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
     });
   }
 
+  void noteDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: "Note",
+            simpleContent:
+                "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+            // row2Content: BookingTimeLeft(
+            //   count: bookingStatus.count,
+            //   upadateat: bookingStatus.updatedAt,
+            //   timeleft: bookingStatus.minutePerSection,
+            // ),
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              Navigator.pop(context);
+              StorageManager.sharedPreferences
+                  .setBool(firsttimeboosting, false);
+              _onTapConfirm();
+            },
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -411,7 +485,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               ),
               onPressed: () => Navigator.pop(context)),
           backgroundColor: Colors.black,
-          title: Text("Confirm Boosting"),
+          title: Text(G.current.boostConfirmBoosting),
           bottom: PreferredSize(
               child: Container(
                 height: 10,
@@ -461,7 +535,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                         height: 5,
                       ),
                       if (_boostingUpTo.isNotEmpty)
-                        Text('Provide Boosting up to $_boostingUpTo'),
+                        Text(G.current.boostProvideTo + '$_boostingUpTo'),
                     ],
                   ),
                   isThreeLine: true,
@@ -472,13 +546,16 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
             ///[Game]
             Card(
               child: ListTile(
+                key: intro.keys[0],
                 title: Text(
                   G.of(context).selectgame,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                subtitle: Text(
-                  _selectedGameName,
-                  style: Theme.of(context).textTheme.caption,
+                subtitle: Container(
+                  child: Text(
+                    _selectedGameName,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
                 trailing: _isPageLoading
                     ? CupertinoActivityIndicator()
@@ -492,15 +569,18 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
             ///[GameRank]
             Card(
                 child: Container(
+              key: intro.keys[1],
               margin: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
                   Text(
-                    'Boost Rank',
+                    G.current.boostRank,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   SizedBox(height: 5),
-                  Text('$_selectedRankFrom  to  $_selectedUpToRank'),
+                  Text('$_selectedRankFrom  ' +
+                      G.current.boostTo +
+                      '  $_selectedUpToRank'),
                   SizedBox(height: 5),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -509,43 +589,60 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                       GestureDetector(
                         onTap: () => _showRankFrom(context),
                         child: Container(
-                            width: 70,
-                            height: 70,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).accentColor,
-                                  width: 1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                              '${_selectedRankFrom == '???' ? "Current\nRank" : _selectedRankFrom.split(" ").join("\n")}',
-                              overflow: TextOverflow.fade,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 12),
-                            )),
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                                colors: MoreGradientColors.instagram),
+                          ),
+                          child: Container(
+                              key: intro.keys[2],
+                              width: 70,
+                              height: 70,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                // border: Border.all(
+                                //     color: Theme.of(context).accentColor,
+                                //     width: 1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                '${_selectedRankFrom == '???' ? "Current\nRank" : _selectedRankFrom.split(" ").join("\n")}',
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 12),
+                              )),
+                        ),
                       ),
                       Icon(Icons.forward_sharp, size: 40),
                       GestureDetector(
                         onTap: () => _showUpToRank(context),
                         child: Container(
-                            width: 70,
-                            height: 70,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).accentColor,
-                                  width: 1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                              '${_selectedUpToRank == '???' ? "To\nRank" : _selectedUpToRank.split(" ").join("\n")}',
-                              overflow: TextOverflow.fade,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 12),
-                            )),
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                                colors: MoreGradientColors.instagram),
+                          ),
+                          child: Container(
+                              key: intro.keys[3],
+                              width: 70,
+                              height: 70,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                '${_selectedUpToRank == '???' ? "To\nRank" : _selectedUpToRank.split(" ").join("\n")}',
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 12),
+                              )),
+                        ),
                       ),
                     ],
                   )
@@ -555,13 +652,17 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
             ///[Duration]
             Card(
+              key: intro.keys[4],
               child: ListTile(
                 title: Text(
-                  "Estimate Finished Time",
+                  G.current.boostEstimateTime,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  ('$_estimateFinishedDays Days, $_estimateFinishedHours Hours'),
+                  ('$_estimateFinishedDays ' +
+                      G.current.boostDays +
+                      ', $_estimateFinishedHours ' +
+                      G.current.boostHours),
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
@@ -575,13 +676,14 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
 
             ///[Price]
             Card(
+              key: intro.keys[5],
               child: ListTile(
                 title: Text(
-                  "Total Price",
+                  G.current.totalprice,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 subtitle: Text(
-                  '$_totalPrice Coins',
+                  '$_totalPrice ' + G.current.boostCoin,
                   style: Theme.of(context).textTheme.caption,
                 ),
                 trailing: _isPageLoading
@@ -594,7 +696,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
             ),
 
             ///[Note]
-            const Card(
+            Card(
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
@@ -623,14 +725,24 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                           child: _wallet == null
                               ? CupertinoActivityIndicator()
                               : Text(
-                                  'You have ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
+                                  G.current.youHave +
+                                      ' ${_wallet.value} ${_wallet.value <= 1 ? 'coin' : 'coins'}.',
                                   style:
                                       Theme.of(context).textTheme.subtitle1)),
                       _isPageLoading
                           ? CupertinoActivityIndicator()
                           : InkWell(
-                              onTap: _onTapConfirm,
+                              onTap: () {
+                                // if (StorageManager.sharedPreferences
+                                //         .getBool(firsttimeboosting) ==
+                                //     null) {
+                                noteDialog();
+                                // } else {
+                                //   _onTapConfirm();
+                                // }
+                              },
                               child: Container(
+                                key: intro.keys[6],
                                 child: _isConfirmLoading
                                     ? CupertinoActivityIndicator()
                                     : Center(
@@ -669,96 +781,95 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
     );
   }
 }
+// _showDurationPicker() {
+//   Picker(
+//       selecteds: [this._selectedDays, this._selectedHours],
+//       backgroundColor: Theme.of(context).backgroundColor,
+//       height: MediaQuery.of(context).size.height * 0.3,
+//       title: Text('Select'),
+//       selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
+//       adapter: PickerDataAdapter<String>(pickerdata: [
+//         List.generate(
+//             1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
+//         List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+//       ], isArray: true),
+//       delimiter: [
+//         PickerDelimiter(
+//             child: Container(
+//                 width: 30.0,
+//                 alignment: Alignment.center,
+//                 color: Theme.of(context).backgroundColor,
+//                 child: Text(' : ',
+//                     style: TextStyle(
+//                         color: Theme.of(context).accentColor,
+//                         fontSize: 32,
+//                         fontWeight: FontWeight.bold))))
+//       ],
+//       onCancel: () {
+//         debugPrint('Cancelling');
+//       },
+//       onConfirm: (picker, ints) {
+//         setState(() {
+//           this._selectedDays = ints.first;
+//           this._selectedHours = ints.last;
+//         });
+//       }).showModal(this.context);
+// }
 
- // _showDurationPicker() {
-  //   Picker(
-  //       selecteds: [this._selectedDays, this._selectedHours],
-  //       backgroundColor: Theme.of(context).backgroundColor,
-  //       height: MediaQuery.of(context).size.height * 0.3,
-  //       title: Text('Select'),
-  //       selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
-  //       adapter: PickerDataAdapter<String>(pickerdata: [
-  //         List.generate(
-  //             1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
-  //         List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
-  //       ], isArray: true),
-  //       delimiter: [
-  //         PickerDelimiter(
-  //             child: Container(
-  //                 width: 30.0,
-  //                 alignment: Alignment.center,
-  //                 color: Theme.of(context).backgroundColor,
-  //                 child: Text(' : ',
-  //                     style: TextStyle(
-  //                         color: Theme.of(context).accentColor,
-  //                         fontSize: 32,
-  //                         fontWeight: FontWeight.bold))))
-  //       ],
-  //       onCancel: () {
-  //         debugPrint('Cancelling');
-  //       },
-  //       onConfirm: (picker, ints) {
-  //         setState(() {
-  //           this._selectedDays = ints.first;
-  //           this._selectedHours = ints.last;
-  //         });
-  //       }).showModal(this.context);
-  // }
+// _showEstimatePrice() {
+//   if (Platform.isAndroid) {
+//     showDialog(
+//         context: context,
+//         builder: (context) {
+//           return AlertDialog(
+//             title: Text("Estimate Price", textAlign: TextAlign.center),
+//             content: CupertinoTextField(
+//               autofocus: true,
+//               decoration:
+//                   BoxDecoration(color: Theme.of(context).backgroundColor),
+//               controller: _priceController,
+//               textAlign: TextAlign.center,
+//               keyboardType: TextInputType.number,
+//             ),
+//             actions: <Widget>[
+//               FlatButton(
+//                 onPressed: () {
+//                   FocusScope.of(context).unfocus();
+//                   setState(() {});
+//                   Navigator.pop(context);
+//                 },
+//                 child: Text(G.of(context).submit),
+//               )
+//             ],
+//           );
+//         });
+//   }
 
-  // _showEstimatePrice() {
-  //   if (Platform.isAndroid) {
-  //     showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: Text("Estimate Price", textAlign: TextAlign.center),
-  //             content: CupertinoTextField(
-  //               autofocus: true,
-  //               decoration:
-  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
-  //               controller: _priceController,
-  //               textAlign: TextAlign.center,
-  //               keyboardType: TextInputType.number,
-  //             ),
-  //             actions: <Widget>[
-  //               FlatButton(
-  //                 onPressed: () {
-  //                   FocusScope.of(context).unfocus();
-  //                   setState(() {});
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: Text(G.of(context).submit),
-  //               )
-  //             ],
-  //           );
-  //         });
-  //   }
-
-  //   if (Platform.isIOS) {
-  //     showCupertinoDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return CupertinoAlertDialog(
-  //             title: Text("Total Price", textAlign: TextAlign.center),
-  //             content: CupertinoTextField(
-  //               autofocus: true,
-  //               decoration:
-  //                   BoxDecoration(color: Theme.of(context).backgroundColor),
-  //               controller: _priceController,
-  //               textAlign: TextAlign.center,
-  //               keyboardType: TextInputType.number,
-  //             ),
-  //             actions: <Widget>[
-  //               CupertinoButton(
-  //                 onPressed: () {
-  //                   FocusScope.of(context).unfocus();
-  //                   setState(() {});
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: Text(G.of(context).submit),
-  //               )
-  //             ],
-  //           );
-  //         });
-  //   }
-  // }
+//   if (Platform.isIOS) {
+//     showCupertinoDialog(
+//         context: context,
+//         builder: (context) {
+//           return CupertinoAlertDialog(
+//             title: Text("Total Price", textAlign: TextAlign.center),
+//             content: CupertinoTextField(
+//               autofocus: true,
+//               decoration:
+//                   BoxDecoration(color: Theme.of(context).backgroundColor),
+//               controller: _priceController,
+//               textAlign: TextAlign.center,
+//               keyboardType: TextInputType.number,
+//             ),
+//             actions: <Widget>[
+//               CupertinoButton(
+//                 onPressed: () {
+//                   FocusScope.of(context).unfocus();
+//                   setState(() {});
+//                   Navigator.pop(context);
+//                 },
+//                 child: Text(G.of(context).submit),
+//               )
+//             ],
+//           );
+//         });
+//   }
+// }

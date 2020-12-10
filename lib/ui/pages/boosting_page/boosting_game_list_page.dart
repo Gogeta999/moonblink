@@ -17,7 +17,8 @@ class BoostingGameListPage extends StatefulWidget {
 
 class _BoostingGameListPageState extends State<BoostingGameListPage> {
   ///ViewModel and Controller in one page coz its simple
-  final _bookingGameListSubject = BehaviorSubject<List<UserPlayGame>>.seeded(null);
+  final _bookingGameListSubject =
+      BehaviorSubject<List<UserPlayGame>>.seeded(null);
   final deselectSubject = BehaviorSubject.seeded(DeselectState.initial);
 
   @override
@@ -132,9 +133,8 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
                   );
                 },
               );
-          },
-        )
-      ),
+            },
+          )),
     );
   }
 

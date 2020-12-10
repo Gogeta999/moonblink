@@ -555,7 +555,10 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('${snapshot.data}', textAlign: TextAlign.center,),
+                              child: Text(
+                                '${snapshot.data}',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                         );

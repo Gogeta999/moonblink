@@ -11,6 +11,7 @@ final String notifilled = 'assets/icons/mainTab/noti1.svg';
 final String mainProfilefilled = 'assets/icons/mainTab/mainprofile1.svg';
 
 //UserStatus
+final String boostProfile = 'assets/icons/status/boostProfile.svg';
 final String checkUpdate = 'assets/icons/status/checkUpdate.svg';
 final String customerservice = 'assets/icons/status/customerService.svg';
 final String dayMood = 'assets/icons/status/dayMood.svg';
