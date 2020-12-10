@@ -156,13 +156,14 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                   children: [
                     Text(
                       '${item.rankFrom}  To  ${item.upToRank}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
                     Text('Price - ${item.estimateCost} Coins'),
                     SizedBox(height: 5),
                     Text(
-                        'Duration - ${item.estimateDay} ${item.estimateDay > 0 ?  "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
+                        'Duration - ${item.estimateDay} ${item.estimateDay > 0 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
                   ],
                 ),
               ),
@@ -223,9 +224,21 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               return Column(
                 children: [
                   _buildTitleWidget(title: 'Fill Your Time & Price'),
+                  Card(
+                    margin: EdgeInsets.zero,
+                    shape:
+                        RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    elevation: 8,
+                    child: ListTile(
+                      onTap: null,
+                      title: Text(
+                        G.current.alarmRatio,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 20),
                   Expanded(
-                                      child: ListView.builder(
+                    child: ListView.builder(
                       physics: ClampingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -285,9 +298,11 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         height: MediaQuery.of(context).size.height * 0.3,
         title: Text('Select'),
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
-        adapter: PickerDataAdapter<String>(
-            pickerdata: [List.generate(1000, (index) => '$index ${index > 0 ? "days" : "day"}'), List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')],
-            isArray: true),
+        adapter: PickerDataAdapter<String>(pickerdata: [
+          List.generate(
+              1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
+          List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+        ], isArray: true),
         delimiter: [
           PickerDelimiter(
               child: Container(
