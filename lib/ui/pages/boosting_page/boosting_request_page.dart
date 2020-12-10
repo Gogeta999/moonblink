@@ -54,16 +54,16 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "This is to choose game",
-          "This is to choose rank",
-          "Press here to choose your current rank",
-          "Press here to choose the rank which you want to boost",
-          "This will show estimated duration by the player",
-          "This is the price issued by the player",
-          "Press confirm to request boosting service",
+          G.current.boostRequestTuto1,
+          G.current.boostRequestTuto2,
+          G.current.boostRequestTuto3,
+          G.current.boostRequestTuto4,
+          G.current.boostRequestTuto5,
+          G.current.boostRequestTuto6,
+          G.current.boostRequestTuto7,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );
@@ -447,14 +447,14 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
         context: context,
         builder: (_) {
           return CustomDialog(
-            title: "Note",
-            simpleContent:
-                "Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+            // title: "Note",
+            simpleContent: G.current.alarmChangePWNoti,
             // row2Content: BookingTimeLeft(
             //   count: bookingStatus.count,
             //   upadateat: bookingStatus.updatedAt,
             //   timeleft: bookingStatus.minutePerSection,
             // ),
+            cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
             confirmContent: G.current.confirm,
@@ -700,7 +700,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Note: Sometimes our CoPlayer may need a little more time than your expected finished duration, please try to understand",
+                  G.current.boostNote,
                   textAlign: TextAlign.justify,
                 ),
               ),

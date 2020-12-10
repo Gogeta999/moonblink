@@ -36,15 +36,15 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "This show which rank you need to boost.",
-          "This is current price for your service. This can be edit as you like",
-          "This is current duration for your service. This can be edit as you like",
-          "Press this to Edit your price",
-          "Press this to Edit your duration",
-          "Finally press submit to confirm your setting",
+          G.current.boostDetailTuto1,
+          G.current.boostDetailTuto2,
+          G.current.boostDetailTuto3,
+          G.current.boostDetailTuto4,
+          G.current.boostDetailTuto5,
+          G.current.boostDetailTuto6,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );
@@ -247,7 +247,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
             Container(
               key: intro.keys[5],
               child: CupertinoButton(
-                child: Text('Submit'),
+                child: Text(G.current.submit),
                 onPressed: () {
                   this._bloc.submit();
                 },
@@ -351,7 +351,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         selecteds: [days, hours],
         backgroundColor: Theme.of(context).backgroundColor,
         height: MediaQuery.of(context).size.height * 0.3,
-        title: Text('Duration'),
+        title: Text(G.current.boostDuration),
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
         adapter: PickerDataAdapter<String>(pickerdata: [
           List.generate(

@@ -75,6 +75,16 @@ class G {
     );
   }
 
+  /// `After partner finished your order，Please change your acc's password to protect your game account's security!`
+  String get alarmChangePWNoti {
+    return Intl.message(
+      'After partner finished your order，Please change your acc\'s password to protect your game account\'s security!',
+      name: 'alarmChangePWNoti',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Albums`
   String get albums {
     return Intl.message(
@@ -295,6 +305,66 @@ class G {
     );
   }
 
+  /// `This show which rank you need to boost.`
+  String get boostDetailTuto1 {
+    return Intl.message(
+      'This show which rank you need to boost.',
+      name: 'boostDetailTuto1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is current price for your service. This can be edit as you like`
+  String get boostDetailTuto2 {
+    return Intl.message(
+      'This is current price for your service. This can be edit as you like',
+      name: 'boostDetailTuto2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is current duration for your service. This can be edit as you like`
+  String get boostDetailTuto3 {
+    return Intl.message(
+      'This is current duration for your service. This can be edit as you like',
+      name: 'boostDetailTuto3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press this to Edit your price`
+  String get boostDetailTuto4 {
+    return Intl.message(
+      'Press this to Edit your price',
+      name: 'boostDetailTuto4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press this to Edit your duration`
+  String get boostDetailTuto5 {
+    return Intl.message(
+      'Press this to Edit your duration',
+      name: 'boostDetailTuto5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finally press submit to confirm your setting`
+  String get boostDetailTuto6 {
+    return Intl.message(
+      'Finally press submit to confirm your setting',
+      name: 'boostDetailTuto6',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Duration`
   String get boostDuration {
     return Intl.message(
@@ -365,6 +435,16 @@ class G {
     );
   }
 
+  /// `Boosting Profile`
+  String get boostProfile {
+    return Intl.message(
+      'Boosting Profile',
+      name: 'boostProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Provide Boosting up to `
   String get boostProvideTo {
     return Intl.message(
@@ -380,6 +460,76 @@ class G {
     return Intl.message(
       'Boost Rank',
       name: 'boostRank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to choose game`
+  String get boostRequestTuto1 {
+    return Intl.message(
+      'This is to choose game',
+      name: 'boostRequestTuto1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is to choose rank`
+  String get boostRequestTuto2 {
+    return Intl.message(
+      'This is to choose rank',
+      name: 'boostRequestTuto2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press here to choose your current rank`
+  String get boostRequestTuto3 {
+    return Intl.message(
+      'Press here to choose your current rank',
+      name: 'boostRequestTuto3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press here to choose the rank which you want to boost`
+  String get boostRequestTuto4 {
+    return Intl.message(
+      'Press here to choose the rank which you want to boost',
+      name: 'boostRequestTuto4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will show estimated duration by the player`
+  String get boostRequestTuto5 {
+    return Intl.message(
+      'This will show estimated duration by the player',
+      name: 'boostRequestTuto5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is the price issued by the player`
+  String get boostRequestTuto6 {
+    return Intl.message(
+      'This is the price issued by the player',
+      name: 'boostRequestTuto6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press confirm to request boosting service`
+  String get boostRequestTuto7 {
+    return Intl.message(
+      'Press confirm to request boosting service',
+      name: 'boostRequestTuto7',
       desc: '',
       args: [],
     );
@@ -860,6 +1010,16 @@ class G {
     return Intl.message(
       'Feedback',
       name: 'feedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish`
+  String get finish {
+    return Intl.message(
+      'Finish',
+      name: 'finish',
       desc: '',
       args: [],
     );
