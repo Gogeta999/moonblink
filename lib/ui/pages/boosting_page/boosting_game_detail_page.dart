@@ -20,7 +20,7 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
-  bool tuto = true;
+  // bool tuto = true;
   Intro intro;
   _BoostingGameDetailPageState() {
     intro = Intro(
@@ -28,9 +28,9 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        setState(() {
-          tuto = false;
-        });
+        // setState(() {
+        //   tuto = false;
+        // });
       },
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
@@ -268,8 +268,9 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               if (snapshot.data == null) {
                 return _loading;
               }
-              // tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
-              print(tuto);
+              bool tuto =
+                  StorageManager.sharedPreferences.getBool(kNewToBoosting);
+
               if (tuto) {
                 Timer(Duration(microseconds: 0), () {
                   intro.start(context);
