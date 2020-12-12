@@ -5,6 +5,7 @@ String hometuto = 'hometuto';
 String userstatustuto = 'userstatustuto';
 String bookingtuto = 'bookingtuto';
 String userdetailtuto = 'userdetailtuto';
+String partnerBoostDetail = 'partnerBoostDetail';
 String chatboxtuto = 'chatboxtuto';
 String boostingrequesttuto = 'boostingrequesttuto';
 
@@ -13,6 +14,7 @@ void tutorialOn() {
   StorageManager.sharedPreferences.setBool(bookingtuto, true);
   StorageManager.sharedPreferences.setBool(userdetailtuto, true);
   StorageManager.sharedPreferences.setBool(chatboxtuto, true);
-  StorageManager.sharedPreferences.setBool(kNewToBoosting, true);
   StorageManager.sharedPreferences.setBool(boostingrequesttuto, true);
+  StorageManager.sharedPreferences.setBool(partnerBoostDetail, true);
+  StorageManager.sharedPreferences.setBool(kNewToBoosting, true);
 }

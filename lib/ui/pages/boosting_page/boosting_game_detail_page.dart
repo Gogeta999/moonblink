@@ -20,7 +20,7 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
-  bool tuto = false;
+  // bool tuto = true;
   Intro intro;
   _BoostingGameDetailPageState() {
     intro = Intro(
@@ -28,23 +28,23 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        setState(() {
-          tuto = false;
-        });
+        // setState(() {
+        //   tuto = false;
+        // });
       },
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "This show which rank you need to boost.",
-          "This is current price for your service. This can be edit as you like",
-          "This is current duration for your service. This can be edit as you like",
-          "Press this to Edit your price",
-          "Press this to Edit your duration",
-          "Finally press submit to confirm your setting",
+          G.current.boostDetailTuto1,
+          G.current.boostDetailTuto2,
+          G.current.boostDetailTuto3,
+          G.current.boostDetailTuto4,
+          G.current.boostDetailTuto5,
+          G.current.boostDetailTuto6,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );
@@ -249,7 +249,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
             Container(
               key: intro.keys[5],
               child: CupertinoButton(
-                child: Text('Submit'),
+                child: Text(G.current.submit),
                 onPressed: () {
                   this._bloc.submit();
                 },
@@ -270,8 +270,9 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               if (snapshot.data == null) {
                 return _loading;
               }
-              tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true;
-              print(tuto);
+              bool tuto =
+                  StorageManager.sharedPreferences.getBool(kNewToBoosting);
+
               if (tuto) {
                 Timer(Duration(microseconds: 0), () {
                   intro.start(context);
@@ -293,9 +294,69 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       ),
                     ),
                   ),
+                  if (tuto)
+                    Column(
+                      children: [
+                        SizedBox(height: 20),
+                        _buildCard(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      key: intro.keys[0],
+                                      padding: EdgeInsets.zero,
+                                      child: Text(
+                                        'Rank ' + G.current.boostTo + ' Rank ',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Container(
+                                      key: intro.keys[1],
+                                      child: Text(G.current.boostPrice +
+                                          '100' +
+                                          G.current.boostCoin),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      key: intro.keys[2],
+                                      child: Text(G.current.boostDuration +
+                                          ' - 10 days, 0 hour'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    key: intro.keys[3],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Text(G.current.boostEditPrice),
+                                        onPressed: () {}),
+                                  ),
+                                  Container(
+                                    key: intro.keys[4],
+                                    child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child:
+                                            Text(G.current.boostEditDuration),
+                                        onPressed: () {}),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   Expanded(
                     child: ListView.builder(
-                      // key: intro.keys[0],
                       physics: ClampingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -353,7 +414,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         selecteds: [days, hours],
         backgroundColor: Theme.of(context).backgroundColor,
         height: MediaQuery.of(context).size.height * 0.3,
-        title: Text('Duration'),
+        title: Text(G.current.boostDuration),
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
         adapter: PickerDataAdapter<String>(pickerdata: [
           List.generate(
