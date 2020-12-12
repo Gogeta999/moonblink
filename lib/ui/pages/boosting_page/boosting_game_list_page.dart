@@ -152,7 +152,7 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
     ///call delete api
     deselectSubject.add(DeselectState.loading);
     MoonBlinkRepository.deleteBoostingGameProfile(item.gameProfile.gameId).then(
-        (value) {
+        (_) {
       deselectSubject.add(DeselectState.initial);
 
       ///After delete, fetch data from server again

@@ -57,6 +57,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               FlatButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: Text(G.of(context).submit),
@@ -83,6 +84,7 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
               CupertinoButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: Text(G.of(context).submit),

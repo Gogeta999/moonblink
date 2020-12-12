@@ -459,7 +459,6 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
             confirmButtonColor: Theme.of(context).accentColor,
             confirmContent: G.current.confirm,
             confirmCallback: () {
-              Navigator.pop(context);
               StorageManager.sharedPreferences
                   .setBool(firsttimeboosting, false);
               _onTapConfirm();
@@ -612,7 +611,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                                 '${_selectedRankFrom == '???' ? "Current\nRank" : _selectedRankFrom.split(" ").join("\n")}',
                                 overflow: TextOverflow.fade,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12, color: Colors.black),
                               )),
                         ),
                       ),
@@ -640,7 +639,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                                 '${_selectedUpToRank == '???' ? "To\nRank" : _selectedUpToRank.split(" ").join("\n")}',
                                 overflow: TextOverflow.fade,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12, color: Colors.black),
                               )),
                         ),
                       ),

@@ -44,7 +44,7 @@ class BoostingGameDetailBloc extends Bloc<BoostingGameDetailEvent, BoostingGameD
       List<Map<String, dynamic>> jsonList = [];
       value.forEach((element) {
         if(!valid) {
-          valid = !(element.estimateCost == 0 && element.estimateDay == 0 && element.estimateHour == 0);
+          valid = element.estimateCost > 0 && (element.estimateDay > 0 || element.estimateHour > 0);
         }
         jsonList.add(element.toJson());
       });

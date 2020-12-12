@@ -43,7 +43,7 @@ class UpdateGameProfileBloc
   TextStyle textStyle;
 
   void dispose() {
-    gameIdController.clear();
+    gameIdController.dispose();
     levelSubject.close();
     gameModeSubject.close();
     gameModeListSubject.close();

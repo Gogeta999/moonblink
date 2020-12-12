@@ -202,10 +202,12 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
+                    if (item.message.isNotEmpty) SizedBox(height: 5),
+                    if (item.message.isNotEmpty) Text(item.message, style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     Text(G.current.boostPrice +
-                        '${item.estimateCost}' +
-                        G.current.boostCoin),
+                        ' - ${item.estimateCost} ${item.estimateCost > 0 ? G.current.boostCoins : G.current.boostCoin}'),
                     SizedBox(height: 5),
                     Text(G.current.boostDuration +
                         ' - ${item.estimateDay} ${item.estimateDay > 0 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
@@ -268,7 +270,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
               if (snapshot.data == null) {
                 return _loading;
               }
-              tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting);
+              tuto = StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true;
               print(tuto);
               if (tuto) {
                 Timer(Duration(microseconds: 0), () {
