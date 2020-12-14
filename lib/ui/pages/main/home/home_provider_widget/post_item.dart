@@ -51,7 +51,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
   }
 
   Widget postprofile() {
-    return CachedNetworkImage(
+    return widget.posts.profileImage == null ? Icon(Icons.error) : CachedNetworkImage(
       imageUrl: widget.posts.profileImage,
       imageBuilder: (context, imageProvider) => Padding(
         padding: const EdgeInsets.only(top: 12, left: 15),
@@ -235,9 +235,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                     constraints: BoxConstraints(
                                         minWidth: double.infinity,
                                         maxWidth: double.infinity),
-                                    child: isDev
-                                        ? Icon(Icons.image)
-                                        : CachedNetworkImage(
+                                    child: widget.posts.coverImage == null ? Icon(Icons.error) : CachedNetworkImage(
                                             fit: BoxFit.fill,
                                             imageUrl: widget.posts.coverImage,
                                             placeholder: (context, url) =>
@@ -256,7 +254,6 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                         MaterialPageRoute(
                                             builder: (context) => ImageView(
                                                 widget.posts.coverImage)));
-                                    print('object');
                                   },
                                   onDoubleTap: widget.posts.isReacted == 0
                                       ? () {
@@ -472,7 +469,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                       ),
                     ],
                   ),
-                  isDev ? Icon(Icons.image) : postprofile(),
+                  postprofile(),
                 ],
               ),
             ),

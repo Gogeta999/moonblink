@@ -394,14 +394,13 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
             bool showtuto =
                 StorageManager.sharedPreferences.getBool(userdetailtuto);
             if (showtuto) {
-              // if (!isDev) {
               Timer(Duration(microseconds: 0), () {
                 intro.start(context);
               });
               StorageManager.sharedPreferences.setBool(userdetailtuto, false);
             }
             void followingRequest(bool newValue) async {
-              print('status is 0 so bool is' +
+              if (isDev) print('status is 0 so bool is' +
                   followButtonClicked.toString() +
                   'to false');
               await DioUtils().post(
@@ -410,19 +409,19 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     '/follow',
                 queryParameters: {'status': '1'},
               );
-              print('stauts now is 1 and switch to following button');
+              if (isDev) print('stauts now is 1 and switch to following button');
               setState(() {
-                print(
+                if (isDev) print(
                     '${partnerModel.partnerData.followerCount} is plus 1 follower');
                 partnerModel.partnerData.followerCount += 1;
-                print('so now is ${partnerModel.partnerData.followerCount}');
+                if (isDev) print('so now is ${partnerModel.partnerData.followerCount}');
                 partnerModel.partnerData.isFollow = 1;
                 followButtonClicked = newValue;
               });
             }
 
             void unFollowRequest(bool newValue) async {
-              print('status is 1 so bool is' +
+              if (isDev) print('status is 1 so bool is' +
                   followButtonClicked.toString() +
                   'to false');
               await DioUtils().post(
@@ -431,18 +430,17 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                     '/follow',
                 queryParameters: {'status': '0'},
               );
-              print('stauts now is 0 and switch to follow button');
+              if (isDev) print('stauts now is 0 and switch to follow button');
               setState(() {
-                print(
+                if (isDev) print(
                     '${partnerModel.partnerData.followerCount} is minus 1 follower');
                 partnerModel.partnerData.followerCount -= 1;
-                print('so now is ${partnerModel.partnerData.followerCount}');
+                if (isDev) print('so now is ${partnerModel.partnerData.followerCount}');
                 partnerModel.partnerData.isFollow = 0;
                 followButtonClicked = newValue;
               });
             }
 
-            // int followerCount = partnerModel.partnerData.followerCount;
             if (partnerModel.isBusy) {
               return ViewStateBusyWidget();
             } else if (partnerModel.isError) {
@@ -736,7 +734,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                       height: 20,
                     ),
                   ),
-                  if (isDev)
+                  if (partnerModel.partnerData.boostableGameList.isNotEmpty && partnerModel.partnerData.showBoostService == 0)///for now 1...production to 0
                     SliverToBoxAdapter(
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 36),
@@ -768,7 +766,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
                             }),
                       ),
                     ),
-                  if (isDev)
+                  if (partnerModel.partnerData.boostableGameList.isNotEmpty && partnerModel.partnerData.showBoostService == 0)
                     SliverPadding(
                         padding: const EdgeInsets.symmetric(vertical: 10)),
                   SliverToBoxAdapter(

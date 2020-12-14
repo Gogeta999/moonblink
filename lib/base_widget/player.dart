@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }
@@ -169,7 +170,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     });
 
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
-      print('audioPlayer error : $msg');
+      if (isDev) print('audioPlayer error : $msg');
       setState(() {
         _playerState = PlayerState.stopped;
         _isFailed = true;
@@ -398,7 +399,7 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
     });
 
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
-      print('audioPlayer error : $msg');
+      if (isDev) print('audioPlayer error : $msg');
       setState(() {
         _playerState = PlayerState.stopped;
         _duration = Duration(seconds: 0);
@@ -422,9 +423,7 @@ class _LocalPlayerWidgetState extends State<LocalPlayerWidget> {
   }
 
   Future<int> _play() async {
-    print(widget.path);
-    print(
-        'Playing this FIle ++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    if (isDev) print(widget.path);
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&

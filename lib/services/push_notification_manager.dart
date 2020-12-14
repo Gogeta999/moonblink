@@ -4,7 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking_manager.dart';
+import 'package:moonblink/base_widget/booking/boosting_manager.dart';
 import 'package:moonblink/base_widget/update_profile_dialog.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -19,6 +21,7 @@ import 'navigation_service.dart';
 
 const String FcmTypeMessage = 'message';
 const String FcmTypeBooking = 'booking';
+const String FcmTypeBoosting = 'boosting';
 const String FcmTypeVoiceCall = 'voice_call';
 const String FcmTypeGameIdUpdate = 'game_id_update';
 const String GameProfileAdd = 'gameprofileadd';
@@ -36,23 +39,21 @@ class PushNotificationsManager {
 
   Future<void> init() async {
     if (!_initialized) {
-      print('FCM initializing');
+      if (isDev) print('FCM initializing');
       await _configLocalNotification();
       // For iOS request permission first.
       await _firebaseMessaging.requestNotificationPermissions();
       usertoken != null ? _registerNotification() : _unregisterNotification();
       _firebaseMessaging.onTokenRefresh.listen((event) {
-        print('onTokenRefresh: $event');
+        if (isDev) print('onTokenRefresh: $event');
       });
-      print('FCM_Token: ${await getFcmToken()}');
-//      _createLocalNotiChannel('moon_go_noti', 'moon_go_noti', 'For Server FCM');
+      if (isDev) print('FCM_Token: ${await getFcmToken()}');
       _initialized = true;
     }
   }
 
   Future<void> reInit() async {
     if (!_initialized) {
-      print('FCM reInit');
       _registerNotification();
       _initialized = true;
     }
@@ -60,7 +61,6 @@ class PushNotificationsManager {
 
   void dispose() {
     if (_initialized) {
-      print('FCM disposing');
       _unregisterNotification();
       _initialized = false;
     }
@@ -86,6 +86,7 @@ class PushNotificationsManager {
       FlutterLocalNotificationsPlugin();
 
   final BookingManager _bookingManager = BookingManager();
+  final BoostingManager _boostingManager = BoostingManager();
   final _Message _message = _Message();
   final _VoiceCall _voiceCall = _VoiceCall();
   final _UpdateProfile _updateProfile = _UpdateProfile();
@@ -99,31 +100,27 @@ class PushNotificationsManager {
     Future<void> onSelectNotification(String payload) async {
       if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
         if (payload == FcmTypeBooking) {
-          print('payload: $payload');
           _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeBoosting) {
+          _boostingManager.showBoostingDialog();
         } else if (payload == FcmTypeMessage) {
-          print('payload: $payload');
           _message.navigateToChatBox();
         } else if (payload == FcmTypeVoiceCall) {
-          print('payload: $payload');
           _voiceCall.navigateToCallScreen();
         } else if (payload == GameProfileAdd) {
-          print('payload: $payload');
           navigatotogameprofile();
         }
       } else {
         locator<NavigationService>().navigateToAndReplace(RouteName.main);
         if (payload == FcmTypeBooking) {
-          print('payload: $payload');
           _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeBoosting) {
+          _boostingManager.showBoostingDialog();
         } else if (payload == FcmTypeMessage) {
-          print('payload: $payload');
           _message.navigateToChatBox();
         } else if (payload == FcmTypeVoiceCall) {
-          print('payload: $payload');
           _voiceCall.navigateToCallScreen();
         } else if (payload == GameProfileAdd) {
-          print('payload: $payload');
           navigatotogameprofile();
         }
       }
@@ -134,31 +131,27 @@ class PushNotificationsManager {
         int id, String title, String body, String payload) async {
       if (StorageManager.sharedPreferences.get(isUserOnForeground)) {
         if (payload == FcmTypeBooking) {
-          print('payload: $payload');
           _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeBoosting) {
+          _boostingManager.showBoostingDialog();
         } else if (payload == FcmTypeMessage) {
-          print('payload: $payload');
           _message.navigateToChatBox();
         } else if (payload == FcmTypeVoiceCall) {
-          print('payload: $payload');
           _voiceCall.navigateToCallScreen();
         } else if (payload == GameProfileAdd) {
-          print('payload: $payload');
           navigatotogameprofile();
         }
       } else {
         locator<NavigationService>().navigateToAndReplace(RouteName.main);
         if (payload == FcmTypeBooking) {
-          print('payload: $payload');
           _bookingManager.showBookingDialog();
+        } else if (payload == FcmTypeBoosting) {
+          _boostingManager.showBoostingDialog();
         } else if (payload == FcmTypeMessage) {
-          print('payload: $payload');
           _message.navigateToChatBox();
         } else if (payload == FcmTypeVoiceCall) {
-          print('payload: $payload');
           _voiceCall.navigateToCallScreen();
         } else if (payload == GameProfileAdd) {
-          print('payload: $payload');
           navigatotogameprofile();
         }
       }
@@ -187,18 +180,13 @@ class PushNotificationsManager {
     _firebaseMessaging.configure(
       onBackgroundMessage: myBackgroundMessageHandler,
       onMessage: (Map<String, dynamic> message) {
-        print('UnregisterNotification');
-        print(message);
         return;
       },
       onLaunch: (Map<String, dynamic> message) {
-        print('UnregisterNotification');
-        print(message);
         return;
       },
       onResume: (Map<String, dynamic> message) {
-        print('UnregisterNotification');
-        print(message);
+
         return;
       },
     );
@@ -206,7 +194,6 @@ class PushNotificationsManager {
 
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) async {
-    print('myBackgroundMessageHandler Executed $message');
     //this only executed when the message is with only data and the app is on background
     //do something
     return;
@@ -214,11 +201,13 @@ class PushNotificationsManager {
 
   Future<dynamic> _onMessage(Map<String, dynamic> message) async {
     //work on foreground and background. on background it automatically show notification
-    print('onMessage: $message');
+    if (isDev) print('onMessage: $message');
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
       _showBookingNotification(message);
+    } else if (fcmType == FcmTypeBoosting) {
+      _showBoostingNotification(message);
     } else if (fcmType == FcmTypeMessage) {
       _showMessageNotification(message);
     } else if (fcmType == FcmTypeVoiceCall) {
@@ -231,11 +220,13 @@ class PushNotificationsManager {
 
   Future<dynamic> _onResume(Map<String, dynamic> message) async {
     //on background and click it
-    print('onResume: $message');
+    if (isDev) print('onResume: $message');
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
+    } else if (fcmType == FcmTypeBoosting) {
+      _showBoostingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
@@ -254,12 +245,14 @@ class PushNotificationsManager {
 
   Future<dynamic> _onLaunch(Map<String, dynamic> message) async {
     //onTerminated
-    print('onLaunch: $message');
+    if (isDev) print('onLaunch: $message');
     var fcmType =
         Platform.isAndroid ? message['data']['fcm_type'] : message['fcm_type'];
     locator<NavigationService>().navigateToAndReplace(RouteName.main);
     if (fcmType == FcmTypeBooking) {
       _showBookingDialog(message);
+    } else if (fcmType == FcmTypeBoosting) {
+      _showBoostingDialog(message);
     } else if (fcmType == FcmTypeMessage) {
       int partnerId = Platform.isAndroid
           ? json.decode(message['data']['sender_id'])
@@ -295,8 +288,6 @@ class PushNotificationsManager {
       showToast('This platform is not supported');
       return;
     }
-
-    print(name);
 
     final PartnerProfile partnerProfile = PartnerProfile(
       profileImage: profileImage,
@@ -417,9 +408,6 @@ class PushNotificationsManager {
       return;
     }
 
-    print(
-        'userId: $userId, bookingId: $bookingId, bookingUserId: $bookingUserId, gameTpye: $gameType');
-
     _bookingManager.bookingPrepare(
       bookingUserName: bookingUserName,
       gameName: gameName,
@@ -431,6 +419,148 @@ class PushNotificationsManager {
 
     await _flutterLocalNotificationsPlugin.show(
         0, title.toString(), body.toString(), platformChannelSpecifics,
+        payload: payload);
+  }
+
+  _showBoostingDialog(message) async {
+    int userId = 0;
+    int bookingId = 0;
+    int bookingUserId = 0;
+    String gameName = '';
+    String bookingUserName = '';
+
+    int estimateCost = 0;
+    int estimateDay = 0;
+    int estimateHour = 0;
+    String rankFrom = '';
+    String upToRank = '';
+
+    String title = '';
+    String body = '';
+
+    String payload = '';
+
+    if (Platform.isAndroid) {
+      userId = json.decode(message['data']['user_id']);
+      bookingId = json.decode(message['data']['id']);
+      bookingUserId = json.decode(message['data']['booking_user_id']);
+      gameName = message['data']['game_name'];
+      bookingUserName = message['data']['name'];
+      estimateCost = json.decode(message['data']['estimate_cost']);
+      estimateDay = json.decode(message['data']['estimate_day']);
+      estimateHour = json.decode(message['data']['estimate_hour']);
+      rankFrom = message['data']['rank_from'];
+      upToRank = message['data']['up_to_rank'];
+
+      title = message['notification']['title'].toString();
+      body = message['notification']['body'].toString();
+      payload = message['data']['fcm_type'];
+    } else if (Platform.isIOS) {
+      userId = json.decode(message['user_id']);
+      bookingId = json.decode(message['id']);
+      bookingUserId = json.decode(message['booking_user_id']);
+      gameName = message['game_name'];
+      bookingUserName = message['name'];
+      estimateCost = json.decode(message['estimate_cost']);
+      estimateDay = json.decode(message['estimate_day']);
+      estimateHour = json.decode(message['estimate_hour']);
+      rankFrom = message['rank_from'];
+      upToRank = message['up_to_rank'];
+
+      title = message['aps']['alert']['title'].toString();
+      body = message['aps']['alert']['body'].toString();
+      payload = message['fcm_type'];
+    } else {
+      showToast('This platform is not supported');
+      return;
+    }
+
+    _boostingManager.boostingPrepare(
+        userId,
+        bookingId,
+        bookingUserId,
+        bookingUserName,
+        gameName,
+        estimateCost,
+        estimateDay,
+        estimateHour,
+        rankFrom,
+        upToRank);
+    _boostingManager.showBoostingDialog();
+  }
+
+  //For boosting Fcm
+  Future<void> _showBoostingNotification(message) async {
+    final context = locator<NavigationService>().navigatorKey.currentContext;
+    BlocProvider.of<UserNewNotificationBloc>(context)
+       .add(UserNewNotificationRefreshedFromStartPageToCurrentPage());
+    NotificationDetails platformChannelSpecifics =
+        setUpPlatformSpecifics('boosting', 'Boosting', song: 'moonblink_noti');
+    int userId = 0;
+    int bookingId = 0;
+    int bookingUserId = 0;
+    String gameName = '';
+    String bookingUserName = '';
+
+    int estimateCost = 0;
+    int estimateDay = 0;
+    int estimateHour = 0;
+    String rankFrom = '';
+    String upToRank = '';
+
+    String title = '';
+    String body = '';
+
+    String payload = '';
+
+    if (Platform.isAndroid) {
+      userId = json.decode(message['data']['user_id']);
+      bookingId = json.decode(message['data']['id']);
+      bookingUserId = json.decode(message['data']['booking_user_id']);
+      gameName = message['data']['game_name'];
+      bookingUserName = message['data']['name'];
+      estimateCost = json.decode(message['data']['estimate_cost']);
+      estimateDay = json.decode(message['data']['estimate_day']);
+      estimateHour = json.decode(message['data']['estimate_hour']);
+      rankFrom = message['data']['rank_from'];
+      upToRank = message['data']['up_to_rank'];
+
+      title = message['notification']['title'].toString();
+      body = message['notification']['body'].toString();
+      payload = message['data']['fcm_type'];
+    } else if (Platform.isIOS) {
+      userId = json.decode(message['user_id']);
+      bookingId = json.decode(message['id']);
+      bookingUserId = json.decode(message['booking_user_id']);
+      gameName = message['game_name'];
+      bookingUserName = message['name'];
+      estimateCost = json.decode(message['estimate_cost']);
+      estimateDay = json.decode(message['estimate_day']);
+      estimateHour = json.decode(message['estimate_hour']);
+      rankFrom = message['rank_from'];
+      upToRank = message['up_to_rank'];
+
+      title = message['aps']['alert']['title'].toString();
+      body = message['aps']['alert']['body'].toString();
+      payload = message['fcm_type'];
+    } else {
+      showToast('This platform is not supported');
+      return;
+    }
+    _boostingManager.boostingPrepare(
+        userId,
+        bookingId,
+        bookingUserId,
+        bookingUserName,
+        gameName,
+        estimateCost,
+        estimateDay,
+        estimateHour,
+        rankFrom,
+        upToRank);
+
+    await _flutterLocalNotificationsPlugin.show(
+        0, title, body, platformChannelSpecifics,
         payload: payload);
   }
 
@@ -521,27 +651,6 @@ class PushNotificationsManager {
         1, 'Voice Call', 'Calling', platformChannelSpecifics);
   }
 
-  // Future<void> showTestNotification() async {
-  //   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //       'com.moonuniverse.moonblink', //same package name for both platform
-  //       'Moon Blink Voice Call',
-  //       'Moon Blink',
-  //       largeIcon: DrawableResourceAndroidBitmap('@mipmap/moonblink'),
-  //       playSound: true,
-  //       importance: Importance.Max,
-  //       priority: Priority.High,
-  //       sound: RawResourceAndroidNotificationSound('moonblink_noti'),
-  //       autoCancel: true);
-  //
-  //   var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-  //       presentAlert: true, presentBadge: true, presentSound: true);
-  //   var platformChannelSpecifics = NotificationDetails(
-  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  //
-  //   await _flutterLocalNotificationsPlugin.show(
-  //       1, 'Test', 'Testing', platformChannelSpecifics);
-  // }
-
   NotificationDetails setUpPlatformSpecifics(name, channelName, {String song}) {
     if (song != null) {
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -601,7 +710,6 @@ class _Message {
 
   void navigateToChatBox() {
     bool atChatBox = StorageManager.sharedPreferences.get(isUserAtChatBox);
-    // ChatModel().init();
     if (_partnerId == null) {
       this._partnerId =
           StorageManager.sharedPreferences.getInt(kPartnerUserIdForChat);

@@ -1,4 +1,5 @@
 import 'package:encrypt/encrypt.dart' as encryptLib;
+import 'package:moonblink/api/moonblink_dio.dart';
 
 encrypt(int id) {
   List confuseList = [
@@ -32,8 +33,8 @@ encrypt(int id) {
   final encrypted = encrypter.encrypt(inputText, iv: iv);
   final decrypted = encrypter.decrypt(encrypted, iv: iv);
 
-  print('Encrypted Code:' + encrypted.base64);
-  print('Decrypted Code: ' + decrypted);
-  print('Compare the layer of multiple 4: ' + confuseList.toString());
+  if (isDev) print('Encrypted Code:' + encrypted.base64);
+  if (isDev) print('Decrypted Code: ' + decrypted);
+  if (isDev) print('Compare the layer of multiple 4: ' + confuseList.toString());
   return encrypted.base64;
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/moongo_database.dart';
@@ -47,10 +48,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _genderSubject.add(gender);
     _pageSubject.add(1);
     final int page = 1;
-    print('Compare Gender: $gender');
+    if (isDev) print('Compare Gender: $gender');
     MoonGoDB().retrievePosts(kHomePostLimit, page, type, gender).then((posts) {
       posts.forEach((element) {
-        print('Compare Local: ${element.updatedAt} ${element.id}');
+        if (isDev) print('Compare Local: ${element.updatedAt} ${element.id}');
       });
       postsSubject.add(posts);
     });
@@ -59,7 +60,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final List<Post> data = await MoonBlinkRepository.fetchPosts(
           pageNum: page, type: type, gender: gender);
       data.forEach((element) {
-        print('Compare Remote: ${element.updatedAt} ${element.id}');
+        if (isDev) print('Compare Remote: ${element.updatedAt} ${element.id}');
       });
       //hasReachedMaxSubject.add(data.length < kHomePostLimit);
       hasReachedMax = data.length < kHomePostLimit;
@@ -73,18 +74,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> fetchMoreData() async {
     if (hasReachedMax) return;
-    print('Fetching More');
+    if (isDev) print('Fetching More');
     final int type = await _typeSubject.first;
     final String gender = await _genderSubject.first;
     final int page = await _pageSubject.first;
     final int nextPage = page + 1;
-    print('nextPage is: $nextPage');
+    if (isDev) print('nextPage is: $nextPage');
     final List<Post> previousPosts = await postsSubject.first;
 
     MoonGoDB()
         .retrievePosts(kHomePostLimit, nextPage, type, gender)
         .then((posts) {
-      print('Local Fetch More: ${posts.length}');
+      if (isDev) print('Local Fetch More: ${posts.length}');
       postsSubject.add(previousPosts + posts);
     });
 
@@ -128,7 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return true;
     } catch (e, s) {
       showToast(e);
-      print(s);
+      if (isDev) print(s);
       return false;
     }
   }

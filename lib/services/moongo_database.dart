@@ -1,3 +1,4 @@
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:path/path.dart';
@@ -16,7 +17,7 @@ class MoonGoDB {
 
   init() async {
     String _path = await getDatabasesPath();
-    print(join(_path, _dbName));
+    if (isDev) print(join(_path, _dbName));
     _db = await openDatabase(
       join(_path, _dbName),
       onCreate: (db, version) {
@@ -26,13 +27,12 @@ class MoonGoDB {
       },
       version: 1,
     );
-    print('Db status: ${_db.isOpen}');
   }
 
   void insertPost(Post post) async {
     int id = await _db.insert(_tableName, post.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    print('Inserted Id: $id');
+    if (isDev) print('Inserted Id: $id');
   }
 
   insertPosts(List<Post> posts) {
@@ -40,7 +40,7 @@ class MoonGoDB {
       posts.forEach((element) async {
         int id = await txn.insert(_tableName, element.toMap(),
             conflictAlgorithm: ConflictAlgorithm.replace);
-        print('Inserted Id: $id');
+        if (isDev) print('Inserted Id: $id');
       });
       return Future.value(true);
     });
@@ -59,7 +59,7 @@ class MoonGoDB {
           orderBy: 'updated_at DESC',
           limit: limit,
           offset: offset);
-      print('Retrieve Posts: ${posts.length}');
+      if (isDev) print('Retrieve Posts: ${posts.length}');
       return List.generate(posts.length, (index) {
         return Post.fromMap(posts[index]);
       });
@@ -72,7 +72,7 @@ class MoonGoDB {
           orderBy: 'updated_at DESC',
           limit: limit,
           offset: offset);
-      print('Retrieve Posts: ${posts.length}');
+      if (isDev) print('Retrieve Posts: ${posts.length}');
       return List.generate(posts.length, (index) {
         return Post.fromMap(posts[index]);
       });

@@ -28,9 +28,8 @@ parseJson(String text) {
   return compute(_parseAndDecode, text);
 }
 
-const bool isDev = true;
-
-///for boosting page testing
+///swith to true to print log
+const bool isDev = false;
 
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
@@ -47,8 +46,6 @@ class DioUtils {
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
     headers: {
-      //Default necessary header
-      //MoonBlink AppKey
       'app-key': baseAppKey
     },
     contentType: Headers.formUrlEncodedContentType,
@@ -83,7 +80,7 @@ class DioUtils {
           requestions.headers['app-version'] = appVersion;
           requestions.headers['Authorization'] = 'Bearer' + usertoken;
           requestions.headers['device-id'] = deviceId;
-          // debugPrint('Add---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
+          // debugPrint('Ad d---request---Token---headers-->\nUserTokenMap->'+requestions.headers.toString());
           return requestions;
         }, onResponse: (Response response) {
           //maybe add something here
@@ -93,7 +90,7 @@ class DioUtils {
           return error;
         }),
       );
-      print('Creating Dio connection to server with Authorization');
+      if (isDev) print('Creating Dio connection to server with Authorization');
     }
   }
 
@@ -107,7 +104,7 @@ class DioUtils {
         requestions.headers['app-version'] = appVersion;
         // requestions.headers['Authorization'] = 'Bearer' + usertokr
         requestions.headers['device-id'] = deviceId;
-        debugPrint('Base Requestions--->' + requestions.headers.toString());
+        if (isDev) debugPrint('Base Requestions--->' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
         //maybe add something here
@@ -117,14 +114,14 @@ class DioUtils {
         return error;
       }),
     );
-    print('Creating Dio connection to server without Authorization');
+    if (isDev) print('Creating Dio connection to server without Authorization');
   }
 
   /*
    * get request
    */
   get(url, {queryParameters, options}) async {
-    print('get---request---from--->$url');
+    if (isDev) print('get---request---from--->$url');
     Response response;
     try {
       response = await _dio.get(url,
@@ -133,10 +130,9 @@ class DioUtils {
       throw 'No Internet Connection';
     }
     ResponseData respData = ResponseData.fromJson(response.data);
-    // debugPrint('debug code error--- ${respData.data}');
     if (respData.success) {
       response.data = respData.data;
-      debugPrint(
+      if (isDev) debugPrint(
           'result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
       return response;
     } else {
@@ -164,7 +160,7 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        debugPrint(
+        if (isDev) debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
@@ -181,14 +177,14 @@ class DioUtils {
     queryParameters,
     options,
   }) async {
-    print('post request path ------$url-------queryParameters$queryParameters');
+    if (isDev) print('post request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.post(url,
         queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      debugPrint(
+      if (isDev) debugPrint(
           'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
@@ -213,7 +209,7 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        debugPrint(
+        if (isDev) debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
@@ -224,7 +220,7 @@ class DioUtils {
 
   //delete request
   delete(url, {queryParameters, options}) async {
-    print(
+    if (isDev) print(
         'delete request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.delete(url,
@@ -232,7 +228,7 @@ class DioUtils {
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      debugPrint(
+      if (isDev) debugPrint(
           'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
@@ -258,7 +254,7 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        debugPrint(
+        if (isDev) debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
@@ -269,7 +265,7 @@ class DioUtils {
 
   //delete request
   patch(url, {queryParameters, options}) async {
-    print(
+    if (isDev) print(
         'patch request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.patch(url,
@@ -277,7 +273,7 @@ class DioUtils {
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      debugPrint(
+      if (isDev) debugPrint(
           'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
@@ -303,7 +299,7 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        debugPrint(
+        if (isDev) debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
@@ -316,19 +312,19 @@ class DioUtils {
    * Post request
    */
   postwithData(url, {data, options}) async {
-    print('post request path ------$url-------data $data');
+    if (isDev) print('post request path ------$url-------data $data');
     Response response;
     response = await _dio.post(url, data: data, options: options,
         onSendProgress: (int count, int total) {
-      print('Uploading progress----->${count / total}----count/total process');
+      if (isDev) print('Uploading progress----->${count / total}----count/total process');
     });
-    print(response.statusCode);
+    if (isDev) print(response.statusCode);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      debugPrint(
+      if (isDev) debugPrint(
           'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
-      debugPrint('$respData');
+      if (isDev) debugPrint('$respData');
       return respData;
     } else {
       if (respData.errorCode == 101) {
@@ -349,7 +345,7 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        debugPrint(
+        if (isDev) debugPrint(
             'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
@@ -367,11 +363,11 @@ class DioUtils {
       response = await _dio.download(urlPath, savePath,
           onReceiveProgress: (int count, int total) {
         //Progress
-        print("$count $total");
+        if (isDev) print("$count $total");
       });
-      print('downloadFile success---------${response.data}');
+      if (isDev) print('downloadFile success---------${response.data}');
     } on DioError catch (e) {
-      print('downloadFile error---------$e');
+      if (isDev) print('downloadFile error---------$e');
       formatError(e);
     }
     return response.data;
@@ -393,22 +389,22 @@ class DioUtils {
   void formatError(DioError e) {
     if (e.type == DioErrorType.CONNECT_TIMEOUT) {
       // It occurs when url is opened timeout.
-      print("connecting timeout");
+      if (isDev) print("connecting timeout");
     } else if (e.type == DioErrorType.SEND_TIMEOUT) {
       // It occurs when url is sent timeout.
-      print("sending timeout");
+      if (isDev) print("sending timeout");
     } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
       //It occurs when receiving timeout
-      print("receiving timeout");
+      if (isDev) print("receiving timeout");
     } else if (e.type == DioErrorType.RESPONSE) {
       // When the server response, but with a incorrect status, such as 404, 503...
-      print("Incorrect status like 404, 503");
+      if (isDev) print("Incorrect status like 404, 503");
     } else if (e.type == DioErrorType.CANCEL) {
       // When the request is cancelled, dio will throw a error with this type.
-      print("Request cancelled");
+      if (isDev) print("Request cancelled");
     } else {
       //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
-      print("Unknown Error");
+      if (isDev) print("Unknown Error");
     }
   }
 
@@ -608,10 +604,6 @@ class ResponseData extends BaseResponseData {
   ResponseData.fromJson(Map<String, dynamic> json) {
     errorCode = json['error_code'];
     statusCode = json['status_code'];
-    print(statusCode);
-    print(errorCode);
-
-    ///remove later
     errorMessage = json['error_message'];
     getMessage = json['message'];
     data = json['data'];

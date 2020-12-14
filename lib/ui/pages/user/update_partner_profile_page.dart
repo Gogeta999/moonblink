@@ -404,7 +404,6 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   User updateProfile =
                                       User.fromJsonMap(response.data);
 
-                                  // print(response.data);
                                   setState(() {
                                     StorageManager.sharedPreferences.setString(
                                         mLoginName, _nameController.text);

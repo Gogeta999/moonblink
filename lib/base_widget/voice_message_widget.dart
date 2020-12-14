@@ -37,13 +37,12 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
   void _init() async {
     Permission.microphone.request();
     recordPlugin.init();
-    print('Inittttttttttttttt');
   }
 
   ///Start Voice Record
   void _start() async {
     recordPlugin.start();
-    print('Startttttttttttttttt');
+
   }
 
   _restart() async {
@@ -87,18 +86,6 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
             if (sent == false) {
               widget.onSend(filePath);
             }
-            // // print("onStop " + data.audioTimeLength.toString());
-            // print("NOT SENT YET +++++++++++++++++++++++++++++++");
-            // print(sent);
-            // if (sent == false) {
-            //   model.sendaudio(
-            //       filename, bytes, widget.id, 3, widget.messages, filePath);
-            //   print(filePath);
-            //   print(filename);
-            //   print("Sent ___________________________________");
-            //   // recordPlugin.dispose();
-            //   sent = true;
-            // }
           } else {
             print("--" + data.msg);
           }

@@ -68,7 +68,7 @@ class LoginModel extends ViewStateModel {
             await _facebookLogin.logIn(['email']);
         switch (result.status) {
           case FacebookLoginStatus.loggedIn:
-            print('case loggedIn');
+            if (isDev) print('case loggedIn');
             final FacebookAccessToken accessToken = result.accessToken;
             user = await MoonBlinkRepository.loginWithFacebook(
                     accessToken.token, fcmToken)
@@ -103,12 +103,12 @@ class LoginModel extends ViewStateModel {
             });
             break;
           case FacebookLoginStatus.cancelledByUser:
-            print('case cancelledByUser');
+            if (isDev) print('case cancelledByUser');
             /*setIdle();
             return false;*/
             break;
           case FacebookLoginStatus.error:
-            print('case error');
+            if (isDev) print('case error');
             /*setIdle();
             return false;*/
             break;
@@ -126,14 +126,14 @@ class LoginModel extends ViewStateModel {
                   identityTokenString, fcmToken);
               break;
             case AuthorizationStatus.error:
-              print("Sign in failed: ${result.error.localizedDescription}");
+              if (isDev) print("Sign in failed: ${result.error.localizedDescription}");
               break;
             case AuthorizationStatus.cancelled:
-              print('User cancelled');
+              if (isDev) print('User cancelled');
               break;
           }
         } else {
-          print('Apple SignIn is not available for your device');
+          if (isDev) print('Apple SignIn is not available for your device');
         }
       } else {
         setIdle();

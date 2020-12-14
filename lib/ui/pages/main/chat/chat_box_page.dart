@@ -1161,7 +1161,7 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
                                         value, BLOCK);
                                     showToast(G.of(context).toastsuccess);
                                   } catch (e) {
-                                    print(e.toString());
+                                    if (isDev) print(e.toString());
                                   }
                                 }
                               });

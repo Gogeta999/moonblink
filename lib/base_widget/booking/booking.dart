@@ -125,71 +125,8 @@ class _BookingButtonState extends State<BookingButton> {
                       offset: Offset(-8, 7), // changes position of shadow
                     ),
                   ]),
-
-              ///[to add pop up]
-              // onPressed:
-              //     userId == partnerDetailModel.partnerId || model.isBusy
-              //         ? null
-              //         : () => CustomBottomSheet.showBookingSheet(
-              //             buildContext: context,
-              //             model: model,
-              //             partnerId: partnerDetailModel.partnerId),
             ),
           );
         });
   }
 }
-
-/*
-class BookingDropdown extends StatefulWidget {
-  final BookingModel bookingModel;
-
-  const BookingDropdown({Key key, this.bookingModel}) : super(key: key);
-
-  @override
-  _BookingDropdownState createState() => _BookingDropdownState();
-}
-
-class _BookingDropdownState extends State<BookingDropdown> {
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value: widget.bookingModel.dropdownGameListAndPrice.isEmpty
-            ? null
-            : widget.bookingModel
-                .dropdownGameListAndPrice[widget.bookingModel.selectedIndex],
-        isExpanded: false,
-        isDense: true,
-        iconEnabledColor: Theme.of(context).accentColor,
-        style: TextStyle(color: Theme.of(context).accentColor),
-        onChanged: (String newValue) {
-          setState(() {
-            final int selectedIndex =
-                widget.bookingModel.dropdownGameListAndPrice.indexOf(newValue);
-            print(selectedIndex);
-            widget.bookingModel.selectedIndex = selectedIndex;
-          });
-        },
-        elevation: 0,
-        items: widget.bookingModel.dropdownGameListAndPrice.isEmpty
-            ? null
-            : widget.bookingModel.dropdownGameListAndPrice
-                .map<DropdownMenuItem<String>>((String value) {
-                List<String> splitValue = value.split('.');
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(splitValue[0], softWrap: true),
-                      Text('    ${splitValue[1]}', softWrap: true)
-                    ],
-                  ),
-                );
-              }).toList(),
-      ),
-    );
-  }
-}
-*/

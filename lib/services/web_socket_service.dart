@@ -72,23 +72,23 @@ class WebSocketService {
 
     ///Register events
     _socket.on(DefaultEvents.connect, (data) {
-      print('Web Socket Service - Connected');
+      if (isDev) print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
       _chatBoxBloc?.add(
           ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
     });
     _socket.on(DefaultEvents.connectError, (data) {
-      print('Web Socket Service - Connect Error $data');
+      if (isDev) print('Web Socket Service - Connect Error $data');
     });
     _socket.on(DefaultEvents.connectTimeout, (data) {
-      print('Web Socket Service - ConnectTimeout $data');
+      if (isDev) print('Web Socket Service - ConnectTimeout $data');
     });
     _socket.on(DefaultEvents.connecting, (data) {
-      print('Web Socket Service - Connecting $data');
+      if (isDev) print('Web Socket Service - Connecting $data');
     });
     _socket.once(EventsToListen.connectedUsers, (data) {
-      print('Connected Users: $data');
+      if (isDev) print('Connected Users: $data');
     });
 
     _socket.on(DefaultEvents.disconnect, (data) => showToast('Disconnected'));
@@ -108,12 +108,12 @@ class WebSocketService {
   void initWithChatBoxBloc(ChatBoxBloc chatBoxBloc) {
     this._chatBoxBloc = chatBoxBloc;
     _socket.on(EventsToListen.chatUpdated, (data) {
-      print('Booking Status: $data');
+      if (isDev) print('Booking Status: $data');
       final bookingStatus = BookingStatus.fromJson(data);
       _chatBoxBloc.bookingStatusSubject.add(bookingStatus);
     });
     _socket.on(EventsToListen.sendLastBoostOrder, (data) {
-      print('Last Boost Order: $data');
+      if (isDev) print('Last Boost Order: $data');
       final lastBoostOrder = LastBoostOrder.fromJson(data);
       _chatBoxBloc.boostingStatusSubject.add(lastBoostOrder);
     });
@@ -139,7 +139,7 @@ class WebSocketService {
 
   void sendMessage(String message, int receiverId) {
     final int myId = StorageManager.sharedPreferences.getInt(mUserId);
-    print('Message Sent - $message');
+    if (isDev) print('Message Sent - $message');
     _socket.emit(EventsToEmit.chatMessage, [
       {
         'message': message,

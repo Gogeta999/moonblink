@@ -558,7 +558,7 @@ class G {
   /// `Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand`
   String get boostNote {
     return Intl.message(
-      'Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand',
+      'Note: Sometime our CoPlayer may need a little more time than estimate finished duration, please try to understand',
       name: 'boostNote',
       desc: '',
       args: [],

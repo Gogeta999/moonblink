@@ -48,21 +48,25 @@ class _VideoTrimmer extends State<VideoTrimmer> {
         setState(() {
           _value = value;
           video = File(_value);
-          print(value);
-          print(DateTime.now().toString());
-          print("111111111111111111111111111111");
+          if (isDev) {
+            print(value);
+            print(DateTime.now().toString());
+            print("111111111111111111111111111111");
+          }
         });
         var partnerId = StorageManager.sharedPreferences.getInt(mUserId);
         var storyPath = video.path;
-        print(storyPath);
-        print("------------------------------------------------------------");
+        if (isDev) {
+          print(storyPath);
+          print("------------------------------------------------------------");
+        }
         FormData formData = FormData.fromMap({
           'body': '',
           'media':
               await MultipartFile.fromFile(storyPath, filename: 'video.mp4'),
           'media_type': 2
         });
-        print(
+        if (isDev) print(
             "===============================================================");
         var response = await DioUtils()
             .postwithData(Api.POSTSTORY + '$partnerId/story', data: formData);
@@ -113,7 +117,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                                 showToast(G.of(context).toastvideooverlimit);
                                 _progressVisibility = false;
                               } else {
-                                print('OUTPUT PATH: $outputPath');
+                                if (isDev) print('OUTPUT PATH: $outputPath');
                               }
                             });
                           },
@@ -158,7 +162,7 @@ class _VideoTrimmer extends State<VideoTrimmer> {
                         endValue: _endValue,
                       );
                       setState(() {
-                        print("-------------------------------------------");
+                        if (isDev) print("-------------------------------------------");
                         _isPlaying = playbackState;
                       });
                     },

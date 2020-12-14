@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
+import 'package:moonblink/utils/constants.dart';
 
 import 'booking_dialog.dart';
 
@@ -29,8 +31,12 @@ class BookingManager {
   void bookingAccept() {
     MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_ACCEPT).then((value) =>
         value != null
-            ? locator<NavigationService>()
-                .navigateTo(RouteName.chatBox, arguments: _bookingUserId)
+            ? (){
+              bool atChatBox = StorageManager.sharedPreferences.getBool(isUserAtChatBox);
+              if (!atChatBox)
+                locator<NavigationService>()
+                .navigateTo(RouteName.chatBox, arguments: _bookingUserId);
+            }
             : null);
   }
 
@@ -39,7 +45,6 @@ class BookingManager {
   }
 
   void showBookingDialog() {
-    print("GameName is $_gameName and Type is $_type");
     if (_gameName.isEmpty || _type.isEmpty) return;
     showDialog(
       context: locator<NavigationService>().navigatorKey.currentState.overlay.context,

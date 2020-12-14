@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/provider_manager.dart';
@@ -54,14 +55,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('$state');
+    if (isDev) print('$state');
     if (state == AppLifecycleState.inactive) {
       StorageManager.sharedPreferences.setBool(isUserOnForeground, false);
-      print(StorageManager.sharedPreferences.get(isUserOnForeground));
+      if (isDev) print(StorageManager.sharedPreferences.get(isUserOnForeground));
     }
     if (state == AppLifecycleState.resumed) {
       StorageManager.sharedPreferences.setBool(isUserOnForeground, true);
-      print(StorageManager.sharedPreferences.get(isUserOnForeground));
+      if (isDev) print(StorageManager.sharedPreferences.get(isUserOnForeground));
     }
   }
 
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    print('Disposing main app');
+    if (isDev) print('Disposing main app');
     MoonGoDB().dispose();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);

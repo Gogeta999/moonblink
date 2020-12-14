@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 
 class BookingTimeLeft extends StatefulWidget {
   final String upadateat;
@@ -34,10 +35,9 @@ class _BookingTimeLeftState extends State<BookingTimeLeft> {
     int left = nowsec - atsec;
     setState(() {
       lefttime = (widget.timeleft * 60 * widget.count) - left;
-      print(lefttime);
+      if (isDev) print(lefttime);
     });
     timerCountDown(lefttime);
-    print("=======================================================");
   }
 
   Future<void> timerCountDown(countdown) async {

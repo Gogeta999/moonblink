@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:oktoast/oktoast.dart';
@@ -51,7 +52,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     }, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
-      print('Sorry: $error');
+      if (isDev) print('Sorry: $error');
     });
 
     initStoreInfo();
@@ -121,7 +122,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     final QueryPurchaseDetailsResponse purchaseResponse =
         await _connection.queryPastPurchases();
     if (purchaseResponse.error != null) {
-      print('Sorry: ${purchaseResponse.error}');
+      if (isDev) print('Sorry: ${purchaseResponse.error}');
     }
     final List<PurchaseDetails> verifiedPurchases = [];
     for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
@@ -136,7 +137,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
     }
 
     _sortProduct(productDetailResponse.productDetails);
-    print(productDetailResponse.productDetails[0].title);
+    if (isDev) print(productDetailResponse.productDetails[0].title);
     //List<String> consumables = await ConsumableStore.load();
     setState(() {
       _isAvailable = isAvailable;
@@ -361,7 +362,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
       var msg = await MoonBlinkRepository.topUp(productId);
       showToast('Top Up Success');
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
       showToast('Can\'t complete this purchase, Please contact us');
     }
   }
@@ -415,7 +416,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
   }
 
   void handleError(IAPError error) {
-    print(error.message);
+    if (isDev) print(error.message);
     setState(() {
       _purchasePending = false;
     });
@@ -461,7 +462,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
               .then((value) {
             switch (value.responseCode) {
               case BillingResponse.ok:
-                print('OK');
+                if (isDev) print('OK');
                 break;
               case BillingResponse.billingUnavailable:
                 showToast('Billing unavailable');
@@ -473,7 +474,7 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
                 showToast('Service disconnected');
                 break;
               case BillingResponse.userCanceled:
-                print('Ok, User cancel');
+                if (isDev) print('Ok, User cancel');
                 break;
               case BillingResponse.serviceUnavailable:
                 showToast('Service unavailable');
@@ -482,10 +483,10 @@ class _TopUpBottomSheetState extends State<TopUpBottomSheet> {
                 showToast('Product unavailable');
                 break;
               case BillingResponse.developerError:
-                print('Developer Error');
+                if (isDev) print('Developer Error');
                 break;
               case BillingResponse.error:
-                print('Error');
+                if (isDev) print('Error');
                 break;
               case BillingResponse.itemAlreadyOwned:
                 showToast('Item Already owned');

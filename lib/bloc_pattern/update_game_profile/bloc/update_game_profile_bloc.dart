@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/game_profile.dart';
@@ -50,7 +51,7 @@ class UpdateGameProfileBloc
     skillCoverPhotoSubject.close();
     submitOrUpdateSubject.close();
     this.close();
-    print('Disposing UpdateGameProfile Success');
+    if (isDev) print('Disposing UpdateGameProfile Success');
   }
 
   @override
@@ -152,7 +153,7 @@ class UpdateGameProfileBloc
       selectedGameModeIndex,
     ];
     Map<String, dynamic> gameProfileMap = Map.fromIterables(mapKeys, mapValues);
-    gameProfileMap.forEach((key, value) {
+    if (isDev) gameProfileMap.forEach((key, value) {
       print(key + ': ' + '$value');
     });
     MoonBlinkRepository.updateGameProfile(gameProfileMap).then((value) {
@@ -160,8 +161,6 @@ class UpdateGameProfileBloc
       if (gameProfile.isPlay == 0) {
         StorageManager.sharedPreferences.setInt(mgameprofile,
             StorageManager.sharedPreferences.getInt(mgameprofile) + 1);
-        print("GAMEPROFILE COUNT IS " +
-            StorageManager.sharedPreferences.getInt(mgameprofile).toString());
       }
       Navigator.pop(context, true);
     }, onError: (e) => {showToast(e.toString()), _unfreezeUI()});

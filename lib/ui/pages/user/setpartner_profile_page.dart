@@ -383,8 +383,7 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                 sendTimeout: 25 * 1000,
                 receiveTimeout: 25 * 1000,
               ));
-      print('PRINTED $response');
-      print("+++++++++++++++++++++++++++++++++++++");
+      if (isDev) print('PRINTED $response');
       setState(() {
         finished = !finished;
       });

@@ -44,7 +44,6 @@ class _BoostingGameListPageState extends State<BoostingGameListPage> {
           stream: _bookingGameListSubject,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              debugPrint(snapshot.error.toString());
               return Center(child: CupertinoButton(child: Text('Something Went Wrong!'), onPressed: (){
                 _bookingGameListSubject.add(null);
                 _fetchData();

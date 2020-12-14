@@ -74,7 +74,6 @@ class UserRatingBloc extends Bloc<UserRatingEvent, UserRatingState> {
 
   Stream<UserRatingState> _mapRefreshedToState(
       UserRatingState currentState) async* {
-    print('Execute');
     List<UserRating> data = [];
     yield UserRatingRefreshing();
     try {

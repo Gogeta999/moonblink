@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/usercontainer.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -119,8 +120,7 @@ class _FollowerPageState extends State<FollowerPage> {
           return ListView.builder(
             itemBuilder: (context, index) {
               Follower follower = followers[index];
-              print(follower.profileimage);
-              print("++++++++++++++++++++++++++++++++++++++++++++++++++");
+              if (isDev) print(follower.profileimage);
               return UserTile(
                 onTap: () {
                   if (ownId == follower.userId) {

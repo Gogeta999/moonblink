@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/chat_models/booking_status.dart';
 import 'package:moonblink/models/chat_models/last_boost_order.dart';
@@ -62,7 +63,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
 
     this.boostingStatusSubject = BehaviorSubject<LastBoostOrder>.seeded(null)..listen((value) {
       if (value?.status == BOOST_ACCEPTED) {
-        print('Listening: ${value.status}');
+        if (isDev) print('Listening: ${value.status}');
         final boostEndTime = ((value.estimateHour + (value.estimateDay * 24)) * 3600) + DateTime.parse(value.startTime).millisecondsSinceEpoch ~/ 1000;
         _boostingTotal = boostEndTime - now;
         _boostingStartCounting();
@@ -143,7 +144,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
     messageController.dispose();
     Future.wait(futures);
     saveTimer();
-    print('Disposing ChatBoxBloc Success');
+    if (isDev) print('Disposing ChatBoxBloc Success');
   }
 
   void saveTimer() {
@@ -673,7 +674,7 @@ class ChatBoxBloc extends Bloc<ChatBoxEvent, ChatBoxState> {
         _boostingTimer.cancel();
         boostingTimeSubject.add('');
       } else
-        boostingTimeSubject.add('Boosting OnProgress \n $days Days: $hours Hours: $minutes Minutes: $seconds Seconds');
+        boostingTimeSubject.add('Boosting is in Progress \n $days Days: $hours Hours: $minutes Minutes: $seconds Seconds');
     });
   }
 

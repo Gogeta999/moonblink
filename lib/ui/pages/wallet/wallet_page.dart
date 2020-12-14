@@ -4,6 +4,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
@@ -40,7 +41,7 @@ class _WalletPageState extends State<WalletPage> {
   void initState() {
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      print("RewardedVideoAd event $event");
+      if (isDev) print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
           userReward();
@@ -270,10 +271,10 @@ class _WalletPageState extends State<WalletPage> {
     });
     try {
       var msg = await MoonBlinkRepository.adReward();
-      print(msg);
+      if (isDev) print(msg);
       await getUserWallet();
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
     }
     setState(() {
       isWalletLoading = false;
@@ -321,7 +322,7 @@ class _WalletPageState extends State<WalletPage> {
         isWalletLoading = false;
       });
     } catch (error) {
-      print(error);
+      if (isDev) print(error);
       setState(() {
         isWalletLoading = false;
       });

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/bloc_pattern/update_game_profile/bloc/update_game_profile_bloc.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/user_play_game.dart';
@@ -32,7 +33,7 @@ class GameProfileBloc extends Bloc<GameProfileEvent, GameProfileState> {
     userPlayGameListSubject.close();
     deselectSubject.close();
     this.close();
-    print('Disposing GameProfileBloc Success');
+    if (isDev) print('Disposing GameProfileBloc Success');
   }
 
   @override
@@ -56,8 +57,6 @@ class GameProfileBloc extends Bloc<GameProfileEvent, GameProfileState> {
       deselectSubject.add(DeselectState.initial);
       StorageManager.sharedPreferences.setInt(mgameprofile,
           StorageManager.sharedPreferences.getInt(mgameprofile) - 1);
-      print("GAMEPROFILE COUNT IS " +
-          StorageManager.sharedPreferences.getInt(mgameprofile).toString());
 
       ///After delete, fetch data from server again
       this.fetchGameProfile();
