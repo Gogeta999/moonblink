@@ -660,7 +660,6 @@ class _HomePageState extends State<HomePage>
                                         ? snapshot.data.length
                                         : snapshot.data.length + 1),
                               ),
-                          //HomePostList()
                         ]),
                   );
                 }),

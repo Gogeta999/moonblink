@@ -357,15 +357,9 @@ class _AlphabetListScrollViewState extends State<AlphabetListScrollView> {
             key: _mainKey,
             controller: controller,
             slivers: <Widget>[
-              // ..._headerWidgetList(),
-              // SliverToBoxAdapter(
-              //   child: Center(child: Text(alphabetList[0])),
-              // ),
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   var currentIndex = index;
-                  // print("++++++++++++++++++--------------------");
-                  // print(currentIndex);
                   return Column(children: [
                     Text(widget.strList[index]),
                     Container(

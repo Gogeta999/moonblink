@@ -127,12 +127,6 @@ class _AdPostWidgetState extends State<AdPostWidget> {
                         type: NativeAdmobType.full,
                       ),
                     ),
-                    // onTap: () {
-                    //   Navigator.of(context).push(MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           ImageView(widget.posts.coverImage)));
-                    //   print('object');
-                    // },
                   ),
 
                   /// [User_bottom data]

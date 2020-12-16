@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
@@ -68,12 +69,12 @@ class _NewTopUpPage extends State<NewTopUpPage>
     }, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
-      print('Sorry: $error');
+      if (isDev) ('Sorry: $error');
     });
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      print("RewardedVideoAd event $event");
+      if (isDev) print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
           userReward();
@@ -504,7 +505,7 @@ class _NewTopUpPage extends State<NewTopUpPage>
         isWalletLoading = false;
       });
     } catch (error) {
-      print(error);
+      if (isDev) print(error);
       setState(() {
         isWalletLoading = false;
       });
@@ -517,10 +518,10 @@ class _NewTopUpPage extends State<NewTopUpPage>
     });
     try {
       var msg = await MoonBlinkRepository.topUp(productId);
-      print(msg);
+      if (isDev) print(msg);
       await getUserWallet();
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
     }
     setState(() {
       isLoading = false;
@@ -533,10 +534,10 @@ class _NewTopUpPage extends State<NewTopUpPage>
     });
     try {
       var msg = await MoonBlinkRepository.adReward();
-      print(msg);
+      if (isDev) print(msg);
       await getUserWallet();
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
     }
     setState(() {
       isLoading = false;

@@ -1,3 +1,4 @@
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/models/notification_models/user_booking_notification.dart';
 import 'package:moonblink/models/notification_models/user_message_notification.dart';
 
@@ -59,7 +60,7 @@ class UserNewNotificationData {
     } else if (fcmType == 'message') {
       data = UserMessageNotificationData.fromJson(json);
     } else {
-      print("--------This notification type is not supported for now--------");
+      if (isDev) print("--------This notification type is not supported for now--------");
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/provider/view_state_list_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -76,8 +77,8 @@ abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T> {
     } catch (e, s) {
       _currentPageNum--;
       refreshController.loadFailed();
-      debugPrint('error--->\n' + e.toString());
-      debugPrint('statck--->\n' + s.toString());
+      if (isDev) debugPrint('error--->\n' + e.toString());
+      if (isDev) debugPrint('statck--->\n' + s.toString());
       return null;
     }
   }

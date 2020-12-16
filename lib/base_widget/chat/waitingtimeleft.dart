@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 
 class WaitingTimeLeft extends StatefulWidget {
   final String createat;
@@ -34,17 +35,16 @@ class _WaitingTimeLeftState extends State<WaitingTimeLeft> {
     if (widget.leftTime != null) {
       setState(() {
         lefttime = widget.leftTime - left;
-        print(lefttime);
+        if (isDev) print(lefttime);
       });
       timerCountDown(lefttime);
     }  else {
       setState(() {
         lefttime = 300 - left;
-        print(lefttime);
+        if (isDev) print(lefttime);
       });
       timerCountDown(lefttime);
     }
-    print("=======================================================");
   }
 
   Future<void> timerCountDown(countdown) async {

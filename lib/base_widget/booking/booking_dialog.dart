@@ -16,12 +16,7 @@ class BookingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Text(G.of(context).bookingDialog),
-// =======
-//     return AlertDialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-//       title: Text(G.of(context).bookingDialog),
-// >>>>>>> develop-master
+      title: Text(G.of(context).bookingRequest),
       content: Text('$bookingUserName ' +
           G.of(context).bookingDialogSomeoneBook +
           '\n\n' + gameName + ' ' + type),
@@ -29,14 +24,12 @@ class BookingDialog extends StatelessWidget {
         FlatButton(
             child: Text(G.of(context).bookingDialogReject),
             onPressed: () {
-              print('Rejected');
               reject();
               Navigator.pop(context, 'Reject');
             }),
         FlatButton(
           child: Text(G.of(context).bookingDialogAccept),
           onPressed: () {
-            print('Accepted');
             accept();
             Navigator.pop(context, 'Accept');
           },

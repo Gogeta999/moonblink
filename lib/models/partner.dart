@@ -21,6 +21,7 @@ class PartnerUser {
   int reactionCount;
   int isFollow;
   int likecount;
+  int showBoostService;
   double rating;
   String ordertaking;
   PartnerProfile prfoileFromPartner;
@@ -49,6 +50,7 @@ class PartnerUser {
     this.reactionCount,
     this.isFollow,
     this.likecount,
+    this.showBoostService,
     this.rating,
     this.ordertaking,
     this.prfoileFromPartner,
@@ -73,6 +75,7 @@ class PartnerUser {
       mlplayerid: map['ml_player_id'],
       pubgplayerid: map['pubg_player_id'],
       likecount: map['reaction_count'],
+      showBoostService: map['show_boost_service'],
       rating: map['rating'],
       verified: map['verified'],
       verifiedAt: map['verified_at'],
@@ -108,6 +111,7 @@ class PartnerUser {
     data['ml_player_id'] = mlplayerid;
     data['pubg_player_id'] = pubgplayerid;
     data['reaction_count'] = likecount;
+    data['show_boost_service'] = showBoostService;
     data['rating'] = rating;
     // data['profile'] = profileFromPartner;
     // 'profile'] =partnerProfileImage;

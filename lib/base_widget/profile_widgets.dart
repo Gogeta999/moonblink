@@ -44,9 +44,6 @@ class PartnerRatingWidget extends StatelessWidget {
               starCount: 5,
               allowHalfRating: true,
               spacing: 5,
-              // onRated: (value) {
-              //   print("rating value_ $value");
-              // },
             ),
           ),
           Positioned(

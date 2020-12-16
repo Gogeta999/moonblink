@@ -188,7 +188,6 @@ class _ContactContainerState extends State<ContactContainer> {
                                     .contact.contactUser.contactUserCover),
                               ),
                             );
-                            print('object');
                           },
                           onDoubleTap: widget.contact.contactUser.reacted == 0
                               ? () {

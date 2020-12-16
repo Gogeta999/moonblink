@@ -45,7 +45,6 @@ class MoonBlinkRepository {
       'page': pageNum,
       'gender': gender
     });
-    print('Pareameters----$type,$pageNum,$gender');
     List<Post> posts =
         response.data['data'].map<Post>((item) => Post.fromJson(item)).toList();
     MoonGoDB().insertPosts(posts);
@@ -58,7 +57,6 @@ class MoonBlinkRepository {
       'channel': channel,
       'user_id': id,
     });
-    print(response.data);
     return response.data;
   }
 
@@ -66,7 +64,6 @@ class MoonBlinkRepository {
   static Future endbooking(int id, int bookingid, int status) async {
     var response = await DioUtils()
         .post(Api.Endbooking + "$id/booking/$bookingid?status=$status");
-    print(response.data);
     return response.data;
   }
 
@@ -159,7 +156,6 @@ class MoonBlinkRepository {
       'name': key,
       'page': pageNum,
     });
-    print(response);
     return response.data['data']
         .map<User>((item) => User.fromJsonMap(item))
         .toList();
@@ -171,7 +167,6 @@ class MoonBlinkRepository {
         .post(Api.SocialRequest + '$partnerId/react', queryParameters: {
       'react': reactType,
     });
-    print(response);
     return response;
   }
 
@@ -309,7 +304,6 @@ class MoonBlinkRepository {
       'body': '',
       'media': await MultipartFile.fromFile(storyPath, filename: 'xxx.jpg')
     });
-    debugPrint('test-------' + storyPath);
     var response = await DioUtils()
         .postwithData(Api.POSTSTORY + '$userid/story', data: formData);
     return response.data;
@@ -431,7 +425,6 @@ class MoonBlinkRepository {
           Api.UserNotificationRead + '$userId/notification/$notificationId',
           queryParameters: {'is_archive': isArchive});
     } else {
-      print("-----ERROR----- can't make this request");
       return null;
     }
     return UserMessageNotificationData.fromJson(response.data);
@@ -452,7 +445,6 @@ class MoonBlinkRepository {
           Api.UserNotificationRead + '$userId/notification/$notificationId',
           queryParameters: {'is_archive': isArchive});
     } else {
-      print("-----ERROR----- can't make this request");
       return null;
     }
     return UserBookingNotificationData.fromJson(response.data);
@@ -539,7 +531,6 @@ class MoonBlinkRepository {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().get(Api.GetOtpCode + '$userid/send/otp',
         queryParameters: {'mail': mail});
-    print(response);
     return response.data;
   }
 

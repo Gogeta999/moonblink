@@ -121,7 +121,6 @@ class LoginTextFieldSuffixIcon extends StatelessWidget {
           offstage: !obscureText,
           child: InkWell(
             onTap: () {
-//              debugPrint('onTap');
               obscureNotifier.value = !obscureNotifier.value;
             },
             child: ValueListenableBuilder(

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -49,7 +50,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
   @override
   void initState() {
     // PushNotificationsManager().showgameprofilenoti();
-    print('token: ${StorageManager.sharedPreferences.getString(token)}');
+    if (isDev) print('token: ${StorageManager.sharedPreferences.getString(token)}');
     if (StorageManager.sharedPreferences.getString(token) != null) init();
     super.initState();
   }
@@ -291,7 +292,6 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                   String id = encrypt(userid);
                                   FlutterClipboard.copy(id).then((value) {
                                     showToast(G.of(context).toastcopy);
-                                    print('copied');
                                   });
                                 },
                                 child: Row(
@@ -399,8 +399,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                   StorageManager.sharedPreferences
                                       .setInt(mstatus, 1);
                                 });
-                                print(status);
-                                print("+++++++++++++++++++++++++++");
+                                if (isDev) print(status);
+                                if (isDev) print("+++++++++++++++++++++++++++");
                                 MoonBlinkRepository.changestatus(1);
                                 showToast(G.of(context).toastoffline);
                               }
@@ -410,8 +410,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                       .setInt(mstatus, 0);
                                   // status = 0;
                                 });
-                                print(status);
-                                print("----------------------------");
+                                if (isDev) print(status);
+                                if (isDev) print("----------------------------");
                                 MoonBlinkRepository.changestatus(0);
                                 showToast(G.of(context).toastonline);
                               }),
@@ -437,7 +437,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                   ),
 
                 ///Boosting Profile
-                if (usertype != 0)
+                if (usertype == kPro)
                   Card(
                     margin: EdgeInsets.zero,
                     // elevation: 4,

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
@@ -67,12 +68,12 @@ class _TopUpPageNew extends State<TopUpPageNew>
     }, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
-      print('Sorry: $error');
+      if (isDev) print('Sorry: $error');
     });
 
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      print("RewardedVideoAd event $event");
+      if (isDev) print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
           userReward();
@@ -166,7 +167,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
     final QueryPurchaseDetailsResponse purchaseResponse =
         await _connection.queryPastPurchases();
     if (purchaseResponse.error != null) {
-      print('Sorry: ${purchaseResponse.error}');
+      if (isDev) print('Sorry: ${purchaseResponse.error}');
     }
     final List<PurchaseDetails> verifiedPurchases = [];
     for (PurchaseDetails purchase in purchaseResponse.pastPurchases) {
@@ -471,7 +472,7 @@ class _TopUpPageNew extends State<TopUpPageNew>
         this.wallet = wallet;
       });
     } catch (error) {
-      print(error);
+      if (isDev) print(error);
     }
   }
 
@@ -481,10 +482,10 @@ class _TopUpPageNew extends State<TopUpPageNew>
     });
     try {
       var msg = await MoonBlinkRepository.topUp(productId);
-      print(msg);
+      if (isDev) print(msg);
       await getUserWallet();
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
     }
     setState(() {
       isLoading = false;
@@ -497,10 +498,10 @@ class _TopUpPageNew extends State<TopUpPageNew>
     });
     try {
       var msg = await MoonBlinkRepository.adReward();
-      print(msg);
+      if (isDev) print(msg);
       await getUserWallet();
     } catch (err) {
-      print(err);
+      if (isDev) print(err);
     }
     setState(() {
       isLoading = false;

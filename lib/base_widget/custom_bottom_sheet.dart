@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/booking/booking_bottom_sheet.dart';
 import 'package:moonblink/base_widget/photo_bottom_sheet.dart';
 import 'package:moonblink/base_widget/top_up_bottom_sheet.dart';
@@ -54,7 +55,7 @@ class CustomBottomSheet {
       try {
         onInit();
       } catch (e) {
-        if (e is NoSuchMethodError) print('NoSuchMethodError');
+        if (e is NoSuchMethodError && isDev) print('NoSuchMethodError');
       }
       showModalBottomSheet(
           context: buildContext,
@@ -88,7 +89,7 @@ class CustomBottomSheet {
         try {
           onDismiss();
         } catch (e) {
-          if (e is NoSuchMethodError) {
+          if (e is NoSuchMethodError && isDev) {
             print('NoSuchMethodError');
           }
         }
@@ -133,7 +134,7 @@ class CustomBottomSheet {
         try {
           onDismiss();
         } catch (e) {
-          if (e is NoSuchMethodError) {
+          if (e is NoSuchMethodError && isDev) {
             print('NoSuchMethodError');
           }
         }
@@ -160,7 +161,7 @@ class CustomBottomSheet {
       try {
         onDismiss();
       } catch (e) {
-        if (e is NoSuchMethodError) {
+        if (e is NoSuchMethodError && isDev) {
           print('NoSuchMethodError');
         }
       }
@@ -182,45 +183,12 @@ class CustomBottomSheet {
       try {
         onDismiss();
       } catch (e) {
-        if (e is NoSuchMethodError) {
+        if (e is NoSuchMethodError && isDev) {
           print('NoSuchMethodError');
         }
       }
     });
   }
-  // static showGameModeBottomSheet(
-  //     {@required
-  //         BuildContext buildContext,
-  //     @required
-  //         List<GameMode> gameModeList,
-  //     @required
-  //         List<Map<String, int>> selectedGameModeIndex,
-  //     @required
-  //         Function(List<Map<String, int>> newSelectedGameModeIndex) onDone,
-  //     Function onDismiss}) {
-  //   showModalBottomSheet(
-  //       context: buildContext,
-  //       barrierColor: Colors.black.withOpacity(0.6),
-  //       isDismissible: true,
-  //       builder: (context) => CircularBottomSheet(
-  //           color: Theme.of(context).scaffoldBackgroundColor,
-  //           child: BlocProvider.value(
-  //             value: BlocProvider.of<UpdateGameProfileBloc>(buildContext),
-  //             child: GameModeBottomSheet(
-  //               gameModeList: gameModeList,
-  //               selectedGameModeIndex: selectedGameModeIndex,
-  //               onDone: onDone,
-  //             ),
-  //           ))).whenComplete(() {
-  //     try {
-  //       onDismiss();
-  //     } catch (e) {
-  //       if (e is NoSuchMethodError) {
-  //         print('NoSuchMethodError');
-  //       }
-  //     }
-  //   });
-  // }
 
   static showBookingSheet(
       {@required BuildContext buildContext,
@@ -241,7 +209,7 @@ class CustomBottomSheet {
       try {
         onDismiss();
       } catch (e) {
-        if (e is NoSuchMethodError) {
+        if (e is NoSuchMethodError && isDev) {
           print('NoSuchMethodError');
         }
       }
@@ -260,7 +228,7 @@ class CustomBottomSheet {
       try {
         onDismiss();
       } catch (e) {
-        if (e is NoSuchMethodError) {
+        if (e is NoSuchMethodError && isDev) {
           print('NoSuchMethodError');
         }
       }

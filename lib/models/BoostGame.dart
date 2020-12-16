@@ -7,6 +7,7 @@ class BoostGame {
   int estimateHour;
   int estimateDay;
   final String message;
+  final int isHonourRank;
   final int isAccept;
 
   BoostGame.fromJson(Map<String, dynamic> json)
@@ -18,6 +19,7 @@ class BoostGame {
       estimateHour = json['estimate_hour'],
       estimateDay = json['estimate_day'],
       message = json['message'],
+      isHonourRank = json['is_honour_rank'],
       isAccept = json['is_accept'];
   
   Map<String, dynamic> toJson() => {
@@ -29,6 +31,7 @@ class BoostGame {
     'estimate_hour': estimateHour,
     'estimate_day': estimateDay,
     'message': message,
+    'is_honour_rank': isHonourRank,
     'is_accept': isAccept
   };
 }

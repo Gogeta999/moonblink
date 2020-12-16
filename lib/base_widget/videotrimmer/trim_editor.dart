@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/videotrimmer/thumbnail_viewer.dart';
 import 'package:moonblink/base_widget/videotrimmer/trim_editor_painter.dart';
 import 'package:moonblink/base_widget/videotrimmer/video_trimmer.dart';
@@ -224,7 +225,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
           setState(() {
             _currentPosition =
                 videoPlayerController.value.position.inMilliseconds;
-            print("CURRENT POS: $_currentPosition");
+            if (isDev) print("CURRENT POS: $_currentPosition");
 
             if (_currentPosition > _videoEndPos.toInt()) {
               widget.onChangePlaybackState(false);
@@ -240,7 +241,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
         } else {
           if (videoPlayerController.value.initialized) {
             if (_animationController != null) {
-              print(
+              if (isDev) print(
                   'ANI VALUE: ${(_scrubberAnimation.value).toInt()} && END: ${(_endPos.dx).toInt()}');
               if ((_scrubberAnimation.value).toInt() == (_endPos.dx).toInt()) {
                 _animationController.reset();
@@ -254,7 +255,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
 
       videoPlayerController.setVolume(1.0);
       _videoDuration = videoPlayerController.value.duration.inMilliseconds;
-      print(_videoFile.path);
+      if (isDev) print(_videoFile.path);
 
       _videoEndPos = _videoDuration.toDouble();
       widget.onChangeEnd(_videoEndPos);
@@ -278,7 +279,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
       setState(() {
         _startPos += details.delta;
         _startFraction = (_startPos.dx / _thumbnailViewerW);
-        print("START PERCENT: $_startFraction");
+        if (isDev) print("START PERCENT: $_startFraction");
         _videoStartPos = _videoDuration * _startFraction;
         widget.onChangeStart(_videoStartPos);
       });
@@ -299,7 +300,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
       setState(() {
         _endPos += details.delta;
         _endFraction = _endPos.dx / _thumbnailViewerW;
-        print("END PERCENT: $_endFraction");
+        if (isDev) print("END PERCENT: $_endFraction");
         _videoEndPos = _videoDuration * _endFraction;
         widget.onChangeEnd(_videoEndPos);
       });
@@ -322,7 +323,7 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
     _thumbnailViewerH = widget.viewerHeight;
 
     _numberOfThumbnails = widget.viewerWidth ~/ _thumbnailViewerH;
-    print('Number of thumbnails generated: $_numberOfThumbnails');
+    if (isDev) print('Number of thumbnails generated: $_numberOfThumbnails');
     _thumbnailViewerW = _numberOfThumbnails * _thumbnailViewerH;
 
     _endPos = Offset(_thumbnailViewerW, _thumbnailViewerH);
@@ -364,10 +365,12 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return GestureDetector(
       onHorizontalDragStart: (DragStartDetails details) {
-        print("START");
-        print(details.localPosition);
-        print((_startPos.dx - details.localPosition.dx).abs());
-        print((_endPos.dx - details.localPosition.dx).abs());
+        if (isDev) {
+          print("START");
+          print(details.localPosition);
+          print((_startPos.dx - details.localPosition.dx).abs());
+          print((_endPos.dx - details.localPosition.dx).abs());
+        }
 
         if (_endPos.dx >= _startPos.dx) {
           if ((_startPos.dx - details.localPosition.dx).abs() >
@@ -394,9 +397,11 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
         });
       },
       onHorizontalDragUpdate: (DragUpdateDetails details) {
-        print("UPDATE");
-        print("START POINT: ${_startPos.dx + details.delta.dx}");
-        print("END POINT: ${_endPos.dx + details.delta.dx}");
+        if (isDev) {
+          print("UPDATE");
+          print("START POINT: ${_startPos.dx + details.delta.dx}");
+          print("END POINT: ${_endPos.dx + details.delta.dx}");
+        }
 
         _circleSize = widget.circleSizeOnDrag;
 

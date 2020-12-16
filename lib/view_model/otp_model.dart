@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/provider/view_state_model.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -18,7 +19,7 @@ class OtpModel extends ViewStateModel {
       try {
         await _firebaseAuth.currentUser.delete();
       } catch (e) {
-        print(e.toString());
+        if (isDev) print(e.toString());
       }
     }
     setBusy();
@@ -36,7 +37,7 @@ class OtpModel extends ViewStateModel {
       }
 
       void verificationFailed(FirebaseAuthException authException) async {
-        print(
+        if (isDev) print(
             'Exception: ${authException.message} ${authException.code} ${authException.phoneNumber}');
       }
 

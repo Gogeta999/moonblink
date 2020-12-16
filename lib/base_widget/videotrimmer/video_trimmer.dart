@@ -1,6 +1,7 @@
 library video_trimmer;
 
 import 'dart:io';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/videotrimmer/file_formats.dart';
 import 'package:moonblink/base_widget/videotrimmer/storage_dir.dart';
 import 'package:moonblink/base_widget/videotrimmer/trim_editor.dart';
@@ -75,10 +76,10 @@ class Trimmer {
 
     if (await _directoryFolder.exists()) {
       // If folder already exists return path
-      print('Exists');
+      if (isDev) print('Exists');
       return _directoryFolder.path;
     } else {
-      print('Creating');
+      if (isDev) print('Creating');
       // If folder does not exists create folder and then return its path
       final Directory _directoryNewFolder =
           await _directoryFolder.create(recursive: true);
@@ -183,8 +184,8 @@ class Trimmer {
     String _outputFormatString;
     String formattedDateTime = dateTime.replaceAll(' ', '');
 
-    print("DateTime: $dateTime");
-    print("Formatted: $formattedDateTime");
+    if (isDev) print("DateTime: $dateTime");
+    if (isDev) print("Formatted: $formattedDateTime");
 
     if (videoFolderName == null) {
       videoFolderName = "Trimmer";

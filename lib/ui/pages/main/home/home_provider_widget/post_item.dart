@@ -51,77 +51,79 @@ class _PostItemWidgetState extends State<PostItemWidget>
   }
 
   Widget postprofile() {
-    return CachedNetworkImage(
-      imageUrl: widget.posts.profileImage,
-      imageBuilder: (context, imageProvider) => Padding(
-        padding: const EdgeInsets.only(top: 12, left: 15),
-        child: CircleAvatar(
-          radius: 30,
-          backgroundColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey
-              : Colors.black,
-          child: CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.transparent,
-            backgroundImage: imageProvider,
-            child: GestureDetector(
-              onTap: usertoken == null
-                  ? () {
-                      showToast(G.of(context).loginFirst);
-                    }
-                  : () {
-                      int detailPageId = widget.posts.id;
-                      Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PartnerDetailPage(detailPageId)))
-                          .then((value) async {
-                        if (value != null) {
-                          setState(() {
-                            isBlocking = true;
-                          });
+    return widget.posts.profileImage == null
+        ? Icon(Icons.error)
+        : CachedNetworkImage(
+            imageUrl: widget.posts.profileImage,
+            imageBuilder: (context, imageProvider) => Padding(
+              padding: const EdgeInsets.only(top: 12, left: 15),
+              child: CircleAvatar(
+                radius: 30,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey
+                    : Colors.black,
+                child: CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: imageProvider,
+                  child: GestureDetector(
+                    onTap: usertoken == null
+                        ? () {
+                            showToast(G.of(context).loginFirst);
+                          }
+                        : () {
+                            int detailPageId = widget.posts.id;
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PartnerDetailPage(detailPageId)))
+                                .then((value) async {
+                              if (value != null) {
+                                setState(() {
+                                  isBlocking = true;
+                                });
 
-                          ///Blocking user
-                          await _homeBloc
-                              .removeItem(
-                                  index: widget.index,
-                                  blockUserId: widget.posts.id)
-                              .then((value) {
-                            value
-                                ? showToast('Successfully Blocked')
-                                : showToast('Error Blocking User');
-                          });
-                          setState(() {
-                            isBlocking = false;
-                          });
-                        }
-                      });
-                    },
+                                ///Blocking user
+                                await _homeBloc
+                                    .removeItem(
+                                        index: widget.index,
+                                        blockUserId: widget.posts.id)
+                                    .then((value) {
+                                  value
+                                      ? showToast('Successfully Blocked')
+                                      : showToast('Error Blocking User');
+                                });
+                                setState(() {
+                                  isBlocking = false;
+                                });
+                              }
+                            });
+                          },
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-      placeholder: (context, url) => Padding(
-        padding: const EdgeInsets.only(top: 12, left: 15),
-        child: CupertinoActivityIndicator(),
-      ),
-      errorWidget: (context, url, error) => Padding(
-        padding: const EdgeInsets.only(top: 12, left: 15),
-        child: Container(
-          color: Colors.grey.shade600,
-          child: IconButton(
-            onPressed: () {
-              showToast('Refresh Again');
-            },
-            icon: Icon(
-              Icons.error,
-              color: Colors.grey.shade300,
+            placeholder: (context, url) => Padding(
+              padding: const EdgeInsets.only(top: 12, left: 15),
+              child: CupertinoActivityIndicator(),
             ),
-          ),
-        ),
-      ),
-    );
+            errorWidget: (context, url, error) => Padding(
+              padding: const EdgeInsets.only(top: 12, left: 15),
+              child: Container(
+                color: Colors.grey.shade600,
+                child: IconButton(
+                  onPressed: () {
+                    showToast('Refresh Again');
+                  },
+                  icon: Icon(
+                    Icons.error,
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 
   //Block Button
@@ -235,29 +237,27 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                     constraints: BoxConstraints(
                                         minWidth: double.infinity,
                                         maxWidth: double.infinity),
-                                    child:
-                                        //  isDev
-                                        //     ? Icon(Icons.image)
-                                        //     :
-                                        CachedNetworkImage(
-                                      fit: BoxFit.fill,
-                                      imageUrl: widget.posts.coverImage,
-                                      placeholder: (context, url) =>
-                                          CachedLoader(
-                                        containerHeight: 200,
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          CachedError(
-                                        containerHeight: 200,
-                                      ),
-                                    ),
+                                    child: widget.posts.coverImage == null
+                                        ? Icon(Icons.error)
+                                        : CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            imageUrl: widget.posts.coverImage,
+                                            placeholder: (context, url) =>
+                                                CachedLoader(
+                                              containerHeight: 200,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    CachedError(
+                                              containerHeight: 200,
+                                            ),
+                                          ),
                                   ),
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => ImageView(
                                                 widget.posts.coverImage)));
-                                    print('object');
                                   },
                                   onDoubleTap: widget.posts.isReacted == 0
                                       ? () {
@@ -472,7 +472,6 @@ class _PostItemWidgetState extends State<PostItemWidget>
                       ),
                     ],
                   ),
-                  // isDev ? Icon(Icons.image) :
                   postprofile(),
                 ],
               ),

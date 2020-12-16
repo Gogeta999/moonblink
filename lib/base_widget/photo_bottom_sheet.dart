@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -176,7 +177,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                             );
                           }).then((value) {
                         if (value != null && value != _currentAlbum) {
-                          print(value);
                           _switchAlbum(value);
                         }
                       });
@@ -289,8 +289,8 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
         minWidth: widget.minWidth,
         minHeight: widget.minHeight);
 
-    print(file.lengthSync());
-    print(result.lengthSync());
+    if (isDev) print(file.lengthSync());
+    if (isDev) print(result.lengthSync());
 
     return result;
   }
@@ -357,12 +357,11 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     }
     File compressedImage =
         await _compressAndGetFile(croppedImage ?? image, tempFile.path);
-    print(image.lengthSync());
-    print(compressedImage.lengthSync());
+    if (isDev) print(image.lengthSync());
+    if (isDev) print(compressedImage.lengthSync());
     if (compressedImage != null) {
       widget.onPressed(compressedImage);
     }
-    //tempFile.delete(recursive: true);
   }
 
   _fetchNewMedia() async {
@@ -396,8 +395,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
         _selectedImages.add(SelectedImageModel(thumbnail: thumbnail));
       });
     }
-    print(_photoList);
-    print(_albums);
     setState(() {
       _photoList.addAll(photos);
       _currentPage++;
@@ -424,7 +421,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
       if (maxScroll - currentScroll <= _scrollThreshold) {
-        print('Fetching');
         _addNewPhotos();
       }
     }

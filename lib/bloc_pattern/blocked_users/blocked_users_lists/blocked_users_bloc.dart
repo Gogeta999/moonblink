@@ -77,7 +77,6 @@ class BlockedUsersBloc extends Bloc<BlockedUsersEvent, BlockedUsersState> {
 
   Stream<BlockedUsersState> _mapRefreshedToState(BlockedUsersState currentState) async* {
     List<BlockedUser> data = [];
-    print('Refreshing');
     if (currentState is BlockedUsersSuccess) {
       for (int i = currentState.data.length - 1; i >= 0; --i) {
         await Future.delayed(Duration(milliseconds: 20));

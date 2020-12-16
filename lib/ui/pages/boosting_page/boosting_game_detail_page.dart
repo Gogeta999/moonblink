@@ -58,7 +58,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
     this._bloc.init();
 
     ///[to test]
-    // StorageManager.sharedPreferences.setBool(kNewToBoosting, true);
+    //StorageManager.sharedPreferences.setBool(kNewToBoosting, true);
     super.initState();
   }
 
@@ -201,28 +201,35 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                           ' ${item.upToRank}',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      key: index == 0 ? intro.keys[0] : null,
                     ),
-                    if (item.message.isNotEmpty) SizedBox(height: 5),
-                    if (item.message.isNotEmpty)
+                    if (item.message?.isNotEmpty) SizedBox(height: 5),
+                    if (item.message?.isNotEmpty)
                       Text(item.message,
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
-                    Text(G.current.boostPrice +
-                        ' - ${item.estimateCost} ${item.estimateCost > 0 ? G.current.boostCoin : G.current.boostCoin}'),
+                    Text(
+                        G.current.boostPrice +
+                            ' - ${item.estimateCost} ${item.estimateCost > 1 ? G.current.boostCoin : G.current.boostCoin}',
+                        key: index == 0 ? intro.keys[1] : null),
                     SizedBox(height: 5),
-                    Text(G.current.boostDuration +
-                        ' - ${item.estimateDay} ${item.estimateDay > 0 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),
+                    Text(
+                        G.current.boostDuration +
+                            ' - ${item.estimateDay} ${item.estimateDay > 1 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 1 ? "Hours" : "Hour"}',
+                        key: index == 0 ? intro.keys[2] : null),
                   ],
                 ),
               ),
               Column(
                 children: [
                   CupertinoButton(
+                      key: index == 0 ? intro.keys[3] : null,
                       padding: EdgeInsets.zero,
                       child: Text(G.current.boostEditPrice),
                       onPressed: () => _showPriceDialog(index)),
                   CupertinoButton(
+                      key: index == 0 ? intro.keys[4] : null,
                       padding: EdgeInsets.zero,
                       child: Text(G.current.boostEditDuration),
                       onPressed: () => _showDurationPicker(index)),
@@ -250,12 +257,23 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
           actions: <Widget>[
             Container(
               key: intro.keys[5],
-              child: CupertinoButton(
-                child: Text(G.current.submit),
-                onPressed: () {
-                  this._bloc.submit();
-                },
-              ),
+              child: StreamBuilder<bool>(
+                  initialData: false,
+                  stream: this._bloc.submitButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data) {
+                      return CupertinoButton(
+                        child: CupertinoActivityIndicator(),
+                        onPressed: () {},
+                      );
+                    }
+                    return CupertinoButton(
+                      child: Text(G.current.submit),
+                      onPressed: () {
+                        this._bloc.submit();
+                      },
+                    );
+                  }),
             )
           ],
           bottom: PreferredSize(
@@ -273,7 +291,8 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                 return _loading;
               }
               bool tuto =
-                  StorageManager.sharedPreferences.getBool(kNewToBoosting);
+                  StorageManager.sharedPreferences.getBool(kNewToBoosting) ??
+                      true;
 
               if (tuto) {
                 Timer(Duration(microseconds: 0), () {
@@ -296,67 +315,67 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       ),
                     ),
                   ),
-                  if (tuto)
-                    Column(
-                      children: [
-                        SizedBox(height: 20),
-                        _buildCard(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      key: intro.keys[0],
-                                      padding: EdgeInsets.zero,
-                                      child: Text(
-                                        'Rank ' + G.current.boostTo + ' Rank ',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      key: intro.keys[1],
-                                      child: Text(G.current.boostPrice +
-                                          '100' +
-                                          G.current.boostCoin),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Container(
-                                      key: intro.keys[2],
-                                      child: Text(G.current.boostDuration +
-                                          ' - 10 days, 0 hour'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    key: intro.keys[3],
-                                    child: CupertinoButton(
-                                        padding: EdgeInsets.zero,
-                                        child: Text(G.current.boostEditPrice),
-                                        onPressed: () {}),
-                                  ),
-                                  Container(
-                                    key: intro.keys[4],
-                                    child: CupertinoButton(
-                                        padding: EdgeInsets.zero,
-                                        child:
-                                            Text(G.current.boostEditDuration),
-                                        onPressed: () {}),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  // if (tuto)
+                  //   Column(
+                  //     children: [
+                  //       SizedBox(height: 20),
+                  //       _buildCard(
+                  //         child: Row(
+                  //           children: [
+                  //             Expanded(
+                  //               child: Column(
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Container(
+                  //                     key: intro.keys[0],
+                  //                     padding: EdgeInsets.zero,
+                  //                     child: Text(
+                  //                       'Rank ' + G.current.boostTo + ' Rank ',
+                  //                       style: TextStyle(
+                  //                           fontSize: 16,
+                  //                           fontWeight: FontWeight.bold),
+                  //                     ),
+                  //                   ),
+                  //                   SizedBox(height: 10),
+                  //                   Container(
+                  //                     key: intro.keys[1],
+                  //                     child: Text(G.current.boostPrice +
+                  //                         ' - 100' +
+                  //                         G.current.boostCoin),
+                  //                   ),
+                  //                   SizedBox(height: 5),
+                  //                   Container(
+                  //                     key: intro.keys[2],
+                  //                     child: Text(G.current.boostDuration +
+                  //                         ' - 10 days, 0 hour'),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //             Column(
+                  //               children: [
+                  //                 Container(
+                  //                   key: intro.keys[3],
+                  //                   child: CupertinoButton(
+                  //                       padding: EdgeInsets.zero,
+                  //                       child: Text(G.current.boostEditPrice),
+                  //                       onPressed: () {}),
+                  //                 ),
+                  //                 Container(
+                  //                   key: intro.keys[4],
+                  //                   child: CupertinoButton(
+                  //                       padding: EdgeInsets.zero,
+                  //                       child:
+                  //                           Text(G.current.boostEditDuration),
+                  //                       onPressed: () {}),
+                  //                 ),
+                  //               ],
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
                   Expanded(
                     child: ListView.builder(
                       physics: ClampingScrollPhysics(),
@@ -389,6 +408,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                   BoxDecoration(color: Theme.of(context).backgroundColor),
               controller: controller,
               textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
             ),
             actions: <Widget>[
               CupertinoButton(
@@ -420,8 +440,8 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
         selectedTextStyle: TextStyle(color: Theme.of(context).accentColor),
         adapter: PickerDataAdapter<String>(pickerdata: [
           List.generate(
-              1000, (index) => '$index ${index > 0 ? "days" : "day"}'),
-          List.generate(24, (index) => '$index ${index > 0 ? "hours" : "hour"}')
+              1000, (index) => '$index ${index > 1 ? "days" : "day"}'),
+          List.generate(24, (index) => '$index ${index > 1 ? "hours" : "hour"}')
         ], isArray: true),
         delimiter: [
           PickerDelimiter(
@@ -435,9 +455,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                           fontSize: 32,
                           fontWeight: FontWeight.bold))))
         ],
-        onCancel: () {
-          debugPrint('Cancelling');
-        },
+        onCancel: () {},
         onConfirm: (picker, ints) {
           final newData = List<BoostGame>.from(data);
           newData[index].estimateDay = ints.first;

@@ -18,6 +18,7 @@ class BoostingGameDetailBloc extends Bloc<BoostingGameDetailEvent, BoostingGameD
   BoostingGameDetailBloc(this.id) : super(BoostingGameDetailInitial());
 
   final gameListSubject = BehaviorSubject<List<BoostGame>>.seeded(null);
+  final submitButtonSubject = BehaviorSubject.seeded(false);
 
   void init() {
     MoonBlinkRepository.getBoostGame(id).then((value) {
@@ -39,6 +40,7 @@ class BoostingGameDetailBloc extends Bloc<BoostingGameDetailEvent, BoostingGameD
   ) async* {}
 
   void submit() {
+    submitButtonSubject.add(true);
     gameListSubject.first.then((value) {
       bool valid = false;
       List<Map<String, dynamic>> jsonList = [];
@@ -50,14 +52,15 @@ class BoostingGameDetailBloc extends Bloc<BoostingGameDetailEvent, BoostingGameD
       });
       if (!valid) {
         showToast('At leat one rank need to proceed');
+        submitButtonSubject.add(false);
         return;
       }
       MoonBlinkRepository.setBoostGameProfile(jsonList, id).then((value) {
-        debugPrint('Upload success');
         showToast('Upload Success');
+        submitButtonSubject.add(false);
         Navigator.pop(context, true);
       }, onError: (e) {
-        debugPrint('Upload Failed: $e');
+        submitButtonSubject.add(false);
         showToast('$e');
       });
     });

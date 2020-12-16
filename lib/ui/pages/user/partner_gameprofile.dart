@@ -17,7 +17,6 @@ class _PartnerGameProfileState extends State<PartnerGameProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.gameprofile.length);
     return Scaffold(
       appBar: AppbarWidget(
         title: Text(G.of(context).profilegame),
