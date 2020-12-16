@@ -66,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "boostProfile" : MessageLookupByLibrary.simpleMessage("代打头像"),
     "boostProvideTo" : MessageLookupByLibrary.simpleMessage("支持到"),
     "boostRank" : MessageLookupByLibrary.simpleMessage("上分"),
+    "boostRequestNote" : MessageLookupByLibrary.simpleMessage("注意: 这个单子只会帮助您上100分，比如-如果你的分是550分，那么陪玩将会把你的分上升至650分.当然时间和价格也是基于完成这100分所需而付的"),
     "boostRequestTuto1" : MessageLookupByLibrary.simpleMessage("这是选择游戏的地方"),
     "boostRequestTuto2" : MessageLookupByLibrary.simpleMessage("这是选择排位的地方"),
     "boostRequestTuto3" : MessageLookupByLibrary.simpleMessage("请选择您当前的排位"),

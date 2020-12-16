@@ -465,6 +465,16 @@ class G {
     );
   }
 
+  /// `Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.`
+  String get boostRequestNote {
+    return Intl.message(
+      'Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.',
+      name: 'boostRequestNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This is to choose game`
   String get boostRequestTuto1 {
     return Intl.message(

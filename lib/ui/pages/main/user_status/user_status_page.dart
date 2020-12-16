@@ -50,7 +50,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
   @override
   void initState() {
     // PushNotificationsManager().showgameprofilenoti();
-    if (isDev) print('token: ${StorageManager.sharedPreferences.getString(token)}');
+    if (isDev)
+      print('token: ${StorageManager.sharedPreferences.getString(token)}');
     if (StorageManager.sharedPreferences.getString(token) != null) init();
     super.initState();
   }
@@ -411,7 +412,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                   // status = 0;
                                 });
                                 if (isDev) print(status);
-                                if (isDev) print("----------------------------");
+                                if (isDev)
+                                  print("----------------------------");
                                 MoonBlinkRepository.changestatus(0);
                                 showToast(G.of(context).toastonline);
                               }),
