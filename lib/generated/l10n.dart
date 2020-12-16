@@ -276,19 +276,9 @@ class G {
   }
 
   /// `Coins`
-  String get boostCoins {
-    return Intl.message(
-      'Coins',
-      name: 'boostCoins',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Coin`
   String get boostCoin {
     return Intl.message(
-      'Coin',
+      'Coins',
       name: 'boostCoin',
       desc: '',
       args: [],

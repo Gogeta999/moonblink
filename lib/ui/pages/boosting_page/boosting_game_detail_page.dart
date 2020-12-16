@@ -203,11 +203,13 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     if (item.message.isNotEmpty) SizedBox(height: 5),
-                    if (item.message.isNotEmpty) Text(item.message, style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    if (item.message.isNotEmpty)
+                      Text(item.message,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     Text(G.current.boostPrice +
-                        ' - ${item.estimateCost} ${item.estimateCost > 0 ? G.current.boostCoins : G.current.boostCoin}'),
+                        ' - ${item.estimateCost} ${item.estimateCost > 0 ? G.current.boostCoin : G.current.boostCoin}'),
                     SizedBox(height: 5),
                     Text(G.current.boostDuration +
                         ' - ${item.estimateDay} ${item.estimateDay > 0 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 0 ? "Hours" : "Hour"}'),

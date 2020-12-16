@@ -235,21 +235,22 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                     constraints: BoxConstraints(
                                         minWidth: double.infinity,
                                         maxWidth: double.infinity),
-                                    child: isDev
-                                        ? Icon(Icons.image)
-                                        : CachedNetworkImage(
-                                            fit: BoxFit.fill,
-                                            imageUrl: widget.posts.coverImage,
-                                            placeholder: (context, url) =>
-                                                CachedLoader(
-                                              containerHeight: 200,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    CachedError(
-                                              containerHeight: 200,
-                                            ),
-                                          ),
+                                    child:
+                                        //  isDev
+                                        //     ? Icon(Icons.image)
+                                        //     :
+                                        CachedNetworkImage(
+                                      fit: BoxFit.fill,
+                                      imageUrl: widget.posts.coverImage,
+                                      placeholder: (context, url) =>
+                                          CachedLoader(
+                                        containerHeight: 200,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          CachedError(
+                                        containerHeight: 200,
+                                      ),
+                                    ),
                                   ),
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -399,7 +400,6 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                       Expanded(
                                         flex: 2,
                                         child: InkWell(
-                                          
                                           child: Container(
                                             child: BlinkWidget(
                                               children: [
@@ -472,7 +472,8 @@ class _PostItemWidgetState extends State<PostItemWidget>
                       ),
                     ],
                   ),
-                  isDev ? Icon(Icons.image) : postprofile(),
+                  // isDev ? Icon(Icons.image) :
+                  postprofile(),
                 ],
               ),
             ),
