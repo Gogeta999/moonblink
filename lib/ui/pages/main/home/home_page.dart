@@ -76,10 +76,10 @@ class _HomePageState extends State<HomePage>
 
     super.initState();
     // tutorialOn();
-    bool showtuto = StorageManager.sharedPreferences.getBool(hometuto);
+    bool showtuto = (StorageManager.sharedPreferences.getBool(hometuto) ?? true);
     if (showtuto == null) {
       tutorialOn();
-      showtuto = StorageManager.sharedPreferences.getBool(hometuto);
+      showtuto = (StorageManager.sharedPreferences.getBool(hometuto) ?? true);
     }
     setState(() {
       tuto = showtuto;

@@ -32,7 +32,7 @@ class BookingManager {
     MoonBlinkRepository.bookingAcceptOrDecline(_userId, _bookingId, BOOKING_ACCEPT).then((value) =>
         value != null
             ? (){
-              bool atChatBox = StorageManager.sharedPreferences.getBool(isUserAtChatBox);
+              bool atChatBox = (StorageManager.sharedPreferences.getBool(isUserAtChatBox) ?? true);
               if (!atChatBox)
                 locator<NavigationService>()
                 .navigateTo(RouteName.chatBox, arguments: _bookingUserId);

@@ -107,7 +107,7 @@ class _ChatBoxDummyPageState extends State<ChatBoxDummyPage> {
 
   bottomActionBar() {
     return Column(
-      key: intro.keys[0],
+      //key: intro.keys[4],
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),

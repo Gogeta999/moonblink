@@ -286,7 +286,7 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
   @override
   void initState() {
     _initData();
-    bool tuto = StorageManager.sharedPreferences.getBool(boostingrequesttuto);
+    bool tuto = (StorageManager.sharedPreferences.getBool(boostingrequesttuto) ?? true);
     // bool tuto = true;
     if (tuto) {
       Timer(Duration(microseconds: 0), () {

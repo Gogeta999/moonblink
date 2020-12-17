@@ -84,7 +84,7 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     _initData();
-    bool tuto = StorageManager.sharedPreferences.getBool(bookingtuto);
+    bool tuto = (StorageManager.sharedPreferences.getBool(bookingtuto) ?? true);
     if (tuto) {
       Timer(Duration(microseconds: 0), () {
         intro.start(context);

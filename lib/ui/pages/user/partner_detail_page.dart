@@ -392,7 +392,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
           },
           builder: (context, partnerModel, child) {
             bool showtuto =
-                StorageManager.sharedPreferences.getBool(userdetailtuto);
+                (StorageManager.sharedPreferences.getBool(userdetailtuto) ?? true);
             if (showtuto) {
               Timer(Duration(microseconds: 0), () {
                 intro.start(context);

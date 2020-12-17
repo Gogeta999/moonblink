@@ -285,7 +285,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                 return _loading;
               }
               bool tuto =
-                  StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true;
+                  (StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true);
 
               if (tuto) {
                 Timer(Duration(microseconds: 0), () {

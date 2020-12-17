@@ -46,7 +46,7 @@ class BoostingManager {
     MoonBlinkRepository.setBoostingStatus(_bookingId, BOOST_ACCEPTED).then(
         (value) => value != null
             ? () {
-              bool atChatBox = StorageManager.sharedPreferences.getBool(isUserAtChatBox);
+              bool atChatBox = (StorageManager.sharedPreferences.getBool(isUserAtChatBox) ?? true);
               if (!atChatBox)
                 locator<NavigationService>()
                 .navigateTo(RouteName.chatBox, arguments: _bookingUserId);

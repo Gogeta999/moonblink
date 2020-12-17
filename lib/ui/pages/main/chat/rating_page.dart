@@ -52,7 +52,7 @@ class _RatingPageState extends State<RatingPage> {
 
   @override
   void initState() {
-    bool tuto = StorageManager.sharedPreferences.getBool(chatboxtuto);
+    bool tuto = (StorageManager.sharedPreferences.getBool(chatboxtuto) ?? true);
     if (tuto) {
       Timer(Duration(microseconds: 0), () {
         intro.start(context);

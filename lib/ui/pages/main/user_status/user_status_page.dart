@@ -449,8 +449,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           width: 30,
                           fit: BoxFit.contain,
                         ),
-                        trailing: StorageManager.sharedPreferences
-                                .getBool(kNewToBoosting)
+                        trailing: (StorageManager.sharedPreferences
+                                .getBool(kNewToBoosting) ?? true)
                             ? Icon(Icons.star_border_outlined)
                             : null,
                         title: Text('Boosting Profile',
