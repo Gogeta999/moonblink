@@ -20,7 +20,7 @@ class BoostingGameDetailPage extends StatefulWidget {
 }
 
 class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
-  // bool tuto = true;
+  bool tuto = true;
   Intro intro;
   _BoostingGameDetailPageState() {
     intro = Intro(
@@ -28,9 +28,10 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        // setState(() {
-        //   tuto = false;
-        // });
+        setState(() {
+          StorageManager.sharedPreferences.setBool(kNewToBoosting, false);
+          tuto = false;
+        });
       },
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
@@ -200,17 +201,24 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                           G.current.boostTo +
                           ' ${item.upToRank}',
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold), key: index == 0 ? intro.keys[0] : null,
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      key: index == 0 ? intro.keys[0] : null,
                     ),
                     if (item.message?.isNotEmpty) SizedBox(height: 5),
-                    if (item.message?.isNotEmpty) Text(item.message, style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    if (item.message?.isNotEmpty)
+                      Text(item.message,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
-                    Text(G.current.boostPrice +
-                        ' - ${item.estimateCost} ${item.estimateCost > 1 ? G.current.boostCoins : G.current.boostCoin}', key: index == 0 ? intro.keys[1] : null),
+                    Text(
+                        G.current.boostPrice +
+                            ' - ${item.estimateCost} ${item.estimateCost > 1 ? G.current.boostCoin : G.current.boostCoin}',
+                        key: index == 0 ? intro.keys[1] : null),
                     SizedBox(height: 5),
-                    Text(G.current.boostDuration +
-                        ' - ${item.estimateDay} ${item.estimateDay > 1 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 1 ? "Hours" : "Hour"}', key: index == 0 ? intro.keys[2] : null),
+                    Text(
+                        G.current.boostDuration +
+                            ' - ${item.estimateDay} ${item.estimateDay > 1 ? "days" : "day"}, ${item.estimateHour} ${item.estimateHour > 1 ? "Hours" : "Hour"}',
+                        key: index == 0 ? intro.keys[2] : null),
                   ],
                 ),
               ),
@@ -251,23 +259,22 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
             Container(
               key: intro.keys[5],
               child: StreamBuilder<bool>(
-                initialData: false,
-                stream: this._bloc.submitButtonSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data) {
+                  initialData: false,
+                  stream: this._bloc.submitButtonSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data) {
+                      return CupertinoButton(
+                        child: CupertinoActivityIndicator(),
+                        onPressed: () {},
+                      );
+                    }
                     return CupertinoButton(
-                      child: CupertinoActivityIndicator(),
-                      onPressed: (){},
+                      child: Text(G.current.submit),
+                      onPressed: () {
+                        this._bloc.submit();
+                      },
                     );
-                  }
-                  return CupertinoButton(
-                    child: Text(G.current.submit),
-                    onPressed: () {
-                      this._bloc.submit();
-                    },
-                  );
-                }
-              ),
+                  }),
             )
           ],
           bottom: PreferredSize(
@@ -448,8 +455,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                           fontSize: 32,
                           fontWeight: FontWeight.bold))))
         ],
-        onCancel: () {
-        },
+        onCancel: () {},
         onConfirm: (picker, ints) {
           final newData = List<BoostGame>.from(data);
           newData[index].estimateDay = ints.first;

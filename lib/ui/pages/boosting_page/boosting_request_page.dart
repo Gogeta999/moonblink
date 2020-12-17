@@ -234,33 +234,35 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
     _gameUpToRank.clear();
     if (element.boostOrderPrice[_selectedRankFromIndex].isHonourRank == 1) {
       _gameUpToRank.add(CupertinoActionSheetAction(
-          onPressed: () {
-            if (this._selectedRankFromIndex < _selectedRankFromIndex + 1) {
-              setState(() {
-                this._selectedUpToRankIndex = _selectedRankFromIndex + 1;
-                this._selectedUpToRank = element.levels[_selectedRankFromIndex + 1];
-              });
-              _calculateTotalPriceAndDuration();
-            } else {
-              showToast(G.current.boostReverseRankToastError);
-            }
-            Navigator.pop(context);
-          },
-          child: Text(element.levels[_selectedRankFromIndex + 1],
-              style: Theme.of(context).textTheme.button),
-        ));
+        onPressed: () {
+          if (this._selectedRankFromIndex < _selectedRankFromIndex + 1) {
+            setState(() {
+              this._selectedUpToRankIndex = _selectedRankFromIndex + 1;
+              this._selectedUpToRank =
+                  element.levels[_selectedRankFromIndex + 1];
+            });
+            _calculateTotalPriceAndDuration();
+          } else {
+            showToast(G.current.boostReverseRankToastError);
+          }
+          Navigator.pop(context);
+        },
+        child: Text(element.levels[_selectedRankFromIndex + 1],
+            style: Theme.of(context).textTheme.button),
+      ));
       setState(() {
-        _noteForHonorRank = 'Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.';
+        _noteForHonorRank = G.current.boostRequestNote;
       });
       return;
     }
     setState(() {
-        _noteForHonorRank = '';
+      _noteForHonorRank = '';
     });
     for (int i = _selectedRankFromIndex;
         i < element.boostOrderPrice.length;
         ++i) {
-      if (element.boostOrderPrice[i].isAccept == 1 && element.boostOrderPrice[i].isHonourRank == 0) {
+      if (element.boostOrderPrice[i].isAccept == 1 &&
+          element.boostOrderPrice[i].isHonourRank == 0) {
         _gameUpToRank.add(CupertinoActionSheetAction(
           onPressed: () {
             if (this._selectedRankFromIndex < i + 1) {
@@ -637,7 +639,8 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                                 '${_selectedRankFrom == '???' ? "Current\nRank" : _selectedRankFrom.split(" ").join("\n")}',
                                 overflow: TextOverflow.fade,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
                               )),
                         ),
                       ),
@@ -665,16 +668,18 @@ class _BoostingRequestPageState extends State<BoostingRequestPage> {
                                 '${_selectedUpToRank == '???' ? "To\nRank" : _selectedUpToRank.split(" ").join("\n")}',
                                 overflow: TextOverflow.fade,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
                               )),
                         ),
                       ),
                     ],
                   ),
                   if (_noteForHonorRank.isNotEmpty) SizedBox(height: 10),
-                  if (_noteForHonorRank.isNotEmpty)  Text(
-                    _noteForHonorRank,
-                  ),
+                  if (_noteForHonorRank.isNotEmpty)
+                    Text(
+                      _noteForHonorRank,
+                    ),
                 ],
               ),
             )),

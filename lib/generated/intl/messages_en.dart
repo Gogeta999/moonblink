@@ -66,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "boostProfile" : MessageLookupByLibrary.simpleMessage("Boosting Profile"),
     "boostProvideTo" : MessageLookupByLibrary.simpleMessage("Provide Boosting up to "),
     "boostRank" : MessageLookupByLibrary.simpleMessage("Boost Rank"),
+    "boostRequestNote" : MessageLookupByLibrary.simpleMessage("Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points."),
     "boostRequestTuto1" : MessageLookupByLibrary.simpleMessage("This is to choose game"),
     "boostRequestTuto2" : MessageLookupByLibrary.simpleMessage("This is to choose rank"),
     "boostRequestTuto3" : MessageLookupByLibrary.simpleMessage("Press here to choose your current rank"),

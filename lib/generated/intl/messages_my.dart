@@ -66,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "boostProfile" : MessageLookupByLibrary.simpleMessage("Rankတင်"),
     "boostProvideTo" : MessageLookupByLibrary.simpleMessage("မြှင့်တင်ရောက်ရှိနိုင်သောRank - "),
     "boostRank" : MessageLookupByLibrary.simpleMessage("Rankတင်"),
+    "boostRequestNote" : MessageLookupByLibrary.simpleMessage("မှတ်စု - သင်၏တောင်းဆိုမှုသည် Mythic Points ၁၀၀ ကိုသာမြှင့်တင်လိမ့်မည်။ ဥပမာ - အကယ်၍ သင်၏လက်ရှိအဆင့်သည် MYTHIC 550 ဖြစ်ပါက Booster သည်သင်၏Pointsကို MYTHIC 650 သို့မြှင့်တင်ပါလိမ့်မည်။ ထို့အတူ စျေးနှင့်အချိန်ကို Point 100 အတွက်သာတွက်ချက်သည်။"),
     "boostRequestTuto1" : MessageLookupByLibrary.simpleMessage("ဒါကဂိမ်းကိုရွေးချယ်ဖို့ဖြစ်တယ်"),
     "boostRequestTuto2" : MessageLookupByLibrary.simpleMessage("ဒါကRankကို ရွေးချယ်ဖို့ဖြစ်တယ်"),
     "boostRequestTuto3" : MessageLookupByLibrary.simpleMessage("သင်၏လက်ရှိRankကို ရွေးချယ်ရန် ဤနေရာတွင်နှိပ်ပါ"),

@@ -276,19 +276,9 @@ class G {
   }
 
   /// `Coins`
-  String get boostCoins {
-    return Intl.message(
-      'Coins',
-      name: 'boostCoins',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Coin`
   String get boostCoin {
     return Intl.message(
-      'Coin',
+      'Coins',
       name: 'boostCoin',
       desc: '',
       args: [],
@@ -475,6 +465,16 @@ class G {
     );
   }
 
+  /// `Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.`
+  String get boostRequestNote {
+    return Intl.message(
+      'Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.',
+      name: 'boostRequestNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This is to choose game`
   String get boostRequestTuto1 {
     return Intl.message(
@@ -558,7 +558,7 @@ class G {
   /// `Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand`
   String get boostNote {
     return Intl.message(
-      'Note: Sometime our CoPlayer may need a little more time than estimate finished duration, please try to understand',
+      'Note: Sometime our CoPlayer may need a little more time than your expected finished duration, please try to understand',
       name: 'boostNote',
       desc: '',
       args: [],

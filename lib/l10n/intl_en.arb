@@ -42,6 +42,7 @@
     "boostProfile": "Boosting Profile",
     "boostProvideTo": "Provide Boosting up to ",
     "boostRank": "Boost Rank",
+    "boostRequestNote": "Note - Your Request Will Only Boost 100 Points. Eg - If your current rank is MYTHIC 550 then the Booster will boost your rank to MYTHIC 650. Also the Price and Time are calculated for 100 Points.",
     "boostRequestTuto1": "This is to choose game",
     "boostRequestTuto2": "This is to choose rank",
     "boostRequestTuto3": "Press here to choose your current rank",
