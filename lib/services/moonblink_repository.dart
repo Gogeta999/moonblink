@@ -610,4 +610,25 @@ class MoonBlinkRepository {
         .postwithData(Api.BoostingRequest + '$partnerId/boost', data: formData);
     return response.data;
   }
+
+  static Future uploadPost(File media, int type, int status, {String body = ''}) async {
+    final userId = StorageManager.sharedPreferences.getInt(mUserId);
+    FormData formData;
+    if (body == null || body.isEmpty) {
+      formData = FormData.fromMap({
+        'media': await MultipartFile.fromFile(media.path),
+        'type': type,
+        'status': status
+      });
+    } else {
+      formData = FormData.fromMap({
+        'body': body,
+        'media': await MultipartFile.fromFile(media.path),
+        'type': type,
+        'status': status
+      });
+    }
+    final response = await DioUtils().postwithData(Api.UploadPost + '$userId/post', data: formData);
+    return response.data;
+  }
 }

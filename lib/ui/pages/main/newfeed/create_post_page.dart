@@ -11,9 +11,11 @@ import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -29,15 +31,19 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  final _followerOptions = ['Public', 'Follower'];
+  final _followerOptions = ['Private', 'Public', 'Followers'];
   final _postTitleController = TextEditingController();
+  final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+  final String myEmail = StorageManager.sharedPreferences.getString(mLoginMail);
 
   // ignore: close_sinks
-  final _followerOptionsSubject = BehaviorSubject.seeded('Public');
-  final _photoSubject = BehaviorSubject<File>.seeded(null);
+  final _postOptionsSubject = BehaviorSubject.seeded('Public');
+  final _photosSubject = BehaviorSubject<List<File>>.seeded(null);
   final _adCountSubject = BehaviorSubject<int>.seeded(0);
   final _postByAdButtonSubject = BehaviorSubject.seeded(false);
   final _postByCoinsButtonSubject = BehaviorSubject.seeded(false);
+  final _startWatchingButtonSubject = BehaviorSubject.seeded(false);
+  final _selectedPhotoIndexSubject = BehaviorSubject<int>.seeded(-1);
 
   @override
   void initState() {
@@ -45,36 +51,54 @@ class _CreatePostPageState extends State<CreatePostPage> {
         {String rewardType, int rewardAmount}) async {
       if (isDev) print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
-        /// Do Some Api Call
-        await Future.delayed(Duration(milliseconds: 2000));
+        this._adCountSubject.first.then((value) {
+          this._adCountSubject.add(value + 1);
+          StorageManager.sharedPreferences.setInt('$myId$myEmail', value + 1);
+        });
         this._postByAdButtonSubject.add(false);
+        this._startWatchingButtonSubject.add(false);
       }
       if (event == RewardedVideoAdEvent.loaded) {
         RewardedVideoAd.instance.show();
       }
       if (event == RewardedVideoAdEvent.failedToLoad) {
+        showToast('Failed to load Ad');
         this._postByAdButtonSubject.add(false);
+        this._startWatchingButtonSubject.add(false);
       }
       if (event == RewardedVideoAdEvent.closed) {
         this._postByAdButtonSubject.add(false);
+        this._startWatchingButtonSubject.add(false);
       }
       if (event == RewardedVideoAdEvent.leftApplication) {
         this._postByAdButtonSubject.add(false);
+        this._startWatchingButtonSubject.add(false);
       }
       if (event == RewardedVideoAdEvent.completed) {
         this._postByAdButtonSubject.add(false);
+        this._startWatchingButtonSubject.add(false);
       }
     };
+    final int myAdCount =
+        StorageManager.sharedPreferences.getInt('$myId$myEmail') ?? null;
+    if (myAdCount == null) {
+      StorageManager.sharedPreferences.setInt('$myId$myEmail', 0);
+      this._adCountSubject.add(0);
+    } else {
+      this._adCountSubject.add(myAdCount);
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    this._followerOptionsSubject.close();
-    this._photoSubject.close();
+    this._postOptionsSubject.close();
+    this._photosSubject.close();
     this._adCountSubject.close();
     this._postByAdButtonSubject.close();
     this._postByCoinsButtonSubject.close();
+    this._startWatchingButtonSubject.close();
+    this._selectedPhotoIndexSubject.close();
     RewardedVideoAd.instance.listener = null;
     super.dispose();
   }
@@ -90,10 +114,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: () {
                 CustomBottomSheet.show(
                     buildContext: context,
-                    limit: 1,
+                    limit: 3,
                     body: G.of(context).picknrc,
-                    onPressed: (File file) {
-                      this._photoSubject.add(file);
+                    onPressed: (List<File> files) {
+                      this._photosSubject.add(files);
+                      this._selectedPhotoIndexSubject.add(-1);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
@@ -109,8 +134,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: () async {
                 PickedFile pickedFile =
                     await ImagePicker().getImage(source: ImageSource.camera);
-                this._photoSubject.add(await CompressUtils.compressAndGetFile(
-                    File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 600, 800));
+                this._photosSubject.add([
+                  await CompressUtils.compressAndGetFile(
+                      File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 600, 800)
+                ]);
+                this._selectedPhotoIndexSubject.add(-1);
                 Navigator.pop(context);
               }),
           CupertinoButton(
@@ -123,45 +151,104 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   _postByAd() async {
-    int adCount = 10 - await this._adCountSubject.first;
-    showCupertinoDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text('Post by watching Ads'),
-            content: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('You need $adCount more Ads need to watch.'),
-            ),
-            actions: [
-              StreamBuilder<bool>(
-                  initialData: false,
-                  stream: this._postByAdButtonSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data) {
+    int myAdCount = await this._adCountSubject.first;
+    int leftAd = 10 - myAdCount;
+    if (myAdCount >= 10) {
+      String body = this._postTitleController.text.trim();
+      List<File> media = await this._photosSubject.first;
+      int type = 1;
+      int status = _getStatus(await this._postOptionsSubject.first);
+      if (body.isEmpty && media == null) {
+        showToast('Require title or photo');
+        return;
+      }
+      this._postByAdButtonSubject.add(true);
+      MoonBlinkRepository.uploadPost(media.first, type, status,
+              body: body ?? '')
+          .then((_) {
+        showToast('Upload Success');
+        myAdCount -= 10;
+        this._adCountSubject.add(myAdCount);
+        StorageManager.sharedPreferences.setInt('$myId$myEmail', myAdCount);
+        Navigator.pop(context);
+        this._postByAdButtonSubject.add(false);
+      },
+              onError: (e) => {
+                    showToast(e.toString()),
+                    this._postByAdButtonSubject.add(false)
+                  });
+    } else {
+      showCupertinoDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text('Post by watching Ads'),
+              content: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('You need $leftAd more Ads need to watch.'),
+              ),
+              actions: [
+                StreamBuilder<bool>(
+                    initialData: false,
+                    stream: this._postByAdButtonSubject,
+                    builder: (context, snapshot) {
+                      if (snapshot.data) {
+                        return CupertinoButton(
+                          child: CupertinoActivityIndicator(),
+                          onPressed: () {},
+                        );
+                      }
                       return CupertinoButton(
-                        child: CupertinoActivityIndicator(),
-                        onPressed: () {},
+                        child: Text('Start Watching'),
+                        onPressed: () async {
+                          this._postByAdButtonSubject.add(true);
+                          await RewardedVideoAd.instance.load(
+                              adUnitId: AdManager.rewardedAdId,
+                              targetingInfo: targetingInfo);
+                          Navigator.pop(context);
+                        },
                       );
-                    }
-                    return CupertinoButton(
-                      child: Text('Start Watching'),
-                      onPressed: () async {
-                        this._postByAdButtonSubject.add(true);
-                        await RewardedVideoAd.instance.load(
-                            adUnitId: AdManager.rewardedAdId,
-                            targetingInfo: targetingInfo);
-                        Navigator.pop(context);
-                      },
-                    );
-                  })
-            ],
-          );
-        });
+                    })
+              ],
+            );
+          });
+    }
   }
 
-  _postByCoins() async {}
+  _postByCoins() async {
+    String body = this._postTitleController.text.trim();
+    List<File> media = await this._photosSubject.first;
+    int type = 1;
+    int status = _getStatus(await this._postOptionsSubject.first);
+    if (body.isEmpty && media == null) {
+      showToast('Require title or photo');
+      return;
+    }
+    this._postByCoinsButtonSubject.add(true);
+    MoonBlinkRepository.uploadPost(media.first, type, status, body: body ?? '')
+        .then((_) {
+      showToast('Upload Success');
+      Navigator.pop(context);
+      this._postByCoinsButtonSubject.add(false);
+    },
+            onError: (e) => {
+                  showToast(e.toString()),
+                  this._postByCoinsButtonSubject.add(false)
+                });
+  }
+
+  int _getStatus(String option) {
+    switch (option) {
+      case 'Private':
+        return 0;
+      case 'Public':
+        return 1;
+      case 'Followers':
+        return 2;
+    }
+    return -1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +271,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         .getString(mUserProfile),
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                         radius: 26, backgroundImage: imageProvider),
-                    placeholder: (context, url) =>
-                        CupertinoActivityIndicator(),
+                    placeholder: (context, url) => CupertinoActivityIndicator(),
                     errorWidget: (context, url, error) => Icon(
                       Icons.error,
                       color: Colors.grey.shade300,
@@ -199,7 +285,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           .getString(mLoginName)),
                       StreamBuilder<String>(
                           initialData: null,
-                          stream: this._followerOptionsSubject,
+                          stream: this._postOptionsSubject,
                           builder: (context, snapshot) {
                             if (snapshot.data == null) {
                               return Container();
@@ -209,7 +295,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 value: snapshot.data,
                                 icon: Icon(Icons.expand_more),
                                 onChanged: (String value) {
-                                  this._followerOptionsSubject.add(value);
+                                  this._postOptionsSubject.add(value);
                                 },
                                 dropdownColor:
                                     Theme.of(context).scaffoldBackgroundColor,
@@ -238,15 +324,35 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           }),
                     ],
                   ),
-                  trailing: StreamBuilder<int>(
-                    initialData: null,
-                    stream: this._adCountSubject,
-                    builder: (context, snapshot) {
-                      return Text(
-                          '${snapshot.data} ${snapshot.data > 1 ? "Ads" : "Ad"} Watched',
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor));
-                    },
+                  trailing: Column(
+                    children: [
+                      StreamBuilder<int>(
+                        initialData: null,
+                        stream: this._adCountSubject,
+                        builder: (context, snapshot) {
+                          return Text(
+                              '${snapshot.data} ${snapshot.data > 1 ? "Ads" : "Ad"} Watched');
+                        },
+                      ),
+                      SizedBox(height: 5),
+                      GestureDetector(
+                          onTap: () async {
+                            this._startWatchingButtonSubject.add(true);
+                            await RewardedVideoAd.instance.load(
+                                adUnitId: AdManager.rewardedAdId,
+                                targetingInfo: targetingInfo);
+                          },
+                          child: StreamBuilder<bool>(
+                              initialData: false,
+                              stream: this._startWatchingButtonSubject,
+                              builder: (context, snapshot) {
+                                if (snapshot.data)
+                                  return CupertinoActivityIndicator();
+                                return Text('Start Watching',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor));
+                              })),
+                    ],
                   ),
                 ),
                 SizedBox(height: 10),
@@ -264,28 +370,106 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   keyboardType: TextInputType.text,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: CupertinoButton(
-                      child: Text('Add a Photo'),
-                      onPressed: () {
-                        _showSelectImageOptions();
-                      }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: Text('Add Photos'),
+                        onPressed: () {
+                          _showSelectImageOptions();
+                        }),
+                    StreamBuilder<List<File>>(
+                      initialData: null,
+                      stream: this._photosSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null || snapshot.data.isEmpty) {
+                          return Container();
+                        }
+                        return StreamBuilder<int>(
+                          initialData: -1,
+                          stream: this._selectedPhotoIndexSubject,
+                          builder: (context, snapshot2) {
+                            if (snapshot2.data == null || snapshot2.data == -1) {
+                              return CupertinoButton(
+                                child: Text('Remove All Photos'),
+                                onPressed: () {
+                                  this._photosSubject.add([]);
+                                },
+                              );
+                            }
+                            return Row(
+                              children: [
+                                CupertinoButton(
+                                  child: Text('Crop'),
+                                  onPressed: () {},
+                                ),
+                                CupertinoButton(
+                                  child: Text('Remove'),
+                                  onPressed: () {
+                                    this._photosSubject.first.then((photos) {
+                                      photos.removeAt(snapshot2.data);
+                                      this._selectedPhotoIndexSubject.add(-1);
+                                      this._photosSubject.add(photos);
+                                    });
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    ),
+                  ],
                 ),
+                SizedBox(height: 5),
                 Expanded(
                   child: Container(
                     alignment: Alignment.topCenter,
-                    child: StreamBuilder<File>(
+                    child: StreamBuilder<List<File>>(
                       initialData: null,
-                      stream: this._photoSubject,
+                      stream: this._photosSubject,
                       builder: (context, snapshot) {
-                        if (snapshot.data == null) {
+                        if (snapshot.data == null || snapshot.data.isEmpty) {
                           return Container();
                         }
-                        return Image.file(
-                          snapshot.data,
-                          width: double.infinity,
-                          fit: BoxFit.fill,
+                        return GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: snapshot.data.length >= 3
+                                      ? 3
+                                      : snapshot.data.length),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return StreamBuilder<int>(
+                                initialData: -1,
+                                stream: this._selectedPhotoIndexSubject,
+                                builder: (context, snapshot2) {
+                                  int selectedIndex = snapshot2.data;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      this
+                                          ._selectedPhotoIndexSubject
+                                          .first
+                                          .then((value) {
+                                        this
+                                            ._selectedPhotoIndexSubject
+                                            .add(value == index ? -1 : index);
+                                      });
+                                    },
+                                    child: Image.file(
+                                      snapshot.data[index],
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      color: index == selectedIndex
+                                          ? Colors.white30
+                                          : Colors.transparent,
+                                      colorBlendMode: BlendMode.lighten,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  );
+                                });
+                          },
                         );
                       },
                     ),

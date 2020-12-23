@@ -753,8 +753,8 @@ class _NewChatBoxPageState extends State<NewChatBoxPage>
               buildContext: context,
               limit: 1,
               body: G.of(context).labelimageselect,
-              onPressed: (File file) {
-                _chatBoxBloc.add(ChatBoxSendImage(file));
+              onPressed: (List<File> files) {
+                _chatBoxBloc.add(ChatBoxSendImage(files.first));
               },
               minWidth: 500,
               minHeight: 500,

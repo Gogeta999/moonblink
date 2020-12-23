@@ -176,9 +176,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         buttonText: G.of(context).choose,
                                         buildContext: context,
                                         limit: 1,
-                                        onPressed: (File file) {
+                                        onPressed: (List<File> files) {
                                           setState(() {
-                                            _cover = file;
+                                            _cover = files.first;
                                           });
                                         },
                                         body: G.of(context).partnercover,
@@ -246,9 +246,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                         buttonText: G.of(context).choose,
                                         buildContext: context,
                                         limit: 1,
-                                        onPressed: (File file) {
+                                        onPressed: (List<File> files) {
                                           setState(() {
-                                            _profile = file;
+                                            _profile = files.first;
                                           });
                                         },
                                         body: G.of(context).partnerprofile,

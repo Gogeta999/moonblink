@@ -155,4 +155,6 @@ class Api {
       'moonblink/api/v1/social/user/'; //eg-moonblink/api/v1/social/user/1/boost
   
   static const String SetBoostingStatus = 'moonblink/api/v1/user/'; //eg-/moonblink/api/v1/user/1/boost/13
+
+  static const String UploadPost = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/1/post
 }

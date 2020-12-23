@@ -410,8 +410,8 @@ class _UpdateGameProfilePageState extends State<UpdateGameProfilePage> {
                     buildContext: context,
                     limit: 1,
                     body: G.of(context).skillcover,
-                    onPressed: (File file) {
-                      _updateGameProfileBloc.skillCoverPhotoSubject.add(file);
+                    onPressed: (List<File> files) {
+                      _updateGameProfileBloc.skillCoverPhotoSubject.add(files.first);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,

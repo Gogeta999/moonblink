@@ -247,9 +247,9 @@ class _ImagePickerState extends State<ImagePickerPage> {
         buildContext: context,
         limit: 1,
         body: G.of(context).pickimage,
-        onPressed: (File file) {
+        onPressed: (List<File> files) {
           setState(() {
-            _chossingItem = file;
+            _chossingItem = files.first;
             _fileType = 1;
           });
         },

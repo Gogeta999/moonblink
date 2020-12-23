@@ -408,11 +408,11 @@ class _SetPartnerProfilePageState extends State<SetPartnerProfilePage> {
                     buildContext: context,
                     limit: 1,
                     body: G.of(context).picknrc,
-                    onPressed: (File file) {
+                    onPressed: (List<File> files) {
                       setState(() {
                         type == NrcType.front
-                            ? _nrcFront = file
-                            : _nrcBack = file;
+                            ? _nrcFront = files.first
+                            : _nrcBack = files.first;
                       });
                     },
                     buttonText: G.of(context).select,

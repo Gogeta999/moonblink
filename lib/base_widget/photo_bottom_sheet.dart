@@ -346,22 +346,43 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     if (widget.popAfterBtnPressed) {
       Navigator.pop(context);
     }
-    File image = await _photoList[_selectedIndices.first].file;
-    File croppedImage;
-    File tempFile = await _getLocalFile();
-    if (widget.willCrop) {
-      croppedImage = await _cropImage(image);
+    List<File> compressedImages = [];
+    for (int i = 0; i < _selectedIndices.length; ++i) {
+      File image = await _photoList[i].file;
+      File croppedImage;
+      File tempFile = await _getLocalFile();
+      if (widget.willCrop) {
+        croppedImage = await _cropImage(image);
+      }
+      if (widget.willCrop && croppedImage == null) {
+        return;
+      }
+      File compressedImage =
+          await _compressAndGetFile(croppedImage ?? image, tempFile.path);
+      compressedImages.add(compressedImage);
     }
-    if (widget.willCrop && croppedImage == null) {
-      return;
+    if (compressedImages.isNotEmpty) {
+      widget.onPressed(compressedImages);
+    } else {
+      if (isDev) print('CompressedImages is empty');
     }
-    File compressedImage =
-        await _compressAndGetFile(croppedImage ?? image, tempFile.path);
-    if (isDev) print(image.lengthSync());
-    if (isDev) print(compressedImage.lengthSync());
-    if (compressedImage != null) {
-      widget.onPressed(compressedImage);
-    }
+
+    // File image = await _photoList[_selectedIndices.first].file;
+    // File croppedImage;
+    // File tempFile = await _getLocalFile();
+    // if (widget.willCrop) {
+    //   croppedImage = await _cropImage(image);
+    // }
+    // if (widget.willCrop && croppedImage == null) {
+    //   return;
+    // }
+    // File compressedImage =
+    //     await _compressAndGetFile(croppedImage ?? image, tempFile.path);
+    // if (isDev) print(image.lengthSync());
+    // if (isDev) print(compressedImage.lengthSync());
+    // if (compressedImage != null) {
+    //   widget.onPressed(compressedImage);
+    // }
   }
 
   _fetchNewMedia() async {
