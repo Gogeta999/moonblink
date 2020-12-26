@@ -167,29 +167,45 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                //Not Pending
+                //Unverified Partner SetUp
                 if (usertype == 0) space(),
-                if (usertype == 0 && usermodel.partnerData.typestatus != 0)
+                if (usertype == 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: ShadedContainer(
+                      height: 50,
+                      ontap: () =>
+                          Navigator.pushNamed(context, RouteName.type5otp),
+                      child: Center(
+                        child: Text(G.of(context).settingsSignAsPartner),
+                      ),
+                    ),
+                  ),
+                //Not Pending
+                if (usertype == 5) space(),
+                if (usertype == 5 && usermodel.partnerData.typestatus != 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
                       height: 50,
                       ontap: () => Navigator.pushNamed(context, RouteName.otp),
                       child: Center(
-                        child: Text(G.of(context).settingsSignAsPartner),
+                        child: Text(
+                          G.current.settingToBeVerifiedPartner,
+                        ),
                       ),
                     ),
                   ),
                 //Pending
-                if (usertype == 0 && usermodel.partnerData.typestatus == 0)
+                if (usertype == 5 && usermodel.partnerData.typestatus == 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: ShadedContainer(
                       height: 50,
-                      ontap: () => showToast("Pending to be partner"),
+                      ontap: () => showToast("In Pending"),
                       child: Center(
                         child: Text(
-                          "Pending to be Partner",
+                          G.current.settingToBeVerifiedPartnerInPending,
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
