@@ -10,9 +10,10 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/otp_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/user/unverified_partner_signup_page.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/otp_model.dart';
 import 'package:provider/provider.dart';
 
@@ -22,13 +23,26 @@ class Type5PartnerOtpPage extends StatefulWidget {
 }
 
 class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
+  final String _spPhoneNumber =
+      StorageManager.sharedPreferences.getString(spPhoneNumber);
+  final _phoneController = TextEditingController(text: '+959');
+  final _otpCodeController = TextEditingController();
   @override
   void initState() {
+    _initPhoneController();
     super.initState();
   }
 
-  final _phoneController = TextEditingController(text: '+959');
-  final _otpCodeController = TextEditingController();
+  void _initPhoneController() {
+    if (_spPhoneNumber.isEmpty) {
+      setState(() {
+        _phoneController.text = '+959';
+      });
+    }
+    setState(() {
+      _phoneController.text = _spPhoneNumber;
+    });
+  }
 
   @override
   void dispose() {
@@ -163,6 +177,8 @@ class SignAsPartnerButton extends StatelessWidget {
                 model.signInWithCredential(otpController.text).then(
                   (value) {
                     if (value) {
+                      StorageManager.sharedPreferences
+                          .setString(spPhoneNumber, phoneController.text);
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UnverifiedPartnerSignUpPage(
                               phoneController.text)));

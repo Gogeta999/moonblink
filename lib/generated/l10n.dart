@@ -2875,6 +2875,36 @@ class G {
     );
   }
 
+  /// `Go To TopUp Page`
+  String get unverifiedPartnerGoTopUpTitle {
+    return Intl.message(
+      'Go To TopUp Page',
+      name: 'unverifiedPartnerGoTopUpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to TopUp Page and buy enough coins to comeback to become partner again`
+  String get unverifiedPartnerGOTopUpContent {
+    return Intl.message(
+      'Go to TopUp Page and buy enough coins to comeback to become partner again',
+      name: 'unverifiedPartnerGOTopUpContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This purchase is a permanent service, you only need to purchase once to enjoy our service forever`
+  String get unverifiedPartnerNote {
+    return Intl.message(
+      'This purchase is a permanent service, you only need to purchase once to enjoy our service forever',
+      name: 'unverifiedPartnerNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose Plan`
   String get unverifiedPartnerPlan {
     return Intl.message(
@@ -3020,6 +3050,16 @@ class G {
     return Intl.message(
       'Pro',
       name: 'usertypepro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boosting Profile`
+  String get userStatusBoostProfile {
+    return Intl.message(
+      'Boosting Profile',
+      name: 'userStatusBoostProfile',
       desc: '',
       args: [],
     );

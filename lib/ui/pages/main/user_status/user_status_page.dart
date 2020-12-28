@@ -280,7 +280,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                       child: Align(
                                         alignment: Alignment.topRight,
                                         child: Text(
-                                          "Vip Level ${profile != null ? profile.accVipLevel : "."}",
+                                          "Vip LV ${profile != null ? profile.accVipLevel : "."}",
                                           style: TextStyle(fontSize: 13),
                                         ),
                                       ),
@@ -456,7 +456,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                 true)
                             ? Icon(Icons.star_border_outlined)
                             : null,
-                        title: Text('Boosting Profile',
+                        title: Text(G.current.userStatusBoostProfile,
                             style: Theme.of(context).textTheme.bodyText1),
                         onTap: () => Navigator.of(context)
                             .pushNamed(RouteName.boostingGameListPage)),

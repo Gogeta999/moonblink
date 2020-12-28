@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -42,7 +41,6 @@ class _NewVoiceMessageState extends State<NewVoiceMessage> {
   ///Start Voice Record
   void _start() async {
     recordPlugin.start();
-
   }
 
   _restart() async {

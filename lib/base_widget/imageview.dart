@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:photo_view/photo_view.dart';
 

@@ -89,23 +89,43 @@ class _UnverifiedPartnerSignUpPageState
         });
   }
 
+  void _goToTopUpDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title: G.current.unverifiedPartnerGoTopUpTitle,
+            simpleContent: G.current.unverifiedPartnerGOTopUpContent,
+            cancelContent: G.current.cancel,
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              Navigator.of(context).pushReplacementNamed(RouteName.wallet);
+            },
+          );
+        });
+  }
+
   _onTapConfirm() {
     if (_selectedPlan == 3 && _wallet.value < 800) {
+      Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     if (_selectedPlan == 2 && _wallet.value < 500) {
+      Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     if (_selectedPlan == 1 && _wallet.value < 300) {
+      Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     setState(() {
       _isConfirmLoading = true;
     });
-    //TODO: Change Real Code Here
     MoonBlinkRepository.signAsType5Partner(widget.phoneNumber, _selectedPlan)
         .then((value) async {
       try {
@@ -138,84 +158,112 @@ class _UnverifiedPartnerSignUpPageState
 
   @override
   Widget build(BuildContext context) {
+    final _textStyle = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
         appBar: AppbarWidget(
           title: Text(G.current.unverifiedPartnerPlan),
         ),
         backgroundColor: Colors.grey[200],
-        body: Column(
-          children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
-                child: Card(
-                  child: ListTile(
-                    isThreeLine: true,
-                    title: Text(G.current.unverifiedPartnerVip1Title),
-                    subtitle: Text(G.current.unverifiedPartnerVip1Subtitle),
-                    trailing: _isConfirmLoading
-                        ? CupertinoActivityIndicator()
-                        : InkWell(
-                            child: Icon(FontAwesomeIcons.question),
-                            onTap: () => showToast('Show exmaple Layer'),
+        body: CustomScrollView(
+          physics: ClampingScrollPhysics(),
+          slivers: <Widget>[
+            SliverList(
+                delegate: SliverChildListDelegate.fixed([
+              Column(
+                children: [
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
+                      child: Card(
+                        child: ListTile(
+                          isThreeLine: true,
+                          title: Text(
+                            G.current.unverifiedPartnerVip1Title,
+                            style: _textStyle.headline5,
                           ),
-                    onTap: () {
-                      setState(() {
-                        _selectedPlan = 1;
-                      });
-                      confirmDialog();
-                    },
-                    onLongPress: () => showToast('Show exmaple Layer'),
-                  ),
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                child: Card(
-                  child: ListTile(
-                    isThreeLine: true,
-                    title: Text(G.current.unverifiedPartnerVip2Title),
-                    subtitle: Text(G.current.unverifiedPartnerVip2Subtitle),
-                    trailing: _isConfirmLoading
-                        ? CupertinoActivityIndicator()
-                        : InkWell(
-                            child: Icon(FontAwesomeIcons.question),
-                            onTap: () => showToast('Show exmaple Layer'),
+                          subtitle: Text(
+                            G.current.unverifiedPartnerVip1Subtitle,
+                            style: _textStyle.subtitle1,
                           ),
-                    onTap: () {
-                      setState(() {
-                        _selectedPlan = 2;
-                      });
-                      confirmDialog();
-                    },
-                    onLongPress: () => showToast('Show exmaple Layer'),
-                  ),
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                child: Card(
-                  child: ListTile(
-                    isThreeLine: true,
-                    title: Text(G.current.unverifiedPartnerVip3Title),
-                    subtitle: Text(G.current.unverifiedPartnerVip3Subtitle),
-                    trailing: _isConfirmLoading
-                        ? CupertinoActivityIndicator()
-                        : InkWell(
-                            child: Icon(FontAwesomeIcons.question),
-                            onTap: () => showToast('Show exmaple Layer'),
+                          trailing: _isConfirmLoading
+                              ? CupertinoActivityIndicator()
+                              : InkWell(
+                                  child: Icon(FontAwesomeIcons.question),
+                                  onTap: () => showToast('Show exmaple Layer'),
+                                ),
+                          onTap: () {
+                            setState(() {
+                              _selectedPlan = 1;
+                            });
+                            confirmDialog();
+                          },
+                          onLongPress: () => showToast('Show exmaple Layer'),
+                        ),
+                      )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                      child: Card(
+                        child: ListTile(
+                          isThreeLine: true,
+                          title: Text(
+                            G.current.unverifiedPartnerVip2Title,
+                            style: _textStyle.headline6,
                           ),
-                    onTap: () {
-                      setState(() {
-                        _selectedPlan = 3;
-                      });
-                      confirmDialog();
-                    },
-                    onLongPress: () => showToast('Show exmaple Layer'),
-                  ),
-                )),
-            Padding(
-              padding: EdgeInsets.fromLTRB(2, 30, 2, 0),
-              child: Text('Write Some Note Here To Tell User'),
-            )
+                          subtitle: Text(
+                              G.current.unverifiedPartnerVip2Subtitle,
+                              style: _textStyle.subtitle1),
+                          trailing: _isConfirmLoading
+                              ? CupertinoActivityIndicator()
+                              : InkWell(
+                                  child: Icon(FontAwesomeIcons.question),
+                                  onTap: () => showToast('Show exmaple Layer'),
+                                ),
+                          onTap: () {
+                            setState(() {
+                              _selectedPlan = 2;
+                            });
+                            confirmDialog();
+                          },
+                          onLongPress: () => showToast('Show exmaple Layer'),
+                        ),
+                      )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                      child: Card(
+                        child: ListTile(
+                          isThreeLine: true,
+                          title: Text(
+                            G.current.unverifiedPartnerVip3Title,
+                            style: _textStyle.headline5,
+                          ),
+                          subtitle: Text(
+                              G.current.unverifiedPartnerVip3Subtitle,
+                              style: _textStyle.subtitle1),
+                          trailing: _isConfirmLoading
+                              ? CupertinoActivityIndicator()
+                              : InkWell(
+                                  child: Icon(FontAwesomeIcons.question),
+                                  onTap: () => showToast('Show exmaple Layer'),
+                                ),
+                          onTap: () {
+                            setState(() {
+                              _selectedPlan = 3;
+                            });
+                            confirmDialog();
+                          },
+                          onLongPress: () => showToast('Show exmaple Layer'),
+                        ),
+                      )),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                    child: Text(
+                      G.current.unverifiedPartnerNote,
+                      style: _textStyle.headline6,
+                    ),
+                  )
+                ],
+              ),
+            ]))
           ],
         ),
         bottomNavigationBar: Container(

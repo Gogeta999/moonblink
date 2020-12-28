@@ -2,13 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_booking_notification.dart';
-import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/services/navigation_service.dart';
-import 'package:moonblink/utils/constants.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'user_booking_notification_event.dart';

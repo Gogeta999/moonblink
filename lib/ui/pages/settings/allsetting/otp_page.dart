@@ -11,7 +11,9 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/otp_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/otp_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +23,23 @@ class OtpPage extends StatefulWidget {
 }
 
 class _OtpPageState extends State<OtpPage> {
+  final String _spPhoneNumber =
+      StorageManager.sharedPreferences.getString(spPhoneNumber);
   @override
   void initState() {
+    _initPhoneController();
     super.initState();
+  }
+
+  void _initPhoneController() {
+    if (_spPhoneNumber.isEmpty) {
+      setState(() {
+        _phoneController.text = '+959';
+      });
+    }
+    setState(() {
+      _phoneController.text = _spPhoneNumber;
+    });
   }
 
   final _phoneController = TextEditingController(text: '+959');

@@ -78,7 +78,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
       _timer.cancel();
       // _countdownController.dispose();
       _userSessions.clear();
-      // TODO:
       // _engine.leaveChannel();
       _engine.destroy();
     } catch (e) {
@@ -161,7 +160,6 @@ class AudioCallPageState extends State<VoiceCallWidget> {
     }));
   }
 
-  //TODO:
   // Mute
   void _isMute() {
     setState(() {
