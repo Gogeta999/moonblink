@@ -118,7 +118,10 @@ class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
                               ],
                             ),
                           ),
-                          SignAsPartnerButton(_otpCodeController)
+                          SignAsPartnerButton(
+                            otpController: _otpCodeController,
+                            phoneController: _phoneController,
+                          )
                         ],
                       ),
                     ),
@@ -134,8 +137,9 @@ class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
 }
 
 class SignAsPartnerButton extends StatelessWidget {
-  SignAsPartnerButton(this.otpController);
+  SignAsPartnerButton({this.otpController, this.phoneController});
   final otpController;
+  final phoneController;
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<OtpModel>(context);
@@ -160,7 +164,8 @@ class SignAsPartnerButton extends StatelessWidget {
                   (value) {
                     if (value) {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UnverifiedPartnerSignUpPage()));
+                          builder: (context) => UnverifiedPartnerSignUpPage(
+                              phoneController.text)));
                     } else {
                       model.showErrorMessage(context);
                     }

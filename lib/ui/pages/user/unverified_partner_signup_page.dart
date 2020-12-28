@@ -1,13 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
+import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
+import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
+import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/navigation_service.dart';
+import 'package:moonblink/services/push_notification_manager.dart';
+import 'package:moonblink/services/web_socket_service.dart';
+import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 
 class UnverifiedPartnerSignUpPage extends StatefulWidget {
+  final String phoneNumber;
+  UnverifiedPartnerSignUpPage(this.phoneNumber);
   @override
   _UnverifiedPartnerSignUpPageState createState() =>
       _UnverifiedPartnerSignUpPageState();
@@ -15,8 +30,12 @@ class UnverifiedPartnerSignUpPage extends StatefulWidget {
 
 class _UnverifiedPartnerSignUpPageState
     extends State<UnverifiedPartnerSignUpPage> {
+  UserModel userModel;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
+  final FacebookLogin _facebookLogin = FacebookLogin();
+
   ///Remote Data
-  int _selectedPlanPrice = 0;
+  int _selectedPlan = 0;
   Wallet _wallet = Wallet(value: 0);
 
   ///UI
@@ -56,14 +75,14 @@ class _UnverifiedPartnerSignUpPageState
         context: context,
         builder: (_) {
           return CustomDialog(
-            title: G.current.unverifiedPartnerPlanConfirmTitle,
+            title:
+                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
             simpleContent: G.current.unverifiedPartnerPlanConfirmContent,
             cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
             confirmContent: G.current.confirm,
             confirmCallback: () {
-              // showToast('Write Function Here');
               _onTapConfirm();
             },
           );
@@ -71,19 +90,49 @@ class _UnverifiedPartnerSignUpPageState
   }
 
   _onTapConfirm() {
-    if (_wallet.value < _selectedPlanPrice) {
+    if (_selectedPlan == 3 && _wallet.value < 800) {
+      showToast(G.current.boostNoEnoughCoins);
+      return;
+    }
+    if (_selectedPlan == 2 && _wallet.value < 500) {
+      showToast(G.current.boostNoEnoughCoins);
+      return;
+    }
+    if (_selectedPlan == 1 && _wallet.value < 300) {
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     setState(() {
       _isConfirmLoading = true;
     });
-    showToast('Success');
     //TODO: Change Real Code Here
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        _isConfirmLoading = false;
-      });
+    MoonBlinkRepository.signAsType5Partner(widget.phoneNumber, _selectedPlan)
+        .then((value) async {
+      try {
+        setState(() {
+          _isConfirmLoading = false;
+        });
+        PushNotificationsManager().dispose();
+        WebSocketService().dispose();
+        final context =
+            locator<NavigationService>().navigatorKey.currentContext;
+        BlocProvider.of<UserNewNotificationBloc>(context)
+            .add(UserNewNotificationCleared());
+        BlocProvider.of<ChatListBloc>(context).chatsSubject.add([]);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(RouteName.splash, (route) => false);
+        _facebookLogin.isLoggedIn.then(
+            (value) async => value ? await _facebookLogin.logOut() : null);
+        _googleSignIn.isSignedIn().then(
+            (value) async => value ? await _googleSignIn.signOut() : null);
+        DioUtils().initWithoutAuthorization();
+        await MoonBlinkRepository.logout();
+        userModel.clearUser();
+      } catch (e) {
+        setState(() {
+          _isPageError = true;
+        });
+      }
     });
   }
 
@@ -106,8 +155,16 @@ class _UnverifiedPartnerSignUpPageState
                     subtitle: Text(G.current.unverifiedPartnerVip1Subtitle),
                     trailing: _isConfirmLoading
                         ? CupertinoActivityIndicator()
-                        : Icon(Icons.chevron_right),
-                    onTap: () => confirmDialog(),
+                        : InkWell(
+                            child: Icon(FontAwesomeIcons.question),
+                            onTap: () => showToast('Show exmaple Layer'),
+                          ),
+                    onTap: () {
+                      setState(() {
+                        _selectedPlan = 1;
+                      });
+                      confirmDialog();
+                    },
                     onLongPress: () => showToast('Show exmaple Layer'),
                   ),
                 )),
@@ -120,8 +177,16 @@ class _UnverifiedPartnerSignUpPageState
                     subtitle: Text(G.current.unverifiedPartnerVip2Subtitle),
                     trailing: _isConfirmLoading
                         ? CupertinoActivityIndicator()
-                        : Icon(Icons.chevron_right),
-                    onTap: () => confirmDialog(),
+                        : InkWell(
+                            child: Icon(FontAwesomeIcons.question),
+                            onTap: () => showToast('Show exmaple Layer'),
+                          ),
+                    onTap: () {
+                      setState(() {
+                        _selectedPlan = 2;
+                      });
+                      confirmDialog();
+                    },
                     onLongPress: () => showToast('Show exmaple Layer'),
                   ),
                 )),
@@ -134,8 +199,16 @@ class _UnverifiedPartnerSignUpPageState
                     subtitle: Text(G.current.unverifiedPartnerVip3Subtitle),
                     trailing: _isConfirmLoading
                         ? CupertinoActivityIndicator()
-                        : Icon(Icons.chevron_right),
-                    onTap: () => confirmDialog(),
+                        : InkWell(
+                            child: Icon(FontAwesomeIcons.question),
+                            onTap: () => showToast('Show exmaple Layer'),
+                          ),
+                    onTap: () {
+                      setState(() {
+                        _selectedPlan = 3;
+                      });
+                      confirmDialog();
+                    },
                     onLongPress: () => showToast('Show exmaple Layer'),
                   ),
                 )),
