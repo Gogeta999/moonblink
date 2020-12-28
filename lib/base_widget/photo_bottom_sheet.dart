@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
+import 'package:moonblink/base_widget/videotrimmer/trimmer_view.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:video_compress/video_compress.dart';
+import 'package:video_trimmer/video_trimmer.dart';
 
 class PhotoBottomSheet extends StatefulWidget {
   final ScrollController sheetScrollController;
@@ -346,43 +349,49 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     if (widget.popAfterBtnPressed) {
       Navigator.pop(context);
     }
-    List<File> compressedImages = [];
-    for (int i = 0; i < _selectedIndices.length; ++i) {
-      File image = await _photoList[i].file;
-      File croppedImage;
-      File tempFile = await _getLocalFile();
-      if (widget.willCrop) {
-        croppedImage = await _cropImage(image);
+    if (widget.requestType == RequestType.image) {
+      List<File> compressedImages = [];
+      for (int i = 0; i < _selectedIndices.length; ++i) {
+        File image = await _photoList[_selectedIndices[i]].file;
+        File croppedImage;
+        File tempFile = await _getLocalFile();
+        if (widget.willCrop) {
+          croppedImage = await _cropImage(image);
+        }
+        if (widget.willCrop && croppedImage == null) {
+          return;
+        }
+        File compressedImage =
+            await _compressAndGetFile(croppedImage ?? image, tempFile.path);
+        compressedImages.add(compressedImage);
       }
-      if (widget.willCrop && croppedImage == null) {
-        return;
+      if (compressedImages.isNotEmpty) {
+        widget.onPressed(compressedImages);
+      } else {
+        if (isDev) print('CompressedImages is empty');
       }
-      File compressedImage =
-          await _compressAndGetFile(croppedImage ?? image, tempFile.path);
-      compressedImages.add(compressedImage);
-    }
-    if (compressedImages.isNotEmpty) {
-      widget.onPressed(compressedImages);
+    } else if (widget.requestType == RequestType.video) {
+      final _trimmer = Trimmer();
+      File video = await _photoList[_selectedIndices.first].file;
+      Uint8List thumbnail = await _photoList[_selectedIndices.first].thumbData;
+      if (video != null) {
+        await _trimmer.loadVideo(videoFile: video);
+        File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return TrimmerView(_trimmer);
+        }));
+        print("Trimmed Video: ${trimmedVideo.lengthSync()}");
+        MediaInfo mediaInfo = await VideoCompress.compressVideo(
+          trimmedVideo.path,
+          quality: VideoQuality.DefaultQuality
+        );
+        print("Trimmed Video: ${mediaInfo.filesize}");
+        if (mediaInfo.file != null) {
+          widget.onPressed(mediaInfo.file, thumbnail);
+        }
+      }
     } else {
-      if (isDev) print('CompressedImages is empty');
+      //Request type not supported
     }
-
-    // File image = await _photoList[_selectedIndices.first].file;
-    // File croppedImage;
-    // File tempFile = await _getLocalFile();
-    // if (widget.willCrop) {
-    //   croppedImage = await _cropImage(image);
-    // }
-    // if (widget.willCrop && croppedImage == null) {
-    //   return;
-    // }
-    // File compressedImage =
-    //     await _compressAndGetFile(croppedImage ?? image, tempFile.path);
-    // if (isDev) print(image.lengthSync());
-    // if (isDev) print(compressedImage.lengthSync());
-    // if (compressedImage != null) {
-    //   widget.onPressed(compressedImage);
-    // }
   }
 
   _fetchNewMedia() async {

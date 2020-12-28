@@ -168,7 +168,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
-          InkWell(
+          GestureDetector(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(

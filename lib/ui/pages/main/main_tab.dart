@@ -11,6 +11,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_list_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
+import 'package:moonblink/ui/pages/main/newfeed/new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -34,6 +35,7 @@ class _MainTabPageState extends State<MainTabPage>
   int _selectedIndex = 0;
   DateTime _lastPressed;
   ScrollController homeController = ScrollController();
+  final nfController = ScrollController();
 
   _MainTabPageState();
 
@@ -57,6 +59,7 @@ class _MainTabPageState extends State<MainTabPage>
   void dispose() {
     _pageController.dispose();
     homeController.dispose();
+    nfController.dispose();
     super.dispose();
   }
 
@@ -64,13 +67,19 @@ class _MainTabPageState extends State<MainTabPage>
   Widget build(BuildContext context) {
     List<Widget> pages = <Widget>[
       HomePage(homeController),
+      NewFeedPage(scrollController: nfController),
       NewChatListPage(), //ChatListPage(),
       ContactsPage(),
       UserNewNotificationPage(),
       UserStatusPage(),
     ];
     return Scaffold(
-      floatingActionButton: type > 0 ? FloatingActionButton(onPressed: () => Navigator.pushNamed(context, RouteName.createPostPage), child: Icon(Icons.add)) : null,
+      floatingActionButton: type > 0
+          ? FloatingActionButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, RouteName.createPostPage),
+              child: Icon(Icons.add))
+          : null,
       body: WillPopScope(
         onWillPop: () async {
           if (_lastPressed == null ||
@@ -189,6 +198,14 @@ class _MainTabPageState extends State<MainTabPage>
                       },
                     ),
                     CustomNavigationBarItem(
+                        icon: home,
+                        selectedIcon: homefilled,
+                        doubletap: () {
+                          nfController.animateTo(0.0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut);
+                        }),
+                    CustomNavigationBarItem(
                         icon: chat, selectedIcon: chatfilled),
                     CustomNavigationBarItem(
                         icon: following, selectedIcon: followingfilled),
@@ -231,6 +248,14 @@ class _MainTabPageState extends State<MainTabPage>
                       );
                     },
                   ),
+                  CustomNavigationBarItem(
+                      icon: home,
+                      selectedIcon: homefilled,
+                      doubletap: () {
+                        nfController.animateTo(0.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut);
+                      }),
                   CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
                   CustomNavigationBarItem(
                       icon: following, selectedIcon: followingfilled),

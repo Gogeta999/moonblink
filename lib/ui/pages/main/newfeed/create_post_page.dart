@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -8,16 +9,21 @@ import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/videotrimmer/preview.dart';
+import 'package:moonblink/base_widget/videotrimmer/trimmer_view.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
+import 'package:moonblink/utils/crop_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:video_compress/video_compress.dart';
+import 'package:video_trimmer/video_trimmer.dart';
 
 ///Emulators are always treated as test devices
 const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
@@ -35,10 +41,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _postTitleController = TextEditingController();
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
   final String myEmail = StorageManager.sharedPreferences.getString(mLoginMail);
+  final maxImageLimit = 4;
+  final maxVideoLimit = 1;
 
-  // ignore: close_sinks
   final _postOptionsSubject = BehaviorSubject.seeded('Public');
-  final _photosSubject = BehaviorSubject<List<File>>.seeded(null);
+  final _mediaSubject = BehaviorSubject<List<File>>.seeded(null);
+  final _videoSubject = BehaviorSubject<File>.seeded(null);
+  final _thumbnailSubject = BehaviorSubject<Uint8List>.seeded(null);
   final _adCountSubject = BehaviorSubject<int>.seeded(0);
   final _postByAdButtonSubject = BehaviorSubject.seeded(false);
   final _postByCoinsButtonSubject = BehaviorSubject.seeded(false);
@@ -47,6 +56,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   void initState() {
+    _mediaSubject.sink.add(null);
     RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
         {String rewardType, int rewardAmount}) async {
       if (isDev) print("RewardedVideoAd event $event");
@@ -93,7 +103,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   void dispose() {
     this._postOptionsSubject.close();
-    this._photosSubject.close();
+    this._mediaSubject.close();
     this._adCountSubject.close();
     this._postByAdButtonSubject.close();
     this._postByCoinsButtonSubject.close();
@@ -105,6 +115,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   _showSelectImageOptions() {
     return showCupertinoDialog(
+      barrierDismissible: true,
       context: context,
       builder: (builder) => CupertinoAlertDialog(
         content: Text(G.of(context).pickimage),
@@ -114,32 +125,123 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: () {
                 CustomBottomSheet.show(
                     buildContext: context,
-                    limit: 3,
-                    body: G.of(context).picknrc,
-                    onPressed: (List<File> files) {
-                      this._photosSubject.add(files);
-                      this._selectedPhotoIndexSubject.add(-1);
+                    limit: maxImageLimit,
+                    body: 'Add Photos',
+                    onPressed: (List<File> files) async {
+                      List<File> currentFile = await this._mediaSubject.first;
+                      if (currentFile == null || currentFile.isEmpty) {
+                        currentFile = List.from(files);
+                        if (currentFile.length > maxImageLimit) {
+                          int x = currentFile.length - maxImageLimit;
+                          currentFile.removeRange(0, x);
+                        }
+                        this._mediaSubject.add(currentFile);
+                        this._selectedPhotoIndexSubject.add(-1);
+                      } else {
+                        currentFile.addAll(files);
+                        if (currentFile.length > maxImageLimit) {
+                          int x = currentFile.length - maxImageLimit;
+                          currentFile.removeRange(0, x);
+                        }
+                        this._mediaSubject.add(currentFile);
+                        this._selectedPhotoIndexSubject.add(-1);
+                      }
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.image,
-                    minWidth: 600,
-                    minHeight: 800,
-                    willCrop: true,
+                    willCrop: false,
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
           CupertinoButton(
               child: Text(G.of(context).imagePickerCamera),
               onPressed: () async {
+                Navigator.pop(context);
                 PickedFile pickedFile =
                     await ImagePicker().getImage(source: ImageSource.camera);
-                this._photosSubject.add([
-                  await CompressUtils.compressAndGetFile(
-                      File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 600, 800)
-                ]);
-                this._selectedPhotoIndexSubject.add(-1);
+                File compressedImage = await CompressUtils.compressAndGetFile(
+                    File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
+                List<File> currentFile = await this._mediaSubject.first;
+                if (currentFile == null || currentFile.isEmpty) {
+                  currentFile = List.from([compressedImage]);
+                  if (currentFile.length > maxImageLimit) {
+                    int x = currentFile.length - maxImageLimit;
+                    currentFile.removeRange(0, x);
+                  }
+                  this._mediaSubject.add(currentFile);
+                  this._selectedPhotoIndexSubject.add(-1);
+                } else {
+                  currentFile.add(compressedImage);
+                  if (currentFile.length > maxImageLimit) {
+                    int x = currentFile.length - maxImageLimit;
+                    currentFile.removeRange(0, x);
+                  }
+                  this._mediaSubject.add(currentFile);
+                  this._selectedPhotoIndexSubject.add(-1);
+                }
+              }),
+          CupertinoButton(
+            child: Text(G.of(context).cancel),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _showSelectVideoOptions() {
+    return showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (builder) => CupertinoAlertDialog(
+        content: Text('Pick Video From'),
+        actions: <Widget>[
+          CupertinoButton(
+              child: Text(G.of(context).imagePickerGallery),
+              onPressed: () {
+                CustomBottomSheet.show(
+                    buildContext: context,
+                    limit: maxVideoLimit,
+                    body: 'Pick A Video',
+                    onPressed: (File video, Uint8List thumbnail) async {
+                      this._videoSubject.add(video);
+                      this._thumbnailSubject.add(thumbnail);
+                    },
+                    buttonText: G.of(context).select,
+                    popAfterBtnPressed: true,
+                    requestType: RequestType.video,
+                    minWidth: 600,
+                    minHeight: 800,
+                    willCrop: false,
+                    compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
+              }),
+          CupertinoButton(
+              child: Text(G.of(context).imagePickerCamera),
+              onPressed: () async {
+                Navigator.pop(context);
+                PickedFile pickedFile =
+                    await ImagePicker().getVideo(source: ImageSource.camera);
+                final _trimmer = Trimmer();
+                File video = File(pickedFile.path);
+                if (video != null) {
+                  await _trimmer.loadVideo(videoFile: video);
+                  File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    return TrimmerView(_trimmer);
+                  }));
+                  print("Trimmed Video: ${trimmedVideo.lengthSync()}");
+                  MediaInfo mediaInfo = await VideoCompress.compressVideo(
+                    trimmedVideo.path,
+                    quality: VideoQuality.DefaultQuality
+                  );
+                  Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
+                  print("Trimmed Video: ${mediaInfo.filesize}");
+                  if (mediaInfo.file != null && thumbnail != null) {
+                    this._videoSubject.add(mediaInfo.file);
+                    this._thumbnailSubject.add(thumbnail);
+                  }
+                }
               }),
           CupertinoButton(
             child: Text(G.of(context).cancel),
@@ -155,27 +257,32 @@ class _CreatePostPageState extends State<CreatePostPage> {
     int leftAd = 10 - myAdCount;
     if (myAdCount >= 10) {
       String body = this._postTitleController.text.trim();
-      List<File> media = await this._photosSubject.first;
+      List<File> media = await this._mediaSubject.first;
+      File video = await this._videoSubject.first;
       int type = 1;
       int status = _getStatus(await this._postOptionsSubject.first);
-      if (body.isEmpty && media == null) {
+      if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
         showToast('Require title or photo');
         return;
       }
       this._postByAdButtonSubject.add(true);
-      MoonBlinkRepository.uploadPost(media.first, type, status,
+      MoonBlinkRepository.uploadPost(media, video, type, status,
               body: body ?? '')
           .then((_) {
         showToast('Upload Success');
         myAdCount -= 10;
-        this._adCountSubject.add(myAdCount);
+        this._adCountSubject?.add(myAdCount);
         StorageManager.sharedPreferences.setInt('$myId$myEmail', myAdCount);
-        Navigator.pop(context);
-        this._postByAdButtonSubject.add(false);
+        try {
+          Navigator.pop(context);
+        } catch (e) {
+          if (isDev) print(e.toSting());
+        }
+        this._postByAdButtonSubject?.add(false);
       },
               onError: (e) => {
                     showToast(e.toString()),
-                    this._postByAdButtonSubject.add(false)
+                    this._postByAdButtonSubject?.add(false)
                   });
     } else {
       showCupertinoDialog(
@@ -203,6 +310,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         child: Text('Start Watching'),
                         onPressed: () async {
                           this._postByAdButtonSubject.add(true);
+                          this._startWatchingButtonSubject.add(true);
                           await RewardedVideoAd.instance.load(
                               adUnitId: AdManager.rewardedAdId,
                               targetingInfo: targetingInfo);
@@ -218,23 +326,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   _postByCoins() async {
     String body = this._postTitleController.text.trim();
-    List<File> media = await this._photosSubject.first;
+    List<File> media = await this._mediaSubject.first;
+    File video = await this._videoSubject.first;
     int type = 1;
     int status = _getStatus(await this._postOptionsSubject.first);
-    if (body.isEmpty && media == null) {
-      showToast('Require title or photo');
+    if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
+      showToast('Require title or photo or video');
       return;
     }
     this._postByCoinsButtonSubject.add(true);
-    MoonBlinkRepository.uploadPost(media.first, type, status, body: body ?? '')
+    MoonBlinkRepository.uploadPost(media, video, type, status, body: body ?? '')
         .then((_) {
       showToast('Upload Success');
-      Navigator.pop(context);
-      this._postByCoinsButtonSubject.add(false);
+      try {
+        Navigator.pop(context);
+      } catch (e) {
+        if (isDev) print(e.toString());
+      }
+      this._postByCoinsButtonSubject?.add(false);
     },
             onError: (e) => {
                   showToast(e.toString()),
-                  this._postByCoinsButtonSubject.add(false)
+                  this._postByCoinsButtonSubject?.add(false)
                 });
   }
 
@@ -330,8 +443,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         initialData: null,
                         stream: this._adCountSubject,
                         builder: (context, snapshot) {
+                          int data = snapshot.data ?? 0;
                           return Text(
-                              '${snapshot.data} ${snapshot.data > 1 ? "Ads" : "Ad"} Watched');
+                              '$data ${data > 1 ? "Ads" : "Ad"} Watched');
                         },
                       ),
                       SizedBox(height: 5),
@@ -380,46 +494,60 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           _showSelectImageOptions();
                         }),
                     StreamBuilder<List<File>>(
-                      initialData: null,
-                      stream: this._photosSubject,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null || snapshot.data.isEmpty) {
-                          return Container();
-                        }
-                        return StreamBuilder<int>(
-                          initialData: -1,
-                          stream: this._selectedPhotoIndexSubject,
-                          builder: (context, snapshot2) {
-                            if (snapshot2.data == null || snapshot2.data == -1) {
-                              return CupertinoButton(
-                                child: Text('Remove All Photos'),
-                                onPressed: () {
-                                  this._photosSubject.add([]);
-                                },
-                              );
-                            }
-                            return Row(
-                              children: [
-                                CupertinoButton(
-                                  child: Text('Crop'),
-                                  onPressed: () {},
-                                ),
-                                CupertinoButton(
-                                  child: Text('Remove'),
+                        initialData: null,
+                        stream: this._mediaSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null || snapshot.data.isEmpty) {
+                            return Container();
+                          }
+                          return StreamBuilder<int>(
+                            initialData: -1,
+                            stream: this._selectedPhotoIndexSubject,
+                            builder: (context, snapshot2) {
+                              if (snapshot2.data == null ||
+                                  snapshot2.data == -1) {
+                                return CupertinoButton(
+                                  child: Text('Remove All Photos'),
                                   onPressed: () {
-                                    this._photosSubject.first.then((photos) {
-                                      photos.removeAt(snapshot2.data);
-                                      this._selectedPhotoIndexSubject.add(-1);
-                                      this._photosSubject.add(photos);
-                                    });
+                                    this._mediaSubject.add([]);
                                   },
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    ),
+                                );
+                              }
+                              return Row(
+                                children: [
+                                  CupertinoButton(
+                                    child: Text('Crop'),
+                                    onPressed: () {
+                                      this
+                                          ._mediaSubject
+                                          .first
+                                          .then((photos) async {
+                                        final beforeCrop =
+                                            photos[snapshot2.data];
+                                        final afterCrop =
+                                            await CropUtils.cropImage(
+                                                beforeCrop);
+                                        photos[snapshot2.data] =
+                                            afterCrop ?? beforeCrop;
+                                        this._mediaSubject.add(photos);
+                                      });
+                                    },
+                                  ),
+                                  CupertinoButton(
+                                    child: Text('Remove'),
+                                    onPressed: () {
+                                      this._mediaSubject.first.then((photos) {
+                                        photos.removeAt(snapshot2.data);
+                                        this._selectedPhotoIndexSubject.add(-1);
+                                        this._mediaSubject.add(photos);
+                                      });
+                                    },
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        }),
                   ],
                 ),
                 SizedBox(height: 5),
@@ -428,7 +556,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     alignment: Alignment.topCenter,
                     child: StreamBuilder<List<File>>(
                       initialData: null,
-                      stream: this._photosSubject,
+                      stream: this._mediaSubject,
                       builder: (context, snapshot) {
                         if (snapshot.data == null || snapshot.data.isEmpty) {
                           return Container();
@@ -447,29 +575,82 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 builder: (context, snapshot2) {
                                   int selectedIndex = snapshot2.data;
                                   return GestureDetector(
-                                    onTap: () {
-                                      this
-                                          ._selectedPhotoIndexSubject
-                                          .first
-                                          .then((value) {
+                                      onTap: () {
                                         this
                                             ._selectedPhotoIndexSubject
-                                            .add(value == index ? -1 : index);
-                                      });
-                                    },
-                                    child: Image.file(
-                                      snapshot.data[index],
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      color: index == selectedIndex
-                                          ? Colors.white30
-                                          : Colors.transparent,
-                                      colorBlendMode: BlendMode.lighten,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  );
+                                            .first
+                                            .then((value) {
+                                          this
+                                              ._selectedPhotoIndexSubject
+                                              .add(value == index ? -1 : index);
+                                        });
+                                      },
+                                      child: Image.file(
+                                        snapshot.data[index],
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        color: index == selectedIndex
+                                            ? Colors.white54
+                                            : Colors.transparent,
+                                        colorBlendMode: BlendMode.lighten,
+                                        fit: BoxFit.fill,
+                                      ));
                                 });
                           },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: Text('Add a Video'),
+                        onPressed: () {
+                          _showSelectVideoOptions();
+                        }),
+                    StreamBuilder<File>(
+                        stream: this._videoSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return Container();
+                          }
+                          return CupertinoButton(
+                              child: Text('Remove video'),
+                              onPressed: () {
+                                this._videoSubject.add(null);
+                                this._thumbnailSubject.add(null);
+                              });
+                        }),
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: StreamBuilder<Uint8List>(
+                      initialData: null,
+                      stream: this._thumbnailSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return Container();
+                        }
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            final file = await this._videoSubject.first;
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => Preview(file.path)));
+                          },
+                          child: Image.memory(
+                            snapshot.data,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
                         );
                       },
                     ),

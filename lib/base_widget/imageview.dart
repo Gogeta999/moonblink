@@ -78,10 +78,15 @@ class FullScreenImageView extends StatelessWidget {
             icon: Icon(Icons.close),
             onPressed: () => Navigator.pop(context)),
       ),
-      body: PhotoView(
-        imageProvider: image == null
-            ? CachedNetworkImageProvider(imageUrl)
-            : FileImage(image),
+      body: GestureDetector(
+        onVerticalDragEnd: (end) {
+          Navigator.pop(context);
+        },
+        child: PhotoView(
+          imageProvider: image == null
+              ? CachedNetworkImageProvider(imageUrl)
+              : FileImage(image),
+        ),
       ),
     );
   }

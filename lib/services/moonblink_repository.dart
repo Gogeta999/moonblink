@@ -12,6 +12,7 @@ import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/partner.dart';
@@ -611,24 +612,30 @@ class MoonBlinkRepository {
     return response.data;
   }
 
-  static Future uploadPost(File media, int type, int status, {String body = ''}) async {
+  static Future uploadPost(List<File> media, File video, int type, int status, {String body = ''}) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);
     FormData formData;
-    if (body == null || body.isEmpty) {
-      formData = FormData.fromMap({
-        'media': await MultipartFile.fromFile(media.path),
-        'type': type,
-        'status': status
-      });
-    } else {
-      formData = FormData.fromMap({
-        'body': body,
-        'media': await MultipartFile.fromFile(media.path),
-        'type': type,
-        'status': status
-      });
+    List<MultipartFile> mFiles = [];
+    if (media != null && media.isNotEmpty)
+    for (int i = 0; i < media.length; ++i) {
+      mFiles.add(await MultipartFile.fromFile(media[i].path));
     }
+    if (video != null) mFiles.add(await MultipartFile.fromFile(video.path));
+    formData = FormData.fromMap({
+      'media': mFiles,
+      'body': body,
+      'type': type,
+      'status': status,
+    });
     final response = await DioUtils().postwithData(Api.UploadPost + '$userId/post', data: formData);
     return response.data;
+  }
+
+  static Future<List<NFPost>> getNFPosts(int limit, int page) async {
+    final response = await DioUtils().get(Api.GetNFPost, queryParameters: {
+      'limit': limit,
+      'page': page,
+    });
+    return response.data['data']['data'].map<NFPost>((e) => NFPost.fromJson(e)).toList();
   }
 }

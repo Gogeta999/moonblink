@@ -1,0 +1,119 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/models/new_feed_models/NFPost.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rxdart/subjects.dart';
+
+enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
+
+class NFBloc {
+  NFBloc(this.scrollController) {
+    this.scrollController.addListener(() => this.onScroll());
+  }
+
+  final ScrollController scrollController;
+  final refreshController = RefreshController();
+  double scrollThreshold = 800.0;
+  Timer _debounce;
+
+  final nfPostsSubject = BehaviorSubject.seeded(<NFPost>[]);
+  final blockingSubject = BehaviorSubject.seeded(false);
+
+  final limit = 10;
+  int nextPage = 1;
+  bool hasReachedMax = false;
+
+  void dispose() {
+    refreshController.dispose();
+    _debounce?.cancel();
+    nfPostsSubject.close();
+    blockingSubject.close();
+  }
+
+  void onScroll() {
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.position.pixels;
+    if (maxScroll - currentScroll <= scrollThreshold) {
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        this.fetchMoreData();
+      });
+    }
+  }
+
+  UrlType getUrlType(String url) {
+    bool isRemote = url.substring(0, 4) == 'http';
+    List<String> strings = url.split('/');
+    bool isImage = strings.last.contains('jpg') ||
+        strings.last.contains('png') ||
+        strings.last.contains('jpeg');
+    bool isVideo = strings.last.contains('mp4');
+    if (isRemote && isImage && !isVideo) {
+      return UrlType.REMOTE_IMAGE;
+    } else if (isRemote && !isImage && isVideo) {
+      return UrlType.REMOTE_VIDEO;
+    } else if (!isRemote && isImage && !isVideo) {
+      return UrlType.LOCAL_IMAGE;
+    } else if (!isRemote && !isImage && isVideo) {
+      return UrlType.LOCAL_VIDEO;
+    } else {
+      return UrlType.UNKNOWN;
+    }
+  }
+
+  void refreshData() {
+    nextPage = 1;
+    MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
+      nfPostsSubject.add(value);
+      refreshController.refreshCompleted();
+      hasReachedMax = value.length < limit;
+    }, onError: (e) {
+      nfPostsSubject.addError(e);
+      refreshController.refreshFailed();
+    });
+  }
+
+  void fetchInitialData() {
+    nextPage = 1;
+    MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
+      nfPostsSubject.add(value);
+      nextPage++;
+      hasReachedMax = value.length < limit;
+    }, onError: (e) => nfPostsSubject.addError(e));
+  }
+
+  void fetchMoreData() {
+    if (hasReachedMax) return;
+    MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
+      nfPostsSubject.first.then((prev) {
+        nfPostsSubject.add(prev + value);
+      });
+      nextPage++;
+      hasReachedMax = value.length < limit;
+    }, onError: (e) => nfPostsSubject.addError(e));
+  }
+
+  void onTapWholeCard(BuildContext context, int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PartnerDetailPage(id),
+      ),
+    );
+  }
+
+  void onTapBlockIcon(BuildContext context) {
+    CustomBottomSheet.showUserManageContent(
+        buildContext: context,
+        onReport: () {
+          Navigator.pop(context);
+        },
+        onBlock: () {},
+        onDismiss: () => print('Dismissing BottomSheet'));
+  }
+}
