@@ -1935,10 +1935,10 @@ class G {
     );
   }
 
-  /// `Be Our Partner`
+  /// `Welcome to be Partner`
   String get otpWelcomePartner {
     return Intl.message(
-      'Be Our Partner',
+      'Welcome to be Partner',
       name: 'otpWelcomePartner',
       desc: '',
       args: [],
@@ -2260,6 +2260,26 @@ class G {
     return Intl.message(
       'Register as our partner',
       name: 'settingsSignAsPartner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To become verfied Partner`
+  String get settingToBeVerifiedPartner {
+    return Intl.message(
+      'To become verfied Partner',
+      name: 'settingToBeVerifiedPartner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending to be verfied Partner`
+  String get settingToBeVerifiedPartnerInPending {
+    return Intl.message(
+      'Pending to be verfied Partner',
+      name: 'settingToBeVerifiedPartnerInPending',
       desc: '',
       args: [],
     );
@@ -2855,6 +2875,126 @@ class G {
     );
   }
 
+  /// `Go To TopUp Page`
+  String get unverifiedPartnerGoTopUpTitle {
+    return Intl.message(
+      'Go To TopUp Page',
+      name: 'unverifiedPartnerGoTopUpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to TopUp Page and buy enough coins to comeback to become partner again`
+  String get unverifiedPartnerGOTopUpContent {
+    return Intl.message(
+      'Go to TopUp Page and buy enough coins to comeback to become partner again',
+      name: 'unverifiedPartnerGOTopUpContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This purchase is a permanent service, you only need to purchase once to enjoy our service forever`
+  String get unverifiedPartnerNote {
+    return Intl.message(
+      'This purchase is a permanent service, you only need to purchase once to enjoy our service forever',
+      name: 'unverifiedPartnerNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Plan`
+  String get unverifiedPartnerPlan {
+    return Intl.message(
+      'Choose Plan',
+      name: 'unverifiedPartnerPlan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm To Choose This Plan`
+  String get unverifiedPartnerPlanConfirmTitle {
+    return Intl.message(
+      'Confirm To Choose This Plan',
+      name: 'unverifiedPartnerPlanConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note that we do not support refunds for this purchase`
+  String get unverifiedPartnerPlanConfirmContent {
+    return Intl.message(
+      'Note that we do not support refunds for this purchase',
+      name: 'unverifiedPartnerPlanConfirmContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 1 Cost 300 Coins`
+  String get unverifiedPartnerVip1Title {
+    return Intl.message(
+      'Vip 1 Cost 300 Coins',
+      name: 'unverifiedPartnerVip1Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will make you appear on the bottom-level feed.\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  String get unverifiedPartnerVip1Subtitle {
+    return Intl.message(
+      'This will make you appear on the bottom-level feed.\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      name: 'unverifiedPartnerVip1Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 2 Cost 500 Coins`
+  String get unverifiedPartnerVip2Title {
+    return Intl.message(
+      'Vip 2 Cost 500 Coins',
+      name: 'unverifiedPartnerVip2Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will make you appear on the mid-level feed.\nAnd you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  String get unverifiedPartnerVip2Subtitle {
+    return Intl.message(
+      'This will make you appear on the mid-level feed.\nAnd you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      name: 'unverifiedPartnerVip2Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 3 Cost 800 Coins`
+  String get unverifiedPartnerVip3Title {
+    return Intl.message(
+      'Vip 3 Cost 800 Coins',
+      name: 'unverifiedPartnerVip3Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will make you appear on the top-level feed.\nAnd you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  String get unverifiedPartnerVip3Subtitle {
+    return Intl.message(
+      'This will make you appear on the top-level feed.\nAnd you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      name: 'unverifiedPartnerVip3Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Your Profile`
   String get updatePartnerProfile {
     return Intl.message(
@@ -2910,6 +3050,16 @@ class G {
     return Intl.message(
       'Pro',
       name: 'usertypepro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boosting Profile`
+  String get userStatusBoostProfile {
+    return Intl.message(
+      'Boosting Profile',
+      name: 'userStatusBoostProfile',
       desc: '',
       args: [],
     );

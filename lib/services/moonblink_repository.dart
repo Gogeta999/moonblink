@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -320,23 +319,28 @@ class MoonBlinkRepository {
   }
 
   //Game List for boosting
-  static Future<List<UserBoostingGamePrice>> getBoostingGameList(int partnerId) async {
-    final response = await DioUtils().get(Api.BoostingGameList + '$partnerId/boost');
-    return response.data.map<UserBoostingGamePrice>((e) => UserBoostingGamePrice.fromJson(e)).toList();
+  static Future<List<UserBoostingGamePrice>> getBoostingGameList(
+      int partnerId) async {
+    final response =
+        await DioUtils().get(Api.BoostingGameList + '$partnerId/boost');
+    return response.data
+        .map<UserBoostingGamePrice>((e) => UserBoostingGamePrice.fromJson(e))
+        .toList();
   }
-  
+
   //Delete Boosting Game Profile
   static Future deleteBoostingGameProfile(int gameId) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().delete(Api.DeleteBoostingProfile + '$userId/game/$gameId/boost/profile');
+    final response = await DioUtils().delete(
+        Api.DeleteBoostingProfile + '$userId/game/$gameId/boost/profile');
     return response.data;
   }
 
   static Future setBoostingStatus(int boostingId, int status) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().patch(Api.SetBoostingStatus + '$userId/boost/$boostingId', queryParameters: {
-      'status': status
-    });
+    final response = await DioUtils().patch(
+        Api.SetBoostingStatus + '$userId/boost/$boostingId',
+        queryParameters: {'status': status});
     return response.data;
   }
 
@@ -454,15 +458,19 @@ class MoonBlinkRepository {
   // Get Boost game
   static Future<List<BoostGame>> getBoostGame(int id) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().get(Api.BoostGameList + '$userId/game/$id/boost/profile');
+    final response = await DioUtils()
+        .get(Api.BoostGameList + '$userId/game/$id/boost/profile');
     return response.data.map<BoostGame>((e) => BoostGame.fromJson(e)).toList();
   }
 
   //Set Boost Game
-  static Future setBoostGameProfile(List<Map<String, dynamic>> json, int id) async {
+  static Future setBoostGameProfile(
+      List<Map<String, dynamic>> json, int id) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     final data = {'boost_profile': json};
-    final response = await DioUtils().postwithData(Api.BoostGameList + '$userId/game/$id/boost/profile', data: data);
+    final response = await DioUtils().postwithData(
+        Api.BoostGameList + '$userId/game/$id/boost/profile',
+        data: data);
     return response.data;
   }
 
@@ -525,6 +533,15 @@ class MoonBlinkRepository {
         Api.VerifyAsPartner + '$userid/verify',
         data: FormData.fromMap({'phone': phone}));
     return User.fromJsonMap(response.data);
+  }
+
+// Sign As Type5 Partner
+  static Future signAsType5Partner(String phone, int vipPlan) async {
+    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().postwithData(
+        Api.VerifyAsPartner + '$userid/register/unverify',
+        data: FormData.fromMap({'phone': phone, 'vip': vipPlan}));
+    return response;
   }
 
   // Get OTP
@@ -596,8 +613,14 @@ class MoonBlinkRepository {
     return UserRatingList.fromJson(response.data['data']);
   }
 
-  static Future requestBoosting(int partnerId, int gameId, String rankFrom,
-      String upToRank, int estimateDay, int estimateHour, int estimateCost) async {
+  static Future requestBoosting(
+      int partnerId,
+      int gameId,
+      String rankFrom,
+      String upToRank,
+      int estimateDay,
+      int estimateHour,
+      int estimateCost) async {
     final map = {
       'game_id': gameId,
       'rank_from': rankFrom,

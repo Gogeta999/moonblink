@@ -20,7 +20,6 @@ import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/ui/helper/cropimage.dart';
 import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';

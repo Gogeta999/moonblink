@@ -10,21 +10,23 @@ import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/otp_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/provider/provider_widget.dart';
+import 'package:moonblink/ui/pages/user/unverified_partner_signup_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/otp_model.dart';
 import 'package:provider/provider.dart';
 
-class OtpPage extends StatefulWidget {
+class Type5PartnerOtpPage extends StatefulWidget {
   @override
-  _OtpPageState createState() => _OtpPageState();
+  _Type5PartnerOtpPageState createState() => _Type5PartnerOtpPageState();
 }
 
-class _OtpPageState extends State<OtpPage> {
+class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
   final String _spPhoneNumber =
       StorageManager.sharedPreferences.getString(spPhoneNumber);
+  final _phoneController = TextEditingController(text: '+959');
+  final _otpCodeController = TextEditingController();
   @override
   void initState() {
     _initPhoneController();
@@ -41,9 +43,6 @@ class _OtpPageState extends State<OtpPage> {
       _phoneController.text = _spPhoneNumber;
     });
   }
-
-  final _phoneController = TextEditingController(text: '+959');
-  final _otpCodeController = TextEditingController();
 
   @override
   void dispose() {
@@ -133,7 +132,10 @@ class _OtpPageState extends State<OtpPage> {
                               ],
                             ),
                           ),
-                          SignAsPartnerButton(_otpCodeController)
+                          SignAsPartnerButton(
+                            otpController: _otpCodeController,
+                            phoneController: _phoneController,
+                          )
                         ],
                       ),
                     ),
@@ -149,8 +151,9 @@ class _OtpPageState extends State<OtpPage> {
 }
 
 class SignAsPartnerButton extends StatelessWidget {
-  SignAsPartnerButton(this.otpController);
+  SignAsPartnerButton({this.otpController, this.phoneController});
   final otpController;
+  final phoneController;
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<OtpModel>(context);
@@ -174,7 +177,11 @@ class SignAsPartnerButton extends StatelessWidget {
                 model.signInWithCredential(otpController.text).then(
                   (value) {
                     if (value) {
-                      Navigator.of(context).pushNamed(RouteName.setprofile);
+                      StorageManager.sharedPreferences
+                          .setString(spPhoneNumber, phoneController.text);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UnverifiedPartnerSignUpPage(
+                              phoneController.text)));
                     } else {
                       model.showErrorMessage(context);
                     }

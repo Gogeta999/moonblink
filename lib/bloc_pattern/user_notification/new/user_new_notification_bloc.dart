@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
-import 'package:moonblink/bloc_pattern/blocked_users/unblock_button/bloc.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/notification_models/user_booking_notification.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
@@ -271,7 +270,8 @@ class UserNewNotificationBloc
                 ? currentState.unreadCount
                 : currentState.unreadCount - 1);
       } else {
-        if (isDev) print("----This type of notification is not supported for now----");
+        if (isDev)
+          print("----This type of notification is not supported for now----");
       }
     } else {
       if (isDev) print('It\'s not in success state');
@@ -321,7 +321,8 @@ class UserNewNotificationBloc
             hasReachedMax: currentState.hasReachedMax,
             page: currentState.page);
       } else {
-        if (isDev) print("----This type of notification is not supported for now----");
+        if (isDev)
+          print("----This type of notification is not supported for now----");
       }
     } else {
       if (isDev) print('It\'s not in success state');

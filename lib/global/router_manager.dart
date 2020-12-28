@@ -17,6 +17,7 @@ import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/unverify_partner_otp_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/resetpassword_page.dart';
@@ -47,6 +48,7 @@ class RouteName {
   static const String setprofile = 'setprofile';
   static const String updateprofile = 'updateprofile';
   static const String otp = 'otp';
+  static const String type5otp = 'type5otp';
   static const String login = 'login';
   static const String resetpassword = 'resetpassword';
   static const String register = 'register';
@@ -96,7 +98,8 @@ class MoonGoRouter {
       case RouteName.boostingGameListPage:
         return CupertinoPageRoute(builder: (_) => BoostingGameListPage());
       case RouteName.boostingGameDetailPage:
-        return CupertinoPageRoute(builder: (_) => BoostingGameDetailPage(data: settings.arguments));
+        return CupertinoPageRoute(
+            builder: (_) => BoostingGameDetailPage(data: settings.arguments));
       case RouteName.boostingPage:
         return CupertinoPageRoute(builder: (_) => BoostingRequestPage());
       case RouteName.termsAndConditionsPage:
@@ -118,6 +121,8 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
       case RouteName.otp:
         return CupertinoPageRoute(builder: (_) => OtpPage());
+      case RouteName.type5otp:
+        return CupertinoPageRoute(builder: (_) => Type5PartnerOtpPage());
       case RouteName.login:
         return CupertinoPageRoute(
             fullscreenDialog: true, builder: (_) => LoginPage());

@@ -20,6 +20,7 @@ class GameModeBottomSheet extends StatefulWidget {
 }
 
 class _GameModeBottomSheet extends State<GameModeBottomSheet> {
+  // ignore: close_sinks
   UpdateGameProfileBloc _updateGameProfileBloc;
   List<Map<String, int>> copySelected;
 

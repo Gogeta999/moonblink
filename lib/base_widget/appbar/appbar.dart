@@ -17,6 +17,17 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+          icon: SvgPicture.asset(
+            back,
+            semanticsLabel: 'back',
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).accentColor
+                : Colors.white,
+            width: 30,
+            height: 30,
+          ),
+          onPressed: () => Navigator.pop(context)),
       backgroundColor: Colors.black,
       title: widget.title == null ? Container() : widget.title,
       // toolbarHeight: kToolbarHeight - 10,

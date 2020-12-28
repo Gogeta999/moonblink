@@ -271,7 +271,6 @@ class _ImagePickerState extends State<ImagePickerPage> {
     detail.getMediaInformation(video.path).then((info) async {
       print("Getting info of video");
       await trimv.loadVideo(videoFile: File(video.path));
-      //TODO:
       // print(info.getStreams());
       var duration = double.parse(info.getMediaProperties()['duration']);
       if (duration > 10.5) {

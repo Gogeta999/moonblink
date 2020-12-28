@@ -280,7 +280,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                       child: Align(
                                         alignment: Alignment.topRight,
                                         child: Text(
-                                          "Lv ${profile != null ? profile.level : "."}",
+                                          "Vip LV ${profile != null ? profile.accVipLevel : "."}",
                                           style: TextStyle(fontSize: 13),
                                         ),
                                       ),
@@ -319,58 +319,58 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ),
 
                 //Level Indicator
-                if (usertype != 0 &&
-                    profile != null &&
-                    profile.levelpercent != null &&
-                    profile.leftorder != null &&
-                    profile.ordercount != null &&
-                    profile.level != null)
-                  Card(
-                    margin: EdgeInsets.only(bottom: 15),
-                    elevation: 4,
-                    shadowColor: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.grey,
-                    child: InkWell(
-                      onTap: () {
-                        leveldialog(profile);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Level ${profile != null ? profile.level : "."}",
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 15.0,
-                                horizontal: 20,
-                              ),
-                              child: new LinearPercentIndicator(
-                                // width: MediaQuery.of(context).size.width - 40,
-                                animation: true,
-                                animationDuration: 1000,
-                                lineHeight: 12.0,
-                                leading: Text("Exp"),
-                                percent: profile != null
-                                    ? double.parse(profile.levelpercent)
-                                    : 0,
-                                linearStrokeCap: LinearStrokeCap.roundAll,
-                                progressColor: Theme.of(context).accentColor,
-                              ),
-                            ),
-                            Text(
-                              "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                // if (usertype != 0 &&
+                //     profile != null &&
+                //     profile.levelpercent != null &&
+                //     profile.leftorder != null &&
+                //     profile.ordercount != null &&
+                //     profile.level != null)
+                //   Card(
+                //     margin: EdgeInsets.only(bottom: 15),
+                //     elevation: 4,
+                //     shadowColor: Theme.of(context).brightness == Brightness.dark
+                //         ? Colors.black
+                //         : Colors.grey,
+                //     child: InkWell(
+                //       onTap: () {
+                //         leveldialog(profile);
+                //       },
+                //       child: Container(
+                //         padding: EdgeInsets.symmetric(vertical: 10),
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.center,
+                //           children: [
+                //             Text(
+                //               "Level ${profile != null ? profile.level : "."}",
+                //               style: Theme.of(context).textTheme.headline6,
+                //             ),
+                //             Padding(
+                //               padding: EdgeInsets.symmetric(
+                //                 vertical: 15.0,
+                //                 horizontal: 20,
+                //               ),
+                //               child: new LinearPercentIndicator(
+                //                 // width: MediaQuery.of(context).size.width - 40,
+                //                 animation: true,
+                //                 animationDuration: 1000,
+                //                 lineHeight: 12.0,
+                //                 leading: Text("Exp"),
+                //                 percent: profile != null
+                //                     ? double.parse(profile.levelpercent)
+                //                     : 0,
+                //                 linearStrokeCap: LinearStrokeCap.roundAll,
+                //                 progressColor: Theme.of(context).accentColor,
+                //               ),
+                //             ),
+                //             Text(
+                //               "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
+                //               style: Theme.of(context).textTheme.bodyText1,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   ),
 
                 // Divider(
                 //   height: 30,
@@ -452,10 +452,11 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           fit: BoxFit.contain,
                         ),
                         trailing: (StorageManager.sharedPreferences
-                                .getBool(kNewToBoosting) ?? true)
+                                    .getBool(kNewToBoosting) ??
+                                true)
                             ? Icon(Icons.star_border_outlined)
                             : null,
-                        title: Text('Boosting Profile',
+                        title: Text(G.current.userStatusBoostProfile,
                             style: Theme.of(context).textTheme.bodyText1),
                         onTap: () => Navigator.of(context)
                             .pushNamed(RouteName.boostingGameListPage)),

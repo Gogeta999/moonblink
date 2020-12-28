@@ -25,6 +25,7 @@ class OwnProfile {
   int isFollow;
   int likecount;
   double rating;
+  String accVipLevel;
   String level;
   String leftorder;
   String ordercount;
@@ -57,6 +58,7 @@ class OwnProfile {
       this.isFollow,
       this.likecount,
       this.rating,
+      this.accVipLevel,
       this.level,
       this.leftorder,
       this.ordercount,
@@ -88,6 +90,7 @@ class OwnProfile {
         verifiedAt: map['verified_at'],
         createdAt: map['created_at'],
         updatedAt: map['updated_at'],
+        accVipLevel: map['vip'],
         level: map['account_level'],
         leftorder: map['need_to_take_order'],
         ordercount: map['next_level_order_count'],
