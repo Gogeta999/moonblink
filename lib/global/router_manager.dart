@@ -18,6 +18,7 @@ import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/unverify_partner_otp_page.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/upgrade_vip_page.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/resetpassword_page.dart';
@@ -58,6 +59,7 @@ class RouteName {
   static const String language = 'language';
   static const String partnerDetail = 'parnterDetail';
   static const String partnerOwnProfile = 'parnterOwnProfile';
+  static const String upgradeVip = 'upgradeVip';
   static const String wallet = 'wallet';
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
@@ -121,6 +123,9 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
       case RouteName.otp:
         return CupertinoPageRoute(builder: (_) => OtpPage());
+      case RouteName.upgradeVip:
+        return CupertinoPageRoute(
+            builder: (_) => UpgradeVipPage(accVipLevel: settings.arguments));
       case RouteName.type5otp:
         return CupertinoPageRoute(builder: (_) => Type5PartnerOtpPage());
       case RouteName.login:

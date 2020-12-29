@@ -167,6 +167,20 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
+                if (usertype != 0) space(),
+                if (usertype != 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: ShadedContainer(
+                      height: 50,
+                      ontap: () => Navigator.pushNamed(
+                          context, RouteName.upgradeVip,
+                          arguments: usermodel.partnerData.accVipLevel),
+                      child: Center(
+                        child: Text(G.current.upgradeVipAppBarTitle),
+                      ),
+                    ),
+                  ),
                 //Unverified Partner SetUp
                 if (usertype == 0) space(),
                 if (usertype == 0)

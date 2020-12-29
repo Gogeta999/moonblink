@@ -49,6 +49,12 @@ class _UnverifiedPartnerSignUpPageState
     super.initState();
   }
 
+  @override
+  void dispose() {
+    if (isDev) print('Disposing main app');
+    userModel.dispose();
+  }
+
   void _initData() {
     Future.wait([_initUserWallet()], eagerError: true).then((value) {
       setState(() {
