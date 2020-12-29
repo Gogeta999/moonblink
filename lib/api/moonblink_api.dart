@@ -158,5 +158,7 @@ class Api {
 
   static const String UploadPost = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/1/post
 
+  static const String GetNFPostByUserId = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/1/post
+
   static const String GetNFPost = 'moonblink/api/v1/social/post';
 }

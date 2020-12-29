@@ -37,11 +37,11 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  final _followerOptions = ['Private', 'Public', 'Followers'];
+  final _followerOptions = ['Public', 'Followers'];
   final _postTitleController = TextEditingController();
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
   final String myEmail = StorageManager.sharedPreferences.getString(mLoginMail);
-  final maxImageLimit = 4;
+  final maxImageLimit = 8;
   final maxVideoLimit = 1;
 
   final _postOptionsSubject = BehaviorSubject.seeded('Public');
@@ -53,6 +53,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _postByCoinsButtonSubject = BehaviorSubject.seeded(false);
   final _startWatchingButtonSubject = BehaviorSubject.seeded(false);
   final _selectedPhotoIndexSubject = BehaviorSubject<int>.seeded(-1);
+  bool _uploading = false;
 
   @override
   void initState() {
@@ -104,6 +105,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   void dispose() {
     this._postOptionsSubject.close();
     this._mediaSubject.close();
+    this._videoSubject.close();
+    this._thumbnailSubject.close();
     this._adCountSubject.close();
     this._postByAdButtonSubject.close();
     this._postByCoinsButtonSubject.close();
@@ -211,8 +214,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.video,
-                    minWidth: 600,
-                    minHeight: 800,
                     willCrop: false,
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
@@ -253,6 +254,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   _postByAd() async {
+    if (_uploading) return;
     int myAdCount = await this._adCountSubject.first;
     int leftAd = 10 - myAdCount;
     if (myAdCount >= 10) {
@@ -262,17 +264,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
       int type = 1;
       int status = _getStatus(await this._postOptionsSubject.first);
       if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
-        showToast('Require title or photo');
+        showToast('Require title or photo or video');
         return;
       }
       this._postByAdButtonSubject.add(true);
-      MoonBlinkRepository.uploadPost(media, video, type, status,
+      _uploading = true;
+      MoonBlinkRepository.uploadPost(media, video, type, status, 1,
               body: body ?? '')
           .then((_) {
         showToast('Upload Success');
         myAdCount -= 10;
         this._adCountSubject?.add(myAdCount);
         StorageManager.sharedPreferences.setInt('$myId$myEmail', myAdCount);
+        _uploading = false;
         try {
           Navigator.pop(context);
         } catch (e) {
@@ -282,6 +286,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
               onError: (e) => {
                     showToast(e.toString()),
+                    _uploading = false,
                     this._postByAdButtonSubject?.add(false)
                   });
     } else {
@@ -309,6 +314,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       return CupertinoButton(
                         child: Text('Start Watching'),
                         onPressed: () async {
+                          if (_uploading) return;
                           this._postByAdButtonSubject.add(true);
                           this._startWatchingButtonSubject.add(true);
                           await RewardedVideoAd.instance.load(
@@ -325,6 +331,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   _postByCoins() async {
+    if (_uploading) return;
     String body = this._postTitleController.text.trim();
     List<File> media = await this._mediaSubject.first;
     File video = await this._videoSubject.first;
@@ -335,9 +342,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
       return;
     }
     this._postByCoinsButtonSubject.add(true);
-    MoonBlinkRepository.uploadPost(media, video, type, status, body: body ?? '')
+    _uploading = true;
+    MoonBlinkRepository.uploadPost(media, video, type, status, 0, body: body ?? '')
         .then((_) {
       showToast('Upload Success');
+      _uploading = false;
       try {
         Navigator.pop(context);
       } catch (e) {
@@ -347,20 +356,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
     },
             onError: (e) => {
                   showToast(e.toString()),
+                  _uploading = false,
                   this._postByCoinsButtonSubject?.add(false)
                 });
   }
 
   int _getStatus(String option) {
     switch (option) {
-      case 'Private':
-        return 0;
       case 'Public':
-        return 1;
+        return 0;
       case 'Followers':
-        return 2;
+        return 1;
     }
     return -1;
+    // switch (option) {
+    //   case 'Private':
+    //     return 0;
+    //   case 'Public':
+    //     return 1;
+    //   case 'Followers':
+    //     return 2;
+    // }
+    // return -1;
   }
 
   @override
@@ -377,7 +394,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 10),
                 ListTile(
                   leading: CachedNetworkImage(
                     imageUrl: StorageManager.sharedPreferences
@@ -489,7 +505,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   children: [
                     CupertinoButton(
                         padding: EdgeInsets.zero,
-                        child: Text('Add Photos'),
+                        child: Text('Add Photos - Limit $maxImageLimit'),
                         onPressed: () {
                           _showSelectImageOptions();
                         }),

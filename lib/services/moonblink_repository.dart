@@ -208,7 +208,6 @@ class MoonBlinkRepository {
     return UserTransaction.fromJson(response.data);
   }
 
-  /// need to remove from database
   static Future blockOrUnblock(int blockUserId, int status) async {
     var userId = StorageManager.sharedPreferences.getInt(mUserId);
     FormData formData =
@@ -635,7 +634,7 @@ class MoonBlinkRepository {
     return response.data;
   }
 
-  static Future uploadPost(List<File> media, File video, int type, int status, {String body = ''}) async {
+  static Future uploadPost(List<File> media, File video, int type, int status, int withAds, {String body = ''}) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);
     FormData formData;
     List<MultipartFile> mFiles = [];
@@ -649,6 +648,7 @@ class MoonBlinkRepository {
       'body': body,
       'type': type,
       'status': status,
+      'with_ads': withAds
     });
     final response = await DioUtils().postwithData(Api.UploadPost + '$userId/post', data: formData);
     return response.data;

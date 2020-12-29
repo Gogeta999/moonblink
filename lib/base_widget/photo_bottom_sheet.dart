@@ -373,7 +373,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     } else if (widget.requestType == RequestType.video) {
       final _trimmer = Trimmer();
       File video = await _photoList[_selectedIndices.first].file;
-      Uint8List thumbnail = await _photoList[_selectedIndices.first].thumbData;
       if (video != null) {
         await _trimmer.loadVideo(videoFile: video);
         File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -384,6 +383,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
           trimmedVideo.path,
           quality: VideoQuality.DefaultQuality
         );
+        Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
         print("Trimmed Video: ${mediaInfo.filesize}");
         if (mediaInfo.file != null) {
           widget.onPressed(mediaInfo.file, thumbnail);

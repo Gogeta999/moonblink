@@ -3,11 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/utils/constants.dart';
+import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:share/share.dart';
 
 enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
 
@@ -21,8 +28,7 @@ class NFBloc {
   double scrollThreshold = 800.0;
   Timer _debounce;
 
-  final nfPostsSubject = BehaviorSubject.seeded(<NFPost>[]);
-  final blockingSubject = BehaviorSubject.seeded(false);
+  final nfPostsSubject = BehaviorSubject<List<NFPost>>.seeded(null);
 
   final limit = 10;
   int nextPage = 1;
@@ -32,7 +38,6 @@ class NFBloc {
     refreshController.dispose();
     _debounce?.cancel();
     nfPostsSubject.close();
-    blockingSubject.close();
   }
 
   void onScroll() {
@@ -107,13 +112,57 @@ class NFBloc {
     );
   }
 
-  void onTapBlockIcon(BuildContext context) {
+  void onTapBlockIcon(BuildContext context, int index, int partnerId) {
     CustomBottomSheet.showUserManageContent(
         buildContext: context,
         onReport: () {
-          Navigator.pop(context);
+          MoonBlinkRepository.reportUser(partnerId).then((value) {
+            showToast('Report success. We will act on this user within 24 hours');
+            Navigator.pop(context);
+          }, onError: (e) {
+            showToast('$e');
+          });
         },
-        onBlock: () {},
+        onBlock: () {
+          MoonBlinkRepository.blockOrUnblock(partnerId, BLOCK).then((value) {
+            this.nfPostsSubject.first.then((value) {
+              value.removeAt(index);
+              this.nfPostsSubject.add(value);
+              Navigator.pop(context);
+            });
+          }, onError: (e) {
+            showToast('$e');
+          });
+        },
         onDismiss: () => print('Dismissing BottomSheet'));
+  }
+
+  void onTapLikeIcon() {
+
+  }
+
+  void onTapInstaIcon(
+      BuildContext context, int userId, String username, String bios, profile) {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    if (userId == myId) {
+      showToast(G.of(context).cannotbookself);
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BookingPage(
+            partnerId: userId,
+            partnerName: username,
+            partnerBios: bios,
+            partnerProfile: profile,
+          ),
+        ),
+      );
+    }
+  }
+
+  void onTapShare(BuildContext context) {
+    Share.share(
+        'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
+        subject: 'Please download our app');
   }
 }

@@ -6,6 +6,10 @@ class NFPost {
   final int status;
   final String createdAt;
   final String updatedAt;
+  final int reactionCount;
+  final String name;
+  final String profile;
+  final int isReacted;
 
   NFPost.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -14,5 +18,9 @@ class NFPost {
       media = json['media'].map<String>((e) => e.toString()).toList(),
       status = json['status'],
       createdAt = json['created_at'],
-      updatedAt = json['updated_at'];
+      updatedAt = json['updated_at'],
+      reactionCount = json['reaction_count'],
+      name = json['user']['name'],
+      profile = json['user']['profile_image'],
+      isReacted = json['user']['is_reacted'];
 }

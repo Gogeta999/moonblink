@@ -17,7 +17,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: IconButton(
+      leading: Navigator.of(context).canPop() ? IconButton(
           icon: SvgPicture.asset(
             back,
             semanticsLabel: 'back',
@@ -27,7 +27,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
             width: 30,
             height: 30,
           ),
-          onPressed: () => Navigator.pop(context)),
+          onPressed: () => Navigator.pop(context)) : Container(),
       backgroundColor: Colors.black,
       title: widget.title == null ? Container() : widget.title,
       // toolbarHeight: kToolbarHeight - 10,
