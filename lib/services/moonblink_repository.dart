@@ -544,6 +544,14 @@ class MoonBlinkRepository {
     return response;
   }
 
+  static Future upgradeVipLevel(int vipPlan) async {
+    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().postwithData(
+        Api.VerifyAsPartner + '$userid/vip',
+        data: FormData.fromMap({'vip': vipPlan}));
+    return response;
+  }
+
   // Get OTP
   static Future getOtpCode(String mail) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
@@ -635,14 +643,16 @@ class MoonBlinkRepository {
     return response.data;
   }
 
-  static Future uploadPost(List<File> media, File video, int type, int status, int withAds, {String body = ''}) async {
+  static Future uploadPost(
+      List<File> media, File video, int type, int status, int withAds,
+      {String body = ''}) async {
     final userId = StorageManager.sharedPreferences.getInt(mUserId);
     FormData formData;
     List<MultipartFile> mFiles = [];
     if (media != null && media.isNotEmpty)
-    for (int i = 0; i < media.length; ++i) {
-      mFiles.add(await MultipartFile.fromFile(media[i].path));
-    }
+      for (int i = 0; i < media.length; ++i) {
+        mFiles.add(await MultipartFile.fromFile(media[i].path));
+      }
     if (video != null) mFiles.add(await MultipartFile.fromFile(video.path));
     formData = FormData.fromMap({
       'media': mFiles,
@@ -651,7 +661,8 @@ class MoonBlinkRepository {
       'status': status,
       'with_ads': withAds
     });
-    final response = await DioUtils().postwithData(Api.UploadPost + '$userId/post', data: formData);
+    final response = await DioUtils()
+        .postwithData(Api.UploadPost + '$userId/post', data: formData);
     return response.data;
   }
 
@@ -660,7 +671,9 @@ class MoonBlinkRepository {
       'limit': limit,
       'page': page,
     });
-    return response.data['data']['data'].map<NFPost>((e) => NFPost.fromJson(e)).toList();
+    return response.data['data']['data']
+        .map<NFPost>((e) => NFPost.fromJson(e))
+        .toList();
   }
 
   static Future<List<NFPost>> getNFPostsById(int limit, int page) async {

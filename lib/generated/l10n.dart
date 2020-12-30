@@ -3135,6 +3135,36 @@ class G {
     );
   }
 
+  /// `Upgrade VIP`
+  String get upgradeVipAppBarTitle {
+    return Intl.message(
+      'Upgrade VIP',
+      name: 'upgradeVipAppBarTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You already achieved this VIP`
+  String get upgradeVipAlreadyOwnToast {
+    return Intl.message(
+      'You already achieved this VIP',
+      name: 'upgradeVipAlreadyOwnToast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note: You already achieved VIP: `
+  String get upgradeVipCurrentLevel {
+    return Intl.message(
+      'Note: You already achieved VIP: ',
+      name: 'upgradeVipCurrentLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Upload`
   String get upload {
     return Intl.message(
