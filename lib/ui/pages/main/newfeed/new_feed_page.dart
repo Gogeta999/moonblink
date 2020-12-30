@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
+import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
@@ -14,9 +15,7 @@ import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:video_player/video_player.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
-import 'package:visibility_detector/visibility_detector.dart';
 
 class NewFeedPage extends StatefulWidget {
   final ScrollController scrollController;
@@ -91,7 +90,7 @@ class _NewFeedPageState extends State<NewFeedPage>
                   if (snapshot.data.isEmpty)
                     return Center(child: Text('No Posts Available'));
                   return ListView.builder(
-                    cacheExtent: MediaQuery.of(context).size.height * 5,
+                    cacheExtent: MediaQuery.of(context).size.height * 10,
                     controller: _bloc.scrollController,
                     itemCount: _bloc.hasReachedMax
                         ? snapshot.data.length
@@ -221,19 +220,20 @@ class _NFPostItemState extends State<NFPostItem> {
                 this._reactedSubject.first.then((value) {
                   if (value) {
                     ///reacted
+                    widget.bloc.onTapLikeIcon(widget.item.id, 0);
                     this
                         ._reactCountSubject
                         .first
                         .then((value) => this._reactCountSubject.add(--value));
                     this._reactedSubject.add(false);
                   } else {
+                    widget.bloc.onTapLikeIcon(widget.item.id, 1);
                     this
                         ._reactCountSubject
                         .first
                         .then((value) => this._reactCountSubject.add(++value));
                     this._reactedSubject.add(true);
                   }
-                  //after this call some api
                 });
               },
               child: Container(
@@ -261,53 +261,49 @@ class _NFPostItemState extends State<NFPostItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-      margin: const EdgeInsets.only(left: 15),
-      child: Row(
-        children: [
-          StreamBuilder<bool>(
-            initialData: false,
-            stream: this._reactedSubject,
-            builder: (context, snapshot) {
-              return CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                    snapshot.data
-                        ? FontAwesomeIcons.solidHeart
-                        : FontAwesomeIcons.heart,
-                    size: 30,
-                    color: snapshot.data
-                        ? Colors.red[400]
-                        : Theme.of(context).iconTheme.color),
-                onPressed: () {
-                  if (snapshot.data) {
-                    ///reacted
-                    this
-                        ._reactCountSubject
-                        .first
-                        .then((value) => this._reactCountSubject.add(--value));
-                    this._reactedSubject.add(false);
-                  } else {
-                    this
-                        ._reactCountSubject
-                        .first
-                        .then((value) => this._reactCountSubject.add(++value));
-                    this._reactedSubject.add(true);
-                  }
-                  //after this call some api
-                },
-              );
-            }
-          ),
-          StreamBuilder<int>(
-            initialData: 0,
-            stream: this._reactCountSubject,
-            builder: (context, snapshot) {
-              return Text('${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
-            }
-          ),
-        ],
-      ),
-    ),
+                  margin: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    children: [
+                      StreamBuilder<bool>(
+                          initialData: false,
+                          stream: this._reactedSubject,
+                          builder: (context, snapshot) {
+                            return CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Icon(
+                                  snapshot.data
+                                      ? FontAwesomeIcons.solidHeart
+                                      : FontAwesomeIcons.heart,
+                                  size: 30,
+                                  color: snapshot.data
+                                      ? Colors.red[400]
+                                      : Theme.of(context).iconTheme.color),
+                              onPressed: () {
+                                if (snapshot.data) {
+                                  ///reacted
+                                  widget.bloc.onTapLikeIcon(widget.item.id, 0);
+                                  this._reactCountSubject.first.then((value) =>
+                                      this._reactCountSubject.add(--value));
+                                  this._reactedSubject.add(false);
+                                } else {
+                                  widget.bloc.onTapLikeIcon(widget.item.id, 1);
+                                  this._reactCountSubject.first.then((value) =>
+                                      this._reactCountSubject.add(++value));
+                                  this._reactedSubject.add(true);
+                                }
+                              },
+                            );
+                          }),
+                      StreamBuilder<int>(
+                          initialData: 0,
+                          stream: this._reactCountSubject,
+                          builder: (context, snapshot) {
+                            return Text(
+                                '${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
+                          }),
+                    ],
+                  ),
+                ),
                 Container(
                   child: Text(
                     G.of(context).becomePartnerAt +
@@ -339,7 +335,7 @@ class _NFPostItemState extends State<NFPostItem> {
                               context,
                               widget.item.userId,
                               widget.item.name,
-                              'bios',
+                              widget.item.bios,
                               widget.item.profile);
                         },
                       ),
@@ -358,64 +354,6 @@ class _NFPostItemState extends State<NFPostItem> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class LikeButton extends StatefulWidget {
-  final int isReacted;
-  final int reactCount;
-
-  const LikeButton({Key key, this.isReacted, this.reactCount})
-      : super(key: key);
-  @override
-  _LikeButtonState createState() => _LikeButtonState();
-}
-
-class _LikeButtonState extends State<LikeButton> {
-  bool isReacted = false;
-  int reactCount = 0;
-
-  @override
-  void initState() {
-    setState(() {
-      isReacted = widget.isReacted == 1;
-      reactCount = widget.reactCount;
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 15),
-      child: Row(
-        children: [
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Icon(
-                isReacted
-                    ? FontAwesomeIcons.solidHeart
-                    : FontAwesomeIcons.heart,
-                size: 30,
-                color: isReacted
-                    ? Colors.red[400]
-                    : Theme.of(context).iconTheme.color),
-            onPressed: () {
-              setState(() {
-                if (isReacted) {
-                  reactCount--;
-                  isReacted = false;
-                } else {
-                  reactCount++;
-                  isReacted = true;
-                }
-              });
-            },
-          ),
-          Text('${reactCount} ${reactCount <= 1 ? "Like" : "Likes"}'),
-        ],
       ),
     );
   }
@@ -493,7 +431,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                   );
                 if (urlType == UrlType.REMOTE_VIDEO)
                   return Player(
-                      url: widget.item.media[index], id: widget.item.id);
+                      url: widget.item.media[index], id: widget.item.id, index: index);
                 return Text('Not Supported Format');
               }),
           StreamBuilder<int>(
@@ -550,131 +488,5 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
       _oldSize = size;
       widget.onSizeChange(size);
     }
-  }
-}
-
-class Player extends StatefulWidget {
-  final String url;
-  final int id;
-
-  const Player({Key key, this.url, this.id}) : super(key: key);
-
-  @override
-  _PlayerState createState() => _PlayerState();
-}
-
-class _PlayerState extends State<Player> {
-  VideoPlayerController _controller;
-  final _leftDuration = BehaviorSubject.seeded("");
-  final _muteSubject = BehaviorSubject.seeded(false);
-  bool didUserPause = false;
-
-  @override
-  void initState() {
-    _controller = VideoPlayerController.network(widget.url);
-    _controller.addListener(() {
-      int left = (_controller.value.duration?.inSeconds ?? 1) -
-          (_controller.value.position.inSeconds + 1);
-      String leftSeconds = (left % 60).toString().padLeft(2, '0');
-      int leftMinutes = left ~/ 60;
-      _leftDuration.add("$leftMinutes:$leftSeconds");
-    });
-    _muteSubject.add(_controller.value.volume == 0.0);
-    _controller.initialize().then((_) {
-      _controller.play();
-      _controller.setLooping(true);
-      setState(() {});
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    _muteSubject.close();
-    _leftDuration.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: VisibilityDetector(
-        key: Key('${widget.id}-${widget.url}'),
-        onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction >= 0.9) {
-            if (!_controller.value.isPlaying && !didUserPause)
-              _controller.play();
-          } else {
-            if (_controller.value.isPlaying) _controller.pause();
-          }
-        },
-        child: Stack(
-          children: [
-            Center(
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  if (!_controller.value.initialized) return;
-                  if (_controller.value.isPlaying) {
-                    _controller.pause();
-                    didUserPause = true;
-                  } else {
-                    _controller.play();
-                    didUserPause = false;
-                  }
-                },
-                child: _controller.value.initialized
-                    ? VideoPlayer(_controller)
-                    : CupertinoActivityIndicator(),
-              ),
-            ),
-            StreamBuilder<String>(
-                initialData: '',
-                stream: this._leftDuration,
-                builder: (context, snapshot) {
-                  if (!_controller.value.initialized) return Container();
-                  return Positioned(
-                      top: 35,
-                      right: 6,
-                      child: Row(
-                        children: [
-                          Text(
-                            '${snapshot.data}',
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                          SizedBox(width: 5),
-                          CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                this._muteSubject.first.then((value) {
-                                  if (value) {
-                                    _controller.setVolume(1.0);
-                                  } else {
-                                    _controller.setVolume(0.0);
-                                  }
-                                  this._muteSubject.add(!value);
-                                });
-                              },
-                              child: StreamBuilder<bool>(
-                                  initialData: false,
-                                  stream: this._muteSubject,
-                                  builder: (context, snapshot) {
-                                    return Icon(
-                                      snapshot.data
-                                          ? Icons.volume_off
-                                          : Icons.volume_up,
-                                      color: Colors.white,
-                                    );
-                                  }))
-                        ],
-                      ));
-                }),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -74,7 +74,7 @@ dependencies:
   flutter_image_compress: ^0.7.0
   # video_player
   # video_player: ^0.10.11+2
-  video_player: ^1.0.1
+  cached_video_player: ^1.0.3
   common_utils: ^1.2.1
   # DateFormat
   timeago: ^2.0.28

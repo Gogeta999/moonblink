@@ -1,8 +1,8 @@
 PODS:
-  - agora_rtc_engine (3.1.3):
-    - AgoraRtcEngine_iOS_Crypto (= 3.1.2)
+  - agora_rtc_engine (3.2.1):
+    - AgoraRtcEngine_iOS (= 3.2.1)
     - Flutter
-  - AgoraRtcEngine_iOS_Crypto (3.1.2)
+  - AgoraRtcEngine_iOS (3.2.1)
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
@@ -12,8 +12,12 @@ PODS:
     - Flutter
   - audioplayers (0.0.1):
     - Flutter
+  - cached_video_player (0.0.1):
+    - Flutter
+    - KTVHTTPCache (~> 2.0.0)
   - camera (0.0.1):
     - Flutter
+  - CocoaAsyncSocket (7.6.5)
   - device_info (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.2):
@@ -194,6 +198,10 @@ PODS:
     - Flutter
   - in_app_purchase (0.0.1):
     - Flutter
+  - KTVCocoaHTTPServer (1.0.0):
+    - CocoaAsyncSocket
+  - KTVHTTPCache (2.0.1):
+    - KTVCocoaHTTPServer
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
     - libwebp/mux (= 1.1.0)
@@ -256,6 +264,7 @@ DEPENDENCIES:
   - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
+  - cached_video_player (from `.symlinks/plugins/cached_video_player/ios`)
   - camera (from `.symlinks/plugins/camera/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -290,8 +299,9 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AgoraRtcEngine_iOS_Crypto
+    - AgoraRtcEngine_iOS
     - AppAuth
+    - CocoaAsyncSocket
     - DKImagePickerController
     - DKPhotoGallery
     - FBSDKCoreKit
@@ -312,6 +322,8 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - KTVCocoaHTTPServer
+    - KTVHTTPCache
     - libwebp
     - Mantle
     - mobile-ffmpeg-min
@@ -331,6 +343,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/apple_sign_in/ios"
   audioplayers:
     :path: ".symlinks/plugins/audioplayers/ios"
+  cached_video_player:
+    :path: ".symlinks/plugins/cached_video_player/ios"
   camera:
     :path: ".symlinks/plugins/camera/ios"
   device_info:
@@ -395,12 +409,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_thumbnail/ios"
 
 SPEC CHECKSUMS:
-  agora_rtc_engine: 5efb18877a0423b88081edb1b8625db6625fd43c
-  AgoraRtcEngine_iOS_Crypto: 42a7a2142317c588f1b5c2e74b98fd01d73f8f60
+  agora_rtc_engine: b9eb6ee2b4dd6c3854c0d94b0691e7d041fb437e
+  AgoraRtcEngine_iOS: bf8ee53108d31dd9e3b7e448701b9098162c42c7
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   audioplayers: 53f0f30789b10ab2009771c6c79def00980945e4
+  cached_video_player: 449b3d85e95316a0eca125c483f6d9e281ccabc3
   camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
+  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
@@ -438,6 +454,8 @@ SPEC CHECKSUMS:
   image_cropper: c8f9b4157933c7bb965a66d1c5e6c8fd408c6eb4
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
+  KTVCocoaHTTPServer: df8d7b861e603ff8037e9b2138aca2563a6b768d
+  KTVHTTPCache: 588c3eb16f6bd1e6fde1e230dabfb7bd4e490a4d
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   mobile-ffmpeg-min: dd2fd38da2788ccb7be5720fc308cb69160820e7

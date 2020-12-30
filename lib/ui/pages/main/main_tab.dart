@@ -76,6 +76,7 @@ class _MainTabPageState extends State<MainTabPage>
     return Scaffold(
       floatingActionButton: type > 0
           ? FloatingActionButton(
+            mini: true,
               onPressed: () =>
                   Navigator.pushNamed(context, RouteName.createPostPage),
               child: Icon(Icons.add))

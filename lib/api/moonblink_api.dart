@@ -161,4 +161,6 @@ class Api {
   static const String GetNFPostByUserId = 'moonblink/api/v1/user/'; //eg - moonblink/api/v1/user/1/post
 
   static const String GetNFPost = 'moonblink/api/v1/social/post';
+
+  static const String GetNFPostById = 'moonblink/api/v1/user/'; //eg - /moonblink/api/v1/user/1/post
 }

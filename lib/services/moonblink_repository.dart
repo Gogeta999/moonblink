@@ -25,6 +25,7 @@ import 'package:moonblink/models/notification_models/user_message_notification.d
 import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
+import 'package:moonblink/models/vip_data.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -660,5 +661,33 @@ class MoonBlinkRepository {
       'page': page,
     });
     return response.data['data']['data'].map<NFPost>((e) => NFPost.fromJson(e)).toList();
+  }
+
+  static Future<List<NFPost>> getNFPostsById(int limit, int page) async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().get(Api.GetNFPostById + '$myId/post', queryParameters: {
+      'limit': limit,
+      'page': page,
+    });
+    return response.data['data'].map<NFPost>((e) => NFPost.fromJson(e)).toList();
+  }
+
+  static Future dropPost(int postId) async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().delete("moonblink/api/v1/user/$myId/post/$postId");
+    return response;
+  }
+
+  static Future reactNFPost(int postId, int like) async {
+    final response = await DioUtils().patch("moonblink/api/v1/social/post/$postId", queryParameters: {
+      'like': like
+    });
+    return response;
+  }
+
+  static Future<VipData> getUserVip() async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().get("moonblink/api/v1/user/$myId/vip/$myId");
+    return VipData.fromJson(response.data);
   }
 }

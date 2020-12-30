@@ -484,6 +484,26 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ),
                 // blankSpace(),
 
+                Card(
+                  margin: EdgeInsets.only(bottom: 15),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
+                  child: ListTile(
+                      leading: SvgPicture.asset(
+                        profileEdit,
+                        // color: Colors.orangeAccent,
+                        height: 32,
+                        width: 32,
+                        fit: BoxFit.contain,
+                      ),
+                      title: Text('Manage Posts',
+                          style: Theme.of(context).textTheme.bodyText1),
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(RouteName.managePostsPage)),
+                ),
+
                 ///Wallet
                 Card(
                   margin: EdgeInsets.zero,

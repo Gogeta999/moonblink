@@ -137,8 +137,11 @@ class NFBloc {
         onDismiss: () => print('Dismissing BottomSheet'));
   }
 
-  void onTapLikeIcon() {
-
+  void onTapLikeIcon(int postId, int like) {
+    MoonBlinkRepository.reactNFPost(postId, like).then((value) {
+    }, onError: (e) {
+      showToast('$e');
+    });
   }
 
   void onTapInstaIcon(
