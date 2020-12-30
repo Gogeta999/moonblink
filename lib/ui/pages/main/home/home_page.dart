@@ -76,7 +76,8 @@ class _HomePageState extends State<HomePage>
 
     super.initState();
     // tutorialOn();
-    bool showtuto = (StorageManager.sharedPreferences.getBool(hometuto) ?? true);
+    bool showtuto =
+        (StorageManager.sharedPreferences.getBool(hometuto) ?? true);
     if (showtuto == null) {
       tutorialOn();
       showtuto = (StorageManager.sharedPreferences.getBool(hometuto) ?? true);
@@ -409,6 +410,76 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                   ),
+
+                  ///UnverifiedPartner
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                catagories.first.then((value) async {
+                                  if (value != kUnverifiedPartner) {
+                                    catagories.add(kUnverifiedPartner);
+                                    final cata = await catagories.first;
+                                    final gen = await gender.first;
+                                    _homeBloc.fetchData(
+                                        type: cata, gender: gen);
+                                  }
+                                });
+                                // if (catagories != 2) {
+                                //   catagories = 2;
+                                //   _homeBloc.fetchData(
+                                //       type: catagories, gender: gender);
+                                // } else {
+                                //   print("Already");
+                                // }
+                              },
+                              child: StreamBuilder<int>(
+                                  stream: catagories,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            snapshot.data == kUnverifiedPartner
+                                                ? BoxShadow(
+                                                    color: Colors.black,
+                                                    // spreadRadius: 1,
+                                                    blurRadius: 4,
+                                                    offset: Offset(-3,
+                                                        3), // changes position of shadow
+                                                  )
+                                                : BoxShadow(),
+                                          ],
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors:
+                                                MoreGradientColors.darkSkyBlue,
+                                          )),
+                                      child: Icon(
+                                        FontAwesomeIcons.peopleArrows,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Expanded(flex: 1, child: Text('Unverified')),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -486,7 +557,7 @@ class _HomePageState extends State<HomePage>
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
-                                    colors: MoreGradientColors.darkSkyBlue,
+                                    colors: MoreGradientColors.coolSky,
                                   )),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -624,7 +695,7 @@ class _HomePageState extends State<HomePage>
                                     snapshot.error == "No Internet Connection"
                                         ? ViewStateErrorType.networkTimeOutError
                                         : ViewStateErrorType.defaultError,
-                                    errorMessage: snapshot.error),
+                                    errorMessage: snapshot.error.toString()),
                                 onPressed: () {
                                   _homeBloc.refreshData();
                                   _homeBloc.postsSubject.add([]);

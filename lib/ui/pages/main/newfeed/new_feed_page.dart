@@ -12,6 +12,8 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:video_player/video_player.dart';
@@ -60,7 +62,12 @@ class _NewFeedPageState extends State<NewFeedPage>
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
-      appBar: AppbarWidget(),
+      appBar: AppbarWidget(
+        leadingCallback: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => ContactsPage()));
+        },
+      ),
       body: SafeArea(
         child: StreamBuilder<List<NFPost>>(
             initialData: null,
@@ -261,53 +268,48 @@ class _NFPostItemState extends State<NFPostItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-      margin: const EdgeInsets.only(left: 15),
-      child: Row(
-        children: [
-          StreamBuilder<bool>(
-            initialData: false,
-            stream: this._reactedSubject,
-            builder: (context, snapshot) {
-              return CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                    snapshot.data
-                        ? FontAwesomeIcons.solidHeart
-                        : FontAwesomeIcons.heart,
-                    size: 30,
-                    color: snapshot.data
-                        ? Colors.red[400]
-                        : Theme.of(context).iconTheme.color),
-                onPressed: () {
-                  if (snapshot.data) {
-                    ///reacted
-                    this
-                        ._reactCountSubject
-                        .first
-                        .then((value) => this._reactCountSubject.add(--value));
-                    this._reactedSubject.add(false);
-                  } else {
-                    this
-                        ._reactCountSubject
-                        .first
-                        .then((value) => this._reactCountSubject.add(++value));
-                    this._reactedSubject.add(true);
-                  }
-                  //after this call some api
-                },
-              );
-            }
-          ),
-          StreamBuilder<int>(
-            initialData: 0,
-            stream: this._reactCountSubject,
-            builder: (context, snapshot) {
-              return Text('${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
-            }
-          ),
-        ],
-      ),
-    ),
+                  margin: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    children: [
+                      StreamBuilder<bool>(
+                          initialData: false,
+                          stream: this._reactedSubject,
+                          builder: (context, snapshot) {
+                            return CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Icon(
+                                  snapshot.data
+                                      ? FontAwesomeIcons.solidHeart
+                                      : FontAwesomeIcons.heart,
+                                  size: 30,
+                                  color: snapshot.data
+                                      ? Colors.red[400]
+                                      : Theme.of(context).iconTheme.color),
+                              onPressed: () {
+                                if (snapshot.data) {
+                                  ///reacted
+                                  this._reactCountSubject.first.then((value) =>
+                                      this._reactCountSubject.add(--value));
+                                  this._reactedSubject.add(false);
+                                } else {
+                                  this._reactCountSubject.first.then((value) =>
+                                      this._reactCountSubject.add(++value));
+                                  this._reactedSubject.add(true);
+                                }
+                                //after this call some api
+                              },
+                            );
+                          }),
+                      StreamBuilder<int>(
+                          initialData: 0,
+                          stream: this._reactCountSubject,
+                          builder: (context, snapshot) {
+                            return Text(
+                                '${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
+                          }),
+                    ],
+                  ),
+                ),
                 Container(
                   child: Text(
                     G.of(context).becomePartnerAt +

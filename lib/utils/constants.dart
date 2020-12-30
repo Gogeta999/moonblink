@@ -45,7 +45,7 @@ const int kCoPlayer = 1;
 const int kStreamer = 2;
 const int kCele = 3;
 const int kPro = 4;
-
+const int kUnverifiedPartner = 5;
 const int kHomePostLimit = 10;
 
 const String kNewToBoosting = 'kNewToBoosting';

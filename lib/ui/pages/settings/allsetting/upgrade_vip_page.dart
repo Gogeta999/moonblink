@@ -128,11 +128,6 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
         });
       }
     });
-    // try {
-    //   //TODO:
-    // } catch (e) {
-    //   //TODO:
-    // }
   }
 
   @override
