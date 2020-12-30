@@ -13,6 +13,7 @@ import 'package:moonblink/base_widget/videotrimmer/preview.dart';
 import 'package:moonblink/base_widget/videotrimmer/trimmer_view.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/models/vip_data.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/compress_utils.dart';
@@ -51,13 +52,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _adCountSubject = BehaviorSubject<int>.seeded(0);
   final _postByAdButtonSubject = BehaviorSubject.seeded(false);
   final _postByCoinsButtonSubject = BehaviorSubject.seeded(false);
+  final _postByFreeButtonSubject = BehaviorSubject.seeded(false);
   final _startWatchingButtonSubject = BehaviorSubject.seeded(false);
   final _selectedPhotoIndexSubject = BehaviorSubject<int>.seeded(-1);
+  final _vipDataSubject = BehaviorSubject<VipData>.seeded(null);
   bool _uploading = false;
 
   @override
   void initState() {
-    _mediaSubject.sink.add(null);
+    MoonBlinkRepository.getUserVip().then((value) {
+      _vipDataSubject.add(value);
+    }, onError: (e) {
+      print(e.toString());
+    });
     RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
         {String rewardType, int rewardAmount}) async {
       if (isDev) print("RewardedVideoAd event $event");
@@ -103,15 +110,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   void dispose() {
-    this._postOptionsSubject.close();
-    this._mediaSubject.close();
-    this._videoSubject.close();
-    this._thumbnailSubject.close();
-    this._adCountSubject.close();
-    this._postByAdButtonSubject.close();
-    this._postByCoinsButtonSubject.close();
-    this._startWatchingButtonSubject.close();
-    this._selectedPhotoIndexSubject.close();
+    _postOptionsSubject.close();
+    _mediaSubject.close();
+    _videoSubject.close();
+    _thumbnailSubject.close();
+    _adCountSubject.close();
+    _postByAdButtonSubject.close();
+    _postByCoinsButtonSubject.close();
+    _postByFreeButtonSubject.close();
+    _startWatchingButtonSubject.close();
+    _selectedPhotoIndexSubject.close();
+    _vipDataSubject.close();
     RewardedVideoAd.instance.listener = null;
     super.dispose();
   }
@@ -228,15 +237,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 File video = File(pickedFile.path);
                 if (video != null) {
                   await _trimmer.loadVideo(videoFile: video);
-                  File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  File trimmedVideo = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
                     return TrimmerView(_trimmer);
                   }));
                   print("Trimmed Video: ${trimmedVideo.lengthSync()}");
                   MediaInfo mediaInfo = await VideoCompress.compressVideo(
-                    trimmedVideo.path,
-                    quality: VideoQuality.DefaultQuality
-                  );
-                  Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
+                      trimmedVideo.path,
+                      quality: VideoQuality.DefaultQuality);
+                  Uint8List thumbnail = await VideoCompress.getByteThumbnail(
+                      mediaInfo.file.path,
+                      position: mediaInfo.duration ~/ 2);
                   print("Trimmed Video: ${mediaInfo.filesize}");
                   if (mediaInfo.file != null && thumbnail != null) {
                     this._videoSubject.add(mediaInfo.file);
@@ -251,6 +262,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ],
       ),
     );
+  }
+
+  _postByFree() async {
+
   }
 
   _postByAd() async {
@@ -343,7 +358,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
     this._postByCoinsButtonSubject.add(true);
     _uploading = true;
-    MoonBlinkRepository.uploadPost(media, video, type, status, 0, body: body ?? '')
+    MoonBlinkRepository.uploadPost(media, video, type, status, 0,
+            body: body ?? '')
         .then((_) {
       showToast('Upload Success');
       _uploading = false;
@@ -394,100 +410,157 @@ class _CreatePostPageState extends State<CreatePostPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: StorageManager.sharedPreferences
-                        .getString(mUserProfile),
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                        radius: 26, backgroundImage: imageProvider),
-                    placeholder: (context, url) => CupertinoActivityIndicator(),
-                    errorWidget: (context, url, error) => Icon(
-                      Icons.error,
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 10),
-                      Text(StorageManager.sharedPreferences
-                          .getString(mLoginName)),
-                      StreamBuilder<String>(
-                          initialData: null,
-                          stream: this._postOptionsSubject,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == null) {
-                              return Container();
-                            }
-                            return DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: snapshot.data,
-                                icon: Icon(Icons.expand_more),
-                                onChanged: (String value) {
-                                  this._postOptionsSubject.add(value);
-                                },
-                                dropdownColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                selectedItemBuilder: (context) {
-                                  return this
-                                      ._followerOptions
-                                      .map<Widget>((String item) {
-                                    return Center(
-                                        child: Text(item,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .accentColor)));
-                                  }).toList();
-                                },
-                                items: this
-                                    ._followerOptions
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem(
-                                    value: value,
-                                    child: Text(value),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          child: StorageManager.sharedPreferences
+                                      .getString(mUserProfile) ==
+                                  null
+                              ? Icon(Icons.error)
+                              : CachedNetworkImage(
+                                  imageUrl: StorageManager.sharedPreferences
+                                      .getString(mUserProfile),
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                          radius: 26,
+                                          backgroundImage: imageProvider),
+                                  placeholder: (context, url) =>
+                                      CupertinoActivityIndicator(),
+                                  errorWidget: (context, url, error) => Icon(
+                                    Icons.error,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10),
+                            Text(StorageManager.sharedPreferences
+                                .getString(mLoginName)),
+                            StreamBuilder<String>(
+                                initialData: null,
+                                stream: this._postOptionsSubject,
+                                builder: (context, snapshot) {
+                                  if (snapshot.data == null) {
+                                    return Container();
+                                  }
+                                  return DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: snapshot.data,
+                                      icon: Icon(Icons.expand_more,
+                                          color: Theme.of(context).accentColor),
+                                      onChanged: (String value) {
+                                        this._postOptionsSubject.add(value);
+                                      },
+                                      dropdownColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      selectedItemBuilder: (context) {
+                                        return this
+                                            ._followerOptions
+                                            .map<Widget>((String item) {
+                                          return Center(child: Text(item));
+                                        }).toList();
+                                      },
+                                      items: this
+                                          ._followerOptions
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
                                   );
-                                }).toList(),
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
-                  trailing: Column(
-                    children: [
-                      StreamBuilder<int>(
-                        initialData: null,
-                        stream: this._adCountSubject,
-                        builder: (context, snapshot) {
-                          int data = snapshot.data ?? 0;
-                          return Text(
-                              '$data ${data > 1 ? "Ads" : "Ad"} Watched');
-                        },
-                      ),
-                      SizedBox(height: 5),
-                      GestureDetector(
-                          onTap: () async {
-                            this._startWatchingButtonSubject.add(true);
-                            await RewardedVideoAd.instance.load(
-                                adUnitId: AdManager.rewardedAdId,
-                                targetingInfo: targetingInfo);
+                                }),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        StreamBuilder<int>(
+                          initialData: null,
+                          stream: this._adCountSubject,
+                          builder: (context, snapshot) {
+                            int data = snapshot.data ?? 0;
+                            return Text(
+                                '$data ${data > 1 ? "Ads" : "Ad"} Watched');
                           },
-                          child: StreamBuilder<bool>(
-                              initialData: false,
-                              stream: this._startWatchingButtonSubject,
-                              builder: (context, snapshot) {
-                                if (snapshot.data)
-                                  return CupertinoActivityIndicator();
-                                return Text('Start Watching',
-                                    style: TextStyle(
-                                        color: Theme.of(context).accentColor));
-                              })),
-                    ],
+                        ),
+                        SizedBox(height: 5),
+                                                SizedBox(height: 5),
+                        StreamBuilder<VipData>(
+                          initialData: null,
+                          stream: this._vipDataSubject,
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) return Container();
+                            return Column(
+                              children: [
+                                Text('Free public post ${snapshot.data.publicPost} left'),
+                                Text('Free follower post ${snapshot.data.onlyFollowerPost} left')
+                              ],
+                            );
+                          }
+                        )
+                        // GestureDetector(
+                        //     onTap: () async {
+                        //       this._startWatchingButtonSubject.add(true);
+                        //       await RewardedVideoAd.instance.load(
+                        //           adUnitId: AdManager.rewardedAdId,
+                        //           targetingInfo: targetingInfo);
+                        //     },
+                        //     child: StreamBuilder<bool>(
+                        //         initialData: false,
+                        //         stream: this._startWatchingButtonSubject,
+                        //         builder: (context, snapshot) {
+                        //           if (snapshot.data)
+                        //             return CupertinoActivityIndicator();
+                        //           return Text('Start Watching',
+                        //               style: TextStyle(
+                        //                   color:
+                        //                       Theme.of(context).accentColor));
+                        //         })),
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(height: 5),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: StreamBuilder<String>(
+                    initialData: null,
+                    stream: this._postOptionsSubject,
+                    builder: (context, snapshot1) {
+                      if (snapshot1.data == null) {
+                        return Container();
+                      }
+                      return StreamBuilder<VipData>(
+                        initialData: null,
+                        stream: this._vipDataSubject,
+                        builder: (context, snapshot2) {
+                          if (snapshot2.data == null) {
+                            return Container();
+                          }
+                          if (snapshot1.data == 'Public') {
+                            return Text('All user will see your post');
+                          }
+                          return Text(
+                              '${snapshot2.data.followerCount} followers will see your post');
+                        },
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 10),
                 CupertinoTextField(
-                  minLines: 3,
+                  minLines: 2,
                   maxLines: 3,
                   placeholder: 'Write your post\'s title here',
                   controller: this._postTitleController,
@@ -693,7 +766,37 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             })),
                     SizedBox(width: 5),
                     Expanded(
-                        child: StreamBuilder<bool>(
+                        child: StreamBuilder<VipData>(
+                          initialData: null,
+                          stream: this._vipDataSubject,
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return CupertinoButton.filled(
+                                    padding: EdgeInsets.zero,
+                                    child: CupertinoActivityIndicator(),
+                                    onPressed: () {});
+                            }
+                            if (snapshot.data.postUpload == 1) {
+                              return StreamBuilder<bool>(
+                                initialData: false,
+                                stream: this._postByFreeButtonSubject,
+                                builder: (context, snapshot) {
+                                  if (snapshot.data) {
+                                    return CupertinoButton.filled(
+                                    padding: EdgeInsets.zero,
+                                    child: CupertinoActivityIndicator(),
+                                    onPressed: () {});
+                                  }
+                                  return CupertinoButton.filled(
+                                    padding: EdgeInsets.zero,
+                                    child: Text('Free to post now'),
+                                    onPressed: () {
+                                      this._postByFree();
+                                    });
+                                } 
+                              );
+                            }
+                            return StreamBuilder<bool>(
                             initialData: false,
                             stream: this._postByCoinsButtonSubject,
                             builder: (context, snapshot) {
@@ -708,7 +811,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   padding: EdgeInsets.zero,
                                   child: Text('Post by using Coins'),
                                   onPressed: () => this._postByCoins());
-                            }))
+                            });
+                          },
+                        ))
                   ],
                 )
               ],

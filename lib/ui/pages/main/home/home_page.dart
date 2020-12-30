@@ -104,542 +104,531 @@ class _HomePageState extends State<HomePage>
   }
 
   newtopTabs(homeController) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Card(
-        key: intro.keys[0],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10.0),
-          ),
+    return Card(
+      margin: EdgeInsets.zero,
+      key: intro.keys[0],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(10.0),
         ),
-        elevation: 4,
-        shadowColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.grey,
-        child: Container(
-          padding: EdgeInsets.only(top: 8, bottom: 4),
-          height: 85,
-          child: Stack(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  //CoPlayer
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      key: intro.keys[2],
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onDoubleTap: () {
-                                homeController.animateTo(
-                                  0.0,
-                                  curve: Curves.easeOut,
-                                  duration: const Duration(milliseconds: 300),
-                                );
-                              },
-                              onTap: () {
-                                catagories.first.then((value) async {
-                                  if (value != kCoPlayer) {
-                                    catagories.add(kCoPlayer);
-                                    final cata = await catagories.first;
-                                    final gen = await gender.first;
-                                    _homeBloc.fetchData(
-                                        type: cata, gender: gen);
-                                  }
-                                });
-                                // if (catagories != 1) {
-                                //   catagories = 1;
-                                //   _homeBloc.fetchData(
-                                //       type: catagories, gender: gender);
-                                // } else {
-                                //   print("Already");
-                                // }
-                              },
-                              child: StreamBuilder<int>(
-                                  stream: catagories,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            snapshot.data == kCoPlayer
-                                                ? BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  )
-                                                : BoxShadow(),
-                                          ],
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors:
-                                                MoreGradientColors.azureLane,
-                                          )),
-                                      child: Icon(Icons.supervisor_account,
-                                          size: 23, color: Colors.white),
-                                    );
-                                  }),
-                            ),
+      ),
+      elevation: 4,
+      shadowColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey,
+      child: Container(
+        padding: EdgeInsets.only(top: 8, bottom: 4),
+        height: 85,
+        child: Stack(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                //CoPlayer
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    key: intro.keys[2],
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onDoubleTap: () {
+                              homeController.animateTo(
+                                0.0,
+                                curve: Curves.easeOut,
+                                duration: const Duration(milliseconds: 300),
+                              );
+                            },
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kCoPlayer) {
+                                  catagories.add(kCoPlayer);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 1) {
+                              //   catagories = 1;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kCoPlayer
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: MoreGradientColors.azureLane,
+                                        )),
+                                    child: Icon(Icons.supervisor_account,
+                                        size: 23, color: Colors.white),
+                                  );
+                                }),
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Expanded(
-                              flex: 1, child: Text(G.current.usertypecoplayer)),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(
+                            flex: 1, child: Text(G.current.usertypecoplayer)),
+                      ],
                     ),
                   ),
+                ),
 
-                  ///Cele
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onTap: () {
-                                catagories.first.then((value) async {
-                                  if (value != kCele) {
-                                    catagories.add(kCele);
-                                    final cata = await catagories.first;
-                                    final gen = await gender.first;
-                                    _homeBloc.fetchData(
-                                        type: cata, gender: gen);
-                                  }
-                                });
-                                // if (catagories != 3) {
-                                //   catagories = 3;
-                                //   _homeBloc.fetchData(
-                                //       type: catagories, gender: gender);
-                                // } else {
-                                //   print("Already");
-                                // }
-                              },
-                              child: StreamBuilder<int>(
-                                  stream: catagories,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            snapshot.data == kCele
-                                                ? BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  )
-                                                : BoxShadow(),
-                                          ],
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: MoreGradientColors
-                                                .orangePinkTeal,
-                                          )),
-                                      child: Icon(
-                                        FontAwesomeIcons.star,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    );
-                                  }),
-                            ),
+                ///Cele
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kCele) {
+                                  catagories.add(kCele);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 3) {
+                              //   catagories = 3;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kCele
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors:
+                                              MoreGradientColors.orangePinkTeal,
+                                        )),
+                                    child: Icon(
+                                      FontAwesomeIcons.star,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Expanded(
-                              flex: 1, child: Text(G.current.usertypecele)),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(flex: 1, child: Text(G.current.usertypecele)),
+                      ],
                     ),
                   ),
+                ),
 
-                  ///Pro
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onTap: () {
-                                catagories.first.then((value) async {
-                                  if (value != kPro) {
-                                    catagories.add(kPro);
-                                    final cata = await catagories.first;
-                                    final gen = await gender.first;
-                                    _homeBloc.fetchData(
-                                        type: cata, gender: gen);
-                                  }
-                                });
-                                // if (catagories != 4) {
-                                //   catagories = 4;
-                                //   _homeBloc.fetchData(
-                                //       type: catagories, gender: gender);
-                                // } else {
-                                //   print("Already");
-                                // }
-                              },
-                              child: StreamBuilder<int>(
-                                  stream: catagories,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            snapshot.data == kPro
-                                                ? BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  )
-                                                : BoxShadow(),
-                                          ],
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: MoreGradientColors.lunada,
-                                          )),
-                                      child: Icon(
-                                        FontAwesomeIcons.gamepad,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    );
-                                  }),
-                            ),
+                ///Pro
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kPro) {
+                                  catagories.add(kPro);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 4) {
+                              //   catagories = 4;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kPro
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: MoreGradientColors.lunada,
+                                        )),
+                                    child: Icon(
+                                      FontAwesomeIcons.gamepad,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Expanded(flex: 1, child: Text(G.current.usertypepro)),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(flex: 1, child: Text(G.current.usertypepro)),
+                      ],
                     ),
                   ),
+                ),
 
-                  ///Streamer
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onTap: () {
-                                catagories.first.then((value) async {
-                                  if (value != kStreamer) {
-                                    catagories.add(kStreamer);
-                                    final cata = await catagories.first;
-                                    final gen = await gender.first;
-                                    _homeBloc.fetchData(
-                                        type: cata, gender: gen);
-                                  }
-                                });
-                                // if (catagories != 2) {
-                                //   catagories = 2;
-                                //   _homeBloc.fetchData(
-                                //       type: catagories, gender: gender);
-                                // } else {
-                                //   print("Already");
-                                // }
-                              },
-                              child: StreamBuilder<int>(
-                                  stream: catagories,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            snapshot.data == kStreamer
-                                                ? BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  )
-                                                : BoxShadow(),
-                                          ],
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: MoreGradientColors.hazel,
-                                          )),
-                                      child: Icon(
-                                        FontAwesomeIcons.twitch,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    );
-                                  }),
-                            ),
+                ///Streamer
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kStreamer) {
+                                  catagories.add(kStreamer);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 2) {
+                              //   catagories = 2;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kStreamer
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: MoreGradientColors.hazel,
+                                        )),
+                                    child: Icon(
+                                      FontAwesomeIcons.twitch,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Expanded(
-                              flex: 1, child: Text(G.current.usertypestreamer)),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(
+                            flex: 1, child: Text(G.current.usertypestreamer)),
+                      ],
                     ),
                   ),
+                ),
 
-                  ///UnverifiedPartner
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onTap: () {
-                                catagories.first.then((value) async {
-                                  if (value != kUnverifiedPartner) {
-                                    catagories.add(kUnverifiedPartner);
-                                    final cata = await catagories.first;
-                                    final gen = await gender.first;
-                                    _homeBloc.fetchData(
-                                        type: cata, gender: gen);
-                                  }
-                                });
-                                // if (catagories != 2) {
-                                //   catagories = 2;
-                                //   _homeBloc.fetchData(
-                                //       type: catagories, gender: gender);
-                                // } else {
-                                //   print("Already");
-                                // }
-                              },
-                              child: StreamBuilder<int>(
-                                  stream: catagories,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            snapshot.data == kUnverifiedPartner
-                                                ? BoxShadow(
-                                                    color: Colors.black,
-                                                    // spreadRadius: 1,
-                                                    blurRadius: 4,
-                                                    offset: Offset(-3,
-                                                        3), // changes position of shadow
-                                                  )
-                                                : BoxShadow(),
-                                          ],
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors:
-                                                MoreGradientColors.darkSkyBlue,
-                                          )),
-                                      child: Icon(
-                                        FontAwesomeIcons.peopleArrows,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    );
-                                  }),
-                            ),
+                ///UnverifiedPartner
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kUnverifiedPartner) {
+                                  catagories.add(kUnverifiedPartner);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 2) {
+                              //   catagories = 2;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kUnverifiedPartner
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors:
+                                              MoreGradientColors.darkSkyBlue,
+                                        )),
+                                    child: Icon(
+                                      FontAwesomeIcons.userAstronaut,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                           ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Expanded(flex: 1, child: Text('Unverified')),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Expanded(flex: 1, child: Text('Unverified')),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
   newmalefemale() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: Card(
-        key: intro.keys[1],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        shadowColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.black
-            : Colors.grey,
-        elevation: 4,
-        child: Padding(
-          padding: EdgeInsets.only(top: 15, bottom: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //Male
-                    GestureDetector(
-                      onTap: () {
-                        gender.first.then((value) async {
-                          if (value != "Male") {
-                            gender.add("Male");
-                            final cata = await catagories.first;
-                            final gen = await gender.first;
-                            _homeBloc.fetchData(type: cata, gender: gen);
-                          } else {
-                            gender.add("All");
-                            final cata = await catagories.first;
-                            final gen = await gender.first;
-                            _homeBloc.fetchData(type: cata, gender: gen);
-                          }
-                        });
-                        // if (gender != "Male") {
-                        //   gender = "Male";
-                        //   _homeBloc.fetchData(type: catagories, gender: gender);
-                        // } else {
-                        //   gender = "All";
-                        //   _homeBloc.fetchData(type: catagories, gender: gender);
-                        // }
-                      },
-                      child: StreamBuilder<String>(
-                          stream: gender,
-                          builder: (context, snapshot) {
-                            return Container(
-                              width: 100,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  boxShadow: [
-                                    snapshot.data == "Male"
-                                        ? BoxShadow(
-                                            color: Colors.black,
-                                            // spreadRadius: 1,
-                                            blurRadius: 4,
-                                            offset: Offset(-3,
-                                                3), // changes position of shadow
-                                          )
-                                        : BoxShadow(),
-                                  ],
-                                  borderRadius: BorderRadius.circular(10),
-                                  // shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: MoreGradientColors.coolSky,
-                                  )),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(FontAwesomeIcons.mars,
-                                      color: Colors.white),
-                                  Text(G.current.genderMale)
+    return Card(
+      margin: EdgeInsets.zero,
+      key: intro.keys[1],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      shadowColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey,
+      elevation: 4,
+      child: Padding(
+        padding: EdgeInsets.only(top: 15, bottom: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //Male
+                  GestureDetector(
+                    onTap: () {
+                      gender.first.then((value) async {
+                        if (value != "Male") {
+                          gender.add("Male");
+                          final cata = await catagories.first;
+                          final gen = await gender.first;
+                          _homeBloc.fetchData(type: cata, gender: gen);
+                        } else {
+                          gender.add("All");
+                          final cata = await catagories.first;
+                          final gen = await gender.first;
+                          _homeBloc.fetchData(type: cata, gender: gen);
+                        }
+                      });
+                      // if (gender != "Male") {
+                      //   gender = "Male";
+                      //   _homeBloc.fetchData(type: catagories, gender: gender);
+                      // } else {
+                      //   gender = "All";
+                      //   _homeBloc.fetchData(type: catagories, gender: gender);
+                      // }
+                    },
+                    child: StreamBuilder<String>(
+                        stream: gender,
+                        builder: (context, snapshot) {
+                          return Container(
+                            width: 100,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  snapshot.data == "Male"
+                                      ? BoxShadow(
+                                          color: Colors.black,
+                                          // spreadRadius: 1,
+                                          blurRadius: 4,
+                                          offset: Offset(-3,
+                                              3), // changes position of shadow
+                                        )
+                                      : BoxShadow(),
                                 ],
-                              ),
-                            );
-                          }),
-                    ),
-                  ],
-                ),
+                                borderRadius: BorderRadius.circular(10),
+                                // shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.coolSky,
+                                )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesomeIcons.mars,
+                                    color: Colors.white),
+                                Text(G.current.genderMale)
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+                ],
               ),
-              Container(
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        gender.first.then((value) async {
-                          if (value != "Female") {
-                            gender.add("Female");
-                            final cata = await catagories.first;
-                            final gen = await gender.first;
-                            _homeBloc.fetchData(type: cata, gender: gen);
-                          } else {
-                            gender.add("All");
-                            final cata = await catagories.first;
-                            final gen = await gender.first;
-                            _homeBloc.fetchData(type: cata, gender: gen);
-                          }
-                        });
-                        // if (gender != "Female") {
-                        //   gender = "Female";
-                        //   _homeBloc.fetchData(type: catagories, gender: gender);
-                        // } else {
-                        //   gender = "All";
-                        //   _homeBloc.fetchData(type: catagories, gender: gender);
-                        // }
-                      },
-                      child: StreamBuilder<String>(
-                          stream: gender,
-                          builder: (context, snapshot) {
-                            return Container(
-                              width: 100,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  boxShadow: [
-                                    snapshot.data == "Female"
-                                        ? BoxShadow(
-                                            color: Colors.black,
-                                            // spreadRadius: 1,
-                                            blurRadius: 4,
-                                            offset: Offset(-3,
-                                                3), // changes position of shadow
-                                          )
-                                        : BoxShadow(),
-                                  ],
-                                  borderRadius: BorderRadius.circular(10),
-                                  // shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: MoreGradientColors.instagram,
-                                  )),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(FontAwesomeIcons.venus,
-                                      color: Colors.white),
-                                  Text(G.current.genderFemale)
+            ),
+            Container(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      gender.first.then((value) async {
+                        if (value != "Female") {
+                          gender.add("Female");
+                          final cata = await catagories.first;
+                          final gen = await gender.first;
+                          _homeBloc.fetchData(type: cata, gender: gen);
+                        } else {
+                          gender.add("All");
+                          final cata = await catagories.first;
+                          final gen = await gender.first;
+                          _homeBloc.fetchData(type: cata, gender: gen);
+                        }
+                      });
+                      // if (gender != "Female") {
+                      //   gender = "Female";
+                      //   _homeBloc.fetchData(type: catagories, gender: gender);
+                      // } else {
+                      //   gender = "All";
+                      //   _homeBloc.fetchData(type: catagories, gender: gender);
+                      // }
+                    },
+                    child: StreamBuilder<String>(
+                        stream: gender,
+                        builder: (context, snapshot) {
+                          return Container(
+                            width: 100,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  snapshot.data == "Female"
+                                      ? BoxShadow(
+                                          color: Colors.black,
+                                          // spreadRadius: 1,
+                                          blurRadius: 4,
+                                          offset: Offset(-3,
+                                              3), // changes position of shadow
+                                        )
+                                      : BoxShadow(),
                                 ],
-                              ),
-                            );
-                          }),
-                    ),
-                  ],
-                ),
+                                borderRadius: BorderRadius.circular(10),
+                                // shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: MoreGradientColors.instagram,
+                                )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesomeIcons.venus,
+                                    color: Colors.white),
+                                Text(G.current.genderFemale)
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -9,8 +9,10 @@ import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/create_post_page.dart';
+import 'package:moonblink/ui/pages/main/newfeed/my_new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
@@ -42,6 +44,7 @@ class RouteName {
   static const String userStatus = '/userStatus';
   // static const String comment = 'comment';
   static const String network = 'network';
+  static const String notiPage = 'notiPage';
   // static const String error = 'error';
   static const String imagepick = 'imagepick';
   static const String takepicture = 'takepicture';
@@ -79,6 +82,7 @@ class RouteName {
   static const String boostingGameListPage = 'BoostingGameListPage';
   static const String boostingGameDetailPage = 'BoostingGameDetailPage';
   static const String createPostPage = 'CreatePostPage';
+  static const String managePostsPage = 'ManagePostsPage';
 }
 
 class MoonGoRouter {
@@ -88,6 +92,8 @@ class MoonGoRouter {
         return NoAnimRouteBuilder(SplashPage());
       case RouteName.createPostPage:
         return CupertinoPageRoute(builder: (_) => CreatePostPage());
+      case RouteName.managePostsPage:
+        return CupertinoPageRoute(builder: (_) => MyNewFeedPage());
       case RouteName.booking:
         return CupertinoPageRoute(
             builder: (_) => BookingPage(
@@ -119,6 +125,8 @@ class MoonGoRouter {
       //   return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
+      case RouteName.notiPage:
+        return NoAnimRouteBuilder(UserNewNotificationPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
       case RouteName.otp:

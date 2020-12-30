@@ -3055,6 +3055,26 @@ class G {
     );
   }
 
+  /// `Notifications`
+  String get userStatusNotification {
+    return Intl.message(
+      'Notifications',
+      name: 'userStatusNotification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage Posts`
+  String get userStatusManagePosts {
+    return Intl.message(
+      'Manage Posts',
+      name: 'userStatusManagePosts',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boosting Profile`
   String get userStatusBoostProfile {
     return Intl.message(

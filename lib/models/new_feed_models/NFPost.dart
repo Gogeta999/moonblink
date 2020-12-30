@@ -10,6 +10,7 @@ class NFPost {
   final String name;
   final String profile;
   final int isReacted;
+  final String bios;
 
   NFPost.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -22,5 +23,6 @@ class NFPost {
       reactionCount = json['reaction_count'],
       name = json['user']['name'],
       profile = json['user']['profile_image'],
-      isReacted = json['user']['is_reacted'];
+      isReacted = json['user']['is_reacted'],
+      bios = json['user']['bios'];
 }

@@ -332,6 +332,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "userStatusCustomerService" : MessageLookupByLibrary.simpleMessage("客户服务"),
     "userStatusDarkMode" : MessageLookupByLibrary.simpleMessage("夜间模式中"),
     "userStatusDayMode" : MessageLookupByLibrary.simpleMessage("日间模式中"),
+    "userStatusManagePosts" : MessageLookupByLibrary.simpleMessage("管理帖子"),
+    "userStatusNotification" : MessageLookupByLibrary.simpleMessage("通知"),
     "userStatusSettings" : MessageLookupByLibrary.simpleMessage("设置"),
     "userStatusTheme" : MessageLookupByLibrary.simpleMessage("主题"),
     "userStatusWallet" : MessageLookupByLibrary.simpleMessage("钱包"),

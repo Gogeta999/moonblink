@@ -11,6 +11,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_list_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
+import 'package:moonblink/ui/pages/main/newfeed/create_post_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
@@ -66,16 +67,16 @@ class _MainTabPageState extends State<MainTabPage>
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = <Widget>[
-      HomePage(homeController),
       NewFeedPage(scrollController: nfController),
+      HomePage(homeController),
+      CreatePostPage(),
       NewChatListPage(), //ChatListPage(),
-      ContactsPage(),
-      UserNewNotificationPage(),
       UserStatusPage(),
     ];
     return Scaffold(
       floatingActionButton: type > 0
           ? FloatingActionButton(
+              mini: true,
               onPressed: () =>
                   Navigator.pushNamed(context, RouteName.createPostPage),
               child: Icon(Icons.add))
@@ -187,17 +188,6 @@ class _MainTabPageState extends State<MainTabPage>
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   items: [
                     CustomNavigationBarItem(
-                      icon: home,
-                      selectedIcon: homefilled,
-                      doubletap: () {
-                        homeController.animateTo(
-                          0.0,
-                          curve: Curves.easeOut,
-                          duration: const Duration(milliseconds: 300),
-                        );
-                      },
-                    ),
-                    CustomNavigationBarItem(
                         icon: home,
                         selectedIcon: homefilled,
                         doubletap: () {
@@ -206,14 +196,25 @@ class _MainTabPageState extends State<MainTabPage>
                               curve: Curves.easeOut);
                         }),
                     CustomNavigationBarItem(
+                      icon: following,
+                      selectedIcon: followingfilled,
+                      doubletap: () {
+                        homeController.animateTo(
+                          0.0,
+                          curve: Curves.easeOut,
+                          duration: const Duration(milliseconds: 300),
+                        );
+                      },
+                    ),
+                    CustomNavigationBarItem(icon: plus, selectedIcon: plus),
+                    CustomNavigationBarItem(
                         icon: chat, selectedIcon: chatfilled),
-                    CustomNavigationBarItem(
-                        icon: following, selectedIcon: followingfilled),
-                    CustomNavigationBarItem(
-                        icon: noti,
-                        selectedIcon: notifilled,
-                        badgeCount: state.unreadCount ?? 0),
-
+                    // CustomNavigationBarItem(
+                    //     icon: following, selectedIcon: followingfilled),
+                    // CustomNavigationBarItem(
+                    //     icon: noti,
+                    //     selectedIcon: notifilled,
+                    //     badgeCount: state.unreadCount ?? 0),
                     ///not real
                     CustomNavigationBarItem(
                         icon: mainProfile, selectedIcon: mainProfilefilled)
@@ -238,8 +239,16 @@ class _MainTabPageState extends State<MainTabPage>
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 items: [
                   CustomNavigationBarItem(
-                    icon: home,
-                    selectedIcon: homefilled,
+                      icon: home,
+                      selectedIcon: homefilled,
+                      doubletap: () {
+                        nfController.animateTo(0.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut);
+                      }),
+                  CustomNavigationBarItem(
+                    icon: following,
+                    selectedIcon: followingfilled,
                     doubletap: () {
                       homeController.animateTo(
                         0.0,
@@ -248,19 +257,15 @@ class _MainTabPageState extends State<MainTabPage>
                       );
                     },
                   ),
-                  CustomNavigationBarItem(
-                      icon: home,
-                      selectedIcon: homefilled,
-                      doubletap: () {
-                        nfController.animateTo(0.0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut);
-                      }),
+                  CustomNavigationBarItem(icon: plus, selectedIcon: plus),
                   CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
-                  CustomNavigationBarItem(
-                      icon: following, selectedIcon: followingfilled),
-                  CustomNavigationBarItem(
-                      icon: noti, selectedIcon: notifilled, badgeCount: 0),
+                  // CustomNavigationBarItem(
+                  //     icon: following, selectedIcon: followingfilled),
+                  // CustomNavigationBarItem(
+                  //     icon: noti,
+                  //     selectedIcon: notifilled,
+                  //     badgeCount: state.unreadCount ?? 0),
+                  ///not real
                   CustomNavigationBarItem(
                       icon: mainProfile, selectedIcon: mainProfilefilled)
                 ],
