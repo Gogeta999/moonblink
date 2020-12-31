@@ -34,14 +34,16 @@ class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
   }
 
   void _initPhoneController() {
-    if (_spPhoneNumber.isEmpty) {
+    if (_spPhoneNumber == '') {
       setState(() {
         _phoneController.text = '+959';
       });
     }
-    setState(() {
-      _phoneController.text = _spPhoneNumber;
-    });
+    if (_spPhoneNumber != '') {
+      setState(() {
+        _phoneController.text = _spPhoneNumber;
+      });
+    }
   }
 
   @override

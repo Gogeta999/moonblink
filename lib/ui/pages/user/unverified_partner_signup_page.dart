@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
@@ -35,6 +36,7 @@ class _UnverifiedPartnerSignUpPageState
   final FacebookLogin _facebookLogin = FacebookLogin();
 
   ///Remote Data
+  String _gender = '';
   int _selectedPlan = 0;
   Wallet _wallet = Wallet(value: 0);
 
@@ -114,6 +116,10 @@ class _UnverifiedPartnerSignUpPageState
   }
 
   _onTapConfirm() {
+    if (_gender == '') {
+      showToast('Gender ${G.of(context).cannotblank}');
+      return;
+    }
     if (_selectedPlan == 3 && _wallet.value < 800) {
       Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
@@ -132,7 +138,8 @@ class _UnverifiedPartnerSignUpPageState
     setState(() {
       _isConfirmLoading = true;
     });
-    MoonBlinkRepository.signAsType5Partner(widget.phoneNumber, _selectedPlan)
+    MoonBlinkRepository.signAsType5Partner(
+            widget.phoneNumber, _selectedPlan, _gender)
         .then((value) async {
       try {
         setState(() {
@@ -178,6 +185,36 @@ class _UnverifiedPartnerSignUpPageState
                 delegate: SliverChildListDelegate.fixed([
               Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ShadedContainer(
+                          selected: _gender.isNotEmpty && _gender == 'Male'
+                              ? true
+                              : false,
+                          ontap: () {
+                            setState(() {
+                              _gender = 'Male';
+                            });
+                          },
+                          child: Text(G.of(context).genderMale),
+                        ),
+                        ShadedContainer(
+                          selected: _gender.isNotEmpty && _gender == 'Female'
+                              ? true
+                              : false,
+                          ontap: () {
+                            setState(() {
+                              _gender = 'Female';
+                            });
+                          },
+                          child: Text(G.of(context).genderFemale),
+                        )
+                      ],
+                    ),
+                  ),
                   Padding(
                       padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
                       child: Card(

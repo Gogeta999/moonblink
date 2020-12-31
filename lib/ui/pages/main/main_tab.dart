@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
@@ -69,17 +70,18 @@ class _MainTabPageState extends State<MainTabPage>
     List<Widget> pages = <Widget>[
       NewFeedPage(scrollController: nfController),
       HomePage(homeController),
-      CreatePostPage(),
+      // CreatePostPage(),
       NewChatListPage(), //ChatListPage(),
       UserStatusPage(),
     ];
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: type > 0
           ? FloatingActionButton(
-              mini: true,
+              mini: false,
               onPressed: () =>
                   Navigator.pushNamed(context, RouteName.createPostPage),
-              child: Icon(Icons.add))
+              child: Icon(FontAwesomeIcons.plus, size: 30))
           : null,
       body: WillPopScope(
         onWillPop: () async {
@@ -206,7 +208,7 @@ class _MainTabPageState extends State<MainTabPage>
                         );
                       },
                     ),
-                    CustomNavigationBarItem(icon: plus, selectedIcon: plus),
+                    // CustomNavigationBarItem(icon: plus, selectedIcon: plus),
                     CustomNavigationBarItem(
                         icon: chat, selectedIcon: chatfilled),
                     // CustomNavigationBarItem(
@@ -257,7 +259,7 @@ class _MainTabPageState extends State<MainTabPage>
                       );
                     },
                   ),
-                  CustomNavigationBarItem(icon: plus, selectedIcon: plus),
+                  // CustomNavigationBarItem(icon: plus, selectedIcon: plus),
                   CustomNavigationBarItem(icon: chat, selectedIcon: chatfilled),
                   // CustomNavigationBarItem(
                   //     icon: following, selectedIcon: followingfilled),
