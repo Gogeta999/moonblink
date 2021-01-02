@@ -15,6 +15,8 @@ dependencies:
 
   cupertino_icons: ^1.0.0
   font_awesome_flutter: ^8.10.0 #The Font Awesome Icon pack available as set of Flutter Icons.
+  # flutter_snake_navigationbar: ^0.4.2
+  # convex_bottom_bar: ^2.6.0
   # State Management
   provider: ^4.3.2+2
   path_provider: ^1.6.21
@@ -133,7 +135,7 @@ flutter:
     - assets/images/
     - assets/logos/
     - images/
-
+    - images/mainTab/
 
   fonts:
     # - family: iconfont
