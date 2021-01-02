@@ -332,6 +332,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "userStatusCustomerService" : MessageLookupByLibrary.simpleMessage("Customer Service"),
     "userStatusDarkMode" : MessageLookupByLibrary.simpleMessage("Dark Mode"),
     "userStatusDayMode" : MessageLookupByLibrary.simpleMessage("Day Mode"),
+    "userStatusManagePosts" : MessageLookupByLibrary.simpleMessage("Manage Posts"),
+    "userStatusNotification" : MessageLookupByLibrary.simpleMessage("Notifications"),
     "userStatusSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "userStatusTheme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "userStatusWallet" : MessageLookupByLibrary.simpleMessage("Wallet"),

@@ -25,7 +25,7 @@ class OwnProfile {
   int isFollow;
   int likecount;
   double rating;
-  String accVipLevel;
+  var accVipLevel;
   String level;
   String leftorder;
   String ordercount;

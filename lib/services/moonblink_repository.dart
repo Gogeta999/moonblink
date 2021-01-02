@@ -536,11 +536,13 @@ class MoonBlinkRepository {
   }
 
 // Sign As Type5 Partner
-  static Future signAsType5Partner(String phone, int vipPlan) async {
+  static Future signAsType5Partner(
+      String phone, int vipPlan, String gender) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().postwithData(
         Api.VerifyAsPartner + '$userid/register/unverify',
-        data: FormData.fromMap({'phone': phone, 'vip': vipPlan}));
+        data: FormData.fromMap(
+            {'phone': phone, 'vip': vipPlan, 'gender': gender}));
     return response;
   }
 
@@ -678,29 +680,34 @@ class MoonBlinkRepository {
 
   static Future<List<NFPost>> getNFPostsById(int limit, int page) async {
     final myId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().get(Api.GetNFPostById + '$myId/post', queryParameters: {
+    final response = await DioUtils()
+        .get(Api.GetNFPostById + '$myId/post', queryParameters: {
       'limit': limit,
       'page': page,
     });
-    return response.data['data'].map<NFPost>((e) => NFPost.fromJson(e)).toList();
+    return response.data['data']
+        .map<NFPost>((e) => NFPost.fromJson(e))
+        .toList();
   }
 
   static Future dropPost(int postId) async {
     final myId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().delete("moonblink/api/v1/user/$myId/post/$postId");
+    final response =
+        await DioUtils().delete("moonblink/api/v1/user/$myId/post/$postId");
     return response;
   }
 
   static Future reactNFPost(int postId, int like) async {
-    final response = await DioUtils().patch("moonblink/api/v1/social/post/$postId", queryParameters: {
-      'like': like
-    });
+    final response = await DioUtils().patch(
+        "moonblink/api/v1/social/post/$postId",
+        queryParameters: {'like': like});
     return response;
   }
 
   static Future<VipData> getUserVip() async {
     final myId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response = await DioUtils().get("moonblink/api/v1/user/$myId/vip/$myId");
+    final response =
+        await DioUtils().get("moonblink/api/v1/user/$myId/vip/$myId");
     return VipData.fromJson(response.data);
   }
 }

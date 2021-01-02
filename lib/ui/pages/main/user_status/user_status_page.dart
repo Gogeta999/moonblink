@@ -418,6 +418,22 @@ class _UserStatusPageState extends State<UserStatusPage> {
                                 showToast(G.of(context).toastonline);
                               }),
                   ),
+                Card(
+                  margin: EdgeInsets.zero,
+                  // elevation: 4,
+                  child: ListTile(
+                      leading: SvgPicture.asset(
+                        notiIcon,
+                        // color: Colors.blueGrey,
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
+                      ),
+                      title: Text(G.current.userStatusNotification,
+                          style: Theme.of(context).textTheme.bodyText1),
+                      onTap: () =>
+                          Navigator.of(context).pushNamed(RouteName.notiPage)),
+                ),
 
                 ///Game Profile
                 if (usertype != 0)
@@ -484,25 +500,26 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ),
                 // blankSpace(),
 
-                Card(
-                  margin: EdgeInsets.only(bottom: 15),
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        profileEdit,
-                        // color: Colors.orangeAccent,
-                        height: 32,
-                        width: 32,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text('Manage Posts',
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(RouteName.managePostsPage)),
-                ),
+                if (usertype != 0)
+                  Card(
+                    margin: EdgeInsets.only(bottom: 15),
+                    elevation: 4,
+                    shadowColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.grey,
+                    child: ListTile(
+                        leading: SvgPicture.asset(
+                          managePost,
+                          // color: Colors.orangeAccent,
+                          height: 32,
+                          width: 32,
+                          fit: BoxFit.contain,
+                        ),
+                        title: Text(G.current.userStatusManagePosts,
+                            style: Theme.of(context).textTheme.bodyText1),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(RouteName.managePostsPage)),
+                  ),
 
                 ///Wallet
                 Card(

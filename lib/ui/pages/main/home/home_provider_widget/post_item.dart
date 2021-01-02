@@ -163,329 +163,324 @@ class _PostItemWidgetState extends State<PostItemWidget>
   Widget build(BuildContext context) {
     super.build(context);
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PartnerDetailPage(widget.posts.id),
-              ),
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartnerDetailPage(widget.posts.id),
             ),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              shadowColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.grey,
-              elevation: 4,
-              child: Stack(
-                children: [
-                  Column(
-                    children: <Widget>[
-                      /// [user_Profile]
-                      Container(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 80.0),
-                              child: Text(widget.posts.userName,
-                                  style: widget.posts.id == 62
-                                      ? TextStyle(
-                                          color: Theme.of(context).accentColor)
-                                      : null),
-                            ),
-                            Spacer(),
-                            Align(
-                                alignment: Alignment.centerRight,
-                                child: blockbtn()),
-                          ],
-                        ),
+          ),
+          child: Card(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0),
+            ),
+            shadowColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.grey,
+            elevation: 4,
+            child: Stack(
+              children: [
+                Column(
+                  children: <Widget>[
+                    /// [user_Profile]
+                    Container(
+                      height: 40,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 80.0),
+                            child: Text(widget.posts.userName,
+                                style: widget.posts.id == 62
+                                    ? TextStyle(
+                                        color: Theme.of(context).accentColor)
+                                    : null),
+                          ),
+                          Spacer(),
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: blockbtn()),
+                        ],
                       ),
+                    ),
 
-                      /// [User_Image]
-                      isBlocking
-                          ? CupertinoActivityIndicator()
-                          : Column(
-                              children: <Widget>[
-                                InkWell(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(
-                                          width: 2,
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.grey
-                                              : Colors.black,
+                    /// [User_Image]
+                    isBlocking
+                        ? CupertinoActivityIndicator()
+                        : Column(
+                            children: <Widget>[
+                              InkWell(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        width: 2,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                      bottom: BorderSide(
+                                        width: 2,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  constraints: BoxConstraints(
+                                      minWidth: double.infinity,
+                                      maxWidth: double.infinity),
+                                  child: widget.posts.coverImage == null
+                                      ? Icon(Icons.error)
+                                      : CachedNetworkImage(
+                                          fit: BoxFit.fill,
+                                          imageUrl: widget.posts.coverImage,
+                                          placeholder: (context, url) =>
+                                              CachedLoader(
+                                            containerHeight: 200,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              CachedError(
+                                            containerHeight: 200,
+                                          ),
                                         ),
-                                        bottom: BorderSide(
-                                          width: 2,
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.grey
-                                              : Colors.black,
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ImageView(widget.posts.coverImage)));
+                                },
+                                onDoubleTap: widget.posts.isReacted == 0
+                                    ? () {
+                                        _homeBloc
+                                            .reactProfile(widget.posts.id, 1)
+                                            .then(
+                                          (value) {
+                                            if (value) {
+                                              showToast(G
+                                                  .of(context)
+                                                  .toastlikesuccess);
+                                              setState(() {
+                                                widget.posts.isReacted = 1;
+                                                widget.posts.reactionCount += 1;
+                                              });
+                                            }
+                                            // else {
+                                            //   _homeBloc
+                                            //       .showErrorMessage(context);
+                                            // }
+                                          },
+                                        );
+                                      }
+                                    : () {
+                                        _homeBloc
+                                            .reactProfile(widget.posts.id, 0)
+                                            .then(
+                                          (value) {
+                                            if (value) {
+                                              showToast(G
+                                                  .of(context)
+                                                  .toastunlikesuccess);
+                                              setState(
+                                                () {
+                                                  widget.posts.isReacted = 0;
+                                                  widget.posts.reactionCount -=
+                                                      1;
+                                                },
+                                              );
+                                            }
+                                            // else {
+                                            //   reactModel
+                                            //       .showErrorMessage(context);
+                                            // }
+                                          },
+                                        );
+                                      },
+                              ),
+
+                              /// [User_bottom data]
+                              Container(
+                                height: 30,
+                                width: double.infinity,
+                                margin: EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: InkWell(
+                                        child: Icon(
+                                            widget.posts.isReacted == 0
+                                                ? FontAwesomeIcons.heart
+                                                : FontAwesomeIcons.solidHeart,
+                                            size: 30,
+                                            color: widget.posts.isReacted == 0
+                                                ? Theme.of(context)
+                                                    .iconTheme
+                                                    .color
+                                                : Colors.red[400]),
+                                        onTap: widget.posts.isReacted == 0
+                                            ? () {
+                                                _homeBloc
+                                                    .reactProfile(
+                                                        widget.posts.id, 1)
+                                                    .then((value) {
+                                                  if (value) {
+                                                    showToast(G
+                                                        .of(context)
+                                                        .toastlikesuccess);
+                                                    setState(() {
+                                                      widget.posts.isReacted =
+                                                          1;
+                                                      widget.posts
+                                                          .reactionCount += 1;
+                                                    });
+                                                  }
+                                                  // else {
+                                                  //   reactModel
+                                                  //       .showErrorMessage(
+                                                  //           context);
+                                                  // }
+                                                });
+                                              }
+                                            : () {
+                                                _homeBloc
+                                                    .reactProfile(
+                                                        widget.posts.id, 0)
+                                                    .then((value) {
+                                                  if (value) {
+                                                    showToast(G
+                                                        .of(context)
+                                                        .toastunlikesuccess);
+                                                    setState(() {
+                                                      widget.posts.isReacted =
+                                                          0;
+                                                      widget.posts
+                                                          .reactionCount -= 1;
+                                                    });
+                                                  }
+                                                  // else {
+                                                  //   reactModel
+                                                  //       .showErrorMessage(
+                                                  //           context);
+                                                  // }
+                                                });
+                                              },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                          '${widget.posts.reactionCount} ${G.of(context).likes}'),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        child: Text(
+                                          G.of(context).becomePartnerAt +
+                                              timeAgo.format(
+                                                  DateTime.parse(
+                                                      widget.posts.createdAt),
+                                                  allowFromNow: true),
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12.0),
                                         ),
                                       ),
                                     ),
-                                    constraints: BoxConstraints(
-                                        minWidth: double.infinity,
-                                        maxWidth: double.infinity),
-                                    child: widget.posts.coverImage == null
-                                        ? Icon(Icons.error)
-                                        : CachedNetworkImage(
-                                            fit: BoxFit.fill,
-                                            imageUrl: widget.posts.coverImage,
-                                            placeholder: (context, url) =>
-                                                CachedLoader(
-                                              containerHeight: 200,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    CachedError(
-                                              containerHeight: 200,
-                                            ),
-                                          ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => ImageView(
-                                                widget.posts.coverImage)));
-                                  },
-                                  onDoubleTap: widget.posts.isReacted == 0
-                                      ? () {
-                                          _homeBloc
-                                              .reactProfile(widget.posts.id, 1)
-                                              .then(
-                                            (value) {
-                                              if (value) {
-                                                showToast(G
-                                                    .of(context)
-                                                    .toastlikesuccess);
-                                                setState(() {
-                                                  widget.posts.isReacted = 1;
-                                                  widget.posts.reactionCount +=
-                                                      1;
-                                                });
-                                              }
-                                              // else {
-                                              //   _homeBloc
-                                              //       .showErrorMessage(context);
-                                              // }
-                                            },
-                                          );
-                                        }
-                                      : () {
-                                          _homeBloc
-                                              .reactProfile(widget.posts.id, 0)
-                                              .then(
-                                            (value) {
-                                              if (value) {
-                                                showToast(G
-                                                    .of(context)
-                                                    .toastunlikesuccess);
-                                                setState(
-                                                  () {
-                                                    widget.posts.isReacted = 0;
-                                                    widget.posts
-                                                        .reactionCount -= 1;
-                                                  },
-                                                );
-                                              }
-                                              // else {
-                                              //   reactModel
-                                              //       .showErrorMessage(context);
-                                              // }
-                                            },
-                                          );
-                                        },
-                                ),
-
-                                /// [User_bottom data]
-                                Container(
-                                  height: 30,
-                                  width: double.infinity,
-                                  margin: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        flex: 1,
-                                        child: InkWell(
-                                          child: Icon(
-                                              widget.posts.isReacted == 0
-                                                  ? FontAwesomeIcons.heart
-                                                  : FontAwesomeIcons.solidHeart,
-                                              size: 30,
-                                              color: widget.posts.isReacted == 0
-                                                  ? Theme.of(context)
-                                                      .iconTheme
-                                                      .color
-                                                  : Colors.red[400]),
-                                          onTap: widget.posts.isReacted == 0
-                                              ? () {
-                                                  _homeBloc
-                                                      .reactProfile(
-                                                          widget.posts.id, 1)
-                                                      .then((value) {
-                                                    if (value) {
-                                                      showToast(G
-                                                          .of(context)
-                                                          .toastlikesuccess);
-                                                      setState(() {
-                                                        widget.posts.isReacted =
-                                                            1;
-                                                        widget.posts
-                                                            .reactionCount += 1;
-                                                      });
-                                                    }
-                                                    // else {
-                                                    //   reactModel
-                                                    //       .showErrorMessage(
-                                                    //           context);
-                                                    // }
-                                                  });
-                                                }
-                                              : () {
-                                                  _homeBloc
-                                                      .reactProfile(
-                                                          widget.posts.id, 0)
-                                                      .then((value) {
-                                                    if (value) {
-                                                      showToast(G
-                                                          .of(context)
-                                                          .toastunlikesuccess);
-                                                      setState(() {
-                                                        widget.posts.isReacted =
-                                                            0;
-                                                        widget.posts
-                                                            .reactionCount -= 1;
-                                                      });
-                                                    }
-                                                    // else {
-                                                    //   reactModel
-                                                    //       .showErrorMessage(
-                                                    //           context);
-                                                    // }
-                                                  });
-                                                },
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                            '${widget.posts.reactionCount} ${G.of(context).likes}'),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
+                                    Expanded(
+                                      flex: 2,
+                                      child: InkWell(
                                         child: Container(
-                                          child: Text(
-                                            G.of(context).becomePartnerAt +
-                                                timeAgo.format(
-                                                    DateTime.parse(
-                                                        widget.posts.createdAt),
-                                                    allowFromNow: true),
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12.0),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: InkWell(
-                                          child: Container(
-                                            child: BlinkWidget(
-                                              children: [
-                                                Icon(FontAwesomeIcons.book),
-                                                RadiantGradientMask(
-                                                  child: Icon(
-                                                    FontAwesomeIcons.book,
-                                                    // size: 30,
-                                                    color: Colors.white,
-                                                  ),
-                                                  colors: MoreGradientColors
-                                                      .instagram,
+                                          child: BlinkWidget(
+                                            children: [
+                                              Icon(FontAwesomeIcons.book),
+                                              RadiantGradientMask(
+                                                child: Icon(
+                                                  FontAwesomeIcons.book,
+                                                  // size: 30,
+                                                  color: Colors.white,
                                                 ),
-                                              ],
-                                            ),
+                                                colors: MoreGradientColors
+                                                    .instagram,
+                                              ),
+                                            ],
                                           ),
-                                          onTap: widget.posts.id == ownId
-                                              ? () {
-                                                  showToast(G
-                                                      .of(context)
-                                                      .cannotbookself);
-                                                }
-                                              : () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          BookingPage(
-                                                        partnerId:
-                                                            widget.posts.id,
-                                                        partnerName: widget
-                                                            .posts.userName,
-                                                        partnerBios:
-                                                            widget.posts.bios,
-                                                        partnerProfile: widget
-                                                            .posts.profileImage,
-                                                      ),
+                                        ),
+                                        onTap: widget.posts.id == ownId
+                                            ? () {
+                                                showToast(G
+                                                    .of(context)
+                                                    .cannotbookself);
+                                              }
+                                            : () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BookingPage(
+                                                      partnerId:
+                                                          widget.posts.id,
+                                                      partnerName:
+                                                          widget.posts.userName,
+                                                      partnerBios:
+                                                          widget.posts.bios,
+                                                      partnerProfile: widget
+                                                          .posts.profileImage,
                                                     ),
-                                                  );
-                                                },
-                                        ),
+                                                  ),
+                                                );
+                                              },
                                       ),
-                                      // ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: IconButton(
-                                          icon: Icon(FontAwesomeIcons.share),
-                                          onPressed: () {
-                                            final RenderBox box =
-                                                context.findRenderObject();
-                                            Share.share(
-                                                'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
-                                                subject:
-                                                    'Please download our app',
-                                                sharePositionOrigin:
-                                                    box.localToGlobal(
-                                                            Offset.zero) &
-                                                        box.size);
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                                    ),
+                                    // ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: IconButton(
+                                        icon: Icon(FontAwesomeIcons.share),
+                                        onPressed: () {
+                                          final RenderBox box =
+                                              context.findRenderObject();
+                                          Share.share(
+                                              'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
+                                              subject:
+                                                  'Please download our app',
+                                              sharePositionOrigin:
+                                                  box.localToGlobal(
+                                                          Offset.zero) &
+                                                      box.size);
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
 
-                      /// [bottom date]
-                      Divider(
-                        height: 5,
-                      ),
-                    ],
-                  ),
-                  postprofile(),
-                ],
-              ),
+                    /// [bottom date]
+                    Divider(
+                      height: 5,
+                    ),
+                  ],
+                ),
+                postprofile(),
+              ],
             ),
           ),
-          Divider(
-            height: 10,
-          ),
-          if (widget.index != 0 && widget.index % 10 == 0)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: AdPostWidget(),
-            )
-        ],
-      ),
+        ),
+        Divider(
+          height: 10,
+        ),
+        if (widget.index != 0 && widget.index % 10 == 0)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: AdPostWidget(),
+          )
+      ],
     );
   }
 }

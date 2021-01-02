@@ -13,6 +13,8 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -59,7 +61,13 @@ class _NewFeedPageState extends State<NewFeedPage>
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
-      appBar: AppbarWidget(),
+      appBar: AppbarWidget(
+        leadingText: G.current.follow,
+        leadingCallback: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => ContactsPage()));
+        },
+      ),
       body: SafeArea(
         child: StreamBuilder<List<NFPost>>(
             initialData: null,
@@ -151,7 +159,7 @@ class _NFPostItemState extends State<NFPostItem> {
         widget.bloc.onTapWholeCard(context, widget.item.userId);
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(40.0),
         ),
@@ -431,7 +439,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                   );
                 if (urlType == UrlType.REMOTE_VIDEO)
                   return Player(
-                      url: widget.item.media[index], id: widget.item.id, index: index);
+                      url: widget.item.media[index],
+                      id: widget.item.id,
+                      index: index);
                 return Text('Not Supported Format');
               }),
           StreamBuilder<int>(

@@ -301,6 +301,8 @@
     "usertypecele": "Cele",
     "usertypestreamer": "Streamer",
     "usertypepro": "Pro",
+    "userStatusNotification": "Notifications",
+    "userStatusManagePosts": "Manage Posts",
     "userStatusBoostProfile": "Boosting Profile",
     "userStatusWallet": "Wallet",
     "userStatusCustomerService": "Customer Service",

@@ -5,7 +5,11 @@ import 'package:moonblink/ui/helper/icons.dart';
 
 class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Widget title;
-  AppbarWidget({this.title});
+  final Function leadingCallback;
+  final Icon leadingIcon;
+  final String leadingText;
+  AppbarWidget(
+      {this.title, this.leadingCallback, this.leadingIcon, this.leadingText});
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
@@ -14,20 +18,68 @@ class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppbarWidgetState extends State<AppbarWidget> {
+  _leadingFunction() {
+    if (widget.leadingIcon != null) {
+      return IconButton(
+          icon: widget.leadingIcon == null
+              ? SvgPicture.asset(
+                  followingfilled,
+                  semanticsLabel: '',
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).accentColor
+                      : Colors.white,
+                  width: 30,
+                  height: 30,
+                )
+              : widget.leadingIcon,
+          onPressed: () => widget.leadingCallback());
+    }
+    if (widget.leadingText != null) {
+      return TextButton(
+        child: widget.leadingText == null
+            ? SvgPicture.asset(
+                back,
+                semanticsLabel: '',
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).accentColor
+                    : Colors.white,
+                width: 30,
+                height: 30,
+              )
+            : Text(
+                widget.leadingText,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).accentColor
+                      : Colors.white,
+                ),
+              ),
+        onPressed: () => widget.leadingCallback(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Navigator.of(context).canPop() ? IconButton(
-          icon: SvgPicture.asset(
-            back,
-            semanticsLabel: 'back',
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Theme.of(context).accentColor
-                : Colors.white,
-            width: 30,
-            height: 30,
-          ),
-          onPressed: () => Navigator.pop(context)) : Container(),
+      leadingWidth: 80,
+
+      leading: widget.leadingCallback == null
+          ? Navigator.of(context).canPop()
+              ? IconButton(
+                  icon: SvgPicture.asset(
+                    back,
+                    semanticsLabel: 'back',
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).accentColor
+                        : Colors.white,
+                    width: 30,
+                    height: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context))
+              : Container()
+          : _leadingFunction(),
       backgroundColor: Colors.black,
       title: widget.title == null ? Container() : widget.title,
       // toolbarHeight: kToolbarHeight - 10,

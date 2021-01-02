@@ -12,6 +12,7 @@ import 'package:moonblink/ui/pages/main/newfeed/create_post_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/my_new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
+import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
@@ -43,6 +44,7 @@ class RouteName {
   static const String userStatus = '/userStatus';
   // static const String comment = 'comment';
   static const String network = 'network';
+  static const String notiPage = 'notiPage';
   // static const String error = 'error';
   static const String imagepick = 'imagepick';
   static const String takepicture = 'takepicture';
@@ -123,6 +125,8 @@ class MoonGoRouter {
       //   return NoAnimRouteBuilder(UserStatusPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
+      case RouteName.notiPage:
+        return NoAnimRouteBuilder(UserNewNotificationPage());
       case RouteName.imagepick:
         return CupertinoPageRoute(builder: (_) => ImagePickerPage());
       case RouteName.otp:

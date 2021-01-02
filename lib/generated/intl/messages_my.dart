@@ -332,6 +332,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "userStatusCustomerService" : MessageLookupByLibrary.simpleMessage("ဝန်ဆောင်မှု"),
     "userStatusDarkMode" : MessageLookupByLibrary.simpleMessage("အမှောင်စနစ်"),
     "userStatusDayMode" : MessageLookupByLibrary.simpleMessage("အလင်းစနစ်"),
+    "userStatusManagePosts" : MessageLookupByLibrary.simpleMessage("Manage Posts"),
+    "userStatusNotification" : MessageLookupByLibrary.simpleMessage("Notifications"),
     "userStatusSettings" : MessageLookupByLibrary.simpleMessage("ဆက်တင်"),
     "userStatusTheme" : MessageLookupByLibrary.simpleMessage("ပုံစံ"),
     "userStatusWallet" : MessageLookupByLibrary.simpleMessage("ပိုက်ဆံအိတ်"),
