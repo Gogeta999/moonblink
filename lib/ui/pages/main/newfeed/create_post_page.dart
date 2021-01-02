@@ -265,7 +265,44 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   _postByFree() async {
-
+    if (_uploading) return;
+    String body = this._postTitleController.text.trim();
+    List<File> media = await this._mediaSubject.first;
+    File video = await this._videoSubject.first;
+    int type = 1;
+    int status = _getStatus(await this._postOptionsSubject.first);
+    final vip = await this._vipDataSubject.first;
+    if (status == 0 && vip.publicPost <= 0) {
+      showToast('No Public free post count left');
+      return;
+    }
+    if (status == 1 && vip.onlyFollowerPost <= 0) {
+      showToast('No Followers free post count left');
+      return;
+    }
+    if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
+      showToast('Require title or photo or video');
+      return;
+    }
+    this._postByFreeButtonSubject.add(true);
+    _uploading = true;
+    MoonBlinkRepository.uploadPost(media, video, type, status, 0,
+            body: body ?? '')
+        .then((_) {
+      showToast('Upload Success');
+      _uploading = false;
+      try {
+        Navigator.pop(context);
+      } catch (e) {
+        if (isDev) print(e.toString());
+      }
+      this._postByFreeButtonSubject?.add(false);
+    },
+            onError: (e) => {
+                  showToast(e.toString()),
+                  _uploading = false,
+                  this._postByFreeButtonSubject?.add(false)
+                });
   }
 
   _postByAd() async {
@@ -385,15 +422,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         return 1;
     }
     return -1;
-    // switch (option) {
-    //   case 'Private':
-    //     return 0;
-    //   case 'Public':
-    //     return 1;
-    //   case 'Followers':
-    //     return 2;
-    // }
-    // return -1;
   }
 
   @override
@@ -495,20 +523,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           },
                         ),
                         SizedBox(height: 5),
-                                                SizedBox(height: 5),
                         StreamBuilder<VipData>(
-                          initialData: null,
-                          stream: this._vipDataSubject,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == null) return Container();
-                            return Column(
-                              children: [
-                                Text('Free public post ${snapshot.data.publicPost} left'),
-                                Text('Free follower post ${snapshot.data.onlyFollowerPost} left')
-                              ],
-                            );
-                          }
-                        )
+                            initialData: null,
+                            stream: this._vipDataSubject,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return Container();
+                              return Column(
+                                children: [
+                                  Text(
+                                      'Free public post ${snapshot.data.publicPost} left'),
+                                  Text(
+                                      'Free followers post ${snapshot.data.onlyFollowerPost} left')
+                                ],
+                              );
+                            })
                         // GestureDetector(
                         //     onTap: () async {
                         //       this._startWatchingButtonSubject.add(true);
@@ -767,36 +795,35 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     SizedBox(width: 5),
                     Expanded(
                         child: StreamBuilder<VipData>(
-                          initialData: null,
-                          stream: this._vipDataSubject,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == null) {
-                              return CupertinoButton.filled(
-                                    padding: EdgeInsets.zero,
-                                    child: CupertinoActivityIndicator(),
-                                    onPressed: () {});
-                            }
-                            if (snapshot.data.postUpload == 1) {
-                              return StreamBuilder<bool>(
-                                initialData: false,
-                                stream: this._postByFreeButtonSubject,
-                                builder: (context, snapshot) {
-                                  if (snapshot.data) {
-                                    return CupertinoButton.filled(
-                                    padding: EdgeInsets.zero,
-                                    child: CupertinoActivityIndicator(),
-                                    onPressed: () {});
-                                  }
+                      initialData: null,
+                      stream: this._vipDataSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return CupertinoButton.filled(
+                              padding: EdgeInsets.zero,
+                              child: CupertinoActivityIndicator(),
+                              onPressed: () {});
+                        }
+                        if (snapshot.data.postUpload == 1) {
+                          return StreamBuilder<bool>(
+                              initialData: false,
+                              stream: this._postByFreeButtonSubject,
+                              builder: (context, snapshot) {
+                                if (snapshot.data) {
                                   return CupertinoButton.filled(
+                                      padding: EdgeInsets.zero,
+                                      child: CupertinoActivityIndicator(),
+                                      onPressed: () {});
+                                }
+                                return CupertinoButton.filled(
                                     padding: EdgeInsets.zero,
                                     child: Text('Free to post now'),
                                     onPressed: () {
                                       this._postByFree();
                                     });
-                                } 
-                              );
-                            }
-                            return StreamBuilder<bool>(
+                              });
+                        }
+                        return StreamBuilder<bool>(
                             initialData: false,
                             stream: this._postByCoinsButtonSubject,
                             builder: (context, snapshot) {
@@ -812,8 +839,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   child: Text('Post by using Coins'),
                                   onPressed: () => this._postByCoins());
                             });
-                          },
-                        ))
+                      },
+                    ))
                   ],
                 )
               ],
