@@ -16,6 +16,7 @@
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../convex_items.dart';
 import 'blend_image_icon.dart';
@@ -28,6 +29,7 @@ class FixedCircleTabStyle extends InnerBuilder {
 
   /// Index of the centered convex shape.
   final int convexIndex;
+  final Function onDoubleTap;
 
   /// Create style builder
   FixedCircleTabStyle(
@@ -35,7 +37,8 @@ class FixedCircleTabStyle extends InnerBuilder {
       Color activeColor,
       Color color,
       this.backgroundColor,
-      this.convexIndex})
+      this.convexIndex,
+      this.onDoubleTap})
       : super(items: items, activeColor: activeColor, color: color);
 
   @override
@@ -65,21 +68,24 @@ class FixedCircleTabStyle extends InnerBuilder {
       );
     }
 
-    return Container(
-      padding: EdgeInsets.only(bottom: 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          BlendImageIcon(
-            active ? item.activeIcon ?? item.icon : item.icon,
-            color: item.blend ? (c) : null,
-            size: style.iconSize,
-          ),
-          style.hideEmptyLabel && (item.title == null || item.title.isEmpty)
-              ? null
-              : Text(item.title ?? '', style: textStyle)
-        ]..removeWhere((it) => it == null),
+    return GestureDetector(
+      child: Container(
+        padding: EdgeInsets.only(bottom: 2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            BlendImageIcon(
+              active ? item.activeIcon ?? item.icon : item.icon,
+              color: item.blend ? (c) : null,
+              size: style.iconSize,
+            ),
+            style.hideEmptyLabel && (item.title == null || item.title.isEmpty)
+                ? null
+                : Text(item.title ?? '', style: textStyle)
+          ]..removeWhere((it) => it == null),
+        ),
       ),
+      onDoubleTap: onDoubleTap == null ? null : onDoubleTap,
     );
   }
 

@@ -35,6 +35,7 @@ DelegateBuilder supportedStyle(
   Color activeColor,
   Color backgroundColor,
   Curve curve,
+  Function onDoubleTap,
 }) {
   assert(items != null && items.isNotEmpty, 'items should not be empty');
   assert(
@@ -54,6 +55,7 @@ DelegateBuilder supportedStyle(
       break;
     case TabStyle.fixedCircle:
       builder = FixedCircleTabStyle(
+        onDoubleTap: onDoubleTap,
         items: items,
         color: color,
         activeColor: activeColor,

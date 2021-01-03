@@ -55,6 +55,7 @@ class _UnverifiedPartnerSignUpPageState
   void dispose() {
     if (isDev) print('Disposing main app');
     userModel.dispose();
+    super.dispose();
   }
 
   void _initData() {

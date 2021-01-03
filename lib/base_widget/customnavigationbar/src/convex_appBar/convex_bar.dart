@@ -95,11 +95,11 @@ class ConvexAppBar extends StatefulWidget {
 
   /// Badge chip builder.
   final ChipBuilder chipBuilder;
+  //Double Tap
+  final Function doubleTap;
 
   /// Tab Click handler.
   final GestureTapIndexCallback onTap;
-  //
-  final GestureTapCallback onDoubleTap;
 
   /// Tab event notifier, can be used to block tap event.
   final TapNotifier onTapNotify;
@@ -187,9 +187,9 @@ class ConvexAppBar extends StatefulWidget {
     @required List<TabItem> items,
     int initialActiveIndex,
     GestureTapIndexCallback onTap,
-    GestureTapCallback onDoubleTap,
     TapNotifier onTabNotify,
     TabController controller,
+    Function doubleTap,
     Color color,
     Color activeColor,
     Color backgroundColor,
@@ -211,9 +211,9 @@ class ConvexAppBar extends StatefulWidget {
             activeColor: activeColor ?? Colors.white,
             backgroundColor: backgroundColor ?? Colors.blue,
             curve: curve ?? Curves.easeInOut,
+            onDoubleTap: doubleTap,
           ),
           onTap: onTap,
-          onDoubleTap: onDoubleTap,
           onTapNotify: onTabNotify,
           controller: controller,
           backgroundColor: backgroundColor ?? Colors.blue,
@@ -250,7 +250,7 @@ class ConvexAppBar extends StatefulWidget {
     @required this.count,
     this.initialActiveIndex,
     this.onTap,
-    this.onDoubleTap,
+    this.doubleTap,
     this.onTapNotify,
     this.controller,
     this.backgroundColor,
@@ -299,6 +299,7 @@ class ConvexAppBar extends StatefulWidget {
     // parameter for appbar
     List<TabItem> items,
     int initialActiveIndex,
+    Function doubleTap,
     GestureTapIndexCallback onTap,
     TapNotifier onTabNotify,
     TabController controller,
@@ -329,6 +330,7 @@ class ConvexAppBar extends StatefulWidget {
       key: key,
       items: items,
       initialActiveIndex: initialActiveIndex,
+      doubleTap: doubleTap,
       onTap: onTap,
       onTabNotify: onTabNotify,
       controller: controller,

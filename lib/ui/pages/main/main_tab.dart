@@ -19,6 +19,7 @@ import 'package:moonblink/ui/pages/main/newfeed/new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
 import 'package:moonblink/ui/pages/main/user_status/user_status_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 
 class MainTabPage extends StatefulWidget {
   final int initPage;
@@ -63,6 +64,22 @@ class _MainTabPageState extends State<MainTabPage>
     homeController.dispose();
     nfController.dispose();
     super.dispose();
+  }
+
+  void _doubleTap(int index) {
+    switch (index) {
+      case 0:
+        nfController.animateTo(0.0,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+        break;
+      case 1:
+        homeController.animateTo(0.0,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+        break;
+
+      default:
+        print('Default tap');
+    }
   }
 
   void _onPageChanged(int index) {
@@ -137,84 +154,83 @@ class _MainTabPageState extends State<MainTabPage>
           onPageChanged: _onPageChanged,
         ),
       ),
-      // bottomNavigationBar: SnakeNavigationBar.color(
-      //   behaviour: snakeBarStyle,
-      //   snakeShape: snakeShape,
-      //   shape: null,
-      //   padding: EdgeInsets.zero,
-
-      //   ///configuration for SnakeNavigationBar.color
-      //   snakeViewColor: selectedColor,
-      //   selectedItemColor:
-      //       snakeShape == SnakeShape.indicator ? selectedColor : null,
-      //   unselectedItemColor: Colors.blueGrey,
-
-      //   ///configuration for SnakeNavigationBar.gradient
-      //   //snakeViewGradient: selectedGradient,
-      //   //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
-      //   //unselectedItemGradient: unselectedGradient,
-
-      //   showUnselectedLabels: showUnselectedLabels,
-      //   showSelectedLabels: showSelectedLabels,
-
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onPageChanged,
-      //   items: [
-      //     BottomNavigationBarItem(
-      //         icon: InkWell(
-      //           child: Icon(FontAwesomeIcons.home),
-      //           onDoubleTap: () {
-      //             nfController.animateTo(0.0,
-      //                 duration: const Duration(milliseconds: 300),
-      //                 curve: Curves.easeOut);
-      //           },
-      //         ),
-      //         label: 'home'),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(FontAwesomeIcons.heart), label: 'heart'),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(FontAwesomeIcons.plus), label: 'plus'),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(FontAwesomeIcons.comment), label: 'comment'),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(FontAwesomeIcons.comment), label: 'user')
-      //   ],
-      // ),
       bottomNavigationBar: ConvexAppBar(
+        doubleTap: () {
+          _doubleTap(_selectedIndex);
+        },
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         style: TabStyle.fixedCircle,
-        // color: Theme.of(context).brightness == Brightness.dark
-        //     ? Colors.black
-        //     : Colors.grey,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Theme.of(context).accentColor,
         items: [
           TabItem(
-            icon: Image.asset('images/mainTab/home.png'),
+            icon: Image.asset(
+              'images/mainTab/home.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
             activeIcon: Image.asset(
               'images/mainTab/home1.png',
-              color: Colors.black,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
           ),
           TabItem(
-            icon: Image.asset('images/mainTab/following.png'),
-            activeIcon: Image.asset('images/mainTab/following1.png',
-                color: Colors.black),
+            icon: Image.asset(
+              'images/mainTab/following.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            activeIcon: Image.asset(
+              'images/mainTab/following1.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
           TabItem(
-            icon: Icon(FontAwesomeIcons.plus),
+            icon: Icon(
+              FontAwesomeIcons.plus,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.white,
+            ),
             // activeIcon: Icon(Icons.add)
           ),
           TabItem(
-            icon: Image.asset('images/mainTab/chat.png'),
-            activeIcon:
-                Image.asset('images/mainTab/chat1.png', color: Colors.black),
+            icon: Image.asset(
+              'images/mainTab/chat.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            activeIcon: Image.asset(
+              'images/mainTab/chat1.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
           TabItem(
-            icon: Image.asset('images/mainTab/mainProfile.png'),
-            activeIcon: Image.asset('images/mainTab/mainProfile1.png',
-                color: Colors.black),
+            icon: Image.asset(
+              'images/mainTab/mainProfile.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            activeIcon: Image.asset(
+              'images/mainTab/mainProfile1.png',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
         ],
-        initialActiveIndex: 1 /*optional*/,
+        initialActiveIndex: 0 /*optional*/,
         onTap: _onPageChanged,
       ),
     );
