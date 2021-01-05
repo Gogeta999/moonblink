@@ -7,6 +7,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -88,6 +89,7 @@ class NFBloc {
 
   void fetchInitialData() {
     nextPage = 1;
+    MoonGoDB().retrieveNfPosts(limit, nextPage).then((value) => nfPostsSubject.add(value));
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
       nfPostsSubject.add(value);
       nextPage++;

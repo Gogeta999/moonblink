@@ -673,9 +673,11 @@ class MoonBlinkRepository {
       'limit': limit,
       'page': page,
     });
-    return response.data['data']['data']
+    List<NFPost> nfPosts = response.data['data']['data']
         .map<NFPost>((e) => NFPost.fromJson(e))
         .toList();
+    MoonGoDB().insertNfPosts(nfPosts);
+    return nfPosts;
   }
 
   static Future<List<NFPost>> getNFPostsById(int limit, int page) async {

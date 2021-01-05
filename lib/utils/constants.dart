@@ -65,3 +65,4 @@ const String thirdButtonMessage = 'What should I do to play with you?';
 
 const String kDataBaseName = 'moongo.db';
 const String kHomePostTableName = 'HomePostTable';
+const String kNewFeedTableName = 'NewFeedTable';
