@@ -1,11 +1,11 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
-import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
-import 'package:moonblink/base_widget/gradient.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/my_nf_bloc.dart';
@@ -102,7 +102,8 @@ class _MyNewFeedPageState extends State<MyNewFeedPage>
                         ));
                       }
                       final item = snapshot.data[index];
-                      return MyNFPostItem(item: item, index: index, bloc: _bloc);
+                      return MyNFPostItem(
+                          item: item, index: index, bloc: _bloc);
                     },
                   );
                 }(),
@@ -188,28 +189,29 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                 ],
               ),
               StreamBuilder<bool>(
-                initialData: false,
-                stream: this._deleteSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data) {
+                  initialData: false,
+                  stream: this._deleteSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data) {
+                      return IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: CupertinoActivityIndicator(),
+                        onPressed: () {},
+                      );
+                    }
                     return IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: CupertinoActivityIndicator(),
-                    onPressed: () {},
-                  );
-                  }
-                  return IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(Icons.delete, color: Colors.redAccent),
-                    onPressed: () {
-                      widget.bloc.onTapDeleteIcon(
-                          context, widget.index, widget.item.id).then((value) {
-                            if (value) this._deleteSubject.add(value);
-                          });
-                    },
-                  );
-                }
-              )
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.delete, color: Colors.redAccent),
+                      onPressed: () {
+                        widget.bloc
+                            .onTapDeleteIcon(
+                                context, widget.index, widget.item.id)
+                            .then((value) {
+                          if (value) this._deleteSubject.add(value);
+                        });
+                      },
+                    );
+                  })
             ],
           ),
 
@@ -271,53 +273,48 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-    margin: const EdgeInsets.only(left: 15),
-    child: Row(
-      children: [
-        StreamBuilder<bool>(
-          initialData: false,
-          stream: this._reactedSubject,
-          builder: (context, snapshot) {
-            return CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: Icon(
-                  snapshot.data
-                      ? FontAwesomeIcons.solidHeart
-                      : FontAwesomeIcons.heart,
-                  size: 30,
-                  color: snapshot.data
-                      ? Colors.red[400]
-                      : Theme.of(context).iconTheme.color),
-              onPressed: () {
-                if (snapshot.data) {
-                  ///reacted
-                  this
-                      ._reactCountSubject
-                      .first
-                      .then((value) => this._reactCountSubject.add(--value));
-                  this._reactedSubject.add(false);
-                } else {
-                  this
-                      ._reactCountSubject
-                      .first
-                      .then((value) => this._reactCountSubject.add(++value));
-                  this._reactedSubject.add(true);
-                }
-                //after this call some api
-              },
-            );
-          }
-        ),
-        StreamBuilder<int>(
-          initialData: 0,
-          stream: this._reactCountSubject,
-          builder: (context, snapshot) {
-            return Text('${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
-          }
-        ),
-      ],
-    ),
-    ),
+                margin: const EdgeInsets.only(left: 15),
+                child: Row(
+                  children: [
+                    StreamBuilder<bool>(
+                        initialData: false,
+                        stream: this._reactedSubject,
+                        builder: (context, snapshot) {
+                          return CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Icon(
+                                snapshot.data
+                                    ? FontAwesomeIcons.solidHeart
+                                    : FontAwesomeIcons.heart,
+                                size: 30,
+                                color: snapshot.data
+                                    ? Colors.red[400]
+                                    : Theme.of(context).iconTheme.color),
+                            onPressed: () {
+                              if (snapshot.data) {
+                                ///reacted
+                                this._reactCountSubject.first.then((value) =>
+                                    this._reactCountSubject.add(--value));
+                                this._reactedSubject.add(false);
+                              } else {
+                                this._reactCountSubject.first.then((value) =>
+                                    this._reactCountSubject.add(++value));
+                                this._reactedSubject.add(true);
+                              }
+                              //after this call some api
+                            },
+                          );
+                        }),
+                    StreamBuilder<int>(
+                        initialData: 0,
+                        stream: this._reactCountSubject,
+                        builder: (context, snapshot) {
+                          return Text(
+                              '${snapshot.data} ${snapshot.data <= 1 ? "Like" : "Likes"}');
+                        }),
+                  ],
+                ),
+              ),
               Container(
                 child: Text(
                   G.of(context).becomePartnerAt +
@@ -356,122 +353,190 @@ class PostMediaItem extends StatefulWidget {
 
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
+  final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
+  int maxHeight = 400;
+  final _maxHeightSubject = BehaviorSubject.seeded(200);
 
   @override
   void initState() {
+    this._pageChildrenSubject.add(widget.item.media
+        .asMap()
+        .map((index, url) {
+          UrlType urlType = widget.nfBloc.getUrlType(url);
+          if (urlType == UrlType.REMOTE_IMAGE) if (urlType ==
+              UrlType.REMOTE_IMAGE)
+            return MapEntry(
+              index,
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.9,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          fullscreenDialog: true,
+                          builder: (_) => FullScreenImageView(imageUrl: url)));
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: url,
+                    imageBuilder: (context, imageProvider) {
+                      final imageListener = ImageStreamListener((info, _) {
+                        this._maxHeightSubject.first.then((value) {
+                          this._maxHeightSubject.add(
+                              min(maxHeight, max(info.image.height, value)));
+                        });
+                      });
+                      imageProvider
+                          .resolve(ImageConfiguration())
+                          .addListener(imageListener);
+                      return Image(image: imageProvider, fit: BoxFit.fill);
+                    },
+                    progressIndicatorBuilder: (context, url, progress) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                          valueColor: AlwaysStoppedAnimation(
+                              Theme.of(context).accentColor),
+                        ),
+                      );
+                    },
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              ),
+            );
+          if (urlType == UrlType.REMOTE_VIDEO)
+            return MapEntry(
+              index,
+              Player(
+                url: url,
+                id: widget.item.id,
+                index: index,
+                maxHeightCallBack: (int height) {
+                  this._maxHeightSubject.first.then((value) {
+                    this
+                        ._maxHeightSubject
+                        .add(max(maxHeight, max(height, value)));
+                  });
+                },
+              ),
+            );
+          return MapEntry(index, Text('Not Supported Format'));
+        })
+        .values
+        .toList());
     super.initState();
   }
 
   @override
+  void didChangeDependencies() {
+    maxHeight = (MediaQuery.of(context).size.height * 0.7).toInt();
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
+    _maxHeightSubject.close();
+    _pageChildrenSubject.close();
     _currentPageSubject.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: Stack(
-        children: [
-          PageView.builder(
-              physics: ClampingScrollPhysics(),
-              itemCount: widget.item.media.length,
-              onPageChanged: (value) {
-                _currentPageSubject.add(value + 1);
-              },
-              itemBuilder: (context, index) {
-                UrlType urlType =
-                    widget.nfBloc.getUrlType(widget.item.media[index]);
-                if (urlType == UrlType.REMOTE_IMAGE)
-                  return CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    pressedOpacity: 0.9,
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              fullscreenDialog: true,
-                              builder: (_) => FullScreenImageView(
-                                  imageUrl: widget.item.media[index])));
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: CachedNetworkImage(
-                        fit: BoxFit.fill,
-                        imageUrl: widget.item.media[index],
-                        progressIndicatorBuilder: (context, url, progress) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: progress.progress,
-                              valueColor: AlwaysStoppedAnimation(
-                                  Theme.of(context).accentColor),
-                            ),
-                          );
-                        },
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
+    return Stack(
+      children: [
+        StreamBuilder<List<Widget>>(
+          initialData: [],
+          stream: this._pageChildrenSubject,
+          builder: (context, childrenSnapshot) {
+            return StreamBuilder<int>(
+                initialData: 200,
+                stream: this._maxHeightSubject,
+                builder: (context, maxHeightSnapshot) {
+                  return Container(
+                    width: double.infinity,
+                    height: maxHeightSnapshot.data.toDouble(),
+                    child: PageView(
+                      physics: ClampingScrollPhysics(),
+                      onPageChanged: (value) {
+                        _currentPageSubject.add(value + 1);
+                      },
+                      children: childrenSnapshot.data,
                     ),
                   );
-                if (urlType == UrlType.REMOTE_VIDEO)
-                  return Player(
-                      url: widget.item.media[index], id: widget.item.id, index: index);
-                return Text('Not Supported Format');
-              }),
-          StreamBuilder<int>(
-              initialData: 0,
-              stream: this._currentPageSubject,
-              builder: (context, snapshot) {
-                if (snapshot.data == null) return Container();
-                return Positioned(
-                    top: 5,
-                    right: 5,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 6),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.black.withOpacity(0.5)),
-                      child: Text(
-                          '${snapshot.data}/${widget.item.media.length}',
-                          style: Theme.of(context).textTheme.bodyText2),
-                    ));
-              })
-        ],
-      ),
+                });
+          },
+        ),
+        // PageView.builder(
+        //     physics: ClampingScrollPhysics(),
+        //     itemCount: widget.item.media.length,
+        //     onPageChanged: (value) {
+        //       _currentPageSubject.add(value + 1);
+        //     },
+        //     itemBuilder: (context, index) {
+        //       UrlType urlType =
+        //           widget.nfBloc.getUrlType(widget.item.media[index]);
+        //       if (urlType == UrlType.REMOTE_IMAGE)
+        //         return CupertinoButton(
+        //           padding: EdgeInsets.zero,
+        //           pressedOpacity: 0.9,
+        //           onPressed: () {
+        //             Navigator.push(
+        //                 context,
+        //                 CupertinoPageRoute(
+        //                     fullscreenDialog: true,
+        //                     builder: (_) => FullScreenImageView(
+        //                         imageUrl: widget.item.media[index])));
+        //           },
+        //           child: Container(
+        //             width: double.infinity,
+        //             height: double.infinity,
+        //             child: CachedNetworkImage(
+        //               fit: BoxFit.fill,
+        //               imageUrl: widget.item.media[index],
+        //               progressIndicatorBuilder: (context, url, progress) {
+        //                 return Center(
+        //                   child: CircularProgressIndicator(
+        //                     value: progress.progress,
+        //                     valueColor: AlwaysStoppedAnimation(
+        //                         Theme.of(context).accentColor),
+        //                   ),
+        //                 );
+        //               },
+        //               errorWidget: (context, url, error) => Icon(Icons.error),
+        //             ),
+        //           ),
+        //         );
+        //       if (urlType == UrlType.REMOTE_VIDEO)
+        //         return Player(
+        //             url: widget.item.media[index],
+        //             id: widget.item.id,
+        //             index: index);
+        //       return Text('Not Supported Format');
+        //     }),
+        StreamBuilder<int>(
+            initialData: 0,
+            stream: this._currentPageSubject,
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return Container();
+              return Positioned(
+                  top: 5,
+                  right: 5,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.black.withOpacity(0.5)),
+                    child: Text('${snapshot.data}/${widget.item.media.length}',
+                        style: Theme.of(context).textTheme.bodyText2),
+                  ));
+            })
+      ],
     );
-  }
-}
-
-class SizeReportingWidget extends StatefulWidget {
-  final Widget child;
-  final ValueChanged<Size> onSizeChange;
-
-  const SizeReportingWidget({
-    Key key,
-    @required this.child,
-    @required this.onSizeChange,
-  }) : super(key: key);
-
-  @override
-  _SizeReportingWidgetState createState() => _SizeReportingWidgetState();
-}
-
-class _SizeReportingWidgetState extends State<SizeReportingWidget> {
-  Size _oldSize;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-    return widget.child;
-  }
-
-  void _notifySize() {
-    final size = context?.size;
-    if (_oldSize != size) {
-      _oldSize = size;
-      widget.onSizeChange(size);
-    }
   }
 }

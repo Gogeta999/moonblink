@@ -381,10 +381,12 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
         print("Trimmed Video: ${trimmedVideo.lengthSync()}");
         MediaInfo mediaInfo = await VideoCompress.compressVideo(
           trimmedVideo.path,
-          quality: VideoQuality.DefaultQuality
+          quality: VideoQuality.DefaultQuality,
+          deleteOrigin: true,
+          includeAudio: true,
         );
         Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
-        print("Trimmed Video: ${mediaInfo.filesize}");
+        print("Compressed Video: ${mediaInfo.filesize}");
         if (mediaInfo.file != null) {
           widget.onPressed(mediaInfo.file, thumbnail);
         }

@@ -8,8 +8,9 @@ class Player extends StatefulWidget {
   final String url;
   final int id;
   final int index;
+  final void Function(int height) maxHeightCallBack;
 
-  const Player({Key key, this.url, this.id, this.index}) : super(key: key);
+  const Player({Key key, this.url, this.id, this.index, this.maxHeightCallBack}) : super(key: key);
 
   @override
   _PlayerState createState() => _PlayerState();
@@ -34,6 +35,7 @@ class _PlayerState extends State<Player> {
     _muteSubject.add(_controller.value.volume == 0.0);
     _controller.initialize().then((_) {
       _controller.setLooping(true);
+      widget.maxHeightCallBack(_controller.value.size.height.toInt());
       setState(() {});
     });
     super.initState();
