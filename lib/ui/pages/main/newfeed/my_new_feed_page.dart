@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,13 +21,9 @@ class MyNewFeedPage extends StatefulWidget {
   _MyNewFeedPageState createState() => _MyNewFeedPageState();
 }
 
-class _MyNewFeedPageState extends State<MyNewFeedPage>
-    with AutomaticKeepAliveClientMixin {
+class _MyNewFeedPageState extends State<MyNewFeedPage> {
   MyNFBloc _bloc;
   final _controller = ScrollController();
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -52,63 +47,62 @@ class _MyNewFeedPageState extends State<MyNewFeedPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
       appBar: AppbarWidget(title: Text('Manage Posts')),
       body: SafeArea(
-        child: StreamBuilder<List<NFPost>>(
+        child: SmartRefresher(
+          controller: _bloc.refreshController,
+          enablePullDown: true,
+          scrollController: _bloc.scrollController,
+          onRefresh: () {
+            _bloc.refreshData();
+          },
+          header: WaterDropHeader(),
+          child: StreamBuilder<List<NFPost>>(
             initialData: null,
             stream: _bloc.myNfPostsSubject,
             builder: (context, snapshot) {
-              return SmartRefresher(
-                controller: _bloc.refreshController,
-                enablePullDown: true,
-                onRefresh: () {
-                  _bloc.refreshData();
-                },
-                header: WaterDropHeader(),
-                child: () {
-                  if (snapshot.hasError)
-                    return ViewStateErrorWidget(
-                      error: ViewStateError(
-                          snapshot.error == "No Internet Connection"
-                              ? ViewStateErrorType.networkTimeOutError
-                              : ViewStateErrorType.defaultError,
-                          errorMessage: snapshot.error.toString()),
-                      onPressed: () {
-                        _bloc.refreshData();
-                      },
-                    );
-                  if (snapshot.data == null) {
-                    return Center(child: CupertinoActivityIndicator());
+              if (snapshot.hasError)
+                return ViewStateErrorWidget(
+                  error: ViewStateError(
+                      snapshot.error == "No Internet Connection"
+                          ? ViewStateErrorType.networkTimeOutError
+                          : ViewStateErrorType.defaultError,
+                      errorMessage: snapshot.error.toString()),
+                  onPressed: () {
+                    _bloc.refreshData();
+                  },
+                );
+              if (snapshot.data == null) {
+                return Center(child: CupertinoActivityIndicator());
+              }
+              if (snapshot.data.isEmpty)
+                return Center(child: Text('No Posts Available'));
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                cacheExtent: MediaQuery.of(context).size.height * 10,
+                itemCount: _bloc.hasReachedMax
+                    ? snapshot.data.length
+                    : snapshot.data.length + 1,
+                itemBuilder: (context, index) {
+                  if (index >= snapshot.data.length) {
+                    return Center(
+                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: CupertinoActivityIndicator(),
+                    ));
                   }
-                  if (snapshot.data.isEmpty)
-                    return Center(child: Text('No Posts Available'));
-                  return ListView.builder(
-                    cacheExtent: MediaQuery.of(context).size.height * 10,
-                    controller: _bloc.scrollController,
-                    itemCount: _bloc.hasReachedMax
-                        ? snapshot.data.length
-                        : snapshot.data.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index >= snapshot.data.length) {
-                        return Center(
-                            child: Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: CupertinoActivityIndicator(),
-                        ));
-                      }
-                      final item = snapshot.data[index];
-                      return MyNFPostItem(
-                          item: item, index: index, bloc: _bloc);
-                    },
-                  );
-                }(),
+                  final item = snapshot.data[index];
+                  return MyNFPostItem(item: item, index: index, bloc: _bloc);
+                },
               );
-            }),
+            },
+          ),
+        ),
       ),
     );
   }

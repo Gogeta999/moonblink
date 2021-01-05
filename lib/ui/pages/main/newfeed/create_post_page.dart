@@ -44,6 +44,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final String myEmail = StorageManager.sharedPreferences.getString(mLoginMail);
   final maxImageLimit = 8;
   final maxVideoLimit = 1;
+  final String public = 'Public';
+  final String followers = 'Followers';
 
   final _postOptionsSubject = BehaviorSubject.seeded('Public');
   final _mediaSubject = BehaviorSubject<List<File>>.seeded(null);
@@ -163,6 +165,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
+
           ///Camera
           CupertinoButton(
               child: Text(G.of(context).imagePickerCamera),
@@ -224,6 +227,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
+
           ///Camera
           CupertinoButton(
               child: Text(G.of(context).imagePickerCamera),
@@ -241,8 +245,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   }));
                   print("Trimmed Video: ${trimmedVideo.lengthSync()}");
                   MediaInfo mediaInfo = await VideoCompress.compressVideo(
-                      trimmedVideo.path,
-                      quality: VideoQuality.DefaultQuality);
+                    trimmedVideo.path,
+                    quality: VideoQuality.DefaultQuality,
+                    deleteOrigin: true,
+                    includeAudio: true,
+                  );
                   Uint8List thumbnail = await VideoCompress.getByteThumbnail(
                       mediaInfo.file.path,
                       position: mediaInfo.duration ~/ 2);
@@ -300,6 +307,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     },
             onError: (e) => {
                   showToast(e.toString()),
+                  print(e.toString()),
                   _uploading = false,
                   this._postByFreeButtonSubject?.add(false)
                 });
@@ -423,6 +431,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
     return -1;
   }
+
+  Widget get _showIndicator => CupertinoButton.filled(
+      padding: EdgeInsets.zero,
+      child: CupertinoActivityIndicator(),
+      onPressed: () {});
 
   @override
   Widget build(BuildContext context) {
@@ -776,7 +789,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             return Container();
                           }
                           return Expanded(
-                                                        child: CupertinoButton(
+                            child: CupertinoButton(
                               padding: EdgeInsets.zero,
                               onPressed: () async {
                                 final file = await this._videoSubject.first;
@@ -790,8 +803,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 snapshot.data,
                                 width: double.infinity,
                                 height: double.infinity,
-                                cacheHeight: (MediaQuery.of(context).size.height * 0.3).toInt(),
-                                cacheWidth: (MediaQuery.of(context).size.width * 0.3).toInt(),
+                                cacheHeight:
+                                    (MediaQuery.of(context).size.height * 0.3)
+                                        .toInt(),
+                                cacheWidth:
+                                    (MediaQuery.of(context).size.width * 0.3)
+                                        .toInt(),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -834,10 +851,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             stream: this._postByAdButtonSubject,
                             builder: (context, snapshot) {
                               if (snapshot.data) {
-                                return CupertinoButton.filled(
-                                    padding: EdgeInsets.zero,
-                                    child: CupertinoActivityIndicator(),
-                                    onPressed: () {});
+                                return _showIndicator;
                               }
                               return CupertinoButton.filled(
                                   padding: EdgeInsets.zero,
@@ -849,48 +863,78 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         child: StreamBuilder<VipData>(
                       initialData: null,
                       stream: this._vipDataSubject,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return CupertinoButton.filled(
-                              padding: EdgeInsets.zero,
-                              child: CupertinoActivityIndicator(),
-                              onPressed: () {});
+                      builder: (context, vipSnapshot) {
+                        if (vipSnapshot.data == null) {
+                          return _showIndicator;
                         }
-                        if (snapshot.data.postUpload == 1) {
-                          return StreamBuilder<bool>(
-                              initialData: false,
-                              stream: this._postByFreeButtonSubject,
-                              builder: (context, snapshot) {
-                                if (snapshot.data) {
-                                  return CupertinoButton.filled(
-                                      padding: EdgeInsets.zero,
-                                      child: CupertinoActivityIndicator(),
-                                      onPressed: () {});
-                                }
-                                return CupertinoButton.filled(
-                                    padding: EdgeInsets.zero,
-                                    child: Text('Free to post now'),
-                                    onPressed: () {
-                                      this._postByFree();
-                                    });
-                              });
-                        }
-                        return StreamBuilder<bool>(
-                            initialData: false,
-                            stream: this._postByCoinsButtonSubject,
-                            builder: (context, snapshot) {
-                              if (snapshot.data) {
-                                return CupertinoButton.filled(
-                                  padding: EdgeInsets.zero,
-                                  child: CupertinoActivityIndicator(),
-                                  onPressed: () {},
-                                );
+                        if (vipSnapshot.data.postUpload == 1) {
+                          return StreamBuilder<String>(
+                            initialData: null,
+                            stream: this._postOptionsSubject,
+                            builder: (context, optionsSnapshot) {
+                              if (optionsSnapshot.data == null ||
+                                  optionsSnapshot.data.isEmpty) {
+                                return _showIndicator;
                               }
-                              return CupertinoButton.filled(
-                                  padding: EdgeInsets.zero,
-                                  child: Text('Post by using Coins'),
-                                  onPressed: () => this._postByCoins());
-                            });
+                              if (optionsSnapshot.data == public &&
+                                  vipSnapshot.data.publicPost > 0) {
+                                return StreamBuilder<bool>(
+                                    initialData: false,
+                                    stream: this._postByFreeButtonSubject,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.data) {
+                                        return CupertinoButton.filled(
+                                            padding: EdgeInsets.zero,
+                                            child: CupertinoActivityIndicator(),
+                                            onPressed: () {});
+                                      }
+                                      return CupertinoButton.filled(
+                                          padding: EdgeInsets.zero,
+                                          child: Text('Free to post now'),
+                                          onPressed: () {
+                                            this._postByFree();
+                                          });
+                                    });
+                              }
+                              if (optionsSnapshot.data == followers &&
+                                  vipSnapshot.data.onlyFollowerPost > 0) {
+                                return StreamBuilder<bool>(
+                                    initialData: false,
+                                    stream: this._postByFreeButtonSubject,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.data) {
+                                        return CupertinoButton.filled(
+                                            padding: EdgeInsets.zero,
+                                            child: CupertinoActivityIndicator(),
+                                            onPressed: () {});
+                                      }
+                                      return CupertinoButton.filled(
+                                          padding: EdgeInsets.zero,
+                                          child: Text('Free to post now'),
+                                          onPressed: () {
+                                            this._postByFree();
+                                          });
+                                    });
+                              }
+                              return StreamBuilder<bool>(
+                                  initialData: false,
+                                  stream: this._postByCoinsButtonSubject,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data) {
+                                      return CupertinoButton.filled(
+                                        padding: EdgeInsets.zero,
+                                        child: CupertinoActivityIndicator(),
+                                        onPressed: () {},
+                                      );
+                                    }
+                                    return CupertinoButton.filled(
+                                        padding: EdgeInsets.zero,
+                                        child: Text('Post by using Coins'),
+                                        onPressed: () => this._postByCoins());
+                                  });
+                            },
+                          );
+                        }
                       },
                     ))
                   ],

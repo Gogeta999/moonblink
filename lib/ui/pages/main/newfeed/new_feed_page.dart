@@ -70,55 +70,56 @@ class _NewFeedPageState extends State<NewFeedPage>
         },
       ),
       body: SafeArea(
-        child: StreamBuilder<List<NFPost>>(
+        child: SmartRefresher(
+          controller: _bloc.refreshController,
+          enablePullDown: true,
+          scrollController: _bloc.scrollController,
+          onRefresh: () {
+            _bloc.refreshData();
+          },
+          header: WaterDropHeader(),
+          child: StreamBuilder<List<NFPost>>(
             initialData: null,
             stream: _bloc.nfPostsSubject,
             builder: (context, snapshot) {
-              return SmartRefresher(
-                controller: _bloc.refreshController,
-                enablePullDown: true,
-                onRefresh: () {
-                  _bloc.refreshData();
-                },
-                header: WaterDropHeader(),
-                child: () {
-                  if (snapshot.hasError)
-                    return ViewStateErrorWidget(
-                      error: ViewStateError(
-                          snapshot.error == "No Internet Connection"
-                              ? ViewStateErrorType.networkTimeOutError
-                              : ViewStateErrorType.defaultError,
-                          errorMessage: snapshot.error.toString()),
-                      onPressed: () {
-                        _bloc.refreshData();
-                      },
-                    );
-                  if (snapshot.data == null) {
-                    return Center(child: CupertinoActivityIndicator());
+              if (snapshot.hasError)
+                return ViewStateErrorWidget(
+                  error: ViewStateError(
+                      snapshot.error == "No Internet Connection"
+                          ? ViewStateErrorType.networkTimeOutError
+                          : ViewStateErrorType.defaultError,
+                      errorMessage: snapshot.error.toString()),
+                  onPressed: () {
+                    _bloc.refreshData();
+                  },
+                );
+              if (snapshot.data == null) {
+                return Center(child: CupertinoActivityIndicator());
+              }
+              if (snapshot.data.isEmpty)
+                return Center(child: Text('No Posts Available'));
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                cacheExtent: MediaQuery.of(context).size.height * 10,
+                itemCount: _bloc.hasReachedMax
+                    ? snapshot.data.length
+                    : snapshot.data.length + 1,
+                itemBuilder: (context, index) {
+                  if (index >= snapshot.data.length) {
+                    return Center(
+                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: CupertinoActivityIndicator(),
+                    ));
                   }
-                  if (snapshot.data.isEmpty)
-                    return Center(child: Text('No Posts Available'));
-                  return ListView.builder(
-                    cacheExtent: MediaQuery.of(context).size.height * 10,
-                    controller: _bloc.scrollController,
-                    itemCount: _bloc.hasReachedMax
-                        ? snapshot.data.length
-                        : snapshot.data.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index >= snapshot.data.length) {
-                        return Center(
-                            child: Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: CupertinoActivityIndicator(),
-                        ));
-                      }
-                      final item = snapshot.data[index];
-                      return NFPostItem(item: item, index: index, bloc: _bloc);
-                    },
-                  );
-                }(),
+                  final item = snapshot.data[index];
+                  return NFPostItem(item: item, index: index, bloc: _bloc);
+                },
               );
-            }),
+            },
+          ),
+        ),
       ),
     );
   }
@@ -512,43 +513,12 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.black.withOpacity(0.5)),
-                    child: Text('${snapshot.data}/${widget.item.media.length}',
+                    child: Text(
+                        '${snapshot.data} / ${widget.item.media.length}',
                         style: Theme.of(context).textTheme.bodyText2),
                   ));
             })
       ],
     );
-  }
-}
-
-class SizeReportingWidget extends StatefulWidget {
-  final Widget child;
-  final ValueChanged<Size> onSizeChange;
-
-  const SizeReportingWidget({
-    Key key,
-    @required this.child,
-    @required this.onSizeChange,
-  }) : super(key: key);
-
-  @override
-  _SizeReportingWidgetState createState() => _SizeReportingWidgetState();
-}
-
-class _SizeReportingWidgetState extends State<SizeReportingWidget> {
-  Size _oldSize;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-    return widget.child;
-  }
-
-  void _notifySize() {
-    final size = context?.size;
-    if (_oldSize != size) {
-      _oldSize = size;
-      widget.onSizeChange(size);
-    }
   }
 }

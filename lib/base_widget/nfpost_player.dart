@@ -26,6 +26,11 @@ class _PlayerState extends State<Player> {
   void initState() {
     _controller = CachedVideoPlayerController.network(widget.url);
     _controller.addListener(() {
+      if (_controller.value.duration == null) return;
+      if (_controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
+        _controller.seekTo(Duration(milliseconds: 50));
+        return;
+      }
       int left = ((_controller.value.duration?.inMilliseconds ?? 0) -
           (_controller.value.position.inMilliseconds)) ~/ 1000;
       String leftSeconds = (left % 60).toString().padLeft(2, '0');
@@ -36,6 +41,7 @@ class _PlayerState extends State<Player> {
     _controller.initialize().then((_) {
       _controller.setLooping(true);
       widget.maxHeightCallBack(_controller.value.size.height.toInt());
+      _controller.seekTo(Duration(milliseconds: 50));
       setState(() {});
     });
     super.initState();

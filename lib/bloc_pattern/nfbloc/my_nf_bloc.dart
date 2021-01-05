@@ -69,9 +69,12 @@ class MyNFBloc {
   void refreshData() {
     nextPage = 1;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
-      myNfPostsSubject.add(value);
-      refreshController.refreshCompleted();
-      hasReachedMax = value.length < limit;
+      myNfPostsSubject.add(null);
+      Future.delayed(Duration(milliseconds: 50), () {
+        myNfPostsSubject.add(value);
+        refreshController.refreshCompleted();
+        hasReachedMax = value.length < limit;
+      });
     }, onError: (e) {
       myNfPostsSubject.addError(e);
       refreshController.refreshFailed();

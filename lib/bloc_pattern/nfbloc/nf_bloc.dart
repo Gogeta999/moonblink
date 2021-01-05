@@ -74,9 +74,12 @@ class NFBloc {
   void refreshData() {
     nextPage = 1;
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
-      nfPostsSubject.add(value);
-      refreshController.refreshCompleted();
-      hasReachedMax = value.length < limit;
+      nfPostsSubject.add(null);
+      Future.delayed(Duration(milliseconds: 50), () {
+        nfPostsSubject.add(value);
+        refreshController.refreshCompleted();
+        hasReachedMax = value.length < limit;
+      });
     }, onError: (e) {
       nfPostsSubject.addError(e);
       refreshController.refreshFailed();
@@ -117,7 +120,8 @@ class NFBloc {
         buildContext: context,
         onReport: () {
           MoonBlinkRepository.reportUser(partnerId).then((value) {
-            showToast('Report success. We will act on this user within 24 hours');
+            showToast(
+                'Report success. We will act on this user within 24 hours');
             Navigator.pop(context);
           }, onError: (e) {
             showToast('$e');
@@ -138,8 +142,8 @@ class NFBloc {
   }
 
   void onTapLikeIcon(int postId, int like) {
-    MoonBlinkRepository.reactNFPost(postId, like).then((value) {
-    }, onError: (e) {
+    MoonBlinkRepository.reactNFPost(postId, like).then((value) {},
+        onError: (e) {
       showToast('$e');
     });
   }
