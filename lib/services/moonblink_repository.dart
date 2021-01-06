@@ -546,11 +546,11 @@ class MoonBlinkRepository {
     return response;
   }
 
-  static Future upgradeVipLevel(int vipPlan) async {
+  static Future upgradeVipLevel(int vipPlan, int rewnew) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().postwithData(
         Api.VerifyAsPartner + '$userid/vip',
-        data: FormData.fromMap({'vip': vipPlan}));
+        data: FormData.fromMap({'vip': vipPlan, 'renew': 1}));
     return response;
   }
 

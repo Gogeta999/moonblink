@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
+import 'package:moonblink/base_widget/vip_renew_dialog.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
@@ -52,11 +53,23 @@ class _UserStatusPageState extends State<UserStatusPage> {
     // PushNotificationsManager().showgameprofilenoti();
     if (isDev)
       print('token: ${StorageManager.sharedPreferences.getString(token)}');
-    if (StorageManager.sharedPreferences.getString(token) != null) init();
+    if (StorageManager.sharedPreferences.getString(token) != null)
+      init().whenComplete(() {
+        int vipLevel = int.tryParse(this.profile.accVipLevel);
+        if (vipLevel != null) {
+          if (vipLevel == 0 && this.profile.vipRenew == 1) {
+            showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return VipRenewDialog();
+                });
+          }
+        }
+      });
     super.initState();
   }
 
-  init() async {
+  Future<void> init() async {
     OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
       this.profile = user;

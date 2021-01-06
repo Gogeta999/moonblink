@@ -175,7 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       height: 50,
                       ontap: () => Navigator.pushNamed(
                           context, RouteName.upgradeVip,
-                          arguments: usermodel.partnerData.accVipLevel),
+                          arguments: {'acc_vip_level': usermodel.partnerData.accVipLevel, 'half_renew': 0}),
                       child: Center(
                         child: Text(G.current.upgradeVipAppBarTitle),
                       ),

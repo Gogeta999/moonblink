@@ -5,6 +5,7 @@ class VipData {
   final int onlyFollowerPost;
   final int publicPost;
   final int walletValue;
+  final int vipRenew;
   final int followerCount;
 
   VipData.fromJson(Map<String, dynamic> json)
@@ -14,6 +15,7 @@ class VipData {
       onlyFollowerPost = json['vip']['only_follower_post'],
       publicPost = json['vip']['public_post'],
       walletValue = json['wallet']['value'],
+      vipRenew = json['vip_renew'],
       followerCount = json['follwer_count'];//typo idk
 }
 

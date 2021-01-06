@@ -26,6 +26,7 @@ class OwnProfile {
   int likecount;
   double rating;
   var accVipLevel;
+  int vipRenew;
   String level;
   String leftorder;
   String ordercount;
@@ -59,6 +60,7 @@ class OwnProfile {
       this.likecount,
       this.rating,
       this.accVipLevel,
+      this.vipRenew,
       this.level,
       this.leftorder,
       this.ordercount,
@@ -91,6 +93,7 @@ class OwnProfile {
         createdAt: map['created_at'],
         updatedAt: map['updated_at'],
         accVipLevel: map['vip'],
+        vipRenew: map['vip_renew'],
         level: map['account_level'],
         leftorder: map['need_to_take_order'],
         ordercount: map['next_level_order_count'],

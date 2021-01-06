@@ -64,10 +64,10 @@ class _PlayerState extends State<Player> {
         key: Key('${widget.id + widget.index}-${widget.url}'),
         onVisibilityChanged: (visibilityInfo) {
           if (visibilityInfo.visibleFraction >= 0.9) {
-            if (!_controller.value.isPlaying && !didUserPause)
-              _controller.play();
+            if (!(_controller?.value?.isPlaying ?? true) && !didUserPause)
+              _controller?.play();
           } else {
-            if (_controller.value.isPlaying) _controller.pause();
+            if ((_controller?.value?.isPlaying ?? false)) _controller?.pause();
           }
         },
         child: Stack(

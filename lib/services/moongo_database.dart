@@ -47,18 +47,24 @@ class MoonGoDB {
     );
   }
 
-  void insertPost(Post post) async {
-    int id = await _db.insert(_tableName, post.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-    if (isDev) print('Inserted Id: $id');
+  void insertPost(Post post) {
+    _db
+        .insert(_tableName, post.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace)
+        .then((value) {
+      if (isDev) print('Inserted Id: $value');
+    });
   }
 
   insertPosts(List<Post> posts) {
     _db.transaction((txn) {
-      posts.forEach((element) async {
-        int id = await txn.insert(_tableName, element.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
-        if (isDev) print('Inserted Id: $id');
+      posts.forEach((element) {
+        txn
+            .insert(_tableName, element.toMap(),
+                conflictAlgorithm: ConflictAlgorithm.replace)
+            .then((value) {
+          if (isDev) print('Inserted Id: $value');
+        });
       });
       return Future.value(true);
     });
@@ -100,7 +106,7 @@ class MoonGoDB {
   deletePost(int id) async {
     await _db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
   }
-
+  ///---- Start NFPOST -----
   void insertNfPost(NFPost nfPost) {
     _db
         .insert(_nfTableName, nfPost.toMap(),
@@ -111,9 +117,12 @@ class MoonGoDB {
   insertNfPosts(List<NFPost> nfPosts) {
     _db.transaction((txn) {
       nfPosts.forEach((element) async {
-        int id = await txn.insert(_nfTableName, element.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
-        if (isDev) print('Inserted Id: $id');
+        txn
+            .insert(_nfTableName, element.toMap(),
+                conflictAlgorithm: ConflictAlgorithm.replace)
+            .then((value) {
+          if (isDev) print('Inserted Id: $value');
+        });
       });
       return Future.value(true);
     });
@@ -135,8 +144,14 @@ class MoonGoDB {
   Future<List<NFPost>> retrieveNfPosts(int limit, int page) async {
     final int offset = limit * (page - 1);
     final List<Map> nfPosts = await _db.query(_nfTableName,
-        distinct: true, columns: null, orderBy: 'id DESC', limit: limit, offset: offset);
-    if (isDev) print('Retrieve Posts: ${nfPosts.length} ${nfPosts.first['id']} ${nfPosts.last['id']}');
+        distinct: true,
+        columns: null,
+        orderBy: 'id DESC',
+        limit: limit,
+        offset: offset);
+    if (isDev)
+      print(
+          'Retrieve Posts: ${nfPosts.length} ${nfPosts.first['id']} ${nfPosts.last['id']}');
     return List.generate(nfPosts.length, (index) {
       return NFPost.fromMap(nfPosts[index]);
     });

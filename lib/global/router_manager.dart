@@ -133,7 +133,7 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => OtpPage());
       case RouteName.upgradeVip:
         return CupertinoPageRoute(
-            builder: (_) => UpgradeVipPage(accVipLevel: settings.arguments));
+            builder: (_) => UpgradeVipPage(data: settings.arguments));
       case RouteName.type5otp:
         return CupertinoPageRoute(builder: (_) => Type5PartnerOtpPage());
       case RouteName.login:
