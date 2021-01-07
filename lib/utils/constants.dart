@@ -66,3 +66,5 @@ const String thirdButtonMessage = 'What should I do to play with you?';
 const String kDataBaseName = 'moongo.db';
 const String kHomePostTableName = 'HomePostTable';
 const String kNewFeedTableName = 'NewFeedTable';
+
+enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }

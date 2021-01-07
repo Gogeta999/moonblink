@@ -17,8 +17,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
 
-enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
-
 class NFBloc {
   NFBloc(this.scrollController) {
     this.scrollController.addListener(() => this.onScroll());

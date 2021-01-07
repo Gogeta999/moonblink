@@ -8,6 +8,7 @@ import 'package:moonblink/ui/pages/call/voice_call_page.dart';
 import 'package:moonblink/ui/pages/fb_login_error_page.dart';
 import 'package:moonblink/ui/pages/game_profile/choose_user_play_game_page.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_box_page.dart';
+import 'package:moonblink/ui/pages/main/newfeed/comment_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/create_post_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/my_new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
@@ -83,6 +84,7 @@ class RouteName {
   static const String boostingGameDetailPage = 'BoostingGameDetailPage';
   static const String createPostPage = 'CreatePostPage';
   static const String managePostsPage = 'ManagePostsPage';
+  static const String nfCommentPage = 'NFCommentPage';
 }
 
 class MoonGoRouter {
@@ -103,6 +105,8 @@ class MoonGoRouter {
                 // partnerName: settings.arguments,
                 // partnerProfile: settings.arguments,
                 ));
+      case RouteName.nfCommentPage:
+        return CupertinoPageRoute(builder: (_) => CommentPage(settings.arguments));
       case RouteName.boostingGameListPage:
         return CupertinoPageRoute(builder: (_) => BoostingGameListPage());
       case RouteName.boostingGameDetailPage:

@@ -123,12 +123,14 @@ class DioUtils {
   get(url, {queryParameters, options}) async {
     if (isDev) print('get---request---from--->$url');
     Response response;
-    try {
-      response = await _dio.get(url,
-          queryParameters: queryParameters, options: options);
-    } catch (e) {
-      throw 'No Internet Connection';
-    }
+    response = await _dio.get(url,
+        queryParameters: queryParameters, options: options);
+    // try {
+    //   response = await _dio.get(url,
+    //       queryParameters: queryParameters, options: options);
+    // } catch (e) {
+    //   throw 'No Internet Connection';
+    // }
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;

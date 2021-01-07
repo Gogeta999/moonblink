@@ -6,12 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
-
-enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
 
 class MyNFBloc {
   MyNFBloc(this.scrollController) {

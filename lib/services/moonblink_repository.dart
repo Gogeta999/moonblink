@@ -11,6 +11,7 @@ import 'package:moonblink/models/chat_models/last_message.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/models/follower.dart';
 import 'package:moonblink/models/message.dart';
+import 'package:moonblink/models/new_feed_models/NFComment.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
@@ -704,6 +705,20 @@ class MoonBlinkRepository {
         "moonblink/api/v1/social/post/$postId",
         queryParameters: {'like': like});
     return response;
+  }
+
+  static Future postComment(int postId, String message, int parentCommentId) async {
+    final formData = FormData.fromMap({'message': message, 'parent_comment_id': parentCommentId});
+    final response = await DioUtils().postwithData("moonblink/api/v1/social/post/$postId/comment", data: formData);
+    return response.data;
+  }
+
+  static Future<List<NFComment>> getNfPostComments(int postId, int limit, int page) async {
+    final response = await DioUtils().get("moonblink/api/v1/social/post/$postId/comment", queryParameters: {
+      'limit': limit,
+      'page': page
+    });
+    return response.data['data'].map<NFComment>((e) => NFComment.fromJson(e)).toList();
   }
 
   static Future<VipData> getUserVip() async {

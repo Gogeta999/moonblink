@@ -9,9 +9,11 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/my_nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -263,6 +265,8 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
             ),
           ),
           SizedBox(height: 5),
+
+          ///Post Actions
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -311,7 +315,7 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
               ),
               Container(
                 child: Text(
-                  G.of(context).becomePartnerAt +
+                  'Posted ' +
                       timeAgo.format(DateTime.parse(widget.item.createdAt),
                           allowFromNow: true),
                   style: TextStyle(color: Colors.grey, fontSize: 12.0),
@@ -329,6 +333,24 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
               ),
             ],
           ),
+          SizedBox(height: 3),
+
+          ///Post Comment
+          Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text('Last Comment')),
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text('View more comments'),
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteName.nfCommentPage,
+                      arguments: widget.item.id);
+                }),
+          )
         ],
       ),
     );
