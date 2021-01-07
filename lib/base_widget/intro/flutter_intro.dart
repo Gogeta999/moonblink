@@ -43,16 +43,21 @@ class Intro {
   OverlayEntry _overlayEntry;
   int _currentStepIndex = 0;
   Widget _stepWidget;
-  Function onfinish;
   List<Map> _configMap = [];
   List<GlobalKey> _globalKeys = [];
-  final Color _maskColor = Colors.black.withOpacity(.6);
-  final Duration _animationDuration = Duration(milliseconds: 300);
-  final _th = _Throttling(duration: Duration(milliseconds: 100));
+  Duration _animationDuration;
   Size _lastScreenSize;
+  Function onfinish;
+  final _th = _Throttling(duration: Duration(milliseconds: 500));
 
-  /// get current step page index
+  /// The mask color of step page
+  final Color maskColor;
+
+  /// Current step page index
   int get currentStepIndex => _currentStepIndex;
+
+  /// No animation
+  final bool noAnimation;
 
   /// The method of generating the content of the guide page,
   /// which will be called internally by [Intro] when the guide page appears.
@@ -74,9 +79,13 @@ class Intro {
     @required this.widgetBuilder,
     @required this.stepCount,
     this.onfinish,
+    this.maskColor = const Color.fromRGBO(0, 0, 0, .6),
+    this.noAnimation = false,
     this.borderRadius = const BorderRadius.all(Radius.circular(4)),
     this.padding = const EdgeInsets.all(8),
   }) : assert(stepCount > 0) {
+    _animationDuration =
+        noAnimation ? Duration(milliseconds: 0) : Duration(milliseconds: 300);
     for (int i = 0; i < stepCount; i++) {
       _globalKeys.add(GlobalKey());
       _configMap.add({});
@@ -198,7 +207,7 @@ class Intro {
               children: [
                 ColorFiltered(
                   colorFilter: ColorFilter.mode(
-                    _maskColor,
+                    maskColor,
                     BlendMode.srcOut,
                   ),
                   child: Stack(
@@ -223,6 +232,9 @@ class Intro {
                   ),
                 ),
                 _DelayRenderedWidget(
+                  duration: noAnimation
+                      ? Duration(milliseconds: 0)
+                      : Duration(milliseconds: 200),
                   child: _stepWidget,
                 ),
               ],
@@ -279,7 +291,7 @@ class Intro {
       offset: _widgetOffset,
       currentStepIndex: _currentStepIndex,
       stepCount: stepCount,
-      onFinish: onfinish == null ? _onFinish : onfinish,
+      onFinish: onfinish ?? _onFinish,
     ));
   }
 

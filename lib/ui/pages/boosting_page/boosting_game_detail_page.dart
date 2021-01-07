@@ -25,6 +25,7 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
   _BoostingGameDetailPageState() {
     intro = Intro(
       stepCount: 6,
+      noAnimation: false,
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
@@ -200,9 +201,9 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                       '${item.rankFrom} ' +
                           G.current.boostTo +
                           ' ${item.upToRank}',
+                      key: index == 0 ? intro.keys[0] : null,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      key: index == 0 ? intro.keys[0] : null,
                     ),
                     if (item.message?.isNotEmpty) SizedBox(height: 5),
                     if (item.message?.isNotEmpty)
@@ -292,12 +293,14 @@ class _BoostingGameDetailPageState extends State<BoostingGameDetailPage> {
                 return _loading;
               }
               bool tuto =
-                  (StorageManager.sharedPreferences.getBool(kNewToBoosting) ?? true);
+                  (StorageManager.sharedPreferences.getBool(kNewToBoosting) ??
+                      true);
 
               if (tuto) {
-                Timer(Duration(microseconds: 0), () {
+                Future.delayed(Duration(milliseconds: 500), () {
                   intro.start(context);
                 });
+                Timer(Duration(microseconds: 1000), () {});
                 StorageManager.sharedPreferences.setBool(kNewToBoosting, false);
               }
               return Column(
