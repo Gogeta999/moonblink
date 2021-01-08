@@ -209,7 +209,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       barrierDismissible: true,
       context: context,
       builder: (builder) => CupertinoAlertDialog(
-        content: Text('Pick Video From'),
+        content: Text(G.current.feedCreatePagePickVideoFrom),
         actions: <Widget>[
           ///Gallery
           CupertinoButton(
@@ -285,15 +285,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
     int status = _getStatus(await this._postOptionsSubject.first);
     final vip = await this._vipDataSubject.first;
     if (status == 0 && vip.publicPost <= 0) {
-      showToast('No Public free post count left');
+      showToast(G.current.feedCreatePageNoToastForFreePublic);
       return;
     }
     if (status == 1 && vip.onlyFollowerPost <= 0) {
-      showToast('No Followers free post count left');
+      showToast(G.current.feedCreatePageNoToastForFreeFollower);
       return;
     }
     if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
-      showToast('Require title or photo or video');
+      showToast(G.current.feedCreatePagePickRequired);
       return;
     }
     this._postByFreeButtonSubject.add(true);
@@ -301,7 +301,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     MoonBlinkRepository.uploadPost(media, video, type, status, 0,
             body: body ?? '')
         .then((_) {
-      showToast('Upload Success');
+      showToast(G.current.toastsuccess);
       _uploading = false;
       try {
         Navigator.pop(context);
@@ -329,7 +329,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       int type = 1;
       int status = _getStatus(await this._postOptionsSubject.first);
       if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
-        showToast('Require title or photo or video');
+        showToast(G.current.feedCreatePagePickRequired);
         return;
       }
       this._postByAdButtonSubject.add(true);
@@ -337,7 +337,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       MoonBlinkRepository.uploadPost(media, video, type, status, 1,
               body: body ?? '')
           .then((_) {
-        showToast('Upload Success');
+        showToast(G.current.toastsuccess);
         myAdCount -= 10;
         this._adCountSubject?.add(myAdCount);
         StorageManager.sharedPreferences.setInt('$myId$myEmail', myAdCount);
@@ -360,10 +360,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text('Post by watching Ads'),
+              title: Text(G.current.feedCreatePagePostByAds),
               content: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('You need $leftAd more Ads need to watch.'),
+                child: Text(G.current.feedCreatePagePostUNeed +
+                    '$leftAd' +
+                    G.current.feedCreatePagePostMoreAds),
               ),
               actions: [
                 StreamBuilder<bool>(
@@ -377,7 +379,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         );
                       }
                       return CupertinoButton(
-                        child: Text('Start Watching'),
+                        child: Text(G.current.feedCreatePagePostStartWatching),
                         onPressed: () async {
                           if (_uploading) return;
                           this._postByAdButtonSubject.add(true);
@@ -403,7 +405,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     int type = 1;
     int status = _getStatus(await this._postOptionsSubject.first);
     if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
-      showToast('Require title or photo or video');
+      showToast(G.current.feedCreatePagePickRequired);
       return;
     }
     this._postByCoinsButtonSubject.add(true);
@@ -411,7 +413,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     MoonBlinkRepository.uploadPost(media, video, type, status, 0,
             body: body ?? '')
         .then((_) {
-      showToast('Upload Success');
+      showToast(G.current.toastsuccess);
       _uploading = false;
       try {
         Navigator.pop(context);
@@ -448,7 +450,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppbarWidget(
-          title: Text('Create Post'),
+          title: Text(G.current.feedCreatePagePost),
         ),
         body: SafeArea(
           child: Container(
@@ -548,10 +550,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               if (snapshot.data == null) return Container();
                               return Column(
                                 children: [
+                                  Text(G.current.feedCreatePageFreePublicPost +
+                                      '${snapshot.data.publicPost}' +
+                                      G.current.feedCreatePageFreeLeft),
                                   Text(
-                                      'Free public post ${snapshot.data.publicPost} left'),
-                                  Text(
-                                      'Free followers post ${snapshot.data.onlyFollowerPost} left')
+                                      G.current.feedCreatePageFreeFollowerPost +
+                                          '${snapshot.data.onlyFollowerPost}' +
+                                          G.current.feedCreatePageFreeLeft)
                                 ],
                               );
                             })
@@ -595,10 +600,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             return Container();
                           }
                           if (snapshot1.data == 'Public') {
-                            return Text('All user will see your post');
+                            return Text(G.current.feedCreatePageAllWillSee);
                           }
-                          return Text(
-                              '${snapshot2.data.followerCount} followers will see your post');
+                          return Text('${snapshot2.data.followerCount}' +
+                              G.current.feedCreatePageFollowersWillSee);
                         },
                       );
                     },
@@ -608,7 +613,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 CupertinoTextField(
                   minLines: 2,
                   maxLines: 3,
-                  placeholder: 'Write your post\'s title here',
+                  placeholder: G.current.feedCreatePageWriteTitle,
                   controller: this._postTitleController,
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).accentColor),
@@ -626,14 +631,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       children: [
                         CupertinoButton(
                             padding: EdgeInsets.zero,
-                            child: Text('Add Photos'),
+                            child: Text(G.current.feedCreatePageAddPhotos),
                             onPressed: () {
                               _showSelectImageOptions();
                             }),
                         SizedBox(width: 10),
                         CupertinoButton(
                             padding: EdgeInsets.zero,
-                            child: Text('Add a Video'),
+                            child: Text(G.current.feedCreatePageAddVideo),
                             onPressed: () {
                               _showSelectVideoOptions();
                             }),
@@ -661,7 +666,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                         return Container();
                                       }
                                       return CupertinoButton(
-                                          child: Text('Remove video'),
+                                          child: Text(G.current
+                                              .feedCreatePageRemoveVideo),
                                           onPressed: () {
                                             this._videoSubject.add(null);
                                             this._thumbnailSubject.add(null);
@@ -677,7 +683,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     if (selectedSnapshot.data == null ||
                                         selectedSnapshot.data == -1) {
                                       return CupertinoButton(
-                                        child: Text('Remove All Photos'),
+                                        child: Text(G.current
+                                            .feedCreatePageRemoveAllPhotos),
                                         onPressed: () {
                                           this._mediaSubject.add([]);
                                         },
@@ -686,7 +693,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     return Row(
                                       children: [
                                         CupertinoButton(
-                                          child: Text('Crop'),
+                                          child: Text(
+                                              G.current.feedCreatePageCrop),
                                           onPressed: () {
                                             this
                                                 ._mediaSubject
@@ -704,7 +712,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           },
                                         ),
                                         CupertinoButton(
-                                          child: Text('Remove'),
+                                          child: Text(
+                                              G.current.feedCreatePageRemove),
                                           onPressed: () {
                                             this
                                                 ._mediaSubject
@@ -859,18 +868,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         return Row(
                           children: [
                             Expanded(
-                                child: StreamBuilder<bool>(
-                                    initialData: false,
-                                    stream: this._postByAdButtonSubject,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.data) {
-                                        return _showIndicator;
-                                      }
-                                      return CupertinoButton.filled(
-                                          padding: EdgeInsets.zero,
-                                          child: Text('Post by watching Ads'),
-                                          onPressed: () => this._postByAd());
-                                    })),
+                                child: Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: StreamBuilder<bool>(
+                                  initialData: false,
+                                  stream: this._postByAdButtonSubject,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data) {
+                                      return _showIndicator;
+                                    }
+                                    return CupertinoButton.filled(
+                                        padding: EdgeInsets.zero,
+                                        child: Text(
+                                          G.current.feedCreatePagePostByAds,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .button,
+                                        ),
+                                        onPressed: () => this._postByAd());
+                                  }),
+                            )),
                             SizedBox(width: 5),
                             Expanded(
                               child: StreamBuilder<String>(
@@ -883,63 +900,91 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   }
                                   if (optionsSnapshot.data == public &&
                                       vipSnapshot.data.publicPost > 0) {
-                                    return StreamBuilder<bool>(
-                                        initialData: false,
-                                        stream: this._postByFreeButtonSubject,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.data) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 5),
+                                      child: StreamBuilder<bool>(
+                                          initialData: false,
+                                          stream: this._postByFreeButtonSubject,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.data) {
+                                              return CupertinoButton.filled(
+                                                  padding: EdgeInsets.zero,
+                                                  child:
+                                                      CupertinoActivityIndicator(),
+                                                  onPressed: () {});
+                                            }
                                             return CupertinoButton.filled(
                                                 padding: EdgeInsets.zero,
-                                                child:
-                                                    CupertinoActivityIndicator(),
-                                                onPressed: () {});
-                                          }
-                                          return CupertinoButton.filled(
-                                              padding: EdgeInsets.zero,
-                                              child: Text('Free to post now'),
-                                              onPressed: () {
-                                                this._postByFree();
-                                              });
-                                        });
+                                                child: Text(
+                                                  G.current
+                                                      .feedCreatePageFreeToPost,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .button,
+                                                ),
+                                                onPressed: () {
+                                                  this._postByFree();
+                                                });
+                                          }),
+                                    );
                                   }
                                   if (optionsSnapshot.data == followers &&
                                       vipSnapshot.data.onlyFollowerPost > 0) {
-                                    return StreamBuilder<bool>(
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 5),
+                                      child: StreamBuilder<bool>(
+                                          initialData: false,
+                                          stream: this._postByFreeButtonSubject,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.data) {
+                                              return CupertinoButton.filled(
+                                                  padding: EdgeInsets.zero,
+                                                  child:
+                                                      CupertinoActivityIndicator(),
+                                                  onPressed: () {});
+                                            }
+                                            return CupertinoButton.filled(
+                                                padding: EdgeInsets.zero,
+                                                child: Text(
+                                                  G.current
+                                                      .feedCreatePageFreeToPost,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .button,
+                                                ),
+                                                onPressed: () {
+                                                  this._postByFree();
+                                                });
+                                          }),
+                                    );
+                                  }
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: 5),
+                                    child: StreamBuilder<bool>(
                                         initialData: false,
-                                        stream: this._postByFreeButtonSubject,
+                                        stream: this._postByCoinsButtonSubject,
                                         builder: (context, snapshot) {
                                           if (snapshot.data) {
                                             return CupertinoButton.filled(
-                                                padding: EdgeInsets.zero,
-                                                child:
-                                                    CupertinoActivityIndicator(),
-                                                onPressed: () {});
+                                              padding: EdgeInsets.zero,
+                                              child:
+                                                  CupertinoActivityIndicator(),
+                                              onPressed: () {},
+                                            );
                                           }
                                           return CupertinoButton.filled(
                                               padding: EdgeInsets.zero,
-                                              child: Text('Free to post now'),
-                                              onPressed: () {
-                                                this._postByFree();
-                                              });
-                                        });
-                                  }
-                                  return StreamBuilder<bool>(
-                                      initialData: false,
-                                      stream: this._postByCoinsButtonSubject,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data) {
-                                          return CupertinoButton.filled(
-                                            padding: EdgeInsets.zero,
-                                            child: CupertinoActivityIndicator(),
-                                            onPressed: () {},
-                                          );
-                                        }
-                                        return CupertinoButton.filled(
-                                            padding: EdgeInsets.zero,
-                                            child: Text('Post by using Coins'),
-                                            onPressed: () =>
-                                                this._postByCoins());
-                                      });
+                                              child: Text(
+                                                G.current
+                                                    .feedCreatePagePostByCoins,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .button,
+                                              ),
+                                              onPressed: () =>
+                                                  this._postByCoins());
+                                        }),
+                                  );
                                 },
                               ),
                             ),
@@ -947,7 +992,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         );
                       }
                       return CupertinoButton.filled(
-                          child: Text('Cannot upload post for now'),
+                          child: Text(
+                            G.current.feedCreatePageCantPostNow,
+                            style: Theme.of(context).textTheme.button,
+                          ),
                           disabledColor: Colors.redAccent[700],
                           onPressed: null);
                     })

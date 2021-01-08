@@ -247,8 +247,7 @@ class _ContactsPageState extends State<ContactsPage> {
           return Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: RoundedContainer(
                   height: 50,
                   color: Theme.of(context).scaffoldBackgroundColor,

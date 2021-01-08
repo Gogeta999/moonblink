@@ -547,6 +547,14 @@ class MoonBlinkRepository {
     return response;
   }
 
+  static Future getVIPList() async {
+    var userid = StorageManager.sharedPreferences.getInt(mUserId);
+    var response = await DioUtils().get(
+      Api.VerifyAsPartner + '$userid/vip',
+    );
+    return response;
+  }
+
   static Future upgradeVipLevel(int vipPlan, int rewnew) async {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().postwithData(
@@ -707,18 +715,24 @@ class MoonBlinkRepository {
     return response;
   }
 
-  static Future postComment(int postId, String message, int parentCommentId) async {
-    final formData = FormData.fromMap({'message': message, 'parent_comment_id': parentCommentId});
-    final response = await DioUtils().postwithData("moonblink/api/v1/social/post/$postId/comment", data: formData);
+  static Future postComment(
+      int postId, String message, int parentCommentId) async {
+    final formData = FormData.fromMap(
+        {'message': message, 'parent_comment_id': parentCommentId});
+    final response = await DioUtils().postwithData(
+        "moonblink/api/v1/social/post/$postId/comment",
+        data: formData);
     return response.data;
   }
 
-  static Future<List<NFComment>> getNfPostComments(int postId, int limit, int page) async {
-    final response = await DioUtils().get("moonblink/api/v1/social/post/$postId/comment", queryParameters: {
-      'limit': limit,
-      'page': page
-    });
-    return response.data['data'].map<NFComment>((e) => NFComment.fromJson(e)).toList();
+  static Future<List<NFComment>> getNfPostComments(
+      int postId, int limit, int page) async {
+    final response = await DioUtils().get(
+        "moonblink/api/v1/social/post/$postId/comment",
+        queryParameters: {'limit': limit, 'page': page});
+    return response.data['data']
+        .map<NFComment>((e) => NFComment.fromJson(e))
+        .toList();
   }
 
   static Future<VipData> getUserVip() async {

@@ -435,10 +435,10 @@ class G {
     );
   }
 
-  /// `Boosting Profile`
+  /// `Rank Boosting Profile`
   String get boostProfile {
     return Intl.message(
-      'Boosting Profile',
+      'Rank Boosting Profile',
       name: 'boostProfile',
       desc: '',
       args: [],
@@ -860,6 +860,296 @@ class G {
     return Intl.message(
       'Choose Game You Play',
       name: 'choosegame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Photos`
+  String get feedCreatePageAddPhotos {
+    return Intl.message(
+      'Add Photos',
+      name: 'feedCreatePageAddPhotos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Video`
+  String get feedCreatePageAddVideo {
+    return Intl.message(
+      'Add Video',
+      name: 'feedCreatePageAddVideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All user will see your post`
+  String get feedCreatePageAllWillSee {
+    return Intl.message(
+      'All user will see your post',
+      name: 'feedCreatePageAllWillSee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cannot upload post for now`
+  String get feedCreatePageCantPostNow {
+    return Intl.message(
+      'Cannot upload post for now',
+      name: 'feedCreatePageCantPostNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Crop`
+  String get feedCreatePageCrop {
+    return Intl.message(
+      'Crop',
+      name: 'feedCreatePageCrop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follower`
+  String get feedCreatePageFollowers {
+    return Intl.message(
+      'Follower',
+      name: 'feedCreatePageFollowers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `followers will see your post`
+  String get feedCreatePageFollowersWillSee {
+    return Intl.message(
+      'followers will see your post',
+      name: 'feedCreatePageFollowersWillSee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free public post`
+  String get feedCreatePageFreeFollowerPost {
+    return Intl.message(
+      'Free public post',
+      name: 'feedCreatePageFreeFollowerPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free followers post`
+  String get feedCreatePageFreePublicPost {
+    return Intl.message(
+      'Free followers post',
+      name: 'feedCreatePageFreePublicPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `left`
+  String get feedCreatePageFreeLeft {
+    return Intl.message(
+      'left',
+      name: 'feedCreatePageFreeLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free to post now`
+  String get feedCreatePageFreeToPost {
+    return Intl.message(
+      'Free to post now',
+      name: 'feedCreatePageFreeToPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Followers free post count left`
+  String get feedCreatePageNoToastForFreeFollower {
+    return Intl.message(
+      'No Followers free post count left',
+      name: 'feedCreatePageNoToastForFreeFollower',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Public free post count left`
+  String get feedCreatePageNoToastForFreePublic {
+    return Intl.message(
+      'No Public free post count left',
+      name: 'feedCreatePageNoToastForFreePublic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick Video From`
+  String get feedCreatePagePickVideoFrom {
+    return Intl.message(
+      'Pick Video From',
+      name: 'feedCreatePagePickVideoFrom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Require title,photo or video`
+  String get feedCreatePagePickRequired {
+    return Intl.message(
+      'Require title,photo or video',
+      name: 'feedCreatePagePickRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Post`
+  String get feedCreatePagePost {
+    return Intl.message(
+      'Create Post',
+      name: 'feedCreatePagePost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post by watching Ads`
+  String get feedCreatePagePostByAds {
+    return Intl.message(
+      'Post by watching Ads',
+      name: 'feedCreatePagePostByAds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post by using Coins`
+  String get feedCreatePagePostByCoins {
+    return Intl.message(
+      'Post by using Coins',
+      name: 'feedCreatePagePostByCoins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need`
+  String get feedCreatePagePostUNeed {
+    return Intl.message(
+      'You need',
+      name: 'feedCreatePagePostUNeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `more Ads need to watch.`
+  String get feedCreatePagePostMoreAds {
+    return Intl.message(
+      'more Ads need to watch.',
+      name: 'feedCreatePagePostMoreAds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Watching`
+  String get feedCreatePagePostStartWatching {
+    return Intl.message(
+      'Start Watching',
+      name: 'feedCreatePagePostStartWatching',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Public`
+  String get feedCreatePagePublic {
+    return Intl.message(
+      'Public',
+      name: 'feedCreatePagePublic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get feedCreatePageRemove {
+    return Intl.message(
+      'Remove',
+      name: 'feedCreatePageRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove All Photos`
+  String get feedCreatePageRemoveAllPhotos {
+    return Intl.message(
+      'Remove All Photos',
+      name: 'feedCreatePageRemoveAllPhotos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Video`
+  String get feedCreatePageRemoveVideo {
+    return Intl.message(
+      'Remove Video',
+      name: 'feedCreatePageRemoveVideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write your post's title here`
+  String get feedCreatePageWriteTitle {
+    return Intl.message(
+      'Write your post\'s title here',
+      name: 'feedCreatePageWriteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Comment`
+  String get feedPageLastComment {
+    return Intl.message(
+      'Last Comment',
+      name: 'feedPageLastComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Posted`
+  String get feedPagePosted {
+    return Intl.message(
+      'Posted',
+      name: 'feedPagePosted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View more Comment`
+  String get feedPageViewMoreComment {
+    return Intl.message(
+      'View more Comment',
+      name: 'feedPageViewMoreComment',
       desc: '',
       args: [],
     );
@@ -2895,10 +3185,10 @@ class G {
     );
   }
 
-  /// `This purchase is a permanent service, you only need to purchase once to enjoy our service forever`
+  /// `This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever,If not Vip 1 will be 1 months,2 will be 3 months and 3 will be 1 years`
   String get unverifiedPartnerNote {
     return Intl.message(
-      'This purchase is a permanent service, you only need to purchase once to enjoy our service forever',
+      'This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever,If not Vip 1 will be 1 months,2 will be 3 months and 3 will be 1 years',
       name: 'unverifiedPartnerNote',
       desc: '',
       args: [],
@@ -2935,60 +3225,90 @@ class G {
     );
   }
 
-  /// `Vip 1 Cost 300 Coins`
+  /// `Vip 1 Cost 350 Coins`
   String get unverifiedPartnerVip1Title {
     return Intl.message(
-      'Vip 1 Cost 300 Coins',
+      'Vip 1 Cost 350 Coins',
       name: 'unverifiedPartnerVip1Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `This will make you appear on the bottom-level feed.\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  /// `Vip 1 Cost 175 Coins`
+  String get unverifiedPartnerVip1TitleHalfPrice {
+    return Intl.message(
+      'Vip 1 Cost 175 Coins',
+      name: 'unverifiedPartnerVip1TitleHalfPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Charge is 50 Coins for Google and Apple's request,\nThis will make you appear on the bottom-level feed.\nYou can post either video or image post on home page,\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.`
   String get unverifiedPartnerVip1Subtitle {
     return Intl.message(
-      'This will make you appear on the bottom-level feed.\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      'Service Charge is 50 Coins for Google and Apple\'s request,\nThis will make you appear on the bottom-level feed.\nYou can post either video or image post on home page,\nAnd you can post 2 only-fan-visible user posts for free every day.\nLong press to watch the display effect.',
       name: 'unverifiedPartnerVip1Subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vip 2 Cost 500 Coins`
+  /// `Vip 2 Cost 550 Coins`
   String get unverifiedPartnerVip2Title {
     return Intl.message(
-      'Vip 2 Cost 500 Coins',
+      'Vip 2 Cost 550 Coins',
       name: 'unverifiedPartnerVip2Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `This will make you appear on the mid-level feed.\nAnd you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  /// `Vip 2 Cost 275 Coins`
+  String get unverifiedPartnerVip2TitleHalfPrice {
+    return Intl.message(
+      'Vip 2 Cost 275 Coins',
+      name: 'unverifiedPartnerVip2TitleHalfPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Charge is 50 Coins for GooglePay and Apple Pay,\nThis will make you appear on the mid-level feed.\nYou can post either video or image post on home page,And you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
   String get unverifiedPartnerVip2Subtitle {
     return Intl.message(
-      'This will make you appear on the mid-level feed.\nAnd you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      'Service Charge is 50 Coins for GooglePay and Apple Pay,\nThis will make you appear on the mid-level feed.\nYou can post either video or image post on home page,And you can post 1 all-user-visible posts and 1 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
       name: 'unverifiedPartnerVip2Subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vip 3 Cost 800 Coins`
+  /// `Vip 3 Cost 1050 Coins`
   String get unverifiedPartnerVip3Title {
     return Intl.message(
-      'Vip 3 Cost 800 Coins',
+      'Vip 3 Cost 1050 Coins',
       name: 'unverifiedPartnerVip3Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `This will make you appear on the top-level feed.\nAnd you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
+  /// `Vip 3 Cost 525 Coins`
+  String get unverifiedPartnerVip3TitleHalfPrice {
+    return Intl.message(
+      'Vip 3 Cost 525 Coins',
+      name: 'unverifiedPartnerVip3TitleHalfPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Charge is 50 Coins for GooglePay and Apple Pay,\nThis will make you appear on the top-level feed.\nYou can post either video or image post on home page,And you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.`
   String get unverifiedPartnerVip3Subtitle {
     return Intl.message(
-      'This will make you appear on the top-level feed.\nAnd you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
+      'Service Charge is 50 Coins for GooglePay and Apple Pay,\nThis will make you appear on the top-level feed.\nYou can post either video or image post on home page,And you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
       name: 'unverifiedPartnerVip3Subtitle',
       desc: '',
       args: [],
@@ -3075,10 +3395,10 @@ class G {
     );
   }
 
-  /// `Boosting Profile`
+  /// `Rank Boosting Profile`
   String get userStatusBoostProfile {
     return Intl.message(
-      'Boosting Profile',
+      'Rank Boosting Profile',
       name: 'userStatusBoostProfile',
       desc: '',
       args: [],

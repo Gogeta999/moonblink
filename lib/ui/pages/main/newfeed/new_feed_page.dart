@@ -320,7 +320,7 @@ class _NFPostItemState extends State<NFPostItem> {
                 ),
                 Container(
                   child: Text(
-                    "Posted " +
+                    G.current.feedPagePosted +
                         timeAgo.format(DateTime.parse(widget.item.createdAt),
                             allowFromNow: true),
                     style: TextStyle(color: Colors.grey, fontSize: 12.0),
@@ -367,19 +367,21 @@ class _NFPostItemState extends State<NFPostItem> {
               ],
             ),
             SizedBox(height: 3),
+
             ///Post Comment
             Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Last Comment')),
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(G.current.feedPageLastComment)),
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  child: Text('View more comments'),
+                  child: Text(G.current.feedPageViewMoreComment),
                   onPressed: () {
-                    Navigator.pushNamed(context, RouteName.nfCommentPage, arguments: widget.item.id);
+                    Navigator.pushNamed(context, RouteName.nfCommentPage,
+                        arguments: widget.item.id);
                   }),
             )
           ],

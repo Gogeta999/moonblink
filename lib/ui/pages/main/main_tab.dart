@@ -33,6 +33,7 @@ class _MainTabPageState extends State<MainTabPage>
     with SingleTickerProviderStateMixin {
   PageController _pageController;
   String usertoken = StorageManager.sharedPreferences.getString(token);
+  int userType = StorageManager.sharedPreferences.getInt(mUserType);
   int initPage;
   // // ignore: unused_field
   int _selectedIndex = 0;
@@ -76,7 +77,6 @@ class _MainTabPageState extends State<MainTabPage>
         homeController.animateTo(0.0,
             duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
         break;
-
       default:
         print('Default tap');
     }
@@ -104,7 +104,12 @@ class _MainTabPageState extends State<MainTabPage>
         //   _selectedIndex = 2;
         //   _pageController.jumpToPage(2);
         // });
-        Navigator.pushNamed(context, RouteName.createPostPage);
+        if (userType == 0) {
+          showToast('Only partner featuer');
+        }
+        if (userType != 0) {
+          Navigator.pushNamed(context, RouteName.createPostPage);
+        }
         break;
       case 3:
         setState(() {
@@ -199,7 +204,12 @@ class _MainTabPageState extends State<MainTabPage>
                   ? Colors.white
                   : Colors.white,
             ),
-            // activeIcon: Icon(Icons.add)
+            activeIcon: Icon(
+              FontAwesomeIcons.plus,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black,
+            ),
           ),
           TabItem(
             icon: Image.asset(

@@ -53,7 +53,7 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
-      appBar: AppbarWidget(title: Text('Manage Posts')),
+      appBar: AppbarWidget(title: Text(G.current.userStatusManagePosts)),
       body: SafeArea(
         child: SmartRefresher(
           controller: _bloc.refreshController,
