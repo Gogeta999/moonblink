@@ -360,6 +360,7 @@
     "viewStateMessageUnAuth": "Not Sign in yet",
     "viewStateMessageNetworkError": "Network Error",
     "viewStateMessageError": "Load Failed",
+    "vipDemo": "VIP Demo",
     "waiting": "Waiting",
     "watchad": "Watch AD",
     "watchadfreecoins": "Watch an Ad to get free coins.",

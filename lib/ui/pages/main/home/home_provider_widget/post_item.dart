@@ -104,18 +104,19 @@ class _PostItemWidgetState extends State<PostItemWidget>
               padding: const EdgeInsets.only(top: 12, left: 15),
               child: CupertinoActivityIndicator(),
             ),
-            errorWidget: (context, url, error) => Padding(
-              padding: const EdgeInsets.only(top: 12, left: 15),
-              child: Container(
-                color: Colors.grey.shade600,
-                child: IconButton(
-                  onPressed: () {
-                    showToast('Refresh Again');
-                  },
-                  icon: Icon(
-                    Icons.error,
-                    color: Colors.grey.shade300,
-                  ),
+            errorWidget: (context, url, error) => CircleAvatar(
+              radius: 41,
+              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey
+                  : Colors.grey.shade600,
+              // color: Colors.grey.shade600,
+              child: IconButton(
+                onPressed: () {
+                  showToast('Refresh Again');
+                },
+                icon: Icon(
+                  Icons.error,
+                  color: Colors.grey.shade300,
                 ),
               ),
             ),
@@ -204,25 +205,25 @@ class _PostItemWidgetState extends State<PostItemWidget>
       case 0:
         return Text(
           'VIP 0',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: Colors.grey.shade600),
         );
         break;
       case 1:
         return Text(
           'VIP 1',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: Colors.grey.shade600),
         );
         break;
       case 2:
         return Text(
           'VIP 2',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: Colors.grey.shade600),
         );
         break;
       case 3:
         return Text(
           'VIP 3',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: Colors.grey.shade600),
         );
         break;
       default:
@@ -277,15 +278,9 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                           : Theme.of(context)
                                               .textTheme
                                               .bodyText1),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      vipText(widget.posts.vip),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                    ],
-                                  )
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 5),
+                                      child: vipText(widget.posts.vip)),
                                 ],
                               ),
                             ),

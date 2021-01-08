@@ -381,6 +381,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "viewStateMessageError" : MessageLookupByLibrary.simpleMessage("Load Failed"),
     "viewStateMessageNetworkError" : MessageLookupByLibrary.simpleMessage("Network Error"),
     "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("Not Sign in yet"),
+    "vipDemo" : MessageLookupByLibrary.simpleMessage("VIP Demo"),
     "voiceCallWaitAnotherToJoin" : MessageLookupByLibrary.simpleMessage("Waiting another to join"),
     "waiting" : MessageLookupByLibrary.simpleMessage("Waiting"),
     "watchad" : MessageLookupByLibrary.simpleMessage("Watch AD"),

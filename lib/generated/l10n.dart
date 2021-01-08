@@ -888,7 +888,7 @@ class G {
   /// `All user will see your post`
   String get feedCreatePageAllWillSee {
     return Intl.message(
-      'All users will see your post',
+      'All user will see your post',
       name: 'feedCreatePageAllWillSee',
       desc: '',
       args: [],
@@ -1008,7 +1008,7 @@ class G {
   /// `Require title,photo or video`
   String get feedCreatePagePickRequired {
     return Intl.message(
-      'Require photo or video',
+      'Require title,photo or video',
       name: 'feedCreatePagePickRequired',
       desc: '',
       args: [],
@@ -1048,7 +1048,7 @@ class G {
   /// `You need`
   String get feedCreatePagePostUNeed {
     return Intl.message(
-      'You need to watch',
+      'You need',
       name: 'feedCreatePagePostUNeed',
       desc: '',
       args: [],
@@ -1058,7 +1058,7 @@ class G {
   /// `more Ads need to watch.`
   String get feedCreatePagePostMoreAds {
     return Intl.message(
-      'more Ads to proceed.',
+      'more Ads need to watch.',
       name: 'feedCreatePagePostMoreAds',
       desc: '',
       args: [],
@@ -3640,6 +3640,16 @@ class G {
     return Intl.message(
       'Load Failed',
       name: 'viewStateMessageError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP Demo`
+  String get vipDemo {
+    return Intl.message(
+      'VIP Demo',
+      name: 'vipDemo',
       desc: '',
       args: [],
     );

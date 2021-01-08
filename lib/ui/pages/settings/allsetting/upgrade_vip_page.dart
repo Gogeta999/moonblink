@@ -141,132 +141,135 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
         appBar: AppbarWidget(
           title: Text(G.current.upgradeVipAppBarTitle),
         ),
-        body: CustomScrollView(
-            physics: ClampingScrollPhysics(),
-            slivers: <Widget>[
-              SliverList(
-                  delegate: SliverChildListDelegate.fixed([
-                Column(children: [
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            widget.data['half_renew'] == 1
-                                ? G.current.unverifiedPartnerVip1TitleHalfPrice
-                                : G.current.unverifiedPartnerVip1Title,
-                            style: _textStyle.headline5,
-                          ),
-                          subtitle: Text(
-                            G.current.unverifiedPartnerVip1Subtitle,
-                            style: _textStyle.subtitle1,
-                          ),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 1;
-                            });
-                            if (_selectedPlan > _partnerVipLevel) {
-                              confirmDialog();
-                            }
-                            if (_selectedPlan <= _partnerVipLevel) {
-                              showToast(G.current.upgradeVipAlreadyOwnToast);
-                            }
-                          },
-                          onLongPress: () => showToast('Show exmaple Layer'),
-                        ),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            widget.data['half_renew'] == 1
-                                ? G.current.unverifiedPartnerVip2TitleHalfPrice
-                                : G.current.unverifiedPartnerVip2Title,
-                            style: _textStyle.headline6,
-                          ),
-                          subtitle: Text(
-                              G.current.unverifiedPartnerVip2Subtitle,
-                              style: _textStyle.subtitle1),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 2;
-                            });
-                            if (_selectedPlan > _partnerVipLevel) {
-                              confirmDialog();
-                            }
-                            if (_selectedPlan <= _partnerVipLevel) {
-                              showToast(G.current.upgradeVipAlreadyOwnToast);
-                            }
-                          },
-                          onLongPress: () => showToast('Show exmaple Layer'),
-                        ),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            widget.data['half_renew'] == 1
-                                ? G.current.unverifiedPartnerVip3TitleHalfPrice
-                                : G.current.unverifiedPartnerVip3Title,
-                            style: _textStyle.headline5,
-                          ),
-                          subtitle: Text(
-                              G.current.unverifiedPartnerVip3Subtitle,
-                              style: _textStyle.subtitle1),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 3;
-                            });
-                            if (_selectedPlan > _partnerVipLevel) {
-                              confirmDialog();
-                            }
-                            if (_selectedPlan <= _partnerVipLevel) {
-                              showToast(G.current.upgradeVipAlreadyOwnToast);
-                            }
-                          },
-                          onLongPress: () => showToast('Show exmaple Layer'),
-                        ),
-                      )),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                    child: _partnerVipLevel != 0
-                        ? Text(
-                            G.current.upgradeVipCurrentLevel +
-                                _partnerVipLevel.toString() +
-                                '\n${G.current.unverifiedPartnerNote}',
-                            style: _textStyle.headline6,
-                          )
-                        : Text(
-                            '${G.current.unverifiedPartnerNote}',
-                            style: _textStyle.headline6,
-                          ),
-                  )
-                ]),
-              ])),
+        body: CustomScrollView(physics: ClampingScrollPhysics(), slivers: <
+            Widget>[
+          SliverList(
+              delegate: SliverChildListDelegate.fixed([
+            Column(children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
+                  child: Card(
+                    child: ListTile(
+                      isThreeLine: true,
+                      title: Text(
+                        widget.data['half_renew'] == 1
+                            ? G.current.unverifiedPartnerVip1TitleHalfPrice
+                            : G.current.unverifiedPartnerVip1Title,
+                        style: _textStyle.headline5,
+                      ),
+                      subtitle: Text(
+                        G.current.unverifiedPartnerVip1Subtitle,
+                        style: _textStyle.subtitle1,
+                      ),
+                      trailing: _isConfirmLoading
+                          ? CupertinoActivityIndicator()
+                          : InkWell(
+                              child: Icon(FontAwesomeIcons.question),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.vipDemo),
+                            ),
+                      onTap: () {
+                        setState(() {
+                          _selectedPlan = 1;
+                        });
+                        if (_selectedPlan > _partnerVipLevel) {
+                          confirmDialog();
+                        }
+                        if (_selectedPlan <= _partnerVipLevel) {
+                          showToast(G.current.upgradeVipAlreadyOwnToast);
+                        }
+                      },
+                      onLongPress: () =>
+                          Navigator.of(context).pushNamed(RouteName.vipDemo),
+                    ),
+                  )),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                  child: Card(
+                    child: ListTile(
+                      isThreeLine: true,
+                      title: Text(
+                        widget.data['half_renew'] == 1
+                            ? G.current.unverifiedPartnerVip2TitleHalfPrice
+                            : G.current.unverifiedPartnerVip2Title,
+                        style: _textStyle.headline6,
+                      ),
+                      subtitle: Text(G.current.unverifiedPartnerVip2Subtitle,
+                          style: _textStyle.subtitle1),
+                      trailing: _isConfirmLoading
+                          ? CupertinoActivityIndicator()
+                          : InkWell(
+                              child: Icon(FontAwesomeIcons.question),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.vipDemo),
+                            ),
+                      onTap: () {
+                        setState(() {
+                          _selectedPlan = 2;
+                        });
+                        if (_selectedPlan > _partnerVipLevel) {
+                          confirmDialog();
+                        }
+                        if (_selectedPlan <= _partnerVipLevel) {
+                          showToast(G.current.upgradeVipAlreadyOwnToast);
+                        }
+                      },
+                      onLongPress: () =>
+                          Navigator.of(context).pushNamed(RouteName.vipDemo),
+                    ),
+                  )),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                  child: Card(
+                    child: ListTile(
+                      isThreeLine: true,
+                      title: Text(
+                        widget.data['half_renew'] == 1
+                            ? G.current.unverifiedPartnerVip3TitleHalfPrice
+                            : G.current.unverifiedPartnerVip3Title,
+                        style: _textStyle.headline5,
+                      ),
+                      subtitle: Text(G.current.unverifiedPartnerVip3Subtitle,
+                          style: _textStyle.subtitle1),
+                      trailing: _isConfirmLoading
+                          ? CupertinoActivityIndicator()
+                          : InkWell(
+                              child: Icon(FontAwesomeIcons.question),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.vipDemo),
+                            ),
+                      onTap: () {
+                        setState(() {
+                          _selectedPlan = 3;
+                        });
+                        if (_selectedPlan > _partnerVipLevel) {
+                          confirmDialog();
+                        }
+                        if (_selectedPlan <= _partnerVipLevel) {
+                          showToast(G.current.upgradeVipAlreadyOwnToast);
+                        }
+                      },
+                      onLongPress: () =>
+                          Navigator.of(context).pushNamed(RouteName.vipDemo),
+                    ),
+                  )),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                child: _partnerVipLevel != 0
+                    ? Text(
+                        G.current.upgradeVipCurrentLevel +
+                            _partnerVipLevel.toString() +
+                            '\n${G.current.unverifiedPartnerNote}',
+                        style: _textStyle.caption,
+                      )
+                    : Text(
+                        '${G.current.unverifiedPartnerNote}',
+                        style: _textStyle.caption,
+                      ),
+              )
             ]),
+          ])),
+        ]),
         bottomNavigationBar: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(

@@ -22,6 +22,7 @@ import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/unverify_partner_otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/upgrade_vip_page.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/vip_effect_demo.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
 import 'package:moonblink/ui/pages/signIO/resetpassword_page.dart';
@@ -64,6 +65,7 @@ class RouteName {
   static const String partnerDetail = 'parnterDetail';
   static const String partnerOwnProfile = 'parnterOwnProfile';
   static const String upgradeVip = 'upgradeVip';
+  static const String vipDemo = 'vipDemo';
   static const String wallet = 'wallet';
   static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
@@ -106,7 +108,8 @@ class MoonGoRouter {
                 // partnerProfile: settings.arguments,
                 ));
       case RouteName.nfCommentPage:
-        return CupertinoPageRoute(builder: (_) => CommentPage(settings.arguments));
+        return CupertinoPageRoute(
+            builder: (_) => CommentPage(settings.arguments));
       case RouteName.boostingGameListPage:
         return CupertinoPageRoute(builder: (_) => BoostingGameListPage());
       case RouteName.boostingGameDetailPage:
@@ -122,6 +125,8 @@ class MoonGoRouter {
         return CupertinoPageRoute(
             builder: (_) =>
                 LicenseAgreement(showAccept: settings.arguments ?? true));
+      case RouteName.vipDemo:
+        return CupertinoPageRoute(builder: (_) => VipDemo());
       case RouteName.main:
         return NoAnimRouteBuilder(MainTabPage(
             initPage: settings.arguments != null ? settings.arguments : 0));
