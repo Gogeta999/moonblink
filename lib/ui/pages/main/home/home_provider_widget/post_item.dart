@@ -2,25 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
-import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
-import 'package:moonblink/base_widget/gradient.dart';
-import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
-import 'package:moonblink/ui/helper/cached_helper.dart';
-import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
-import 'package:timeago/timeago.dart' as timeAgo;
 
 class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.id));
@@ -47,6 +41,12 @@ class _PostItemWidgetState extends State<PostItemWidget>
   void initState() {
     _homeBloc = BlocProvider.of<HomeBloc>(context);
     super.initState();
+  }
+
+  void onTapShare() {
+    Share.share(
+        'https://play.google.com/store/apps/details?id=com.moonuniverse.moonblink',
+        subject: 'Please download our app');
   }
 
   Widget postprofile() {
@@ -156,6 +156,81 @@ class _PostItemWidgetState extends State<PostItemWidget>
     );
   }
 
+  //Status
+  Widget statusText(int status) {
+    switch (status) {
+      case ONLINE:
+        return Text(
+          'Available',
+          style: TextStyle(color: Colors.green),
+        );
+        break;
+      case BUSY:
+        return Text(
+          'Busy',
+          style: TextStyle(color: Colors.redAccent),
+        );
+        break;
+      case AWAY:
+        return Text(
+          'Away',
+          style: TextStyle(color: Colors.yellow),
+        );
+        break;
+      case IN_GAME:
+        return Text(
+          'In Game',
+          style: TextStyle(color: Colors.blue),
+        );
+        break;
+      case BAN:
+        return Text(
+          'Ban',
+          style: TextStyle(color: Colors.red),
+        );
+        break;
+      default:
+        return Text(
+          'Error',
+          style: TextStyle(color: Colors.red),
+        );
+        break;
+    }
+  }
+
+  ///VIP
+  Widget vipText(int vip) {
+    switch (vip) {
+      case 0:
+        return Text(
+          'VIP 0',
+          style: Theme.of(context).textTheme.bodyText1,
+        );
+        break;
+      case 1:
+        return Text(
+          'VIP 1',
+          style: Theme.of(context).textTheme.bodyText1,
+        );
+        break;
+      case 2:
+        return Text(
+          'VIP 2',
+          style: Theme.of(context).textTheme.bodyText1,
+        );
+        break;
+      case 3:
+        return Text(
+          'VIP 3',
+          style: Theme.of(context).textTheme.bodyText1,
+        );
+        break;
+      default:
+        return Container();
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -192,11 +267,27 @@ class _PostItemWidgetState extends State<PostItemWidget>
                           children: [
                             Positioned(
                               top: 20,
-                              child: Text(widget.posts.userName,
-                                  style: widget.posts.id == 62
-                                      ? TextStyle(
-                                          color: Theme.of(context).accentColor)
-                                      : Theme.of(context).textTheme.bodyText1),
+                              child: Row(
+                                children: [
+                                  Text(widget.posts.userName,
+                                      style: widget.posts.id == 62
+                                          ? TextStyle(
+                                              color:
+                                                  Theme.of(context).accentColor)
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyText1),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      vipText(widget.posts.vip),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                             Positioned(
                               top: 43,
@@ -207,10 +298,10 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                       : Theme.of(context).textTheme.caption),
                             ),
 
-                            //TODO: Add Status Here
+                            //Status
                             Positioned(
                               bottom: 20,
-                              child: Text('Status'),
+                              child: statusText(widget.posts.status),
                             )
                           ],
                         )),
@@ -224,56 +315,75 @@ class _PostItemWidgetState extends State<PostItemWidget>
                             Positioned(
                               // top: 50,
                               bottom: 25,
-                              left: 22,
-                              child: InkWell(
-                                child: Icon(
-                                    widget.posts.isReacted == 0
-                                        ? FontAwesomeIcons.heart
-                                        : FontAwesomeIcons.solidHeart,
-                                    size: 30,
-                                    color: widget.posts.isReacted == 0
-                                        ? Theme.of(context).iconTheme.color
-                                        : Colors.red[400]),
-                                onTap: widget.posts.isReacted == 0
-                                    ? () {
-                                        _homeBloc
-                                            .reactProfile(widget.posts.id, 1)
-                                            .then((value) {
-                                          if (value) {
-                                            showToast(
-                                                G.of(context).toastlikesuccess);
-                                            setState(() {
-                                              widget.posts.isReacted = 1;
-                                              widget.posts.reactionCount += 1;
+                              // right: 22,
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    child: Icon(
+                                        widget.posts.isReacted == 0
+                                            ? FontAwesomeIcons.heart
+                                            : FontAwesomeIcons.solidHeart,
+                                        size: 30,
+                                        color: widget.posts.isReacted == 0
+                                            ? Theme.of(context).iconTheme.color
+                                            : Colors.red[400]),
+                                    onTap: widget.posts.isReacted == 0
+                                        ? () {
+                                            _homeBloc
+                                                .reactProfile(
+                                                    widget.posts.id, 1)
+                                                .then((value) {
+                                              if (value) {
+                                                showToast(G
+                                                    .of(context)
+                                                    .toastlikesuccess);
+                                                setState(() {
+                                                  widget.posts.isReacted = 1;
+                                                  widget.posts.reactionCount +=
+                                                      1;
+                                                });
+                                              }
+                                              // else {
+                                              //   reactModel
+                                              //       .showErrorMessage(
+                                              //           context);
+                                              // }
                                             });
                                           }
-                                          // else {
-                                          //   reactModel
-                                          //       .showErrorMessage(
-                                          //           context);
-                                          // }
-                                        });
-                                      }
-                                    : () {
-                                        _homeBloc
-                                            .reactProfile(widget.posts.id, 0)
-                                            .then((value) {
-                                          if (value) {
-                                            showToast(G
-                                                .of(context)
-                                                .toastunlikesuccess);
-                                            setState(() {
-                                              widget.posts.isReacted = 0;
-                                              widget.posts.reactionCount -= 1;
+                                        : () {
+                                            _homeBloc
+                                                .reactProfile(
+                                                    widget.posts.id, 0)
+                                                .then((value) {
+                                              if (value) {
+                                                showToast(G
+                                                    .of(context)
+                                                    .toastunlikesuccess);
+                                                setState(() {
+                                                  widget.posts.isReacted = 0;
+                                                  widget.posts.reactionCount -=
+                                                      1;
+                                                });
+                                              }
+                                              // else {
+                                              //   reactModel
+                                              //       .showErrorMessage(
+                                              //           context);
+                                              // }
                                             });
-                                          }
-                                          // else {
-                                          //   reactModel
-                                          //       .showErrorMessage(
-                                          //           context);
-                                          // }
-                                        });
+                                          },
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 15),
+                                    child: CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      child: Icon(FontAwesomeIcons.share),
+                                      onPressed: () {
+                                        onTapShare();
                                       },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Positioned(

@@ -25,11 +25,6 @@ import 'package:moonblink/utils/constants.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 
-///coplayer = 1
-///streamer = 2
-///cele = 3
-///pro = 4
-
 class HomePage extends StatefulWidget {
   final ScrollController homecontroller;
   HomePage(this.homecontroller);

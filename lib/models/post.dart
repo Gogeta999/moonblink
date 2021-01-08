@@ -12,6 +12,8 @@ class Post extends Equatable {
   final int type;
   final String bios;
   final String gender;
+  final int status;
+  final int vip;
 
   Post.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -24,7 +26,9 @@ class Post extends Equatable {
         isReacted = json['is_reacted'],
         type = json['type'],
         bios = json['bios'],
-        gender = json['gender'] ?? "";
+        gender = json['gender'] ?? "",
+        status = json['status'],
+        vip = json['vip'];
 
   Post.fromMap(Map<String, dynamic> json)
       : id = json['id'],
@@ -37,7 +41,9 @@ class Post extends Equatable {
         isReacted = json['is_reacted'],
         type = json['type'],
         bios = json['bios'],
-        gender = json['gender'] ?? "";
+        gender = json['gender'] ?? "",
+        status = json['status'],
+        vip = json['vip'];
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -50,7 +56,9 @@ class Post extends Equatable {
         'is_reacted': isReacted,
         'type': type,
         'bios': bios,
-        'gender': gender
+        'gender': gender,
+        'status': status,
+        'vip': vip
       };
 
   @override

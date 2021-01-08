@@ -67,4 +67,10 @@ const String kDataBaseName = 'moongo.db';
 const String kHomePostTableName = 'HomePostTable';
 const String kNewFeedTableName = 'NewFeedTable';
 
+const ONLINE = 0;
+const BUSY = 1;
+const AWAY = 2; // socket conn
+const IN_GAME = 3; // server site
+const BAN = -9;
+
 enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
