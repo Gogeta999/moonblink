@@ -42,12 +42,10 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: devUrl,
+    baseUrl: baseUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
-    headers: {
-      'app-key': devAppKey
-    },
+    headers: {'app-key': baseAppKey},
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
   );
@@ -104,7 +102,8 @@ class DioUtils {
         requestions.headers['app-version'] = appVersion;
         // requestions.headers['Authorization'] = 'Bearer' + usertokr
         requestions.headers['device-id'] = deviceId;
-        if (isDev) debugPrint('Base Requestions--->' + requestions.headers.toString());
+        if (isDev)
+          debugPrint('Base Requestions--->' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
         //maybe add something here
@@ -123,8 +122,8 @@ class DioUtils {
   get(url, {queryParameters, options}) async {
     if (isDev) print('get---request---from--->$url');
     Response response;
-    response = await _dio.get(url,
-        queryParameters: queryParameters, options: options);
+    response =
+        await _dio.get(url, queryParameters: queryParameters, options: options);
     // try {
     //   response = await _dio.get(url,
     //       queryParameters: queryParameters, options: options);
@@ -134,8 +133,9 @@ class DioUtils {
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      if (isDev) debugPrint(
-          'result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+      if (isDev)
+        debugPrint(
+            'result--from---$url---->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
       return response;
     } else {
       // or if(usertoken = null)
@@ -162,8 +162,9 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        if (isDev) debugPrint(
-            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -179,15 +180,18 @@ class DioUtils {
     queryParameters,
     options,
   }) async {
-    if (isDev) print('post request path ------$url-------queryParameters$queryParameters');
+    if (isDev)
+      print(
+          'post request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.post(url,
         queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      if (isDev) debugPrint(
-          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      if (isDev)
+        debugPrint(
+            'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
       if (respData.errorCode == 101) {
@@ -211,8 +215,9 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        if (isDev) debugPrint(
-            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -222,16 +227,18 @@ class DioUtils {
 
   //delete request
   delete(url, {queryParameters, options}) async {
-    if (isDev) print(
-        'delete request path ------$url-------queryParameters$queryParameters');
+    if (isDev)
+      print(
+          'delete request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.delete(url,
         queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      if (isDev) debugPrint(
-          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      if (isDev)
+        debugPrint(
+            'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
       if (respData.errorCode == 101) {
@@ -256,8 +263,9 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        if (isDev) debugPrint(
-            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -267,16 +275,18 @@ class DioUtils {
 
   //delete request
   patch(url, {queryParameters, options}) async {
-    if (isDev) print(
-        'patch request path ------$url-------queryParameters$queryParameters');
+    if (isDev)
+      print(
+          'patch request path ------$url-------queryParameters$queryParameters');
     Response response;
     response = await _dio.patch(url,
         queryParameters: queryParameters, options: options);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      if (isDev) debugPrint(
-          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      if (isDev)
+        debugPrint(
+            'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       return response;
     } else {
       if (respData.errorCode == 101) {
@@ -301,8 +311,9 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        if (isDev) debugPrint(
-            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
@@ -318,14 +329,17 @@ class DioUtils {
     Response response;
     response = await _dio.post(url, data: data, options: options,
         onSendProgress: (int count, int total) {
-      if (isDev) print('Uploading progress----->${count / total}----count/total process');
+      if (isDev)
+        print(
+            'Uploading progress----->${count / total}----count/total process');
     });
     if (isDev) print(response.statusCode);
     ResponseData respData = ResponseData.fromJson(response.data);
     if (respData.success) {
       response.data = respData.data;
-      if (isDev) debugPrint(
-          'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      if (isDev)
+        debugPrint(
+            'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
       if (isDev) debugPrint('$respData');
       return respData;
     } else {
@@ -347,8 +361,9 @@ class DioUtils {
       else if (respData.errorCode == 123) {
         response.data = respData.data;
         // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
-        if (isDev) debugPrint(
-            'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
         return response;
       } else {
         throw NotSuccessException.fromRespData(respData);
