@@ -30,7 +30,7 @@ class MoonGoDB {
       version: migrationsScripts.length,
       onCreate: (db, version) async {
         if (isDev) print("Creating Database for $version");
-        for (int i = 1; i <= migrationsScripts.length; ++i) {
+        for (int i = 1; i <= version; ++i) {
           await db.execute(migrationsScripts[i - 1]);
         }
       },
