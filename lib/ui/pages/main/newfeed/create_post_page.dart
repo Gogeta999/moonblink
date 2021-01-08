@@ -292,7 +292,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       showToast(G.current.feedCreatePageNoToastForFreeFollower);
       return;
     }
-    if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
+    if ((media == null || media.isEmpty) && video == null) {
       showToast(G.current.feedCreatePagePickRequired);
       return;
     }
@@ -328,7 +328,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       File video = await this._videoSubject.first;
       int type = 1;
       int status = _getStatus(await this._postOptionsSubject.first);
-      if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
+      if ((media == null || media.isEmpty) && video == null) {
         showToast(G.current.feedCreatePagePickRequired);
         return;
       }
@@ -364,7 +364,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               content: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(G.current.feedCreatePagePostUNeed +
-                    '$leftAd' +
+                    ' $leftAd ' +
                     G.current.feedCreatePagePostMoreAds),
               ),
               actions: [
@@ -399,34 +399,69 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   _postByCoins() async {
     if (_uploading) return;
-    String body = this._postTitleController.text.trim();
-    List<File> media = await this._mediaSubject.first;
-    File video = await this._videoSubject.first;
-    int type = 1;
-    int status = _getStatus(await this._postOptionsSubject.first);
-    if (body.isEmpty && (media == null || media.isEmpty) && video == null) {
-      showToast(G.current.feedCreatePagePickRequired);
-      return;
-    }
-    this._postByCoinsButtonSubject.add(true);
-    _uploading = true;
-    MoonBlinkRepository.uploadPost(media, video, type, status, 0,
-            body: body ?? '')
-        .then((_) {
-      showToast(G.current.toastsuccess);
-      _uploading = false;
-      try {
-        Navigator.pop(context);
-      } catch (e) {
-        if (isDev) print(e.toString());
-      }
-      this._postByCoinsButtonSubject?.add(false);
-    },
-            onError: (e) => {
-                  showToast(e.toString()),
-                  _uploading = false,
-                  this._postByCoinsButtonSubject?.add(false)
-                });
+    showCupertinoDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (dialogContext) {
+          return StreamBuilder<VipData>(
+            initialData: null,
+            stream: this._vipDataSubject,
+            builder: (_, snapshot) {
+              if (snapshot.data == null) {
+                return Text("Service Unavailable");
+              }
+              return CupertinoAlertDialog(
+                title: Text('Cost per post - ${snapshot.data.costPerPost} coins'),
+                content: Container(
+                  margin: const EdgeInsets.all(8.0),
+                  child: Text('You have ${snapshot.data.walletValue} ${snapshot.data.walletValue > 1 ? "coins" : "coin"} for now.')),
+                actions: [
+                  CupertinoButton(
+                    child: Text(G.current.cancel),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                    },
+                  ),
+                  CupertinoButton(
+                    child: Text('Post Now'),
+                    onPressed: () async {
+                      Navigator.pop(dialogContext);
+                      String body = this._postTitleController.text.trim();
+                      List<File> media = await this._mediaSubject.first;
+                      File video = await this._videoSubject.first;
+                      int type = 1;
+                      int status = _getStatus(await this._postOptionsSubject.first);
+                      if ((media == null || media.isEmpty) &&
+                          video == null) {
+                        showToast(G.current.feedCreatePagePickRequired);
+                        return;
+                      }
+                      this._postByCoinsButtonSubject.add(true);
+                      _uploading = true;
+                      MoonBlinkRepository.uploadPost(media, video, type, status, 0,
+                              body: body ?? '')
+                          .then((_) {
+                        showToast(G.current.toastsuccess);
+                        _uploading = false;
+                        try {
+                          Navigator.pop(context);
+                        } catch (e) {
+                          if (isDev) print(e.toString());
+                        }
+                        this._postByCoinsButtonSubject?.add(false);
+                      },
+                              onError: (e) => {
+                                    showToast(e.toString()),
+                                    _uploading = false,
+                                    this._postByCoinsButtonSubject?.add(false)
+                                  });
+                    },
+                  )
+                ],
+              );
+            }
+          );
+        });
   }
 
   int _getStatus(String option) {
@@ -549,14 +584,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             builder: (context, snapshot) {
                               if (snapshot.data == null) return Container();
                               return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(G.current.feedCreatePageFreePublicPost +
-                                      '${snapshot.data.publicPost}' +
+                                      ' ${snapshot.data.publicPost} ' +
                                       G.current.feedCreatePageFreeLeft),
-                                  Text(
-                                      G.current.feedCreatePageFreeFollowerPost +
-                                          '${snapshot.data.onlyFollowerPost}' +
-                                          G.current.feedCreatePageFreeLeft)
+                                  Text(G.current
+                                          .feedCreatePageFreeFollowerPost +
+                                      ' ${snapshot.data.onlyFollowerPost} ' +
+                                      G.current.feedCreatePageFreeLeft)
                                 ],
                               );
                             })

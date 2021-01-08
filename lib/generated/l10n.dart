@@ -888,7 +888,7 @@ class G {
   /// `All user will see your post`
   String get feedCreatePageAllWillSee {
     return Intl.message(
-      'All user will see your post',
+      'All users will see your post',
       name: 'feedCreatePageAllWillSee',
       desc: '',
       args: [],
@@ -1008,7 +1008,7 @@ class G {
   /// `Require title,photo or video`
   String get feedCreatePagePickRequired {
     return Intl.message(
-      'Require title,photo or video',
+      'Require photo or video',
       name: 'feedCreatePagePickRequired',
       desc: '',
       args: [],
@@ -1048,7 +1048,7 @@ class G {
   /// `You need`
   String get feedCreatePagePostUNeed {
     return Intl.message(
-      'You need',
+      'You need to watch',
       name: 'feedCreatePagePostUNeed',
       desc: '',
       args: [],
@@ -1058,7 +1058,7 @@ class G {
   /// `more Ads need to watch.`
   String get feedCreatePagePostMoreAds {
     return Intl.message(
-      'more Ads need to watch.',
+      'more Ads to proceed.',
       name: 'feedCreatePagePostMoreAds',
       desc: '',
       args: [],

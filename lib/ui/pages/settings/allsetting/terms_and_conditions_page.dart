@@ -43,17 +43,10 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
         title: InkWell(
           child: Text(G.current.splashSkip),
           onTap: () {
-            if (_scrollController.position.maxScrollExtent >
-                _scrollController.position.pixels) {
-              if (Platform.isIOS) {
-                _scrollController.jumpTo(
-                    _scrollController.position.maxScrollExtent -
-                        _scrollController.position.pixels);
-              } else {
-                _scrollController
-                    .jumpTo(_scrollController.position.maxScrollExtent);
-              }
-            }
+            _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeIn);
           },
         ),
         backgroundColor: Colors.black,
@@ -64,6 +57,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       body: SafeArea(
         child: Container(
           child: ListView(
+            physics: ClampingScrollPhysics(),
             controller: _scrollController,
             children: <Widget>[
               Stack(

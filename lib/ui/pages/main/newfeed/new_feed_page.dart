@@ -320,7 +320,7 @@ class _NFPostItemState extends State<NFPostItem> {
                 ),
                 Container(
                   child: Text(
-                    G.current.feedPagePosted +
+                    G.current.feedPagePosted + " " +
                         timeAgo.format(DateTime.parse(widget.item.createdAt),
                             allowFromNow: true),
                     style: TextStyle(color: Colors.grey, fontSize: 12.0),
@@ -369,21 +369,21 @@ class _NFPostItemState extends State<NFPostItem> {
             SizedBox(height: 3),
 
             ///Post Comment
-            Container(
-                alignment: Alignment.centerLeft,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(G.current.feedPageLastComment)),
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: Text(G.current.feedPageViewMoreComment),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RouteName.nfCommentPage,
-                        arguments: widget.item.id);
-                  }),
-            )
+            // Container(
+            //     alignment: Alignment.centerLeft,
+            //     margin: const EdgeInsets.symmetric(horizontal: 20),
+            //     child: Text(G.current.feedPageLastComment)),
+            // Container(
+            //   alignment: Alignment.centerLeft,
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   child: CupertinoButton(
+            //       padding: EdgeInsets.zero,
+            //       child: Text(G.current.feedPageViewMoreComment),
+            //       onPressed: () {
+            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
+            //             arguments: widget.item.id);
+            //       }),
+            // )
           ],
         ),
       ),
@@ -537,7 +537,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                         color: Colors.black.withOpacity(0.5)),
                     child: Text(
                         '${snapshot.data} / ${widget.item.media.length}',
-                        style: Theme.of(context).textTheme.bodyText2),
+                        style: TextStyle(color: Colors.white)),
                   ));
             })
       ],
