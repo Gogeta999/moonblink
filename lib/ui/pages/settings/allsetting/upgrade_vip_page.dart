@@ -56,14 +56,58 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
     });
   }
 
-  void confirmDialog() {
+  void confirmV1Dialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title:
+                '${G.current.unverifiedPartnerVip1HalfPrice} \'Vip$_selectedPlan\'',
+            simpleContent: widget.data['half_renew'] == 1
+                ? '${G.current.unverifiedPartnerVip1HalfPrice}. ${G.current.unverifiedPartnerPlanConfirmContent}'
+                : '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+            cancelContent: G.current.cancel,
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              _onTapConfirm();
+            },
+          );
+        });
+  }
+
+  void confirmV2Dialog() {
     showDialog(
         context: context,
         builder: (_) {
           return CustomDialog(
             title:
                 '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
-            simpleContent: G.current.unverifiedPartnerPlanConfirmContent,
+            simpleContent: widget.data['half_renew'] == 1
+                ? '${G.current.unverifiedPartnerVip2HalfPrice}. ${G.current.unverifiedPartnerPlanConfirmContent}'
+                : '${G.current.unverifiedPartnerVip2Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+            cancelContent: G.current.cancel,
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              _onTapConfirm();
+            },
+          );
+        });
+  }
+
+  void confirmV3Dialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title:
+                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
+            simpleContent: widget.data['half_renew'] == 1
+                ? '${G.current.unverifiedPartnerVip3HalfPrice}. ${G.current.unverifiedPartnerPlanConfirmContent}'
+                : '${G.current.unverifiedPartnerVip3Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
             cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
@@ -152,8 +196,8 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                     child: ListTile(
                       isThreeLine: true,
                       title: Text(
-                        widget.data['half_renew'] == 1
-                            ? G.current.unverifiedPartnerVip1TitleHalfPrice
+                        _partnerVipLevel == 0 || _partnerVipLevel == 5
+                            ? G.current.unverifiedPartnerVip1TitleDuration
                             : G.current.unverifiedPartnerVip1Title,
                         style: _textStyle.headline5,
                       ),
@@ -173,7 +217,7 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                           _selectedPlan = 1;
                         });
                         if (_selectedPlan > _partnerVipLevel) {
-                          confirmDialog();
+                          confirmV1Dialog();
                         }
                         if (_selectedPlan <= _partnerVipLevel) {
                           showToast(G.current.upgradeVipAlreadyOwnToast);
@@ -189,8 +233,8 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                     child: ListTile(
                       isThreeLine: true,
                       title: Text(
-                        widget.data['half_renew'] == 1
-                            ? G.current.unverifiedPartnerVip2TitleHalfPrice
+                        _partnerVipLevel == 0 || _partnerVipLevel == 5
+                            ? G.current.unverifiedPartnerVip2TitleDuration
                             : G.current.unverifiedPartnerVip2Title,
                         style: _textStyle.headline6,
                       ),
@@ -208,7 +252,7 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                           _selectedPlan = 2;
                         });
                         if (_selectedPlan > _partnerVipLevel) {
-                          confirmDialog();
+                          confirmV2Dialog();
                         }
                         if (_selectedPlan <= _partnerVipLevel) {
                           showToast(G.current.upgradeVipAlreadyOwnToast);
@@ -224,8 +268,8 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                     child: ListTile(
                       isThreeLine: true,
                       title: Text(
-                        widget.data['half_renew'] == 1
-                            ? G.current.unverifiedPartnerVip3TitleHalfPrice
+                        _partnerVipLevel == 0 || _partnerVipLevel == 5
+                            ? G.current.unverifiedPartnerVip3TitleDuration
                             : G.current.unverifiedPartnerVip3Title,
                         style: _textStyle.headline5,
                       ),
@@ -243,7 +287,7 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                           _selectedPlan = 3;
                         });
                         if (_selectedPlan > _partnerVipLevel) {
-                          confirmDialog();
+                          confirmV3Dialog();
                         }
                         if (_selectedPlan <= _partnerVipLevel) {
                           showToast(G.current.upgradeVipAlreadyOwnToast);
@@ -258,8 +302,7 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
                 child: _partnerVipLevel != 0
                     ? Text(
                         G.current.upgradeVipCurrentLevel +
-                            _partnerVipLevel.toString() +
-                            '\n${G.current.unverifiedPartnerNote}',
+                            _partnerVipLevel.toString(),
                         style: _textStyle.caption,
                       )
                     : Text(
