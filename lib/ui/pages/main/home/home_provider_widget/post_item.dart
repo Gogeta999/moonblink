@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/ad_post_widget.dart';
+import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/pages/booking_page/booking_page.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -162,7 +164,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
     switch (status) {
       case ONLINE:
         return Text(
-          'Available',
+          'Online',
           style: TextStyle(color: Colors.green),
         );
         break;
@@ -174,8 +176,8 @@ class _PostItemWidgetState extends State<PostItemWidget>
         break;
       case AWAY:
         return Text(
-          'Away',
-          style: TextStyle(color: Colors.yellow),
+          'Available',
+          style: TextStyle(color: Colors.green[300]),
         );
         break;
       case IN_GAME:
@@ -263,7 +265,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                   children: [
                     Expanded(flex: 3, child: postprofile()),
                     Expanded(
-                        flex: 6,
+                        flex: 5,
                         child: Stack(
                           children: [
                             Positioned(
@@ -301,18 +303,65 @@ class _PostItemWidgetState extends State<PostItemWidget>
                           ],
                         )),
                     Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: Stack(
                           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           // crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Positioned(top: -5, left: 30, child: blockbtn()),
+                            Positioned(top: -5, right: 0, child: blockbtn()),
                             Positioned(
                               // top: 50,
                               bottom: 25,
                               // right: 22,
                               child: Row(
                                 children: [
+                                  InkWell(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Container(
+                                        child: BlinkWidget(
+                                          children: [
+                                            Icon(FontAwesomeIcons.book),
+                                            Icon(
+                                              FontAwesomeIcons.book,
+                                              // size: 30,
+                                              color: Colors.green,
+                                            ),
+                                            // RadiantGradientMask(
+                                            //   child: Icon(
+                                            //     FontAwesomeIcons.book,
+                                            //     // size: 30,
+                                            //     color: Colors.white,
+                                            //   ),
+                                            //   colors:
+                                            //       MoreGradientColors.instagram,
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: widget.posts.id == ownId
+                                        ? () {
+                                            showToast(
+                                                G.of(context).cannotbookself);
+                                          }
+                                        : () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BookingPage(
+                                                  partnerId: widget.posts.id,
+                                                  partnerName:
+                                                      widget.posts.userName,
+                                                  partnerBios:
+                                                      widget.posts.bios,
+                                                  partnerProfile:
+                                                      widget.posts.profileImage,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                  ),
                                   InkWell(
                                     child: Icon(
                                         widget.posts.isReacted == 0
