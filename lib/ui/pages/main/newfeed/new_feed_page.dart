@@ -103,7 +103,7 @@ class _NewFeedPageState extends State<NewFeedPage>
               return ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                cacheExtent: MediaQuery.of(context).size.height * 10,
+                cacheExtent: MediaQuery.of(context).size.height * 5,
                 itemCount: _bloc.hasReachedMax
                     ? snapshot.data.length
                     : snapshot.data.length + 1,
@@ -320,7 +320,8 @@ class _NFPostItemState extends State<NFPostItem> {
                 ),
                 Container(
                   child: Text(
-                    G.current.feedPagePosted + " " +
+                    G.current.feedPagePosted +
+                        " " +
                         timeAgo.format(DateTime.parse(widget.item.createdAt),
                             allowFromNow: true),
                     style: TextStyle(color: Colors.grey, fontSize: 12.0),
@@ -404,8 +405,8 @@ class PostMediaItem extends StatefulWidget {
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
   final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
-  int maxHeight = 400;
-  final _maxHeightSubject = BehaviorSubject.seeded(200);
+  //int maxHeight = 200;
+  final _maxHeightSubject = BehaviorSubject.seeded(200.0);
 
   @override
   void initState() {
@@ -434,10 +435,20 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     imageUrl: url,
                     imageBuilder: (context, imageProvider) {
                       final imageListener = ImageStreamListener((info, _) {
-                        this._maxHeightSubject.first.then((value) {
-                          this._maxHeightSubject.add(
-                              min(maxHeight, max(info.image.height, value)));
-                        });
+                        final _fittedSize = applyBoxFit(
+                            BoxFit.contain,
+                            Size(info.image.width.toDouble(),
+                                info.image.height.toDouble()),
+                            MediaQuery.of(context).size);
+                        this
+                            ._maxHeightSubject
+                            .add(_fittedSize.destination.height);
+                        // this._maxHeightSubject.first.then((value) {
+                        //   this._maxHeightSubject.add(
+                        //       //min(maxHeight, max(info.image.height, value)));
+                        //       //max(_fittedSize.destination.height, value));
+                        //       _fittedSize.destination.height);
+                        // });
                       });
                       imageProvider
                           .resolve(ImageConfiguration())
@@ -465,12 +476,12 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 url: url,
                 id: widget.item.id,
                 index: index,
-                maxHeightCallBack: (int height) {
-                  this._maxHeightSubject.first.then((value) {
-                    this
-                        ._maxHeightSubject
-                        .add(max(maxHeight, max(height, value)));
-                  });
+                maxHeightCallBack: (double height) {
+                  this._maxHeightSubject.add(height);
+                  // this._maxHeightSubject.first.then((value) {
+                  //   this._maxHeightSubject.add(max(height, value));
+                  //   // .add(max(maxHeight, max(height, value)));
+                  // });
                 },
               ),
             );
@@ -483,7 +494,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
 
   @override
   void didChangeDependencies() {
-    maxHeight = (MediaQuery.of(context).size.height * 0.7).toInt();
+    //maxHeight = MediaQuery.of(context).size.height.toInt();
     super.didChangeDependencies();
   }
 
@@ -503,13 +514,13 @@ class _PostMediaItemState extends State<PostMediaItem> {
           initialData: [],
           stream: this._pageChildrenSubject,
           builder: (context, childrenSnapshot) {
-            return StreamBuilder<int>(
-                initialData: 200,
+            return StreamBuilder<double>(
+                initialData: 200.0,
                 stream: this._maxHeightSubject,
                 builder: (context, maxHeightSnapshot) {
                   return Container(
                     width: double.infinity,
-                    height: maxHeightSnapshot.data.toDouble(),
+                    height: maxHeightSnapshot.data,
                     child: PageView(
                       physics: ClampingScrollPhysics(),
                       onPageChanged: (value) {
