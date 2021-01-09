@@ -885,10 +885,10 @@ class G {
     );
   }
 
-  /// `All user will see your post`
+  /// `All users will see your post`
   String get feedCreatePageAllWillSee {
     return Intl.message(
-      'All user will see your post',
+      'All users will see your post',
       name: 'feedCreatePageAllWillSee',
       desc: '',
       args: [],
@@ -935,20 +935,20 @@ class G {
     );
   }
 
-  /// `Free public post`
+  /// `Free Followers post`
   String get feedCreatePageFreeFollowerPost {
     return Intl.message(
-      'Free public post',
+      'Free Followers post',
       name: 'feedCreatePageFreeFollowerPost',
       desc: '',
       args: [],
     );
   }
 
-  /// `Free followers post`
+  /// `Free Public post`
   String get feedCreatePageFreePublicPost {
     return Intl.message(
-      'Free followers post',
+      'Free Public post',
       name: 'feedCreatePageFreePublicPost',
       desc: '',
       args: [],
@@ -1005,10 +1005,10 @@ class G {
     );
   }
 
-  /// `Require title,photo or video`
+  /// `Require photo or video`
   String get feedCreatePagePickRequired {
     return Intl.message(
-      'Require title,photo or video',
+      'Require photo or video',
       name: 'feedCreatePagePickRequired',
       desc: '',
       args: [],
@@ -1045,20 +1045,20 @@ class G {
     );
   }
 
-  /// `You need`
+  /// `You need to watch`
   String get feedCreatePagePostUNeed {
     return Intl.message(
-      'You need',
+      'You need to watch',
       name: 'feedCreatePagePostUNeed',
       desc: '',
       args: [],
     );
   }
 
-  /// `more Ads need to watch.`
+  /// `more Ads to post.`
   String get feedCreatePagePostMoreAds {
     return Intl.message(
-      'more Ads need to watch.',
+      'more Ads to post.',
       name: 'feedCreatePagePostMoreAds',
       desc: '',
       args: [],

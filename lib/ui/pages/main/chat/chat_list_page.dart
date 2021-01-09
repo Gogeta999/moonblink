@@ -33,7 +33,7 @@ class _NewChatListPageState extends State<NewChatListPage> {
 
   @override
   void dispose() {
-    _storyModel?.dispose();
+    //_storyModel?.dispose();
     super.dispose();
   }
 

@@ -29,7 +29,7 @@ parseJson(String text) {
 }
 
 ///swith to true to print log
-const bool isDev = true;
+const bool isDev = false;
 
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url
@@ -42,10 +42,10 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: devUrl,
+    baseUrl: baseUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
-    headers: {'app-key': devAppKey},
+    headers: {'app-key': baseAppKey},
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
   );
