@@ -274,7 +274,8 @@ class _UnverifiedPartnerSignUpPageState
                               ? CupertinoActivityIndicator()
                               : InkWell(
                                   child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
+                                  onTap: () => Navigator.of(context)
+                                      .pushNamed(RouteName.vipDemo),
                                 ),
                           onTap: () {
                             setState(() {
@@ -282,7 +283,8 @@ class _UnverifiedPartnerSignUpPageState
                             });
                             confirmV1Dialog();
                           },
-                          onLongPress: () => showToast('Show exmaple Layer'),
+                          onLongPress: () => Navigator.of(context)
+                              .pushNamed(RouteName.vipDemo),
                         ),
                       )),
                   Padding(
@@ -301,7 +303,8 @@ class _UnverifiedPartnerSignUpPageState
                               ? CupertinoActivityIndicator()
                               : InkWell(
                                   child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
+                                  onTap: () => Navigator.of(context)
+                                      .pushNamed(RouteName.vipDemo),
                                 ),
                           onTap: () {
                             setState(() {
@@ -309,7 +312,8 @@ class _UnverifiedPartnerSignUpPageState
                             });
                             confirmV2Dialog();
                           },
-                          onLongPress: () => showToast('Show exmaple Layer'),
+                          onLongPress: () => Navigator.of(context)
+                              .pushNamed(RouteName.vipDemo),
                         ),
                       )),
                   Padding(
@@ -328,7 +332,8 @@ class _UnverifiedPartnerSignUpPageState
                               ? CupertinoActivityIndicator()
                               : InkWell(
                                   child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => showToast('Show exmaple Layer'),
+                                  onTap: () => Navigator.of(context)
+                                      .pushNamed(RouteName.vipDemo),
                                 ),
                           onTap: () {
                             setState(() {
@@ -336,7 +341,8 @@ class _UnverifiedPartnerSignUpPageState
                             });
                             confirmV3Dialog();
                           },
-                          onLongPress: () => showToast('Show exmaple Layer'),
+                          onLongPress: () => Navigator.of(context)
+                              .pushNamed(RouteName.vipDemo),
                         ),
                       )),
                   Padding(

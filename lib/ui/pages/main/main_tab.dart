@@ -105,7 +105,7 @@ class _MainTabPageState extends State<MainTabPage>
         //   _pageController.jumpToPage(2);
         // });
         if (userType == 0) {
-          showToast('Only partner featuer');
+          showToast('CoPlayer feature');
         }
         if (userType != 0) {
           Navigator.pushNamed(context, RouteName.createPostPage);
