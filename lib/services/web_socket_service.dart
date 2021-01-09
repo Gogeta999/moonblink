@@ -101,11 +101,12 @@ class WebSocketService {
       for (var e in response) {
         chats.add(NewChat.fromJson(e));
       }
-      for (int i = 0; i < 500; ++i) {
-        for (var e in response) {
-          chats.add(NewChat.fromJson(e));
-        }
-      }
+      //for testing
+      // for (int i = 0; i < 500; ++i) {
+      //   for (var e in response) {
+      //     chats.add(NewChat.fromJson(e));
+      //   }
+      // }
       _chatListBloc.chatsSubject.add(chats);
     });
   }
