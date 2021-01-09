@@ -380,8 +380,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
         .asMap()
         .map((index, url) {
           UrlType urlType = widget.nfBloc.getUrlType(url);
-          if (urlType == UrlType.REMOTE_IMAGE) if (urlType ==
-              UrlType.REMOTE_IMAGE)
+          if (urlType == UrlType.REMOTE_IMAGE)
             return MapEntry(
               index,
               CupertinoButton(

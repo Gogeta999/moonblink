@@ -345,10 +345,6 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   }
 
   _choose() async {
-    ///can improve with Navigator.pop with result.
-    if (widget.popAfterBtnPressed) {
-      Navigator.pop(context);
-    }
     if (widget.requestType == RequestType.image) {
       List<File> compressedImages = [];
       for (int i = 0; i < _selectedIndices.length; ++i) {
@@ -370,6 +366,10 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       } else {
         if (isDev) print('CompressedImages is empty');
       }
+      ///can improve with Navigator.pop with result.
+      if (widget.popAfterBtnPressed) {
+        Navigator.pop(context);
+      }
     } else if (widget.requestType == RequestType.video) {
       final _trimmer = Trimmer();
       File video = await _photoList[_selectedIndices.first].file;
@@ -390,9 +390,14 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
         if (mediaInfo.file != null) {
           widget.onPressed(mediaInfo.file, thumbnail);
         }
+        ///can improve with Navigator.pop with result.
+        if (widget.popAfterBtnPressed) {
+          Navigator.pop(context);
+        }
       }
     } else {
       //Request type not supported
+      Navigator.pop(context);
     }
   }
 

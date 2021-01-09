@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -415,8 +412,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
         .asMap()
         .map((index, url) {
           UrlType urlType = widget.nfBloc.getUrlType(url);
-          if (urlType == UrlType.REMOTE_IMAGE) if (urlType ==
-              UrlType.REMOTE_IMAGE)
+          if (urlType == UrlType.REMOTE_IMAGE)
             return MapEntry(
               index,
               CupertinoButton(
