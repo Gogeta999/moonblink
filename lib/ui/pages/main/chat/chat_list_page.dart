@@ -11,7 +11,6 @@ import 'package:moonblink/models/chat_models/new_chat.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/pages/main/stories/storylist.dart';
 import 'package:moonblink/view_model/story_model.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class NewChatListPage extends StatefulWidget {
@@ -19,14 +18,12 @@ class NewChatListPage extends StatefulWidget {
   _NewChatListPageState createState() => _NewChatListPageState();
 }
 
-class _NewChatListPageState extends State<NewChatListPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _NewChatListPageState extends State<NewChatListPage> {
 
   // ignore: close_sinks
   ChatListBloc _chatListBloc;
-  RefreshController refreshController = RefreshController();
+  final _storyModel = StoryModel();
+  //RefreshController refreshController = RefreshController();
 
   @override
   void initState() {
@@ -34,10 +31,16 @@ class _NewChatListPageState extends State<NewChatListPage>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _storyModel?.dispose();
+    super.dispose();
+  }
+
   void onRefresh(StoryModel storyModel) async {
-    await storyModel.fetchStory().then((value) {
-      refreshController.refreshCompleted();
-    }, onError: (e) => refreshController.refreshFailed());
+    // await storyModel.fetchStory().then((value) {
+    //   refreshController.refreshCompleted();
+    // }, onError: (e) => refreshController.refreshFailed());
   }
 
   //Chat Tile
@@ -88,76 +91,144 @@ class _NewChatListPageState extends State<NewChatListPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppbarWidget(),
       body: SafeArea(
-        child: ProviderWidget<StoryModel>(
-          model: StoryModel(),
-          onModelReady: (model) {
-            model.fetchStory();
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _storyModel.fetchStory();
           },
-          builder: (context, storyModel, child) {
-            return SmartRefresher(
-              controller: refreshController,
-              header: WaterDropHeader(),
-              onRefresh: () {
-                onRefresh(storyModel);
-              },
-              child: ListView(
-                children: [
-                  if (storyModel.stories.isNotEmpty)
-                    StoryList(
-                      stories: storyModel.stories,
-                    ),
-                  StreamBuilder<List<NewChat>>(
-                      initialData: null,
-                      stream: _chatListBloc.chatsSubject,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Center(child: CupertinoActivityIndicator());
-                        }
-                        if (snapshot.data.isEmpty) {
-                          return Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: Image.asset(
-                                  'assets/images/noFollowing.jpg',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                bottom:
-                                    MediaQuery.of(context).size.height * 0.5,
-                                child: Text(
-                                  G.of(context).noChatHistory,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20),
-                                ),
-                              )
-                            ],
-                          );
-                        }
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            NewChat chat = snapshot.data[index];
-                            return _buildChatTile(chat);
-                          },
-                          itemCount: snapshot.data.length,
-                        );
-                      }),
-                ],
+          child: Column(
+            children: [
+              ProviderWidget<StoryModel>(
+                model: _storyModel,
+                onModelReady: (model) {
+                  model.fetchStory();
+                },
+                builder: (context, _, child) {
+                  if (_storyModel.stories.isEmpty) {
+                    return Container();
+                  }
+                  return StoryList(
+                    stories: _storyModel.stories,
+                  );
+                },
               ),
-            );
-          },
+              StreamBuilder<List<NewChat>>(
+                  initialData: null,
+                  stream: _chatListBloc.chatsSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Center(child: CupertinoActivityIndicator());
+                    }
+                    if (snapshot.data.isEmpty) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: Image.asset(
+                              'assets/images/noFollowing.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: MediaQuery.of(context).size.height * 0.5,
+                            child: Text(
+                              G.of(context).noChatHistory,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 20),
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                        physics: ClampingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          NewChat chat = snapshot.data[index];
+                          return _buildChatTile(chat);
+                        },
+                        itemCount: snapshot.data.length,
+                      ),
+                    );
+                  }),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+/*
+SmartRefresher(
+          controller: refreshController,
+          header: WaterDropHeader(),
+          enablePullDown: true,
+          onRefresh: () {
+            onRefresh(_storyModel);
+          },
+          child: Column(
+            children: [
+              ProviderWidget<StoryModel>(
+                model: _storyModel,
+                onModelReady: (model) {
+                  model.fetchStory();
+                },
+                builder: (context, _, child) {
+                  if (_storyModel.stories.isEmpty) {
+                    return Container();
+                  }
+                  return StoryList(
+                    stories: _storyModel.stories,
+                  );
+                },
+              ),
+              StreamBuilder<List<NewChat>>(
+                  initialData: null,
+                  stream: _chatListBloc.chatsSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Center(child: CupertinoActivityIndicator());
+                    }
+                    if (snapshot.data.isEmpty) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: Image.asset(
+                              'assets/images/noFollowing.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: MediaQuery.of(context).size.height * 0.5,
+                            child: Text(
+                              G.of(context).noChatHistory,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 20),
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                        physics: ClampingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          NewChat chat = snapshot.data[index];
+                          return _buildChatTile(chat);
+                        },
+                        itemCount: snapshot.data.length,
+                      ),
+                    );
+                  }),
+            ],
+          ),
+        )
+*/

@@ -59,7 +59,7 @@ class WebSocketService {
   ChatListBloc _chatListBloc;
   ChatBoxBloc _chatBoxBloc;
 
-  final IO.Socket _socket = IO.io(proSocketurl, <String, dynamic>{
+  final IO.Socket _socket = IO.io(devSocketUrl, <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
     'timeout': 2000
@@ -100,6 +100,11 @@ class WebSocketService {
       final response = ResponseData.fromJson(data).data as List;
       for (var e in response) {
         chats.add(NewChat.fromJson(e));
+      }
+      for (int i = 0; i < 500; ++i) {
+        for (var e in response) {
+          chats.add(NewChat.fromJson(e));
+        }
       }
       _chatListBloc.chatsSubject.add(chats);
     });

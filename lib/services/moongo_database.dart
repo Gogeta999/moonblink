@@ -20,7 +20,9 @@ class MoonGoDB {
   init() async {
     final migrationsScripts = [
       "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at INTEGER, reaction_count INTEGER, profile_image TEXT, cover_image TEXT, is_reacted INTEGER, type INTEGER, gender TEXT, bios TEXT)",
-      "CREATE TABLE $_nfTableName(id INTEGER PRIMARY KEY, user_id INTEGER, body TEXT, media TEXT, status INTEGER, created_at TEXT, updated_at TEXT, reaction_count INTEGER, user_name TEXT, profile_image TEXT, is_reacted INTEGER, bios TEXT)"
+      "CREATE TABLE $_nfTableName(id INTEGER PRIMARY KEY, user_id INTEGER, body TEXT, media TEXT, status INTEGER, created_at TEXT, updated_at TEXT, reaction_count INTEGER, user_name TEXT, profile_image TEXT, is_reacted INTEGER, bios TEXT)",
+      "ALTER TABLE $_tableName ADD COLUMN status INTEGER",
+      "ALTER TABLE $_tableName ADD COLUMN vip INTEGER"
     ];
 
     String _path = await getDatabasesPath();
@@ -47,24 +49,12 @@ class MoonGoDB {
     );
   }
 
-  void insertPost(Post post) {
-    _db
-        .insert(_tableName, post.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace)
-        .then((value) {
-      if (isDev) print('Inserted Id: $value');
-    });
-  }
-
   insertPosts(List<Post> posts) {
     _db.transaction((txn) {
-      posts.forEach((element) {
-        txn
-            .insert(_tableName, element.toMap(),
-                conflictAlgorithm: ConflictAlgorithm.replace)
-            .then((value) {
-          if (isDev) print('Inserted Id: $value');
-        });
+      posts.forEach((element) async {
+        final id = await txn.insert(_tableName, element.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+        if (isDev) print('Inserted Id: $id');
       });
       return Future.value(true);
     });
@@ -106,36 +96,28 @@ class MoonGoDB {
   deletePost(int id) async {
     await _db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
   }
-  ///---- Start NFPOST -----
-  void insertNfPost(NFPost nfPost) {
-    _db
-        .insert(_nfTableName, nfPost.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace)
-        .then((value) => print('Inserted Id: $value'));
-  }
 
+  ///---- Start NFPOST -----
   insertNfPosts(List<NFPost> nfPosts) {
     _db.transaction((txn) {
       nfPosts.forEach((element) async {
-        txn
-            .insert(_nfTableName, element.toMap(),
-                conflictAlgorithm: ConflictAlgorithm.replace)
-            .then((value) {
-          if (isDev) print('Inserted Id: $value');
-        });
+        final id = await txn.insert(_nfTableName, element.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+        if (isDev) print('Inserted Id: $id');
       });
       return Future.value(true);
     });
   }
 
   updateNfPost(NFPost nfPost) {
-    _db.transaction((txn) {
-      txn.update(
+    _db.transaction((txn) async {
+      final id = await txn.update(
         _nfTableName,
         nfPost.toMap(),
         where: "id = ?",
         whereArgs: [nfPost.id],
-      ).then((value) => print("Updated Id: $value"));
+      );
+      if (isDev) print("Updated Id: $id");
       return Future.value(true);
     });
   }
