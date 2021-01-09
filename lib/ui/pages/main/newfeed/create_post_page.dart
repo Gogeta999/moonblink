@@ -638,7 +638,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           if (snapshot1.data == 'Public') {
                             return Text(G.current.feedCreatePageAllWillSee);
                           }
-                          return Text('${snapshot2.data.followerCount}' +
+                          return Text('${snapshot2.data.followerCount} ' +
                               G.current.feedCreatePageFollowersWillSee);
                         },
                       );
@@ -943,11 +943,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           stream: this._postByFreeButtonSubject,
                                           builder: (context, snapshot) {
                                             if (snapshot.data) {
-                                              return CupertinoButton.filled(
-                                                  padding: EdgeInsets.zero,
-                                                  child:
-                                                      CupertinoActivityIndicator(),
-                                                  onPressed: () {});
+                                              return _showIndicator;
                                             }
                                             return CupertinoButton.filled(
                                                 padding: EdgeInsets.zero,
@@ -973,11 +969,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           stream: this._postByFreeButtonSubject,
                                           builder: (context, snapshot) {
                                             if (snapshot.data) {
-                                              return CupertinoButton.filled(
-                                                  padding: EdgeInsets.zero,
-                                                  child:
-                                                      CupertinoActivityIndicator(),
-                                                  onPressed: () {});
+                                              return _showIndicator;
                                             }
                                             return CupertinoButton.filled(
                                                 padding: EdgeInsets.zero,
@@ -1001,12 +993,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                         stream: this._postByCoinsButtonSubject,
                                         builder: (context, snapshot) {
                                           if (snapshot.data) {
-                                            return CupertinoButton.filled(
-                                              padding: EdgeInsets.zero,
-                                              child:
-                                                  CupertinoActivityIndicator(),
-                                              onPressed: () {},
-                                            );
+                                            return _showIndicator;
                                           }
                                           return CupertinoButton.filled(
                                               padding: EdgeInsets.zero,
