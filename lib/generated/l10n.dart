@@ -2706,10 +2706,30 @@ class G {
   }
 
   /// `Online`
-  String get statusavailable {
+  String get statusOnline {
     return Intl.message(
       'Online',
+      name: 'statusOnline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available`
+  String get statusavailable {
+    return Intl.message(
+      'Available',
       name: 'statusavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ban`
+  String get statusBan {
+    return Intl.message(
+      'Ban',
+      name: 'statusBan',
       desc: '',
       args: [],
     );

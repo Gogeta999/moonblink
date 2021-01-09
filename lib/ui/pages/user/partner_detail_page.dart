@@ -354,7 +354,7 @@ class _PartnerDetailPageState extends State<PartnerDetailPage> {
     switch (status) {
       case (0):
         return Center(
-            child: Text(G.of(context).statusavailable,
+            child: Text(G.of(context).statusOnline,
                 style: TextStyle(
                     color: Colors.green, fontWeight: FontWeight.bold)));
         break;

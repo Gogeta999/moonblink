@@ -164,25 +164,25 @@ class _PostItemWidgetState extends State<PostItemWidget>
     switch (status) {
       case ONLINE:
         return Text(
-          'Online',
+          G.of(context).statusOnline,
           style: TextStyle(color: Colors.green),
         );
         break;
       case BUSY:
         return Text(
-          'Busy',
+          G.of(context).statusbusy,
           style: TextStyle(color: Colors.redAccent),
         );
         break;
       case AWAY:
         return Text(
-          'Available',
+          G.of(context).statusavailable,
           style: TextStyle(color: Colors.green[300]),
         );
         break;
       case IN_GAME:
         return Text(
-          'In Game',
+          G.of(context).statusingame,
           style: TextStyle(color: Colors.blue),
         );
         break;
@@ -194,7 +194,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
         break;
       default:
         return Text(
-          'Error',
+          G.of(context).statuserror,
           style: TextStyle(color: Colors.red),
         );
         break;
