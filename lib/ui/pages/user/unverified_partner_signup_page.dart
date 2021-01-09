@@ -79,14 +79,55 @@ class _UnverifiedPartnerSignUpPageState
     });
   }
 
-  void confirmDialog() {
+  void confirmV1Dialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title:
+                '${G.current.unverifiedPartnerVip1HalfPrice} \'Vip$_selectedPlan\'',
+            simpleContent:
+                '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+            cancelContent: G.current.cancel,
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              _onTapConfirm();
+            },
+          );
+        });
+  }
+
+  void confirmV2Dialog() {
     showDialog(
         context: context,
         builder: (_) {
           return CustomDialog(
             title:
                 '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
-            simpleContent: G.current.unverifiedPartnerPlanConfirmContent,
+            simpleContent:
+                '${G.current.unverifiedPartnerVip2Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+            cancelContent: G.current.cancel,
+            cancelColor: Theme.of(context).accentColor,
+            confirmButtonColor: Theme.of(context).accentColor,
+            confirmContent: G.current.confirm,
+            confirmCallback: () {
+              _onTapConfirm();
+            },
+          );
+        });
+  }
+
+  void confirmV3Dialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return CustomDialog(
+            title:
+                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
+            simpleContent:
+                '${G.current.unverifiedPartnerVip3Price}.  ${G.current.unverifiedPartnerPlanConfirmContent}',
             cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
@@ -239,7 +280,7 @@ class _UnverifiedPartnerSignUpPageState
                             setState(() {
                               _selectedPlan = 1;
                             });
-                            confirmDialog();
+                            confirmV1Dialog();
                           },
                           onLongPress: () => showToast('Show exmaple Layer'),
                         ),
@@ -266,7 +307,7 @@ class _UnverifiedPartnerSignUpPageState
                             setState(() {
                               _selectedPlan = 2;
                             });
-                            confirmDialog();
+                            confirmV2Dialog();
                           },
                           onLongPress: () => showToast('Show exmaple Layer'),
                         ),
@@ -293,7 +334,7 @@ class _UnverifiedPartnerSignUpPageState
                             setState(() {
                               _selectedPlan = 3;
                             });
-                            confirmDialog();
+                            confirmV3Dialog();
                           },
                           onLongPress: () => showToast('Show exmaple Layer'),
                         ),

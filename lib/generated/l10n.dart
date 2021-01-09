@@ -3205,10 +3205,10 @@ class G {
     );
   }
 
-  /// `This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever,If not Vip 1 will be 1 months,2 will be 3 months and 3 will be 1 years`
+  /// `This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever`
   String get unverifiedPartnerNote {
     return Intl.message(
-      'This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever,If not Vip 1 will be 1 months,2 will be 3 months and 3 will be 1 years',
+      'This purchase is a permanent service for Verified User,if you become verified partner,you only need to purchase once to enjoy our service forever',
       name: 'unverifiedPartnerNote',
       desc: '',
       args: [],
@@ -3245,21 +3245,21 @@ class G {
     );
   }
 
-  /// `Vip 1 Cost 350 Coins`
+  /// `Vip 1`
   String get unverifiedPartnerVip1Title {
     return Intl.message(
-      'Vip 1 Cost 350 Coins',
+      'Vip 1',
       name: 'unverifiedPartnerVip1Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vip 1 Cost 175 Coins`
-  String get unverifiedPartnerVip1TitleHalfPrice {
+  /// `Vip 1 Duration 1 month`
+  String get unverifiedPartnerVip1TitleDuration {
     return Intl.message(
-      'Vip 1 Cost 175 Coins',
-      name: 'unverifiedPartnerVip1TitleHalfPrice',
+      'Vip 1 Duration 1 month',
+      name: 'unverifiedPartnerVip1TitleDuration',
       desc: '',
       args: [],
     );
@@ -3275,21 +3275,41 @@ class G {
     );
   }
 
-  /// `Vip 2 Cost 550 Coins`
+  /// `Vip 1 Cost 350 Coins`
+  String get unverifiedPartnerVip1Price {
+    return Intl.message(
+      'Vip 1 Cost 350 Coins',
+      name: 'unverifiedPartnerVip1Price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 1 Cost 175 Coins`
+  String get unverifiedPartnerVip1HalfPrice {
+    return Intl.message(
+      'Vip 1 Cost 175 Coins',
+      name: 'unverifiedPartnerVip1HalfPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 2`
   String get unverifiedPartnerVip2Title {
     return Intl.message(
-      'Vip 2 Cost 550 Coins',
+      'Vip 2',
       name: 'unverifiedPartnerVip2Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vip 2 Cost 275 Coins`
-  String get unverifiedPartnerVip2TitleHalfPrice {
+  /// `Vip 2 Duration 3 month`
+  String get unverifiedPartnerVip2TitleDuration {
     return Intl.message(
-      'Vip 2 Cost 275 Coins',
-      name: 'unverifiedPartnerVip2TitleHalfPrice',
+      'Vip 2 Duration 3 month',
+      name: 'unverifiedPartnerVip2TitleDuration',
       desc: '',
       args: [],
     );
@@ -3305,21 +3325,41 @@ class G {
     );
   }
 
-  /// `Vip 3 Cost 1050 Coins`
+  /// `Vip 2 Cost 550 Coins`
+  String get unverifiedPartnerVip2Price {
+    return Intl.message(
+      'Vip 2 Cost 550 Coins',
+      name: 'unverifiedPartnerVip2Price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 2 Cost 275 Coins`
+  String get unverifiedPartnerVip2HalfPrice {
+    return Intl.message(
+      'Vip 2 Cost 275 Coins',
+      name: 'unverifiedPartnerVip2HalfPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 3`
   String get unverifiedPartnerVip3Title {
     return Intl.message(
-      'Vip 3 Cost 1050 Coins',
+      'Vip 3',
       name: 'unverifiedPartnerVip3Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vip 3 Cost 525 Coins`
-  String get unverifiedPartnerVip3TitleHalfPrice {
+  /// `Vip 3 Duration 1 Year`
+  String get unverifiedPartnerVip3TitleDuration {
     return Intl.message(
-      'Vip 3 Cost 525 Coins',
-      name: 'unverifiedPartnerVip3TitleHalfPrice',
+      'Vip 3 Duration 1 Year',
+      name: 'unverifiedPartnerVip3TitleDuration',
       desc: '',
       args: [],
     );
@@ -3330,6 +3370,26 @@ class G {
     return Intl.message(
       'Service Charge is 50 Coins for GooglePay and Apple Pay,\nThis will make you appear on the top-level feed.\nYou can post either video or image post on home page,And you can post 3 all-user-visible posts and 3 individual-fan-visible user posts for free every day.\nLong press to watch the display effect.',
       name: 'unverifiedPartnerVip3Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 3 Cost 1050 Coins`
+  String get unverifiedPartnerVip3Price {
+    return Intl.message(
+      'Vip 3 Cost 1050 Coins',
+      name: 'unverifiedPartnerVip3Price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vip 3 Cost 525 Coins`
+  String get unverifiedPartnerVip3HalfPrice {
+    return Intl.message(
+      'Vip 3 Cost 525 Coins',
+      name: 'unverifiedPartnerVip3HalfPrice',
       desc: '',
       args: [],
     );
@@ -3355,10 +3415,10 @@ class G {
     );
   }
 
-  /// `Coplayer`
+  /// `Authorize`
   String get usertypecoplayer {
     return Intl.message(
-      'Coplayer',
+      'Authorize',
       name: 'usertypecoplayer',
       desc: '',
       args: [],
@@ -3390,6 +3450,16 @@ class G {
     return Intl.message(
       'Pro',
       name: 'usertypepro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP`
+  String get usertypeUnverified {
+    return Intl.message(
+      'VIP',
+      name: 'usertypeUnverified',
       desc: '',
       args: [],
     );

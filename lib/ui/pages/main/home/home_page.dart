@@ -462,7 +462,8 @@ class _HomePageState extends State<HomePage>
                         SizedBox(
                           height: 4,
                         ),
-                        Expanded(flex: 1, child: Text('Unverified')),
+                        Expanded(
+                            flex: 1, child: Text(G.current.usertypeUnverified)),
                       ],
                     ),
                   ),

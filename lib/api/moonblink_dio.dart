@@ -42,10 +42,10 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: devUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
-    headers: {'app-key': baseAppKey},
+    headers: {'app-key': devAppKey},
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
   );
