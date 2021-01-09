@@ -24,6 +24,7 @@ class _PlayerState extends State<Player> {
 
   @override
   void initState() {
+    print('Key - ${widget.index}');
     _controller = CachedVideoPlayerController.network(widget.url);
     _controller.addListener(() {
       if (_controller.value.duration == null) return;
@@ -61,13 +62,15 @@ class _PlayerState extends State<Player> {
       width: double.infinity,
       height: double.infinity,
       child: VisibilityDetector(
-        key: Key('${widget.id + widget.index}-${widget.url}'),
+        key: ValueKey(widget.index),
         onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction >= 0.9) {
-            if (!(_controller?.value?.isPlaying ?? true) && !didUserPause)
-              _controller?.play();
+          if (visibilityInfo.visibleFraction >= 0.8) {
+            _controller?.play();
+            // if (!(_controller.value.isPlaying) && !didUserPause)
+            //   _controller?.play();
           } else {
-            if ((_controller?.value?.isPlaying ?? false)) _controller?.pause();
+            //if ((_controller.value.isPlaying)) _controller?.pause();
+            _controller?.pause();
           }
         },
         child: Stack(

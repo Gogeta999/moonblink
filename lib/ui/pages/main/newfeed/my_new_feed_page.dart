@@ -261,7 +261,7 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                   ),
                 ),
               ),
-              child: PostMediaItem(item: widget.item, nfBloc: widget.bloc),
+              child: PostMediaItem(item: widget.item, index: widget.index, nfBloc: widget.bloc),
             ),
           ),
           SizedBox(height: 5),
@@ -360,8 +360,9 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
 class PostMediaItem extends StatefulWidget {
   final NFPost item;
   final MyNFBloc nfBloc;
+  final int index;
 
-  const PostMediaItem({Key key, this.item, this.nfBloc}) : super(key: key);
+  const PostMediaItem({Key key, this.item, this.index, this.nfBloc}) : super(key: key);
 
   @override
   _PostMediaItemState createState() => _PostMediaItemState();
@@ -438,7 +439,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
               Player(
                 url: url,
                 id: widget.item.id,
-                index: index,
+                index: widget.index,
                 maxHeightCallBack: (double height) {
                     this._maxHeightSubject.add(height);
                   // this._maxHeightSubject.first.then((value) {
