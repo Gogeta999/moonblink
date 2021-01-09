@@ -938,7 +938,7 @@ class G {
   /// `Free public post`
   String get feedCreatePageFreeFollowerPost {
     return Intl.message(
-      'Free Followers post',
+      'Free public post',
       name: 'feedCreatePageFreeFollowerPost',
       desc: '',
       args: [],
@@ -948,7 +948,7 @@ class G {
   /// `Free followers post`
   String get feedCreatePageFreePublicPost {
     return Intl.message(
-      'Free Public post',
+      'Free followers post',
       name: 'feedCreatePageFreePublicPost',
       desc: '',
       args: [],
