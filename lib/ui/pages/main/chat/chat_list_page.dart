@@ -92,7 +92,7 @@ class _NewChatListPageState extends State<NewChatListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarWidget(),
+      appBar: AppbarWidget(showBack: false,),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {

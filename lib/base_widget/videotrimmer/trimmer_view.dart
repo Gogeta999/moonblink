@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class TrimmerView extends StatefulWidget {
@@ -18,24 +21,57 @@ class _TrimmerViewState extends State<TrimmerView> {
   bool _isPlaying = false;
   bool _progressVisibility = false;
 
+  final _saveSubject = BehaviorSubject.seeded(false);
+
+  @override
+  void dispose() {
+    _saveSubject.close();
+    super.dispose();
+  }
+
   Future<String> _saveVideo() async {
     setState(() {
       _progressVisibility = true;
     });
 
     String _value;
-
-    await widget._trimmer
-        .saveTrimmedVideo(
-            startValue: _startValue,
-            endValue: _endValue,
-            outputFormat: FileFormat.mp4,
-        ).then((value) {
-      setState(() {
-        _progressVisibility = false;
-        _value = value;
+    if (Platform.isAndroid) {
+      await widget._trimmer
+          .saveTrimmedVideo(
+        startValue: _startValue,
+        endValue: _endValue,
+        //ffmpegCommand: "-vcodec copy -acodec aac",
+        ffmpegCommand:
+            "-s 720x480 -r 25 -vcodec mpeg4 -b:v 300k -b:a 48000 -ac 2 -ar 22050",
+        customVideoFormat: ".mp4",
+        outputFormat: FileFormat.mp4,
+      )
+          .then((value) {
+        setState(() {
+          _progressVisibility = false;
+          _value = value;
+        });
       });
-    });
+    } else {
+      await widget._trimmer
+          .saveTrimmedVideo(
+        startValue: _startValue,
+        endValue: _endValue,
+        outputFormat: FileFormat.mp4,
+      )
+          .then((value) async {
+        MediaInfo mediaInfo = await VideoCompress.compressVideo(
+          value,
+          quality: VideoQuality.DefaultQuality,
+          deleteOrigin: true,
+          includeAudio: true,
+        );
+        setState(() {
+          _progressVisibility = false;
+          _value = mediaInfo.file.path;
+        });
+      });
+    }
 
     return _value;
   }
@@ -62,24 +98,28 @@ class _TrimmerViewState extends State<TrimmerView> {
                   ),
                 ),
                 RaisedButton(
-                  onPressed: _progressVisibility
-                      ? null
-                      : () async {
-                          _saveVideo().then((outputPath) {
-                            print('OUTPUT PATH: $outputPath');
-                            final snackBar = SnackBar(
-                              content: Text('Video Saved successfully'),
-                            );
-                            Scaffold.of(context).showSnackBar(snackBar);
-                            Navigator.pop(context, File(outputPath));
-                            // Navigator.of(context).pushReplacement(
-                            //   MaterialPageRoute(
-                            //     builder: (context) => Preview(outputPath),
-                            //   ),
-                            // );
-                          });
-                        },
-                  child: Text("SAVE"),
+                  onPressed: () async {
+                    if (await _saveSubject.first) return;
+                    _saveSubject.add(true);
+                    _saveVideo().then((outputPath) {
+                      print('OUTPUT PATH: $outputPath');
+                      _saveSubject.add(false);
+                      showToast('Video save successfully');
+                      Navigator.pop(context, File(outputPath));
+                    }, onError: (e) {
+                      _saveSubject.add(false);
+                      showToast(e.toString());
+                    });
+                  },
+                  child: StreamBuilder<bool>(
+                      initialData: false,
+                      stream: this._saveSubject,
+                      builder: (context, snapshot) {
+                        if (snapshot.data) {
+                          return CupertinoActivityIndicator();
+                        }
+                        return Text("SAVE");
+                      }),
                 ),
                 Expanded(
                   child: VideoViewer(),

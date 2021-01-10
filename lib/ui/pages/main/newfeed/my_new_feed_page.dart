@@ -13,6 +13,7 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
@@ -86,7 +87,6 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
               return ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                cacheExtent: MediaQuery.of(context).size.height * 10,
                 itemCount: _bloc.hasReachedMax
                     ? snapshot.data.length
                     : snapshot.data.length + 1,
@@ -124,7 +124,6 @@ class MyNFPostItem extends StatefulWidget {
 class _MyNFPostItemState extends State<MyNFPostItem> {
   final _reactCountSubject = BehaviorSubject<int>();
   final _reactedSubject = BehaviorSubject<bool>();
-  final _deleteSubject = BehaviorSubject.seeded(false);
 
   @override
   void initState() {
@@ -137,7 +136,6 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
   void dispose() {
     _reactCountSubject.close();
     _reactedSubject.close();
-    _deleteSubject.close();
     super.dispose();
   }
 
@@ -184,30 +182,13 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                       : widget.item.name),
                 ],
               ),
-              StreamBuilder<bool>(
-                  initialData: false,
-                  stream: this._deleteSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data) {
-                      return IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: CupertinoActivityIndicator(),
-                        onPressed: () {},
-                      );
-                    }
-                    return IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () {
-                        widget.bloc
-                            .onTapDeleteIcon(
-                                context, widget.index, widget.item.id)
-                            .then((value) {
-                          if (value) this._deleteSubject.add(value);
-                        });
-                      },
-                    );
-                  })
+              IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.delete, color: Colors.redAccent),
+                  onPressed: () {
+                    widget.bloc
+                        .onTapDeleteIcon(context, widget.index, widget.item.id);
+                  }),
             ],
           ),
 
@@ -261,7 +242,8 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                   ),
                 ),
               ),
-              child: PostMediaItem(item: widget.item, index: widget.index, nfBloc: widget.bloc),
+              child: PostMediaItem(
+                  item: widget.item, index: widget.index, nfBloc: widget.bloc),
             ),
           ),
           SizedBox(height: 5),
@@ -315,7 +297,8 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
               ),
               Container(
                 child: Text(
-                  G.current.feedPagePosted + " " +
+                  G.current.feedPagePosted +
+                      " " +
                       timeAgo.format(DateTime.parse(widget.item.createdAt),
                           allowFromNow: true),
                   style: TextStyle(color: Colors.grey, fontSize: 12.0),
@@ -362,7 +345,8 @@ class PostMediaItem extends StatefulWidget {
   final MyNFBloc nfBloc;
   final int index;
 
-  const PostMediaItem({Key key, this.item, this.index, this.nfBloc}) : super(key: key);
+  const PostMediaItem({Key key, this.item, this.index, this.nfBloc})
+      : super(key: key);
 
   @override
   _PostMediaItemState createState() => _PostMediaItemState();
@@ -405,7 +389,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                             Size(info.image.width.toDouble(),
                                 info.image.height.toDouble()),
                             MediaQuery.of(context).size);
-                        this._maxHeightSubject.add(_fittedSize.destination.height);
+                        this
+                            ._maxHeightSubject
+                            .add(_fittedSize.destination.height);
                         // this._maxHeightSubject.first.then((value) {
                         //   this._maxHeightSubject.add(
                         //       //min(maxHeight, max(info.image.height, value)));
@@ -440,7 +426,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 id: widget.item.id,
                 index: widget.index,
                 maxHeightCallBack: (double height) {
-                    this._maxHeightSubject.add(height);
+                  this._maxHeightSubject.add(height);
                   // this._maxHeightSubject.first.then((value) {
                   //   this
                   //       ._maxHeightSubject

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -225,6 +226,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                             width: double.infinity,
                             height: double.infinity,
                           ),
+                          if (_selectedImages[index].duration > 0)
+                            Positioned(
+                                top: 10,
+                                right: 40,
+                                child: Center(
+                                    child: Text(
+                                        '${_selectedImages[index].formattedDuration}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1))),
                           if (_selectedImages[index].isSelected)
                             Positioned(
                                 top: 10,
@@ -366,6 +377,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       } else {
         if (isDev) print('CompressedImages is empty');
       }
+
       ///can improve with Navigator.pop with result.
       if (widget.popAfterBtnPressed) {
         Navigator.pop(context);
@@ -374,25 +386,41 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       final _trimmer = Trimmer();
       File video = await _photoList[_selectedIndices.first].file;
       if (video != null) {
-        await _trimmer.loadVideo(videoFile: video);
-        File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return TrimmerView(_trimmer);
-        }));
-        print("Trimmed Video: ${trimmedVideo.lengthSync()}");
-        MediaInfo mediaInfo = await VideoCompress.compressVideo(
-          trimmedVideo.path,
-          quality: VideoQuality.DefaultQuality,
-          deleteOrigin: true,
-          includeAudio: true,
-        );
-        Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
-        print("Compressed Video: ${mediaInfo.filesize}");
-        if (mediaInfo.file != null) {
-          widget.onPressed(mediaInfo.file, thumbnail);
-        }
-        ///can improve with Navigator.pop with result.
-        if (widget.popAfterBtnPressed) {
-          Navigator.pop(context);
+        if (Platform.isAndroid) {
+          await _trimmer.loadVideo(videoFile: video);
+          File trimmedVideo = await Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) {
+            return TrimmerView(_trimmer);
+          }));
+          if (widget.popAfterBtnPressed) {
+            Navigator.pop(context);
+          }
+          if (trimmedVideo != null) {
+            widget.onPressed(trimmedVideo);
+          }
+        } else {
+          await _trimmer.loadVideo(videoFile: video);
+          File trimmedVideo = await Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) {
+            return TrimmerView(_trimmer);
+          }));
+          // print("Trimmed Video: ${trimmedVideo.lengthSync()}");
+          // MediaInfo mediaInfo = await VideoCompress.compressVideo(
+          //   trimmedVideo.path,
+          //   quality: VideoQuality.DefaultQuality,
+          //   deleteOrigin: true,
+          //   includeAudio: true,
+          // );
+          // print("Compressed Video: ${mediaInfo.filesize}");
+          // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
+          //     mediaInfo.file.path,
+          //     position: mediaInfo.duration ~/ 2);
+          if (widget.popAfterBtnPressed) {
+            Navigator.pop(context);
+          }
+          if (trimmedVideo != null) {
+            widget.onPressed(trimmedVideo);
+          }
         }
       }
     } else {
@@ -428,8 +456,13 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     }
     for (var photo in photos) {
       Uint8List thumbnail = await photo.thumbDataWithSize(150, 150);
+      final minutes = (photo.duration ~/ 60).toString();
+      final seconds = (photo.duration % 60).toString().padLeft(2, "0");
       setState(() {
-        _selectedImages.add(SelectedImageModel(thumbnail: thumbnail));
+        _selectedImages.add(SelectedImageModel(
+            thumbnail: thumbnail,
+            duration: photo.duration,
+            formattedDuration: "$minutes:$seconds"));
       });
     }
     setState(() {
