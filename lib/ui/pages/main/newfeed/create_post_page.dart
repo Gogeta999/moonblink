@@ -404,63 +404,65 @@ class _CreatePostPageState extends State<CreatePostPage> {
         context: context,
         builder: (dialogContext) {
           return StreamBuilder<VipData>(
-            initialData: null,
-            stream: this._vipDataSubject,
-            builder: (_, snapshot) {
-              if (snapshot.data == null) {
-                return Text("Service Unavailable");
-              }
-              return CupertinoAlertDialog(
-                title: Text('Cost per post - ${snapshot.data.costPerPost} coins'),
-                content: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  child: Text('You have ${snapshot.data.walletValue} ${snapshot.data.walletValue > 1 ? "coins" : "coin"} for now.')),
-                actions: [
-                  CupertinoButton(
-                    child: Text(G.current.cancel),
-                    onPressed: () {
-                      Navigator.pop(dialogContext);
-                    },
-                  ),
-                  CupertinoButton(
-                    child: Text('Post Now'),
-                    onPressed: () async {
-                      Navigator.pop(dialogContext);
-                      String body = this._postTitleController.text.trim();
-                      List<File> media = await this._mediaSubject.first;
-                      File video = await this._videoSubject.first;
-                      int type = 1;
-                      int status = _getStatus(await this._postOptionsSubject.first);
-                      if ((media == null || media.isEmpty) &&
-                          video == null) {
-                        showToast(G.current.feedCreatePagePickRequired);
-                        return;
-                      }
-                      this._postByCoinsButtonSubject.add(true);
-                      _uploading = true;
-                      MoonBlinkRepository.uploadPost(media, video, type, status, 0,
-                              body: body ?? '')
-                          .then((_) {
-                        showToast(G.current.toastsuccess);
-                        _uploading = false;
-                        try {
-                          Navigator.pop(context);
-                        } catch (e) {
-                          if (isDev) print(e.toString());
-                        }
-                        this._postByCoinsButtonSubject?.add(false);
+              initialData: null,
+              stream: this._vipDataSubject,
+              builder: (_, snapshot) {
+                if (snapshot.data == null) {
+                  return Text("Service Unavailable");
+                }
+                return CupertinoAlertDialog(
+                  title: Text(
+                      'Cost per post - ${snapshot.data.costPerPost} coins'),
+                  content: Container(
+                      margin: const EdgeInsets.all(8.0),
+                      child: Text(
+                          'You have ${snapshot.data.walletValue} ${snapshot.data.walletValue > 1 ? "coins" : "coin"} for now.')),
+                  actions: [
+                    CupertinoButton(
+                      child: Text(G.current.cancel),
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
                       },
-                              onError: (e) => {
-                                    showToast(e.toString()),
-                                    _uploading = false,
-                                    this._postByCoinsButtonSubject?.add(false)
-                                  });
-                    },
-                  )
-                ],
-              );
-            }
-          );
+                    ),
+                    CupertinoButton(
+                      child: Text('Post Now'),
+                      onPressed: () async {
+                        Navigator.pop(dialogContext);
+                        String body = this._postTitleController.text.trim();
+                        List<File> media = await this._mediaSubject.first;
+                        File video = await this._videoSubject.first;
+                        int type = 1;
+                        int status =
+                            _getStatus(await this._postOptionsSubject.first);
+                        if ((media == null || media.isEmpty) && video == null) {
+                          showToast(G.current.feedCreatePagePickRequired);
+                          return;
+                        }
+                        this._postByCoinsButtonSubject.add(true);
+                        _uploading = true;
+                        MoonBlinkRepository.uploadPost(
+                                media, video, type, status, 0,
+                                body: body ?? '')
+                            .then((_) {
+                          showToast(G.current.toastsuccess);
+                          _uploading = false;
+                          try {
+                            Navigator.pop(context);
+                          } catch (e) {
+                            if (isDev) print(e.toString());
+                          }
+                          this._postByCoinsButtonSubject?.add(false);
+                        },
+                                onError: (e) => {
+                                      showToast(e.toString()),
+                                      _uploading = false,
+                                      this._postByCoinsButtonSubject?.add(false)
+                                    });
+                      },
+                    )
+                  ],
+                );
+              });
         });
   }
 
@@ -672,12 +674,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               _showSelectImageOptions();
                             }),
                         SizedBox(width: 10),
-                        CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: Text(G.current.feedCreatePageAddVideo),
-                            onPressed: () {
-                              _showSelectVideoOptions();
-                            }),
+                        //TODO: Solve Android Video Upload Later
+                        // CupertinoButton(
+                        //     padding: EdgeInsets.zero,
+                        //     child: Text(G.current.feedCreatePageAddVideo),
+                        //     onPressed: () {
+                        //       _showSelectVideoOptions();
+                        //     }),
                       ],
                     ),
                     StreamBuilder<Uint8List>(
