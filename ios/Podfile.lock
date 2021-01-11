@@ -127,9 +127,9 @@ PODS:
     - FBSDKCoreKit (~> 5.5)
     - FBSDKLoginKit (~> 5.5)
     - Flutter
-  - flutter_ffmpeg/min-lts (0.3.0):
+  - flutter_ffmpeg/min-gpl-lts (0.3.0):
     - Flutter
-    - mobile-ffmpeg-min (= 4.4.LTS)
+    - mobile-ffmpeg-min-gpl (= 4.4.LTS)
   - flutter_image_compress (0.0.1):
     - Flutter
     - Mantle
@@ -214,7 +214,7 @@ PODS:
   - Mantle (2.1.6):
     - Mantle/extobjc (= 2.1.6)
   - Mantle/extobjc (2.1.6)
-  - mobile-ffmpeg-min (4.4.LTS)
+  - mobile-ffmpeg-min-gpl (4.4.LTS)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
     - nanopb/encode (= 1.30906.0)
@@ -274,7 +274,7 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
-  - flutter_ffmpeg/min-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
+  - flutter_ffmpeg/min-gpl-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_admob (from `.symlinks/plugins/flutter_native_admob/ios`)
@@ -326,7 +326,7 @@ SPEC REPOS:
     - KTVHTTPCache
     - libwebp
     - Mantle
-    - mobile-ffmpeg-min
+    - mobile-ffmpeg-min-gpl
     - nanopb
     - PromisesObjC
     - Protobuf
@@ -458,7 +458,7 @@ SPEC CHECKSUMS:
   KTVHTTPCache: 588c3eb16f6bd1e6fde1e230dabfb7bd4e490a4d
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
-  mobile-ffmpeg-min: dd2fd38da2788ccb7be5720fc308cb69160820e7
+  mobile-ffmpeg-min-gpl: 792c147353792f50127471b6a355a3c414a0d83d
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
@@ -481,6 +481,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
 
-PODFILE CHECKSUM: 0dd00d51980ad8426b3c06cfeca94fccbf275c4d
+PODFILE CHECKSUM: 38f7e0bd066d51ebc63c1740f74dfb657ea2076c
 
 COCOAPODS: 1.9.3

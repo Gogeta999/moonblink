@@ -47,6 +47,7 @@ class CustomBottomSheet {
       bool defaultCropStyle = true,
       int minWidth = 1080,
       int minHeight = 1080,
+      int vipLevel,
       Function onInit,
       Function onDismiss}) async {
     var result = await PhotoManager.requestPermission();
@@ -79,6 +80,7 @@ class CustomBottomSheet {
                       buttonText: buttonText,
                       minWidth: minWidth,
                       minHeight: minHeight,
+                      vipLevel: vipLevel,
                       willCrop: willCrop,
                       compressQuality: compressQuality,
                       defaultCropStyle: defaultCropStyle,

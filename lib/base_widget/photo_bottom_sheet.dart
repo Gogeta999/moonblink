@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
@@ -12,7 +11,6 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class PhotoBottomSheet extends StatefulWidget {
@@ -28,6 +26,7 @@ class PhotoBottomSheet extends StatefulWidget {
   final bool willCrop;
   final bool defaultCropStyle;
   final int compressQuality;
+  final int vipLevel;
 
   const PhotoBottomSheet(
       {Key key,
@@ -42,7 +41,8 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.minHeight,
       @required this.willCrop,
       @required this.defaultCropStyle,
-      @required this.compressQuality})
+      @required this.compressQuality,
+      this.vipLevel})
       : super(key: key);
 
   @override
@@ -382,45 +382,20 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       if (widget.popAfterBtnPressed) {
         Navigator.pop(context);
       }
-    } else if (widget.requestType == RequestType.video) {
+    } else if (widget.requestType == RequestType.video && widget.vipLevel != null) {
       final _trimmer = Trimmer();
       File video = await _photoList[_selectedIndices.first].file;
       if (video != null) {
-        if (Platform.isAndroid) {
-          await _trimmer.loadVideo(videoFile: video);
-          File trimmedVideo = await Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) {
-            return TrimmerView(_trimmer);
-          }));
-          if (widget.popAfterBtnPressed) {
-            Navigator.pop(context);
-          }
-          if (trimmedVideo != null) {
-            widget.onPressed(trimmedVideo);
-          }
-        } else {
-          await _trimmer.loadVideo(videoFile: video);
-          File trimmedVideo = await Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) {
-            return TrimmerView(_trimmer);
-          }));
-          // print("Trimmed Video: ${trimmedVideo.lengthSync()}");
-          // MediaInfo mediaInfo = await VideoCompress.compressVideo(
-          //   trimmedVideo.path,
-          //   quality: VideoQuality.DefaultQuality,
-          //   deleteOrigin: true,
-          //   includeAudio: true,
-          // );
-          // print("Compressed Video: ${mediaInfo.filesize}");
-          // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
-          //     mediaInfo.file.path,
-          //     position: mediaInfo.duration ~/ 2);
-          if (widget.popAfterBtnPressed) {
-            Navigator.pop(context);
-          }
-          if (trimmedVideo != null) {
-            widget.onPressed(trimmedVideo);
-          }
+        await _trimmer.loadVideo(videoFile: video);
+        File trimmedCompressedVideo = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) {
+          return TrimmerView(_trimmer, widget.vipLevel);
+        }));
+        if (widget.popAfterBtnPressed) {
+          Navigator.pop(context);
+        }
+        if (trimmedCompressedVideo != null) {
+          widget.onPressed(trimmedCompressedVideo);
         }
       }
     } else {

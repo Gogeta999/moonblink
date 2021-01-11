@@ -9,7 +9,6 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
 
@@ -19,7 +18,7 @@ class MyNFBloc {
   }
 
   final ScrollController scrollController;
-  final refreshController = RefreshController();
+  Completer<void> refreshCompleter = Completer<void>();
   double scrollThreshold = 800.0;
   Timer _debounce;
 
@@ -30,7 +29,6 @@ class MyNFBloc {
   bool hasReachedMax = false;
 
   void dispose() {
-    refreshController.dispose();
     _debounce?.cancel();
     myNfPostsSubject.close();
   }
@@ -72,12 +70,14 @@ class MyNFBloc {
       myNfPostsSubject.add(null);
       Future.delayed(Duration(milliseconds: 50), () {
         myNfPostsSubject.add(value);
-        refreshController.refreshCompleted();
+        refreshCompleter?.complete();
+        refreshCompleter = Completer<void>();
         hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       myNfPostsSubject.addError(e);
-      refreshController.refreshFailed();
+      refreshCompleter.completeError(e);
+      refreshCompleter = Completer<void>();
     });
   }
 
@@ -121,9 +121,9 @@ class MyNFBloc {
                       showToast("Successfully deleted");
                       MoonGoDB().deleteNFPost(postId);
                       this.myNfPostsSubject.first.then((value) {
-                        final List<NFPost> current = List.from(value);
-                        current.removeAt(index);
-                        this.myNfPostsSubject.add(current);
+                        value.removeAt(index);
+                        this.myNfPostsSubject.add(null);
+                        Future.delayed(Duration(milliseconds: 50), () => this.myNfPostsSubject.add(value));
                       });
                     }, onError: (e) {
                       showToast(e.toString());
@@ -135,8 +135,11 @@ class MyNFBloc {
         });
   }
 
-  void onTapLikeIcon() {
-    ///some api call
+  void onTapLikeIcon(int postId, int like) {
+    MoonBlinkRepository.reactNFPost(postId, like).then((value) {},
+        onError: (e) {
+      showToast('$e');
+    });
   }
 
   void onTapShare(BuildContext context) {

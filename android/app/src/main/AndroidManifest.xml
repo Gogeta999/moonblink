@@ -30,6 +30,7 @@
         tools:replace="android:label"
         android:name=".Application"
         android:label="Moon Go"
+        android:largeHeap="true"
         android:icon="@mipmap/moonblink">
         <!--FCM noti icon-->
         <meta-data

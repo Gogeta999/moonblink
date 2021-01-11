@@ -9,13 +9,10 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/my_nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/constants.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -54,16 +51,15 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
-      appBar: AppbarWidget(title: Text(G.current.userStatusManagePosts)),
+      appBar: AppbarWidget(
+        leadingText: G.current.follow,
+      ),
       body: SafeArea(
-        child: SmartRefresher(
-          controller: _bloc.refreshController,
-          enablePullDown: true,
-          scrollController: _bloc.scrollController,
+        child: RefreshIndicator(
           onRefresh: () {
             _bloc.refreshData();
+            return _bloc.refreshCompleter.future;
           },
-          header: WaterDropHeader(),
           child: StreamBuilder<List<NFPost>>(
             initialData: null,
             stream: _bloc.myNfPostsSubject,
@@ -85,8 +81,9 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
               if (snapshot.data.isEmpty)
                 return Center(child: Text('No Posts Available'));
               return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                //shrinkWrap: true,
+                controller: _bloc.scrollController,
+                physics: ClampingScrollPhysics(),
                 itemCount: _bloc.hasReachedMax
                     ? snapshot.data.length
                     : snapshot.data.length + 1,
@@ -210,19 +207,20 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
               this._reactedSubject.first.then((value) {
                 if (value) {
                   ///reacted
+                  widget.bloc.onTapLikeIcon(widget.item.id, 0);
                   this
                       ._reactCountSubject
                       .first
                       .then((value) => this._reactCountSubject.add(--value));
                   this._reactedSubject.add(false);
                 } else {
+                  widget.bloc.onTapLikeIcon(widget.item.id, 1);
                   this
                       ._reactCountSubject
                       .first
                       .then((value) => this._reactCountSubject.add(++value));
                   this._reactedSubject.add(true);
                 }
-                //after this call some api
               });
             },
             child: Container(
@@ -273,15 +271,16 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                             onPressed: () {
                               if (snapshot.data) {
                                 ///reacted
+                                widget.bloc.onTapLikeIcon(widget.item.id, 0);
                                 this._reactCountSubject.first.then((value) =>
                                     this._reactCountSubject.add(--value));
                                 this._reactedSubject.add(false);
                               } else {
+                                widget.bloc.onTapLikeIcon(widget.item.id, 1);
                                 this._reactCountSubject.first.then((value) =>
                                     this._reactCountSubject.add(++value));
                                 this._reactedSubject.add(true);
                               }
-                              //after this call some api
                             },
                           );
                         }),
@@ -355,7 +354,7 @@ class PostMediaItem extends StatefulWidget {
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
   final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
-  //int maxHeight = 400;
+  //int maxHeight = 200;
   final _maxHeightSubject = BehaviorSubject.seeded(200.0);
 
   @override
@@ -426,12 +425,11 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 id: widget.item.id,
                 index: widget.index,
                 maxHeightCallBack: (double height) {
-                  this._maxHeightSubject.add(height);
+                  this._maxHeightSubject.add(
+                      min(height, MediaQuery.of(context).size.height * 0.7));
                   // this._maxHeightSubject.first.then((value) {
-                  //   this
-                  //       ._maxHeightSubject
-                  //       .add(max(height, value));
-                  //       //.add(max(maxHeight, max(height, value)));
+                  //   this._maxHeightSubject.add(max(height, value));
+                  //   // .add(max(maxHeight, max(height, value)));
                   // });
                 },
               ),
@@ -445,7 +443,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
 
   @override
   void didChangeDependencies() {
-    //maxHeight = (MediaQuery.of(context).size.height * 0.7).toInt();
+    //maxHeight = MediaQuery.of(context).size.height.toInt();
     super.didChangeDependencies();
   }
 
@@ -454,6 +452,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
     _maxHeightSubject.close();
     _pageChildrenSubject.close();
     _currentPageSubject.close();
+    print("Disposing PostMediaItem: ${widget.index}");
     super.dispose();
   }
 
@@ -483,53 +482,6 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 });
           },
         ),
-        // PageView.builder(
-        //     physics: ClampingScrollPhysics(),
-        //     itemCount: widget.item.media.length,
-        //     onPageChanged: (value) {
-        //       _currentPageSubject.add(value + 1);
-        //     },
-        //     itemBuilder: (context, index) {
-        //       UrlType urlType =
-        //           widget.nfBloc.getUrlType(widget.item.media[index]);
-        //       if (urlType == UrlType.REMOTE_IMAGE)
-        //         return CupertinoButton(
-        //           padding: EdgeInsets.zero,
-        //           pressedOpacity: 0.9,
-        //           onPressed: () {
-        //             Navigator.push(
-        //                 context,
-        //                 CupertinoPageRoute(
-        //                     fullscreenDialog: true,
-        //                     builder: (_) => FullScreenImageView(
-        //                         imageUrl: widget.item.media[index])));
-        //           },
-        //           child: Container(
-        //             width: double.infinity,
-        //             height: double.infinity,
-        //             child: CachedNetworkImage(
-        //               fit: BoxFit.fill,
-        //               imageUrl: widget.item.media[index],
-        //               progressIndicatorBuilder: (context, url, progress) {
-        //                 return Center(
-        //                   child: CircularProgressIndicator(
-        //                     value: progress.progress,
-        //                     valueColor: AlwaysStoppedAnimation(
-        //                         Theme.of(context).accentColor),
-        //                   ),
-        //                 );
-        //               },
-        //               errorWidget: (context, url, error) => Icon(Icons.error),
-        //             ),
-        //           ),
-        //         );
-        //       if (urlType == UrlType.REMOTE_VIDEO)
-        //         return Player(
-        //             url: widget.item.media[index],
-        //             id: widget.item.id,
-        //             index: index);
-        //       return Text('Not Supported Format');
-        //     }),
         StreamBuilder<int>(
             initialData: 0,
             stream: this._currentPageSubject,
@@ -544,8 +496,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.black.withOpacity(0.5)),
-                    child: Text('${snapshot.data}/${widget.item.media.length}',
-                        style: Theme.of(context).textTheme.bodyText2),
+                    child: Text(
+                        '${snapshot.data} / ${widget.item.media.length}',
+                        style: TextStyle(color: Colors.white)),
                   ));
             })
       ],
