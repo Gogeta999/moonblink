@@ -13,7 +13,6 @@ import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
 
@@ -23,7 +22,7 @@ class NFBloc {
   }
 
   final ScrollController scrollController;
-  final refreshController = RefreshController();
+  Completer<void> refreshCompleter = Completer<void>();
   double scrollThreshold = 800.0;
   Timer _debounce;
 
@@ -34,7 +33,6 @@ class NFBloc {
   bool hasReachedMax = false;
 
   void dispose() {
-    refreshController.dispose();
     _debounce?.cancel();
     nfPostsSubject.close();
   }
@@ -76,12 +74,14 @@ class NFBloc {
       nfPostsSubject.add(null);
       Future.delayed(Duration(milliseconds: 50), () {
         nfPostsSubject.add(value);
-        refreshController.refreshCompleted();
+        refreshCompleter?.complete();
+        refreshCompleter = Completer<void>();
         hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       nfPostsSubject.addError(e);
-      refreshController.refreshFailed();
+      refreshCompleter.completeError(e);
+      refreshCompleter = Completer<void>();
     });
   }
 
@@ -103,7 +103,9 @@ class NFBloc {
       });
       nextPage++;
       hasReachedMax = value.length < limit;
-    }, onError: (e) => nfPostsSubject.addError(e));
+    }, onError: (e) {
+      refreshCompleter.completeError(e);
+    });
   }
 
   void onTapWholeCard(BuildContext context, int id) {
@@ -121,7 +123,7 @@ class NFBloc {
         onReport: () {
           MoonBlinkRepository.reportUser(partnerId).then((value) {
             showToast(
-                'Report success. We will act on this user within 24 hours');
+                'Report success. We will act on this user within 24 hours.');
             Navigator.pop(context);
           }, onError: (e) {
             showToast('$e');

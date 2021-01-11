@@ -30,21 +30,23 @@ class _PlayerState extends State<Player> {
     _controller = CachedVideoPlayerController.network(widget.url);
     _controller.addListener(() {
       if (_controller.value.duration == null) return;
-      if (_controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
-        _controller.seekTo(Duration(milliseconds: 50));
+      if (Platform.isIOS && _controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
+        _controller.seekTo(Duration(milliseconds: 500));
         return;
       }
       int left = ((_controller.value.duration?.inMilliseconds ?? 0) -
           (_controller.value.position.inMilliseconds)) ~/ 1000;
       String leftSeconds = (left % 60).toString().padLeft(2, '0');
       int leftMinutes = left ~/ 60;
-      _leftDuration.add("$leftMinutes:$leftSeconds");
+      if (!_leftDuration.isClosed) {
+        _leftDuration?.add("$leftMinutes:$leftSeconds");
+      }
     });
     _muteSubject.add(_controller.value.volume == 0.0);
     _controller.initialize().then((_) {
       _controller.setLooping(true);
       widget.maxHeightCallBack(_controller.value.size.height);
-      _controller.seekTo(Duration(milliseconds: 50));
+      if (Platform.isIOS) _controller.seekTo(Duration(milliseconds: 500));
       setState(() {});
     });
     super.initState();
@@ -162,20 +164,22 @@ class _LocalPlayerState extends State<LocalPlayer> {
     _controller = CachedVideoPlayerController.file(widget.file);
     _controller.addListener(() {
       if (_controller.value.duration == null) return;
-      if (_controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
-        _controller.seekTo(Duration(milliseconds: 50));
+      if (Platform.isIOS && _controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
+        _controller.seekTo(Duration(milliseconds: 500));
         return;
       }
       int left = ((_controller.value.duration?.inMilliseconds ?? 0) -
           (_controller.value.position.inMilliseconds)) ~/ 1000;
       String leftSeconds = (left % 60).toString().padLeft(2, '0');
       int leftMinutes = left ~/ 60;
-      _leftDuration.add("$leftMinutes:$leftSeconds");
+      if (!_leftDuration.isClosed) {
+        _leftDuration?.add("$leftMinutes:$leftSeconds");
+      }
     });
     _muteSubject.add(_controller.value.volume == 0.0);
     _controller.initialize().then((_) {
       _controller.setLooping(true);
-      _controller.seekTo(Duration(milliseconds: 50));
+      if (Platform.isIOS) _controller.seekTo(Duration(milliseconds: 500));
       setState(() {});
     });
     super.initState();
@@ -191,9 +195,9 @@ class _LocalPlayerState extends State<LocalPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return _controller.value.initialized ? Container(
+      height: _controller.value.size.height,
       width: double.infinity,
-      height: double.infinity,
       child: Stack(
         children: [
           Center(
@@ -257,6 +261,6 @@ class _LocalPlayerState extends State<LocalPlayer> {
               }),
         ],
       ),
-    );
+    ) : Container();
   }
 }

@@ -200,7 +200,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  _showSelectVideoOptions() {
+  _showSelectVideoOptions() async {
+    final vipLevel = await _vipDataSubject.first;
+    if (vipLevel == null) return;
     return showCupertinoDialog(
       barrierDismissible: true,
       context: context,
@@ -226,6 +228,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     popAfterBtnPressed: true,
                     requestType: RequestType.video,
                     willCrop: false,
+                    vipLevel: vipLevel.vip,
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
@@ -240,38 +243,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 final _trimmer = Trimmer();
                 File video = File(pickedFile.path);
                 if (video != null) {
-                  if (Platform.isAndroid) {
-                    await _trimmer.loadVideo(videoFile: video);
-                    File trimmedVideo = await Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return TrimmerView(_trimmer);
-                    }));
-                    // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
-                    //     trimmedVideo.path,
-                    //     position: 1);
-                    if (trimmedVideo != null) {
-                      this._selectedPhotoIndexSubject.add(-1);
-                      this._mediaSubject.add(null);
-                      this._videoSubject.add(null);
-                      await Future.delayed(Duration(milliseconds: 500));
-                      this._videoSubject.add(trimmedVideo);
-                    }
-                  } else {
-                    await _trimmer.loadVideo(videoFile: video);
-                    File trimmedVideo = await Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return TrimmerView(_trimmer);
-                    }));
-                    // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
-                    //     mediaInfo.file.path,
-                    //     position: mediaInfo.duration ~/ 2);
-                    if (trimmedVideo != null) {
-                      this._selectedPhotoIndexSubject.add(-1);
-                      this._mediaSubject.add(null);
-                      this._videoSubject.add(null);
-                      await Future.delayed(Duration(milliseconds: 500));
-                      this._videoSubject.add(trimmedVideo);
-                    }
+                  await _trimmer.loadVideo(videoFile: video);
+                  File trimmedVideo = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return TrimmerView(_trimmer, vipLevel.vip);
+                  }));
+                  // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
+                  //     trimmedVideo.path,
+                  //     position: 1);
+                  if (trimmedVideo != null) {
+                    this._selectedPhotoIndexSubject.add(-1);
+                    this._mediaSubject.add(null);
+                    this._videoSubject.add(null);
+                    await Future.delayed(Duration(milliseconds: 500));
+                    this._videoSubject.add(trimmedVideo);
                   }
                 }
               }),
@@ -681,13 +666,30 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             onPressed: () {
                               _showSelectImageOptions();
                             }),
-                        SizedBox(width: 10),
-                        CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: Text(G.current.feedCreatePageAddVideo),
-                            onPressed: () {
-                              _showSelectVideoOptions();
-                            }),
+                        StreamBuilder<VipData>(
+                          initialData: null,
+                          stream: this._vipDataSubject,
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return Container();
+                            }
+                            if (snapshot.data.vip <= 1) {
+                              return Container();
+                            }
+                            return Row(
+                              children: [
+                                SizedBox(width: 10),
+                                CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    child:
+                                        Text(G.current.feedCreatePageAddVideo),
+                                    onPressed: () {
+                                      _showSelectVideoOptions();
+                                    }),
+                              ],
+                            );
+                          },
+                        )
                       ],
                     ),
                     StreamBuilder<File>(
