@@ -12,13 +12,11 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
-import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/utils/constants.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -31,12 +29,8 @@ class NewFeedPage extends StatefulWidget {
   _NewFeedPageState createState() => _NewFeedPageState();
 }
 
-class _NewFeedPageState extends State<NewFeedPage>
-    with AutomaticKeepAliveClientMixin {
+class _NewFeedPageState extends State<NewFeedPage> {
   NFBloc _bloc;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -59,7 +53,6 @@ class _NewFeedPageState extends State<NewFeedPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
@@ -72,14 +65,11 @@ class _NewFeedPageState extends State<NewFeedPage>
         },
       ),
       body: SafeArea(
-        child: SmartRefresher(
-          controller: _bloc.refreshController,
-          enablePullDown: true,
-          scrollController: _bloc.scrollController,
+        child: RefreshIndicator(
           onRefresh: () {
             _bloc.refreshData();
+            return _bloc.refreshCompleter.future;
           },
-          header: WaterDropHeader(),
           child: StreamBuilder<List<NFPost>>(
             initialData: null,
             stream: _bloc.nfPostsSubject,
@@ -101,9 +91,9 @@ class _NewFeedPageState extends State<NewFeedPage>
               if (snapshot.data.isEmpty)
                 return Center(child: Text('No Posts Available'));
               return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                //cacheExtent: MediaQuery.of(context).size.height * 5,
+                //shrinkWrap: true,
+                controller: _bloc.scrollController,
+                physics: ClampingScrollPhysics(),
                 itemCount: _bloc.hasReachedMax
                     ? snapshot.data.length
                     : snapshot.data.length + 1,
@@ -124,6 +114,69 @@ class _NewFeedPageState extends State<NewFeedPage>
         ),
       ),
     );
+    // return Scaffold(
+    //   backgroundColor: Theme.of(context).brightness == Brightness.light
+    //       ? Colors.grey[200]
+    //       : null,
+    //   appBar: AppbarWidget(
+    //     leadingText: G.current.follow,
+    //     leadingCallback: () {
+    //       Navigator.of(context)
+    //           .push(MaterialPageRoute(builder: (_) => ContactsPage()));
+    //     },
+    //   ),
+    //   body: SafeArea(
+    //     child: SmartRefresher(
+    //       controller: _bloc.refreshController,
+    //       enablePullDown: true,
+    //       scrollController: _bloc.scrollController,
+    //       onRefresh: () {
+    //         _bloc.refreshData();
+    //       },
+    //       header: WaterDropHeader(),
+    //       child: StreamBuilder<List<NFPost>>(
+    //         initialData: null,
+    //         stream: _bloc.nfPostsSubject,
+    //         builder: (context, snapshot) {
+    //           if (snapshot.hasError)
+    //             return ViewStateErrorWidget(
+    //               error: ViewStateError(
+    //                   snapshot.error == "No Internet Connection"
+    //                       ? ViewStateErrorType.networkTimeOutError
+    //                       : ViewStateErrorType.defaultError,
+    //                   errorMessage: snapshot.error.toString()),
+    //               onPressed: () {
+    //                 _bloc.refreshData();
+    //               },
+    //             );
+    //           if (snapshot.data == null) {
+    //             return Center(child: CupertinoActivityIndicator());
+    //           }
+    //           if (snapshot.data.isEmpty)
+    //             return Center(child: Text('No Posts Available'));
+    //           return ListView.builder(
+    //             shrinkWrap: true,
+    //             physics: NeverScrollableScrollPhysics(),
+    //             itemCount: _bloc.hasReachedMax
+    //                 ? snapshot.data.length
+    //                 : snapshot.data.length + 1,
+    //             itemBuilder: (context, index) {
+    //               if (index >= snapshot.data.length) {
+    //                 return Center(
+    //                     child: Padding(
+    //                   padding: const EdgeInsets.only(bottom: 12.0),
+    //                   child: CupertinoActivityIndicator(),
+    //                 ));
+    //               }
+    //               final item = snapshot.data[index];
+    //               return NFPostItem(item: item, index: index, bloc: _bloc);
+    //             },
+    //           );
+    //         },
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -265,7 +318,10 @@ class _NFPostItemState extends State<NFPostItem> {
                     ),
                   ),
                 ),
-                child: PostMediaItem(item: widget.item, index: widget.index, nfBloc: widget.bloc),
+                child: PostMediaItem(
+                    item: widget.item,
+                    index: widget.index,
+                    nfBloc: widget.bloc),
               ),
             ),
             SizedBox(height: 5),
@@ -397,7 +453,8 @@ class PostMediaItem extends StatefulWidget {
   final NFBloc nfBloc;
   final int index;
 
-  const PostMediaItem({Key key, this.item, this.index, this.nfBloc}) : super(key: key);
+  const PostMediaItem({Key key, this.item, this.index, this.nfBloc})
+      : super(key: key);
 
   @override
   _PostMediaItemState createState() => _PostMediaItemState();
@@ -415,8 +472,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
         .asMap()
         .map((index, url) {
           UrlType urlType = widget.nfBloc.getUrlType(url);
-          if (urlType == UrlType.REMOTE_IMAGE) if (urlType ==
-              UrlType.REMOTE_IMAGE)
+          if (urlType == UrlType.REMOTE_IMAGE)
             return MapEntry(
               index,
               CupertinoButton(
@@ -478,7 +534,8 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 id: widget.item.id,
                 index: widget.index,
                 maxHeightCallBack: (double height) {
-                  this._maxHeightSubject.add(height);
+                  this._maxHeightSubject.add(
+                      min(height, MediaQuery.of(context).size.height * 0.7));
                   // this._maxHeightSubject.first.then((value) {
                   //   this._maxHeightSubject.add(max(height, value));
                   //   // .add(max(maxHeight, max(height, value)));
@@ -504,6 +561,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
     _maxHeightSubject.close();
     _pageChildrenSubject.close();
     _currentPageSubject.close();
+    print("Disposing PostMediaItem: ${widget.index}");
     super.dispose();
   }
 

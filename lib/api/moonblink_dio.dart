@@ -10,6 +10,7 @@ import 'package:moonblink/api/moonblink_api.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/main.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -324,6 +325,59 @@ class DioUtils {
   /*
    * Post request
    */
+  ///use only for create post page
+  createPostWithData(url, {data, options, bool showProgress}) async {
+    final cancelToken = CancelToken();
+    cancelTokenForCreatePost.add(cancelToken);
+    if (isDev) print('post request path ------$url-------data $data');
+    Response response;
+    response = await _dio.post(url, data: data, options: options, cancelToken: cancelToken,
+        onSendProgress: (int count, int total) {
+          uploadProgress.add(count / total);
+      if (isDev)
+        print(
+            'Uploading progress----->${count / total}----count/total process');
+    });
+    cancelTokenForCreatePost.add(null);
+    uploadProgress.add(null);
+    if (isDev) print(response.statusCode);
+    ResponseData respData = ResponseData.fromJson(response.data);
+    if (respData.success) {
+      response.data = respData.data;
+      if (isDev)
+        debugPrint(
+            'api-post--->result----->${response.data}\napiResponseMessgae---->${respData.getMessage}');
+      if (isDev) debugPrint('$respData');
+      return respData;
+    } else {
+      if (respData.errorCode == 101) {
+        StorageManager.localStorage.deleteItem(mUser);
+        StorageManager.sharedPreferences.remove(token);
+        StorageManager.sharedPreferences.remove(mLoginName);
+        StorageManager.sharedPreferences.remove(mUserId);
+        StorageManager.sharedPreferences.remove(mUserType);
+        throw forceLoginDialog();
+      } // Platform and version Control
+      // 102 is version late
+      else if (respData.errorCode == 102 && Platform.isAndroid) {
+        throw forceUpdateAndroidDialog();
+      } else if (respData.errorCode == 102 && Platform.isIOS) {
+        throw forceUpdateAppStoreDialog();
+      }
+      // Request null data when no story
+      else if (respData.errorCode == 123) {
+        response.data = respData.data;
+        // final emptyData = rootBundle.loadString("json/storyEmpty.json").then((value) => jsonDecode(value));
+        if (isDev)
+          debugPrint(
+              'result--from--$url--->${response.data}\nResponseMessgae--from-$url->${respData.getMessage}');
+        return response;
+      } else {
+        throw NotSuccessException.fromRespData(respData);
+      }
+    }
+  }
+
   postwithData(url, {data, options}) async {
     if (isDev) print('post request path ------$url-------data $data');
     Response response;

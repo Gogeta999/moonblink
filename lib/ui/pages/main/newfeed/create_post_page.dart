@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
-import 'package:moonblink/base_widget/videotrimmer/preview.dart';
+import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/base_widget/videotrimmer/trimmer_view.dart';
 import 'package:moonblink/base_widget/vip_renew_dialog.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -51,7 +49,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _postOptionsSubject = BehaviorSubject.seeded('Public');
   final _mediaSubject = BehaviorSubject<List<File>>.seeded(null);
   final _videoSubject = BehaviorSubject<File>.seeded(null);
-  final _thumbnailSubject = BehaviorSubject<Uint8List>.seeded(null);
+  //final _thumbnailSubject = BehaviorSubject<Uint8List>.seeded(null);
   final _adCountSubject = BehaviorSubject<int>.seeded(0);
   final _postByAdButtonSubject = BehaviorSubject.seeded(false);
   final _postByCoinsButtonSubject = BehaviorSubject.seeded(false);
@@ -120,7 +118,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _postOptionsSubject.close();
     _mediaSubject.close();
     _videoSubject.close();
-    _thumbnailSubject.close();
+    //_thumbnailSubject.close();
     _adCountSubject.close();
     _postByAdButtonSubject.close();
     _postByCoinsButtonSubject.close();
@@ -158,7 +156,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         int x = currentFile.length - maxImageLimit;
                         currentFile.removeRange(0, x);
                       }
-                      this._thumbnailSubject.add(null);
                       this._videoSubject.add(null);
                       this._mediaSubject.add(currentFile);
                       this._selectedPhotoIndexSubject.add(-1);
@@ -190,7 +187,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   int x = currentFile.length - maxImageLimit;
                   currentFile.removeRange(0, x);
                 }
-                this._thumbnailSubject.add(null);
                 this._videoSubject.add(null);
                 this._mediaSubject.add(currentFile);
                 this._selectedPhotoIndexSubject.add(-1);
@@ -204,7 +200,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  _showSelectVideoOptions() {
+  _showSelectVideoOptions() async {
+    final vipLevel = await _vipDataSubject.first;
+    if (vipLevel == null) return;
     return showCupertinoDialog(
       barrierDismissible: true,
       context: context,
@@ -219,16 +217,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     buildContext: context,
                     limit: maxVideoLimit,
                     body: 'Max - $maxVideoLimit',
-                    onPressed: (File video, Uint8List thumbnail) async {
+                    onPressed: (File video) async {
                       this._selectedPhotoIndexSubject.add(-1);
                       this._mediaSubject.add(null);
+                      this._videoSubject.add(null);
+                      await Future.delayed(Duration(milliseconds: 500));
                       this._videoSubject.add(video);
-                      this._thumbnailSubject.add(thumbnail);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
                     requestType: RequestType.video,
                     willCrop: false,
+                    vipLevel: vipLevel.vip,
                     compressQuality: NORMAL_COMPRESS_QUALITY);
                 Navigator.pop(context);
               }),
@@ -246,24 +246,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   await _trimmer.loadVideo(videoFile: video);
                   File trimmedVideo = await Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return TrimmerView(_trimmer);
+                    return TrimmerView(_trimmer, vipLevel.vip);
                   }));
-                  print("Trimmed Video: ${trimmedVideo.lengthSync()}");
-                  MediaInfo mediaInfo = await VideoCompress.compressVideo(
-                    trimmedVideo.path,
-                    quality: VideoQuality.DefaultQuality,
-                    deleteOrigin: true,
-                    includeAudio: true,
-                  );
-                  Uint8List thumbnail = await VideoCompress.getByteThumbnail(
-                      mediaInfo.file.path,
-                      position: mediaInfo.duration ~/ 2);
-                  print("Compressed Video: ${mediaInfo.filesize}");
-                  if (mediaInfo.file != null && thumbnail != null) {
+                  // Uint8List thumbnail = await VideoCompress.getByteThumbnail(
+                  //     trimmedVideo.path,
+                  //     position: 1);
+                  if (trimmedVideo != null) {
                     this._selectedPhotoIndexSubject.add(-1);
                     this._mediaSubject.add(null);
-                    this._videoSubject.add(video);
-                    this._thumbnailSubject.add(thumbnail);
+                    this._videoSubject.add(null);
+                    await Future.delayed(Duration(milliseconds: 500));
+                    this._videoSubject.add(trimmedVideo);
                   }
                 }
               }),
@@ -673,44 +666,51 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             onPressed: () {
                               _showSelectImageOptions();
                             }),
-                        SizedBox(width: 10),
-                        //TODO: Solve Android Video Upload Later
-                        // CupertinoButton(
-                        //     padding: EdgeInsets.zero,
-                        //     child: Text(G.current.feedCreatePageAddVideo),
-                        //     onPressed: () {
-                        //       _showSelectVideoOptions();
-                        //     }),
+                        StreamBuilder<VipData>(
+                          initialData: null,
+                          stream: this._vipDataSubject,
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return Container();
+                            }
+                            if (snapshot.data.vip <= 1) {
+                              return Container();
+                            }
+                            return Row(
+                              children: [
+                                SizedBox(width: 10),
+                                CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    child:
+                                        Text(G.current.feedCreatePageAddVideo),
+                                    onPressed: () {
+                                      _showSelectVideoOptions();
+                                    }),
+                              ],
+                            );
+                          },
+                        )
                       ],
                     ),
-                    StreamBuilder<Uint8List>(
+                    StreamBuilder<File>(
                       initialData: null,
-                      stream: this._thumbnailSubject,
-                      builder: (context, thumbSnapshot) {
+                      stream: this._videoSubject,
+                      builder: (context, videoSnapshot) {
                         return StreamBuilder<List<File>>(
                             initialData: null,
                             stream: this._mediaSubject,
                             builder: (context, mediaSnapshot) {
                               if ((mediaSnapshot.data == null ||
                                       mediaSnapshot.data.isEmpty) &&
-                                  thumbSnapshot.data == null) {
+                                  videoSnapshot.data == null) {
                                 return Container();
                               }
-                              if (thumbSnapshot.hasData) {
-                                return StreamBuilder<File>(
-                                    initialData: null,
-                                    stream: this._videoSubject,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.data == null) {
-                                        return Container();
-                                      }
-                                      return CupertinoButton(
-                                          child: Text(G.current
-                                              .feedCreatePageRemoveVideo),
-                                          onPressed: () {
-                                            this._videoSubject.add(null);
-                                            this._thumbnailSubject.add(null);
-                                          });
+                              if (videoSnapshot.hasData) {
+                                return CupertinoButton(
+                                    child: Text(
+                                        G.current.feedCreatePageRemoveVideo),
+                                    onPressed: () {
+                                      this._videoSubject.add(null);
                                     });
                               }
                               if (mediaSnapshot.hasData &&
@@ -826,7 +826,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                                 ? Colors.white54
                                                 : Colors.transparent,
                                             colorBlendMode: BlendMode.lighten,
-                                            fit: BoxFit.fill,
+                                            fit: BoxFit.cover,
                                           ));
                                     });
                               },
@@ -834,40 +834,52 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           );
                         },
                       ),
-                      StreamBuilder<Uint8List>(
+                      StreamBuilder<File>(
                         initialData: null,
-                        stream: this._thumbnailSubject,
+                        stream: this._videoSubject,
                         builder: (context, snapshot) {
                           if (snapshot.data == null) {
                             return Container();
                           }
                           return Expanded(
-                            child: CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                final file = await this._videoSubject.first;
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) =>
-                                            Preview(file.path)));
-                              },
-                              child: Image.memory(
-                                snapshot.data,
-                                width: double.infinity,
-                                height: double.infinity,
-                                cacheHeight:
-                                    (MediaQuery.of(context).size.height * 0.3)
-                                        .toInt(),
-                                cacheWidth:
-                                    (MediaQuery.of(context).size.width * 0.3)
-                                        .toInt(),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
+                            child: LocalPlayer(file: snapshot.data),
                           );
                         },
                       ),
+                      // StreamBuilder<Uint8List>(
+                      //   initialData: null,
+                      //   stream: this._thumbnailSubject,
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.data == null) {
+                      //       return Container();
+                      //     }
+                      //     return Expanded(
+                      //       child: CupertinoButton(
+                      //         padding: EdgeInsets.zero,
+                      //         onPressed: () async {
+                      //           final file = await this._videoSubject.first;
+                      //           Navigator.push(
+                      //               context,
+                      //               CupertinoPageRoute(
+                      //                   builder: (context) =>
+                      //                       Preview(file.path)));
+                      //         },
+                      //         child: Image.memory(
+                      //           snapshot.data,
+                      //           width: double.infinity,
+                      //           height: double.infinity,
+                      //           cacheHeight:
+                      //               (MediaQuery.of(context).size.height * 0.3)
+                      //                   .toInt(),
+                      //           cacheWidth:
+                      //               (MediaQuery.of(context).size.width * 0.3)
+                      //                   .toInt(),
+                      //           fit: BoxFit.cover,
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ),

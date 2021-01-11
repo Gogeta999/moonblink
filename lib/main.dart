@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,11 +23,16 @@ import 'package:moonblink/view_model/local_model.dart';
 import 'package:moonblink/view_model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'bloc_pattern/simple_bloc_observer.dart';
 import 'bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'services/locator.dart';
 import 'services/navigation_service.dart';
+
+/// Bad Coding style
+final BehaviorSubject<double> uploadProgress = BehaviorSubject();
+final BehaviorSubject<CancelToken> cancelTokenForCreatePost = BehaviorSubject();
 
 main() async {
   Provider.debugCheckInvalidValueType = null;
@@ -58,11 +64,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (isDev) print('$state');
     if (state == AppLifecycleState.inactive) {
       StorageManager.sharedPreferences.setBool(isUserOnForeground, false);
-      if (isDev) print(StorageManager.sharedPreferences.get(isUserOnForeground));
+      if (isDev)
+        print(StorageManager.sharedPreferences.get(isUserOnForeground));
     }
     if (state == AppLifecycleState.resumed) {
       StorageManager.sharedPreferences.setBool(isUserOnForeground, true);
-      if (isDev) print(StorageManager.sharedPreferences.get(isUserOnForeground));
+      if (isDev)
+        print(StorageManager.sharedPreferences.get(isUserOnForeground));
     }
   }
 
@@ -77,6 +85,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     if (isDev) print('Disposing main app');
     MoonGoDB().dispose();
+    uploadProgress.close();
+    cancelTokenForCreatePost.close();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
@@ -106,21 +116,71 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         providers: providers,
         child: Consumer2<ThemeModel, LocaleModel>(
             builder: (context, themeModel, localModel, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: themeModel.themeData(),
-            darkTheme: themeModel.themeData(platformDarkMode: true),
-            locale: localModel.locale,
-            localizationsDelegates: const [
-              G.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate
+          return Stack(
+            children: [
+              MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: themeModel.themeData(),
+                darkTheme: themeModel.themeData(platformDarkMode: true),
+                locale: localModel.locale,
+                localizationsDelegates: const [
+                  G.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate
+                ],
+                supportedLocales: G.delegate.supportedLocales,
+                onGenerateRoute: MoonGoRouter.generateRoute,
+                initialRoute: RouteName.splash,
+                navigatorKey: locator<NavigationService>().navigatorKey,
+              ),
+              StreamBuilder<double>(
+                  initialData: null,
+                  stream: uploadProgress,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) return Container();
+                    return Positioned(
+                        top: 60,
+                        right: 10,
+                        left: 10,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 2),
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.black),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Uploading on progress...'),
+                                  GestureDetector(
+                                      child: Text('Cancel upload', style: TextStyle(color: Theme.of(context).accentColor)),
+                                      onTap: () {
+                                        cancelTokenForCreatePost.first
+                                            .then((value) {
+                                          if (value != null) {
+                                            value.cancel("cancelled");
+                                            uploadProgress.add(null);
+                                          }
+                                        });
+                                      })
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              LinearProgressIndicator(
+                                value: snapshot.data,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).accentColor),
+                              )
+                            ],
+                          ),
+                        ));
+                  })
             ],
-            supportedLocales: G.delegate.supportedLocales,
-            onGenerateRoute: MoonGoRouter.generateRoute,
-            initialRoute: RouteName.splash,
-            navigatorKey: locator<NavigationService>().navigatorKey,
           );
         }),
       ),

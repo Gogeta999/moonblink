@@ -11,7 +11,6 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class PhotoBottomSheet extends StatefulWidget {
@@ -27,6 +26,7 @@ class PhotoBottomSheet extends StatefulWidget {
   final bool willCrop;
   final bool defaultCropStyle;
   final int compressQuality;
+  final int vipLevel;
 
   const PhotoBottomSheet(
       {Key key,
@@ -41,7 +41,8 @@ class PhotoBottomSheet extends StatefulWidget {
       @required this.minHeight,
       @required this.willCrop,
       @required this.defaultCropStyle,
-      @required this.compressQuality})
+      @required this.compressQuality,
+      this.vipLevel})
       : super(key: key);
 
   @override
@@ -225,6 +226,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                             width: double.infinity,
                             height: double.infinity,
                           ),
+                          if (_selectedImages[index].duration > 0)
+                            Positioned(
+                                top: 10,
+                                right: 40,
+                                child: Center(
+                                    child: Text(
+                                        '${_selectedImages[index].formattedDuration}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1))),
                           if (_selectedImages[index].isSelected)
                             Positioned(
                                 top: 10,
@@ -371,37 +382,31 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       } else {
         if (isDev) print('CompressedImages is empty');
       }
-    } else if (widget.requestType == RequestType.video) {
+
+      ///can improve with Navigator.pop with result.
+      if (widget.popAfterBtnPressed) {
+        Navigator.pop(context);
+      }
+    } else if (widget.requestType == RequestType.video &&
+        widget.vipLevel != null) {
       final _trimmer = Trimmer();
       File video = await _photoList[_selectedIndices.first].file;
       if (video != null) {
         await _trimmer.loadVideo(videoFile: video);
-        File trimmedVideo = await Navigator.of(context)
+        File trimmedCompressedVideo = await Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) {
-          return TrimmerView(_trimmer);
+          return TrimmerView(_trimmer, widget.vipLevel);
         }));
-        print("Trimmed Video: ${trimmedVideo.lengthSync()}");
-        MediaInfo mediaInfo = await VideoCompress.compressVideo(
-          trimmedVideo.path,
-          quality: VideoQuality.DefaultQuality,
-          deleteOrigin: true,
-          includeAudio: true,
-        );
-        Uint8List thumbnail = await VideoCompress.getByteThumbnail(
-            mediaInfo.file.path,
-            position: mediaInfo.duration ~/ 2);
-        print("Compressed Video: ${mediaInfo.filesize}");
-        if (mediaInfo.file != null) {
-          widget.onPressed(mediaInfo.file, thumbnail);
-
-          ///can improve with Navigator.pop with result.
-          if (widget.popAfterBtnPressed) {
-            Navigator.pop(context);
-          }
+        if (widget.popAfterBtnPressed) {
+          Navigator.pop(context);
+        }
+        if (trimmedCompressedVideo != null) {
+          widget.onPressed(trimmedCompressedVideo);
         }
       }
     } else {
       //Request type not supported
+      Navigator.pop(context);
     }
   }
   // _choose() async {
@@ -483,8 +488,13 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
     }
     for (var photo in photos) {
       Uint8List thumbnail = await photo.thumbDataWithSize(150, 150);
+      final minutes = (photo.duration ~/ 60).toString();
+      final seconds = (photo.duration % 60).toString().padLeft(2, "0");
       setState(() {
-        _selectedImages.add(SelectedImageModel(thumbnail: thumbnail));
+        _selectedImages.add(SelectedImageModel(
+            thumbnail: thumbnail,
+            duration: photo.duration,
+            formattedDuration: "$minutes:$seconds"));
       });
     }
     setState(() {

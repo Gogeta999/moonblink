@@ -8,8 +8,9 @@ class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Function leadingCallback;
   final Icon leadingIcon;
   final String leadingText;
+  final bool showBack;
   AppbarWidget(
-      {this.title, this.leadingCallback, this.leadingIcon, this.leadingText});
+      {this.title, this.leadingCallback, this.leadingIcon, this.leadingText, this.showBack = true});
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
@@ -66,7 +67,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
       leadingWidth: 80,
 
       leading: widget.leadingCallback == null
-          ? Navigator.of(context).canPop()
+          ? Navigator.of(context).canPop() && widget.showBack
               ? IconButton(
                   icon: SvgPicture.asset(
                     back,
