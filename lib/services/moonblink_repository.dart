@@ -673,7 +673,7 @@ class MoonBlinkRepository {
       'with_ads': withAds
     });
     final response = await DioUtils()
-        .postwithData(Api.UploadPost + '$userId/post', data: formData);
+        .createPostWithData(Api.UploadPost + '$userId/post', data: formData, showProgress: true);
     return response.data;
   }
 
