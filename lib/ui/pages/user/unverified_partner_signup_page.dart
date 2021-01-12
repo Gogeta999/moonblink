@@ -85,7 +85,7 @@ class _UnverifiedPartnerSignUpPageState
         builder: (_) {
           return CustomDialog(
             title:
-                '${G.current.unverifiedPartnerVip1HalfPrice} \'Vip$_selectedPlan\'',
+                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
             simpleContent:
                 '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
             cancelContent: G.current.cancel,

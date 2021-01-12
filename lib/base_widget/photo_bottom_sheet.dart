@@ -426,6 +426,57 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
       Navigator.pop(context);
     }
   }
+  // _choose() async {
+  //   ///can improve with Navigator.pop with result.
+  //   if (widget.popAfterBtnPressed) {
+  //     Navigator.pop(context);
+  //   }
+  //   if (widget.requestType == RequestType.image) {
+  //     List<File> compressedImages = [];
+  //     for (int i = 0; i < _selectedIndices.length; ++i) {
+  //       File image = await _photoList[_selectedIndices[i]].file;
+  //       File croppedImage;
+  //       File tempFile = await _getLocalFile();
+  //       if (widget.willCrop) {
+  //         croppedImage = await _cropImage(image);
+  //       }
+  //       if (widget.willCrop && croppedImage == null) {
+  //         return;
+  //       }
+  //       File compressedImage =
+  //           await _compressAndGetFile(croppedImage ?? image, tempFile.path);
+  //       compressedImages.add(compressedImage);
+  //     }
+  //     if (compressedImages.isNotEmpty) {
+  //       widget.onPressed(compressedImages);
+  //     } else {
+  //       if (isDev) print('CompressedImages is empty');
+  //     }
+  //   } else if (widget.requestType == RequestType.video) {
+  //     final _trimmer = Trimmer();
+  //     File video = await _photoList[_selectedIndices.first].file;
+  //     if (video != null) {
+  //       await _trimmer.loadVideo(videoFile: video);
+  //       File trimmedVideo = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+  //         return TrimmerView(_trimmer);
+  //       }));
+  //       print("Trimmed Video: ${trimmedVideo.lengthSync()}");
+  //       MediaInfo mediaInfo = await VideoCompress.compressVideo(
+  //         trimmedVideo.path,
+  //         quality: VideoQuality.DefaultQuality,
+  //         deleteOrigin: true,
+  //         includeAudio: true,
+  //       );
+  //       Uint8List thumbnail = await VideoCompress.getByteThumbnail(mediaInfo.file.path, position: mediaInfo.duration ~/ 2);
+  //       print("Compressed Video: ${mediaInfo.filesize}");
+  //       if (mediaInfo.file != null) {
+  //         widget.onPressed(mediaInfo.file, thumbnail);
+  //       }
+  //     }
+  //   } else {
+  //     //Request type not supported
+  //   }
+  // }
 
   _fetchNewMedia() async {
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(

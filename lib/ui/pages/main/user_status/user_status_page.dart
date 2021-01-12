@@ -632,7 +632,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
                 ///Settings
                 Card(
-                  margin: EdgeInsets.only(bottom: 10),
+                  margin: EdgeInsets.zero,
                   elevation: 4,
                   shadowColor: Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
@@ -649,6 +649,34 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           style: Theme.of(context).textTheme.bodyText1),
                       onTap: () =>
                           Navigator.of(context).pushNamed(RouteName.setting)),
+                ),
+                Card(
+                  margin: EdgeInsets.only(bottom: 10, top: 0),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
+                  child: ListTile(
+                      leading: SvgPicture.asset(
+                        upgradeVIP,
+                        // color: Colors.black,
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
+                      ),
+                      title: usertype == 0
+                          ? Text(G.of(context).settingsSignAsPartner,
+                              style: Theme.of(context).textTheme.bodyText1)
+                          : Text(G.current.upgradeVipAppBarTitle,
+                              style: Theme.of(context).textTheme.bodyText1),
+                      onTap: usertype == 0
+                          ? () => Navigator.of(context)
+                              .pushNamed(RouteName.type5otp)
+                          : () => Navigator.of(context)
+                                  .pushNamed(RouteName.upgradeVip, arguments: {
+                                'acc_vip_level': profile.accVipLevel,
+                                'half_renew': profile.vipRenew
+                              })),
                 ),
                 blankSpace(),
 

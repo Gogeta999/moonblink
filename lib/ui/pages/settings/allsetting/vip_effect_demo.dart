@@ -18,33 +18,60 @@ class VipDemo extends StatelessWidget {
           restorationId: 'list_demo_list_view',
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
+            Center(
+              child: Text(
+                G.current.vipDemo3Title,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ),
             for (int index = 1; index < 8; index++)
-              Card(
-                child: ListTile(
-                  leading: ExcludeSemantics(
-                    child: CircleAvatar(child: Text('$index')),
+              Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Card(
+                  child: ListTile(
+                    leading: ExcludeSemantics(
+                      child: CircleAvatar(child: Text('$index')),
+                    ),
+                    title: Text(
+                      G.current.vipDemo3Body,
+                    ),
+                    subtitle: Text(''),
                   ),
-                  title: Text('VIP 3'),
-                  subtitle: Text(''),
                 ),
               ),
+            Center(
+              child: Text(
+                G.current.vipDemo2Title,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ),
             for (int index = 8; index < 15; index++)
               Card(
                 child: ListTile(
                   leading: ExcludeSemantics(
                     child: CircleAvatar(child: Text('$index')),
                   ),
-                  title: Text('VIP 2'),
+                  title: Text(
+                    G.current.vipDemo2Body,
+                  ),
                   subtitle: Text(''),
                 ),
               ),
+            Center(
+              child: Text(
+                G.current.vipDemo1Title,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ),
             for (int index = 15; index < 22; index++)
               Card(
                 child: ListTile(
                   leading: ExcludeSemantics(
                     child: CircleAvatar(child: Text('$index')),
                   ),
-                  title: Text('VIP 1'),
+                  title: Text(
+                    G.current.vipDemo1Body,
+                  ),
                   subtitle: Text(''),
                 ),
               ),

@@ -3745,6 +3745,66 @@ class G {
     );
   }
 
+  /// `Here is VIP 1 layer`
+  String get vipDemo1Title {
+    return Intl.message(
+      'Here is VIP 1 layer',
+      name: 'vipDemo1Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP 1 will be displayed under VIP 1`
+  String get vipDemo1Body {
+    return Intl.message(
+      'VIP 1 will be displayed under VIP 1',
+      name: 'vipDemo1Body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here is VIP 2 layer`
+  String get vipDemo2Title {
+    return Intl.message(
+      'Here is VIP 2 layer',
+      name: 'vipDemo2Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP 2 will be displayed under VIP 3`
+  String get vipDemo2Body {
+    return Intl.message(
+      'VIP 2 will be displayed under VIP 3',
+      name: 'vipDemo2Body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here is VIP 3 layer`
+  String get vipDemo3Title {
+    return Intl.message(
+      'Here is VIP 3 layer',
+      name: 'vipDemo3Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP 3 will be displayed at the top`
+  String get vipDemo3Body {
+    return Intl.message(
+      'VIP 3 will be displayed at the top',
+      name: 'vipDemo3Body',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Waiting`
   String get waiting {
     return Intl.message(

@@ -331,9 +331,11 @@ class DioUtils {
     cancelTokenForCreatePost.add(cancelToken);
     if (isDev) print('post request path ------$url-------data $data');
     Response response;
-    response = await _dio.post(url, data: data, options: options, cancelToken: cancelToken,
-        onSendProgress: (int count, int total) {
-          uploadProgress.add(count / total);
+    response = await _dio.post(url,
+        data: data,
+        options: options,
+        cancelToken: cancelToken, onSendProgress: (int count, int total) {
+      uploadProgress.add(count / total);
       if (isDev)
         print(
             'Uploading progress----->${count / total}----count/total process');
