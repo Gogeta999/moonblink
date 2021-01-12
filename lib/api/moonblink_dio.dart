@@ -43,10 +43,10 @@ class DioUtils {
   static final DioUtils _instance = DioUtils._();
   factory DioUtils() => _instance;
   BaseOptions _baseOptions = BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: devUrl,
     connectTimeout: 10 * 1000,
     receiveTimeout: 8 * 1000,
-    headers: {'app-key': baseAppKey},
+    headers: {'app-key': devAppKey},
     contentType: Headers.formUrlEncodedContentType,
     responseType: ResponseType.json,
   );
@@ -331,9 +331,11 @@ class DioUtils {
     cancelTokenForCreatePost.add(cancelToken);
     if (isDev) print('post request path ------$url-------data $data');
     Response response;
-    response = await _dio.post(url, data: data, options: options, cancelToken: cancelToken,
-        onSendProgress: (int count, int total) {
-          uploadProgress.add(count / total);
+    response = await _dio.post(url,
+        data: data,
+        options: options,
+        cancelToken: cancelToken, onSendProgress: (int count, int total) {
+      uploadProgress.add(count / total);
       if (isDev)
         print(
             'Uploading progress----->${count / total}----count/total process');
@@ -447,7 +449,7 @@ class DioUtils {
   /*
    * Cancel Request
    *
-  * The same cancel token can be used for multiple requests. When a cancel token is canceled, all requests using the cancel token will be canceled. 
+  * The same cancel token can be used for multiple requests. When a cancel token is canceled, all requests using the cancel token will be canceled.
   * So the parameters are optional
    */
   void cancelRequests(CancelToken token) {

@@ -5,6 +5,8 @@ import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/cardContainer.dart';
 import 'package:moonblink/base_widget/horizontalPager.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/models/vipmodel.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 
@@ -24,7 +26,7 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
   ///Remote Data
   int _selectedPlan = 0;
   Wallet _wallet = Wallet(value: 0);
-  int _partnerVipLevel = 0;
+  int partnerVipLevel = 0;
   // bool _enableToBuy = true;
 
   ///UI
@@ -33,14 +35,23 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
   bool _isPageError = false;
   bool _isConfirmLoading = false;
 
+  List<VIPprice> prices = [];
+
   @override
   void initState() {
     _initData();
+    partnerVipLevel = int.tryParse(widget.data['acc_vip_level']);
+    pagecontroller = PageController(
+        initialPage: partnerVipLevel != 0 ? partnerVipLevel - 1 : 0);
     super.initState();
   }
 
   void _initData() {
-    Future.wait([_initUserWallet()], eagerError: true).then((value) {
+    Future.wait([
+      _initUserWallet(),
+      _getVippice(),
+    ], eagerError: true)
+        .then((value) {
       setState(() {
         _isPageLoading = false;
       });
@@ -60,92 +71,90 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
     });
   }
 
+  Future<void> _getVippice() async {
+    MoonBlinkRepository.getVIPList().then((value) {
+      setState(() {
+        prices = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Partner VIP Level
-    int partnerVipLevel = int.tryParse(widget.data['acc_vip_level']);
     return Scaffold(
       appBar: AppbarWidget(
         title: Text(G.current.upgradeVipAppBarTitle),
       ),
-      body: NestedScrollView(
-        controller: _scrollController,
-        // shrinkWrap: true,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverToBoxAdapter(
-              child: Stack(
-                children: [
-                  ClipPath(
-                    clipper: OvalBottomBorderClipper(),
-                    child: Container(
-                      height: 150,
-                      color: Theme.of(context).accentColor,
-                      child: Container(),
+      body: prices.isEmpty
+          ? Container()
+          : NestedScrollView(
+              controller: _scrollController,
+              // shrinkWrap: true,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverToBoxAdapter(
+                    child: Stack(
+                      children: [
+                        ClipPath(
+                          clipper: OvalBottomBorderClipper(),
+                          child: Container(
+                            height: 150,
+                            color: Theme.of(context).accentColor,
+                            child: Container(),
+                          ),
+                        ),
+                        HorizontalCardPager(
+                          initialPage:
+                              partnerVipLevel != 0 ? partnerVipLevel - 1 : 0,
+                          onPageChanged: (page) => pagecontroller.jumpToPage(
+                            page.round(),
+                          ),
+                          items: [
+                            ItemContainer(
+                              child: itemCard('assets/images/vip1.jpg',
+                                  prices[0].vip, prices[0].updatecost, context),
+                            ),
+                            ItemContainer(
+                              child: itemCard('assets/images/vip2.jpg',
+                                  prices[1].vip, prices[1].updatecost, context),
+                            ),
+                            ItemContainer(
+                              child: itemCard('assets/images/vip3.jpg',
+                                  prices[2].vip, prices[2].updatecost, context),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  HorizontalCardPager(
-                    initialPage: partnerVipLevel,
-                    onPageChanged: (page) => pagecontroller.jumpToPage(
-                      page.round(),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Text(
+                              "Note: Your current vip level is $partnerVipLevel"),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
-                    items: [
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.grey,
-                          child: Center(
-                            child: Text("VIP 0"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.green,
-                          child: Center(
-                            child: Text("VIP 1"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.yellow,
-                          child: Center(
-                            child: Text("VIP 2"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.lightBlue,
-                          child: Center(
-                            child: Text("VIP 3"),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
-                ],
+                ];
+              },
+              body: Container(
+                child: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: pagecontroller,
+                  children: [
+                    VIP1(),
+                    VIP2(),
+                    VIP3(),
+                  ],
+                ),
               ),
             ),
-          ];
-        },
-        body: Container(
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: pagecontroller,
-            children: [
-              VIP0(),
-              VIP1(),
-              VIP2(),
-              VIP3(),
-            ],
-          ),
-        ),
-      ),
       bottomNavigationBar: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
@@ -350,5 +359,41 @@ Widget postperday(String text, IconData icon) {
         ),
       ],
     ),
+  );
+}
+
+Widget itemCard(String image, int viplvl, int cost, BuildContext context) {
+  return Stack(
+    children: [
+      CardContainer(
+        // ontap: () => print("Notes"),
+        color: Colors.green,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Image.asset(
+            image,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      Positioned(
+        top: 20,
+        left: 20,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "VIP " + viplvl.toString(),
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(
+              "Price " + cost.toString(),
+              style: Theme.of(context).textTheme.headline6,
+            )
+          ],
+        ),
+      )
+    ],
   );
 }
