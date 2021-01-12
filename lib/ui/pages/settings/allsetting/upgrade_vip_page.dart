@@ -139,19 +139,19 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
 
   _onTapConfirm() {
     if (_selectedPlan == 3 &&
-        _wallet.value < (widget.data['half_renew'] == 1 ? 1050 / 2 : 1050)) {
+        _wallet.value < (widget.data['half_renew'] == 1 ? 1050 ~/ 2 : 1050)) {
       Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     if (_selectedPlan == 2 &&
-        _wallet.value < (widget.data['half_renew'] == 1 ? 550 / 2 : 550)) {
+        _wallet.value < (widget.data['half_renew'] == 1 ? 550 ~/ 2 : 550)) {
       Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
     }
     if (_selectedPlan == 1 &&
-        _wallet.value < (widget.data['half_renew'] == 1 ? 350 / 2 : 350)) {
+        _wallet.value < (widget.data['half_renew'] == 1 ? 350 ~/ 2 : 350)) {
       Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
