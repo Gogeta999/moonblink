@@ -13,6 +13,9 @@ class NFPost extends Equatable {
   final String profile;
   final int isReacted;
   final String bios;
+  final String lastComment;
+  final String lastCommenterName;
+  final String lastCommenterProfileImage;
 
   NFPost.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -26,7 +29,10 @@ class NFPost extends Equatable {
         name = json['user']['name'],
         profile = json['user']['profile_image'],
         isReacted = json['is_reacted'],
-        bios = json['user']['bios'];
+        bios = json['user']['bios'],
+        lastComment = json['last_comment'] == null ? "" : json['last_comment']['message'],
+        lastCommenterName = json['last_comment'] == null ? "" : json['last_comment']['user']['name'],
+        lastCommenterProfileImage = json['last_comment'] == null ? "" : json['last_comment']['user']['profile_image'];
 
   ///for sqflite
   Map<String, dynamic> toMap() => {
@@ -42,6 +48,9 @@ class NFPost extends Equatable {
         'profile_image': profile,
         'is_reacted': isReacted,
         'bios': bios,
+        'last_comment': lastComment,
+        'last_commenter_name': lastCommenterName,
+        'last_commenter_profile_image': lastCommenterProfileImage
       };
   
   NFPost.fromMap(Map<String, dynamic> map)
@@ -56,7 +65,10 @@ class NFPost extends Equatable {
       name = map['user_name'],
       profile = map['profile_image'],
       isReacted = map['is_reacted'],
-      bios = map['bios'];
+      bios = map['bios'],
+      lastComment = map['last_comment'],
+      lastCommenterName = map['last_commenter_name'],
+      lastCommenterProfileImage = map['last_commenter_profile_image'];
 
   @override
   List<Object> get props => [id];

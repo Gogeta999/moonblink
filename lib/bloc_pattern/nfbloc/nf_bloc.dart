@@ -15,7 +15,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
-
+///To-Do Block and Delete feature to work smoothly
 class NFBloc {
   NFBloc(this.scrollController) {
     this.scrollController.addListener(() => this.onScroll());
@@ -28,7 +28,7 @@ class NFBloc {
 
   final nfPostsSubject = BehaviorSubject<List<NFPost>>.seeded(null);
 
-  final limit = 10;
+  final limit = 20;
   int nextPage = 1;
   bool hasReachedMax = false;
 
@@ -80,7 +80,7 @@ class NFBloc {
       });
     }, onError: (e) {
       nfPostsSubject.addError(e);
-      refreshCompleter.completeError(e);
+      refreshCompleter?.completeError(e);
       refreshCompleter = Completer<void>();
     });
   }
@@ -88,7 +88,9 @@ class NFBloc {
   void fetchInitialData() {
     nextPage = 1;
     MoonGoDB().retrieveNfPosts(limit, nextPage).then((value) => nfPostsSubject.add(value));
-    MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
+    MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) async {
+      nfPostsSubject.add(null);
+      await Future.delayed(Duration(milliseconds: 50));
       nfPostsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
@@ -131,11 +133,14 @@ class NFBloc {
         },
         onBlock: () {
           MoonBlinkRepository.blockOrUnblock(partnerId, BLOCK).then((value) {
-            this.nfPostsSubject.first.then((value) {
-              value.removeAt(index);
-              this.nfPostsSubject.add(value);
-              Navigator.pop(context);
-            });
+            showToast(
+                'Successfully block');
+            Navigator.pop(context);
+            // this.nfPostsSubject.first.then((value) {
+            //   value.removeAt(index);
+            //   this.nfPostsSubject.add(value);
+            //   Navigator.pop(context);
+            // });
           }, onError: (e) {
             showToast('$e');
           });

@@ -672,8 +672,10 @@ class MoonBlinkRepository {
       'status': status,
       'with_ads': withAds
     });
-    final response = await DioUtils()
-        .createPostWithData(Api.UploadPost + '$userId/post', data: formData, showProgress: true);
+    final response = await DioUtils().createPostWithData(
+        Api.UploadPost + '$userId/post',
+        data: formData,
+        showProgress: true);
     return response.data;
   }
 
@@ -722,6 +724,20 @@ class MoonBlinkRepository {
     final response = await DioUtils().postwithData(
         "moonblink/api/v1/social/post/$postId/comment",
         data: formData);
+    return response.data;
+  }
+
+  static Future deleteComment(int postId, int commentId) async {
+    final response = await DioUtils()
+        .delete("moonblink/api/v1/social/post/$postId/comment/$commentId");
+    return response.data;
+  }
+
+  static Future updateComment(
+      int postId, int commentId, String newComment) async {
+    final response = await DioUtils().patch(
+        "moonblink/api/v1/social/post/$postId/comment/$commentId",
+        queryParameters: {'message': newComment});
     return response.data;
   }
 

@@ -12,6 +12,7 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/bloc_pattern/nfbloc/nf_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -82,6 +83,7 @@ class _NewFeedPageState extends State<NewFeedPage> {
                           : ViewStateErrorType.defaultError,
                       errorMessage: snapshot.error.toString()),
                   onPressed: () {
+                    _bloc.nfPostsSubject.add(null);
                     _bloc.refreshData();
                   },
                 );
@@ -426,21 +428,58 @@ class _NFPostItemState extends State<NFPostItem> {
             SizedBox(height: 3),
 
             ///Post Comment
-            // Container(
-            //     alignment: Alignment.centerLeft,
-            //     margin: const EdgeInsets.symmetric(horizontal: 20),
-            //     child: Text(G.current.feedPageLastComment)),
-            // Container(
-            //   alignment: Alignment.centerLeft,
-            //   margin: const EdgeInsets.symmetric(horizontal: 20),
-            //   child: CupertinoButton(
-            //       padding: EdgeInsets.zero,
-            //       child: Text(G.current.feedPageViewMoreComment),
-            //       onPressed: () {
-            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
-            //             arguments: widget.item.id);
-            //       }),
-            // )
+            if (widget.item.lastComment != null &&
+                widget.item.lastComment.isNotEmpty &&
+                widget.item.lastCommenterName != null &&
+                widget.item.lastCommenterName.isNotEmpty &&
+                widget.item.lastCommenterProfileImage != null &&
+                widget.item.lastCommenterProfileImage.isNotEmpty)
+              Container(
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+            children: [
+              CachedNetworkImage(
+                      fit: BoxFit.fill,
+                      imageUrl: widget.item.lastCommenterProfileImage,
+                      imageBuilder: (context, provider) {
+                        return CircleAvatar(
+                          backgroundImage: provider,
+                        );
+                      },
+                      placeholder: (_, __) => CupertinoActivityIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+              SizedBox(width: 10),
+              Expanded(
+                  child: RichText(
+                text: TextSpan(
+                    text: widget.item.lastCommenterName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: '  ${widget.item.lastComment}',
+                          style: Theme.of(context).textTheme.bodyText1),
+                    ]),
+              ))
+            ],
+          ),),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: (widget.item.lastComment != null &&
+                widget.item.lastComment.isNotEmpty &&
+                widget.item.lastCommenterName != null &&
+                widget.item.lastCommenterName.isNotEmpty &&
+                widget.item.lastCommenterProfileImage != null &&
+                widget.item.lastCommenterProfileImage.isNotEmpty) ? Text(G.current.feedPageViewMoreComment) : Text('Post comments'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RouteName.nfCommentPage,
+                        arguments: widget.item.id);
+                  }),
+            )
           ],
         ),
       ),

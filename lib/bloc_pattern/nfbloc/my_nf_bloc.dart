@@ -76,7 +76,7 @@ class MyNFBloc {
       });
     }, onError: (e) {
       myNfPostsSubject.addError(e);
-      refreshCompleter.completeError(e);
+      refreshCompleter?.completeError(e);
       refreshCompleter = Completer<void>();
     });
   }
