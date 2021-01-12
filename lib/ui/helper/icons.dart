@@ -27,6 +27,7 @@ final String gameProfile = 'assets/icons/status/gameProfile.svg';
 final String profileEdit = 'assets/icons/status/profileEdit.svg';
 final String setting = 'assets/icons/status/setting.svg';
 final String theme = 'assets/icons/status/theme.svg';
+final String upgradeVIP = 'assets/icons/status/upgradeVIP.svg';
 final String wallet = 'assets/icons/status/wallet.svg';
 
 final String search = 'assets/icons/search.svg';

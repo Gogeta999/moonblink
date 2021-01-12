@@ -167,34 +167,36 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                if (usertype != 0) space(),
-                if (usertype != 0)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: ShadedContainer(
-                      height: 50,
-                      ontap: () => Navigator.pushNamed(
-                          context, RouteName.upgradeVip,
-                          arguments: {'acc_vip_level': usermodel.partnerData.accVipLevel, 'half_renew': 0}),
-                      child: Center(
-                        child: Text(G.current.upgradeVipAppBarTitle),
-                      ),
-                    ),
-                  ),
+                // if (usertype != 0) space(),
+                // if (usertype != 0)
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                //     child: ShadedContainer(
+                //       height: 50,
+                //       ontap: () => Navigator.pushNamed(
+                //           context, RouteName.upgradeVip, arguments: {
+                //         'acc_vip_level': usermodel.partnerData.accVipLevel,
+                //         'half_renew': 0
+                //       }),
+                //       child: Center(
+                //         child: Text(G.current.upgradeVipAppBarTitle),
+                //       ),
+                //     ),
+                //   ),
                 //Unverified Partner SetUp
-                if (usertype == 0) space(),
-                if (usertype == 0)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: ShadedContainer(
-                      height: 50,
-                      ontap: () =>
-                          Navigator.pushNamed(context, RouteName.type5otp),
-                      child: Center(
-                        child: Text(G.of(context).settingsSignAsPartner),
-                      ),
-                    ),
-                  ),
+                // if (usertype == 0) space(),
+                // if (usertype == 0)
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                //     child: ShadedContainer(
+                //       height: 50,
+                //       ontap: () =>
+                //           Navigator.pushNamed(context, RouteName.type5otp),
+                //       child: Center(
+                //         child: Text(G.of(context).settingsSignAsPartner),
+                //       ),
+                //     ),
+                //   ),
                 //Not Pending
                 if (usertype == 5) space(),
                 if (usertype == 5 && usermodel.partnerData.typestatus != 0)
