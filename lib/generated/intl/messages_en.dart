@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedCreatePageWriteTitle" : MessageLookupByLibrary.simpleMessage("Write your post\'s title here"),
     "feedPageLastComment" : MessageLookupByLibrary.simpleMessage("Last Comment"),
     "feedPagePosted" : MessageLookupByLibrary.simpleMessage("Posted"),
-    "feedPageViewMoreComment" : MessageLookupByLibrary.simpleMessage("View more Comment"),
+    "feedPageViewMoreComment" : MessageLookupByLibrary.simpleMessage("View more comments"),
     "feedback" : MessageLookupByLibrary.simpleMessage("Feedback"),
     "fieldNotEmpty" : MessageLookupByLibrary.simpleMessage("Can\'t be empty"),
     "fillgameinfo" : MessageLookupByLibrary.simpleMessage("Fill your game Information"),

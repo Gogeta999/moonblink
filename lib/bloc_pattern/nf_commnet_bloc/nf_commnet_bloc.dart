@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFComment.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/subjects.dart';
 
 class NFCommentBloc {
@@ -20,23 +21,27 @@ class NFCommentBloc {
   final int postId;
 
   ScrollController scrollController;
-  final refreshController = RefreshController();
+  Completer<void> refreshCompleter = Completer<void>();
   final commentController = TextEditingController();
+  final myId = StorageManager.sharedPreferences.getInt(mUserId);
   double scrollThreshold = 400.0;
   Timer _debounce;
 
   final nfCommentsSubject = BehaviorSubject<List<NFComment>>();
   final postButtonSubject = BehaviorSubject.seeded(false);
+  final replyingSubject = BehaviorSubject<Map<String, dynamic>>();
+  final editingSubject = BehaviorSubject<int>();
 
   final limit = 10;
   int nextPage = 1;
   bool hasReachedMax = false;
 
   void dispose() {
-    refreshController.dispose();
     _debounce?.cancel();
     nfCommentsSubject.close();
     postButtonSubject.close();
+    replyingSubject.close();
+    editingSubject.close();
   }
 
   void onScroll() {
@@ -77,12 +82,14 @@ class NFCommentBloc {
       nfCommentsSubject.add(null);
       Future.delayed(Duration(milliseconds: 50), () {
         nfCommentsSubject.add(value);
-        refreshController.refreshCompleted();
+        refreshCompleter?.complete();
+        refreshCompleter = Completer<void>();
         hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       nfCommentsSubject.addError(e);
-      refreshController.refreshFailed();
+      refreshCompleter?.completeError(e);
+      refreshCompleter = Completer<void>();
     });
   }
 
@@ -108,39 +115,148 @@ class NFCommentBloc {
     }, onError: (e) => nfCommentsSubject.addError(e));
   }
 
-  void postComment() {
+  void postComment(BuildContext context) async {
     final message = commentController.text.trim();
     if (message == null || message.isEmpty) return;
-    postButtonSubject.add(true);
-    MoonBlinkRepository.postComment(postId, message, 1).then((value) {
-      this.commentController.clear();
-      postButtonSubject.add(false);
-      final newComment = NFComment.fromJson({
-        'id': value['id'],
-        'post_id': value['pos_id'],
-        'user_id': value['user_id'],
-        'message': message,
-        'media': "[]",
-        'parent_comment_id': 1,
-        'created_at': DateTime.now().toString(),
-        'updated_at': DateTime.now().toString(),
-        'user': {
-          'name': StorageManager.sharedPreferences.get(mLoginName) ?? "",
-          'email': StorageManager.sharedPreferences.get(mLoginMail) ?? "",
-          'type': StorageManager.sharedPreferences.get(mUserType),
-          'status': StorageManager.sharedPreferences.get(mstatus),
-          'profile_image': StorageManager.sharedPreferences.get(mUserProfile)
+    final commentId = await editingSubject.first;
+    if (commentId != null) {
+      postButtonSubject.add(true);
+      MoonBlinkRepository.updateComment(postId, commentId, message).then((value) async {
+        final currentPage = nextPage;
+        nextPage = 1;
+        List<NFComment> comments = [];
+        while (nextPage < currentPage) {
+          try {
+            final lastComments = await MoonBlinkRepository.getNfPostComments(
+                postId, limit, nextPage);
+            comments.addAll(lastComments);
+            nextPage++;
+            hasReachedMax = lastComments.length < limit;
+          } catch (e) {
+            nfCommentsSubject.addError(e);
+            postButtonSubject.add(false);
+            return;
+          }
         }
-      });
-      this.nfCommentsSubject.first.then((prev) {
-        prev.add(newComment);
-        this.nfCommentsSubject.add(prev);
+        nfCommentsSubject.add(comments);
+        resetCommentController(context);
+        postButtonSubject.add(false);
       }, onError: (e) {
-        this.nfCommentsSubject.add([newComment]);
-        hasReachedMax = true;
+        showToast(e.toString());
+        postButtonSubject.add(false);
       });
-    }, onError: (e) {
-      showToast(e.toString());
-    });
+    } else {
+      int parentCommentId = -1;
+      final replyingMap = await replyingSubject.first;
+      if (replyingMap != null)
+        parentCommentId = replyingMap['parent_comment_id'];
+      postButtonSubject.add(true);
+      MoonBlinkRepository.postComment(postId, message, parentCommentId).then(
+          (_) async {
+        final currentPage = nextPage;
+        nextPage = 1;
+        List<NFComment> comments = [];
+        while (nextPage < currentPage) {
+          try {
+            final lastComments = await MoonBlinkRepository.getNfPostComments(
+                postId, limit, nextPage);
+            comments.addAll(lastComments);
+            nextPage++;
+            hasReachedMax = lastComments.length < limit;
+          } catch (e) {
+            nfCommentsSubject.addError(e);
+            postButtonSubject.add(false);
+            return;
+          }
+        }
+        nfCommentsSubject.add(comments);
+        resetCommentController(context);
+        postButtonSubject.add(false);
+      }, onError: (e) {
+        showToast(e.toString());
+        postButtonSubject.add(false);
+      });
+    }
+  }
+
+  void resetCommentController(BuildContext context) {
+    replyingSubject.add(null);
+    editingSubject.add(null);
+    FocusScope.of(context).unfocus();
+    commentController.clear();
+  }
+
+  ///Edit action close
+  void onTapReply(BuildContext context, String username, int parentCommentId) {
+    resetCommentController(context);
+    replyingSubject
+        .add({'username': username, 'parent_comment_id': parentCommentId});
+  }
+
+  void onTapCancelReply(BuildContext context) {
+    resetCommentController(context);
+  }
+
+  ///Reply action close
+  void onTapEdit(BuildContext context, int commentId, String prevMessage) {
+    resetCommentController(context);
+    editingSubject.add(commentId);
+    commentController.text = prevMessage;
+  }
+
+  ///Edit and delete action close
+  void onTapDelete(BuildContext context, int commentId) {
+    resetCommentController(context);
+    showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          bool deleting = false;
+          return CupertinoAlertDialog(
+            title: Text('Delete'),
+            content: Text('This comment will be deleted permanently.'),
+            actions: [
+              CupertinoButton(
+                  child: Text(G.of(context).cancel),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              CupertinoButton(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onPressed: () {
+                    if (deleting) return;
+                    deleting = true;
+                    MoonBlinkRepository.deleteComment(postId, commentId).then(
+                        (value) async {
+                      final currentPage = nextPage;
+                      nextPage = 1;
+                      List<NFComment> comments = [];
+                      while (nextPage < currentPage) {
+                        try {
+                          final lastComments =
+                              await MoonBlinkRepository.getNfPostComments(
+                                  postId, limit, nextPage);
+                          comments.addAll(lastComments);
+                          nextPage++;
+                          hasReachedMax = lastComments.length < limit;
+                        } catch (e) {
+                          nfCommentsSubject.addError(e);
+                          postButtonSubject.add(false);
+                          return;
+                        }
+                      }
+                      nfCommentsSubject.add(comments);
+                      resetCommentController(context);
+                      postButtonSubject.add(false);
+                    }, onError: (e) {
+                      showToast(e.toString());
+                      postButtonSubject.add(false);
+                    }).whenComplete(() => Navigator.pop(context));
+                  })
+            ],
+          );
+        });
   }
 }

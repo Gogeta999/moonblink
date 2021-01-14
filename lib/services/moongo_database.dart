@@ -22,7 +22,10 @@ class MoonGoDB {
       "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at INTEGER, reaction_count INTEGER, profile_image TEXT, cover_image TEXT, is_reacted INTEGER, type INTEGER, gender TEXT, bios TEXT)",
       "CREATE TABLE $_nfTableName(id INTEGER PRIMARY KEY, user_id INTEGER, body TEXT, media TEXT, status INTEGER, created_at TEXT, updated_at TEXT, reaction_count INTEGER, user_name TEXT, profile_image TEXT, is_reacted INTEGER, bios TEXT)",
       "ALTER TABLE $_tableName ADD COLUMN status INTEGER",
-      "ALTER TABLE $_tableName ADD COLUMN vip INTEGER"
+      "ALTER TABLE $_tableName ADD COLUMN vip INTEGER",
+      "ALTER TABLE $_nfTableName ADD COLUMN last_comment TEXT",
+      "ALTER TABLE $_nfTableName ADD COLUMN last_commenter_name TEXT",
+      "ALTER TABLE $_nfTableName ADD COLUMN last_commenter_profile_image TEXT"
     ];
 
     String _path = await getDatabasesPath();

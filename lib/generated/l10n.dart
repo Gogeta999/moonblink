@@ -1155,10 +1155,10 @@ class G {
     );
   }
 
-  /// `View more Comment`
+  /// `View more comments`
   String get feedPageViewMoreComment {
     return Intl.message(
-      'View more Comment',
+      'View more comments',
       name: 'feedPageViewMoreComment',
       desc: '',
       args: [],
