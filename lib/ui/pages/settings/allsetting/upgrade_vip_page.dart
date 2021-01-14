@@ -62,7 +62,7 @@ class _UpgradeVipPageState extends State<UpgradeVipPage> {
         builder: (_) {
           return CustomDialog(
             title:
-                '${G.current.unverifiedPartnerVip1HalfPrice} \'Vip$_selectedPlan\'',
+                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
             simpleContent: widget.data['half_renew'] == 1
                 ? '${G.current.unverifiedPartnerVip1HalfPrice}. ${G.current.unverifiedPartnerPlanConfirmContent}'
                 : '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',

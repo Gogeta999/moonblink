@@ -7,12 +7,15 @@ import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/horizontalPager.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/vip_data.dart';
 import 'package:moonblink/models/vipmodel.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class UpgradeVIP extends StatefulWidget {
@@ -127,7 +130,13 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                           },
                           onSelectedItem: (page) {
                             if (uservip.vip < currentpage + 1) {
-                              confirmV1Dialog(context);
+                              confirmDialog(
+                                  context,
+                                  (currentpage + 1),
+                                  prices[currentpage].updatecost,
+                                  uservip.vipRenew,
+                                  prices[currentpage].promotion,
+                                  _wallet);
                             } else {
                               showToast("You already bought this");
                             }
@@ -137,24 +146,30 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                               child: itemCard(
                                   'assets/images/vip1.jpg',
                                   prices[0].vip,
+                                  prices[0].expiretime,
                                   prices[0].updatecost,
                                   prices[0].promotion,
+                                  uservip.vipRenew,
                                   context),
                             ),
                             ItemContainer(
                               child: itemCard(
                                   'assets/images/vip2.jpg',
                                   prices[1].vip,
+                                  prices[1].expiretime,
                                   prices[1].updatecost,
                                   prices[1].promotion,
+                                  uservip.vipRenew,
                                   context),
                             ),
                             ItemContainer(
                               child: itemCard(
                                   'assets/images/vip3.jpg',
                                   prices[2].vip,
+                                  prices[2].expiretime,
                                   prices[2].updatecost,
                                   prices[2].promotion,
+                                  uservip.vipRenew,
                                   context),
                             ),
                           ],
@@ -162,16 +177,17 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                       ],
                     ),
                   ),
-                  if (uservip.vip != 0)
+                  if (uservip.vip != 0 && uservip.expiredat != '')
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
                           Center(
                             child: Text(
-                                "Note: Your VIP Level ${uservip.vip} will expire at " +
-                                    timeAgo.format(
-                                        DateTime.parse(uservip.expiredat),
-                                        allowFromNow: true)),
+                              "Note: Your VIP Level ${uservip.vip} will expire at " +
+                                  timeAgo.format(
+                                      DateTime.parse(uservip.expiredat),
+                                      allowFromNow: true),
+                            ),
                           ),
                           SizedBox(
                             height: 20,
@@ -180,37 +196,6 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                         ],
                       ),
                     ),
-                  //to add male female choice for normal user
-                  // if (widget.data['user_type'] == 0)
-                  SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Male'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Male';
-                            });
-                          },
-                          child: Text(G.of(context).genderMale),
-                        ),
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Female'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Female';
-                            });
-                          },
-                          child: Text(G.of(context).genderFemale),
-                        )
-                      ],
-                    ),
-                  ),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 20,
@@ -249,7 +234,13 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                         if (uservip.vip < currentpage + 1)
                           ShadedContainer(
                             ontap: () {
-                              print(pagecontroller.page);
+                              confirmDialog(
+                                  context,
+                                  (currentpage + 1),
+                                  prices[currentpage].updatecost,
+                                  uservip.vipRenew,
+                                  prices[currentpage].promotion,
+                                  _wallet);
                             },
                             child: Text("Buy Now"),
                           ),
@@ -285,7 +276,11 @@ class VIP0 extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
             crossAxisCount: 3,
-            children: [],
+            children: [
+              Icon(IconFonts.vipPhoto),
+              Icon(IconFonts.vipVideo),
+              Icon(IconFonts.vipGem),
+            ],
           ),
         ),
         SliverPadding(
@@ -320,7 +315,11 @@ class VIP1 extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
             crossAxisCount: 3,
-            children: [],
+            children: [
+              icontext('Hello', IconFonts.vipPhoto),
+              icontext('Hello', IconFonts.vipVideo),
+              icontext('Hello', IconFonts.vipGem),
+            ],
           ),
         ),
         SliverPadding(
@@ -356,7 +355,9 @@ class VIP2 extends StatelessWidget {
           sliver: SliverGrid.count(
             crossAxisCount: 3,
             children: [
-              postperday("Allow 1 public post per day", Icons.post_add),
+              icontext('Hello', IconFonts.vipPhoto),
+              icontext('Hello', IconFonts.vipVideo),
+              icontext('Hello', IconFonts.vipGem),
             ],
           ),
         ),
@@ -394,8 +395,9 @@ class VIP3 extends StatelessWidget {
             childAspectRatio: 1,
             crossAxisCount: 3,
             children: [
-              postperday(
-                  "Allow 3 public posts per day", Icons.video_call_rounded),
+              icontext('Hello', IconFonts.vipPhoto),
+              icontext('Hello', IconFonts.vipVideo),
+              icontext('Hello', IconFonts.vipGem),
             ],
           ),
         ),
@@ -412,7 +414,7 @@ class VIP3 extends StatelessWidget {
   }
 }
 
-Widget postperday(String text, IconData icon) {
+Widget icontext(String text, IconData icon) {
   return Center(
     child: Column(
       children: [
@@ -451,8 +453,8 @@ Widget postperday(String text, IconData icon) {
   );
 }
 
-Widget itemCard(
-    String image, int viplvl, int cost, int promotion, BuildContext context) {
+Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
+    int viprenew, BuildContext context) {
   return Stack(
     children: [
       CardContainer(
@@ -469,61 +471,110 @@ Widget itemCard(
       Positioned(
         top: 20,
         left: 20,
-        child: Text(
-          "VIP " + viplvl.toString(),
-          style: Theme.of(context).textTheme.headline6,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "VIP " + viplvl.toString(),
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(
+              "Duration " + duration.toString() + " Days",
+              style: Theme.of(context).textTheme.headline6,
+            )
+          ],
         ),
       ),
-      Positioned(
-        bottom: 20,
-        right: 20,
-        child: promotion == 0
-            ? Text(
-                "Price " + cost.toString(),
-                style: Theme.of(context).textTheme.headline6,
-              )
-            : Row(
-                children: [
-                  Text(
-                    "Price ",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Text(
-                    cost.toString(),
-                    style: TextStyle(decoration: TextDecoration.lineThrough),
-                  ),
-                  Text(
-                    promotion.toString(),
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ],
-              ),
-      )
+      viprenew == 0
+          ? Positioned(
+              bottom: 20,
+              right: 20,
+              child: promotion == 0
+                  ? Text(
+                      "Price " + cost.toString(),
+                      style: Theme.of(context).textTheme.headline6,
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          "Price ",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        Text(
+                          cost.toString(),
+                          style:
+                              TextStyle(decoration: TextDecoration.lineThrough),
+                        ),
+                        Text(
+                          promotion.toString(),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ],
+                    ),
+            )
+          : Positioned(
+              bottom: 20,
+              right: 20,
+              child: promotion == 0
+                  ? Text(
+                      "Price " + cost.toString(),
+                      style: Theme.of(context).textTheme.headline6,
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          "Price ",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        Text(
+                          cost.toString(),
+                          style:
+                              TextStyle(decoration: TextDecoration.lineThrough),
+                        ),
+                        Text(
+                          (cost ~/ 2).toString(),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ],
+                    ),
+            ),
     ],
   );
 }
 
-void confirmV1Dialog(BuildContext context) {
+void confirmDialog(BuildContext context, int selectedplan, int price,
+    int halfnew, int promotion, Wallet wallet) {
   showDialog(
       context: context,
       builder: (_) {
         return CustomDialog(
-          title: '${G.current.unverifiedPartnerVip1HalfPrice} \'Vip 1\'',
+          title:
+              '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip $selectedplan\'',
           simpleContent:
-              '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+              'VIP $selectedplan cost ${halfnew == 1 ? price ~/ 2 : (promotion == 0 ? price : promotion)}.${G.current.unverifiedPartnerPlanConfirmContent}',
           cancelContent: G.current.cancel,
           cancelColor: Theme.of(context).accentColor,
           confirmButtonColor: Theme.of(context).accentColor,
           confirmContent: G.current.confirm,
           confirmCallback: () {
-            upgradeVIP(context);
+            upgradeVIP(
+                context, selectedplan, price, halfnew, promotion, wallet);
           },
         );
       });
 }
 
-upgradeVIP(BuildContext context) {
-  MoonBlinkRepository.upgradeVipLevel(3, 1).then((value) async {
+upgradeVIP(BuildContext context, int _selectedPlan, int price, int halfnew,
+    int promotion, Wallet _wallet) {
+  if (_wallet.value <
+      (halfnew == 1 ? price ~/ 2 : (promotion == 0 ? price : promotion))) {
+    Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog(context));
+    showToast(G.current.boostNoEnoughCoins);
+    return;
+  }
+  MoonBlinkRepository.upgradeVipLevel(_selectedPlan, halfnew)
+      .then((value) async {
     try {
       Navigator.pushNamedAndRemoveUntil(
           context, RouteName.main, (route) => false);
