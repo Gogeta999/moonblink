@@ -82,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "burmese" : MessageLookupByLibrary.simpleMessage("缅文"),
     "buttonrestart" : MessageLookupByLibrary.simpleMessage("重新录音"),
     "buttonstartrecord" : MessageLookupByLibrary.simpleMessage("开始"),
+    "buyNow" : MessageLookupByLibrary.simpleMessage("购买"),
     "bySigning" : MessageLookupByLibrary.simpleMessage("当您注册或登录后代表您遵守 "),
     "cancel" : MessageLookupByLibrary.simpleMessage("取消"),
     "cannotblank" : MessageLookupByLibrary.simpleMessage("数据禁止为空"),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:moonblink/global/router_manager.dart';
 
 typedef PageChangedCallback = void Function(double page);
 typedef PageSelectedCallback = void Function(int index);
@@ -60,6 +61,7 @@ class _HorizontalCardPagerState extends State<HorizontalCardPager> {
           onHorizontalDragStart: (details) {
             _isScrolling = true;
           },
+          onLongPress: () => Navigator.of(context).pushNamed(RouteName.vipDemo),
           onTapUp: (details) {
             if (_isScrolling == true) {
               return;

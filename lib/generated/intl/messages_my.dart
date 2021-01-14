@@ -82,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "burmese" : MessageLookupByLibrary.simpleMessage("ဗမာ"),
     "buttonrestart" : MessageLookupByLibrary.simpleMessage("ပြန်စ"),
     "buttonstartrecord" : MessageLookupByLibrary.simpleMessage("Record စတင်"),
+    "buyNow" : MessageLookupByLibrary.simpleMessage("ဝယ်မည်"),
     "bySigning" : MessageLookupByLibrary.simpleMessage("ဆိုင်းအင်လုပ်ခြင်းအားဖြင့် သင်၎င်းစာချုပ်ကို လိုက်နာမည်ဟုယူမှတ်သည်။ "),
     "cancel" : MessageLookupByLibrary.simpleMessage("ပယ်ဖျက်"),
     "cannotblank" : MessageLookupByLibrary.simpleMessage("အလွတ်မရပါ"),

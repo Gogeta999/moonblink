@@ -615,6 +615,16 @@ class G {
     );
   }
 
+  /// `Buy Now`
+  String get buyNow {
+    return Intl.message(
+      'Buy Now',
+      name: 'buyNow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restart`
   String get buttonrestart {
     return Intl.message(

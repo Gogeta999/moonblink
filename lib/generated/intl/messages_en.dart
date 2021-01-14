@@ -82,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "burmese" : MessageLookupByLibrary.simpleMessage("Burmese"),
     "buttonrestart" : MessageLookupByLibrary.simpleMessage("Restart"),
     "buttonstartrecord" : MessageLookupByLibrary.simpleMessage("Start Record"),
+    "buyNow" : MessageLookupByLibrary.simpleMessage("Buy Now"),
     "bySigning" : MessageLookupByLibrary.simpleMessage("By Signing in or up, you agree to "),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
     "cannotblank" : MessageLookupByLibrary.simpleMessage("can\'t be blanked"),

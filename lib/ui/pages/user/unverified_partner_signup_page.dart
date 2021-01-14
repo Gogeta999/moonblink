@@ -47,7 +47,6 @@ class _UnverifiedPartnerSignUpPageState
   String _gender = '';
   Wallet _wallet = Wallet(value: 0);
   List<VIPprice> prices = [];
-  VipData uservip;
 
   ///UI
   var error;
@@ -57,6 +56,7 @@ class _UnverifiedPartnerSignUpPageState
   @override
   void initState() {
     _initData();
+    pagecontroller = PageController(initialPage: 0);
     super.initState();
   }
 
@@ -70,7 +70,7 @@ class _UnverifiedPartnerSignUpPageState
   void _initData() {
     Future.wait([
       _initUserWallet(),
-      _getVIPdata(),
+      // _getVIPdata(),
       _getVippice(),
     ], eagerError: true)
         .then((value) {
@@ -98,16 +98,6 @@ class _UnverifiedPartnerSignUpPageState
       setState(() {
         prices = value;
       });
-    });
-  }
-
-  Future<void> _getVIPdata() async {
-    MoonBlinkRepository.getUserVip().then((value) {
-      setState(() {
-        uservip = value;
-      });
-      pagecontroller =
-          PageController(initialPage: value.vip != 0 ? value.vip - 1 : 0);
     });
   }
 
@@ -196,151 +186,147 @@ class _UnverifiedPartnerSignUpPageState
   @override
   Widget build(BuildContext context) {
     final _textStyle = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppbarWidget(
-        title: Text(G.current.upgradeVipAppBarTitle),
-      ),
-      body: _isPageLoading || uservip == null
-          ? CupertinoActivityIndicator()
-          : NestedScrollView(
-              controller: _scrollController,
-              // shrinkWrap: true,
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverToBoxAdapter(
-                    child: Stack(
-                      children: [
-                        ClipPath(
-                          clipper: OvalBottomBorderClipper(),
-                          child: Container(
-                            height: 150,
-                            color: Theme.of(context).accentColor,
-                            child: Container(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppbarWidget(
+          title: Text(G.current.upgradeVipAppBarTitle),
+        ),
+        body: _isPageLoading || prices.isEmpty
+            ? CupertinoActivityIndicator()
+            : NestedScrollView(
+                controller: _scrollController,
+                // shrinkWrap: true,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverToBoxAdapter(
+                      child: Stack(
+                        children: [
+                          ClipPath(
+                            clipper: OvalBottomBorderClipper(),
+                            child: Container(
+                              height: 150,
+                              color: Theme.of(context).accentColor,
+                              child: Container(),
+                            ),
                           ),
-                        ),
-                        HorizontalCardPager(
-                          initialPage: uservip.vip != 0 ? uservip.vip - 1 : 0,
-                          onPageChanged: (page) {
-                            setState(() {
-                              currentpage = page.toInt();
-                            });
-                            pagecontroller.jumpToPage(
-                              page.round(),
-                            );
-                          },
-                          onSelectedItem: (page) {
-                            if (uservip.vip < currentpage + 1) {
+                          HorizontalCardPager(
+                            initialPage: 0,
+                            onPageChanged: (page) {
+                              setState(() {
+                                currentpage = page.toInt();
+                              });
+                              pagecontroller.jumpToPage(
+                                page.round(),
+                              );
+                            },
+                            onSelectedItem: (page) {
                               confirmVIPDialog(
                                   prices[currentpage].updatecost,
                                   prices[currentpage].promotion,
                                   currentpage + 1);
-                            } else {
-                              showToast("You already bought this");
-                            }
-                          },
-                          items: [
-                            ItemContainer(
-                              child: itemCard(
-                                  'assets/images/vip1.jpg',
-                                  prices[0].vip,
-                                  prices[0].expiretime,
-                                  prices[0].updatecost,
-                                  prices[0].promotion,
-                                  uservip.vipRenew,
-                                  context),
-                            ),
-                            ItemContainer(
-                              child: itemCard(
-                                  'assets/images/vip2.jpg',
-                                  prices[1].vip,
-                                  prices[1].expiretime,
-                                  prices[1].updatecost,
-                                  prices[1].promotion,
-                                  uservip.vipRenew,
-                                  context),
-                            ),
-                            ItemContainer(
-                              child: itemCard(
-                                  'assets/images/vip3.jpg',
-                                  prices[2].vip,
-                                  prices[2].expiretime,
-                                  prices[2].updatecost,
-                                  prices[2].promotion,
-                                  uservip.vipRenew,
-                                  context),
-                            ),
-                          ],
-                        ),
-                      ],
+                            },
+                            items: [
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip1.jpg',
+                                    prices[0].vip,
+                                    prices[0].expiretime,
+                                    prices[0].updatecost,
+                                    prices[0].promotion,
+                                    0,
+                                    context),
+                              ),
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip2.jpg',
+                                    prices[1].vip,
+                                    prices[1].expiretime,
+                                    prices[1].updatecost,
+                                    prices[1].promotion,
+                                    0,
+                                    context),
+                              ),
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip3.jpg',
+                                    prices[2].vip,
+                                    prices[2].expiretime,
+                                    prices[2].updatecost,
+                                    prices[2].promotion,
+                                    0,
+                                    context),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
+                    //to add male female choice for normal user
+                    SliverToBoxAdapter(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ShadedContainer(
+                            selected: _gender.isNotEmpty && _gender == 'Male'
+                                ? true
+                                : false,
+                            ontap: () {
+                              setState(() {
+                                _gender = 'Male';
+                              });
+                            },
+                            child: Text(G.of(context).genderMale),
+                          ),
+                          ShadedContainer(
+                            selected: _gender.isNotEmpty && _gender == 'Female'
+                                ? true
+                                : false,
+                            ontap: () {
+                              setState(() {
+                                _gender = 'Female';
+                              });
+                            },
+                            child: Text(G.of(context).genderFemale),
+                          )
+                        ],
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 20,
+                      ),
+                    )
+                  ];
+                },
+                body: Container(
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: pagecontroller,
+                    children: [
+                      VIP1(),
+                      VIP2(),
+                      VIP3(),
+                    ],
                   ),
-                  //to add male female choice for normal user
-                  SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Male'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Male';
-                            });
-                          },
-                          child: Text(G.of(context).genderMale),
-                        ),
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Female'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Female';
-                            });
-                          },
-                          child: Text(G.of(context).genderFemale),
-                        )
-                      ],
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 20,
-                    ),
-                  )
-                ];
-              },
-              body: Container(
-                child: PageView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: pagecontroller,
-                  children: [
-                    VIP1(),
-                    VIP2(),
-                    VIP3(),
-                  ],
                 ),
               ),
-            ),
-      bottomNavigationBar: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            color: Theme.of(context).bottomAppBarColor,
-            border: Border(top: BorderSide(width: 2, color: Colors.black))),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: _isPageError
-              ? Center(child: Text('$error'))
-              : _isPageLoading || uservip == null
-                  ? CupertinoActivityIndicator()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(G.current.youHave + '${_wallet.value} Coins now',
-                            style: Theme.of(context).textTheme.subtitle1),
-                        if (uservip.vip < currentpage + 1)
+        bottomNavigationBar: Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: Theme.of(context).bottomAppBarColor,
+              border: Border(top: BorderSide(width: 2, color: Colors.black))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: _isPageError
+                ? Center(child: Text('$error'))
+                : _isPageLoading
+                    ? CupertinoActivityIndicator()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(G.current.youHave + '${_wallet.value} Coins',
+                              style: Theme.of(context).textTheme.subtitle1),
                           ShadedContainer(
                             ontap: () {
                               confirmVIPDialog(
@@ -348,10 +334,11 @@ class _UnverifiedPartnerSignUpPageState
                                   prices[currentpage].promotion,
                                   currentpage + 1);
                             },
-                            child: Text("Buy Now"),
+                            child: Text(G.current.buyNow),
                           ),
-                      ],
-                    ),
+                        ],
+                      ),
+          ),
         ),
       ),
     );

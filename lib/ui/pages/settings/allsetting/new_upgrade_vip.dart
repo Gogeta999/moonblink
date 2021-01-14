@@ -242,7 +242,7 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                                   prices[currentpage].promotion,
                                   _wallet);
                             },
-                            child: Text("Buy Now"),
+                            child: Text(G.current.buyNow),
                           ),
                       ],
                     ),
@@ -316,9 +316,11 @@ class VIP1 extends StatelessWidget {
           sliver: SliverGrid.count(
             crossAxisCount: 3,
             children: [
-              icontext('Hello', IconFonts.vipPhoto),
-              icontext('Hello', IconFonts.vipVideo),
-              icontext('Hello', IconFonts.vipGem),
+              icontext('1 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.blue),
+              icontext('No Video', IconFonts.vipVideo, color: Colors.purple),
+              icontext('VIP 1 Icon', IconFonts.vipGem,
+                  color: Color.fromRGBO(169, 113, 66, 5)),
             ],
           ),
         ),
@@ -355,9 +357,12 @@ class VIP2 extends StatelessWidget {
           sliver: SliverGrid.count(
             crossAxisCount: 3,
             children: [
-              icontext('Hello', IconFonts.vipPhoto),
-              icontext('Hello', IconFonts.vipVideo),
-              icontext('Hello', IconFonts.vipGem),
+              icontext('1 Public Post', IconFonts.vipPhoto, color: Colors.blue),
+              icontext('1 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.green),
+              icontext('Enable 360p Video', IconFonts.vipVideo,
+                  color: Colors.purple),
+              icontext('VIP Icon', IconFonts.vipGem, color: Colors.grey[300]),
             ],
           ),
         ),
@@ -395,9 +400,12 @@ class VIP3 extends StatelessWidget {
             childAspectRatio: 1,
             crossAxisCount: 3,
             children: [
-              icontext('Hello', IconFonts.vipPhoto),
-              icontext('Hello', IconFonts.vipVideo),
-              icontext('Hello', IconFonts.vipGem),
+              icontext('3 Public Post', IconFonts.vipPhoto, color: Colors.blue),
+              icontext('3 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.green),
+              icontext('Enable 720p Video', IconFonts.vipVideo,
+                  color: Colors.purple),
+              icontext('VIP Icon', IconFonts.vipGem, color: Colors.yellow[700]),
             ],
           ),
         ),
@@ -414,7 +422,7 @@ class VIP3 extends StatelessWidget {
   }
 }
 
-Widget icontext(String text, IconData icon) {
+Widget icontext(String text, IconData icon, {Color color}) {
   return Center(
     child: Column(
       children: [
@@ -435,7 +443,7 @@ Widget icontext(String text, IconData icon) {
           child: Icon(
             icon,
             size: 35,
-            color: Colors.grey,
+            color: color ?? Colors.grey,
           ),
         ),
         SizedBox(
@@ -477,11 +485,21 @@ Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
           children: [
             Text(
               "VIP " + viplvl.toString(),
-              style: Theme.of(context).textTheme.headline6,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
             ),
             Text(
-              "Duration " + duration.toString() + " Days",
-              style: Theme.of(context).textTheme.headline6,
+              G.current.boostDuration +
+                  ' ' +
+                  duration.toString() +
+                  ' ' +
+                  G.current.boostDays,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
             )
           ],
         ),
@@ -492,23 +510,34 @@ Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
               right: 20,
               child: promotion == 0
                   ? Text(
-                      "Price " + cost.toString(),
-                      style: Theme.of(context).textTheme.headline6,
+                      G.current.boostPrice + " " + cost.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
                     )
                   : Row(
                       children: [
                         Text(
-                          "Price ",
-                          style: Theme.of(context).textTheme.headline6,
+                          G.current.boostPrice + " ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
                         ),
                         Text(
                           cost.toString(),
-                          style:
-                              TextStyle(decoration: TextDecoration.lineThrough),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.lineThrough),
                         ),
                         Text(
                           promotion.toString(),
-                          style: Theme.of(context).textTheme.headline6,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -518,23 +547,34 @@ Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
               right: 20,
               child: promotion == 0
                   ? Text(
-                      "Price " + cost.toString(),
-                      style: Theme.of(context).textTheme.headline6,
+                      G.current.boostPrice + " " + cost.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
                     )
                   : Row(
                       children: [
                         Text(
-                          "Price ",
-                          style: Theme.of(context).textTheme.headline6,
+                          G.current.boostPrice + " ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
                         ),
                         Text(
                           cost.toString(),
-                          style:
-                              TextStyle(decoration: TextDecoration.lineThrough),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.lineThrough),
                         ),
                         Text(
                           (cost ~/ 2).toString(),
-                          style: Theme.of(context).textTheme.headline6,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),

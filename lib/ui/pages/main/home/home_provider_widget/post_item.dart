@@ -235,6 +235,36 @@ class _PostItemWidgetState extends State<PostItemWidget>
     }
   }
 
+  ///VIP
+  Widget gemColor(int vip) {
+    switch (vip) {
+      case 0:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(0, 0, 0, 0),
+        );
+        break;
+      case 1:
+        return Icon(IconFonts.vipGem, color: Color.fromRGBO(169, 113, 66, 5));
+        break;
+      case 2:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(216, 216, 216, 5),
+        );
+        break;
+      case 3:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(225, 215, 0, 5),
+        );
+        break;
+      default:
+        return Container();
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -283,10 +313,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                               .bodyText1),
                                   Padding(
                                       padding: EdgeInsets.only(left: 10),
-                                      child: Icon(
-                                        IconFonts.vipGem,
-                                        size: 15,
-                                      )),
+                                      child: gemColor(widget.posts.vip)),
                                   Padding(
                                       padding: EdgeInsets.only(left: 3),
                                       child: vipText(widget.posts.vip)),
