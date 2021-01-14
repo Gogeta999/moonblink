@@ -91,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
     "chargeForPro" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
-    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
+    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 5% ကောက်လိမ့်မည်*"),
     "chatavailable" : MessageLookupByLibrary.simpleMessage("ကျွန်တော်နင့် ဂိမ်းတူတူဆော့ရန် အားပါသလား။"),
     "chatbook" : MessageLookupByLibrary.simpleMessage("Booking လုပ်နည်း"),
     "chatbuycoin" : MessageLookupByLibrary.simpleMessage("သင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။"),

@@ -77,7 +77,7 @@
     "chargeForNormalPartner": "*We will charge 20% of the price*",
     "chargeForCeleNStreamer": "*We will charge 20% of the price*",
     "chargeForPro": "*We will charge 20% of the price*",
-    "chargeForUnverified": "*We will charge 20% of the price*",
+    "chargeForUnverified": "*We will charge 5% of the price*",
     "china": "Chinese",
     "cancel": "Cancel",
     "currentcoin": "Current coin",

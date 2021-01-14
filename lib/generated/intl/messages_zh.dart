@@ -91,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的20%*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*我们会收取价格的20%*"),
     "chargeForPro" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的20%*"),
-    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的20%*"),
+    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*我们将收取价格的5%*"),
     "chatavailable" : MessageLookupByLibrary.simpleMessage("你有空吗?"),
     "chatbook" : MessageLookupByLibrary.simpleMessage("如何下单？"),
     "chatbuycoin" : MessageLookupByLibrary.simpleMessage("我想和你游玩但金币要从哪里充值?"),

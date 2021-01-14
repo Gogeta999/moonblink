@@ -91,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),
     "chargeForPro" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),
-    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),
+    "chargeForUnverified" : MessageLookupByLibrary.simpleMessage("*We will charge 5% of the price*"),
     "chatavailable" : MessageLookupByLibrary.simpleMessage("Are you available?"),
     "chatbook" : MessageLookupByLibrary.simpleMessage("How to Book"),
     "chatbuycoin" : MessageLookupByLibrary.simpleMessage("I want to play with you, where can I buy coin?"),

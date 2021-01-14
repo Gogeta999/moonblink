@@ -815,10 +815,10 @@ class G {
     );
   }
 
-  /// `*We will charge 20% of the price*`
+  /// `*We will charge 5% of the price*`
   String get chargeForUnverified {
     return Intl.message(
-      '*We will charge 20% of the price*',
+      '*We will charge 5% of the price*',
       name: 'chargeForUnverified',
       desc: '',
       args: [],

@@ -32,6 +32,10 @@ class IconFonts {
   IconFonts._();
   //AliIcon
   static const String fontFamily = 'appIconFonts';
+  //VIP Icon
+  static const IconData vipGem = IconData(0xe62d, fontFamily: fontFamily);
+  static const IconData vipPhoto = IconData(0xe600, fontFamily: fontFamily);
+  static const IconData vipVideo = IconData(0xe60d, fontFamily: fontFamily);
   //Camera Icon
   static const IconData cameraIcon = IconData(0xe657, fontFamily: fontFamily);
   //Noti Icon

@@ -77,7 +77,7 @@
     "chargeForNormalPartner": "*我们会收取价格的20%*",
     "chargeForCeleNStreamer": "*我们将收取价格的20%*",
     "chargeForPro": "*我们将收取价格的20%*",
-    "chargeForUnverified": "*我们将收取价格的20%*",
+    "chargeForUnverified": "*我们将收取价格的5%*",
     "china": "中文",
     "cancel": "取消",
     "currentcoin": "当前金币",
