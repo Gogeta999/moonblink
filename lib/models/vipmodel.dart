@@ -5,14 +5,17 @@ class VIPprice {
   final int followerpost;
   final int publicpost;
   final int expiretime;
+  final int promotion;
 
-  VIPprice(
-      {this.vip,
-      this.updatecost,
-      this.postupload,
-      this.followerpost,
-      this.publicpost,
-      this.expiretime});
+  VIPprice({
+    this.vip,
+    this.updatecost,
+    this.postupload,
+    this.followerpost,
+    this.publicpost,
+    this.expiretime,
+    this.promotion,
+  });
 
   VIPprice.fromJson(Map<String, dynamic> json)
       : vip = json['vip'],
@@ -20,5 +23,6 @@ class VIPprice {
         postupload = json['post_upload'],
         followerpost = json['only_follower_post'],
         publicpost = json['public_post'],
-        expiretime = json['expire_at'];
+        expiretime = json['expire_at'],
+        promotion = json['promotion_price'];
 }

@@ -6,19 +6,21 @@ class VipData {
   final int publicPost;
   final int walletValue;
   final int vipRenew;
+  final String expiredat;
   final int followerCount;
   final int costPerPost;
 
   VipData.fromJson(Map<String, dynamic> json)
-    : vip = json['vip']['vip'],
-      updateCost = json['vip']['update_cost'],
-      postUpload = json['vip']['post_upload'],
-      onlyFollowerPost = json['vip']['only_follower_post'],
-      publicPost = json['vip']['public_post'],
-      walletValue = json['wallet']['value'],
-      vipRenew = json['vip_renew'],
-      followerCount = json['follwer_count'],//typo from server
-      costPerPost = json['cost_per_post'];
+      : vip = json['vip']['vip'],
+        updateCost = json['vip']['update_cost'],
+        postUpload = json['vip']['post_upload'],
+        onlyFollowerPost = json['vip']['only_follower_post'],
+        publicPost = json['vip']['public_post'],
+        walletValue = json['wallet']['value'],
+        vipRenew = json['vip_renew'],
+        expiredat = json['vip']['expire_at'],
+        followerCount = json['follwer_count'], //typo from server
+        costPerPost = json['cost_per_post'];
 }
 
 /*
