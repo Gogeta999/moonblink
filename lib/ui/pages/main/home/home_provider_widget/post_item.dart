@@ -8,6 +8,7 @@ import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -281,7 +282,13 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                               .textTheme
                                               .bodyText1),
                                   Padding(
-                                      padding: EdgeInsets.only(left: 5),
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(
+                                        IconFonts.vipGem,
+                                        size: 15,
+                                      )),
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 3),
                                       child: vipText(widget.posts.vip)),
                                 ],
                               ),

@@ -9,7 +9,8 @@ import 'package:video_trimmer/video_trimmer.dart';
 class TrimmerView extends StatefulWidget {
   final Trimmer _trimmer;
   final int vipLevel;
-  TrimmerView(this._trimmer, this.vipLevel) : assert(vipLevel != null || vipLevel < 2);
+  TrimmerView(this._trimmer, this.vipLevel)
+      : assert(vipLevel != null || vipLevel < 2);
   @override
   _TrimmerViewState createState() => _TrimmerViewState();
 }
@@ -34,7 +35,7 @@ class _TrimmerViewState extends State<TrimmerView> {
       _progressVisibility = true;
     });
     String _value;
-    final bitrate = widget.vipLevel == 3 ? "5M" : "2.5M";
+    final bitrate = widget.vipLevel == 3 ? "5M" : "1M";
     await widget._trimmer
         .saveTrimmedVideo(
       startValue: _startValue,
@@ -117,7 +118,8 @@ class _TrimmerViewState extends State<TrimmerView> {
                   onPressed: () async {
                     if (await _saveSubject.first) return;
                     _saveSubject.add(true);
-                    showToast('This would take about 1 or 3 minutes. Please wait patiently.');
+                    showToast(
+                        'This would take about 1 or 3 minutes. Please wait patiently.');
                     _saveVideo().then((outputPath) {
                       print('OUTPUT PATH: $outputPath');
                       _saveSubject.add(false);

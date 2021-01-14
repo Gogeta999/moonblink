@@ -74,3 +74,6 @@ const IN_GAME = 3; // server site
 const BAN = -9;
 
 enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
+
+const String kEdit = 'Edit';
+const String kDelete = 'Delete';

@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   builder: (context, snapshot) {
                     if (snapshot.data == null) return Container();
                     return Positioned(
-                        top: 60,
+                        top: MediaQuery.of(context).size.height * 0.1,
                         right: 10,
                         left: 10,
                         child: Container(

@@ -11,6 +11,7 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/selected_image_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class PhotoBottomSheet extends StatefulWidget {
@@ -57,6 +58,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   int _currentAlbum = 0;
   bool _hasReachedMax = false;
   bool _isFetching = false;
+  final _selectButtonSubject = BehaviorSubject.seeded(false);
 
   List<AssetPathEntity> _albums = [];
   List<AssetEntity> _photoList = [];
@@ -74,6 +76,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _selectButtonSubject.close();
     super.dispose();
   }
 
@@ -263,16 +266,32 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
                   bottom: 20,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.6,
-                    child: RaisedButton(
-                      onPressed: _choose,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text('${widget.buttonText}',
-                          style: TextStyle(fontSize: 16)),
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      color: Theme.of(context).accentColor,
-                    ),
+                    child: StreamBuilder<bool>(
+                        initialData: false,
+                        stream: this._selectButtonSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data) {
+                            return RaisedButton(
+                              onPressed: () {},
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: CupertinoActivityIndicator(),
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              color: Theme.of(context).accentColor,
+                            );
+                          }
+                          return RaisedButton(
+                            onPressed: _choose,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text('${widget.buttonText}',
+                                style: TextStyle(fontSize: 16)),
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            color: Theme.of(context).accentColor,
+                          );
+                        }),
                   ),
                 )
             ],
@@ -356,6 +375,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
   }
 
   _choose() async {
+    _selectButtonSubject.add(true);
     if (widget.requestType == RequestType.image) {
       List<File> compressedImages = [];
       for (int i = 0; i < _selectedIndices.length; ++i) {
@@ -372,20 +392,16 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
             await _compressAndGetFile(croppedImage ?? image, tempFile.path);
         compressedImages.add(compressedImage);
       }
-      if (compressedImages.isNotEmpty) {
-        widget.onPressed(compressedImages);
-
-        ///can improve with Navigator.pop with result.
-        if (widget.popAfterBtnPressed) {
-          Navigator.pop(context);
-        }
-      } else {
-        if (isDev) print('CompressedImages is empty');
-      }
 
       ///can improve with Navigator.pop with result.
       if (widget.popAfterBtnPressed) {
         Navigator.pop(context);
+      }
+      _selectButtonSubject.add(false);
+      if (compressedImages.isNotEmpty) {
+        widget.onPressed(compressedImages);
+      } else {
+        if (isDev) print('CompressedImages is empty');
       }
     } else if (widget.requestType == RequestType.video &&
         widget.vipLevel != null) {
@@ -397,6 +413,7 @@ class _PhotoBottomSheetState extends State<PhotoBottomSheet> {
             .push(MaterialPageRoute(builder: (context) {
           return TrimmerView(_trimmer, widget.vipLevel);
         }));
+        _selectButtonSubject.add(false);
         if (widget.popAfterBtnPressed) {
           Navigator.pop(context);
         }

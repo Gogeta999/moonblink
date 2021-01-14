@@ -730,6 +730,20 @@ class MoonBlinkRepository {
     return response.data;
   }
 
+  static Future deleteComment(int postId, int commentId) async {
+    final response = await DioUtils()
+        .delete("moonblink/api/v1/social/post/$postId/comment/$commentId");
+    return response.data;
+  }
+
+  static Future updateComment(
+      int postId, int commentId, String newComment) async {
+    final response = await DioUtils().patch(
+        "moonblink/api/v1/social/post/$postId/comment/$commentId",
+        queryParameters: {'message': newComment});
+    return response.data;
+  }
+
   static Future<List<NFComment>> getNfPostComments(
       int postId, int limit, int page) async {
     final response = await DioUtils().get(
