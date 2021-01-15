@@ -30,8 +30,11 @@ class NewFeedPage extends StatefulWidget {
   _NewFeedPageState createState() => _NewFeedPageState();
 }
 
-class _NewFeedPageState extends State<NewFeedPage> {
+class _NewFeedPageState extends State<NewFeedPage>
+    with AutomaticKeepAliveClientMixin {
   NFBloc _bloc;
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -54,16 +57,13 @@ class _NewFeedPageState extends State<NewFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
       appBar: AppbarWidget(
-        leadingText: G.current.follow,
-        leadingCallback: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => ContactsPage()));
-        },
+        showBack: false,
       ),
       body: SafeArea(
         child: RefreshIndicator(
