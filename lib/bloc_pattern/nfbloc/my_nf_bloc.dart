@@ -24,9 +24,10 @@ class MyNFBloc {
 
   final myNfPostsSubject = BehaviorSubject<List<NFPost>>.seeded(null);
 
-  final limit = 10;
+  final limit = 20;
   int nextPage = 1;
   bool hasReachedMax = false;
+  bool isFetching = false;
 
   void dispose() {
     _debounce?.cancel();
@@ -66,14 +67,16 @@ class MyNFBloc {
 
   void refreshData() {
     nextPage = 1;
+    isFetching = false;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
       myNfPostsSubject.add(null);
       Future.delayed(Duration(milliseconds: 50), () {
         myNfPostsSubject.add(value);
-        refreshCompleter?.complete();
-        refreshCompleter = Completer<void>();
-        hasReachedMax = value.length < limit;
       });
+      refreshCompleter?.complete();
+      refreshCompleter = Completer<void>();
+      hasReachedMax = value.length < limit;
+      nextPage++;
     }, onError: (e) {
       myNfPostsSubject.addError(e);
       refreshCompleter?.completeError(e);
@@ -91,15 +94,17 @@ class MyNFBloc {
   }
 
   void fetchMoreData() {
-    if (hasReachedMax) return;
+    if (hasReachedMax || isFetching) return;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
       myNfPostsSubject.first.then((prev) {
         myNfPostsSubject.add(prev + value);
       });
       nextPage++;
       hasReachedMax = value.length < limit;
+      isFetching = false;
     }, onError: (e) {
       hasReachedMax = true;
+      isFetching = false;
     });
   }
 

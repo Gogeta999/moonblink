@@ -454,7 +454,6 @@ class _PostMediaItemState extends State<PostMediaItem> {
     _maxHeightSubject.close();
     _pageChildrenSubject.close();
     _currentPageSubject.close();
-    print("Disposing PostMediaItem: ${widget.index}");
     super.dispose();
   }
 

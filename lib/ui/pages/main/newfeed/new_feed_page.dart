@@ -16,7 +16,6 @@ import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
-import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
@@ -248,9 +247,9 @@ class _NFPostItemState extends State<NFPostItem> {
                               },
                               placeholder: (_, __) =>
                                   CupertinoActivityIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
+                              errorWidget: (context, url, error) {
+                                return Icon(Icons.error);
+                              }),
                     ),
                     SizedBox(width: 10),
                     Text(widget.item.name.isEmpty
@@ -448,7 +447,9 @@ class _NFPostItemState extends State<NFPostItem> {
                         );
                       },
                       placeholder: (_, __) => CupertinoActivityIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) {
+                        return Icon(Icons.error);
+                      },
                     ),
                     SizedBox(width: 10),
                     Expanded(
@@ -465,22 +466,24 @@ class _NFPostItemState extends State<NFPostItem> {
                   ],
                 ),
               ),
-            // Container(
-            //   alignment: Alignment.centerLeft,
-            //   margin: const EdgeInsets.symmetric(horizontal: 20),
-            //   child: CupertinoButton(
-            //       padding: EdgeInsets.zero,
-            //       child: (widget.item.lastComment != null &&
-            //     widget.item.lastComment.isNotEmpty &&
-            //     widget.item.lastCommenterName != null &&
-            //     widget.item.lastCommenterName.isNotEmpty &&
-            //     widget.item.lastCommenterProfileImage != null &&
-            //     widget.item.lastCommenterProfileImage.isNotEmpty) ? Text(G.current.feedPageViewMoreComment) : Text('Post comments'),
-            //       onPressed: () {
-            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
-            //             arguments: widget.item.id);
-            //       }),
-            // )
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: (widget.item.lastComment != null &&
+                          widget.item.lastComment.isNotEmpty &&
+                          widget.item.lastCommenterName != null &&
+                          widget.item.lastCommenterName.isNotEmpty &&
+                          widget.item.lastCommenterProfileImage != null &&
+                          widget.item.lastCommenterProfileImage.isNotEmpty)
+                      ? Text(G.current.feedPageViewMoreComment)
+                      : Text('Post comments'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RouteName.nfCommentPage,
+                        arguments: widget.item.id);
+                  }),
+            )
           ],
         ),
       ),
@@ -601,7 +604,6 @@ class _PostMediaItemState extends State<PostMediaItem> {
     _maxHeightSubject.close();
     _pageChildrenSubject.close();
     _currentPageSubject.close();
-    print("Disposing PostMediaItem: ${widget.index}");
     super.dispose();
   }
 

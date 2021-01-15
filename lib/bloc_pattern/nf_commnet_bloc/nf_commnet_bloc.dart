@@ -27,10 +27,10 @@ class NFCommentBloc {
   double scrollThreshold = 400.0;
   Timer _debounce;
 
-  final nfCommentsSubject = BehaviorSubject<List<NFComment>>();
+  final nfCommentsSubject = BehaviorSubject<List<NFComment>>.seeded(null);
   final postButtonSubject = BehaviorSubject.seeded(false);
-  final replyingSubject = BehaviorSubject<Map<String, dynamic>>();
-  final editingSubject = BehaviorSubject<int>();
+  final replyingSubject = BehaviorSubject<Map<String, dynamic>>.seeded(null);
+  final editingSubject = BehaviorSubject<int>.seeded(null);
 
   final limit = 10;
   int nextPage = 1;
@@ -117,11 +117,12 @@ class NFCommentBloc {
 
   void postComment(BuildContext context) async {
     final message = commentController.text.trim();
-    if (message == null || message.isEmpty) return;
+    //if (message == null || message.isEmpty) return;
     final commentId = await editingSubject.first;
     if (commentId != null) {
       postButtonSubject.add(true);
-      MoonBlinkRepository.updateComment(postId, commentId, message).then((value) async {
+      MoonBlinkRepository.updateComment(postId, commentId, message).then(
+          (value) async {
         final currentPage = nextPage;
         nextPage = 1;
         List<NFComment> comments = [];
@@ -156,7 +157,7 @@ class NFCommentBloc {
         final currentPage = nextPage;
         nextPage = 1;
         List<NFComment> comments = [];
-        while (nextPage < currentPage) {
+        if (currentPage == 1) {
           try {
             final lastComments = await MoonBlinkRepository.getNfPostComments(
                 postId, limit, nextPage);
@@ -167,6 +168,20 @@ class NFCommentBloc {
             nfCommentsSubject.addError(e);
             postButtonSubject.add(false);
             return;
+          }
+        } else {
+          while (nextPage < currentPage) {
+            try {
+              final lastComments = await MoonBlinkRepository.getNfPostComments(
+                  postId, limit, nextPage);
+              comments.addAll(lastComments);
+              nextPage++;
+              hasReachedMax = lastComments.length < limit;
+            } catch (e) {
+              nfCommentsSubject.addError(e);
+              postButtonSubject.add(false);
+              return;
+            }
           }
         }
         nfCommentsSubject.add(comments);
