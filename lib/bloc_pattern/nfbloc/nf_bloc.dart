@@ -76,13 +76,13 @@ class NFBloc {
     isFetching = false;
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
       nfPostsSubject.add(null);
-      Future.delayed(Duration(milliseconds: 50), () {
-        nfPostsSubject.add(value);
-      });
       refreshCompleter?.complete();
       refreshCompleter = Completer<void>();
       hasReachedMax = value.length < limit;
       nextPage++;
+      Future.delayed(Duration(milliseconds: 50), () {
+        nfPostsSubject.add(value);
+      });
     }, onError: (e) {
       nfPostsSubject.addError(e);
       refreshCompleter?.completeError(e);
@@ -97,10 +97,10 @@ class NFBloc {
     //     .then((value) => nfPostsSubject.add(value));
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) async {
       nfPostsSubject.add(null);
-      await Future.delayed(Duration(milliseconds: 50));
-      nfPostsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
+      await Future.delayed(Duration(milliseconds: 50));
+      nfPostsSubject.add(value);
     }, onError: (e) => nfPostsSubject.addError(e));
   }
 
@@ -109,15 +109,16 @@ class NFBloc {
     isFetching = true;
     if (isDev) print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
-      nfPostsSubject.first.then((prev) {
-        nfPostsSubject.add(prev + value);
-      });
       nextPage++;
       hasReachedMax = value.length < limit;
       isFetching = false;
+      nfPostsSubject.first.then((prev) {
+        nfPostsSubject.add(prev + value);
+      });
     }, onError: (e) {
       hasReachedMax = true;
       isFetching = false;
+      nfPostsSubject.first.then((value) => nfPostsSubject.add(value));
     });
   }
 

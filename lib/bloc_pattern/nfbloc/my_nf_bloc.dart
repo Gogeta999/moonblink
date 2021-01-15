@@ -70,13 +70,13 @@ class MyNFBloc {
     isFetching = false;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
       myNfPostsSubject.add(null);
-      Future.delayed(Duration(milliseconds: 50), () {
-        myNfPostsSubject.add(value);
-      });
       refreshCompleter?.complete();
       refreshCompleter = Completer<void>();
       hasReachedMax = value.length < limit;
       nextPage++;
+      Future.delayed(Duration(milliseconds: 50), () {
+        myNfPostsSubject.add(value);
+      });
     }, onError: (e) {
       myNfPostsSubject.addError(e);
       refreshCompleter?.completeError(e);
@@ -87,24 +87,27 @@ class MyNFBloc {
   void fetchInitialData() {
     nextPage = 1;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
-      myNfPostsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
+      myNfPostsSubject.add(value);
     }, onError: (e) => myNfPostsSubject.addError(e));
   }
 
   void fetchMoreData() {
     if (hasReachedMax || isFetching) return;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
-      myNfPostsSubject.first.then((prev) {
-        myNfPostsSubject.add(prev + value);
-      });
       nextPage++;
       hasReachedMax = value.length < limit;
       isFetching = false;
+      myNfPostsSubject.first.then((prev) {
+        myNfPostsSubject.add(prev + value);
+      });
     }, onError: (e) {
       hasReachedMax = true;
       isFetching = false;
+      myNfPostsSubject.first.then((value) {
+        myNfPostsSubject.add(value);
+      });
     });
   }
 
