@@ -63,7 +63,8 @@ class _NewFeedPageState extends State<NewFeedPage>
           ? Colors.grey[200]
           : null,
       appBar: AppbarWidget(
-        showBack: false,
+        leadingText: G.current.tabHome,
+        leadingCallback: () {},
       ),
       body: SafeArea(
         child: RefreshIndicator(
