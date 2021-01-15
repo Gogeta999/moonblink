@@ -885,6 +885,16 @@ class G {
     );
   }
 
+  /// `Duration`
+  String get duration {
+    return Intl.message(
+      'Duration',
+      name: 'duration',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add Photos`
   String get feedCreatePageAddPhotos {
     return Intl.message(
@@ -3820,6 +3830,66 @@ class G {
     return Intl.message(
       'VIP 3 will be displayed at the top',
       name: 'vipDemo3Body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appear Layer`
+  String get vipIconAppearText {
+    return Intl.message(
+      'Appear Layer',
+      name: 'vipIconAppearText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable 480p Video`
+  String get vipIconEnable480p {
+    return Intl.message(
+      'Enable 480p Video',
+      name: 'vipIconEnable480p',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable 720p Video`
+  String get vipIconEnable720p {
+    return Intl.message(
+      'Enable 720p Video',
+      name: 'vipIconEnable720p',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Followers Post`
+  String get vipIconFollowerText {
+    return Intl.message(
+      'Followers Post',
+      name: 'vipIconFollowerText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Public Post`
+  String get vipIconPublicText {
+    return Intl.message(
+      'Public Post',
+      name: 'vipIconPublicText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Icon`
+  String get vipIconText {
+    return Intl.message(
+      'Icon',
+      name: 'vipIconText',
       desc: '',
       args: [],
     );

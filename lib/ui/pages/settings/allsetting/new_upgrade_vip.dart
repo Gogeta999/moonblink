@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/cardContainer.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
@@ -314,12 +315,19 @@ class VIP1 extends StatelessWidget {
         SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
+            childAspectRatio: 0.85,
             crossAxisCount: 3,
             children: [
-              icontext('1 Followers Post', IconFonts.vipPhoto,
+              icontext('1 ' + G.current.vipIconPublicText, IconFonts.vipPhoto,
+                  color: Colors.green),
+              icontext('1 ' + G.current.vipIconFollowerText, IconFonts.vipPhoto,
                   color: Colors.blue),
-              icontext('No Video', IconFonts.vipVideo, color: Colors.purple),
-              icontext('VIP 1 Icon', IconFonts.vipGem,
+              icontext(
+                  G.current.vipIconAppearText, FontAwesomeIcons.userAstronaut,
+                  color: Colors.black,
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(RouteName.vipDemo)),
+              icontext('VIP 1 ' + G.current.vipIconText, IconFonts.vipGem,
                   color: Color.fromRGBO(169, 113, 66, 5)),
             ],
           ),
@@ -355,14 +363,22 @@ class VIP2 extends StatelessWidget {
         SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
+            childAspectRatio: 0.85,
             crossAxisCount: 3,
             children: [
-              icontext('1 Public Post', IconFonts.vipPhoto, color: Colors.blue),
-              icontext('1 Followers Post', IconFonts.vipPhoto,
+              icontext('1 ' + G.current.vipIconPublicText, IconFonts.vipPhoto,
                   color: Colors.green),
-              icontext('Enable 360p Video', IconFonts.vipVideo,
+              icontext('1 ' + G.current.vipIconFollowerText, IconFonts.vipPhoto,
+                  color: Colors.blue),
+              icontext(G.current.vipIconEnable480p, IconFonts.vipVideo,
                   color: Colors.purple),
-              icontext('VIP Icon', IconFonts.vipGem, color: Colors.grey[300]),
+              icontext(
+                  G.current.vipIconAppearText, FontAwesomeIcons.userAstronaut,
+                  color: Colors.black,
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(RouteName.vipDemo)),
+              icontext('VIP 2 ' + G.current.vipIconText, IconFonts.vipGem,
+                  color: Colors.grey[300]),
             ],
           ),
         ),
@@ -397,15 +413,22 @@ class VIP3 extends StatelessWidget {
         SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
-            childAspectRatio: 1,
+            childAspectRatio: 0.85,
             crossAxisCount: 3,
             children: [
-              icontext('3 Public Post', IconFonts.vipPhoto, color: Colors.blue),
-              icontext('3 Followers Post', IconFonts.vipPhoto,
+              icontext('3 ' + G.current.vipIconPublicText, IconFonts.vipPhoto,
                   color: Colors.green),
-              icontext('Enable 720p Video', IconFonts.vipVideo,
+              icontext('3 ' + G.current.vipIconFollowerText, IconFonts.vipPhoto,
+                  color: Colors.blue),
+              icontext(G.current.vipIconEnable720p, IconFonts.vipVideo,
                   color: Colors.purple),
-              icontext('VIP Icon', IconFonts.vipGem, color: Colors.yellow[700]),
+              icontext(
+                  G.current.vipIconAppearText, FontAwesomeIcons.userAstronaut,
+                  color: Colors.black,
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(RouteName.vipDemo)),
+              icontext('VIP 3 ' + G.current.vipIconText, IconFonts.vipGem,
+                  color: Colors.yellow[700]),
             ],
           ),
         ),
@@ -422,41 +445,44 @@ class VIP3 extends StatelessWidget {
   }
 }
 
-Widget icontext(String text, IconData icon, {Color color}) {
-  return Center(
-    child: Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                // spreadRadius: 2,
-                blurRadius: 4,
-                offset: Offset(-2, 3), // changes position of shadow
-              ),
-            ],
+Widget icontext(String text, IconData icon, {Color color, Function onTap}) {
+  return InkWell(
+    onTap: onTap,
+    child: Center(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  // spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: Offset(-2, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              size: 35,
+              color: color ?? Colors.grey,
+            ),
           ),
-          child: Icon(
-            icon,
-            size: 35,
-            color: color ?? Colors.grey,
+          SizedBox(
+            height: 5,
           ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          padding: EdgeInsets.zero,
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
+          Container(
+            padding: EdgeInsets.zero,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -491,7 +517,7 @@ Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
                   fontWeight: FontWeight.w500),
             ),
             Text(
-              G.current.boostDuration +
+              G.current.duration +
                   ' ' +
                   duration.toString() +
                   ' ' +
