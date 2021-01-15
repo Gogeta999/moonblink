@@ -6,6 +6,7 @@ import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/contacttemple/contactcontainer.dart';
 import 'package:moonblink/base_widget/container/roundedContainer.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/models/contact.dart';
 import 'package:moonblink/provider/provider_widget.dart';
@@ -150,7 +151,10 @@ class _ContactsPageState extends State<ContactsPage> {
 
     return Scaffold(
       ///[Appbar]
-      appBar: AppbarWidget(),
+      appBar: AppbarWidget(
+        leadingText: G.current.tabFollowing,
+        leadingCallback: () {},
+      ),
       body: ProviderWidget<ContactModel>(
         model: _contactModel,
         onModelReady: (model) => model.initData(),
