@@ -98,7 +98,9 @@ class MyNFBloc {
       });
       nextPage++;
       hasReachedMax = value.length < limit;
-    }, onError: (e) => myNfPostsSubject.addError(e));
+    }, onError: (e) {
+      hasReachedMax = true;
+    });
   }
 
   Future<bool> onTapDeleteIcon(BuildContext context, int index, int postId) {
@@ -123,7 +125,8 @@ class MyNFBloc {
                       this.myNfPostsSubject.first.then((value) {
                         value.removeAt(index);
                         this.myNfPostsSubject.add(null);
-                        Future.delayed(Duration(milliseconds: 50), () => this.myNfPostsSubject.add(value));
+                        Future.delayed(Duration(milliseconds: 50),
+                            () => this.myNfPostsSubject.add(value));
                       });
                     }, onError: (e) {
                       showToast(e.toString());
