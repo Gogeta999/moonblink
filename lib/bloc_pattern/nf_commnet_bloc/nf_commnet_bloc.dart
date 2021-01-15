@@ -27,14 +27,15 @@ class NFCommentBloc {
   double scrollThreshold = 400.0;
   Timer _debounce;
 
-  final nfCommentsSubject = BehaviorSubject<List<NFComment>>();
+  final nfCommentsSubject = BehaviorSubject<List<NFComment>>.seeded(null);
   final postButtonSubject = BehaviorSubject.seeded(false);
-  final replyingSubject = BehaviorSubject<Map<String, dynamic>>();
-  final editingSubject = BehaviorSubject<int>();
+  final replyingSubject = BehaviorSubject<Map<String, dynamic>>.seeded(null);
+  final editingSubject = BehaviorSubject<int>.seeded(null);
 
   final limit = 10;
   int nextPage = 1;
   bool hasReachedMax = false;
+  bool isFetching = false;
 
   void dispose() {
     _debounce?.cancel();
@@ -77,14 +78,17 @@ class NFCommentBloc {
 
   void refreshData() {
     nextPage = 1;
+    isFetching = false;
+    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
         (value) {
       nfCommentsSubject.add(null);
+      refreshCompleter?.complete();
+      refreshCompleter = Completer<void>();
+      hasReachedMax = value.length < limit;
+      nextPage++;
       Future.delayed(Duration(milliseconds: 50), () {
         nfCommentsSubject.add(value);
-        refreshCompleter?.complete();
-        refreshCompleter = Completer<void>();
-        hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       nfCommentsSubject.addError(e);
@@ -95,37 +99,46 @@ class NFCommentBloc {
 
   void fetchInitialData() {
     nextPage = 1;
+    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
         (value) {
-      nfCommentsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
+      nfCommentsSubject.add(value);
     }, onError: (e) => nfCommentsSubject.addError(e));
   }
 
   void fetchMoreData() {
-    if (hasReachedMax) return;
+    if (hasReachedMax || isFetching) return;
+    isFetching = true;
+    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
         (value) {
+      isFetching = false;
+      nextPage++;
+      hasReachedMax = value.length < limit;
       nfCommentsSubject.first.then((prev) {
         nfCommentsSubject.add(prev + value);
       });
-      nextPage++;
-      hasReachedMax = value.length < limit;
-    }, onError: (e) => nfCommentsSubject.addError(e));
+    }, onError: (e) {
+      isFetching = false;
+      hasReachedMax = true;
+      nfCommentsSubject.first.then((value) => nfCommentsSubject.add(value));
+    });
   }
 
   void postComment(BuildContext context) async {
     final message = commentController.text.trim();
-    if (message == null || message.isEmpty) return;
+    //if (message == null || message.isEmpty) return;
     final commentId = await editingSubject.first;
     if (commentId != null) {
       postButtonSubject.add(true);
-      MoonBlinkRepository.updateComment(postId, commentId, message).then((value) async {
+      MoonBlinkRepository.updateComment(postId, commentId, message).then(
+          (value) async {
         final currentPage = nextPage;
         nextPage = 1;
         List<NFComment> comments = [];
-        while (nextPage < currentPage) {
+        if (currentPage == 1) {
           try {
             final lastComments = await MoonBlinkRepository.getNfPostComments(
                 postId, limit, nextPage);
@@ -133,9 +146,25 @@ class NFCommentBloc {
             nextPage++;
             hasReachedMax = lastComments.length < limit;
           } catch (e) {
-            nfCommentsSubject.addError(e);
+            hasReachedMax = true;
+            //nfCommentsSubject.addError(e);
             postButtonSubject.add(false);
-            return;
+            //return;
+          }
+        } else {
+          while (nextPage < currentPage) {
+            try {
+              final lastComments = await MoonBlinkRepository.getNfPostComments(
+                  postId, limit, nextPage);
+              comments.addAll(lastComments);
+              nextPage++;
+              hasReachedMax = lastComments.length < limit;
+            } catch (e) {
+              hasReachedMax = true;
+              //nfCommentsSubject.addError(e);
+              postButtonSubject.add(false);
+              //return;
+            }
           }
         }
         nfCommentsSubject.add(comments);
@@ -156,7 +185,7 @@ class NFCommentBloc {
         final currentPage = nextPage;
         nextPage = 1;
         List<NFComment> comments = [];
-        while (nextPage < currentPage) {
+        if (currentPage == 1) {
           try {
             final lastComments = await MoonBlinkRepository.getNfPostComments(
                 postId, limit, nextPage);
@@ -164,9 +193,27 @@ class NFCommentBloc {
             nextPage++;
             hasReachedMax = lastComments.length < limit;
           } catch (e) {
-            nfCommentsSubject.addError(e);
+            hasReachedMax = true;
+            nextPage++;
+            //nfCommentsSubject.addError(e);
             postButtonSubject.add(false);
-            return;
+            //return;
+          }
+        } else {
+          while (nextPage < currentPage) {
+            try {
+              final lastComments = await MoonBlinkRepository.getNfPostComments(
+                  postId, limit, nextPage);
+              comments.addAll(lastComments);
+              nextPage++;
+              hasReachedMax = lastComments.length < limit;
+            } catch (e) {
+              hasReachedMax = true;
+              nextPage++;
+              //nfCommentsSubject.addError(e);
+              postButtonSubject.add(false);
+              //return;
+            }
           }
         }
         nfCommentsSubject.add(comments);
@@ -233,7 +280,7 @@ class NFCommentBloc {
                       final currentPage = nextPage;
                       nextPage = 1;
                       List<NFComment> comments = [];
-                      while (nextPage < currentPage) {
+                      if (currentPage == 1) {
                         try {
                           final lastComments =
                               await MoonBlinkRepository.getNfPostComments(
@@ -242,9 +289,28 @@ class NFCommentBloc {
                           nextPage++;
                           hasReachedMax = lastComments.length < limit;
                         } catch (e) {
-                          nfCommentsSubject.addError(e);
+                          hasReachedMax = true;
+                          nextPage++;
+                          //nfCommentsSubject.addError(e);
                           postButtonSubject.add(false);
-                          return;
+                          //return;
+                        }
+                      } else {
+                        while (nextPage < currentPage) {
+                          try {
+                            final lastComments =
+                                await MoonBlinkRepository.getNfPostComments(
+                                    postId, limit, nextPage);
+                            comments.addAll(lastComments);
+                            nextPage++;
+                            hasReachedMax = lastComments.length < limit;
+                          } catch (e) {
+                            hasReachedMax = true;
+                            nextPage++;
+                            //nfCommentsSubject.addError(e);
+                            postButtonSubject.add(false);
+                            //return;
+                          }
                         }
                       }
                       nfCommentsSubject.add(comments);
