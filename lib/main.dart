@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   builder: (context, snapshot) {
                     if (snapshot.data == null) return Container();
                     return Positioned(
-                        top: MediaQuery.of(context).size.height * 0.1,
+                        top: 60,
                         right: 10,
                         left: 10,
                         child: Container(
@@ -154,11 +154,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('Uploading on progress...'),
                                   GestureDetector(
-                                      child: Text('Cancel upload', style: TextStyle(color: Theme.of(context).accentColor)),
+                                      child: Text('Cancel upload',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .accentColor)),
                                       onTap: () {
                                         cancelTokenForCreatePost.first
                                             .then((value) {

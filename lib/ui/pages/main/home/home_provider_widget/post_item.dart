@@ -8,6 +8,7 @@ import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/home/bloc/home_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -234,6 +235,36 @@ class _PostItemWidgetState extends State<PostItemWidget>
     }
   }
 
+  ///VIP
+  Widget gemColor(int vip) {
+    switch (vip) {
+      case 0:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(0, 0, 0, 0),
+        );
+        break;
+      case 1:
+        return Icon(IconFonts.vipGem, color: Color.fromRGBO(169, 113, 66, 5));
+        break;
+      case 2:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(216, 216, 216, 5),
+        );
+        break;
+      case 3:
+        return Icon(
+          IconFonts.vipGem,
+          color: Color.fromRGBO(225, 215, 0, 5),
+        );
+        break;
+      default:
+        return Container();
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -281,7 +312,10 @@ class _PostItemWidgetState extends State<PostItemWidget>
                                               .textTheme
                                               .bodyText1),
                                   Padding(
-                                      padding: EdgeInsets.only(left: 5),
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: gemColor(widget.posts.vip)),
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 3),
                                       child: vipText(widget.posts.vip)),
                                 ],
                               ),

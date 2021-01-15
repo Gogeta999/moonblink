@@ -17,6 +17,7 @@ import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/new_upgrade_vip.dart';
 // import 'package:moonblink/ui/pages/settings/allsetting/new_upgrade_vip.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
@@ -142,8 +143,7 @@ class MoonGoRouter {
       case RouteName.otp:
         return CupertinoPageRoute(builder: (_) => OtpPage());
       case RouteName.upgradeVip:
-        return CupertinoPageRoute(
-            builder: (_) => UpgradeVipPage(data: settings.arguments));
+        return CupertinoPageRoute(builder: (_) => UpgradeVIP());
       case RouteName.type5otp:
         return CupertinoPageRoute(builder: (_) => Type5PartnerOtpPage());
       case RouteName.login:

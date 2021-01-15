@@ -30,8 +30,11 @@ class NewFeedPage extends StatefulWidget {
   _NewFeedPageState createState() => _NewFeedPageState();
 }
 
-class _NewFeedPageState extends State<NewFeedPage> {
+class _NewFeedPageState extends State<NewFeedPage>
+    with AutomaticKeepAliveClientMixin {
   NFBloc _bloc;
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -54,16 +57,13 @@ class _NewFeedPageState extends State<NewFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Colors.grey[200]
           : null,
       appBar: AppbarWidget(
-        leadingText: G.current.follow,
-        leadingCallback: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => ContactsPage()));
-        },
+        showBack: false,
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -435,11 +435,11 @@ class _NFPostItemState extends State<NFPostItem> {
                 widget.item.lastCommenterProfileImage != null &&
                 widget.item.lastCommenterProfileImage.isNotEmpty)
               Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-            children: [
-              CachedNetworkImage(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    CachedNetworkImage(
                       fit: BoxFit.fill,
                       imageUrl: widget.item.lastCommenterProfileImage,
                       imageBuilder: (context, provider) {
@@ -450,36 +450,37 @@ class _NFPostItemState extends State<NFPostItem> {
                       placeholder: (_, __) => CupertinoActivityIndicator(),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
-              SizedBox(width: 10),
-              Expanded(
-                  child: RichText(
-                text: TextSpan(
-                    text: widget.item.lastCommenterName,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: '  ${widget.item.lastComment}',
-                          style: Theme.of(context).textTheme.bodyText1),
-                    ]),
-              ))
-            ],
-          ),),
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: (widget.item.lastComment != null &&
-                widget.item.lastComment.isNotEmpty &&
-                widget.item.lastCommenterName != null &&
-                widget.item.lastCommenterName.isNotEmpty &&
-                widget.item.lastCommenterProfileImage != null &&
-                widget.item.lastCommenterProfileImage.isNotEmpty) ? Text(G.current.feedPageViewMoreComment) : Text('Post comments'),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RouteName.nfCommentPage,
-                        arguments: widget.item.id);
-                  }),
-            )
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: RichText(
+                      text: TextSpan(
+                          text: widget.item.lastCommenterName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '  ${widget.item.lastComment}',
+                                style: Theme.of(context).textTheme.bodyText1),
+                          ]),
+                    ))
+                  ],
+                ),
+              ),
+            // Container(
+            //   alignment: Alignment.centerLeft,
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   child: CupertinoButton(
+            //       padding: EdgeInsets.zero,
+            //       child: (widget.item.lastComment != null &&
+            //     widget.item.lastComment.isNotEmpty &&
+            //     widget.item.lastCommenterName != null &&
+            //     widget.item.lastCommenterName.isNotEmpty &&
+            //     widget.item.lastCommenterProfileImage != null &&
+            //     widget.item.lastCommenterProfileImage.isNotEmpty) ? Text(G.current.feedPageViewMoreComment) : Text('Post comments'),
+            //       onPressed: () {
+            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
+            //             arguments: widget.item.id);
+            //       }),
+            // )
           ],
         ),
       ),

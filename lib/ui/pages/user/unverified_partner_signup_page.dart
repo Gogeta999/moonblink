@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,16 +9,20 @@ import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
+import 'package:moonblink/base_widget/horizontalPager.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/vip_data.dart';
+import 'package:moonblink/models/vipmodel.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/locator.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/services/web_socket_service.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/new_upgrade_vip.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -34,11 +39,14 @@ class _UnverifiedPartnerSignUpPageState
   UserModel userModel;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
   final FacebookLogin _facebookLogin = FacebookLogin();
+  PageController pagecontroller = PageController();
+  ScrollController _scrollController = new ScrollController();
+  int currentpage = 0;
 
   ///Remote Data
   String _gender = '';
-  int _selectedPlan = 0;
   Wallet _wallet = Wallet(value: 0);
+  List<VIPprice> prices = [];
 
   ///UI
   var error;
@@ -48,6 +56,7 @@ class _UnverifiedPartnerSignUpPageState
   @override
   void initState() {
     _initData();
+    pagecontroller = PageController(initialPage: 0);
     super.initState();
   }
 
@@ -59,7 +68,12 @@ class _UnverifiedPartnerSignUpPageState
   }
 
   void _initData() {
-    Future.wait([_initUserWallet()], eagerError: true).then((value) {
+    Future.wait([
+      _initUserWallet(),
+      // _getVIPdata(),
+      _getVippice(),
+    ], eagerError: true)
+        .then((value) {
       setState(() {
         _isPageLoading = false;
       });
@@ -79,27 +93,15 @@ class _UnverifiedPartnerSignUpPageState
     });
   }
 
-  void confirmV1Dialog() {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return CustomDialog(
-            title:
-                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
-            simpleContent:
-                '${G.current.unverifiedPartnerVip1Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
-            cancelContent: G.current.cancel,
-            cancelColor: Theme.of(context).accentColor,
-            confirmButtonColor: Theme.of(context).accentColor,
-            confirmContent: G.current.confirm,
-            confirmCallback: () {
-              _onTapConfirm();
-            },
-          );
-        });
+  Future<void> _getVippice() async {
+    MoonBlinkRepository.getVIPList().then((value) {
+      setState(() {
+        prices = value;
+      });
+    });
   }
 
-  void confirmV2Dialog() {
+  void confirmVIPDialog(int cost, int promotion, int _selectedPlan) {
     showDialog(
         context: context,
         builder: (_) {
@@ -107,33 +109,13 @@ class _UnverifiedPartnerSignUpPageState
             title:
                 '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
             simpleContent:
-                '${G.current.unverifiedPartnerVip2Price}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+                'VIP $_selectedPlan cost ${promotion == 0 ? cost : promotion}. ${G.current.unverifiedPartnerPlanConfirmContent}',
             cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,
             confirmContent: G.current.confirm,
             confirmCallback: () {
-              _onTapConfirm();
-            },
-          );
-        });
-  }
-
-  void confirmV3Dialog() {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return CustomDialog(
-            title:
-                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
-            simpleContent:
-                '${G.current.unverifiedPartnerVip3Price}.  ${G.current.unverifiedPartnerPlanConfirmContent}',
-            cancelContent: G.current.cancel,
-            cancelColor: Theme.of(context).accentColor,
-            confirmButtonColor: Theme.of(context).accentColor,
-            confirmContent: G.current.confirm,
-            confirmCallback: () {
-              _onTapConfirm();
+              _onTapConfirm(cost, promotion, _selectedPlan);
             },
           );
         });
@@ -157,22 +139,12 @@ class _UnverifiedPartnerSignUpPageState
         });
   }
 
-  _onTapConfirm() {
+  _onTapConfirm(int cost, int promotion, int _selectedPlan) {
     if (_gender == '') {
       showToast('Gender ${G.of(context).cannotblank}');
       return;
     }
-    if (_selectedPlan == 3 && _wallet.value < 800) {
-      Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
-      showToast(G.current.boostNoEnoughCoins);
-      return;
-    }
-    if (_selectedPlan == 2 && _wallet.value < 500) {
-      Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
-      showToast(G.current.boostNoEnoughCoins);
-      return;
-    }
-    if (_selectedPlan == 1 && _wallet.value < 300) {
+    if (promotion == 0 ? _wallet.value < cost : _wallet.value < promotion) {
       Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog());
       showToast(G.current.boostNoEnoughCoins);
       return;
@@ -217,160 +189,157 @@ class _UnverifiedPartnerSignUpPageState
     return SafeArea(
       child: Scaffold(
         appBar: AppbarWidget(
-          title: Text(G.current.unverifiedPartnerPlan),
+          title: Text(G.current.upgradeVipAppBarTitle),
         ),
-        backgroundColor: Colors.grey[200],
-        body: CustomScrollView(
-          physics: ClampingScrollPhysics(),
-          slivers: <Widget>[
-            SliverList(
-                delegate: SliverChildListDelegate.fixed([
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Male'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Male';
-                            });
-                          },
-                          child: Text(G.of(context).genderMale),
-                        ),
-                        ShadedContainer(
-                          selected: _gender.isNotEmpty && _gender == 'Female'
-                              ? true
-                              : false,
-                          ontap: () {
-                            setState(() {
-                              _gender = 'Female';
-                            });
-                          },
-                          child: Text(G.of(context).genderFemale),
-                        )
-                      ],
+        body: _isPageLoading || prices.isEmpty
+            ? CupertinoActivityIndicator()
+            : NestedScrollView(
+                controller: _scrollController,
+                // shrinkWrap: true,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverToBoxAdapter(
+                      child: Stack(
+                        children: [
+                          ClipPath(
+                            clipper: OvalBottomBorderClipper(),
+                            child: Container(
+                              height: 150,
+                              color: Theme.of(context).accentColor,
+                              child: Container(),
+                            ),
+                          ),
+                          HorizontalCardPager(
+                            initialPage: 0,
+                            onPageChanged: (page) {
+                              setState(() {
+                                currentpage = page.toInt();
+                              });
+                              pagecontroller.jumpToPage(
+                                page.round(),
+                              );
+                            },
+                            onSelectedItem: (page) {
+                              confirmVIPDialog(
+                                  prices[currentpage].updatecost,
+                                  prices[currentpage].promotion,
+                                  currentpage + 1);
+                            },
+                            items: [
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip1.jpg',
+                                    prices[0].vip,
+                                    prices[0].expiretime,
+                                    prices[0].updatecost,
+                                    prices[0].promotion,
+                                    0,
+                                    context),
+                              ),
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip2.jpg',
+                                    prices[1].vip,
+                                    prices[1].expiretime,
+                                    prices[1].updatecost,
+                                    prices[1].promotion,
+                                    0,
+                                    context),
+                              ),
+                              ItemContainer(
+                                child: itemCard(
+                                    'assets/images/vip3.jpg',
+                                    prices[2].vip,
+                                    prices[2].expiretime,
+                                    prices[2].updatecost,
+                                    prices[2].promotion,
+                                    0,
+                                    context),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
+                    //to add male female choice for normal user
+                    SliverToBoxAdapter(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ShadedContainer(
+                            selected: _gender.isNotEmpty && _gender == 'Male'
+                                ? true
+                                : false,
+                            ontap: () {
+                              setState(() {
+                                _gender = 'Male';
+                              });
+                            },
+                            child: Text(G.of(context).genderMale),
+                          ),
+                          ShadedContainer(
+                            selected: _gender.isNotEmpty && _gender == 'Female'
+                                ? true
+                                : false,
+                            ontap: () {
+                              setState(() {
+                                _gender = 'Female';
+                              });
+                            },
+                            child: Text(G.of(context).genderFemale),
+                          )
+                        ],
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 20,
+                      ),
+                    )
+                  ];
+                },
+                body: Container(
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: pagecontroller,
+                    children: [
+                      VIP1(),
+                      VIP2(),
+                      VIP3(),
+                    ],
                   ),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 10, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            G.current.unverifiedPartnerVip1Title,
-                            style: _textStyle.headline5,
-                          ),
-                          subtitle: Text(
-                            G.current.unverifiedPartnerVip1Subtitle,
-                            style: _textStyle.subtitle1,
-                          ),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed(RouteName.vipDemo),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 1;
-                            });
-                            confirmV1Dialog();
-                          },
-                          onLongPress: () => Navigator.of(context)
-                              .pushNamed(RouteName.vipDemo),
-                        ),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            G.current.unverifiedPartnerVip2Title,
-                            style: _textStyle.headline6,
-                          ),
-                          subtitle: Text(
-                              G.current.unverifiedPartnerVip2Subtitle,
-                              style: _textStyle.subtitle1),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed(RouteName.vipDemo),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 2;
-                            });
-                            confirmV2Dialog();
-                          },
-                          onLongPress: () => Navigator.of(context)
-                              .pushNamed(RouteName.vipDemo),
-                        ),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                      child: Card(
-                        child: ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            G.current.unverifiedPartnerVip3Title,
-                            style: _textStyle.headline5,
-                          ),
-                          subtitle: Text(
-                              G.current.unverifiedPartnerVip3Subtitle,
-                              style: _textStyle.subtitle1),
-                          trailing: _isConfirmLoading
-                              ? CupertinoActivityIndicator()
-                              : InkWell(
-                                  child: Icon(FontAwesomeIcons.question),
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed(RouteName.vipDemo),
-                                ),
-                          onTap: () {
-                            setState(() {
-                              _selectedPlan = 3;
-                            });
-                            confirmV3Dialog();
-                          },
-                          onLongPress: () => Navigator.of(context)
-                              .pushNamed(RouteName.vipDemo),
-                        ),
-                      )),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                    child: Text(
-                      G.current.unverifiedPartnerNote,
-                      style: _textStyle.headline6,
-                    ),
-                  )
-                ],
+                ),
               ),
-            ]))
-          ],
-        ),
         bottomNavigationBar: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 28,
-            decoration: BoxDecoration(
-                color: Theme.of(context).bottomAppBarColor,
-                border: Border(top: BorderSide(width: 2, color: Colors.black))),
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: _isPageError
-                    ? Center(child: Text('$error'))
-                    : _isPageLoading
-                        ? CupertinoActivityIndicator()
-                        : Text(G.current.youHave + '${_wallet.value} Coins now',
-                            style: Theme.of(context).textTheme.subtitle1))),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: Theme.of(context).bottomAppBarColor,
+              border: Border(top: BorderSide(width: 2, color: Colors.black))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: _isPageError
+                ? Center(child: Text('$error'))
+                : _isPageLoading
+                    ? CupertinoActivityIndicator()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(G.current.youHave + '${_wallet.value} Coins',
+                              style: Theme.of(context).textTheme.subtitle1),
+                          ShadedContainer(
+                            ontap: () {
+                              confirmVIPDialog(
+                                  prices[currentpage].updatecost,
+                                  prices[currentpage].promotion,
+                                  currentpage + 1);
+                            },
+                            child: Text(G.current.buyNow),
+                          ),
+                        ],
+                      ),
+          ),
+        ),
       ),
     );
   }

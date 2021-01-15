@@ -615,6 +615,16 @@ class G {
     );
   }
 
+  /// `Buy Now`
+  String get buyNow {
+    return Intl.message(
+      'Buy Now',
+      name: 'buyNow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restart`
   String get buttonrestart {
     return Intl.message(
@@ -785,31 +795,41 @@ class G {
     );
   }
 
-  /// `*We will charge 50% of the price*`
+  /// `*We will charge 20% of the price*`
   String get chargeForNormalPartner {
     return Intl.message(
-      '*We will charge 50% of the price*',
+      '*We will charge 20% of the price*',
       name: 'chargeForNormalPartner',
       desc: '',
       args: [],
     );
   }
 
-  /// `*We will charge 30% of the price*`
+  /// `*We will charge 20% of the price*`
   String get chargeForCeleNStreamer {
     return Intl.message(
-      '*We will charge 30% of the price*',
+      '*We will charge 20% of the price*',
       name: 'chargeForCeleNStreamer',
       desc: '',
       args: [],
     );
   }
 
-  /// `*We will charge 40% of the price*`
+  /// `*We will charge 20% of the price*`
   String get chargeForPro {
     return Intl.message(
-      '*We will charge 40% of the price*',
+      '*We will charge 20% of the price*',
       name: 'chargeForPro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*We will charge 5% of the price*`
+  String get chargeForUnverified {
+    return Intl.message(
+      '*We will charge 5% of the price*',
+      name: 'chargeForUnverified',
       desc: '',
       args: [],
     );
@@ -2525,10 +2545,10 @@ class G {
     );
   }
 
-  /// `Upload Profile`
+  /// `Submit`
   String get setPartnerButton {
     return Intl.message(
-      'Upload Profile',
+      'Submit',
       name: 'setPartnerButton',
       desc: '',
       args: [],

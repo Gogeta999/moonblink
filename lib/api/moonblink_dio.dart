@@ -449,7 +449,7 @@ class DioUtils {
   /*
    * Cancel Request
    *
-  * The same cancel token can be used for multiple requests. When a cancel token is canceled, all requests using the cancel token will be canceled. 
+  * The same cancel token can be used for multiple requests. When a cancel token is canceled, all requests using the cancel token will be canceled.
   * So the parameters are optional
    */
   void cancelRequests(CancelToken token) {

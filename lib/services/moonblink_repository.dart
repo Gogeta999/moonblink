@@ -27,6 +27,7 @@ import 'package:moonblink/models/user_play_game.dart';
 import 'package:moonblink/models/user_rating.dart';
 import 'package:moonblink/models/user_transaction.dart';
 import 'package:moonblink/models/vip_data.dart';
+import 'package:moonblink/models/vipmodel.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moongo_database.dart';
 import 'package:moonblink/utils/constants.dart';
@@ -552,7 +553,9 @@ class MoonBlinkRepository {
     var response = await DioUtils().get(
       Api.VerifyAsPartner + '$userid/vip',
     );
-    return response;
+    List<VIPprice> prices =
+        response.data.map<VIPprice>((e) => VIPprice.fromJson(e)).toList();
+    return prices;
   }
 
   static Future upgradeVipLevel(int vipPlan, int rewnew) async {

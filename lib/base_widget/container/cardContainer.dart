@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonblink/global/router_manager.dart';
 
 class CardContainer extends StatelessWidget {
   final Widget child;
@@ -11,6 +12,7 @@ class CardContainer extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: InkWell(
         onTap: ontap,
+        onLongPress: () => Navigator.of(context).pushNamed(RouteName.vipDemo),
         child: Container(
           height: 170,
           width: 350,

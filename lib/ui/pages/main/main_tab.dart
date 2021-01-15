@@ -14,6 +14,7 @@ import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/ui/pages/main/chat/chat_list_page.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
+import 'package:moonblink/ui/pages/main/mainpage.dart';
 import 'package:moonblink/ui/pages/main/newfeed/create_post_page.dart';
 import 'package:moonblink/ui/pages/main/newfeed/new_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_new_notification_page.dart';
@@ -130,7 +131,7 @@ class _MainTabPageState extends State<MainTabPage>
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = <Widget>[
-      NewFeedPage(scrollController: nfController),
+      MainPage(nfcontroller: nfController),
       HomePage(homeController),
       CreatePostPage(),
       NewChatListPage(), //ChatListPage(),

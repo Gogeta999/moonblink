@@ -3,15 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/container/cardContainer.dart';
+import 'package:moonblink/base_widget/container/shadedContainer.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/horizontalPager.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/models/vip_data.dart';
+import 'package:moonblink/models/vipmodel.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 
 class UpgradeVIP extends StatefulWidget {
-  final Map<String, dynamic> data;
-  UpgradeVIP({this.data});
-
   @override
   _UpgradeVIPState createState() => _UpgradeVIPState();
 }
@@ -20,18 +27,21 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
   ///Scroll Controller
   PageController pagecontroller = PageController();
   ScrollController _scrollController = new ScrollController();
+  int currentpage = 0;
 
   ///Remote Data
   int _selectedPlan = 0;
   Wallet _wallet = Wallet(value: 0);
-  int _partnerVipLevel = 0;
   // bool _enableToBuy = true;
 
   ///UI
   var error;
   bool _isPageLoading = true;
   bool _isPageError = false;
-  bool _isConfirmLoading = false;
+
+  List<VIPprice> prices = [];
+  VipData uservip;
+  String _gender = '';
 
   @override
   void initState() {
@@ -40,7 +50,12 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
   }
 
   void _initData() {
-    Future.wait([_initUserWallet()], eagerError: true).then((value) {
+    Future.wait([
+      _initUserWallet(),
+      _getVippice(),
+      _getVIPdata(),
+    ], eagerError: true)
+        .then((value) {
       setState(() {
         _isPageLoading = false;
       });
@@ -60,105 +75,179 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
     });
   }
 
+  Future<void> _getVippice() async {
+    MoonBlinkRepository.getVIPList().then((value) {
+      setState(() {
+        prices = value;
+      });
+    });
+  }
+
+  Future<void> _getVIPdata() async {
+    MoonBlinkRepository.getUserVip().then((value) {
+      setState(() {
+        uservip = value;
+      });
+      pagecontroller =
+          PageController(initialPage: value.vip != 0 ? value.vip - 1 : 0);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Partner VIP Level
-    int partnerVipLevel = int.tryParse(widget.data['acc_vip_level']);
     return Scaffold(
       appBar: AppbarWidget(
         title: Text(G.current.upgradeVipAppBarTitle),
       ),
-      body: NestedScrollView(
-        controller: _scrollController,
-        // shrinkWrap: true,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverToBoxAdapter(
-              child: Stack(
-                children: [
-                  ClipPath(
-                    clipper: OvalBottomBorderClipper(),
-                    child: Container(
-                      height: 150,
-                      color: Theme.of(context).accentColor,
-                      child: Container(),
+      body: _isPageLoading || uservip == null
+          ? CupertinoActivityIndicator()
+          : NestedScrollView(
+              controller: _scrollController,
+              // shrinkWrap: true,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverToBoxAdapter(
+                    child: Stack(
+                      children: [
+                        ClipPath(
+                          clipper: OvalBottomBorderClipper(),
+                          child: Container(
+                            height: 150,
+                            color: Theme.of(context).accentColor,
+                            child: Container(),
+                          ),
+                        ),
+                        HorizontalCardPager(
+                          initialPage: uservip.vip != 0 ? uservip.vip - 1 : 0,
+                          onPageChanged: (page) {
+                            setState(() {
+                              currentpage = page.toInt();
+                            });
+                            pagecontroller.jumpToPage(
+                              page.round(),
+                            );
+                          },
+                          onSelectedItem: (page) {
+                            if (uservip.vip < currentpage + 1) {
+                              confirmDialog(
+                                  context,
+                                  (currentpage + 1),
+                                  prices[currentpage].updatecost,
+                                  uservip.vipRenew,
+                                  prices[currentpage].promotion,
+                                  _wallet);
+                            } else {
+                              showToast("You already bought this");
+                            }
+                          },
+                          items: [
+                            ItemContainer(
+                              child: itemCard(
+                                  'assets/images/vip1.jpg',
+                                  prices[0].vip,
+                                  prices[0].expiretime,
+                                  prices[0].updatecost,
+                                  prices[0].promotion,
+                                  uservip.vipRenew,
+                                  context),
+                            ),
+                            ItemContainer(
+                              child: itemCard(
+                                  'assets/images/vip2.jpg',
+                                  prices[1].vip,
+                                  prices[1].expiretime,
+                                  prices[1].updatecost,
+                                  prices[1].promotion,
+                                  uservip.vipRenew,
+                                  context),
+                            ),
+                            ItemContainer(
+                              child: itemCard(
+                                  'assets/images/vip3.jpg',
+                                  prices[2].vip,
+                                  prices[2].expiretime,
+                                  prices[2].updatecost,
+                                  prices[2].promotion,
+                                  uservip.vipRenew,
+                                  context),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  HorizontalCardPager(
-                    initialPage: partnerVipLevel,
-                    onPageChanged: (page) => pagecontroller.jumpToPage(
-                      page.round(),
+                  if (uservip.vip != 0 && uservip.expiredat != '')
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              "Note: Your VIP Level ${uservip.vip} will expire at " +
+                                  timeAgo.format(
+                                      DateTime.parse(uservip.expiredat),
+                                      allowFromNow: true),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          //TODO: Expired time
+                        ],
+                      ),
                     ),
-                    items: [
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.grey,
-                          child: Center(
-                            child: Text("VIP 0"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.green,
-                          child: Center(
-                            child: Text("VIP 1"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.yellow,
-                          child: Center(
-                            child: Text("VIP 2"),
-                          ),
-                        ),
-                      ),
-                      ItemContainer(
-                        child: CardContainer(
-                          // ontap: () => print("Notes"),
-                          color: Colors.lightBlue,
-                          child: Center(
-                            child: Text("VIP 3"),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 20,
+                    ),
+                  )
+                ];
+              },
+              body: Container(
+                child: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: pagecontroller,
+                  children: [
+                    VIP1(),
+                    VIP2(),
+                    VIP3(),
+                  ],
+                ),
               ),
             ),
-          ];
-        },
-        body: Container(
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: pagecontroller,
-            children: [
-              VIP0(),
-              VIP1(),
-              VIP2(),
-              VIP3(),
-            ],
-          ),
+      bottomNavigationBar: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            color: Theme.of(context).bottomAppBarColor,
+            border: Border(top: BorderSide(width: 2, color: Colors.black))),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: _isPageError
+              ? Center(child: Text('$error'))
+              : _isPageLoading || uservip == null
+                  ? CupertinoActivityIndicator()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(G.current.youHave + '${_wallet.value} Coins now',
+                            style: Theme.of(context).textTheme.subtitle1),
+                        if (uservip.vip < currentpage + 1)
+                          ShadedContainer(
+                            ontap: () {
+                              confirmDialog(
+                                  context,
+                                  (currentpage + 1),
+                                  prices[currentpage].updatecost,
+                                  uservip.vipRenew,
+                                  prices[currentpage].promotion,
+                                  _wallet);
+                            },
+                            child: Text(G.current.buyNow),
+                          ),
+                      ],
+                    ),
         ),
       ),
-      bottomNavigationBar: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: Theme.of(context).bottomAppBarColor,
-              border: Border(top: BorderSide(width: 2, color: Colors.black))),
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: _isPageError
-                  ? Center(child: Text('$error'))
-                  : _isPageLoading
-                      ? CupertinoActivityIndicator()
-                      : Text(G.current.youHave + '${_wallet.value} Coins now',
-                          style: Theme.of(context).textTheme.subtitle1))),
     );
   }
 }
@@ -187,7 +276,11 @@ class VIP0 extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
             crossAxisCount: 3,
-            children: [],
+            children: [
+              Icon(IconFonts.vipPhoto),
+              Icon(IconFonts.vipVideo),
+              Icon(IconFonts.vipGem),
+            ],
           ),
         ),
         SliverPadding(
@@ -222,7 +315,13 @@ class VIP1 extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           sliver: SliverGrid.count(
             crossAxisCount: 3,
-            children: [],
+            children: [
+              icontext('1 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.blue),
+              icontext('No Video', IconFonts.vipVideo, color: Colors.purple),
+              icontext('VIP 1 Icon', IconFonts.vipGem,
+                  color: Color.fromRGBO(169, 113, 66, 5)),
+            ],
           ),
         ),
         SliverPadding(
@@ -258,7 +357,12 @@ class VIP2 extends StatelessWidget {
           sliver: SliverGrid.count(
             crossAxisCount: 3,
             children: [
-              postperday("Allow 1 public post per day", Icons.post_add),
+              icontext('1 Public Post', IconFonts.vipPhoto, color: Colors.blue),
+              icontext('1 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.green),
+              icontext('Enable 360p Video', IconFonts.vipVideo,
+                  color: Colors.purple),
+              icontext('VIP Icon', IconFonts.vipGem, color: Colors.grey[300]),
             ],
           ),
         ),
@@ -296,8 +400,12 @@ class VIP3 extends StatelessWidget {
             childAspectRatio: 1,
             crossAxisCount: 3,
             children: [
-              postperday(
-                  "Allow 3 public posts per day", Icons.video_call_rounded),
+              icontext('3 Public Post', IconFonts.vipPhoto, color: Colors.blue),
+              icontext('3 Followers Post', IconFonts.vipPhoto,
+                  color: Colors.green),
+              icontext('Enable 720p Video', IconFonts.vipVideo,
+                  color: Colors.purple),
+              icontext('VIP Icon', IconFonts.vipGem, color: Colors.yellow[700]),
             ],
           ),
         ),
@@ -314,7 +422,7 @@ class VIP3 extends StatelessWidget {
   }
 }
 
-Widget postperday(String text, IconData icon) {
+Widget icontext(String text, IconData icon, {Color color}) {
   return Center(
     child: Column(
       children: [
@@ -335,7 +443,7 @@ Widget postperday(String text, IconData icon) {
           child: Icon(
             icon,
             size: 35,
-            color: Colors.grey,
+            color: color ?? Colors.grey,
           ),
         ),
         SizedBox(
@@ -351,4 +459,185 @@ Widget postperday(String text, IconData icon) {
       ],
     ),
   );
+}
+
+Widget itemCard(String image, int viplvl, int duration, int cost, int promotion,
+    int viprenew, BuildContext context) {
+  return Stack(
+    children: [
+      CardContainer(
+        // ontap: () => print("Notes"),
+        color: Colors.green,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Image.asset(
+            image,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      Positioned(
+        top: 20,
+        left: 20,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "VIP " + viplvl.toString(),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              G.current.boostDuration +
+                  ' ' +
+                  duration.toString() +
+                  ' ' +
+                  G.current.boostDays,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
+            )
+          ],
+        ),
+      ),
+      viprenew == 0
+          ? Positioned(
+              bottom: 20,
+              right: 20,
+              child: promotion == 0
+                  ? Text(
+                      G.current.boostPrice + " " + cost.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          G.current.boostPrice + " ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          cost.toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.lineThrough),
+                        ),
+                        Text(
+                          promotion.toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+            )
+          : Positioned(
+              bottom: 20,
+              right: 20,
+              child: promotion == 0
+                  ? Text(
+                      G.current.boostPrice + " " + cost.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          G.current.boostPrice + " ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          cost.toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.lineThrough),
+                        ),
+                        Text(
+                          (cost ~/ 2).toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+            ),
+    ],
+  );
+}
+
+void confirmDialog(BuildContext context, int selectedplan, int price,
+    int halfnew, int promotion, Wallet wallet) {
+  showDialog(
+      context: context,
+      builder: (_) {
+        return CustomDialog(
+          title:
+              '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip $selectedplan\'',
+          simpleContent:
+              'VIP $selectedplan cost ${halfnew == 1 ? price ~/ 2 : (promotion == 0 ? price : promotion)}.${G.current.unverifiedPartnerPlanConfirmContent}',
+          cancelContent: G.current.cancel,
+          cancelColor: Theme.of(context).accentColor,
+          confirmButtonColor: Theme.of(context).accentColor,
+          confirmContent: G.current.confirm,
+          confirmCallback: () {
+            upgradeVIP(
+                context, selectedplan, price, halfnew, promotion, wallet);
+          },
+        );
+      });
+}
+
+upgradeVIP(BuildContext context, int _selectedPlan, int price, int halfnew,
+    int promotion, Wallet _wallet) {
+  if (_wallet.value <
+      (halfnew == 1 ? price ~/ 2 : (promotion == 0 ? price : promotion))) {
+    Future.delayed(const Duration(seconds: 2), () => _goToTopUpDialog(context));
+    showToast(G.current.boostNoEnoughCoins);
+    return;
+  }
+  MoonBlinkRepository.upgradeVipLevel(_selectedPlan, halfnew)
+      .then((value) async {
+    try {
+      Navigator.pushNamedAndRemoveUntil(
+          context, RouteName.main, (route) => false);
+    } catch (e) {
+      print(e);
+    }
+  });
+}
+
+void _goToTopUpDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (_) {
+        return CustomDialog(
+          title: G.current.unverifiedPartnerGoTopUpTitle,
+          simpleContent: G.current.unverifiedPartnerGOTopUpContent,
+          cancelContent: G.current.cancel,
+          cancelColor: Theme.of(context).accentColor,
+          confirmButtonColor: Theme.of(context).accentColor,
+          confirmContent: G.current.confirm,
+          confirmCallback: () {
+            Navigator.of(context).pushReplacementNamed(RouteName.wallet);
+          },
+        );
+      });
 }
