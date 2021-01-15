@@ -10,7 +10,11 @@ class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String leadingText;
   final bool showBack;
   AppbarWidget(
-      {this.title, this.leadingCallback, this.leadingIcon, this.leadingText, this.showBack = true});
+      {this.title,
+      this.leadingCallback,
+      this.leadingIcon,
+      this.leadingText,
+      this.showBack = true});
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 

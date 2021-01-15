@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/contacttemple/contactcontainer.dart';
 import 'package:moonblink/base_widget/container/roundedContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -150,10 +151,49 @@ class _ContactsPageState extends State<ContactsPage> {
     // super.build(context);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
+
       ///[Appbar]
-      appBar: AppbarWidget(
-        leadingText: G.current.tabFollowing,
-        leadingCallback: () {},
+      appBar: AppBar(
+        toolbarHeight: 66,
+        leadingWidth: 120,
+        leading: Container(
+          // color: Colors.red,
+          child: Center(
+            child: Text(
+              G.current.tabFollowing,
+              style: TextStyle(
+                fontSize: 20,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).accentColor
+                    : Colors.white,
+              ),
+            ),
+          ),
+        ),
+        backgroundColor: Colors.black,
+        actions: [
+          AppbarLogo(),
+        ],
+        bottom: PreferredSize(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).accentColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).accentColor,
+                  // spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: Offset(0, 0), // changes position of shadow
+                ),
+              ],
+            ),
+            height: 10,
+          ),
+          preferredSize: Size.fromHeight(5),
+        ),
       ),
       body: ProviderWidget<ContactModel>(
         model: _contactModel,

@@ -467,24 +467,24 @@ class _NFPostItemState extends State<NFPostItem> {
                   ],
                 ),
               ),
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: (widget.item.lastComment != null &&
-                          widget.item.lastComment.isNotEmpty &&
-                          widget.item.lastCommenterName != null &&
-                          widget.item.lastCommenterName.isNotEmpty &&
-                          widget.item.lastCommenterProfileImage != null &&
-                          widget.item.lastCommenterProfileImage.isNotEmpty)
-                      ? Text(G.current.feedPageViewMoreComment)
-                      : Text('Post comments'),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RouteName.nfCommentPage,
-                        arguments: widget.item.id);
-                  }),
-            )
+            // Container(
+            //   alignment: Alignment.centerLeft,
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   child: CupertinoButton(
+            //       padding: EdgeInsets.zero,
+            //       child: (widget.item.lastComment != null &&
+            //               widget.item.lastComment.isNotEmpty &&
+            //               widget.item.lastCommenterName != null &&
+            //               widget.item.lastCommenterName.isNotEmpty &&
+            //               widget.item.lastCommenterProfileImage != null &&
+            //               widget.item.lastCommenterProfileImage.isNotEmpty)
+            //           ? Text(G.current.feedPageViewMoreComment)
+            //           : Text('Post comments'),
+            //       onPressed: () {
+            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
+            //             arguments: widget.item.id);
+            //       }),
+            // )
           ],
         ),
       ),
