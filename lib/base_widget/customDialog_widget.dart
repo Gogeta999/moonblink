@@ -71,7 +71,8 @@ class _CustomDialogState extends State<CustomDialog> {
     Column _columnText = Column(
       children: <Widget>[
         SizedBox(height: widget.title == null ? 0 : 16.0),
-        Center(
+        Padding(
+          padding: EdgeInsets.only(left: 5, right: 5),
           child: Text(widget.title == null ? '' : widget.title,
               style: widget.titleTextStyle == null
                   ? TextStyle(fontSize: 16.0)

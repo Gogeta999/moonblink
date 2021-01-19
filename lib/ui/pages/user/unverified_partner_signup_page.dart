@@ -106,10 +106,11 @@ class _UnverifiedPartnerSignUpPageState
         context: context,
         builder: (_) {
           return CustomDialog(
-            title:
-                '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip$_selectedPlan\'',
-            simpleContent:
-                'VIP $_selectedPlan cost ${promotion == 0 ? cost : promotion}. ${G.current.unverifiedPartnerPlanConfirmContent}',
+            title: '${G.current.upgradeVipImportantNote1}',
+            titleTextStyle: TextStyle(
+                color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+            simpleContent: '${G.current.upgradeVipImportantNote2}',
+            isContentLong: true,
             cancelContent: G.current.cancel,
             cancelColor: Theme.of(context).accentColor,
             confirmButtonColor: Theme.of(context).accentColor,

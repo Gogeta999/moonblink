@@ -633,11 +633,10 @@ void confirmDialog(BuildContext context, int selectedplan, int price,
         //   ),
         // );
         return CustomDialog(
-          title:
-              '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip $selectedplan\'',
-          titleTextStyle: Theme.of(context).textTheme.headline6,
-          simpleContent:
-              '${G.current.upgradeVipImportantNote1}\n\n${G.current.upgradeVipImportantNote2}',
+          title: '${G.current.upgradeVipImportantNote1}',
+          titleTextStyle: TextStyle(
+              color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+          simpleContent: '${G.current.upgradeVipImportantNote2}',
           isContentLong: true,
           cancelContent: G.current.cancel,
           cancelColor: Theme.of(context).accentColor,
