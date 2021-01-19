@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LoginFormContainer extends StatelessWidget {
   final Widget child;
 
-  LoginFormContainer({this.child});
+  LoginFormContainer({Key key, this.child});
 
   @override
   Widget build(BuildContext context) {
