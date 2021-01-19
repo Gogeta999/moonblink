@@ -21,7 +21,7 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   CachedVideoPlayerController _controller;
   final _leftDuration = BehaviorSubject.seeded("");
