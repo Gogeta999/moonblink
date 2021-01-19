@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/ui/pages/main/tutorial/homepagedummy.dart';
 
 class GameProfileDummy extends StatefulWidget {
   GameProfileDummy({Key key}) : super(key: key);
@@ -19,7 +20,17 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        Future.delayed(Duration(microseconds: 0), () {});
+        Future.delayed(
+          Duration(microseconds: 0),
+          () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePageDummy(),
+              ),
+            );
+          },
+        );
       },
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself

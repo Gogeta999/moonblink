@@ -146,9 +146,9 @@ void nextPage(context) {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
     if (type != 0) {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => HomePageDummy(),
+          builder: (context) => UpdatePartnerProfilePage(),
         ),
       );
     } else if (gameprofile == 0 && type != 0) {

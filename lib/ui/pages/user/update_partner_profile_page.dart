@@ -49,7 +49,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => GameProfileDummy()));
       },
 

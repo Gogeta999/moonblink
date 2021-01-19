@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/blinkIcon_Widget.dart';
+import 'package:moonblink/base_widget/customDialog_widget.dart';
 import 'package:moonblink/base_widget/customnavigationbar/src/convex_appBar/convex_bottom_bar.dart';
 import 'package:moonblink/base_widget/customnavigationbar/src/convex_appBar/convex_items.dart';
 import 'package:moonblink/base_widget/intro/flutter_intro.dart';
@@ -31,7 +32,9 @@ class _HomePageDummyState extends State<HomePageDummy> {
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
-        Future.delayed(Duration(microseconds: 0), () {});
+        Future.delayed(Duration(microseconds: 0), () {
+          coplayerrules();
+        });
       },
 
       /// use defaultTheme, or you can implement widgetBuilder function yourself
@@ -73,7 +76,24 @@ class _HomePageDummyState extends State<HomePageDummy> {
   }
 
   coplayerrules() {
-    return AboutDialog();
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return CustomDialog(
+          outsideDismiss: false,
+          isCancel: false,
+          isContentLong: true,
+          title: "Co-player rule",
+          confirmButtonColor: Theme.of(context).accentColor,
+          confirmContent: "Confirm",
+          confirmCallback: () {
+            Navigator.pop(context);
+          },
+          simpleContent:
+              ("1. Customer booking ကိုလက်ခံပြီးလျှင်သူကစားမယ်ဘယ်ဂိမ်းမဆို voice chat ဖွင့်ပေးရမည်။\n2. Customer ကိုစိတ်ကြေနပ်အောင်ကစားပေးရမည်။ (Rating ကောင်းလျှင်လူများပို၍မြင်နိုင်သည်)\n3. လက်ခံပြီးလျှင်ဂိမ်းကစားပေးရပါမည်။ Customer ဘက်က report လာ၍အချက်လက်မှန်ကန်ပါက warning ပေးပြီး coin ပြန်ဖျက်သိမ်းပါမည်။ ဒုတိယတစ်ခါဖြစ်လျှင် account ban ပါမည်။\n4. မိမိ၏လှပသောပုံများကို post တင်ခြင်းဖြင့် customer များ follow လာလုပ်မည်။\n5. တခြား media profile များ screenshot ရိုက်ပြီးပုံတင်ခွင့်မရှိပါ။"),
+        );
+      },
+    );
   }
 
   Future loadJson() async {
