@@ -146,7 +146,7 @@ void nextPage(context) {
   } else {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
-    if (type != 0 &&
+    if (type == 5 &&
         (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
       Navigator.of(context).push(
         MaterialPageRoute(
