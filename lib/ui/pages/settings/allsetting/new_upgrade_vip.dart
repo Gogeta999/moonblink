@@ -614,11 +614,30 @@ void confirmDialog(BuildContext context, int selectedplan, int price,
   showDialog(
       context: context,
       builder: (_) {
+        // return SingleChildScrollView(
+        //   child: AlertDialog(
+        //     title: Text('Very, very large title', textScaleFactor: 5),
+        //     content: Text('Very, very large content', textScaleFactor: 5),
+        //     actions: <Widget>[
+        //       TextButton(
+        //           child: Text('Button 1'),
+        //           onPressed: () {
+        //             showToast('Ok');
+        //           }),
+        //       TextButton(
+        //           child: Text('Button 2'),
+        //           onPressed: () {
+        //             showToast('Cancel');
+        //           }),
+        //     ],
+        //   ),
+        // );
         return CustomDialog(
-          title:
-              '${G.current.unverifiedPartnerPlanConfirmTitle} \'Vip $selectedplan\'',
-          simpleContent:
-              'VIP $selectedplan cost ${halfnew == 1 ? price ~/ 2 : (promotion == 0 ? price : promotion)}.${G.current.unverifiedPartnerPlanConfirmContent}',
+          title: '${G.current.upgradeVipImportantNote1}',
+          titleTextStyle: TextStyle(
+              color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+          simpleContent: '${G.current.upgradeVipImportantNote2}',
+          isContentLong: true,
           cancelContent: G.current.cancel,
           cancelColor: Theme.of(context).accentColor,
           confirmButtonColor: Theme.of(context).accentColor,

@@ -14,7 +14,9 @@ class CustomDialog extends StatefulWidget {
   final bool outsideDismiss; //点击弹窗外部，关闭弹窗，默认为true true：可以关闭 false：不可以关闭
   final Function confirmCallback; //点击确定按钮回调
   final Function dismissCallback; //弹窗关闭回调
-
+  final bool isContentLong;
+  final TextStyle titleTextStyle;
+  final TextStyle bodyTextStyle;
   final String image;
   final String imageHintText;
 
@@ -27,6 +29,9 @@ class CustomDialog extends StatefulWidget {
       this.confirmContent,
       this.confirmTextColor,
       this.isCancel = true,
+      this.isContentLong = false,
+      this.titleTextStyle,
+      this.bodyTextStyle,
       this.confirmButtonColor,
       this.cancelColor,
       this.cancelContent,
@@ -66,16 +71,25 @@ class _CustomDialogState extends State<CustomDialog> {
     Column _columnText = Column(
       children: <Widget>[
         SizedBox(height: widget.title == null ? 0 : 16.0),
-        Text(widget.title == null ? '' : widget.title,
-            style: TextStyle(fontSize: 16.0)),
+        Padding(
+          padding: EdgeInsets.only(left: 5, right: 5),
+          child: Text(widget.title == null ? '' : widget.title,
+              style: widget.titleTextStyle == null
+                  ? TextStyle(fontSize: 16.0)
+                  : widget.titleTextStyle),
+        ),
         // SizedBox(height: 1.0, child: Container(color: Colors.grey)),
         if (widget.simpleContent != null)
           Expanded(
               child: Padding(
                 padding: EdgeInsets.all(15),
-                child: Text(
-                    widget.simpleContent == null ? '' : widget.simpleContent,
-                    style: TextStyle(fontSize: 14.0)),
+                child: SingleChildScrollView(
+                  child: Text(
+                      widget.simpleContent == null ? '' : widget.simpleContent,
+                      style: widget.bodyTextStyle == null
+                          ? TextStyle(fontSize: 14.0)
+                          : widget.bodyTextStyle),
+                ),
               ),
               flex: 1),
         if (widget.row1Content != null)
@@ -92,7 +106,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
         SizedBox(height: 1.0, child: Container(color: Colors.grey)),
         Container(
-            height: 45,
+            height: 40,
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -192,7 +206,7 @@ class _CustomDialogState extends State<CustomDialog> {
             child: Center(
               child: Container(
                 width: widget.image == null ? width - 100.0 : width - 150.0,
-                height: 150.0,
+                height: widget.isContentLong == false ? 150.0 : 450,
                 alignment: Alignment.center,
                 child: widget.image == null ? _columnText : _columnImage,
                 decoration: BoxDecoration(

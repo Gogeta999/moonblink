@@ -141,9 +141,15 @@ class _CommentPageState extends State<CommentPage> {
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.black45),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text('Editing Comment "$prevMessage"'),
+                                Text('Editing Comment: '),
+                                Expanded(
+                                  child: Text(
+                                    '$prevMessage',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                                 CupertinoButton(
                                   padding: EdgeInsets.zero,
                                   child: Icon(Icons.cancel_outlined),
@@ -167,7 +173,7 @@ class _CommentPageState extends State<CommentPage> {
                               Expanded(
                                 child: Container(
                                   margin: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 4),
+                                      horizontal: 8, vertical: 4),
                                   child: CupertinoTextField(
                                     placeholder: 'Add a comment',
                                     controller: _bloc.commentController,
@@ -185,7 +191,10 @@ class _CommentPageState extends State<CommentPage> {
                                             BorderRadius.circular(10)),
                                     keyboardType: TextInputType.text,
                                     prefix: editingSnapshot.data != null
-                                        ? Text('Editing: ')
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: 20, left: 5),
+                                            child: Text('Editing: '))
                                         : null,
                                     prefixMode: OverlayVisibilityMode.always,
                                     maxLines: 2,

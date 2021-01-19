@@ -2715,6 +2715,16 @@ class G {
     );
   }
 
+  /// `Re-Enter Password`
+  String get signUpReEnterPassword {
+    return Intl.message(
+      'Re-Enter Password',
+      name: 'signUpReEnterPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Skip`
   String get splashSkip {
     return Intl.message(
@@ -2970,6 +2980,16 @@ class G {
     return Intl.message(
       'User',
       name: 'tabUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VIP Feature`
+  String get tabVipFeatureToast {
+    return Intl.message(
+      'VIP Feature',
+      name: 'tabVipFeatureToast',
       desc: '',
       args: [],
     );
@@ -3625,6 +3645,26 @@ class G {
     );
   }
 
+  /// `We Will Ban and Permanently freeze all funds in the account If you violate the following rules :`
+  String get upgradeVipImportantNote1 {
+    return Intl.message(
+      'We Will Ban and Permanently freeze all funds in the account If you violate the following rules :',
+      name: 'upgradeVipImportantNote1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rule 01\nA detailed description\nDisseminate content that violates laws and regulations such as reactionary, anti-social morality, political or politically related, terrorist, etc.\n\nConfirmation method\n\n01. User feedback;\n02. Coplayer feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 02\nA detailed description\nSpread pornography, piracy and infringement in any form that violates laws and regulations\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 03\nA detailed description\nCash orders in any form (inducing/transaction with other users/co-player through other channels (non-band orders)\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 04\nA detailed description\nIn any form, actions that damage the interests of the platform, disrupt the order of the platform, and disseminate any third-party personal/platform/tool ​​(plug-in/script/assistance, etc.) advertising information without platform authorization in any form\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 05\nA detailed description\nFraud, in any form that damages users/other gods (such as inducing users to not serve after completing orders, transferring illegal funds through various channels, causing losses to users/other co-player property)\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring`
+  String get upgradeVipImportantNote2 {
+    return Intl.message(
+      'Rule 01\nA detailed description\nDisseminate content that violates laws and regulations such as reactionary, anti-social morality, political or politically related, terrorist, etc.\n\nConfirmation method\n\n01. User feedback;\n02. Coplayer feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 02\nA detailed description\nSpread pornography, piracy and infringement in any form that violates laws and regulations\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 03\nA detailed description\nCash orders in any form (inducing/transaction with other users/co-player through other channels (non-band orders)\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 04\nA detailed description\nIn any form, actions that damage the interests of the platform, disrupt the order of the platform, and disseminate any third-party personal/platform/tool ​​(plug-in/script/assistance, etc.) advertising information without platform authorization in any form\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring\n\nRule 05\nA detailed description\nFraud, in any form that damages users/other gods (such as inducing users to not serve after completing orders, transferring illegal funds through various channels, causing losses to users/other co-player property)\n\nConfirmation method\n01. User feedback;\n02. Great God feedback;\n03. Or other displayable text proof;\n04. Platform Monitoring',
+      name: 'upgradeVipImportantNote2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Upload`
   String get upload {
     return Intl.message(
@@ -3785,10 +3825,10 @@ class G {
     );
   }
 
-  /// `VIP 1 will be displayed under VIP 1`
+  /// `VIP 1 will be displayed under VIP 2`
   String get vipDemo1Body {
     return Intl.message(
-      'VIP 1 will be displayed under VIP 1',
+      'VIP 1 will be displayed under VIP 2',
       name: 'vipDemo1Body',
       desc: '',
       args: [],

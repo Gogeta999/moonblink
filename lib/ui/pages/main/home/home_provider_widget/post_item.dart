@@ -18,6 +18,7 @@ import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
+import 'package:intl/intl.dart';
 
 class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.id));
@@ -268,7 +269,15 @@ class _PostItemWidgetState extends State<PostItemWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var _formattedLikes =
+        NumberFormat.compact().format(widget.posts.reactionCount);
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
+    String truncateWithEllipsis(int cutoff, String myString) {
+      return (myString.length <= cutoff)
+          ? myString
+          : '${myString.substring(0, cutoff)}...';
+    }
+
     return Column(
       children: [
         GestureDetector(
@@ -303,14 +312,28 @@ class _PostItemWidgetState extends State<PostItemWidget>
                               top: 20,
                               child: Row(
                                 children: [
-                                  Text(widget.posts.userName,
-                                      style: widget.posts.id == 62
-                                          ? TextStyle(
-                                              color:
-                                                  Theme.of(context).accentColor)
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyText1),
+                                  if (widget.posts.userName.length >= 11)
+                                    Text(
+                                        widget.posts.userName.replaceRange(
+                                            10,
+                                            widget.posts.userName.length,
+                                            '...'),
+                                        style: widget.posts.id == 62
+                                            ? TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor)
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
+                                  if (widget.posts.userName.length < 11)
+                                    Text(widget.posts.userName,
+                                        style: widget.posts.id == 62
+                                            ? TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor)
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
                                   Padding(
                                       padding: EdgeInsets.only(left: 10),
                                       child: gemColor(widget.posts.vip)),
@@ -467,7 +490,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                             Positioned(
                                 bottom: 5,
                                 child: Text(
-                                    '${widget.posts.reactionCount} ${G.of(context).likes}'))
+                                    '$_formattedLikes ${G.of(context).likes}'))
                           ],
                         )),
                   ],

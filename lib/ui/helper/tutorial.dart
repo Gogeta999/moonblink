@@ -8,6 +8,7 @@ String userdetailtuto = 'userdetailtuto';
 String partnerBoostDetail = 'partnerBoostDetail';
 String chatboxtuto = 'chatboxtuto';
 String boostingrequesttuto = 'boostingrequesttuto';
+String firsttuto = 'first tuto';
 
 void tutorialOn() {
   StorageManager.sharedPreferences.setBool(hometuto, true);
