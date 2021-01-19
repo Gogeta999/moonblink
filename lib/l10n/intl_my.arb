@@ -267,6 +267,7 @@
     "signUpName": "နာမည်",
     "signUpLastName": "နာမည်နောက်ဆုံးစာလုံး",
     "signUpPassword": "စကားဝှက်ဖြည့်သွင်းရန်",
+    "signUpReEnterPassword": "စကားဝှက်ပြန်ဖြည့်သွင်းရန်",
     "splashSkip": "ကျော်ရန်",
     "submit": "တင်ရန်",
     "statusOnline": "အွန်လိုင်း",

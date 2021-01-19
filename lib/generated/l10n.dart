@@ -2715,6 +2715,16 @@ class G {
     );
   }
 
+  /// `Re-Enter Password`
+  String get signUpReEnterPassword {
+    return Intl.message(
+      'Re-Enter Password',
+      name: 'signUpReEnterPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Skip`
   String get splashSkip {
     return Intl.message(

@@ -272,6 +272,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "signUpMail" : MessageLookupByLibrary.simpleMessage("Mail"),
     "signUpName" : MessageLookupByLibrary.simpleMessage("Name"),
     "signUpPassword" : MessageLookupByLibrary.simpleMessage("Password"),
+    "signUpReEnterPassword" : MessageLookupByLibrary.simpleMessage("Re-Enter Password"),
     "skillcover" : MessageLookupByLibrary.simpleMessage("Skill Cover"),
     "skilldescription" : MessageLookupByLibrary.simpleMessage("Skill Description"),
     "someoneCallingYou" : MessageLookupByLibrary.simpleMessage("Someone is calling you"),

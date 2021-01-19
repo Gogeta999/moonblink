@@ -267,6 +267,7 @@
     "signUpName": "名称",
     "signUpLastName": "姓氏",
     "signUpPassword": "密码",
+    "signUpReEnterPassword": "再次填写密码",
     "splashSkip": "跳过",
     "submit": "提交",
     "statusOnline": "在线",

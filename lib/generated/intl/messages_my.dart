@@ -272,6 +272,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "signUpMail" : MessageLookupByLibrary.simpleMessage("အီးမေးလ်"),
     "signUpName" : MessageLookupByLibrary.simpleMessage("နာမည်"),
     "signUpPassword" : MessageLookupByLibrary.simpleMessage("စကားဝှက်ဖြည့်သွင်းရန်"),
+    "signUpReEnterPassword" : MessageLookupByLibrary.simpleMessage("စကားဝှက်ပြန်ဖြည့်သွင်းရန်"),
     "skillcover" : MessageLookupByLibrary.simpleMessage("ကျွမ်းကျင်မှုCover"),
     "skilldescription" : MessageLookupByLibrary.simpleMessage("ကျွမ်းကျင်မှုဖော်ပြချက်"),
     "someoneCallingYou" : MessageLookupByLibrary.simpleMessage("သင့်ကိုဖုန်းခေါ်နေတယ်"),

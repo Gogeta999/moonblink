@@ -267,6 +267,7 @@
     "signUpName": "Name",
     "signUpLastName": "Last Name",
     "signUpPassword": "Password",
+    "signUpReEnterPassword": "Re-Enter Password",
     "splashSkip": "Skip",
     "submit": "Submit",
     "statusOnline": "Online",
