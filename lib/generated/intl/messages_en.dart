@@ -288,6 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("Home"),
     "tabUser" : MessageLookupByLibrary.simpleMessage("User"),
+    "tabVipFeatureToast" : MessageLookupByLibrary.simpleMessage("VIP Feature"),
     "termAndConditions" : MessageLookupByLibrary.simpleMessage("Term and Conditions"),
     "textnohistory" : MessageLookupByLibrary.simpleMessage("This user has no history."),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("Third Login"),
