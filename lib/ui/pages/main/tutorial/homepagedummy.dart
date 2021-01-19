@@ -12,7 +12,9 @@ import 'package:moonblink/base_widget/customnavigationbar/src/convex_appBar/conv
 import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/home/home_page.dart';
 import 'package:moonblink/utils/constants.dart';
 
@@ -87,6 +89,7 @@ class _HomePageDummyState extends State<HomePageDummy> {
           confirmButtonColor: Theme.of(context).accentColor,
           confirmContent: "Confirm",
           confirmCallback: () {
+            StorageManager.sharedPreferences.setBool(firsttuto, false);
             Navigator.pop(context);
           },
           simpleContent:

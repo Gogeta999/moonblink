@@ -23,6 +23,7 @@ import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/tutorial/gameprofiledummy.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
@@ -176,13 +177,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     //     _pubgIdController.value.copyWith(text: widget.partnerUser.pubgplayerid);
   }
 
-  @override
-  void dispose() {
-    Future.delayed(Duration(microseconds: 0), () {
-      intro.dispose();
-    });
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   Future.delayed(Duration(microseconds: 0), () {
+  //     intro.dispose();
+  //   });
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +207,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
           _biosController.value = _biosController.value
               .copyWith(text: partnermodel.partnerData.prfoileFromPartner.bios);
           Future.delayed(const Duration(milliseconds: 100), () {
-            intro.start(context);
+            if (StorageManager.sharedPreferences.getBool(firsttuto) ?? true) {
+              intro.start(context);
+            }
             setState(() {
               load = false;
             });
