@@ -181,9 +181,7 @@ class MoonGoRouter {
         return CupertinoPageRoute(builder: (_) => SetPartnerProfilePage());
 
       case RouteName.updateprofile:
-        return CupertinoPageRoute(
-            builder: (_) => UpdatePartnerProfilePage(
-                partnerUser: settings.arguments ?? 'Unknown data'));
+        return CupertinoPageRoute(builder: (_) => UpdatePartnerProfilePage());
       case RouteName.wallet:
         return CupertinoPageRoute(builder: (_) => WalletPage());
       case RouteName.callScreen:

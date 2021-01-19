@@ -634,93 +634,94 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-        backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.grey[200]
-            : null,
-        appBar: HomeAppBar(),
-        body: BlocProvider.value(
-          value: _homeBloc,
-          child: SafeArea(
-            child: StreamBuilder<List<Post>>(
-                initialData: [],
-                stream: _homeBloc.postsSubject,
-                builder: (context, snapshot) {
-                  return SmartRefresher(
-                    controller: _homeBloc.refreshController,
-                    header: WaterDropHeader(),
-                    footer: ShimmerFooter(
-                      text: CupertinoActivityIndicator(),
-                    ),
-                    enablePullDown: true,
-                    onRefresh: () {
-                      _homeBloc.refreshData();
-                    },
-                    child: CustomScrollView(
-                        controller: widget.homecontroller,
-                        physics: AlwaysScrollableScrollPhysics(),
-                        slivers: [
-                          SliverAppBar(
-                            floating: true,
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            collapsedHeight: 100,
-                            flexibleSpace: newtopTabs(widget.homecontroller),
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[200]
+          : null,
+      appBar: HomeAppBar(),
+      body: BlocProvider.value(
+        value: _homeBloc,
+        child: SafeArea(
+          child: StreamBuilder<List<Post>>(
+              initialData: [],
+              stream: _homeBloc.postsSubject,
+              builder: (context, snapshot) {
+                return SmartRefresher(
+                  controller: _homeBloc.refreshController,
+                  header: WaterDropHeader(),
+                  footer: ShimmerFooter(
+                    text: CupertinoActivityIndicator(),
+                  ),
+                  enablePullDown: true,
+                  onRefresh: () {
+                    _homeBloc.refreshData();
+                  },
+                  child: CustomScrollView(
+                      controller: widget.homecontroller,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      slivers: [
+                        SliverAppBar(
+                          floating: true,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                          collapsedHeight: 100,
+                          flexibleSpace: newtopTabs(widget.homecontroller),
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          sliver: SliverToBoxAdapter(
+                            child: newmalefemale(),
                           ),
-                          SliverPadding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            sliver: SliverToBoxAdapter(
-                              child: newmalefemale(),
-                            ),
+                        ),
+                        if (snapshot.hasError)
+                          SliverToBoxAdapter(
+                            child: SizedBox(
+                                child: ViewStateErrorWidget(
+                              error: ViewStateError(
+                                  snapshot.error == "No Internet Connection"
+                                      ? ViewStateErrorType.networkTimeOutError
+                                      : ViewStateErrorType.defaultError,
+                                  errorMessage: snapshot.error.toString()),
+                              onPressed: () {
+                                _homeBloc.refreshData();
+                                _homeBloc.postsSubject.add([]);
+                              },
+                            )),
                           ),
-                          if (snapshot.hasError)
+                        if (snapshot.hasData)
+                          if (snapshot.data.isEmpty)
                             SliverToBoxAdapter(
                               child: SizedBox(
-                                  child: ViewStateErrorWidget(
-                                error: ViewStateError(
-                                    snapshot.error == "No Internet Connection"
-                                        ? ViewStateErrorType.networkTimeOutError
-                                        : ViewStateErrorType.defaultError,
-                                    errorMessage: snapshot.error.toString()),
-                                onPressed: () {
-                                  _homeBloc.refreshData();
-                                  _homeBloc.postsSubject.add([]);
-                                },
-                              )),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  child: Center(
+                                      child: CupertinoActivityIndicator())),
                             ),
-                          if (snapshot.hasData)
-                            if (snapshot.data.isEmpty)
-                              SliverToBoxAdapter(
-                                child: SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    child: Center(
-                                        child: CupertinoActivityIndicator())),
-                              ),
-                          if (snapshot.hasData)
-                            if (snapshot.data.isNotEmpty)
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                  if (index >= snapshot.data.length) {
-                                    return Center(
-                                        child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 12.0),
-                                      child: CupertinoActivityIndicator(),
-                                    ));
-                                  }
-                                  Post item = snapshot.data[index];
-                                  return PostItemWidget(item, index: index);
-                                },
-                                    childCount: _homeBloc.hasReachedMax
-                                        ? snapshot.data.length
-                                        : snapshot.data.length + 1),
-                              ),
-                        ]),
-                  );
-                }),
-          ),
-        ));
+                        if (snapshot.hasData)
+                          if (snapshot.data.isNotEmpty)
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                if (index >= snapshot.data.length) {
+                                  return Center(
+                                      child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 12.0),
+                                    child: CupertinoActivityIndicator(),
+                                  ));
+                                }
+                                Post item = snapshot.data[index];
+                                return PostItemWidget(item, index: index);
+                              },
+                                  childCount: _homeBloc.hasReachedMax
+                                      ? snapshot.data.length
+                                      : snapshot.data.length + 1),
+                            ),
+                      ]),
+                );
+              }),
+        ),
+      ),
+    );
   }
 
   void _onScroll() {

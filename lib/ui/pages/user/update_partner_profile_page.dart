@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -11,6 +12,7 @@ import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
+import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/LoginFormContainer_widget.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_field_widget.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -21,6 +23,7 @@ import 'package:moonblink/models/user.dart';
 import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/pages/main/tutorial/gameprofiledummy.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/utils/platform_utils.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -32,16 +35,39 @@ import 'package:provider/provider.dart';
 import 'package:moonblink/global/router_manager.dart';
 
 class UpdatePartnerProfilePage extends StatefulWidget {
-  final OwnProfile partnerUser;
-  UpdatePartnerProfilePage({Key key, @required this.partnerUser})
-      : super(key: key);
-
   @override
   _UpdatePartnerProfilePageState createState() =>
       _UpdatePartnerProfilePageState();
 }
 
 class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
+  Intro intro;
+
+  _UpdatePartnerProfilePageState() {
+    intro = Intro(
+      stepCount: 4,
+      borderRadius: BorderRadius.circular(15),
+      onfinish: () {
+        intro.dispose();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => GameProfileDummy()));
+      },
+
+      /// use defaultTheme, or you can implement widgetBuilder function yourself
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          "Choose Cover Here",
+          "Choose Profile Here",
+          "To Edit Your Name and Bios",
+          "Then finally Pressed Sumbit to update your profile ",
+        ],
+        buttonTextBuilder: (curr, total) {
+          return curr < total - 1 ? 'Next' : 'Finish';
+        },
+      ),
+    );
+  }
+
   final _nameController = TextEditingController();
   final _biosController = TextEditingController();
   // final _mlIdController = TextEditingController();
@@ -51,18 +77,21 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
   File _cover;
   File _profile;
   bool finish = false;
+  bool load = true;
   String _filePath;
 
   //Get File from Cached
-  Future getCachedFile() async {
-    var cachedCoverFile = await DefaultCacheManager()
-        .getFileFromCache(widget.partnerUser.prfoileFromPartner.coverImage);
+  Future getCachedFile(partnermodel) async {
+    var cachedCoverFile = await DefaultCacheManager().getFileFromCache(
+        partnermodel.partnerData.prfoileFromPartner.coverImage);
     var cachedProfileFile = await DefaultCacheManager().getFileFromCache(
-      widget.partnerUser.prfoileFromPartner.profileImage,
+      partnermodel.partnerData.prfoileFromPartner.profileImage,
     );
-    setState(() {
-      _profile = cachedProfileFile.file;
-      _cover = cachedCoverFile.file;
+    Future.delayed(Duration(microseconds: 0), () {
+      setState(() {
+        _profile = cachedProfileFile.file;
+        _cover = cachedCoverFile.file;
+      });
     });
   }
 
@@ -87,19 +116,72 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
     return result;
   }
 
+  Widget partercoverwidget(coverFile) {
+    if (_cover == null) {
+      // return Image.network(
+      //   partnermodel.partnerData.prfoileFromPartner.coverImage,
+      //   fit: BoxFit.cover,
+      // );
+      // if (coverFile is String) {
+      //   return CupertinoActivityIndicator();
+      // } else {
+      return Image.network(
+        coverFile,
+        fit: BoxFit.cover,
+      );
+      // }
+    } else {
+      return Image.file(
+        _cover,
+        filterQuality: FilterQuality.medium,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
+  Widget partnerprofilewidget(profileFile) {
+    if (_profile == null) {
+      // return Image.network(
+      //   partnermodel.partnerData.prfoileFromPartner.profileImage,
+      //   fit: BoxFit.cover,
+      // );
+      // if (profileFile is String) {
+      //   return CupertinoActivityIndicator();
+      // } else {
+      return Image.network(
+        profileFile,
+        fit: BoxFit.cover,
+      );
+      // }
+    } else {
+      return Image.file(
+        _profile,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    getCachedFile();
-    _nameController.value = _nameController.value.copyWith(
-      text: widget.partnerUser.partnerName,
-    );
-    _biosController.value = _biosController.value
-        .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
+
+    // _nameController.value = _nameController.value.copyWith(
+    //   text: widget.partnerUser.partnerName,
+    // );
+    // _biosController.value = _biosController.value
+    //     .copyWith(text: widget.partnerUser.prfoileFromPartner.bios);
     // _mlIdController.value =
     //     _mlIdController.value.copyWith(text: widget.partnerUser.mlplayerid);
     // _pubgIdController.value =
     //     _pubgIdController.value.copyWith(text: widget.partnerUser.pubgplayerid);
+  }
+
+  @override
+  void dispose() {
+    Future.delayed(Duration(microseconds: 0), () {
+      intro.dispose();
+    });
+    super.dispose();
   }
 
   @override
@@ -112,6 +194,23 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
       builder: (context, partnermodel, child) {
         if (partnermodel.isBusy) {
           return ViewStateBusyWidget();
+        }
+        if (partnermodel.partnerData == null) {
+          return CupertinoActivityIndicator();
+        }
+        if (load) {
+          getCachedFile(partnermodel);
+          _nameController.value = _nameController.value.copyWith(
+            text: partnermodel.partnerData.partnerName,
+          );
+          _biosController.value = _biosController.value
+              .copyWith(text: partnermodel.partnerData.prfoileFromPartner.bios);
+          Future.delayed(const Duration(milliseconds: 100), () {
+            intro.start(context);
+            setState(() {
+              load = false;
+            });
+          });
         }
         return Scaffold(
           appBar: AppBar(
@@ -146,54 +245,53 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                     child: Stack(
                       children: <Widget>[
                         Container(
+                          key: intro.keys[0],
                           width: MediaQuery.of(context).size.width,
                           height: 240,
                           child: Stack(
                             children: [
                               GestureDetector(
+                                /// [You need to put before OnTap]
 
-                                  /// [You need to put before OnTap]
+                                onTap: () async {
+                                  // PickedFile image = await _picker.getImage(
+                                  //     source: ImageSource.gallery);
+                                  // setState(() {
+                                  //   _cover = File(image.path);
+                                  // });
+                                  // cropImage(_cover, true);
+                                  // File temporaryImage = await _getLocalFile();
+                                  // File _compressedImage =
+                                  //     await _compressAndGetFile(_cover,
+                                  //         temporaryImage.absolute.path);
+                                  // setState(() async {
+                                  //   _cover = _compressedImage;
+                                  // });
 
-                                  onTap: () async {
-                                    // PickedFile image = await _picker.getImage(
-                                    //     source: ImageSource.gallery);
-                                    // setState(() {
-                                    //   _cover = File(image.path);
-                                    // });
-                                    // cropImage(_cover, true);
-                                    // File temporaryImage = await _getLocalFile();
-                                    // File _compressedImage =
-                                    //     await _compressAndGetFile(_cover,
-                                    //         temporaryImage.absolute.path);
-                                    // setState(() async {
-                                    //   _cover = _compressedImage;
-                                    // });
-
-                                    CustomBottomSheet.show(
-                                        requestType: RequestType.image,
-                                        popAfterBtnPressed: true,
-                                        buttonText: G.of(context).choose,
-                                        buildContext: context,
-                                        limit: 1,
-                                        onPressed: (List<File> files) {
-                                          setState(() {
-                                            _cover = files.first;
-                                          });
-                                        },
-                                        body: G.of(context).partnercover,
-                                        willCrop: true,
-                                        compressQuality:
-                                            NORMAL_COMPRESS_QUALITY);
-                                  },
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 240,
-                                    child: PartnerCoverWidget(
-                                        _cover,
-                                        partnermodel,
-                                        widget.partnerUser.prfoileFromPartner
-                                            .coverImage),
-                                  )),
+                                  CustomBottomSheet.show(
+                                      requestType: RequestType.image,
+                                      popAfterBtnPressed: true,
+                                      buttonText: G.of(context).choose,
+                                      buildContext: context,
+                                      limit: 1,
+                                      onPressed: (List<File> files) {
+                                        setState(() {
+                                          _cover = files.first;
+                                        });
+                                      },
+                                      body: G.of(context).partnercover,
+                                      willCrop: true,
+                                      compressQuality: NORMAL_COMPRESS_QUALITY);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 240,
+                                  child: partercoverwidget(partnermodel
+                                      .partnerData
+                                      .prfoileFromPartner
+                                      .coverImage),
+                                ),
+                              ),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Container(
@@ -259,6 +357,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                   child: Stack(
                                     children: [
                                       CircleAvatar(
+                                        key: intro.keys[1],
                                         radius: 75,
                                         child: CircleAvatar(
                                           radius: 72,
@@ -268,11 +367,9 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                             child: new SizedBox(
                                               width: 150.0,
                                               height: 150.0,
-                                              child: PartnerProfileWidget(
-                                                  _profile,
-                                                  partnermodel,
-                                                  widget
-                                                      .partnerUser
+                                              child: partnerprofilewidget(
+                                                  partnermodel
+                                                      .partnerData
                                                       .prfoileFromPartner
                                                       .profileImage),
                                             ),
@@ -310,6 +407,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                               ),
                               LoginFormContainer(
                                 child: Column(
+                                  key: intro.keys[2],
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -361,6 +459,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
                                 ),
                               ),
                               ShadedContainer(
+                                key: intro.keys[3],
                                 child: finish
                                     ? ButtonProgressIndicator()
                                     : Text(
@@ -429,59 +528,5 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
         );
       },
     );
-  }
-}
-
-///[Change Image.file (ImagePicker get File format)]
-class PartnerCoverWidget extends StatelessWidget {
-  PartnerCoverWidget(this.cover, this.partnermodel, this.coverFile);
-  final cover;
-  final partnermodel;
-  final coverFile;
-
-  @override
-  Widget build(BuildContext context) {
-    if (this.cover == null) {
-      // return Image.network(
-      //   partnermodel.partnerData.prfoileFromPartner.coverImage,
-      //   fit: BoxFit.cover,
-      // );
-      return Image.file(
-        coverFile,
-        fit: BoxFit.cover,
-      );
-    } else {
-      return Image.file(
-        cover,
-        filterQuality: FilterQuality.medium,
-        fit: BoxFit.cover,
-      );
-    }
-  }
-}
-
-///[Change Image.file (ImagePicker get File format)]
-class PartnerProfileWidget extends StatelessWidget {
-  PartnerProfileWidget(this.profile, this.partnermodel, this.profileFile);
-  final profile;
-  final partnermodel;
-  final profileFile;
-  @override
-  Widget build(BuildContext context) {
-    if (this.profile == null) {
-      // return Image.network(
-      //   partnermodel.partnerData.prfoileFromPartner.profileImage,
-      //   fit: BoxFit.cover,
-      // );
-      return Image.file(
-        profileFile,
-        fit: BoxFit.cover,
-      );
-    } else {
-      return Image.file(
-        this.profile,
-        fit: BoxFit.cover,
-      );
-    }
   }
 }

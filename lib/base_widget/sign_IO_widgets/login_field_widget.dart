@@ -15,7 +15,8 @@ class LoginTextField extends StatefulWidget {
   final TextInputType keyboardType;
 
   LoginTextField(
-      {this.label,
+      {Key key,
+      this.label,
       this.icon,
       this.controller,
       this.obscureText: false,
