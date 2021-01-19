@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/storage_manager.dart';
+import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/main/tutorial/homepagedummy.dart';
 
 class GameProfileDummy extends StatefulWidget {
@@ -53,7 +55,9 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
   void initState() {
     super.initState();
     Future.delayed(Duration(microseconds: 0), () {
-      intro.start(context);
+      if (StorageManager.sharedPreferences.getBool(firsttuto) ?? true) {
+        intro.start(context);
+      }
     });
   }
 
