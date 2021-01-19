@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -15,6 +16,7 @@ import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:share/share.dart';
+
 ///To-Do Block and Delete feature to work smoothly
 class NFBloc {
   NFBloc(this.scrollController) {
@@ -31,6 +33,7 @@ class NFBloc {
   final limit = 20;
   int nextPage = 1;
   bool hasReachedMax = false;
+  bool isFetching = false;
 
   void dispose() {
     _debounce?.cancel();
@@ -70,13 +73,15 @@ class NFBloc {
 
   void refreshData() {
     nextPage = 1;
+    isFetching = false;
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
       nfPostsSubject.add(null);
+      refreshCompleter?.complete();
+      refreshCompleter = Completer<void>();
+      hasReachedMax = value.length < limit;
+      nextPage++;
       Future.delayed(Duration(milliseconds: 50), () {
         nfPostsSubject.add(value);
-        refreshCompleter?.complete();
-        refreshCompleter = Completer<void>();
-        hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       nfPostsSubject.addError(e);
@@ -87,26 +92,33 @@ class NFBloc {
 
   void fetchInitialData() {
     nextPage = 1;
-    MoonGoDB().retrieveNfPosts(limit, nextPage).then((value) => nfPostsSubject.add(value));
+    // MoonGoDB()
+    //     .retrieveNfPosts(limit, nextPage)
+    //     .then((value) => nfPostsSubject.add(value));
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) async {
       nfPostsSubject.add(null);
-      await Future.delayed(Duration(milliseconds: 50));
-      nfPostsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
+      await Future.delayed(Duration(milliseconds: 50));
+      nfPostsSubject.add(value);
     }, onError: (e) => nfPostsSubject.addError(e));
   }
 
   void fetchMoreData() {
-    if (hasReachedMax) return;
+    if (hasReachedMax || isFetching) return;
+    isFetching = true;
+    if (isDev) print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNFPosts(limit, nextPage).then((value) {
+      nextPage++;
+      hasReachedMax = value.length < limit;
+      isFetching = false;
       nfPostsSubject.first.then((prev) {
         nfPostsSubject.add(prev + value);
       });
-      nextPage++;
-      hasReachedMax = value.length < limit;
     }, onError: (e) {
-      refreshCompleter.completeError(e);
+      hasReachedMax = true;
+      isFetching = false;
+      nfPostsSubject.first.then((value) => nfPostsSubject.add(value));
     });
   }
 
@@ -133,8 +145,7 @@ class NFBloc {
         },
         onBlock: () {
           MoonBlinkRepository.blockOrUnblock(partnerId, BLOCK).then((value) {
-            showToast(
-                'Successfully block');
+            showToast('Successfully block');
             Navigator.pop(context);
             // this.nfPostsSubject.first.then((value) {
             //   value.removeAt(index);

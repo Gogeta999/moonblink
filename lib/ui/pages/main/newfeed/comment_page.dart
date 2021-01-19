@@ -1,5 +1,3 @@
-
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -344,8 +342,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     SizedBox(width: 10),
                     InkResponse(
                       onTap: () {
-                        widget.bloc
-                            .onTapDelete(context, item.commentId);
+                        widget.bloc.onTapDelete(context, item.commentId);
                       },
                       child: Text('Delete',
                           style: TextStyle(
@@ -429,8 +426,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     SizedBox(width: 10),
                     InkResponse(
                       onTap: () {
-                        widget.bloc
-                            .onTapDelete(context, item.commentId);
+                        widget.bloc.onTapDelete(context, item.commentId);
                       },
                       child: Text('Delete',
                           style: TextStyle(

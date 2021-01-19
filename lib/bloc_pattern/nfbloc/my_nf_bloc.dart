@@ -24,9 +24,10 @@ class MyNFBloc {
 
   final myNfPostsSubject = BehaviorSubject<List<NFPost>>.seeded(null);
 
-  final limit = 10;
+  final limit = 20;
   int nextPage = 1;
   bool hasReachedMax = false;
+  bool isFetching = false;
 
   void dispose() {
     _debounce?.cancel();
@@ -66,13 +67,15 @@ class MyNFBloc {
 
   void refreshData() {
     nextPage = 1;
+    isFetching = false;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
       myNfPostsSubject.add(null);
+      refreshCompleter?.complete();
+      refreshCompleter = Completer<void>();
+      hasReachedMax = value.length < limit;
+      nextPage++;
       Future.delayed(Duration(milliseconds: 50), () {
         myNfPostsSubject.add(value);
-        refreshCompleter?.complete();
-        refreshCompleter = Completer<void>();
-        hasReachedMax = value.length < limit;
       });
     }, onError: (e) {
       myNfPostsSubject.addError(e);
@@ -84,21 +87,28 @@ class MyNFBloc {
   void fetchInitialData() {
     nextPage = 1;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
-      myNfPostsSubject.add(value);
       nextPage++;
       hasReachedMax = value.length < limit;
+      myNfPostsSubject.add(value);
     }, onError: (e) => myNfPostsSubject.addError(e));
   }
 
   void fetchMoreData() {
-    if (hasReachedMax) return;
+    if (hasReachedMax || isFetching) return;
     MoonBlinkRepository.getNFPostsById(limit, nextPage).then((value) {
+      nextPage++;
+      hasReachedMax = value.length < limit;
+      isFetching = false;
       myNfPostsSubject.first.then((prev) {
         myNfPostsSubject.add(prev + value);
       });
-      nextPage++;
-      hasReachedMax = value.length < limit;
-    }, onError: (e) => myNfPostsSubject.addError(e));
+    }, onError: (e) {
+      hasReachedMax = true;
+      isFetching = false;
+      myNfPostsSubject.first.then((value) {
+        myNfPostsSubject.add(value);
+      });
+    });
   }
 
   Future<bool> onTapDeleteIcon(BuildContext context, int index, int postId) {
@@ -123,7 +133,8 @@ class MyNFBloc {
                       this.myNfPostsSubject.first.then((value) {
                         value.removeAt(index);
                         this.myNfPostsSubject.add(null);
-                        Future.delayed(Duration(milliseconds: 50), () => this.myNfPostsSubject.add(value));
+                        Future.delayed(Duration(milliseconds: 50),
+                            () => this.myNfPostsSubject.add(value));
                       });
                     }, onError: (e) {
                       showToast(e.toString());

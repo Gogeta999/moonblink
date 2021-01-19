@@ -35,7 +35,7 @@ class _TrimmerViewState extends State<TrimmerView> {
       _progressVisibility = true;
     });
     String _value;
-    final bitrate = widget.vipLevel == 3 ? "5M" : "1M";
+    final bitrate = widget.vipLevel == 3 ? "5M" : "2.5M";
     await widget._trimmer
         .saveTrimmedVideo(
       startValue: _startValue,

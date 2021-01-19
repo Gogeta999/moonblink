@@ -89,7 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     textInputAction: TextInputAction.done,
                                   ),
                                   LoginTextField(
-                                    label: "Re-Enter Password",
+                                    label: G.current.signUpReEnterPassword,
                                     icon: Icons.lock_open,
                                     obscureText: true,
                                     controller: _rePasswordCtrl,

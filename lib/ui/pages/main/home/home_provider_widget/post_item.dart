@@ -18,6 +18,7 @@ import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:share/share.dart';
+import 'package:intl/intl.dart';
 
 class PostItemWidget extends StatefulWidget {
   PostItemWidget(this.posts, {this.index}) : super(key: ValueKey(posts.id));
@@ -268,6 +269,8 @@ class _PostItemWidgetState extends State<PostItemWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var _formattedLikes =
+        NumberFormat.compact().format(widget.posts.reactionCount);
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
     return Column(
       children: [
@@ -467,7 +470,7 @@ class _PostItemWidgetState extends State<PostItemWidget>
                             Positioned(
                                 bottom: 5,
                                 child: Text(
-                                    '${widget.posts.reactionCount} ${G.of(context).likes}'))
+                                    '$_formattedLikes ${G.of(context).likes}'))
                           ],
                         )),
                   ],
