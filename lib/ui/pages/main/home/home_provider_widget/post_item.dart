@@ -272,6 +272,12 @@ class _PostItemWidgetState extends State<PostItemWidget>
     var _formattedLikes =
         NumberFormat.compact().format(widget.posts.reactionCount);
     final ownId = StorageManager.sharedPreferences.getInt(mUserId);
+    String truncateWithEllipsis(int cutoff, String myString) {
+      return (myString.length <= cutoff)
+          ? myString
+          : '${myString.substring(0, cutoff)}...';
+    }
+
     return Column(
       children: [
         GestureDetector(
@@ -306,14 +312,28 @@ class _PostItemWidgetState extends State<PostItemWidget>
                               top: 20,
                               child: Row(
                                 children: [
-                                  Text(widget.posts.userName,
-                                      style: widget.posts.id == 62
-                                          ? TextStyle(
-                                              color:
-                                                  Theme.of(context).accentColor)
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyText1),
+                                  if (widget.posts.userName.length >= 11)
+                                    Text(
+                                        widget.posts.userName.replaceRange(
+                                            10,
+                                            widget.posts.userName.length,
+                                            '...'),
+                                        style: widget.posts.id == 62
+                                            ? TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor)
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
+                                  if (widget.posts.userName.length < 11)
+                                    Text(widget.posts.userName,
+                                        style: widget.posts.id == 62
+                                            ? TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor)
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .bodyText1),
                                   Padding(
                                       padding: EdgeInsets.only(left: 10),
                                       child: gemColor(widget.posts.vip)),

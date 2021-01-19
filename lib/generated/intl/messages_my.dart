@@ -288,6 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("Following"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("Home"),
     "tabUser" : MessageLookupByLibrary.simpleMessage("User"),
+    "tabVipFeatureToast" : MessageLookupByLibrary.simpleMessage("VIP Feature"),
     "termAndConditions" : MessageLookupByLibrary.simpleMessage("ကာလနှင့်အခြေအနေများစာချုပ်"),
     "textnohistory" : MessageLookupByLibrary.simpleMessage("အသုံးပြုသူတွင်မှတ်တမ်းမရှိပါ။"),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("Gmailသို့Facebookဖြင့်၀င်ရန်"),

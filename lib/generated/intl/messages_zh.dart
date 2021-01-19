@@ -288,6 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabFollowing" : MessageLookupByLibrary.simpleMessage("正在关注"),
     "tabHome" : MessageLookupByLibrary.simpleMessage("主页"),
     "tabUser" : MessageLookupByLibrary.simpleMessage("用户"),
+    "tabVipFeatureToast" : MessageLookupByLibrary.simpleMessage("VIP功能"),
     "termAndConditions" : MessageLookupByLibrary.simpleMessage("隐私政策"),
     "textnohistory" : MessageLookupByLibrary.simpleMessage("该玩家没有任何记录"),
     "thirdLogin" : MessageLookupByLibrary.simpleMessage("第三方登录"),

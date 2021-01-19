@@ -7,6 +7,7 @@ import 'package:moonblink/base_widget/customnavigationbar/custom_navigation_bar.
 import 'package:moonblink/base_widget/customnavigationbar/src/convex_appBar/convex_bottom_bar.dart';
 import 'package:moonblink/bloc_pattern/chat_list/chat_list_bloc.dart';
 import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notification_bloc.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/services/web_socket_service.dart';
@@ -106,7 +107,7 @@ class _MainTabPageState extends State<MainTabPage>
         //   _pageController.jumpToPage(2);
         // });
         if (userType == 0) {
-          showToast('CoPlayer feature');
+          showToast(G.current.tabVipFeatureToast);
         }
         if (userType != 0) {
           Navigator.pushNamed(context, RouteName.createPostPage);

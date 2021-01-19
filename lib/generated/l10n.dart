@@ -2985,6 +2985,16 @@ class G {
     );
   }
 
+  /// `VIP Feature`
+  String get tabVipFeatureToast {
+    return Intl.message(
+      'VIP Feature',
+      name: 'tabVipFeatureToast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Term and Conditions`
   String get termAndConditions {
     return Intl.message(
