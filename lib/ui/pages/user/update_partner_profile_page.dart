@@ -206,8 +206,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
           );
           _biosController.value = _biosController.value
               .copyWith(text: partnermodel.partnerData.prfoileFromPartner.bios);
+
+          ///to change partner datatype
           Future.delayed(const Duration(milliseconds: 100), () {
-            if (StorageManager.sharedPreferences.getBool(firsttuto) ?? true) {
+            if (partnermodel.partnerData.type == 5 &&
+                (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
               intro.start(context);
             }
             setState(() {

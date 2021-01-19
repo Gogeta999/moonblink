@@ -11,6 +11,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/permission.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/main/tutorial/gamepricedummy.dart';
 import 'package:moonblink/ui/pages/main/tutorial/homepagedummy.dart';
 import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
@@ -146,7 +147,8 @@ void nextPage(context) {
   } else {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
-    if (type != 0 &&
+    //important to change here
+    if (type == 5 &&
         (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
       Navigator.of(context).push(
         MaterialPageRoute(

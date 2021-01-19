@@ -14,6 +14,7 @@ import 'package:moonblink/provider/provider_widget.dart';
 import 'package:moonblink/ui/helper/agreement.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
 
@@ -164,9 +165,20 @@ class LoginButton extends StatelessWidget {
                         StorageManager.sharedPreferences.getInt(mgameprofile);
                     int type =
                         StorageManager.sharedPreferences.getInt(mUserType);
-    
+
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
+
+                    ///important to change here
+                    if (type == 5 &&
+                        (StorageManager.sharedPreferences.getBool(firsttuto) ??
+                            true)) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UpdatePartnerProfilePage(),
+                        ),
+                      );
+                    }
                     tutorialOn();
                     if (gameprofile == 0 && type != 0) {
                       gameProfileSetUp();
