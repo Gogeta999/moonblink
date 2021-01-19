@@ -6,13 +6,10 @@ import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/global/storage_manager.dart';
-import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/permission.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
-import 'package:moonblink/ui/pages/main/tutorial/homepagedummy.dart';
-import 'package:moonblink/ui/pages/user/partner_detail_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:moonblink/view_model/user_model.dart';
@@ -146,6 +143,7 @@ void nextPage(context) {
   } else {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+    //important to change here
     if (type == 5 &&
         (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
       Navigator.of(context).push(

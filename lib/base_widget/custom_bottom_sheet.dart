@@ -12,6 +12,8 @@ import 'package:moonblink/base_widget/user_manage_content_bottom_sheet.dart';
 import 'package:moonblink/base_widget/voice_bottom_sheet.dart';
 import 'package:moonblink/bloc_pattern/update_game_profile/bloc/update_game_profile_bloc.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/models/game_profile.dart';
+import 'package:moonblink/ui/pages/main/tutorial/gamepricedummy.dart';
 import 'package:moonblink/view_model/booking_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
