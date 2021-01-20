@@ -68,6 +68,8 @@
     "chatbuycoin": "သင်နဲ့ gameဆော့ရအောင် Coin ကိုဘယ်မှာဝယ်ရမှာလဲ။",
     "chathowtoplay": "သင်နဲ့ဆော့ရအောင်ကျွန်တော်ဘာကိုလုပ်ရမှာလဲ။",
     "cashout": "ငွေထုတ်",
+    "captchaEnterLabel": "Enter Captcha",
+    "captchaWrongToast": "Captcha Wrong",
     "coin": "ကျွန်တော့် ပိုက်ဆံ",
     "copyID": "copy ID",
     "cannotblank": "အလွတ်မရပါ",

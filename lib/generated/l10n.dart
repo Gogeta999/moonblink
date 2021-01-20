@@ -725,6 +725,26 @@ class G {
     );
   }
 
+  /// `Enter Captcha`
+  String get captchaEnterLabel {
+    return Intl.message(
+      'Enter Captcha',
+      name: 'captchaEnterLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Captcha Wrong`
+  String get captchaWrongToast {
+    return Intl.message(
+      'Captcha Wrong',
+      name: 'captchaWrongToast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `My Coin`
   String get coin {
     return Intl.message(

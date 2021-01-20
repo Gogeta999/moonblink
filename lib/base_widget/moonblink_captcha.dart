@@ -1,18 +1,38 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'dart:math';
-
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:random_string/random_string.dart';
 
 class MBCaptcha extends StatefulWidget {
-  MBCaptcha({@required this.something});
-  final int something;
+  MBCaptcha(
+      {
+      // @required this.checkFunction,
+      this.captchaController,
+      this.label,
+      this.validator,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted,
+      this.keyboardType});
+  final TextEditingController captchaController;
+  // final checkCaptchaCode;
+  // final checkFunction;
+  final String label;
+  final FormFieldValidator<String> validator;
+  final FocusNode focusNode;
+  final TextInputAction textInputAction;
+  final ValueChanged<String> onFieldSubmitted;
+  final TextInputType keyboardType;
   @override
   _MBCaptchaState createState() => _MBCaptchaState();
 }
 
 class _MBCaptchaState extends State<MBCaptcha> {
+  // bool enable = false;
+  TextEditingController controller;
   //For RandomOutPut
   var elementList = [
     '0',
@@ -80,6 +100,7 @@ class _MBCaptchaState extends State<MBCaptcha> {
   ];
   final _random = Random();
   var _randomValueList = [];
+  String captchaValue;
   //For Random Paint
   int _textLength;
   double _width;
@@ -88,8 +109,15 @@ class _MBCaptchaState extends State<MBCaptcha> {
   Color _randomColor = RandomColorTheme.randomColor();
   @override
   void initState() {
+    controller = widget.captchaController ?? TextEditingController();
     captchOutPut();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   void generateRandomValue() {
@@ -100,10 +128,18 @@ class _MBCaptchaState extends State<MBCaptcha> {
   void captchOutPut() {
     generateRandomValue();
     _textLength = 4;
-    _width = _textLength.toDouble() * 32;
+    _width = _textLength.toDouble() * 28;
     _height = 50;
+    captchaValue = _randomValueList.join();
     _randLines();
+    setState(() {
+      globalCaptchaValue = captchaValue;
+    });
   }
+
+  // void checkFunction() {
+
+  // }
 
   //Rotate substring in List Effect
   Container _subBox(index) {
@@ -153,34 +189,73 @@ class _MBCaptchaState extends State<MBCaptcha> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          captchOutPut();
-        });
-      },
-      child: Container(
-        color: Colors.grey[200],
-        width: _width,
-        height: _height,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            _annoyLine(),
-            _annoyLine(),
-            // _annoyLine(),
-            // _annoyLine(),
-            Container(
+    var theme = Theme.of(context);
+    // if (widget.checkFunction != null) {
+    //   if (controller.text != captchaValue) {
+    //     showToast('Wrong Enter');
+    //     return null;
+    //   } else if (controller.text == captchaValue) {
+    //     return showToast('1');
+    //   }
+    // }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: TextFormField(
+        style: TextStyle(color: Colors.white),
+        controller: controller,
+        obscureText: false,
+        textAlign: TextAlign.center,
+        focusNode: widget.focusNode,
+        textInputAction: widget.textInputAction,
+        keyboardType: widget.keyboardType,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        decoration: InputDecoration(
+          prefixIcon: GestureDetector(
+            onTap: () {
+              setState(() {
+                captchOutPut();
+              });
+            },
+            child: Container(
+              color: Colors.grey[200],
               width: _width,
               height: _height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_randomValueList.length, (int index) {
-                  return _subBox(index);
-                }),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  _annoyLine(),
+                  _annoyLine(),
+                  // _annoyLine(),
+                  // _annoyLine(),
+                  Container(
+                    width: _width,
+                    height: _height,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children:
+                          List.generate(_randomValueList.length, (int index) {
+                        return _subBox(index);
+                      }),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
+          hintText: widget.label,
+          hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: theme.accentColor),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.green),
+          ),
+          // suffix: MBCaptcha(
+          //   checkCaptchaCode: widget.captchaController,
+          // ),
         ),
       ),
     );

@@ -144,6 +144,12 @@ void nextPage(context) {
   } else {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RouteName.main, (route) => false);
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => UpdatePartnerProfilePage(),
+    //   ),
+    // );
+
     //important to change here
     if (type == 5 &&
         (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
