@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/ui/pages/main/contacts/contacts_page.dart';
-import 'package:moonblink/ui/pages/main/newfeed/new_feed_page.dart';
+import 'package:moonblink/ui/pages/main/newfeed/feed_page.dart';
 
 class MainPage extends StatefulWidget {
   final nfcontroller;

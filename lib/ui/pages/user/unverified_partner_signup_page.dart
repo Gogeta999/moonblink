@@ -22,7 +22,7 @@ import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/services/web_socket_service.dart';
-import 'package:moonblink/ui/pages/settings/allsetting/new_upgrade_vip.dart';
+import 'package:moonblink/ui/pages/settings/allsetting/upgrade_vip_page.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 
