@@ -57,13 +57,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          "Choose Cover Here",
-          "Choose Profile Here",
-          "To Edit Your Name and Bios",
-          "Then finally Pressed Sumbit to update your profile ",
+          G.of(context).tutoupgradeprofile1,
+          G.of(context).tutoupgradeprofile2,
+          G.of(context).tutoupgradeprofile3,
+          G.of(context).tutoupgradeprofile4,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
         },
       ),
     );
@@ -206,8 +206,11 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
           );
           _biosController.value = _biosController.value
               .copyWith(text: partnermodel.partnerData.prfoileFromPartner.bios);
+
+          ///to change partner datatype
           Future.delayed(const Duration(milliseconds: 100), () {
-            if (StorageManager.sharedPreferences.getBool(firsttuto) ?? true) {
+            if (partnermodel.partnerData.type == 5 &&
+                (StorageManager.sharedPreferences.getBool(firsttuto) ?? true)) {
               intro.start(context);
             }
             setState(() {

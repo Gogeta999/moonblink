@@ -196,6 +196,8 @@ class NFPostItem extends StatefulWidget {
 class _NFPostItemState extends State<NFPostItem> {
   final _reactCountSubject = BehaviorSubject<int>();
   final _reactedSubject = BehaviorSubject<bool>();
+  final _readMoreButtonSubject = BehaviorSubject.seeded(false);
+  final maxTitleAndCommentLenght = 80;
 
   @override
   void initState() {
@@ -208,6 +210,7 @@ class _NFPostItemState extends State<NFPostItem> {
   void dispose() {
     _reactCountSubject.close();
     _reactedSubject.close();
+    _readMoreButtonSubject.close();
     super.dispose();
   }
 
@@ -273,12 +276,74 @@ class _NFPostItemState extends State<NFPostItem> {
             if (widget.item.body.isNotEmpty) SizedBox(height: 5),
             if (widget.item.body.isNotEmpty)
               Container(
-                  margin: const EdgeInsets.only(left: 16),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.item.body,
-                    style: Theme.of(context).textTheme.subtitle1,
-                  )),
+                margin: const EdgeInsets.only(left: 16),
+                alignment: Alignment.centerLeft,
+                child: () {
+                  return StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _readMoreButtonSubject,
+                      builder: (context, snapshot) {
+                        if (widget.item.body.length >
+                            maxTitleAndCommentLenght) {
+                          if (snapshot.data) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  widget.item.body,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                SizedBox(height: 5),
+                                InkWell(
+                                  onTap: () {
+                                    _readMoreButtonSubject.add(false);
+                                  },
+                                  child: Text(
+                                    'Read Less',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            String short = widget.item.body.substring(
+                                0,
+                                min(maxTitleAndCommentLenght,
+                                    widget.item.body.length));
+                            short += ' ....';
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  short,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                SizedBox(height: 5),
+                                InkWell(
+                                  onTap: () {
+                                    _readMoreButtonSubject.add(true);
+                                  },
+                                  child: Text(
+                                    'Read More',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        } else {
+                          return Text(
+                            widget.item.body,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          );
+                        }
+                      });
+                }(),
+              ),
             SizedBox(height: 5),
 
             ///Post Media
@@ -459,9 +524,17 @@ class _NFPostItemState extends State<NFPostItem> {
                           text: widget.item.lastCommenterName,
                           style: TextStyle(fontWeight: FontWeight.bold),
                           children: <TextSpan>[
-                            TextSpan(
-                                text: '  ${widget.item.lastComment}',
-                                style: Theme.of(context).textTheme.bodyText1),
+                            () {
+                              String short = widget.item.lastComment.substring(
+                                  0,
+                                  min(maxTitleAndCommentLenght,
+                                      widget.item.lastComment.length));
+                              if (widget.item.lastComment.length >
+                                  maxTitleAndCommentLenght) short += ' ....';
+                              return TextSpan(
+                                  text: ' $short',
+                                  style: Theme.of(context).textTheme.bodyText1);
+                            }(),
                           ]),
                     ))
                   ],
@@ -482,7 +555,7 @@ class _NFPostItemState extends State<NFPostItem> {
                       : Text('Post comments'),
                   onPressed: () {
                     Navigator.pushNamed(context, RouteName.nfCommentPage,
-                        arguments: widget.item.id);
+                        arguments: widget.item);
                   }),
             )
           ],

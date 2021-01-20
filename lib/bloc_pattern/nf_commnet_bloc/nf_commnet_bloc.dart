@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/new_feed_models/NFComment.dart';
+import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
@@ -13,12 +14,12 @@ import 'package:oktoast/oktoast.dart';
 import 'package:rxdart/subjects.dart';
 
 class NFCommentBloc {
-  NFCommentBloc(this.postId) {
+  NFCommentBloc(this.post) {
     this.scrollController = ScrollController()
       ..addListener(() => this.onScroll());
   }
 
-  final int postId;
+  final NFPost post;
 
   ScrollController scrollController;
   Completer<void> refreshCompleter = Completer<void>();
@@ -80,7 +81,7 @@ class NFCommentBloc {
     nextPage = 1;
     isFetching = false;
     print("Fetching Page: $nextPage");
-    MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
+    MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       nfCommentsSubject.add(null);
       refreshCompleter?.complete();
@@ -100,7 +101,7 @@ class NFCommentBloc {
   void fetchInitialData() {
     nextPage = 1;
     print("Fetching Page: $nextPage");
-    MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
+    MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       nextPage++;
       hasReachedMax = value.length < limit;
@@ -112,7 +113,7 @@ class NFCommentBloc {
     if (hasReachedMax || isFetching) return;
     isFetching = true;
     print("Fetching Page: $nextPage");
-    MoonBlinkRepository.getNfPostComments(postId, limit, nextPage).then(
+    MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       isFetching = false;
       nextPage++;
@@ -133,7 +134,7 @@ class NFCommentBloc {
     final commentId = await editingSubject.first;
     if (commentId != null) {
       postButtonSubject.add(true);
-      MoonBlinkRepository.updateComment(postId, commentId, message).then(
+      MoonBlinkRepository.updateComment(post.id, commentId, message).then(
           (value) async {
         final currentPage = nextPage;
         nextPage = 1;
@@ -141,7 +142,7 @@ class NFCommentBloc {
         if (currentPage == 1) {
           try {
             final lastComments = await MoonBlinkRepository.getNfPostComments(
-                postId, limit, nextPage);
+                post.id, limit, nextPage);
             comments.addAll(lastComments);
             nextPage++;
             hasReachedMax = lastComments.length < limit;
@@ -155,7 +156,7 @@ class NFCommentBloc {
           while (nextPage < currentPage) {
             try {
               final lastComments = await MoonBlinkRepository.getNfPostComments(
-                  postId, limit, nextPage);
+                  post.id, limit, nextPage);
               comments.addAll(lastComments);
               nextPage++;
               hasReachedMax = lastComments.length < limit;
@@ -167,6 +168,7 @@ class NFCommentBloc {
             }
           }
         }
+        nfCommentsSubject.add(null);
         nfCommentsSubject.add(comments);
         resetCommentController(context);
         postButtonSubject.add(false);
@@ -180,7 +182,7 @@ class NFCommentBloc {
       if (replyingMap != null)
         parentCommentId = replyingMap['parent_comment_id'];
       postButtonSubject.add(true);
-      MoonBlinkRepository.postComment(postId, message, parentCommentId).then(
+      MoonBlinkRepository.postComment(post.id, message, parentCommentId).then(
           (_) async {
         final currentPage = nextPage;
         nextPage = 1;
@@ -188,7 +190,7 @@ class NFCommentBloc {
         if (currentPage == 1) {
           try {
             final lastComments = await MoonBlinkRepository.getNfPostComments(
-                postId, limit, nextPage);
+                post.id, limit, nextPage);
             comments.addAll(lastComments);
             nextPage++;
             hasReachedMax = lastComments.length < limit;
@@ -203,7 +205,7 @@ class NFCommentBloc {
           while (nextPage < currentPage) {
             try {
               final lastComments = await MoonBlinkRepository.getNfPostComments(
-                  postId, limit, nextPage);
+                  post.id, limit, nextPage);
               comments.addAll(lastComments);
               nextPage++;
               hasReachedMax = lastComments.length < limit;
@@ -216,6 +218,7 @@ class NFCommentBloc {
             }
           }
         }
+        nfCommentsSubject.add(null);
         nfCommentsSubject.add(comments);
         resetCommentController(context);
         postButtonSubject.add(false);
@@ -275,7 +278,7 @@ class NFCommentBloc {
                   onPressed: () {
                     if (deleting) return;
                     deleting = true;
-                    MoonBlinkRepository.deleteComment(postId, commentId).then(
+                    MoonBlinkRepository.deleteComment(post.id, commentId).then(
                         (value) async {
                       final currentPage = nextPage;
                       nextPage = 1;
@@ -284,7 +287,7 @@ class NFCommentBloc {
                         try {
                           final lastComments =
                               await MoonBlinkRepository.getNfPostComments(
-                                  postId, limit, nextPage);
+                                  post.id, limit, nextPage);
                           comments.addAll(lastComments);
                           nextPage++;
                           hasReachedMax = lastComments.length < limit;
@@ -300,7 +303,7 @@ class NFCommentBloc {
                           try {
                             final lastComments =
                                 await MoonBlinkRepository.getNfPostComments(
-                                    postId, limit, nextPage);
+                                    post.id, limit, nextPage);
                             comments.addAll(lastComments);
                             nextPage++;
                             hasReachedMax = lastComments.length < limit;
@@ -313,6 +316,7 @@ class NFCommentBloc {
                           }
                         }
                       }
+                      nfCommentsSubject.add(null);
                       nfCommentsSubject.add(comments);
                       resetCommentController(context);
                       postButtonSubject.add(false);

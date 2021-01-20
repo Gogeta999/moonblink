@@ -102,7 +102,7 @@ class _OtpPageState extends State<OtpPage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: ProviderWidget<OtpModel>(
-                      model: OtpModel(Provider.of(context)),
+                      model: OtpModel(),
                       builder: (context, model, child) {
                         return Form(
                           onWillPop: () async {

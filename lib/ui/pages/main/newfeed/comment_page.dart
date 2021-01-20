@@ -1,17 +1,21 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/bloc_pattern/nf_commnet_bloc/nf_commnet_bloc.dart';
 import 'package:moonblink/models/new_feed_models/NFComment.dart';
+import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class CommentPage extends StatefulWidget {
-  final int postId;
+  final NFPost post;
 
-  const CommentPage(this.postId, {Key key}) : super(key: key);
+  const CommentPage(this.post, {Key key}) : super(key: key);
 
   @override
   _CommentPageState createState() => _CommentPageState();
@@ -22,7 +26,7 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   void initState() {
-    _bloc = NFCommentBloc(widget.postId);
+    _bloc = NFCommentBloc(widget.post);
     _bloc.fetchInitialData();
     super.initState();
   }
@@ -248,35 +252,18 @@ class NfCommentItem extends StatefulWidget {
 }
 
 class _NfCommentItemState extends State<NfCommentItem> {
-  // final _repliesSubject = BehaviorSubject<List<NFReply>>.seeded([]);
-  // int start = 0;
-  // int end = 0;
+  final _repliesSubject = BehaviorSubject<List<NFReply>>.seeded([]);
 
-  // @override
-  // void initState() {
-  //   end = widget.item.reply.length >= 3 ? 3 : widget.item.reply.length;
-  //   addMoreReply();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  // @override
-  // void dispose() {
-  //   _repliesSubject.close();
-  //   super.dispose();
-  // }
-
-  // void addMoreReply() {
-  //   List<NFReply> replies = [];
-  //   end = min(widget.item.reply.length, end);
-  //   while (start < end) {
-  //     replies.add(widget.item.reply[start]);
-  //     start++;
-  //   }
-  //   end += replies.length;
-  //   _repliesSubject.first.then((prev) {
-  //     _repliesSubject.add(prev + replies);
-  //   });
-  // }
+  @override
+  void dispose() {
+    _repliesSubject.close();
+    super.dispose();
+  }
 
   Widget commentListTile(dynamic item) {
     if (item is NFComment) {
@@ -358,6 +345,20 @@ class _NfCommentItemState extends State<NfCommentItem> {
                               color: Colors.red[600], fontSize: 14.0)),
                     ),
                   ],
+                ),
+              if (widget.bloc.post.userId == widget.bloc.myId)
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    InkResponse(
+                      onTap: () {
+                        widget.bloc.onTapDelete(context, item.commentId);
+                      },
+                      child: Text('Delete',
+                          style: TextStyle(
+                              color: Colors.red[600], fontSize: 14.0)),
+                    ),
+                  ],
                 )
             ],
           ),
@@ -418,31 +419,49 @@ class _NfCommentItemState extends State<NfCommentItem> {
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
                 ),
-              if (item.userId == widget.bloc.myId)
-                Row(
-                  children: [
-                    SizedBox(width: 10),
-                    InkResponse(
-                      onTap: () {
-                        widget.bloc
-                            .onTapEdit(context, item.commentId, item.message);
-                      },
-                      child: Text('Edit',
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 14.0)),
-                    ),
-                    SizedBox(width: 10),
-                    InkResponse(
-                      onTap: () {
-                        widget.bloc.onTapDelete(context, item.commentId);
-                      },
-                      child: Text('Delete',
-                          style: TextStyle(
-                              color: Colors.red[600], fontSize: 14.0)),
-                    ),
-                  ],
-                )
+              () {
+                if (item.userId == widget.bloc.myId)
+                  return Row(
+                    children: [
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc
+                              .onTapEdit(context, item.commentId, item.message);
+                        },
+                        child: Text('Edit',
+                            style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                                fontSize: 14.0)),
+                      ),
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc.onTapDelete(context, item.commentId);
+                        },
+                        child: Text('Delete',
+                            style: TextStyle(
+                                color: Colors.red[600], fontSize: 14.0)),
+                      ),
+                    ],
+                  );
+                else if (widget.bloc.post.userId == widget.bloc.myId)
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc.onTapDelete(context, item.commentId);
+                        },
+                        child: Text('Delete',
+                            style: TextStyle(
+                                color: Colors.red[600], fontSize: 14.0)),
+                      ),
+                    ],
+                  );
+                else
+                  return Container();
+              }()
             ],
           ),
         ],
@@ -463,59 +482,58 @@ class _NfCommentItemState extends State<NfCommentItem> {
           if (widget.item.reply.isNotEmpty) SizedBox(height: 5),
           if (widget.item.reply.isNotEmpty)
             Container(
-              margin: const EdgeInsets.only(left: 30.0),
-              child: ListView(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                children: widget.item.reply.map((item) {
-                  return commentListTile(item);
-                }).toList(),
-              ),
+              margin: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: StreamBuilder<List<NFReply>>(
+                  initialData: [],
+                  stream: _repliesSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null || snapshot.data.isEmpty) {
+                      return Container();
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return commentListTile(snapshot.data[index]);
+                      },
+                    );
+                  }),
             ),
-          // if (widget.item.reply.isNotEmpty)
-          //   Container(
-          //     margin: const EdgeInsets.symmetric(horizontal: 30.0),
-          //     child: StreamBuilder<List<NFReply>>(
-          //         initialData: [],
-          //         stream: _repliesSubject,
-          //         builder: (context, snapshot) {
-          //           if (snapshot.data == null || snapshot.data.isEmpty) {
-          //             return Container();
-          //           }
-          //           return ListView(
-          //             shrinkWrap: true,
-          //             physics: ClampingScrollPhysics(),
-          //             children: snapshot.data.map((item) {
-          //               return commentListTile(item);
-          //             }).toList(),
-          //           );
-          //         }),
-          //   ),
-          // if (widget.item.reply.isNotEmpty) SizedBox(height: 5),
-          // if (widget.item.reply.isNotEmpty)
-          //   StreamBuilder<List<NFReply>>(
-          //     initialData: [],
-          //     stream: _repliesSubject,
-          //     builder: (context, snapshot) {
-          //       if (snapshot.data == null || snapshot.data.isEmpty) {
-          //         return Container();
-          //       }
-          //       if (start >= widget.item.reply.length) return Container();
-          //       return Container(
-          //         margin: const EdgeInsets.symmetric(horizontal: 30.0),
-          //         child: InkWell(
-          //           onTap: () {
-          //             addMoreReply();
-          //           },
-          //           child: Text(
-          //             'View more replies',
-          //             style: TextStyle(
-          //                 color: Theme.of(context).accentColor),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   )
+          if (widget.item.reply.isNotEmpty) SizedBox(height: 5),
+          if (widget.item.reply.isNotEmpty)
+            StreamBuilder<List<NFReply>>(
+              initialData: [],
+              stream: _repliesSubject,
+              builder: (context, snapshot) {
+                if (snapshot.data == null || snapshot.data.isEmpty) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: InkWell(
+                      onTap: () {
+                        _repliesSubject.add(widget.item.reply);
+                      },
+                      child: Text(
+                        'View more replies',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                  );
+                }
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: InkWell(
+                    onTap: () {
+                      _repliesSubject.add([]);
+                    },
+                    child: Text(
+                      'View less replies',
+                      style: TextStyle(color: Theme.of(context).accentColor),
+                    ),
+                  ),
+                );
+              },
+            )
         ],
       ),
     );

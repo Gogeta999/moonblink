@@ -4,6 +4,7 @@ import 'package:moonblink/base_widget/intro/flutter_intro.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
+import 'package:moonblink/ui/pages/main/tutorial/gamepricedummy.dart';
 import 'package:moonblink/ui/pages/main/tutorial/homepagedummy.dart';
 
 class GameProfileDummy extends StatefulWidget {
@@ -18,7 +19,7 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
 
   _GameProfileDummyState() {
     intro = Intro(
-      stepCount: 5,
+      stepCount: 3,
       borderRadius: BorderRadius.circular(15),
       onfinish: () {
         intro.dispose();
@@ -28,7 +29,7 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePageDummy(),
+                builder: (context) => GamePriceDummy(),
               ),
             );
           },
@@ -38,14 +39,12 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'choose game',
-          'choose rank',
-          'choose price',
-          'choose profile of your game',
-          'submit'
+          G.of(context).tutogameprofile1,
+          G.of(context).tutogameprofile2,
+          G.of(context).tutogameprofile3,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
         },
       ),
     );
@@ -134,7 +133,6 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
 
   Card _buildGameProfilePhotoCard() {
     return Card(
-        key: intro.keys[3],
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         elevation: 8,
@@ -176,7 +174,6 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
               }),
           actions: <Widget>[
             CupertinoButton(
-              key: intro.keys[4],
               onPressed: () {},
               child: Text("Submit"),
             )
