@@ -39,12 +39,12 @@ class _GameProfileDummyState extends State<GameProfileDummy> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'choose game',
-          'choose rank',
-          'choose price',
+          G.of(context).tutogameprofile1,
+          G.of(context).tutogameprofile2,
+          G.of(context).tutogameprofile3,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
         },
       ),
     );

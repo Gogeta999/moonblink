@@ -42,10 +42,10 @@ class _HomePageDummyState extends State<HomePageDummy> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          'You will be in one of these tabs',
+          G.of(context).tutohomepage1,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? 'Next' : 'Finish';
+          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
         },
       ),
     );
@@ -85,15 +85,14 @@ class _HomePageDummyState extends State<HomePageDummy> {
           outsideDismiss: false,
           isCancel: false,
           isContentLong: true,
-          title: "Co-player rule",
+          title: G.of(context).userrule1,
           confirmButtonColor: Theme.of(context).accentColor,
-          confirmContent: "Confirm",
+          confirmContent: G.of(context).confirm,
           confirmCallback: () {
-            StorageManager.sharedPreferences.setBool(firsttuto, false);
+            // StorageManager.sharedPreferences.setBool(firsttuto, false);
             Navigator.pop(context);
           },
-          simpleContent:
-              ("1. Customer booking ကိုလက်ခံပြီးလျှင်သူကစားမယ်ဘယ်ဂိမ်းမဆို voice chat ဖွင့်ပေးရမည်။\n2. Customer ကိုစိတ်ကြေနပ်အောင်ကစားပေးရမည်။ (Rating ကောင်းလျှင်လူများပို၍မြင်နိုင်သည်)\n3. လက်ခံပြီးလျှင်ဂိမ်းကစားပေးရပါမည်။ Customer ဘက်က report လာ၍အချက်လက်မှန်ကန်ပါက warning ပေးပြီး coin ပြန်ဖျက်သိမ်းပါမည်။ ဒုတိယတစ်ခါဖြစ်လျှင် account ban ပါမည်။\n4. မိမိ၏လှပသောပုံများကို post တင်ခြင်းဖြင့် customer များ follow လာလုပ်မည်။\n5. တခြား media profile များ screenshot ရိုက်ပြီးပုံတင်ခွင့်မရှိပါ။"),
+          simpleContent: (G.of(context).userrule2),
         );
       },
     );
