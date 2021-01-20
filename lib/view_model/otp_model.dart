@@ -6,14 +6,11 @@ import 'package:moonblink/view_model/user_model.dart';
 import 'package:oktoast/oktoast.dart';
 
 class OtpModel extends ViewStateModel {
-  final UserModel userModel;
-
   ///Firebase OTP
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String _verificationId;
   int _forceResendingToken;
   String _phone;
-  OtpModel(this.userModel) : assert(userModel != null);
   Future<bool> getFirebaseOtp({String phone, bool retry = false}) async {
     if (_firebaseAuth.currentUser != null) {
       try {
@@ -37,8 +34,9 @@ class OtpModel extends ViewStateModel {
       }
 
       void verificationFailed(FirebaseAuthException authException) async {
-        if (isDev) print(
-            'Exception: ${authException.message} ${authException.code} ${authException.phoneNumber}');
+        if (isDev)
+          print(
+              'Exception: ${authException.message} ${authException.code} ${authException.phoneNumber}');
       }
 
       void codeSent(String verificationId, [int forceResendingToken]) {
