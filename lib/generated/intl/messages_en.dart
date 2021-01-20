@@ -88,6 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "cannotblank" : MessageLookupByLibrary.simpleMessage("can\'t be blanked"),
     "cannotbookself" : MessageLookupByLibrary.simpleMessage("You can\'t book yourself"),
     "cannotchatself" : MessageLookupByLibrary.simpleMessage("You can\'t chat yourself"),
+    "captchaEnterLabel" : MessageLookupByLibrary.simpleMessage("Enter Captcha"),
+    "captchaWrongToast" : MessageLookupByLibrary.simpleMessage("Captcha Wrong"),
     "cashout" : MessageLookupByLibrary.simpleMessage("Cash Out"),
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*We will charge 20% of the price*"),

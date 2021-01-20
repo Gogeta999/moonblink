@@ -88,6 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "cannotblank" : MessageLookupByLibrary.simpleMessage("အလွတ်မရပါ"),
     "cannotbookself" : MessageLookupByLibrary.simpleMessage("သင်ကိုယ်တိုင်ဘွတ်လုပ်လို့မရဘူး"),
     "cannotchatself" : MessageLookupByLibrary.simpleMessage("သင်ကိုယ်တိုင်စကားမပြောနိုင်ပါ"),
+    "captchaEnterLabel" : MessageLookupByLibrary.simpleMessage("Enter Captcha"),
+    "captchaWrongToast" : MessageLookupByLibrary.simpleMessage("Captcha Wrong"),
     "cashout" : MessageLookupByLibrary.simpleMessage("ငွေထုတ်"),
     "chargeForCeleNStreamer" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
     "chargeForNormalPartner" : MessageLookupByLibrary.simpleMessage("*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),

@@ -68,6 +68,8 @@
     "chatbuycoin": "I want to play with you, where can I buy coin?",
     "chathowtoplay": "What should i do to play with you",
     "cashout": "Cash Out",
+    "captchaEnterLabel": "Enter Captcha",
+    "captchaWrongToast": "Captcha Wrong",
     "coin": "My Coin",
     "copyID": "copy ID",
     "cannotblank": "can't be blanked",
