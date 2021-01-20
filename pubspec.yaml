@@ -117,7 +117,8 @@ dependencies:
   video_trimmer: ^0.3.4
   video_compress: ^2.1.0
   visibility_detector: ^0.1.5
-
+  #For Own Captch
+  random_string: ^2.1.0
 
 dev_dependencies:
   flutter_test:

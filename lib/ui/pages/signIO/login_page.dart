@@ -16,6 +16,7 @@ import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/view_model/login_model.dart';
 import 'package:provider/provider.dart';
+import 'package:moonblink/base_widget/moonblink_captcha.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -90,7 +91,14 @@ class _LoginPageState extends State<LoginPage> {
                                 focusNode: _pwdFocus,
                                 textInputAction: TextInputAction.done,
                               ),
-
+                              MBCaptcha(),
+                              // RaisedButton(
+                              //   child: Text('Test'),
+                              //   onPressed: () => Navigator.of(context)
+                              //       .push(MaterialPageRoute(builder: (context) {
+                              //     return MBCaptcha();
+                              //   })),
+                              // )
                               // ThirdLogin(),
                             ],
                           ),
@@ -164,7 +172,7 @@ class LoginButton extends StatelessWidget {
                         StorageManager.sharedPreferences.getInt(mgameprofile);
                     int type =
                         StorageManager.sharedPreferences.getInt(mUserType);
-    
+
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         RouteName.main, (route) => false);
                     tutorialOn();
