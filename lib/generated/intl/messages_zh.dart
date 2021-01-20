@@ -205,6 +205,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "norating" : MessageLookupByLibrary.simpleMessage("该用户还没有评分"),
     "notenoughcoin" : MessageLookupByLibrary.simpleMessage("您没有足够的金币来下单"),
     "offline" : MessageLookupByLibrary.simpleMessage("下线"),
+    "offlinedialogcontent" : MessageLookupByLibrary.simpleMessage("If you turn off Online,\n you will not able to get booking"),
+    "offlinedialogtitle" : MessageLookupByLibrary.simpleMessage("Alert"),
     "okay" : MessageLookupByLibrary.simpleMessage("确认"),
     "online" : MessageLookupByLibrary.simpleMessage("在线"),
     "or" : MessageLookupByLibrary.simpleMessage(" 或者 "),

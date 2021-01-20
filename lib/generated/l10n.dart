@@ -2245,6 +2245,26 @@ class G {
     );
   }
 
+  /// `Alert`
+  String get offlinedialogtitle {
+    return Intl.message(
+      'Alert',
+      name: 'offlinedialogtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you turn off Online,\n you will not able to get booking`
+  String get offlinedialogcontent {
+    return Intl.message(
+      'If you turn off Online,\n you will not able to get booking',
+      name: 'offlinedialogcontent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Get your otp code`
   String get otpGetCode {
     return Intl.message(

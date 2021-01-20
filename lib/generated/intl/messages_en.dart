@@ -205,6 +205,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "norating" : MessageLookupByLibrary.simpleMessage("This user has no rating."),
     "notenoughcoin" : MessageLookupByLibrary.simpleMessage("You don\'t have enough coin to make this booking"),
     "offline" : MessageLookupByLibrary.simpleMessage("Offline"),
+    "offlinedialogcontent" : MessageLookupByLibrary.simpleMessage("If you turn off Online,\n you will not able to get booking"),
+    "offlinedialogtitle" : MessageLookupByLibrary.simpleMessage("Alert"),
     "okay" : MessageLookupByLibrary.simpleMessage("Okay"),
     "online" : MessageLookupByLibrary.simpleMessage("Online"),
     "or" : MessageLookupByLibrary.simpleMessage(" or "),

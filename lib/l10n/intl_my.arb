@@ -220,6 +220,8 @@
     "okay": "အိုကေ",
     "online": "အွန်လိုင်း",
     "offline": "အော့ဖ်လိုင်း",
+    "offlinedialogtitle": "သတိပေး",
+    "offlinedialogcontent": "သင်အွန်လိုင်းကိုပိတ်ထားပါကသင်ဘွတ်ကင်မရနိုင်ပါ",
     "otpGetCode": "Otp codeရယူရန်",
     "otpWelcomePartner": "ကျွန်တော်တို့ရဲ့ မိတ်ဆွေအဖြစ်ကြိုဆိုပါတယ်",
     "otpSignAsPartnerButton": "မိတ်ဆွေအဖြစ်၀င်ရန်",

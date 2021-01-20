@@ -220,6 +220,8 @@
     "okay": "Okay",
     "online": "Online",
     "offline": "Offline",
+    "offlinedialogtitle": "Alert",
+    "offlinedialogcontent": "If you turn off Online,\n you will not able to get booking",
     "otpGetCode": "Get your otp code",
     "otpWelcomePartner": "Welcome to be Partner",
     "otpSignAsPartnerButton": "Sign As Partner",

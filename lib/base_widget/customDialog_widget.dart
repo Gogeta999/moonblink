@@ -97,9 +97,9 @@ class _CustomDialogState extends State<CustomDialog> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(widget.row1Content == null ? '' : widget.row1Content,
+                  Text(widget.row1Content ?? '',
                       style: TextStyle(fontSize: 14.0)),
-                  widget.row2Content == null ? '' : widget.row2Content,
+                  widget.row2Content ?? Container(),
                 ],
               ),
               flex: 1),

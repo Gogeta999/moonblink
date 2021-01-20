@@ -205,6 +205,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "norating" : MessageLookupByLibrary.simpleMessage("အသုံးပြုသူတွင်အဆင့်သတ်မှတ်ချက်မရှိပါ။"),
     "notenoughcoin" : MessageLookupByLibrary.simpleMessage("ဒီဘွတ်ကင်လုပ်ဖို့သင့်မှာငွေအလုံအလောက်မရှိဘူး"),
     "offline" : MessageLookupByLibrary.simpleMessage("အော့ဖ်လိုင်း"),
+    "offlinedialogcontent" : MessageLookupByLibrary.simpleMessage("သင်အွန်လိုင်းကိုပိတ်ထားပါကသင်ဘွတ်ကင်မရနိုင်ပါ"),
+    "offlinedialogtitle" : MessageLookupByLibrary.simpleMessage("သတိပေး"),
     "okay" : MessageLookupByLibrary.simpleMessage("အိုကေ"),
     "online" : MessageLookupByLibrary.simpleMessage("အွန်လိုင်း"),
     "or" : MessageLookupByLibrary.simpleMessage(" သို့မဟုတ် "),
