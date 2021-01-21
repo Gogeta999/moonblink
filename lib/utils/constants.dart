@@ -78,3 +78,5 @@ enum UrlType { LOCAL_IMAGE, LOCAL_VIDEO, REMOTE_IMAGE, REMOTE_VIDEO, UNKNOWN }
 
 const String kEdit = 'Edit';
 const String kDelete = 'Delete';
+
+enum PaymentStatus { PENDING, SUCCESS, REJECT, REFUND }

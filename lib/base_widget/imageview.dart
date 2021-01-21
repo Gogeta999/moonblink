@@ -64,8 +64,9 @@ class LocalImageView extends StatelessWidget {
 class FullScreenImageView extends StatelessWidget {
   final File image;
   final String imageUrl;
+  final String assetsName;
 
-  FullScreenImageView({this.image, this.imageUrl});
+  FullScreenImageView({this.image, this.imageUrl, this.assetsName});
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +83,17 @@ class FullScreenImageView extends StatelessWidget {
           Navigator.pop(context);
         },
         child: PhotoView(
-          imageProvider: image == null
-              ? CachedNetworkImageProvider(imageUrl)
-              : FileImage(image),
+          imageProvider: () {
+            if (image != null) {
+              return FileImage(image);
+            } else if (imageUrl != null) {
+              return CachedNetworkImageProvider(imageUrl);
+            } else if (assetsName != null) {
+              return AssetImage(assetsName);
+            } else {
+              return AssetImage('assets/images/Later.jpg');
+            }
+          }(),
         ),
       ),
     );

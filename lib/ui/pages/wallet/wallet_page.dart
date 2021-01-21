@@ -9,6 +9,7 @@ import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/container/shadedContainer.dart';
 import 'package:moonblink/base_widget/container/titleContainer.dart';
 import 'package:moonblink/generated/l10n.dart';
+import 'package:moonblink/global/router_manager.dart';
 import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
@@ -167,7 +168,10 @@ class _WalletPageState extends State<WalletPage> {
                             // ontap: () {
                             //   _showTopUpBtmSheet();
                             // },
-                            ontap: openCustomerServicePage,
+                            ontap: () {
+                              Navigator.pushNamed(
+                                  context, RouteName.productListPage);
+                            },
                             child: Text(G.of(context).topup),
                           ),
                           ShadedContainer(

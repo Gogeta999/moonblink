@@ -696,7 +696,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                   return AnimatedContainer(
                     width: double.infinity,
                     height: maxHeightSnapshot.data,
-                    duration: Duration(milliseconds: 500),
+                    duration: Duration(milliseconds: 300),
                     child: PageView(
                       physics: ClampingScrollPhysics(),
                       onPageChanged: (value) {

@@ -14,6 +14,9 @@ import 'package:moonblink/ui/pages/main/newfeed/my_feed_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_booking_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_message_notification_page.dart';
 import 'package:moonblink/ui/pages/main/notifications/user_notification_page.dart';
+import 'package:moonblink/ui/pages/payment/payment_history_page.dart';
+import 'package:moonblink/ui/pages/payment/product_list_page.dart';
+import 'package:moonblink/ui/pages/payment/top_up_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/license_agreement.dart';
 import 'package:moonblink/ui/pages/main/main_tab.dart';
 import 'package:moonblink/ui/pages/main/stories/imagepicker_page.dart';
@@ -23,7 +26,6 @@ import 'package:moonblink/ui/pages/settings/allsetting/otp_page.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/blocklist.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/languages.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/unverify_partner_otp_page.dart';
-import 'package:moonblink/ui/pages/settings/allsetting/upgrade_vip_page_OLD.dart';
 import 'package:moonblink/ui/pages/settings/allsetting/vip_effect_demo.dart';
 import 'package:moonblink/ui/pages/settings/settings_page.dart';
 import 'package:moonblink/ui/pages/signIO/DebugDio_Network_page.dart';
@@ -36,7 +38,6 @@ import 'package:moonblink/ui/pages/user/partner_ownProfile_page.dart';
 import 'package:moonblink/ui/pages/user/setpartner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
 import 'package:moonblink/ui/pages/user/user_rating_page.dart';
-import 'package:moonblink/ui/pages/wallet/topup_page.dart';
 import 'package:moonblink/ui/pages/wallet/wallet_page.dart';
 import 'package:moonblink/utils/page_route_animation.dart';
 import '../ui/pages/settings/allsetting/terms_and_conditions_page.dart';
@@ -69,7 +70,6 @@ class RouteName {
   static const String upgradeVip = 'upgradeVip';
   static const String vipDemo = 'vipDemo';
   static const String wallet = 'wallet';
-  static const String topUp = 'topUp';
   static const String chatBox = 'chatBox';
   static const String callScreen = 'callScreen';
   static const String termsAndConditionsPage = 'termsAndConditionsPage';
@@ -89,6 +89,9 @@ class RouteName {
   static const String createPostPage = 'CreatePostPage';
   static const String managePostsPage = 'ManagePostsPage';
   static const String nfCommentPage = 'NFCommentPage';
+  static const String productListPage = 'ProductListPage';
+  static const String topUpPage = 'TopUpPage';
+  static const String paymentHistoryPage = 'PaymentHistoryPage';
 }
 
 class MoonGoRouter {
@@ -134,6 +137,13 @@ class MoonGoRouter {
             initPage: settings.arguments != null ? settings.arguments : 0));
       // case RouteName.userStatus:
       //   return NoAnimRouteBuilder(UserStatusPage());
+      case RouteName.topUpPage:
+        return CupertinoPageRoute(
+            builder: (_) => TopUpPage(product: settings.arguments));
+      case RouteName.productListPage:
+        return CupertinoPageRoute(builder: (_) => ProductListPage());
+      case RouteName.paymentHistoryPage:
+        return CupertinoPageRoute(builder: (_) => PaymentHistoryPage());
       case RouteName.network:
         return NoAnimRouteBuilder(NetWorkPage());
       case RouteName.notiPage:
@@ -200,10 +210,6 @@ class MoonGoRouter {
       //   return CupertinoPageRoute(builder: (_) => ApplyForQualification());
       // case RouteName.pubgMobile:
       //   return CupertinoPageRoute(builder: (_) => PubgMobile());
-
-      case RouteName.topUp:
-        return CupertinoPageRoute(builder: (_) => NewTopUpPage());
-
       case RouteName.userRating:
         return CupertinoPageRoute(
             builder: (_) => UserRatingPage(userId: settings.arguments ?? 0));

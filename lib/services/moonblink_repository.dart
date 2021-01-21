@@ -16,7 +16,9 @@ import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
 import 'package:moonblink/models/ownprofile.dart';
 import 'package:moonblink/models/partner.dart';
+import 'package:moonblink/models/payments/payment.dart';
 import 'package:moonblink/models/post.dart';
+import 'package:moonblink/models/payments/product.dart';
 import 'package:moonblink/models/story.dart';
 import 'package:moonblink/models/transcationModel.dart';
 import 'package:moonblink/models/user.dart';
@@ -759,5 +761,35 @@ class MoonBlinkRepository {
     final response =
         await DioUtils().get("moonblink/api/v1/user/$myId/vip/$myId");
     return VipData.fromJson(response.data);
+  }
+
+  static Future postPayment(int productId, File screenshot) async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final formData = FormData.fromMap({
+      'item_id': productId,
+      'transaction_image': await MultipartFile.fromFile(screenshot.path)
+    });
+    final response = await DioUtils().postwithData(
+        "moonblink/api/v1/user/$myId/product/payment",
+        data: formData);
+    return response;
+  }
+
+  static Future<List<Product>> getProducts() async {
+    final response = await DioUtils().get("moonblink/api/v1/social/product");
+    return response.data.map<Product>((e) => Product.fromJson(e)).toList();
+  }
+
+  static Future<List<Payment>> getUserPayments(int limit, int page) async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils()
+        .get("moonblink/api/v1/user/$myId/product/payment", queryParameters: {
+      'limit': limit,
+      'page': page,
+      'stauts': -1,
+    });
+    return response.data['data']
+        .map<Payment>((e) => Payment.fromJson(e))
+        .toList();
   }
 }

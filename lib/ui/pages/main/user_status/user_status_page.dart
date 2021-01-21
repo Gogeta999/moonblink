@@ -533,9 +533,10 @@ class _UserStatusPageState extends State<UserStatusPage> {
                 ),
                 // blankSpace(),
 
+                ///Manage Own Posts
                 if (usertype != 0)
                   Card(
-                    margin: EdgeInsets.only(bottom: 15),
+                    margin: EdgeInsets.zero,
                     elevation: 4,
                     shadowColor: Theme.of(context).brightness == Brightness.dark
                         ? Colors.black
@@ -553,6 +554,26 @@ class _UserStatusPageState extends State<UserStatusPage> {
                         onTap: () => Navigator.of(context)
                             .pushNamed(RouteName.managePostsPage)),
                   ),
+
+                Card(
+                  margin: EdgeInsets.only(bottom: 15),
+                  elevation: 4,
+                  shadowColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.grey,
+                  child: ListTile(
+                      leading: SvgPicture.asset(
+                        managePost,
+                        // color: Colors.orangeAccent,
+                        height: 32,
+                        width: 32,
+                        fit: BoxFit.contain,
+                      ),
+                      title: Text('Payment History',
+                          style: Theme.of(context).textTheme.bodyText1),
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(RouteName.paymentHistoryPage)),
+                ),
 
                 ///Wallet
                 Card(
