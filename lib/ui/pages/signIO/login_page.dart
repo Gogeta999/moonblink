@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/MoonBlink_LOGO_widget.dart';
 import 'package:moonblink/base_widget/curvepanel.dart';
+import 'package:moonblink/base_widget/moonblink_captcha.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/forgetpassword.dart';
 import 'package:moonblink/base_widget/indicator/button_indicator.dart';
 import 'package:moonblink/base_widget/sign_IO_widgets/login_button_widget.dart';
@@ -15,7 +16,9 @@ import 'package:moonblink/ui/helper/agreement.dart';
 import 'package:moonblink/ui/helper/gameProfileSetUp.dart';
 import 'package:moonblink/ui/helper/tutorial.dart';
 import 'package:moonblink/ui/pages/user/update_partner_profile_page.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:moonblink/view_model/login_model.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,11 +29,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _captchaController = TextEditingController();
   final _pwdFocus = FocusNode();
   @override
   void dispose() {
     _mailController.dispose();
     _passwordController.dispose();
+    _captchaController.dispose();
     _pwdFocus.unfocus();
     _pwdFocus.dispose();
     super.dispose();
@@ -91,11 +96,15 @@ class _LoginPageState extends State<LoginPage> {
                                 focusNode: _pwdFocus,
                                 textInputAction: TextInputAction.done,
                               ),
-
-                              // ThirdLogin(),
+                              MBCaptcha(
+                                captchaController: _captchaController,
+                                label: G.current.captchaEnterLabel,
+                                textInputAction: TextInputAction.done,
+                              ),
                             ],
                           ),
-                          LoginButton(_mailController, _passwordController),
+                          LoginButton(_mailController, _passwordController,
+                              _captchaController.text),
                           Container(),
                           Column(
                             children: [
@@ -131,7 +140,9 @@ class _LoginPageState extends State<LoginPage> {
 class LoginButton extends StatelessWidget {
   final mailController;
   final passwordController;
-  LoginButton(this.mailController, this.passwordController);
+  final captchaController;
+  LoginButton(
+      this.mailController, this.passwordController, this.captchaController);
 
   @override
   Widget build(BuildContext context) {
@@ -154,39 +165,44 @@ class LoginButton extends StatelessWidget {
       onPressed: model.isBusy
           ? null
           : () {
-              var formState = Form.of(context);
-              if (formState.validate()) {
-                model
-                    .login(
-                        mailController.text, passwordController.text, 'email')
-                    .then((value) {
-                  if (value) {
-                    int gameprofile =
-                        StorageManager.sharedPreferences.getInt(mgameprofile);
-                    int type =
-                        StorageManager.sharedPreferences.getInt(mUserType);
+              if (captchaController != globalCaptchaValue) {
+                showToast(G.current.captchaWrongToast);
+              } else {
+                var formState = Form.of(context);
+                if (formState.validate()) {
+                  model
+                      .login(
+                          mailController.text, passwordController.text, 'email')
+                      .then((value) {
+                    if (value) {
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
 
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouteName.main, (route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false);
 
-                    ///important to change here
-                    if (type == 5 &&
-                        (StorageManager.sharedPreferences.getBool(firsttuto) ??
-                            true)) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UpdatePartnerProfilePage(),
-                        ),
-                      );
+                      ///important to change here
+                      if (type == 5 &&
+                          (StorageManager.sharedPreferences
+                                  .getBool(firsttuto) ??
+                              true)) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => UpdatePartnerProfilePage(),
+                          ),
+                        );
+                      }
+                      tutorialOn();
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
+                    } else {
+                      model.showErrorMessage(context);
                     }
-                    tutorialOn();
-                    if (gameprofile == 0 && type != 0) {
-                      gameProfileSetUp();
-                    }
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
+                  });
+                }
               }
             },
     );

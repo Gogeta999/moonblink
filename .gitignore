@@ -1,3 +1,7 @@
+#Vs Code
+**/.vscode/
+*.code-workspace
+*/.build/
 # Miscellaneous
 *.class
 *.log

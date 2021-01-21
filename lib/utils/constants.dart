@@ -1,3 +1,4 @@
+String globalCaptchaValue = '';
 const String spPhoneNumber = 'spPhoneNumber';
 const String isUserAtChatBox = 'isUserAtChatBox';
 const String isUserAtVoiceCallPage = 'isUserAtVoiceCallPage';

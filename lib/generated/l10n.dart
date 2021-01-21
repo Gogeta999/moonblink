@@ -725,6 +725,26 @@ class G {
     );
   }
 
+  /// `Enter Captcha`
+  String get captchaEnterLabel {
+    return Intl.message(
+      'Enter Captcha',
+      name: 'captchaEnterLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Captcha Wrong`
+  String get captchaWrongToast {
+    return Intl.message(
+      'Captcha Wrong',
+      name: 'captchaWrongToast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `My Coin`
   String get coin {
     return Intl.message(
@@ -2245,6 +2265,26 @@ class G {
     );
   }
 
+  /// `Alert`
+  String get offlinedialogtitle {
+    return Intl.message(
+      'Alert',
+      name: 'offlinedialogtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you turn off Online,\n you will not able to get booking`
+  String get offlinedialogcontent {
+    return Intl.message(
+      'If you turn off Online,\n you will not able to get booking',
+      name: 'offlinedialogcontent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Get your otp code`
   String get otpGetCode {
     return Intl.message(
@@ -3235,6 +3275,96 @@ class G {
     );
   }
 
+  /// `First tap here to add your game ID.`
+  String get tutogameprofile1 {
+    return Intl.message(
+      'First tap here to add your game ID.',
+      name: 'tutogameprofile1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to choose your game rank `
+  String get tutogameprofile2 {
+    return Intl.message(
+      'Tap here to choose your game rank ',
+      name: 'tutogameprofile2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to enter game mode you want to play and can choose price for yourself.`
+  String get tutogameprofile3 {
+    return Intl.message(
+      'Tap here to enter game mode you want to play and can choose price for yourself.',
+      name: 'tutogameprofile3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can customize your booking price as you want`
+  String get tutogameprice1 {
+    return Intl.message(
+      'You can customize your booking price as you want',
+      name: 'tutogameprice1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This page will be in your own profile. Tap here to choose and update your cover.`
+  String get tutoupgradeprofile1 {
+    return Intl.message(
+      'This page will be in your own profile. Tap here to choose and update your cover.',
+      name: 'tutoupgradeprofile1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to choose and update your profile image. `
+  String get tutoupgradeprofile2 {
+    return Intl.message(
+      'Tap here to choose and update your profile image. ',
+      name: 'tutoupgradeprofile2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you can update your name and bios.`
+  String get tutoupgradeprofile3 {
+    return Intl.message(
+      'Here you can update your name and bios.',
+      name: 'tutoupgradeprofile3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Then, pressed Submit to update your data`
+  String get tutoupgradeprofile4 {
+    return Intl.message(
+      'Then, pressed Submit to update your data',
+      name: 'tutoupgradeprofile4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will find yourself in one of these below tabs`
+  String get tutohomepage1 {
+    return Intl.message(
+      'You will find yourself in one of these below tabs',
+      name: 'tutohomepage1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Go To TopUp Page`
   String get unverifiedPartnerGoTopUpTitle {
     return Intl.message(
@@ -3710,6 +3840,26 @@ class G {
     return Intl.message(
       'unblock',
       name: 'unblock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User rules`
+  String get userrule1 {
+    return Intl.message(
+      'User rules',
+      name: 'userrule1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If the complaint occurs and is established, different penalties will be imposed on the severity.\n\n\nRule 01\nA detailed description\nRequire Co-player to provide services other than the order service, and use canceling orders, bad reviews, etc. as threats to disrupt the platform (require immediate suspension of the order, if the circumstances are serious, the order will be directly confiscated. If such an incident occurs again, the order will be directly confiscated )\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 02\nA detailed description\nThere is no actual order service behavior with co-player, only using platform discounts to place orders multiple times to help co-player get ranking, praise and other related benefits\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 03\nA detailed descriptio\nUse platform rules loopholes to commit fraud or leak platform information/data, Co-player/user privacy and personal information\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 04\nA detailed description\nMaliciously send third-party contact information, maliciously guide platform co-player/users to third parties to communicate order issues\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 05\nA detailed description\nMalicious personal attacks, insults and abuse, slander other platform users/co-player, malicious spread rumors to slander platform/platform users\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nPS: The platform reserves the right to deal with the above violations`
+  String get userrule2 {
+    return Intl.message(
+      'If the complaint occurs and is established, different penalties will be imposed on the severity.\n\n\nRule 01\nA detailed description\nRequire Co-player to provide services other than the order service, and use canceling orders, bad reviews, etc. as threats to disrupt the platform (require immediate suspension of the order, if the circumstances are serious, the order will be directly confiscated. If such an incident occurs again, the order will be directly confiscated )\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 02\nA detailed description\nThere is no actual order service behavior with co-player, only using platform discounts to place orders multiple times to help co-player get ranking, praise and other related benefits\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 03\nA detailed descriptio\nUse platform rules loopholes to commit fraud or leak platform information/data, Co-player/user privacy and personal information\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 04\nA detailed description\nMaliciously send third-party contact information, maliciously guide platform co-player/users to third parties to communicate order issues\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nRule 05\nA detailed description\nMalicious personal attacks, insults and abuse, slander other platform users/co-player, malicious spread rumors to slander platform/platform users\n\nConfirmation method\n01. Co-player;\n02. Feedback from other groups/;\n03. Other displayable text certificates;\n\nPenalties\n01. Three days or permanent ban\n\n\nPS: The platform reserves the right to deal with the above violations',
+      name: 'userrule2',
       desc: '',
       args: [],
     );
