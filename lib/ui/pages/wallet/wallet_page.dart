@@ -168,10 +168,10 @@ class _WalletPageState extends State<WalletPage> {
                             // ontap: () {
                             //   _showTopUpBtmSheet();
                             // },
-                            ontap: () {
-                              Navigator.pushNamed(
-                                  context, RouteName.productListPage);
-                            },
+                            ontap: () => showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                child: ChoosePayDialog()),
                             child: Text(G.of(context).topup),
                           ),
                           ShadedContainer(
@@ -330,5 +330,91 @@ class _WalletPageState extends State<WalletPage> {
         isWalletLoading = false;
       });
     }
+  }
+}
+
+class ChoosePayDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      elevation: 2,
+      title: Text('Choose Payment Method'),
+      children: <Widget>[
+        SimpleDialogOption(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Navigator.pushNamed(context, RouteName.productListPage);
+          },
+          child: Container(
+            child: Padding(
+                padding: EdgeInsets.only(left: 18, bottom: 15),
+                child: Text(
+                  'MoonGo Pay',
+                  style: Theme.of(context).textTheme.subtitle1,
+                )),
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.grey,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey[300],
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (Platform.isAndroid)
+          SimpleDialogOption(
+            onPressed: () {
+              showToast('GPay');
+            },
+            padding: EdgeInsets.zero,
+            child: Container(
+              child: Padding(
+                  padding: EdgeInsets.only(left: 18),
+                  child: Text(
+                    'Google Pay',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  )),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.grey,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.grey[300],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (Platform.isIOS)
+          SimpleDialogOption(
+            onPressed: () {
+              showToast('Apple Pay');
+            },
+            padding: EdgeInsets.zero,
+            child: Container(
+              child: Padding(
+                  padding: EdgeInsets.only(left: 18),
+                  child: Text(
+                    'Apple Pay',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  )),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.grey,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.grey[300],
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

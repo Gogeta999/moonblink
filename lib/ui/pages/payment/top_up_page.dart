@@ -116,15 +116,19 @@ class _TopUpPageState extends State<TopUpPage> {
                 SizedBox(width: 10.0),
                 Expanded(
                   child: RichText(
-                      text: TextSpan(text: description, children: [
-                    TextSpan(
-                        recognizer: tapGestureRecognizer,
-                        text: bankIdWithSpaces,
-                        style: TextStyle(
-                            letterSpacing: 0.3,
-                            color: Theme.of(context).accentColor,
-                            fontSize: 18.0))
-                  ])),
+                      text: TextSpan(
+                          text: description,
+                          style: Theme.of(context).textTheme.subtitle1,
+                          children: [
+                        TextSpan(
+                          recognizer: tapGestureRecognizer,
+                          text: bankIdWithSpaces,
+                          style: TextStyle(
+                              letterSpacing: 0.3,
+                              color: Theme.of(context).accentColor,
+                              fontSize: 15.0),
+                        )
+                      ])),
                 )
               ],
             ),
@@ -216,11 +220,12 @@ class _TopUpPageState extends State<TopUpPage> {
                       horizontal: 10.0, vertical: 10.0),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: Colors.black45),
+                      color: Colors.white30),
                   alignment: Alignment.centerLeft,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Text('Upload Your Transfer Photo & Description'),
                       Text(
                           'Selected Product -> MoonBlink Coins - ${widget.product.mbCoin}'),
                       Text(
@@ -366,20 +371,20 @@ class _TopUpPageState extends State<TopUpPage> {
                   physics: ClampingScrollPhysics(),
                   children: [
                     availablePlatformItem(_kbzpayIdWithSpaces, _kbzpayTapGR,
-                        color: Colors.blue[900],
+                        color: Colors.blue[200],
                         assetsName: 'assets/images/Later.jpg',
                         name: 'KBZPay',
                         description:
                             'Open KBZPay.\nScan QR to pay or manual with this number.\n'),
                     availablePlatformItem(
                         _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
-                        color: Colors.blue[900],
+                        color: Colors.blue[200],
                         assetsName: 'assets/images/Later.jpg',
                         name: 'KBZ M Banking',
                         description:
                             'Open KBZ mBanking App.\nClick Transfer.\n'),
                     availablePlatformItem(_waveIdWithSpaces, _waveTapGR,
-                        color: Colors.yellow[300],
+                        color: Colors.yellow[200],
                         assetsName: 'assets/images/Later.jpg',
                         textColor: Colors.black,
                         name: 'Wave Money',
