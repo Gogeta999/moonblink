@@ -763,11 +763,19 @@ class MoonBlinkRepository {
     return VipData.fromJson(response.data);
   }
 
-  static Future postPayment(int productId, File screenshot) async {
+  static Future postPayment(int productId, List<File> screenshots,
+      String transferAmount, String description) async {
     final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    List<MultipartFile> mFiles = [];
+    if (screenshots != null && screenshots.isNotEmpty)
+      for (int i = 0; i < screenshots.length; ++i) {
+        mFiles.add(await MultipartFile.fromFile(screenshots[i].path));
+      }
     final formData = FormData.fromMap({
       'item_id': productId,
-      'transaction_image': await MultipartFile.fromFile(screenshot.path)
+      'transaction_image': mFiles,
+      'transfer_amount': transferAmount,
+      'description': description
     });
     final response = await DioUtils().postwithData(
         "moonblink/api/v1/user/$myId/product/payment",

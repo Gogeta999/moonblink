@@ -4,6 +4,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
@@ -11,6 +12,7 @@ import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/payments/product.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/ui/helper/icons.dart';
 import 'package:moonblink/utils/compress_utils.dart';
 import 'package:moonblink/utils/constants.dart';
 import 'package:oktoast/oktoast.dart';
@@ -28,8 +30,11 @@ class TopUpPage extends StatefulWidget {
 }
 
 class _TopUpPageState extends State<TopUpPage> {
-  final _transactionImageSubject = BehaviorSubject<File>();
+  final _transactionImagesSubject = BehaviorSubject<List<File>>.seeded([]);
   final _submitSubject = BehaviorSubject.seeded(false);
+  final maxImageLimit = 2;
+  final _transferAmountController = TextEditingController();
+  final _descriptionController = TextEditingController();
   //KBZ
   final _kbzpayIdWithSpaces = '1234 5678 9123 4567';
   final _kbzpayId = '1234567891234567';
@@ -63,7 +68,9 @@ class _TopUpPageState extends State<TopUpPage> {
   @override
   void dispose() {
     _submitSubject.close();
-    _transactionImageSubject.close();
+    _transactionImagesSubject.close();
+    _transferAmountController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -151,10 +158,17 @@ class _TopUpPageState extends State<TopUpPage> {
               onPressed: () {
                 CustomBottomSheet.show(
                     buildContext: context,
-                    limit: 1,
+                    limit: maxImageLimit,
                     body: 'Select Screenshot',
-                    onPressed: (List<File> files) {
-                      this._transactionImageSubject.add(files.first);
+                    onPressed: (List<File> files) async {
+                      final currentFiles =
+                          await this._transactionImagesSubject.first;
+                      currentFiles.addAll(files);
+                      if (currentFiles.length > maxImageLimit) {
+                        int x = currentFiles.length - maxImageLimit;
+                        currentFiles.removeRange(0, x);
+                      }
+                      this._transactionImagesSubject.add(currentFiles);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
@@ -173,7 +187,13 @@ class _TopUpPageState extends State<TopUpPage> {
                     await ImagePicker().getImage(source: ImageSource.camera);
                 File compressedImage = await CompressUtils.compressAndGetFile(
                     File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
-                this._transactionImageSubject.add(compressedImage);
+                final currentFiles = await this._transactionImagesSubject.first;
+                currentFiles.add(compressedImage);
+                if (currentFiles.length > maxImageLimit) {
+                  int x = currentFiles.length - maxImageLimit;
+                  currentFiles.removeRange(0, x);
+                }
+                this._transactionImagesSubject.add(currentFiles);
               }),
           CupertinoButton(
             child: Text(G.of(context).cancel),
@@ -185,14 +205,18 @@ class _TopUpPageState extends State<TopUpPage> {
   }
 
   _topup() async {
-    final screenshot = await _transactionImageSubject.first;
-    if (screenshot == null) {
+    final screenshots = await _transactionImagesSubject.first;
+    if (screenshots == null || screenshots.isEmpty) {
       showToast('Require screenshot');
       return;
     }
     _submitSubject.add(true);
-    MoonBlinkRepository.postPayment(widget.product.id, screenshot).then(
-        (value) {
+    MoonBlinkRepository.postPayment(
+            widget.product.id,
+            screenshots,
+            _transferAmountController.text ?? "",
+            _descriptionController.text ?? "")
+        .then((value) {
       _submitSubject.add(false);
       Navigator.pop(context);
       showToast('Success');
@@ -205,195 +229,347 @@ class _TopUpPageState extends State<TopUpPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          appBar: AppbarWidget(
-            title: Text('TopUp'),
-          ),
-          body: Container(
-            margin: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(height: 5),
-                //Text('Upload your transfer Photo & Description'),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 10.0),
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text('TopUp'),
+              backgroundColor: Colors.black,
+              bottom: PreferredSize(
+                child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white30),
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Text('Upload Your Transfer Photo & Description'),
-                      Text(
-                          'Selected Product -> MoonBlink Coins - ${widget.product.mbCoin}'),
-                      Text(
-                          'Amount To Transfer -> ${widget.product.value} ${widget.product.currencyCode}'),
+                    color: Theme.of(context).accentColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).accentColor,
+                        // spreadRadius: 1,
+                        blurRadius: 4,
+                        offset: Offset(0, 0), // changes position of shadow
+                      ),
                     ],
                   ),
+                  height: 10,
                 ),
-                Divider(indent: 5, endIndent: 5, thickness: 2),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  child: Row(
-                    children: [
-                      ///ScreenShot
-                      Expanded(
-                        flex: 2,
-                        child: Center(
-                          child: StreamBuilder<File>(
-                            initialData: null,
-                            stream: _transactionImageSubject,
-                            builder: (context, snapshot) {
-                              if (snapshot.data == null) {
-                                return Text(
-                                  'Your Screenshot will appear here.',
-                                  textAlign: TextAlign.center,
-                                );
-                              }
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          fullscreenDialog: true,
-                                          builder: (_) => FullScreenImageView(
-                                              image: snapshot.data)));
-                                },
-                                child: Image.file(
-                                  snapshot.data,
-                                  fit: BoxFit.cover,
-                                  height: double.infinity,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-
-                      /// Submit and Description
-                      Expanded(
-                        flex: 3,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Transfer amount & Description'),
-                              Divider(indent: 5, endIndent: 5, thickness: 2),
-                              Text('? Click To Show Example Format'),
-                              SizedBox(height: 10),
-                              StreamBuilder<bool>(
-                                  initialData: false,
-                                  stream: _submitSubject,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data) {
-                                      return Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 4.0),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .accentColor),
-                                            borderRadius:
-                                                BorderRadius.circular(15.0)),
-                                        child: CupertinoActivityIndicator(),
-                                      );
-                                    }
+                preferredSize: Size.fromHeight(5),
+              ),
+              leading: IconButton(
+                  icon: SvgPicture.asset(
+                    back,
+                    semanticsLabel: 'back',
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).accentColor
+                        : Colors.white,
+                    width: 30,
+                    height: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context)),
+              actions: [
+                StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _submitSubject,
+                    builder: (context, snapshot) {
+                      if (snapshot.data) {
+                        return CupertinoButton(
+                          onPressed: () {},
+                          child: CupertinoActivityIndicator(),
+                        );
+                      }
+                      return CupertinoButton(
+                        onPressed: () {
+                          _topup();
+                        },
+                        child: Text('Submit'),
+                      );
+                    })
+              ],
+            ),
+            body: Container(
+              margin: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 5),
+                  //Text('Upload your transfer Photo & Description'),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 10.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white30),
+                    alignment: Alignment.centerLeft,
+                    child: () {
+                      if (widget.product.name == customProduct) {
+                        return Text('Selected Product -> Custom Product');
+                      } else {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                'Selected Product -> MoonBlink Coins - ${widget.product.mbCoin}'),
+                            Text(
+                                'Amount To Transfer -> ${widget.product.value} ${widget.product.currencyCode}'),
+                          ],
+                        );
+                      }
+                    }(),
+                  ),
+                  Divider(indent: 5, endIndent: 5, thickness: 2),
+                  Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    child: Row(
+                      children: [
+                        ///ScreenShot
+                        Expanded(
+                          flex: 2,
+                          child: Center(
+                            child: StreamBuilder<List<File>>(
+                              initialData: null,
+                              stream: _transactionImagesSubject,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null ||
+                                    snapshot.data.isEmpty) {
+                                  return Text(
+                                    'Your Screenshot will appear here.\nPlease add a detailed screenshot for quicker topup.',
+                                    textAlign: TextAlign.center,
+                                  );
+                                }
+                                return GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: ClampingScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: maxImageLimit),
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (context, index) {
                                     return InkWell(
-                                      borderRadius: BorderRadius.circular(15.0),
                                       onTap: () {
-                                        _topup();
+                                        Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                                fullscreenDialog: true,
+                                                builder: (_) =>
+                                                    FullScreenImageView(
+                                                        image: snapshot
+                                                            .data[index])));
                                       },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 4.0),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .accentColor),
-                                            borderRadius:
-                                                BorderRadius.circular(15.0)),
-                                        child: Text('Submit',
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .accentColor,
-                                                fontSize: 16.0)),
+                                      child: Image.file(
+                                        snapshot.data[index],
+                                        fit: BoxFit.fill,
+                                        height: double.infinity,
                                       ),
                                     );
-                                  })
-                            ],
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
 
-                /// Add a screenshot
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(15.0),
-                    onTap: () {
-                      _showSelectImageOptions();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Theme.of(context).accentColor),
-                          borderRadius: BorderRadius.circular(15.0)),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add),
-                          SizedBox(width: 5),
-                          Text('Add a screenshot',
+                        // /// Submit and Description
+                        // Expanded(
+                        //   flex: 3,
+                        //   child: Center(
+                        //     child: Column(
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       children: [
+                        //         Text('Transfer amount & Description'),
+                        //         Divider(indent: 5, endIndent: 5, thickness: 2),
+                        //         Text('? Click To Show Example Format'),
+                        //         SizedBox(height: 10),
+                        //         StreamBuilder<bool>(
+                        //             initialData: false,
+                        //             stream: _submitSubject,
+                        //             builder: (context, snapshot) {
+                        //               if (snapshot.data) {
+                        //                 return Container(
+                        //                   padding: const EdgeInsets.symmetric(
+                        //                       horizontal: 10.0, vertical: 4.0),
+                        //                   decoration: BoxDecoration(
+                        //                       border: Border.all(
+                        //                           color: Theme.of(context)
+                        //                               .accentColor),
+                        //                       borderRadius:
+                        //                           BorderRadius.circular(15.0)),
+                        //                   child: CupertinoActivityIndicator(),
+                        //                 );
+                        //               }
+                        //               return InkWell(
+                        //                 borderRadius: BorderRadius.circular(15.0),
+                        //                 onTap: () {
+                        //                   _topup();
+                        //                 },
+                        //                 child: Container(
+                        //                   padding: const EdgeInsets.symmetric(
+                        //                       horizontal: 10.0, vertical: 4.0),
+                        //                   decoration: BoxDecoration(
+                        //                       border: Border.all(
+                        //                           color: Theme.of(context)
+                        //                               .accentColor),
+                        //                       borderRadius:
+                        //                           BorderRadius.circular(15.0)),
+                        //                   child: Text('Submit',
+                        //                       style: TextStyle(
+                        //                           color: Theme.of(context)
+                        //                               .accentColor,
+                        //                           fontSize: 16.0)),
+                        //                 ),
+                        //               );
+                        //             })
+                        //       ],
+                        //     ),
+                        //   ),
+                        // )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      /// Add a screenshot
+                      InkWell(
+                        borderRadius: BorderRadius.circular(15.0),
+                        onTap: () {
+                          _showSelectImageOptions();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 6.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).accentColor),
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Text('Add screenshots',
                               style: TextStyle(
                                   color: Theme.of(context).accentColor,
                                   fontSize: 16.0)),
-                        ],
+                        ),
                       ),
-                    ),
+
+                      /// Remove a screenshot
+                      StreamBuilder<List<File>>(
+                          initialData: [],
+                          stream: _transactionImagesSubject,
+                          builder: (context, snapshot) {
+                            if (snapshot.data.isEmpty) {
+                              return Container();
+                            }
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(15.0),
+                              onTap: () {
+                                _transactionImagesSubject.add([]);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 6.0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context).accentColor),
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                child: Text('Remove screenshots',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 16.0)),
+                              ),
+                            );
+                          }),
+                    ],
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    'P.S: Please add a detailed screenshot for quicker topup.'),
-                Divider(indent: 5, endIndent: 5, thickness: 2),
-                Text('Available TopUp Platform'),
-                SizedBox(height: 10),
-                Expanded(
-                    child: ListView(
-                  physics: ClampingScrollPhysics(),
-                  children: [
-                    availablePlatformItem(_kbzpayIdWithSpaces, _kbzpayTapGR,
-                        color: Colors.blue[200],
-                        assetsName: 'assets/images/Later.jpg',
-                        name: 'KBZPay',
-                        description:
-                            'Open KBZPay.\nScan QR to pay or manual with this number.\n'),
-                    availablePlatformItem(
-                        _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
-                        color: Colors.blue[200],
-                        assetsName: 'assets/images/Later.jpg',
-                        name: 'KBZ M Banking',
-                        description:
-                            'Open KBZ mBanking App.\nClick Transfer.\n'),
-                    availablePlatformItem(_waveIdWithSpaces, _waveTapGR,
-                        color: Colors.yellow[200],
-                        assetsName: 'assets/images/Later.jpg',
-                        textColor: Colors.black,
-                        name: 'Wave Money',
-                        description: 'Open Wave Money App.\nClick ...\n'),
-                  ],
-                ))
-              ],
-            ),
-          )),
+                  SizedBox(height: 10),
+                  if (widget.product.name == customProduct)
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: CupertinoTextField(
+                                placeholder: 'Transfer amount',
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
+                                clearButtonMode: OverlayVisibilityMode.editing,
+                                controller: _transferAmountController,
+                                style: Theme.of(context).textTheme.subtitle1,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context).accentColor),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor),
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Expanded(
+                              flex: 6,
+                              child: CupertinoTextField(
+                                placeholder: 'Description',
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.done,
+                                clearButtonMode: OverlayVisibilityMode.editing,
+                                controller: _descriptionController,
+                                style: Theme.of(context).textTheme.subtitle1,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context).accentColor),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor),
+                              ),
+                            ),
+                            InkResponse(
+                              onTap: () {
+                                showToast('Show Example Format');
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 3),
+                                child: Icon(
+                                  Icons.help_outline_rounded,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10)
+                      ],
+                    ),
+                  Divider(indent: 5, endIndent: 5, thickness: 2),
+                  Text('Available TopUp Platform'),
+                  SizedBox(height: 10),
+                  Expanded(
+                      child: ListView(
+                    physics: ClampingScrollPhysics(),
+                    children: [
+                      availablePlatformItem(_kbzpayIdWithSpaces, _kbzpayTapGR,
+                          color: Colors.blue[200],
+                          assetsName: 'assets/images/Later.jpg',
+                          name: 'KBZPay',
+                          description:
+                              'Open KBZPay.\nScan QR to pay or manual with this number.\n'),
+                      availablePlatformItem(
+                          _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
+                          color: Colors.blue[200],
+                          assetsName: 'assets/images/Later.jpg',
+                          name: 'KBZ M Banking',
+                          description:
+                              'Open KBZ mBanking App.\nClick Transfer.\n'),
+                      availablePlatformItem(_waveIdWithSpaces, _waveTapGR,
+                          color: Colors.yellow[200],
+                          assetsName: 'assets/images/Later.jpg',
+                          textColor: Colors.black,
+                          name: 'Wave Money',
+                          description: 'Open Wave Money App.\nClick ...\n'),
+                    ],
+                  ))
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

@@ -170,7 +170,7 @@ class _WalletPageState extends State<WalletPage> {
                             // },
                             ontap: () => showDialog(
                                 context: context,
-                                barrierDismissible: false,
+                                barrierDismissible: true,
                                 child: ChoosePayDialog()),
                             child: Text(G.of(context).topup),
                           ),

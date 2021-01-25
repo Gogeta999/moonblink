@@ -174,27 +174,76 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        'Product -> MoonBlink Coins - ${item.item.mbCoin}'),
-                                    SizedBox(height: 5),
-                                    Text(
-                                        'Amount -> ${item.item.value} ${item.item.currencyCode}'),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      'Purchased at ' +
-                                          timeAgo.format(
-                                              DateTime.parse(item.createdAt),
-                                              allowFromNow: true),
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12.0),
-                                    )
-                                  ],
-                                ),
-                              ),
+                              Expanded(child: () {
+                                if (item.item.name == customProduct) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Product -> Custom Product'),
+                                      SizedBox(height: 5),
+                                      Text(
+                                          'Transfer Amount -> ${item.transferAmount}'),
+                                      SizedBox(height: 5),
+                                      Text(
+                                          'Description -> ${item.description}'),
+                                      SizedBox(height: 5),
+                                      if (item.note != null &&
+                                          item.note.isNotEmpty)
+                                        SizedBox(height: 5),
+                                      if (item.note != null &&
+                                          item.note.isNotEmpty)
+                                        Text('Note -> ${item.note}'),
+                                      // timeAgo.format(
+                                      //     DateTime.parse(item.createdAt),
+                                      //     allowFromNow: true),
+                                      () {
+                                        final date =
+                                            DateTime.parse(item.createdAt);
+                                        final day =
+                                            date.day.toString().padLeft(2, '0');
+                                        final month = date.month
+                                            .toString()
+                                            .padLeft(2, '0');
+                                        final year = date.year.toString();
+                                        return Text(
+                                          'Purchased at ' + '$day/$month/$year',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12.0),
+                                        );
+                                      }()
+                                    ],
+                                  );
+                                } else {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          'Product -> MoonBlink Coins - ${item.item.mbCoin}'),
+                                      SizedBox(height: 5),
+                                      Text(
+                                          'Amount -> ${item.item.value} ${item.item.currencyCode}'),
+                                      SizedBox(height: 5),
+                                      if (item.note != null &&
+                                          item.note.isNotEmpty)
+                                        SizedBox(height: 5),
+                                      if (item.note != null &&
+                                          item.note.isNotEmpty)
+                                        Text('Note -> ${item.note}'),
+                                      Text(
+                                        'Purchased at ' +
+                                            timeAgo.format(
+                                                DateTime.parse(item.createdAt),
+                                                allowFromNow: true),
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12.0),
+                                      )
+                                    ],
+                                  );
+                                }
+                              }()),
                               Center(
                                 child: getPaymentStatus(item.status),
                               )

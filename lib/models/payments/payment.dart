@@ -6,10 +6,13 @@ class Payment extends Equatable {
   final int userId;
   final String payWith;
   final int status;
-  final String transactionImage;
+  final List<String> transactionImage;
   final String updatedBy;
   final String createdAt;
   final String updatedAt;
+  final String note;
+  final String description;
+  final int transferAmount;
   final Product item;
 
   Payment.fromJson(Map<String, dynamic> json)
@@ -17,10 +20,14 @@ class Payment extends Equatable {
         userId = json['user_id'],
         payWith = json['pay_with'],
         status = json['status'],
-        transactionImage = json['transaction_image'],
+        transactionImage =
+            json['transaction_image'].map<String>((e) => e.toString()).toList(),
         updatedBy = json['updated_by'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
+        description = json['description'],
+        transferAmount = json['transfer_amount'],
+        note = json['note'],
         item = Product.fromJson(json['item']);
 
   @override

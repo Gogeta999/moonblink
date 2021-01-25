@@ -80,3 +80,5 @@ const String kEdit = 'Edit';
 const String kDelete = 'Delete';
 
 enum PaymentStatus { PENDING, SUCCESS, REJECT, REFUND }
+
+const String customProduct = 'custom_topup_coin';
