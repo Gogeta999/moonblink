@@ -91,7 +91,7 @@ class _Type5PartnerOtpPageState extends State<Type5PartnerOtpPage> {
                     child: Center(
                       child: Text(
                         G.of(context).otpWelcomePartner,
-                        style: TextStyle(fontSize: 30),
+                        style: Theme.of(context).textTheme.headline5,
                       ),
                     ),
                   ),
