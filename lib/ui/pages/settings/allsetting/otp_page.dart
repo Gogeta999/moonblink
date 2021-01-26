@@ -92,7 +92,7 @@ class _OtpPageState extends State<OtpPage> {
                     child: Center(
                       child: Text(
                         G.of(context).otpWelcomePartner,
-                        style: TextStyle(fontSize: 30),
+                        style: Theme.of(context).textTheme.headline5,
                       ),
                     ),
                   ),

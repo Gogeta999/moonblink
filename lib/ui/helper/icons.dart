@@ -29,6 +29,7 @@ final String setting = 'assets/icons/status/setting.svg';
 final String theme = 'assets/icons/status/theme.svg';
 final String upgradeVIP = 'assets/icons/status/upgradeVIP.svg';
 final String wallet = 'assets/icons/status/wallet.svg';
+final String paymentHistory = 'assets/icons/status/paymentHistory.svg';
 
 final String search = 'assets/icons/search.svg';
 final String send = 'assets/icons/send.svg';

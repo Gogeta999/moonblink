@@ -2315,6 +2315,186 @@ class G {
     );
   }
 
+  /// `Product List`
+  String get paymentProductList {
+    return Intl.message(
+      'Product List',
+      name: 'paymentProductList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Amount TopUp`
+  String get paymentCustomProduct {
+    return Intl.message(
+      'Custom Amount TopUp',
+      name: 'paymentCustomProduct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price - Base on your top-up amount and multiplied by 10`
+  String get paymentCustomProductPrice {
+    return Intl.message(
+      'Price - Base on your top-up amount and multiplied by 10',
+      name: 'paymentCustomProductPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Moon Go Coins`
+  String get paymentMBCoins {
+    return Intl.message(
+      'Moon Go Coins',
+      name: 'paymentMBCoins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get paymentMBCoinsPrice {
+    return Intl.message(
+      'Price',
+      name: 'paymentMBCoinsPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment History`
+  String get paymentHistory {
+    return Intl.message(
+      'Payment History',
+      name: 'paymentHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Payment History`
+  String get paymentHistoryEmpty {
+    return Intl.message(
+      'No Payment History',
+      name: 'paymentHistoryEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available TopUp Platform`
+  String get paymentTopUpAvailablePlatform {
+    return Intl.message(
+      'Available TopUp Platform',
+      name: 'paymentTopUpAvailablePlatform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Screenshots`
+  String get paymentTopUpAddScreenshots {
+    return Intl.message(
+      'Add Screenshots',
+      name: 'paymentTopUpAddScreenshots',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove screenshots`
+  String get paymentTopUpRemoveScreenshots {
+    return Intl.message(
+      'Remove screenshots',
+      name: 'paymentTopUpRemoveScreenshots',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Require screenshot`
+  String get paymentTopUpRequireScreenshot {
+    return Intl.message(
+      'Require screenshot',
+      name: 'paymentTopUpRequireScreenshot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Screenshot`
+  String get paymentTopUpSelectScreenshot {
+    return Intl.message(
+      'Select Screenshot',
+      name: 'paymentTopUpSelectScreenshot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Product -> Custom Product`
+  String get paymentTopUpSelectCustomProduct {
+    return Intl.message(
+      'Selected Product -> Custom Product',
+      name: 'paymentTopUpSelectCustomProduct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected Product -> MoonGo Coins - `
+  String get paymentTopUpSelectProduct {
+    return Intl.message(
+      'Selected Product -> MoonGo Coins - ',
+      name: 'paymentTopUpSelectProduct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount To Transfer -> `
+  String get paymentTopUpSelectProductTransferAmount {
+    return Intl.message(
+      'Amount To Transfer -> ',
+      name: 'paymentTopUpSelectProductTransferAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Screenshot will appear here.\nPlease add a detailed screenshot for quicker topup.`
+  String get paymentTopUpScreenshotAppearLayer {
+    return Intl.message(
+      'Your Screenshot will appear here.\nPlease add a detailed screenshot for quicker topup.',
+      name: 'paymentTopUpScreenshotAppearLayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer Amount`
+  String get paymentTopUpTransferAmount {
+    return Intl.message(
+      'Transfer Amount',
+      name: 'paymentTopUpTransferAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get paymentTopUpDescription {
+    return Intl.message(
+      'Description',
+      name: 'paymentTopUpDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `PlayerID`
   String get playerid {
     return Intl.message(
@@ -4110,6 +4290,26 @@ class G {
     return Intl.message(
       'Watch an Ad to get free coins.',
       name: 'watchadfreecoins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Payment Method`
+  String get walletChoosePaymentTitle {
+    return Intl.message(
+      'Select Payment Method',
+      name: 'walletChoosePaymentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MoonGo Pay`
+  String get walletMoonGoPay {
+    return Intl.message(
+      'MoonGo Pay',
+      name: 'walletMoonGoPay',
       desc: '',
       args: [],
     );
