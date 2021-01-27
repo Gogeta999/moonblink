@@ -20,16 +20,18 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final maxImageLimit = 2;
   //KBZ
   final _kbzpayIdWithSpaces = '1234 5678 9123 4567';
-  final _kbzpayId = '1234567891234567';
+  final _kbzpayId = '09764033373';
   final _kbzpayTapGR = TapGestureRecognizer();
+  final _kbzpayqr = "assets/images/kbzpayQR.jpeg";
   //KBZ M Banking
-  final _kbzmbankingIdWithSpaces = '1234 1234 1234 1234';
-  final _kbzmbankingId = '1234123412341234';
-  final _kbzmbankingTapGR = TapGestureRecognizer();
+  // final _kbzmbankingIdWithSpaces = '1234 1234 1234 1234';
+  // final _kbzmbankingId = '1234123412341234';
+  // final _kbzmbankingTapGR = TapGestureRecognizer();
   //Wave Money
   final _waveIdWithSpaces = '5678 5678 5678 5678';
-  final _waveId = '5678567856785678';
+  final _waveId = '09764033373';
   final _waveTapGR = TapGestureRecognizer();
+  final _wavepayqr = "assets/images/wavepayQR.jpeg";
 
   Widget availablePlatformItem(
     String bankIdWithSpaces,
@@ -140,12 +142,12 @@ class _NewProductListPageState extends State<NewProductListPage> {
                 children: [
                   availablePlatformItem(_kbzpayIdWithSpaces, _kbzpayTapGR,
                       color: Colors.blue[200],
-                      assetsName: 'assets/images/Later.jpg',
+                      assetsName: _kbzpayqr,
                       name: 'KBZPay', onTap: () {
                     PaymentMethod method = PaymentMethod(
                       title: "KBZPay",
-                      id: "id",
-                      image: "assets/images/Later.jpg",
+                      id: _kbzpayId,
+                      image: _kbzpayqr,
                       method:
                           "Open KBZPay.\nScan QR to pay or manual with this number.\n",
                     );
@@ -161,37 +163,37 @@ class _NewProductListPageState extends State<NewProductListPage> {
                   },
                       description:
                           'Open KBZPay.\nScan QR to pay or manual with this number.\n'),
-                  availablePlatformItem(
-                      _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
-                      color: Colors.blue[200],
-                      assetsName: 'assets/images/Later.jpg',
-                      name: 'KBZ M Banking', onTap: () {
-                    ///payment method
-                    PaymentMethod method = PaymentMethod(
-                      title: "KBZ M Banking",
-                      id: "id",
-                      image: "assets/images/Later.jpg",
-                      method: "Open KBZ mBanking App.\nClick Transfer.\n",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Newtopuppage(
-                          product: snapshot.data,
-                          method: method,
-                        ),
-                      ),
-                    );
-                  }, description: 'Open KBZ mBanking App.\nClick Transfer.\n'),
+                  // availablePlatformItem(
+                  //     _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
+                  //     color: Colors.blue[200],
+                  //     assetsName: 'assets/images/Later.jpg',
+                  //     name: 'KBZ M Banking', onTap: () {
+                  //   ///payment method
+                  //   PaymentMethod method = PaymentMethod(
+                  //     title: "KBZ M Banking",
+                  //     id: "id",
+                  //     image: "assets/images/Later.jpg",
+                  //     method: "Open KBZ mBanking App.\nClick Transfer.\n",
+                  //   );
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => Newtopuppage(
+                  //         product: snapshot.data,
+                  //         method: method,
+                  //       ),
+                  //     ),
+                  //   );
+                  // }, description: 'Open KBZ mBanking App.\nClick Transfer.\n'),
                   availablePlatformItem(_waveIdWithSpaces, _waveTapGR,
                       color: Colors.yellow[200],
-                      assetsName: 'assets/images/Later.jpg',
+                      assetsName: _wavepayqr,
                       textColor: Colors.black,
                       name: 'Wave Money', onTap: () {
                     PaymentMethod method = PaymentMethod(
                       title: "Wave Money",
-                      id: "id",
-                      image: "assets/images/Later.jpg",
+                      id: _waveId,
+                      image: _wavepayqr,
                       method: "Open Wave Money App.\nClick ...\n",
                     );
                     Navigator.push(
