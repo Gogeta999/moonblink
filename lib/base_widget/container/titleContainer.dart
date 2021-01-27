@@ -11,7 +11,8 @@ class TitleContainer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 20, right: 20),
       width: MediaQuery.of(context).size.width,
-      height: height,
+      constraints: BoxConstraints(minHeight: height),
+      //height: height,
       decoration: BoxDecoration(
         border: Border.all(
             width: 1,
