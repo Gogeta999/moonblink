@@ -14,6 +14,8 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/pages/payment/newproductlist.dart';
+import 'package:moonblink/ui/pages/payment/newtopuppage.dart';
 import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -168,10 +170,20 @@ class _WalletPageState extends State<WalletPage> {
                             // ontap: () {
                             //   _showTopUpBtmSheet();
                             // },
-                            ontap: () => showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                child: ChoosePayDialog()),
+                            ontap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewProductListPage(
+                                    currentcoin: wallet.value.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            // => showDialog(
+                            //     context: context,
+                            //     barrierDismissible: true,
+                            //     child: ChoosePayDialog()),
                             child: Text(G.of(context).topup),
                           ),
                           ShadedContainer(
@@ -338,7 +350,10 @@ class ChoosePayDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleDialog(
       elevation: 2,
-      title: Text('Choose Payment Method'),
+      title: Text(
+        G.current.walletChoosePaymentTitle,
+        style: Theme.of(context).textTheme.headline6,
+      ),
       children: <Widget>[
         SimpleDialogOption(
           padding: EdgeInsets.zero,
@@ -347,9 +362,9 @@ class ChoosePayDialog extends StatelessWidget {
           },
           child: Container(
             child: Padding(
-                padding: EdgeInsets.only(left: 18, bottom: 15),
+                padding: EdgeInsets.only(left: 18, top: 5),
                 child: Text(
-                  'MoonGo Pay',
+                  G.current.walletMoonGoPay,
                   style: Theme.of(context).textTheme.subtitle1,
                 )),
             decoration: BoxDecoration(
@@ -364,56 +379,56 @@ class ChoosePayDialog extends StatelessWidget {
             ),
           ),
         ),
-        if (Platform.isAndroid)
-          SimpleDialogOption(
-            onPressed: () {
-              showToast('GPay');
-            },
-            padding: EdgeInsets.zero,
-            child: Container(
-              child: Padding(
-                  padding: EdgeInsets.only(left: 18),
-                  child: Text(
-                    'Google Pay',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  )),
-              decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.grey,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.grey[300],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        if (Platform.isIOS)
-          SimpleDialogOption(
-            onPressed: () {
-              showToast('Apple Pay');
-            },
-            padding: EdgeInsets.zero,
-            child: Container(
-              child: Padding(
-                  padding: EdgeInsets.only(left: 18),
-                  child: Text(
-                    'Apple Pay',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  )),
-              decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.grey,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.grey[300],
-                  ),
-                ],
-              ),
-            ),
-          ),
+        // if (Platform.isAndroid)
+        //   SimpleDialogOption(
+        //     onPressed: () {
+        //       showToast('GPay');
+        //     },
+        //     padding: EdgeInsets.zero,
+        //     child: Container(
+        //       child: Padding(
+        //           padding: EdgeInsets.only(left: 18,top: 15),
+        //           child: Text(
+        //             'Google Pay',
+        //             style: Theme.of(context).textTheme.subtitle1,
+        //           )),
+        //       decoration: BoxDecoration(
+        //         color: Theme.of(context).brightness == Brightness.light
+        //             ? Colors.white
+        //             : Colors.grey,
+        //         boxShadow: <BoxShadow>[
+        //           BoxShadow(
+        //             color: Colors.grey[300],
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // if (Platform.isIOS)
+        //   SimpleDialogOption(
+        //     onPressed: () {
+        //       showToast('Apple Pay');
+        //     },
+        //     padding: EdgeInsets.zero,
+        //     child: Container(
+        //       child: Padding(
+        //           padding: EdgeInsets.only(left: 18,top: 15),
+        //           child: Text(
+        //             'Apple Pay',
+        //             style: Theme.of(context).textTheme.subtitle1,
+        //           )),
+        //       decoration: BoxDecoration(
+        //         color: Theme.of(context).brightness == Brightness.light
+        //             ? Colors.white
+        //             : Colors.grey,
+        //         boxShadow: <BoxShadow>[
+        //           BoxShadow(
+        //             color: Colors.grey[300],
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ],
     );
   }

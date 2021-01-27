@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/models/payments/payment.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
@@ -123,7 +124,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppbarWidget(title: Text('Payment History')),
+        appBar: AppbarWidget(title: Text(G.current.paymentHistory)),
         body: Container(
             margin: const EdgeInsets.all(8.0),
             child: RefreshIndicator(
@@ -151,7 +152,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     return Center(child: CupertinoActivityIndicator());
                   }
                   if (snapshot.data.isEmpty)
-                    return Center(child: Text('No Payments Available'));
+                    return Center(child: Text(G.current.paymentHistoryEmpty));
                   return ListView.builder(
                     //shrinkWrap: true,
                     controller: _scrollController,

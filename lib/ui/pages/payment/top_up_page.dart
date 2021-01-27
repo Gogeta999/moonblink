@@ -159,7 +159,7 @@ class _TopUpPageState extends State<TopUpPage> {
                 CustomBottomSheet.show(
                     buildContext: context,
                     limit: maxImageLimit,
-                    body: 'Select Screenshot',
+                    body: G.current.paymentTopUpSelectScreenshot,
                     onPressed: (List<File> files) async {
                       final currentFiles =
                           await this._transactionImagesSubject.first;
@@ -207,7 +207,7 @@ class _TopUpPageState extends State<TopUpPage> {
   _topup() async {
     final screenshots = await _transactionImagesSubject.first;
     if (screenshots == null || screenshots.isEmpty) {
-      showToast('Require screenshot');
+      showToast(G.current.paymentTopUpRequireScreenshot);
       return;
     }
     _submitSubject.add(true);
@@ -219,7 +219,7 @@ class _TopUpPageState extends State<TopUpPage> {
         .then((value) {
       _submitSubject.add(false);
       Navigator.pop(context);
-      showToast('Success');
+      showToast(G.current.toastsuccess);
     }, onError: (e) {
       _submitSubject.add(false);
       showToast('$e');
@@ -235,7 +235,7 @@ class _TopUpPageState extends State<TopUpPage> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: Text('TopUp'),
+              title: Text(G.current.topup),
               backgroundColor: Colors.black,
               bottom: PreferredSize(
                 child: Container(
@@ -271,16 +271,16 @@ class _TopUpPageState extends State<TopUpPage> {
                     stream: _submitSubject,
                     builder: (context, snapshot) {
                       if (snapshot.data) {
-                        return CupertinoButton(
+                        return TextButton(
                           onPressed: () {},
                           child: CupertinoActivityIndicator(),
                         );
                       }
-                      return CupertinoButton(
+                      return TextButton(
                         onPressed: () {
                           _topup();
                         },
-                        child: Text('Submit'),
+                        child: Text(G.current.submit),
                       );
                     })
               ],
@@ -300,15 +300,16 @@ class _TopUpPageState extends State<TopUpPage> {
                     alignment: Alignment.centerLeft,
                     child: () {
                       if (widget.product.name == customProduct) {
-                        return Text('Selected Product -> Custom Product');
+                        return Text(G.current.paymentTopUpSelectCustomProduct);
                       } else {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                'Selected Product -> MoonBlink Coins - ${widget.product.mbCoin}'),
-                            Text(
-                                'Amount To Transfer -> ${widget.product.value} ${widget.product.currencyCode}'),
+                            Text(G.current.paymentTopUpSelectProduct +
+                                '${widget.product.mbCoin}'),
+                            Text(G.current
+                                    .paymentTopUpSelectProductTransferAmount +
+                                '${widget.product.value} ${widget.product.currencyCode}'),
                           ],
                         );
                       }
@@ -332,7 +333,7 @@ class _TopUpPageState extends State<TopUpPage> {
                                 if (snapshot.data == null ||
                                     snapshot.data.isEmpty) {
                                   return Text(
-                                    'Your Screenshot will appear here.\nPlease add a detailed screenshot for quicker topup.',
+                                    G.current.paymentTopUpScreenshotAppearLayer,
                                     textAlign: TextAlign.center,
                                   );
                                 }
@@ -443,7 +444,7 @@ class _TopUpPageState extends State<TopUpPage> {
                               border: Border.all(
                                   color: Theme.of(context).accentColor),
                               borderRadius: BorderRadius.circular(15.0)),
-                          child: Text('Add screenshots',
+                          child: Text(G.current.paymentTopUpAddScreenshots,
                               style: TextStyle(
                                   color: Theme.of(context).accentColor,
                                   fontSize: 16.0)),
@@ -470,7 +471,8 @@ class _TopUpPageState extends State<TopUpPage> {
                                     border: Border.all(
                                         color: Theme.of(context).accentColor),
                                     borderRadius: BorderRadius.circular(15.0)),
-                                child: Text('Remove screenshots',
+                                child: Text(
+                                    G.current.paymentTopUpRemoveScreenshots,
                                     style: TextStyle(
                                         color: Theme.of(context).accentColor,
                                         fontSize: 16.0)),
@@ -488,7 +490,8 @@ class _TopUpPageState extends State<TopUpPage> {
                             Expanded(
                               flex: 4,
                               child: CupertinoTextField(
-                                placeholder: 'Transfer amount',
+                                placeholder: G.current
+                                    .paymentTopUpSelectProductTransferAmount,
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.done,
                                 clearButtonMode: OverlayVisibilityMode.editing,
@@ -506,7 +509,7 @@ class _TopUpPageState extends State<TopUpPage> {
                             Expanded(
                               flex: 6,
                               child: CupertinoTextField(
-                                placeholder: 'Description',
+                                placeholder: G.current.paymentTopUpDescription,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.done,
                                 clearButtonMode: OverlayVisibilityMode.editing,
@@ -539,7 +542,7 @@ class _TopUpPageState extends State<TopUpPage> {
                       ],
                     ),
                   Divider(indent: 5, endIndent: 5, thickness: 2),
-                  Text('Available TopUp Platform'),
+                  Text(G.current.paymentTopUpAvailablePlatform),
                   SizedBox(height: 10),
                   Expanded(
                       child: ListView(
