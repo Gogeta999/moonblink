@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentcoin" : MessageLookupByLibrary.simpleMessage("လက်ရှိ"),
     "deselect" : MessageLookupByLibrary.simpleMessage("ပယ်ဖျက်ပါ"),
     "done" : MessageLookupByLibrary.simpleMessage("အိုကေ"),
-    "duration" : MessageLookupByLibrary.simpleMessage("ကြာချိန်"),
+    "duration" : MessageLookupByLibrary.simpleMessage("သက်တမ်း"),
     "end" : MessageLookupByLibrary.simpleMessage("အဆုံးသတ်"),
     "english" : MessageLookupByLibrary.simpleMessage("အင်္ဂလိပ်"),
     "enterCall" : MessageLookupByLibrary.simpleMessage("ဖုန်းလက်ခံ"),

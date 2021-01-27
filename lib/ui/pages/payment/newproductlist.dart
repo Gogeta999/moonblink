@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:moonblink/models/payments/paymentMethod.dart';
 import 'package:moonblink/models/payments/product.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/payment/newtopuppage.dart';
+import 'package:oktoast/oktoast.dart';
 
 class NewProductListPage extends StatefulWidget {
   final String currentcoin;
@@ -23,6 +25,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final _kbzpayId = '09764033373';
   final _kbzpayTapGR = TapGestureRecognizer();
   final _kbzpayqr = "assets/images/kbzpayQR.jpeg";
+  final _kbzpaysample = "assets/images/kbzpayexample.jpg";
   //KBZ M Banking
   // final _kbzmbankingIdWithSpaces = '1234 1234 1234 1234';
   // final _kbzmbankingId = '1234123412341234';
@@ -32,6 +35,24 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final _waveId = '09764033373';
   final _waveTapGR = TapGestureRecognizer();
   final _wavepayqr = "assets/images/wavepayQR.jpeg";
+  final _wavepaysample = "assets/images/wavepayexample.jpg";
+
+  @override
+  void initState() {
+    _kbzpayTapGR.onTap = () {
+      FlutterClipboard.copy(_kbzpayId)
+          .then((value) => showToast(G.of(context).toastcopy));
+    };
+    // _kbzmbankingTapGR.onTap = () {
+    //   FlutterClipboard.copy(_kbzmbankingId)
+    //       .then((value) => showToast(G.of(context).toastcopy));
+    // };
+    _waveTapGR.onTap = () {
+      FlutterClipboard.copy(_waveId)
+          .then((value) => showToast(G.of(context).toastcopy));
+    };
+    super.initState();
+  }
 
   Widget availablePlatformItem(
     String bankIdWithSpaces,
@@ -148,6 +169,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
                       title: "KBZPay",
                       id: _kbzpayId,
                       image: _kbzpayqr,
+                      sample: _kbzpaysample,
                       method:
                           "Open KBZPay.\nScan QR to pay or manual with this number.\n",
                     );
@@ -195,6 +217,8 @@ class _NewProductListPageState extends State<NewProductListPage> {
                       id: _waveId,
                       image: _wavepayqr,
                       method: "Open Wave Money App.\nClick ...\n",
+                      sample: _wavepaysample,
+                      recognizer: _waveTapGR,
                     );
                     Navigator.push(
                       context,

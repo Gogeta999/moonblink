@@ -6,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/imageview.dart';
 import 'package:moonblink/generated/l10n.dart';
@@ -33,7 +32,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
   Product selectedProduct;
   final _transactionImagesSubject = BehaviorSubject<List<File>>.seeded([]);
   final _submitSubject = BehaviorSubject.seeded(false);
-  final maxImageLimit = 2;
+  final maxImageLimit = 1;
   final _transferAmountController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -67,14 +66,15 @@ class _NewtopuppageState extends State<Newtopuppage> {
                     limit: maxImageLimit,
                     body: 'Select Screenshot',
                     onPressed: (List<File> files) async {
-                      final currentFiles =
-                          await this._transactionImagesSubject.first;
-                      currentFiles.addAll(files);
-                      if (currentFiles.length > maxImageLimit) {
-                        int x = currentFiles.length - maxImageLimit;
-                        currentFiles.removeRange(0, x);
-                      }
-                      this._transactionImagesSubject.add(currentFiles);
+                      this._transactionImagesSubject.add([files.first]);
+                      // final currentFiles =
+                      //     await this._transactionImagesSubject.first;
+                      // currentFiles.addAll(files);
+                      // if (currentFiles.length > maxImageLimit) {
+                      //   int x = currentFiles.length - maxImageLimit;
+                      //   currentFiles.removeRange(0, x);
+                      // }
+                      // this._transactionImagesSubject.add(currentFiles);
                     },
                     buttonText: G.of(context).select,
                     popAfterBtnPressed: true,
@@ -93,13 +93,14 @@ class _NewtopuppageState extends State<Newtopuppage> {
                     await ImagePicker().getImage(source: ImageSource.camera);
                 File compressedImage = await CompressUtils.compressAndGetFile(
                     File(pickedFile.path), NORMAL_COMPRESS_QUALITY, 1080, 1080);
-                final currentFiles = await this._transactionImagesSubject.first;
-                currentFiles.add(compressedImage);
-                if (currentFiles.length > maxImageLimit) {
-                  int x = currentFiles.length - maxImageLimit;
-                  currentFiles.removeRange(0, x);
-                }
-                this._transactionImagesSubject.add(currentFiles);
+                this._transactionImagesSubject.add([compressedImage]);
+                // final currentFiles = await this._transactionImagesSubject.first;
+                // currentFiles.add(compressedImage);
+                // if (currentFiles.length > maxImageLimit) {
+                //   int x = currentFiles.length - maxImageLimit;
+                //   currentFiles.removeRange(0, x);
+                // }
+                // this._transactionImagesSubject.add(currentFiles);
               }),
           CupertinoButton(
             child: Text(G.of(context).cancel),
@@ -158,6 +159,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                       style: Theme.of(context).textTheme.subtitle1,
                       children: [
                         TextSpan(
+                          recognizer: widget.method.recognizer,
                           text: widget.method.id,
                           style: TextStyle(
                               letterSpacing: 0.3,
@@ -183,7 +185,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
       return;
     }
     if (selectedProduct == null) {
-      showToast("Select Product");
+      showToast("Require Product");
       return;
     }
     _submitSubject.add(true);
@@ -263,7 +265,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
           ),
           body: Container(
             margin: const EdgeInsets.all(8.0),
-            child: ListView(
+            child: Column(
               children: [
                 SizedBox(height: 5),
                 //Method
@@ -298,16 +300,15 @@ class _NewtopuppageState extends State<Newtopuppage> {
                   ),
                 ),
                 Divider(indent: 5, endIndent: 5, thickness: 2),
-                Container(
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height * 0.4,
-                  ),
-                  child: Row(
-                    children: [
-                      ///ScreenShot
-                      Expanded(
-                        flex: 2,
-                        child: Center(
+                Expanded(
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height * 0.4,
+                    ),
+                    child: Row(
+                      children: [
+                        ///ScreenShot
+                        Expanded(
                           child: StreamBuilder<List<File>>(
                             initialData: null,
                             stream: _transactionImagesSubject,
@@ -319,38 +320,70 @@ class _NewtopuppageState extends State<Newtopuppage> {
                                   textAlign: TextAlign.center,
                                 );
                               }
-                              return GridView.builder(
-                                shrinkWrap: true,
-                                physics: ClampingScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: maxImageLimit),
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                              fullscreenDialog: true,
-                                              builder: (_) =>
-                                                  FullScreenImageView(
-                                                      image: snapshot
-                                                          .data[index])));
-                                    },
-                                    child: Image.file(
-                                      snapshot.data[index],
-                                      fit: BoxFit.fill,
-                                      height: double.infinity,
-                                    ),
-                                  );
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (_) => FullScreenImageView(
+                                              image: snapshot.data.first)));
                                 },
+                                child: Image.file(
+                                  snapshot.data.first,
+                                  fit: BoxFit.fill,
+                                  height: double.infinity,
+                                ),
                               );
+                              // return GridView.builder(
+                              //   shrinkWrap: true,
+                              //   physics: ClampingScrollPhysics(),
+                              //   gridDelegate:
+                              //       SliverGridDelegateWithFixedCrossAxisCount(
+                              //           crossAxisCount: maxImageLimit),
+                              //   itemCount: snapshot.data.length,
+                              //   itemBuilder: (context, index) {
+                              //     return InkWell(
+                              //       onTap: () {
+                              //         Navigator.push(
+                              //             context,
+                              //             CupertinoPageRoute(
+                              //                 fullscreenDialog: true,
+                              //                 builder: (_) =>
+                              //                     FullScreenImageView(
+                              //                         image: snapshot
+                              //                             .data[index])));
+                              //       },
+                              //       child: Image.file(
+                              //         snapshot.data[index],
+                              //         fit: BoxFit.fill,
+                              //         height: double.infinity,
+                              //       ),
+                              //     );
+                              //   },
+                              // );
                             },
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (_) => FullScreenImageView(
+                                          assetsName: widget.method.sample)));
+                            },
+                            child: Image.asset(
+                              widget.method.sample,
+                              fit: BoxFit.fill,
+                              height: double.infinity,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -371,7 +404,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                             border: Border.all(
                                 color: Theme.of(context).accentColor),
                             borderRadius: BorderRadius.circular(15.0)),
-                        child: Text('Add screenshots',
+                        child: Text('Add screenshot',
                             style: TextStyle(
                                 color: Theme.of(context).accentColor,
                                 fontSize: 16.0)),
@@ -398,7 +431,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                                   border: Border.all(
                                       color: Theme.of(context).accentColor),
                                   borderRadius: BorderRadius.circular(15.0)),
-                              child: Text('Remove screenshots',
+                              child: Text('Remove screenshot',
                                   style: TextStyle(
                                       color: Theme.of(context).accentColor,
                                       fontSize: 16.0)),
