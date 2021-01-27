@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:moonblink/models/payments/paymentMethod.dart';
 import 'package:moonblink/models/payments/product.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/pages/payment/newtopuppage.dart';
+import 'package:oktoast/oktoast.dart';
 
 class NewProductListPage extends StatefulWidget {
   final String currentcoin;
@@ -30,6 +32,23 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final _waveIdWithSpaces = '5678 5678 5678 5678';
   final _waveId = '5678567856785678';
   final _waveTapGR = TapGestureRecognizer();
+
+  @override
+  void initState() {
+    _kbzpayTapGR.onTap = () {
+      FlutterClipboard.copy(_kbzpayId)
+          .then((value) => showToast(G.of(context).toastcopy));
+    };
+    _kbzmbankingTapGR.onTap = () {
+      FlutterClipboard.copy(_kbzmbankingId)
+          .then((value) => showToast(G.of(context).toastcopy));
+    };
+    _waveTapGR.onTap = () {
+      FlutterClipboard.copy(_waveId)
+          .then((value) => showToast(G.of(context).toastcopy));
+    };
+    super.initState();
+  }
 
   Widget availablePlatformItem(
     String bankIdWithSpaces,
@@ -143,12 +162,12 @@ class _NewProductListPageState extends State<NewProductListPage> {
                       assetsName: 'assets/images/Later.jpg',
                       name: 'KBZPay', onTap: () {
                     PaymentMethod method = PaymentMethod(
-                      title: "KBZPay",
-                      id: "id",
-                      image: "assets/images/Later.jpg",
-                      method:
-                          "Open KBZPay.\nScan QR to pay or manual with this number.\n",
-                    );
+                        title: "KBZPay",
+                        id: _kbzpayIdWithSpaces,
+                        image: "assets/images/Later.jpg",
+                        method:
+                            "Open KBZPay.\nScan QR to pay or manual with this number.\n",
+                        recognizer: _kbzpayTapGR);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -169,9 +188,10 @@ class _NewProductListPageState extends State<NewProductListPage> {
                     ///payment method
                     PaymentMethod method = PaymentMethod(
                       title: "KBZ M Banking",
-                      id: "id",
+                      id: _kbzmbankingIdWithSpaces,
                       image: "assets/images/Later.jpg",
                       method: "Open KBZ mBanking App.\nClick Transfer.\n",
+                      recognizer: _kbzmbankingTapGR,
                     );
                     Navigator.push(
                       context,
@@ -190,9 +210,10 @@ class _NewProductListPageState extends State<NewProductListPage> {
                       name: 'Wave Money', onTap: () {
                     PaymentMethod method = PaymentMethod(
                       title: "Wave Money",
-                      id: "id",
+                      id: _waveIdWithSpaces,
                       image: "assets/images/Later.jpg",
                       method: "Open Wave Money App.\nClick ...\n",
+                      recognizer: _waveTapGR,
                     );
                     Navigator.push(
                       context,
