@@ -158,7 +158,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                 CustomBottomSheet.show(
                     buildContext: context,
                     limit: maxImageLimit,
-                    body: 'Select Screenshot',
+                    body: G.current.paymentTopUpSelectScreenshot,
                     onPressed: (List<File> files) async {
                       final currentFiles =
                           await this._transactionImagesSubject.first;
