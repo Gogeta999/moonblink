@@ -14,6 +14,7 @@ import 'package:moonblink/models/wallet.dart';
 import 'package:moonblink/services/ad_manager.dart';
 import 'package:moonblink/services/moonblink_repository.dart';
 import 'package:moonblink/ui/helper/icons.dart';
+import 'package:moonblink/ui/pages/payment/newproductlist.dart';
 import 'package:moonblink/ui/pages/payment/newtopuppage.dart';
 import 'package:moonblink/ui/pages/wallet/user_transaction_page.dart';
 import 'package:oktoast/oktoast.dart';
@@ -171,9 +172,13 @@ class _WalletPageState extends State<WalletPage> {
                             // },
                             ontap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Newtopuppage()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewProductListPage(
+                                    currentcoin: wallet.value.toString(),
+                                  ),
+                                ),
+                              );
                             },
                             // => showDialog(
                             //     context: context,
