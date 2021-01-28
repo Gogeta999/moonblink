@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:moonblink/generated/l10n.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class CommentPage extends StatefulWidget {
@@ -41,7 +40,7 @@ class _CommentPageState extends State<CommentPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppbarWidget(title: Text('Comments')),
+        appBar: AppbarWidget(title: Text(G.current.commentPageTitle)),
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: RefreshIndicator(
@@ -72,7 +71,9 @@ class _CommentPageState extends State<CommentPage> {
                         return Center(child: CupertinoActivityIndicator());
                       }
                       if (snapshot.data.isEmpty)
-                        return Center(child: Text('No Comments Available'));
+                        return Center(
+                            child:
+                                Text(G.current.commentPageNoCommentAvaialbe));
                       return ListView.builder(
                         controller: _bloc.scrollController,
                         physics: AlwaysScrollableScrollPhysics(),
@@ -112,7 +113,8 @@ class _CommentPageState extends State<CommentPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Replying to ${snapshot.data['username']}'),
+                              Text(G.current.commentPageReplyTo +
+                                  ' ${snapshot.data['username']}'),
                               CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 child: Icon(Icons.cancel_outlined),
@@ -143,7 +145,7 @@ class _CommentPageState extends State<CommentPage> {
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text('Editing Comment: '),
+                                Text(G.current.commentPageNoCommentAvaialbe),
                                 Expanded(
                                   child: Text(
                                     '$prevMessage',
@@ -175,7 +177,8 @@ class _CommentPageState extends State<CommentPage> {
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 4),
                                   child: CupertinoTextField(
-                                    placeholder: 'Add a comment',
+                                    placeholder:
+                                        G.current.commentPageInputHolderText,
                                     controller: _bloc.commentController,
                                     style:
                                         Theme.of(context).textTheme.bodyText1,
@@ -194,7 +197,8 @@ class _CommentPageState extends State<CommentPage> {
                                         ? Padding(
                                             padding: EdgeInsets.only(
                                                 bottom: 20, left: 5),
-                                            child: Text('Editing: '))
+                                            child: Text(
+                                                G.current.commentPageEditing))
                                         : null,
                                     prefixMode: OverlayVisibilityMode.always,
                                     maxLines: 2,
@@ -218,8 +222,8 @@ class _CommentPageState extends State<CommentPage> {
                                     return CupertinoButton(
                                       padding: EdgeInsets.only(right: 5),
                                       child: Text(editingSnapshot.data != null
-                                          ? "Edit"
-                                          : "Post"),
+                                          ? G.current.commentPageEdit
+                                          : G.current.commentPagePost),
                                       onPressed: () {
                                         _bloc.postComment(context);
                                       },
@@ -316,7 +320,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     widget.bloc
                         .onTapReply(context, item.username, item.commentId);
                   },
-                  child: Text('Reply',
+                  child: Text(G.current.commentPageReply,
                       style: TextStyle(
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
@@ -330,7 +334,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                         widget.bloc
                             .onTapEdit(context, item.commentId, item.message);
                       },
-                      child: Text('Edit',
+                      child: Text(G.current.commentPageEdit,
                           style: TextStyle(
                               color: Theme.of(context).accentColor,
                               fontSize: 14.0)),
@@ -340,7 +344,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                       onTap: () {
                         widget.bloc.onTapDelete(context, item.commentId);
                       },
-                      child: Text('Delete',
+                      child: Text(G.current.commentPageDelete,
                           style: TextStyle(
                               color: Colors.red[600], fontSize: 14.0)),
                     ),
@@ -354,9 +358,9 @@ class _NfCommentItemState extends State<NfCommentItem> {
                       onTap: () {
                         widget.bloc.onTapDelete(context, item.commentId);
                       },
-                      child: Text('Delete',
+                      child: Text(G.current.commentPageDeleteAll,
                           style: TextStyle(
-                              color: Colors.red[600], fontSize: 14.0)),
+                              color: Colors.purple[600], fontSize: 14.0)),
                     ),
                   ],
                 )
@@ -414,7 +418,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     widget.bloc
                         .onTapReply(context, item.username, item.commentId);
                   },
-                  child: Text('Reply',
+                  child: Text(G.current.commentPageReply,
                       style: TextStyle(
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
@@ -429,7 +433,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                           widget.bloc
                               .onTapEdit(context, item.commentId, item.message);
                         },
-                        child: Text('Edit',
+                        child: Text(G.current.commentPageEdit,
                             style: TextStyle(
                                 color: Theme.of(context).accentColor,
                                 fontSize: 14.0)),
@@ -439,7 +443,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                         onTap: () {
                           widget.bloc.onTapDelete(context, item.commentId);
                         },
-                        child: Text('Delete',
+                        child: Text(G.current.commentPageDelete,
                             style: TextStyle(
                                 color: Colors.red[600], fontSize: 14.0)),
                       ),
@@ -453,9 +457,9 @@ class _NfCommentItemState extends State<NfCommentItem> {
                         onTap: () {
                           widget.bloc.onTapDelete(context, item.commentId);
                         },
-                        child: Text('Delete',
+                        child: Text(G.current.commentPageDeleteAll,
                             style: TextStyle(
-                                color: Colors.red[600], fontSize: 14.0)),
+                                color: Colors.purple[600], fontSize: 14.0)),
                       ),
                     ],
                   );
@@ -514,7 +518,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                         _repliesSubject.add(widget.item.reply);
                       },
                       child: Text(
-                        'View more replies',
+                        G.current.commentPageViewMoreReplies,
                         style: TextStyle(color: Theme.of(context).accentColor),
                       ),
                     ),
@@ -527,7 +531,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                       _repliesSubject.add([]);
                     },
                     child: Text(
-                      'View less replies',
+                      G.current.commentPageViewLessReplies,
                       style: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),

@@ -140,7 +140,13 @@ class _NewProductListPageState extends State<NewProductListPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppbarWidget(title: Text("Choose Payment Method")),
+        appBar: AppbarWidget(
+          title: Text(
+            G.current.walletChoosePaymentTitle,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          showActionIcon: false,
+        ),
         body: Container(
           margin: const EdgeInsets.all(8.0),
           child: FutureBuilder<List<Product>>(
@@ -164,32 +170,34 @@ class _NewProductListPageState extends State<NewProductListPage> {
               return ListView(
                 physics: ClampingScrollPhysics(),
                 children: [
-                  availablePlatformItem(_kbzpayId, _kbzpayTapGR,
-                      color: Colors.blue[200],
-                      assetsName: _kbzpayqr,
-                      qrasset: _smallkbzapayqr,
-                      name: 'KBZPay', onTap: () {
-                    PaymentMethod method = PaymentMethod(
-                      title: "KBZPay",
-                      id: _kbzpayId,
-                      image: _kbzpayqr,
-                      smallimage: _smallkbzapayqr,
-                      sample: _kbzpaysample,
-                      method:
-                          "Open KBZPay.\nScan QR to pay or manual with this number.\n",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Newtopuppage(
-                          product: snapshot.data,
-                          method: method,
+                  availablePlatformItem(
+                    _kbzpayId,
+                    _kbzpayTapGR,
+                    color: Colors.blue[200],
+                    assetsName: _kbzpayqr,
+                    qrasset: _smallkbzapayqr,
+                    name: 'KBZPay',
+                    onTap: () {
+                      PaymentMethod method = PaymentMethod(
+                        title: "KBZPay",
+                        id: _kbzpayId,
+                        image: _kbzpayqr,
+                        smallimage: _smallkbzapayqr,
+                        sample: _kbzpaysample,
+                        method: G.current.paymentTopUpKpayMethod,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Newtopuppage(
+                            product: snapshot.data,
+                            method: method,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                      description:
-                          'Open KBZPay.\nScan QR to pay or manual with this number.\n'),
+                      );
+                    },
+                    description: G.current.paymentTopUpKpayMethod,
+                  ),
                   // availablePlatformItem(
                   //     _kbzmbankingIdWithSpaces, _kbzmbankingTapGR,
                   //     color: Colors.blue[200],
@@ -212,31 +220,36 @@ class _NewProductListPageState extends State<NewProductListPage> {
                   //     ),
                   //   );
                   // }, description: 'Open KBZ mBanking App.\nClick Transfer.\n'),
-                  availablePlatformItem(_waveId, _waveTapGR,
-                      color: Colors.yellow[200],
-                      assetsName: _wavepayqr,
-                      qrasset: _smallwavepayqr,
-                      textColor: Colors.black,
-                      name: 'Wave Money', onTap: () {
-                    PaymentMethod method = PaymentMethod(
-                      title: "Wave Money",
-                      id: _waveId,
-                      image: _wavepayqr,
-                      smallimage: _smallwavepayqr,
-                      method: "Open Wave Money App.\nClick ...\n",
-                      sample: _wavepaysample,
-                      recognizer: _waveTapGR,
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Newtopuppage(
-                          product: snapshot.data,
-                          method: method,
+                  availablePlatformItem(
+                    _waveId,
+                    _waveTapGR,
+                    color: Colors.yellow[200],
+                    assetsName: _wavepayqr,
+                    qrasset: _smallwavepayqr,
+                    textColor: Colors.black,
+                    name: 'Wave Money',
+                    onTap: () {
+                      PaymentMethod method = PaymentMethod(
+                        title: "Wave Money",
+                        id: _waveId,
+                        image: _wavepayqr,
+                        smallimage: _smallwavepayqr,
+                        method: G.current.paymentTopUpWavepayMethod,
+                        sample: _wavepaysample,
+                        recognizer: _waveTapGR,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Newtopuppage(
+                            product: snapshot.data,
+                            method: method,
+                          ),
                         ),
-                      ),
-                    );
-                  }, description: 'Open Wave Money App.\nClick ...\n'),
+                      );
+                    },
+                    description: G.current.paymentTopUpKpayMethod,
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -244,7 +257,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     width: MediaQuery.of(context).size.width,
                     child: Text(
-                      "Your Current Coin is ${widget.currentcoin}",
+                      G.current.currentcoin + ": ${widget.currentcoin}",
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   )

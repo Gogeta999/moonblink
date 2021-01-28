@@ -91,7 +91,7 @@ class _NewFeedPageState extends State<NewFeedPage>
                 return Center(child: CupertinoActivityIndicator());
               }
               if (snapshot.data.isEmpty)
-                return Center(child: Text('No Posts Available'));
+                return Center(child: Text(G.current.feedPageNoPostAvailable));
               return ListView.builder(
                 //shrinkWrap: true,
                 controller: _bloc.scrollController,
@@ -300,7 +300,7 @@ class _NFPostItemState extends State<NFPostItem> {
                                     _readMoreButtonSubject.add(false);
                                   },
                                   child: Text(
-                                    'Read Less',
+                                    G.current.readLess,
                                     style: TextStyle(
                                         color: Theme.of(context).accentColor),
                                   ),
@@ -327,7 +327,7 @@ class _NFPostItemState extends State<NFPostItem> {
                                     _readMoreButtonSubject.add(true);
                                   },
                                   child: Text(
-                                    'Read More',
+                                    G.current.readMore,
                                     style: TextStyle(
                                         color: Theme.of(context).accentColor),
                                   ),
@@ -552,7 +552,7 @@ class _NFPostItemState extends State<NFPostItem> {
                           widget.item.lastCommenterProfileImage != null &&
                           widget.item.lastCommenterProfileImage.isNotEmpty)
                       ? Text(G.current.feedPageViewMoreComment)
-                      : Text('Post comments'),
+                      : Text(G.current.feedPagePostComments),
                   onPressed: () {
                     Navigator.pushNamed(context, RouteName.nfCommentPage,
                         arguments: widget.item);
