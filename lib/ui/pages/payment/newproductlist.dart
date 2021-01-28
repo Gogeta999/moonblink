@@ -26,6 +26,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final _kbzpayTapGR = TapGestureRecognizer();
   final _kbzpayqr = "assets/images/kbzpayQR.jpeg";
   final _kbzpaysample = "assets/images/kbzpayexample.jpg";
+  final _smallkbzapayqr = "assets/images/kbzqr.jpeg";
   //KBZ M Banking
   // final _kbzmbankingIdWithSpaces = '1234 1234 1234 1234';
   // final _kbzmbankingId = '1234123412341234';
@@ -35,6 +36,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
   final _waveId = '09764033373';
   final _waveTapGR = TapGestureRecognizer();
   final _wavepayqr = "assets/images/wavepayQR.jpeg";
+  final _smallwavepayqr = "assets/images/waveqr.jpeg";
   final _wavepaysample = "assets/images/wavepayexample.jpg";
 
   @override
@@ -62,6 +64,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
     String name,
     String description,
     String assetsName,
+    String qrasset,
     Function onTap,
   }) {
     return InkWell(
@@ -99,10 +102,10 @@ class _NewProductListPageState extends State<NewProductListPage> {
                                   FullScreenImageView(assetsName: assetsName)));
                     },
                     child: Image.asset(
-                      assetsName,
+                      qrasset,
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.12,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   SizedBox(width: 10.0),
@@ -161,14 +164,16 @@ class _NewProductListPageState extends State<NewProductListPage> {
               return ListView(
                 physics: ClampingScrollPhysics(),
                 children: [
-                  availablePlatformItem(_kbzpayIdWithSpaces, _kbzpayTapGR,
+                  availablePlatformItem(_kbzpayId, _kbzpayTapGR,
                       color: Colors.blue[200],
                       assetsName: _kbzpayqr,
+                      qrasset: _smallkbzapayqr,
                       name: 'KBZPay', onTap: () {
                     PaymentMethod method = PaymentMethod(
                       title: "KBZPay",
                       id: _kbzpayId,
                       image: _kbzpayqr,
+                      smallimage: _smallkbzapayqr,
                       sample: _kbzpaysample,
                       method:
                           "Open KBZPay.\nScan QR to pay or manual with this number.\n",
@@ -207,15 +212,17 @@ class _NewProductListPageState extends State<NewProductListPage> {
                   //     ),
                   //   );
                   // }, description: 'Open KBZ mBanking App.\nClick Transfer.\n'),
-                  availablePlatformItem(_waveIdWithSpaces, _waveTapGR,
+                  availablePlatformItem(_waveId, _waveTapGR,
                       color: Colors.yellow[200],
                       assetsName: _wavepayqr,
+                      qrasset: _smallwavepayqr,
                       textColor: Colors.black,
                       name: 'Wave Money', onTap: () {
                     PaymentMethod method = PaymentMethod(
                       title: "Wave Money",
                       id: _waveId,
                       image: _wavepayqr,
+                      smallimage: _smallwavepayqr,
                       method: "Open Wave Money App.\nClick ...\n",
                       sample: _wavepaysample,
                       recognizer: _waveTapGR,
