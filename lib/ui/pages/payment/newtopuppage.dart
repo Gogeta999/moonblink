@@ -366,9 +366,20 @@ class _NewtopuppageState extends State<Newtopuppage> {
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            'Sample Image',
-                            textAlign: TextAlign.center,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (_) => FullScreenImageView(
+                                          assetsName: widget.method.sample)));
+                            },
+                            child: Image.asset(
+                              widget.method.sample,
+                              fit: BoxFit.fill,
+                              height: double.infinity,
+                            ),
                           ),
                         )
                       ],

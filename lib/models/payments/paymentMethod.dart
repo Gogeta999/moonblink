@@ -5,7 +5,14 @@ class PaymentMethod {
   String method;
   String id;
   String image;
+  String sample;
   TapGestureRecognizer recognizer;
+
   PaymentMethod(
-      {this.title, this.method, this.id, this.image, this.recognizer});
+      {this.title,
+      this.method,
+      this.id,
+      this.image,
+      this.sample,
+      this.recognizer});
 }
