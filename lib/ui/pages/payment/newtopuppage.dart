@@ -145,10 +145,10 @@ class _NewtopuppageState extends State<Newtopuppage> {
                                 assetsName: widget.method.image)));
                   },
                   child: Image.asset(
-                    widget.method.image,
+                    widget.method.smallimage,
                     width: MediaQuery.of(context).size.width * 0.3,
                     height: MediaQuery.of(context).size.height * 0.12,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 SizedBox(width: 10.0),
