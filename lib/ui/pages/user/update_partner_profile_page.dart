@@ -57,13 +57,13 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          G.of(context).tutoupgradeprofile1,
-          G.of(context).tutoupgradeprofile2,
-          G.of(context).tutoupgradeprofile3,
-          G.of(context).tutoupgradeprofile4,
+          G.current.tutoupgradeprofile1,
+          G.current.tutoupgradeprofile2,
+          G.current.tutoupgradeprofile3,
+          G.current.tutoupgradeprofile4,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );
