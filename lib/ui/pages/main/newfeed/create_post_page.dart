@@ -44,6 +44,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final maxVideoLimit = 1;
   final String public = 'Public';
   final String followers = 'Followers';
+  final maxNameLength = 15;
 
   final _postOptionsSubject = BehaviorSubject.seeded('Public');
   final _mediaSubject = BehaviorSubject<List<File>>.seeded(null);
@@ -518,8 +519,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 10),
-                            Text(StorageManager.sharedPreferences
-                                .getString(mLoginName)),
+                            () {
+                              String name = StorageManager.sharedPreferences
+                                  .getString(mLoginName);
+                              if (name.length > maxNameLength) {
+                                return Text(
+                                    name.substring(0, maxNameLength) + '...');
+                              } else {
+                                return Text(name);
+                              }
+                            }(),
                             StreamBuilder<String>(
                                 initialData: null,
                                 stream: this._postOptionsSubject,
@@ -562,16 +571,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     Column(
                       children: [
-                        StreamBuilder<int>(
-                          initialData: null,
-                          stream: this._adCountSubject,
-                          builder: (context, snapshot) {
-                            int data = snapshot.data ?? 0;
-                            return Text(
-                                '$data ${data > 1 ? "Ads" : "Ad"} Watched');
-                          },
-                        ),
-                        SizedBox(height: 5),
+                        ///Ad Count
+                        // StreamBuilder<int>(
+                        //   initialData: null,
+                        //   stream: this._adCountSubject,
+                        //   builder: (context, snapshot) {
+                        //     int data = snapshot.data ?? 0;
+                        //     return Text(
+                        //         '$data ${data > 1 ? "Ads" : "Ad"} Watched');
+                        //   },
+                        // ),
+                        // SizedBox(height: 5),
                         StreamBuilder<VipData>(
                             initialData: null,
                             stream: this._vipDataSubject,
@@ -912,33 +922,38 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     stream: this._vipDataSubject,
                     builder: (context, vipSnapshot) {
                       if (vipSnapshot.data == null) {
-                        return _showIndicator;
+                        return Row(
+                          children: [
+                            Expanded(child: _showIndicator),
+                          ],
+                        );
                       }
                       if (vipSnapshot.data.postUpload == 1) {
                         return Row(
                           children: [
-                            Expanded(
-                                child: Padding(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: StreamBuilder<bool>(
-                                  initialData: false,
-                                  stream: this._postByAdButtonSubject,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data) {
-                                      return _showIndicator;
-                                    }
-                                    return CupertinoButton.filled(
-                                        padding: EdgeInsets.zero,
-                                        child: Text(
-                                          G.current.feedCreatePagePostByAds,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .button,
-                                        ),
-                                        onPressed: () => this._postByAd());
-                                  }),
-                            )),
-                            SizedBox(width: 5),
+                            ///Post by watching ads button
+                            // Expanded(
+                            //     child: Padding(
+                            //   padding: EdgeInsets.only(bottom: 5),
+                            //   child: StreamBuilder<bool>(
+                            //       initialData: false,
+                            //       stream: this._postByAdButtonSubject,
+                            //       builder: (context, snapshot) {
+                            //         if (snapshot.data) {
+                            //           return _showIndicator;
+                            //         }
+                            //         return CupertinoButton.filled(
+                            //             padding: EdgeInsets.zero,
+                            //             child: Text(
+                            //               G.current.feedCreatePagePostByAds,
+                            //               style: Theme.of(context)
+                            //                   .textTheme
+                            //                   .button,
+                            //             ),
+                            //             onPressed: () => this._postByAd());
+                            //       }),
+                            // )),
+                            // SizedBox(width: 5),
                             Expanded(
                               child: StreamBuilder<String>(
                                 initialData: null,

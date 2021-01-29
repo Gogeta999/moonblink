@@ -84,6 +84,7 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
                 return Center(child: Text('No Posts Available'));
               return ListView.builder(
                 //shrinkWrap: true,
+                cacheExtent: MediaQuery.of(context).size.height * 5,
                 controller: _bloc.scrollController,
                 physics: ClampingScrollPhysics(),
                 itemCount: _bloc.hasReachedMax
@@ -471,7 +472,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
   final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
   //int maxHeight = 200;
-  final _maxHeightSubject = BehaviorSubject.seeded(200.0);
+  final _maxHeightSubject = BehaviorSubject.seeded(400.0);
 
   @override
   void initState() {
@@ -580,7 +581,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
           stream: this._pageChildrenSubject,
           builder: (context, childrenSnapshot) {
             return StreamBuilder<double>(
-                initialData: 200.0,
+                initialData: 400.0,
                 stream: this._maxHeightSubject,
                 builder: (context, maxHeightSnapshot) {
                   return AnimatedContainer(

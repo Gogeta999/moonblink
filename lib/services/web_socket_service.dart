@@ -36,6 +36,7 @@ class DefaultEvents {
 class EventsToEmit {
   static const connectUser = 'connect-user';
   static const chatUpdating = 'chat-updating';
+  static const updateConversation = 'conversation-update';
   static const chatMessage = 'chat-message';
   static const callUser = 'call-user';
   static const uploadAttach = 'upload-attach';
@@ -74,6 +75,7 @@ class WebSocketService {
     _socket.on(DefaultEvents.connect, (data) {
       if (isDev) print('Web Socket Service - Connected');
       _socket.emit(EventsToEmit.connectUser, userToken);
+      updateConversation();
       _chatBoxBloc?.add(
           ChatBoxFetched()); //if user is in chatbox then reconnecting will fetch data from server again.
       showToast('Connected');
@@ -101,12 +103,14 @@ class WebSocketService {
       for (var e in response) {
         chats.add(NewChat.fromJson(e));
       }
-      //for testing
-      // for (int i = 0; i < 500; ++i) {
-      //   for (var e in response) {
-      //     chats.add(NewChat.fromJson(e));
-      //   }
-      // }
+      _chatListBloc.isFetching = false;
+      if (_chatListBloc.chatsSubject.value.length == chats.length) {
+        _chatListBloc.hasReachedMax = true;
+      } else {
+        _chatListBloc.hasReachedMax = chats.length < _chatListBloc.limit;
+        if (!_chatListBloc.hasReachedMax) _chatListBloc.nextPage++;
+      }
+      print("Debug Length: ${chats.length}");
       _chatListBloc.chatsSubject.add(chats);
     });
   }
@@ -134,6 +138,14 @@ class WebSocketService {
       _chatBoxBloc.add(ChatBoxReceiveMessage('', data['sender_id'],
           data['receiver_id'], data['time'], data['attach'], data['type']));
     });
+  }
+
+  void updateConversation() {
+    _socket.emit(EventsToEmit.updateConversation, {
+      'page': _chatListBloc.nextPage,
+      'limit': _chatListBloc.limit,
+    });
+    print("Debug: ${_chatListBloc.nextPage} ${_chatListBloc.limit}");
   }
 
   void updateChat() {

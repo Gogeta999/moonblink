@@ -178,7 +178,7 @@ class _CommentPageState extends State<CommentPage> {
                                     placeholder: 'Add a comment',
                                     controller: _bloc.commentController,
                                     style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                        Theme.of(context).textTheme.bodyText2,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 6, vertical: 4),
                                     decoration: BoxDecoration(
@@ -293,7 +293,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     children: <TextSpan>[
                       TextSpan(
                           text: '  ${item.message}',
-                          style: Theme.of(context).textTheme.bodyText1),
+                          style: Theme.of(context).textTheme.bodyText2),
                     ]),
               ))
             ],

@@ -18,8 +18,7 @@ class _ThirdLoginState extends State<ThirdLogin> {
   void initState() {
     super.initState();
     if (Platform.isIOS) {
-      AppleSignIn.onCredentialRevoked.listen((_) {
-      });
+      AppleSignIn.onCredentialRevoked.listen((_) {});
     }
   }
 
@@ -86,8 +85,15 @@ class _ThirdLoginState extends State<ThirdLogin> {
                 InkResponse(
                   onTap: () => model.login(null, null, 'apple').then((value) {
                     if (value) {
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.main, (route) => false);
+                      if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
                     } else {
                       model.showErrorMessage(context);
                     }

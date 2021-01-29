@@ -19,7 +19,6 @@ class NewChatListPage extends StatefulWidget {
 }
 
 class _NewChatListPageState extends State<NewChatListPage> {
-
   // ignore: close_sinks
   ChatListBloc _chatListBloc;
   final _storyModel = StoryModel();
@@ -45,57 +44,66 @@ class _NewChatListPageState extends State<NewChatListPage> {
 
   //Chat Tile
   _buildChatTile(NewChat chat) {
-    return ChatTile(
-        image: CachedNetworkImage(
-          imageUrl: chat.profileImage,
-          imageBuilder: (context, imageProvider) => CircleAvatar(
-            radius: 33,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            backgroundImage: imageProvider,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      child: ChatTile(
+          image: CachedNetworkImage(
+            imageUrl: chat.profileImage,
+            imageBuilder: (context, imageProvider) => CircleAvatar(
+              radius: 33,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundImage: imageProvider,
+            ),
+            placeholder: (context, url) => CircleAvatar(
+              radius: 33,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              // backgroundImage: ,
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
-          placeholder: (context, url) => CircleAvatar(
-            radius: 33,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            // backgroundImage: ,
+          name: Text(
+            chat.name,
+            style: TextStyle(
+                color: chat.userId == 48 || chat.userId == 62
+                    ? Theme.of(context).accentColor
+                    : null),
           ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
-        name: Text(
-          chat.name,
-          style: TextStyle(
-              color: chat.userId == 48 || chat.userId == 62
-                  ? Theme.of(context).accentColor
-                  : null),
-        ),
 
-        ///[Last Message]
-        lastmsg: Text(chat.lastMessage,
-            maxLines: 1, overflow: TextOverflow.ellipsis),
-        trailing:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Text(timeAgo.format(DateTime.parse(chat.updatedAt),
-              allowFromNow: true)),
-          if (chat.unread != 0)
-            CircleAvatar(
-              radius: 10,
-              backgroundColor: Theme.of(context).accentColor,
-              child: Text(
-                chat.unread.toString(),
-                style: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            )
-        ]),
-        onTap: () => Navigator.pushNamed(context, RouteName.chatBox,
-            arguments: chat.userId));
+          ///[Last Message]
+          lastmsg: Text(chat.lastMessage,
+              maxLines: 1, overflow: TextOverflow.ellipsis),
+          trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(timeAgo.format(DateTime.parse(chat.updatedAt),
+                    allowFromNow: true)),
+                if (chat.unread != 0)
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Theme.of(context).accentColor,
+                    child: Text(
+                      chat.unread.toString(),
+                      style: TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+                  )
+              ]),
+          onTap: () => Navigator.pushNamed(context, RouteName.chatBox,
+              arguments: chat.userId)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarWidget(showBack: false,),
+      appBar: AppbarWidget(
+        showBack: false,
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
+            _chatListBloc.nextPage = 1;
+
+            _chatListBloc.fetchChats();
             await _storyModel.fetchStory();
           },
           child: Column(
@@ -122,36 +130,66 @@ class _NewChatListPageState extends State<NewChatListPage> {
                       return Center(child: CupertinoActivityIndicator());
                     }
                     if (snapshot.data.isEmpty) {
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.7,
-                            child: Image.asset(
-                              'assets/images/noFollowing.jpg',
-                              fit: BoxFit.cover,
+                      return Expanded(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              child: Image.asset(
+                                'assets/images/noFollowing.jpg',
+                                width: double.infinity,
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: MediaQuery.of(context).size.height * 0.5,
-                            child: Text(
+                            Text(
                               G.of(context).noChatHistory,
                               style:
                                   TextStyle(color: Colors.black, fontSize: 20),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       );
+                      // return Stack(
+                      //   alignment: Alignment.center,
+                      //   children: [
+                      //     Container(
+                      //       width: double.infinity,
+                      //       height: MediaQuery.of(context).size.height * 0.7,
+                      //       child: Image.asset(
+                      //         'assets/images/noFollowing.jpg',
+                      //         fit: BoxFit.cover,
+                      //       ),
+                      //     ),
+                      //     Positioned(
+                      //       bottom: MediaQuery.of(context).size.height * 0.5,
+                      //       child: Text(
+                      //         G.of(context).noChatHistory,
+                      //         style:
+                      //             TextStyle(color: Colors.black, fontSize: 20),
+                      //       ),
+                      //     )
+                      //   ],
+                      // );
                     }
                     return Expanded(
                       child: ListView.builder(
                         physics: ClampingScrollPhysics(),
+                        controller: _chatListBloc.scrollController
+                          ..addListener(() => _chatListBloc.onScroll()),
+                        itemCount: _chatListBloc.hasReachedMax
+                            ? snapshot.data.length
+                            : snapshot.data.length + 1,
                         itemBuilder: (context, index) {
+                          if (index >= snapshot.data.length) {
+                            return Center(
+                                child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: CupertinoActivityIndicator(),
+                            ));
+                          }
                           NewChat chat = snapshot.data[index];
                           return _buildChatTile(chat);
                         },
-                        itemCount: snapshot.data.length,
                       ),
                     );
                   }),

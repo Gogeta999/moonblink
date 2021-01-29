@@ -15,6 +15,7 @@ import 'package:moonblink/services/navigation_service.dart';
 import 'package:moonblink/services/push_notification_manager.dart';
 import 'package:moonblink/view_model/user_model.dart';
 import 'package:moonblink/services/web_socket_service.dart';
+import 'package:oktoast/oktoast.dart';
 
 // save user login name to let them get their last name after logout
 const String mLoginName = 'mLoginName';
@@ -49,12 +50,9 @@ class LoginModel extends ViewStateModel {
     String fcmToken = await PushNotificationsManager().getFcmToken();
     try {
       var user;
-      if (type == 'email' &&
-          mail != null &&
-          password != null &&
-          fcmToken != null) {
+      if (type == 'email' && mail != null && password != null) {
         user = await MoonBlinkRepository.login(mail, password, fcmToken);
-      } else if (type == 'google' && fcmToken != null) {
+      } else if (type == 'google') {
         await _googleSignIn.signOut();
         GoogleSignInAccount googleUser = await _googleSignIn.signIn();
         if (googleUser != null) {
@@ -63,7 +61,7 @@ class LoginModel extends ViewStateModel {
           user = await MoonBlinkRepository.loginWithGoogle(
               auth.accessToken, fcmToken);
         }
-      } else if (type == 'facebook' && fcmToken != null) {
+      } else if (type == 'facebook') {
         final FacebookLoginResult result =
             await _facebookLogin.logIn(['email']);
         switch (result.status) {
@@ -113,7 +111,7 @@ class LoginModel extends ViewStateModel {
             return false;*/
             break;
         }
-      } else if (type == 'apple' && fcmToken != null) {
+      } else if (type == 'apple') {
         if (await AppleSignIn.isAvailable()) {
           final AuthorizationResult result = await AppleSignIn.performRequests([
             AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
@@ -126,7 +124,8 @@ class LoginModel extends ViewStateModel {
                   identityTokenString, fcmToken);
               break;
             case AuthorizationStatus.error:
-              if (isDev) print("Sign in failed: ${result.error.localizedDescription}");
+              if (isDev)
+                print("Sign in failed: ${result.error.localizedDescription}");
               break;
             case AuthorizationStatus.cancelled:
               if (isDev) print('User cancelled');
