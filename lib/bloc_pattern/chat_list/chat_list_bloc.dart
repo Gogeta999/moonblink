@@ -22,7 +22,13 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   bool hasReachedMax = false;
   bool isFetching = false;
 
-  final chatsSubject = BehaviorSubject.seeded(<NewChat>[]);
+  final chatsSubject = BehaviorSubject.seeded(<NewChat>[])
+    ..listen((value) {
+      print('Debug: Length -> ${value.length}');
+      value.forEach((element) {
+        print('Debug: Name -> ${element.name}');
+      });
+    });
 
   void dispose() {
     _debounce?.cancel();

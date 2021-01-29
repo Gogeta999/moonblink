@@ -110,7 +110,7 @@ class WebSocketService {
         _chatListBloc.hasReachedMax = chats.length < _chatListBloc.limit;
         if (!_chatListBloc.hasReachedMax) _chatListBloc.nextPage++;
       }
-      print("Debug Length: ${chats.length}");
+      print("Debug Response Length: ${chats.length}");
       _chatListBloc.chatsSubject.add(chats);
     });
   }

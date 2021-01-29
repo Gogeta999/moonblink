@@ -44,52 +44,55 @@ class _NewChatListPageState extends State<NewChatListPage> {
 
   //Chat Tile
   _buildChatTile(NewChat chat) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      child: ChatTile(
-          image: CachedNetworkImage(
-            imageUrl: chat.profileImage,
-            imageBuilder: (context, imageProvider) => CircleAvatar(
-              radius: 33,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              backgroundImage: imageProvider,
-            ),
-            placeholder: (context, url) => CircleAvatar(
-              radius: 33,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              // backgroundImage: ,
-            ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+    return ChatTile(
+        image: CachedNetworkImage(
+          imageUrl: chat.profileImage,
+          imageBuilder: (context, imageProvider) => CircleAvatar(
+            radius: 33,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundImage: imageProvider,
           ),
-          name: Text(
-            chat.name,
-            style: TextStyle(
-                color: chat.userId == 48 || chat.userId == 62
-                    ? Theme.of(context).accentColor
-                    : null),
+          placeholder: (context, url) => CircleAvatar(
+            radius: 33,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            // backgroundImage: ,
           ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+        name: Text(
+          chat.name,
+          style: TextStyle(
+              color: chat.userId == 48 || chat.userId == 62
+                  ? Theme.of(context).accentColor
+                  : null),
+        ),
 
-          ///[Last Message]
-          lastmsg: Text(chat.lastMessage,
-              maxLines: 1, overflow: TextOverflow.ellipsis),
-          trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(timeAgo.format(DateTime.parse(chat.updatedAt),
-                    allowFromNow: true)),
-                if (chat.unread != 0)
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundColor: Theme.of(context).accentColor,
-                    child: Text(
-                      chat.unread.toString(),
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  )
-              ]),
-          onTap: () => Navigator.pushNamed(context, RouteName.chatBox,
-              arguments: chat.userId)),
-    );
+        ///[Last Message]
+        lastmsg: Text(chat.lastMessage,
+            maxLines: 1, overflow: TextOverflow.ellipsis),
+        trailing:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text(timeAgo.format(DateTime.parse(chat.updatedAt),
+              allowFromNow: true)),
+          if (chat.unread != 0)
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Theme.of(context).accentColor,
+              child: Text(
+                chat.unread.toString(),
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            )
+        ]),
+        onTap: () {
+          Navigator.pushNamed(context, RouteName.chatBox,
+                  arguments: chat.userId)
+              .whenComplete(() {
+            ///Quick fix for chat not updating instantly
+            _chatListBloc.nextPage--;
+            _chatListBloc.fetchChats();
+          });
+        });
   }
 
   @override
