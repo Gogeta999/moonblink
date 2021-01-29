@@ -446,6 +446,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "viewStateMessageError" : MessageLookupByLibrary.simpleMessage("မအောင်မြင်ပါ"),
     "viewStateMessageNetworkError" : MessageLookupByLibrary.simpleMessage("အင်တာနက်လိုင်းမကောင်းပါ"),
     "viewStateMessageUnAuth" : MessageLookupByLibrary.simpleMessage("အကောင့်မဝင်ရသေးပါ"),
+    "vipDemo" : MessageLookupByLibrary.simpleMessage("VIP Demo"),
     "vipDemo1Body" : MessageLookupByLibrary.simpleMessage("VIP 1 သည် VIP 2 အောက်တွင်ပြလိမ့်မည်"),
     "vipDemo1Title" : MessageLookupByLibrary.simpleMessage("VIP 1 အလွှာ"),
     "vipDemo2Body" : MessageLookupByLibrary.simpleMessage("VIP 2 သည် VIP 3 အောက်တွင်ပြလိမ့်မည်"),

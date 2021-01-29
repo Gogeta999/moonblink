@@ -532,28 +532,28 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           .pushNamed(RouteName.partnerOwnProfile)),
                 ),
                 // blankSpace(),
-
+                //TODO: Still need some to add
                 ///Manage Own Posts
-                if (usertype != 0)
-                  Card(
-                    margin: EdgeInsets.only(bottom: 15),
-                    elevation: 4,
-                    shadowColor: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.grey,
-                    child: ListTile(
-                        leading: SvgPicture.asset(
-                          managePost,
-                          // color: Colors.orangeAccent,
-                          height: 32,
-                          width: 32,
-                          fit: BoxFit.contain,
-                        ),
-                        title: Text(G.current.userStatusManagePosts,
-                            style: Theme.of(context).textTheme.bodyText1),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(RouteName.managePostsPage)),
-                  ),
+                // if (usertype != 0)
+                //   Card(
+                //     margin: EdgeInsets.only(bottom: 15),
+                //     elevation: 4,
+                //     shadowColor: Theme.of(context).brightness == Brightness.dark
+                //         ? Colors.black
+                //         : Colors.grey,
+                //     child: ListTile(
+                //         leading: SvgPicture.asset(
+                //           managePost,
+                //           // color: Colors.orangeAccent,
+                //           height: 32,
+                //           width: 32,
+                //           fit: BoxFit.contain,
+                //         ),
+                //         title: Text(G.current.userStatusManagePosts,
+                //             style: Theme.of(context).textTheme.bodyText1),
+                //         onTap: () => Navigator.of(context)
+                //             .pushNamed(RouteName.managePostsPage)),
+                //   ),
 
                 ///Wallet
                 Card(

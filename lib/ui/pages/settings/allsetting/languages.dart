@@ -43,6 +43,38 @@ class _LanguagePageState extends State<LanguagePage> {
               ),
             ),
           ),
+          // Container(
+          //   padding: EdgeInsets.only(left: 20, right: 20),
+          //   width: MediaQuery.of(context).size.width,
+          //   constraints: BoxConstraints(minHeight: 50),
+          //   height: 100,
+          //   //height: height,
+          //   decoration: BoxDecoration(
+          //     border: Border.all(
+          //         width: 1,
+          //         color: Theme.of(context).brightness == Brightness.dark
+          //             ? Colors.grey
+          //             : Colors.black),
+          //     color: Theme.of(context).scaffoldBackgroundColor,
+          //     borderRadius: BorderRadius.all(Radius.circular(30)),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Theme.of(context).brightness == Brightness.dark
+          //             ? Colors.black
+          //             : Colors.black,
+          //         spreadRadius: 2,
+          //         // blurRadius: 2,
+          //         offset: Offset(0, 3), // changes position of shadow
+          //       ),
+          //     ],
+          //   ),
+          //   child: Center(
+          //     child: Text(
+          //       G.of(context).settingLanguage,
+          //       style: TextStyle(fontSize: 30),
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 50),
             child: TitleContainer(
