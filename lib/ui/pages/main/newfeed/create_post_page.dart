@@ -39,6 +39,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _followerOptions = ['Public', 'Followers'];
   final _postTitleController = TextEditingController();
   final int myId = StorageManager.sharedPreferences.getInt(mUserId);
+  final int myType = StorageManager.sharedPreferences.getInt(mUserType);
   final String myEmail = StorageManager.sharedPreferences.getString(mLoginMail);
   final maxImageLimit = 8;
   final maxVideoLimit = 1;
@@ -484,7 +485,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ),
         body: SafeArea(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -493,27 +494,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   children: [
                     Row(
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          child: StorageManager.sharedPreferences
-                                      .getString(mUserProfile) ==
-                                  null
-                              ? Icon(Icons.error)
-                              : CachedNetworkImage(
-                                  imageUrl: StorageManager.sharedPreferences
-                                      .getString(mUserProfile),
-                                  imageBuilder: (context, imageProvider) =>
-                                      CircleAvatar(
-                                          radius: 26,
-                                          backgroundImage: imageProvider),
-                                  placeholder: (context, url) =>
-                                      CupertinoActivityIndicator(),
-                                  errorWidget: (context, url, error) => Icon(
-                                    Icons.error,
-                                    color: Colors.grey.shade300,
-                                  ),
+                        StorageManager.sharedPreferences
+                                    .getString(mUserProfile) ==
+                                null
+                            ? Icon(Icons.error)
+                            : CachedNetworkImage(
+                                imageUrl: StorageManager.sharedPreferences
+                                    .getString(mUserProfile),
+                                imageBuilder: (context, imageProvider) =>
+                                    CircleAvatar(
+                                        radius: 26,
+                                        backgroundImage: imageProvider),
+                                placeholder: (context, url) =>
+                                    CupertinoActivityIndicator(),
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.error,
+                                  color: Colors.grey.shade300,
                                 ),
-                        ),
+                              ),
                         SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -570,18 +568,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       ],
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ///Ad Count
-                        // StreamBuilder<int>(
-                        //   initialData: null,
-                        //   stream: this._adCountSubject,
-                        //   builder: (context, snapshot) {
-                        //     int data = snapshot.data ?? 0;
-                        //     return Text(
-                        //         '$data ${data > 1 ? "Ads" : "Ad"} Watched');
-                        //   },
-                        // ),
-                        // SizedBox(height: 5),
+                        ///Ad Count will only show for Authorized Partner
+                        if (myType != kUnverifiedPartner)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: StreamBuilder<int>(
+                              initialData: null,
+                              stream: this._adCountSubject,
+                              builder: (context, snapshot) {
+                                int data = snapshot.data ?? 0;
+                                return Text(
+                                    '$data ${data > 1 ? "Ads" : "Ad"} Watched');
+                              },
+                            ),
+                          ),
                         StreamBuilder<VipData>(
                             initialData: null,
                             stream: this._vipDataSubject,
@@ -931,29 +933,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       if (vipSnapshot.data.postUpload == 1) {
                         return Row(
                           children: [
-                            ///Post by watching ads button
-                            // Expanded(
-                            //     child: Padding(
-                            //   padding: EdgeInsets.only(bottom: 5),
-                            //   child: StreamBuilder<bool>(
-                            //       initialData: false,
-                            //       stream: this._postByAdButtonSubject,
-                            //       builder: (context, snapshot) {
-                            //         if (snapshot.data) {
-                            //           return _showIndicator;
-                            //         }
-                            //         return CupertinoButton.filled(
-                            //             padding: EdgeInsets.zero,
-                            //             child: Text(
-                            //               G.current.feedCreatePagePostByAds,
-                            //               style: Theme.of(context)
-                            //                   .textTheme
-                            //                   .button,
-                            //             ),
-                            //             onPressed: () => this._postByAd());
-                            //       }),
-                            // )),
-                            // SizedBox(width: 5),
+                            ///Post by watching ads button will show only for Authorized Partner
+                            if (myType != kUnverifiedPartner)
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.only(bottom: 5),
+                                child: StreamBuilder<bool>(
+                                    initialData: false,
+                                    stream: this._postByAdButtonSubject,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.data) {
+                                        return _showIndicator;
+                                      }
+                                      return CupertinoButton.filled(
+                                          padding: EdgeInsets.zero,
+                                          child: Text(
+                                            G.current.feedCreatePagePostByAds,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button,
+                                          ),
+                                          onPressed: () => this._postByAd());
+                                    }),
+                              )),
+                            if (myType != kUnverifiedPartner)
+                              SizedBox(width: 5),
                             Expanded(
                               child: StreamBuilder<String>(
                                 initialData: null,

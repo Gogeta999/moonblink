@@ -48,6 +48,7 @@ const int kCele = 3;
 const int kPro = 4;
 const int kUnverifiedPartner = 5;
 const int kHomePostLimit = 10;
+const int kChatListLimit = 20;
 
 const String kNewToBoosting = 'kNewToBoosting';
 const String firsttimeboosting = 'firsttimeboosting';

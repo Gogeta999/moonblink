@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:moonblink/models/chat_models/new_chat.dart';
 import 'package:moonblink/services/web_socket_service.dart';
+import 'package:moonblink/utils/constants.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'chat_list_event.dart';
@@ -17,18 +18,20 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   final scrollController = ScrollController();
   double scrollThreshold = 400.0;
   Timer _debounce;
-  final limit = 5;
+  final limit = kChatListLimit;
   int nextPage = 1;
   bool hasReachedMax = false;
   bool isFetching = false;
 
-  final chatsSubject = BehaviorSubject.seeded(<NewChat>[])
-    ..listen((value) {
-      print('Debug: Length -> ${value.length}');
-      value.forEach((element) {
-        print('Debug: Name -> ${element.name}');
-      });
-    });
+  final chatsSubject = BehaviorSubject.seeded(<NewChat>[]);
+
+  ///For debugging value
+  // ..listen((value) {
+  //   print('Debug: Length -> ${value.length}');
+  //   value.forEach((element) {
+  //     print('Debug: Name -> ${element.name}');
+  //   });
+  // });
 
   void dispose() {
     _debounce?.cancel();
