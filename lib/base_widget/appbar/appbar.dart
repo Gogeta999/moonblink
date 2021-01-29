@@ -9,12 +9,14 @@ class AppbarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Icon leadingIcon;
   final String leadingText;
   final bool showBack;
+  final bool showActionIcon;
   AppbarWidget(
       {this.title,
       this.leadingCallback,
       this.leadingIcon,
       this.leadingText,
-      this.showBack = true});
+      this.showBack = true,
+      this.showActionIcon = true});
   @override
   _AppbarWidgetState createState() => _AppbarWidgetState();
 
@@ -88,9 +90,12 @@ class _AppbarWidgetState extends State<AppbarWidget> {
       backgroundColor: Colors.black,
       title: widget.title == null ? Container() : widget.title,
       // toolbarHeight: kToolbarHeight - 10,
-      actions: [
-        AppbarLogo(),
-      ],
+
+      actions: widget.showActionIcon == true
+          ? [
+              AppbarLogo(),
+            ]
+          : null,
       bottom: PreferredSize(
         child: Container(
           decoration: BoxDecoration(

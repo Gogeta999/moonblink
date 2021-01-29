@@ -815,6 +815,126 @@ class G {
     );
   }
 
+  /// `Delete`
+  String get commentPageDelete {
+    return Intl.message(
+      'Delete',
+      name: 'commentPageDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete All`
+  String get commentPageDeleteAll {
+    return Intl.message(
+      'Delete All',
+      name: 'commentPageDeleteAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get commentPageEdit {
+    return Intl.message(
+      'Edit',
+      name: 'commentPageEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing: `
+  String get commentPageEditing {
+    return Intl.message(
+      'Editing: ',
+      name: 'commentPageEditing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please leave a civil comment`
+  String get commentPageInputHolderText {
+    return Intl.message(
+      'Please leave a civil comment',
+      name: 'commentPageInputHolderText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Comments Available`
+  String get commentPageNoCommentAvaialbe {
+    return Intl.message(
+      'No Comments Available',
+      name: 'commentPageNoCommentAvaialbe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post`
+  String get commentPagePost {
+    return Intl.message(
+      'Post',
+      name: 'commentPagePost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reply`
+  String get commentPageReply {
+    return Intl.message(
+      'Reply',
+      name: 'commentPageReply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replying to`
+  String get commentPageReplyTo {
+    return Intl.message(
+      'Replying to',
+      name: 'commentPageReplyTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments`
+  String get commentPageTitle {
+    return Intl.message(
+      'Comments',
+      name: 'commentPageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View More Replies`
+  String get commentPageViewMoreReplies {
+    return Intl.message(
+      'View More Replies',
+      name: 'commentPageViewMoreReplies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get commentPageViewLessReplies {
+    return Intl.message(
+      'Close',
+      name: 'commentPageViewLessReplies',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `*We will charge 20% of the price*`
   String get chargeForNormalPartner {
     return Intl.message(
@@ -1185,11 +1305,31 @@ class G {
     );
   }
 
+  /// `No Post Available`
+  String get feedPageNoPostAvailable {
+    return Intl.message(
+      'No Post Available',
+      name: 'feedPageNoPostAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Posted`
   String get feedPagePosted {
     return Intl.message(
       'Posted',
       name: 'feedPagePosted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post Comments`
+  String get feedPagePostComments {
+    return Intl.message(
+      'Post Comments',
+      name: 'feedPagePostComments',
       desc: '',
       args: [],
     );
@@ -2395,11 +2535,41 @@ class G {
     );
   }
 
+  /// `Open KBZPay.\nScan QR to pay or\nClick transfer and manual paywith this number.\n`
+  String get paymentTopUpKpayMethod {
+    return Intl.message(
+      'Open KBZPay.\nScan QR to pay or\nClick transfer and manual paywith this number.\n',
+      name: 'paymentTopUpKpayMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Wave Money App.\nScan QR to pay or\nClick SendMoney and manual pay with this number.\n`
+  String get paymentTopUpWavepayMethod {
+    return Intl.message(
+      'Open Wave Money App.\nScan QR to pay or\nClick SendMoney and manual pay with this number.\n',
+      name: 'paymentTopUpWavepayMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add Screenshots`
   String get paymentTopUpAddScreenshots {
     return Intl.message(
       'Add Screenshots',
       name: 'paymentTopUpAddScreenshots',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Describe to our staff to complete your top-up quickly.`
+  String get paymentTopUpQuestionExplain {
+    return Intl.message(
+      'Describe to our staff to complete your top-up quickly.',
+      name: 'paymentTopUpQuestionExplain',
       desc: '',
       args: [],
     );
@@ -2445,10 +2615,10 @@ class G {
     );
   }
 
-  /// `Selected Product -> MoonGo Coins - `
+  /// `Select Product`
   String get paymentTopUpSelectProduct {
     return Intl.message(
-      'Selected Product -> MoonGo Coins - ',
+      'Select Product',
       name: 'paymentTopUpSelectProduct',
       desc: '',
       args: [],
@@ -2700,6 +2870,26 @@ class G {
     return Intl.message(
       'Qualification requirements',
       name: 'qualificationrequire',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read More`
+  String get readMore {
+    return Intl.message(
+      'Read More',
+      name: 'readMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get readLess {
+    return Intl.message(
+      'Close',
+      name: 'readLess',
       desc: '',
       args: [],
     );
@@ -3125,10 +3315,10 @@ class G {
     );
   }
 
-  /// `Top up`
+  /// `Top Up`
   String get topup {
     return Intl.message(
-      'Top up',
+      'Top Up',
       name: 'topup',
       desc: '',
       args: [],

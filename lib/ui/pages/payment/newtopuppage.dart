@@ -64,7 +64,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                 CustomBottomSheet.show(
                     buildContext: context,
                     limit: maxImageLimit,
-                    body: 'Select Screenshot',
+                    body: G.current.paymentTopUpSelectScreenshot,
                     onPressed: (List<File> files) async {
                       this._transactionImagesSubject.add([files.first]);
                       // final currentFiles =
@@ -145,10 +145,10 @@ class _NewtopuppageState extends State<Newtopuppage> {
                                 assetsName: widget.method.image)));
                   },
                   child: Image.asset(
-                    widget.method.image,
+                    widget.method.smallimage,
                     width: MediaQuery.of(context).size.width * 0.3,
                     height: MediaQuery.of(context).size.height * 0.12,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 SizedBox(width: 10.0),
@@ -181,11 +181,11 @@ class _NewtopuppageState extends State<Newtopuppage> {
   _topup() async {
     final screenshots = await _transactionImagesSubject.first;
     if (screenshots == null || screenshots.isEmpty) {
-      showToast('Require screenshot');
+      showToast(G.current.paymentTopUpRequireScreenshot);
       return;
     }
     if (selectedProduct == null) {
-      showToast("Require Product");
+      showToast(G.current.paymentTopUpRequireScreenshot);
       return;
     }
     _submitSubject.add(true);
@@ -197,7 +197,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
         .then((value) {
       _submitSubject.add(false);
       Navigator.pop(context);
-      showToast('Success');
+      showToast(G.current.toastsuccess);
     }, onError: (e) {
       _submitSubject.add(false);
       showToast('$e');
@@ -213,7 +213,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text('TopUp'),
+            title: Text(G.current.topup),
             backgroundColor: Colors.black,
             bottom: PreferredSize(
               child: Container(
@@ -254,11 +254,11 @@ class _NewtopuppageState extends State<Newtopuppage> {
                         child: CupertinoActivityIndicator(),
                       );
                     }
-                    return CupertinoButton(
+                    return TextButton(
                       onPressed: () {
                         _topup();
                       },
-                      child: Text('Submit'),
+                      child: Text(G.current.submit),
                     );
                   })
             ],
@@ -278,7 +278,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                     value: selectedProduct,
                     hint: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text("Select item"),
+                      child: Text(G.current.paymentTopUpSelectProduct),
                     ),
                     onChanged: (Product value) {
                       setState(() {
@@ -316,7 +316,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                               if (snapshot.data == null ||
                                   snapshot.data.isEmpty) {
                                 return Text(
-                                  'Your Screenshot will appear here.\nPlease add a detailed screenshot for quicker topup.',
+                                  G.current.paymentTopUpScreenshotAppearLayer,
                                   textAlign: TextAlign.center,
                                 );
                               }
@@ -366,9 +366,20 @@ class _NewtopuppageState extends State<Newtopuppage> {
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            'Sample Image',
-                            textAlign: TextAlign.center,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (_) => FullScreenImageView(
+                                          assetsName: widget.method.sample)));
+                            },
+                            child: Image.asset(
+                              widget.method.sample,
+                              fit: BoxFit.fill,
+                              height: double.infinity,
+                            ),
                           ),
                         )
                       ],
@@ -393,7 +404,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                             border: Border.all(
                                 color: Theme.of(context).accentColor),
                             borderRadius: BorderRadius.circular(15.0)),
-                        child: Text('Add screenshot',
+                        child: Text(G.current.paymentTopUpAddScreenshots,
                             style: TextStyle(
                                 color: Theme.of(context).accentColor,
                                 fontSize: 16.0)),
@@ -420,7 +431,8 @@ class _NewtopuppageState extends State<Newtopuppage> {
                                   border: Border.all(
                                       color: Theme.of(context).accentColor),
                                   borderRadius: BorderRadius.circular(15.0)),
-                              child: Text('Remove screenshot',
+                              child: Text(
+                                  G.current.paymentTopUpRemoveScreenshots,
                                   style: TextStyle(
                                       color: Theme.of(context).accentColor,
                                       fontSize: 16.0)),
@@ -440,7 +452,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                           Expanded(
                             flex: 4,
                             child: CupertinoTextField(
-                              placeholder: 'Transfer amount',
+                              placeholder: G.current.paymentTopUpTransferAmount,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.done,
                               clearButtonMode: OverlayVisibilityMode.editing,
@@ -458,7 +470,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                           Expanded(
                             flex: 6,
                             child: CupertinoTextField(
-                              placeholder: 'Description',
+                              placeholder: G.current.paymentTopUpDescription,
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.done,
                               clearButtonMode: OverlayVisibilityMode.editing,
@@ -474,7 +486,7 @@ class _NewtopuppageState extends State<Newtopuppage> {
                           ),
                           InkResponse(
                             onTap: () {
-                              showToast('Show Example Format');
+                              showToast(G.current.paymentTopUpQuestionExplain);
                             },
                             child: Padding(
                               padding:
