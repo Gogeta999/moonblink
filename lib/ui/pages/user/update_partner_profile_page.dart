@@ -63,7 +63,7 @@ class _UpdatePartnerProfilePageState extends State<UpdatePartnerProfilePage> {
           G.current.tutoupgradeprofile4,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );

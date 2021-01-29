@@ -41,10 +41,10 @@ class _GamePriceDummyState extends State<GamePriceDummy> {
       /// use defaultTheme, or you can implement widgetBuilder function yourself
       widgetBuilder: StepWidgetBuilder.useDefaultTheme(
         texts: [
-          G.of(context).tutogameprice1,
+          G.current.tutogameprice1,
         ],
         buttonTextBuilder: (curr, total) {
-          return curr < total - 1 ? G.of(context).next : G.of(context).finish;
+          return curr < total - 1 ? G.current.next : G.current.finish;
         },
       ),
     );
