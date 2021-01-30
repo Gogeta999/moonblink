@@ -117,6 +117,7 @@ dependencies:
   video_trimmer: ^0.3.4
   video_compress: ^2.1.0
   visibility_detector: ^0.1.5
+  readmore: ^1.0.1
   #For Own Captch
   random_string: ^2.1.0
 

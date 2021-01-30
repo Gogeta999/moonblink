@@ -14,6 +14,7 @@ import 'package:moonblink/models/new_feed_models/NFPost.dart';
 import 'package:moonblink/provider/view_state.dart';
 import 'package:moonblink/provider/view_state_error_widget.dart';
 import 'package:moonblink/utils/constants.dart';
+import 'package:readmore/readmore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
@@ -124,8 +125,6 @@ class MyNFPostItem extends StatefulWidget {
 class _MyNFPostItemState extends State<MyNFPostItem> {
   final _reactCountSubject = BehaviorSubject<int>();
   final _reactedSubject = BehaviorSubject<bool>();
-  final _readMoreButtonSubject = BehaviorSubject.seeded(false);
-  final maxTitleAndCommentLenght = 50;
 
   @override
   void initState() {
@@ -138,7 +137,6 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
   void dispose() {
     _reactCountSubject.close();
     _reactedSubject.close();
-    _readMoreButtonSubject.close();
     super.dispose();
   }
 
@@ -199,73 +197,17 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
           if (widget.item.body.isNotEmpty) SizedBox(height: 5),
           if (widget.item.body.isNotEmpty)
             Container(
-              margin: const EdgeInsets.only(left: 16),
-              alignment: Alignment.centerLeft,
-              child: () {
-                return StreamBuilder<bool>(
-                    initialData: false,
-                    stream: _readMoreButtonSubject,
-                    builder: (context, snapshot) {
-                      if (widget.item.body.length > maxTitleAndCommentLenght) {
-                        if (snapshot.data) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                widget.item.body,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              SizedBox(height: 5),
-                              InkWell(
-                                onTap: () {
-                                  _readMoreButtonSubject.add(false);
-                                },
-                                child: Text(
-                                  'Read Less',
-                                  style: TextStyle(
-                                      color: Theme.of(context).accentColor),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          String short = widget.item.body.substring(
-                              0,
-                              min(maxTitleAndCommentLenght,
-                                  widget.item.body.length));
-                          short += ' ....';
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                short,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              SizedBox(height: 5),
-                              InkWell(
-                                onTap: () {
-                                  _readMoreButtonSubject.add(true);
-                                },
-                                child: Text(
-                                  'Read More',
-                                  style: TextStyle(
-                                      color: Theme.of(context).accentColor),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                      } else {
-                        return Text(
-                          widget.item.body,
-                          style: Theme.of(context).textTheme.subtitle1,
-                        );
-                      }
-                    });
-              }(),
-            ),
+                margin: const EdgeInsets.only(left: 16),
+                alignment: Alignment.centerLeft,
+                child: ReadMoreText(
+                  widget.item.body,
+                  style: Theme.of(context).textTheme.subtitle1,
+                  trimLines: 3,
+                  colorClickableText: Theme.of(context).accentColor,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: G.of(context).readMore,
+                  trimExpandedText: G.of(context).readLess,
+                )),
           SizedBox(height: 5),
 
           ///Post Media
@@ -412,21 +354,21 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                   SizedBox(width: 10),
                   Expanded(
                       child: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                         text: widget.item.lastCommenterName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white),
                         children: <TextSpan>[
-                          () {
-                            String short = widget.item.lastComment.substring(
-                                0,
-                                min(maxTitleAndCommentLenght,
-                                    widget.item.lastComment.length));
-                            if (widget.item.lastComment.length >
-                                maxTitleAndCommentLenght) short += ' ....';
-                            return TextSpan(
-                                text: ' $short',
-                                style: Theme.of(context).textTheme.bodyText1);
-                          }(),
+                          TextSpan(
+                              text: ' ' + widget.item.lastComment,
+                              style: Theme.of(context).textTheme.bodyText2)
                         ]),
                   ))
                 ],
