@@ -274,6 +274,10 @@ class _NewtopuppageState extends State<Newtopuppage> {
                 //Dropdown to choose product
                 DropdownButtonHideUnderline(
                   child: DropdownButton<Product>(
+                    dropdownColor:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black,
                     isExpanded: true,
                     value: selectedProduct,
                     hint: Container(
