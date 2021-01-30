@@ -44,17 +44,16 @@ class NFCommentBloc {
   final replyingSubject = BehaviorSubject<Map<String, dynamic>>.seeded(null);
   final editingSubject = BehaviorSubject<int>.seeded(null);
 
-  final commentSuspendTimeSubject = BehaviorSubject<String>.seeded(null)
-    ..listen((value) {
-      print('Debug Time: $value');
-    });
+  final commentSuspendTimeSubject = BehaviorSubject<String>.seeded(null);
 
   Timer _timer;
   int _totalTime = -1;
   //Staring time
-  String get startTimeKey => 'start_time' + kPartnerId + '_${post.id}';
+  String get startTimeKey =>
+      'start_time_${StorageManager.sharedPreferences.getInt(mUserId)}_${post.id}';
   //Remaining time
-  String get remainTimeKey => 'remain_time' + kPartnerId + '_${post.id}';
+  String get remainTimeKey =>
+      'remain_time_${StorageManager.sharedPreferences.getInt(mUserId)}_${post.id}';
 
   final limit = 10;
   int nextPage = 1;
@@ -130,7 +129,6 @@ class NFCommentBloc {
   void refreshData() {
     nextPage = 1;
     isFetching = false;
-    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       nfCommentsSubject.add(null);
@@ -150,7 +148,6 @@ class NFCommentBloc {
 
   void fetchInitialData() {
     nextPage = 1;
-    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       nextPage++;
@@ -162,7 +159,6 @@ class NFCommentBloc {
   void fetchMoreData() {
     if (hasReachedMax || isFetching) return;
     isFetching = true;
-    print("Fetching Page: $nextPage");
     MoonBlinkRepository.getNfPostComments(post.id, limit, nextPage).then(
         (value) {
       isFetching = false;
