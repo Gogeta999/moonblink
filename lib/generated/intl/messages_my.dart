@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "commentPagePost" : MessageLookupByLibrary.simpleMessage("တင်ရန်"),
     "commentPageReply" : MessageLookupByLibrary.simpleMessage("Reply"),
     "commentPageReplyTo" : MessageLookupByLibrary.simpleMessage("Replying to"),
+    "commentPageSuspendNote1" : MessageLookupByLibrary.simpleMessage("သင်နောက်ထပ်"),
+    "commentPageSuspendNote2" : MessageLookupByLibrary.simpleMessage("စောင့်ပြီးမှ Commentလုပ်လို့ရမည်"),
     "commentPageTitle" : MessageLookupByLibrary.simpleMessage("Comments"),
     "commentPageViewLessReplies" : MessageLookupByLibrary.simpleMessage("ပိတ်ရန်"),
     "commentPageViewMoreReplies" : MessageLookupByLibrary.simpleMessage("Repliesဆက်ဖတ်ရန်"),

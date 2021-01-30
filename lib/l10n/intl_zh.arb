@@ -86,6 +86,8 @@
     "commentPagePost": "发送",
     "commentPageReply": "回复",
     "commentPageReplyTo": "回复给",
+    "commentPageSuspendNote1": "您需要在等",
+    "commentPageSuspendNote2": "才能继续评论或者回复",
     "commentPageTitle": "评论",
     "commentPageViewMoreReplies": "观看更多回复",
     "commentPageViewLessReplies": "收起",

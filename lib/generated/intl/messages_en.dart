@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "commentPagePost" : MessageLookupByLibrary.simpleMessage("Post"),
     "commentPageReply" : MessageLookupByLibrary.simpleMessage("Reply"),
     "commentPageReplyTo" : MessageLookupByLibrary.simpleMessage("Replying to"),
+    "commentPageSuspendNote1" : MessageLookupByLibrary.simpleMessage("You have to wait"),
+    "commentPageSuspendNote2" : MessageLookupByLibrary.simpleMessage("to comment or reply"),
     "commentPageTitle" : MessageLookupByLibrary.simpleMessage("Comments"),
     "commentPageViewLessReplies" : MessageLookupByLibrary.simpleMessage("Close"),
     "commentPageViewMoreReplies" : MessageLookupByLibrary.simpleMessage("View More Replies"),

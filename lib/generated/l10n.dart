@@ -905,6 +905,26 @@ class G {
     );
   }
 
+  /// `You have to wait`
+  String get commentPageSuspendNote1 {
+    return Intl.message(
+      'You have to wait',
+      name: 'commentPageSuspendNote1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `to comment or reply`
+  String get commentPageSuspendNote2 {
+    return Intl.message(
+      'to comment or reply',
+      name: 'commentPageSuspendNote2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Comments`
   String get commentPageTitle {
     return Intl.message(

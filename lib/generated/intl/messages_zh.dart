@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "commentPagePost" : MessageLookupByLibrary.simpleMessage("发送"),
     "commentPageReply" : MessageLookupByLibrary.simpleMessage("回复"),
     "commentPageReplyTo" : MessageLookupByLibrary.simpleMessage("回复给"),
+    "commentPageSuspendNote1" : MessageLookupByLibrary.simpleMessage("您需要在等"),
+    "commentPageSuspendNote2" : MessageLookupByLibrary.simpleMessage("才能继续评论或者回复"),
     "commentPageTitle" : MessageLookupByLibrary.simpleMessage("评论"),
     "commentPageViewLessReplies" : MessageLookupByLibrary.simpleMessage("收起"),
     "commentPageViewMoreReplies" : MessageLookupByLibrary.simpleMessage("观看更多回复"),

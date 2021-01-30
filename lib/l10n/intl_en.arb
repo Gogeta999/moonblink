@@ -86,6 +86,8 @@
     "commentPagePost": "Post",
     "commentPageReply": "Reply",
     "commentPageReplyTo": "Replying to",
+    "commentPageSuspendNote1": "You have to wait",
+    "commentPageSuspendNote2": "to comment or reply",
     "commentPageTitle": "Comments",
     "commentPageViewMoreReplies": "View More Replies",
     "commentPageViewLessReplies": "Close",

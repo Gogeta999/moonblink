@@ -283,7 +283,12 @@ class _CommentPageState extends State<CommentPage> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 12),
                                     child: Text(
-                                        'You have to wait ${suspendSnapshot.data} to comment or reply'),
+                                      G.current.commentPageSuspendNote1 +
+                                          ' ${suspendSnapshot.data} ' +
+                                          G.current.commentPageSuspendNote2,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
+                                    ),
                                   ),
                                 ),
                               );
