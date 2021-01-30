@@ -494,71 +494,71 @@ class _NFPostItemState extends State<NFPostItem> {
             SizedBox(height: 3),
 
             ///Post Comment
-            // if (widget.item.lastComment != null &&
-            //     widget.item.lastComment.isNotEmpty &&
-            //     widget.item.lastCommenterName != null &&
-            //     widget.item.lastCommenterName.isNotEmpty &&
-            //     widget.item.lastCommenterProfileImage != null &&
-            //     widget.item.lastCommenterProfileImage.isNotEmpty)
-            //   Container(
-            //     alignment: Alignment.centerLeft,
-            //     margin: const EdgeInsets.symmetric(horizontal: 20),
-            //     child: Row(
-            //       children: [
-            //         CachedNetworkImage(
-            //           fit: BoxFit.fill,
-            //           imageUrl: widget.item.lastCommenterProfileImage,
-            //           imageBuilder: (context, provider) {
-            //             return CircleAvatar(
-            //               backgroundImage: provider,
-            //             );
-            //           },
-            //           placeholder: (_, __) => CupertinoActivityIndicator(),
-            //           errorWidget: (context, url, error) {
-            //             return Icon(Icons.error);
-            //           },
-            //         ),
-            //         SizedBox(width: 10),
-            //         Expanded(
-            //             child: RichText(
-            //           text: TextSpan(
-            //               text: widget.item.lastCommenterName,
-            //               style: TextStyle(fontWeight: FontWeight.bold),
-            //               children: <TextSpan>[
-            //                 () {
-            //                   String short = widget.item.lastComment.substring(
-            //                       0,
-            //                       min(maxTitleAndCommentLenght,
-            //                           widget.item.lastComment.length));
-            //                   if (widget.item.lastComment.length >
-            //                       maxTitleAndCommentLenght) short += ' ....';
-            //                   return TextSpan(
-            //                       text: ' $short',
-            //                       style: Theme.of(context).textTheme.bodyText2);
-            //                 }(),
-            //               ]),
-            //         ))
-            //       ],
-            //     ),
-            //   ),
-            // Container(
-            //   alignment: Alignment.centerLeft,
-            //   margin: const EdgeInsets.symmetric(horizontal: 20),
-            //   child: CupertinoButton(
-            //       padding: EdgeInsets.zero,
-            //       child: (widget.item.lastComment != null &&
-            //               widget.item.lastComment.isNotEmpty &&
-            //               widget.item.lastCommenterName != null &&
-            //               widget.item.lastCommenterName.isNotEmpty &&
-            //               widget.item.lastCommenterProfileImage != null &&
-            //               widget.item.lastCommenterProfileImage.isNotEmpty)
-            //           ? Text(G.current.feedPageViewMoreComment)
-            //           : Text(G.current.feedPagePostComments),
-            //       onPressed: () {
-            //         Navigator.pushNamed(context, RouteName.nfCommentPage,
-            //             arguments: widget.item);
-            //       }),
-            // )
+            if (widget.item.lastComment != null &&
+                widget.item.lastComment.isNotEmpty &&
+                widget.item.lastCommenterName != null &&
+                widget.item.lastCommenterName.isNotEmpty &&
+                widget.item.lastCommenterProfileImage != null &&
+                widget.item.lastCommenterProfileImage.isNotEmpty)
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    CachedNetworkImage(
+                      fit: BoxFit.fill,
+                      imageUrl: widget.item.lastCommenterProfileImage,
+                      imageBuilder: (context, provider) {
+                        return CircleAvatar(
+                          backgroundImage: provider,
+                        );
+                      },
+                      placeholder: (_, __) => CupertinoActivityIndicator(),
+                      errorWidget: (context, url, error) {
+                        return Icon(Icons.error);
+                      },
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: RichText(
+                      text: TextSpan(
+                          text: widget.item.lastCommenterName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            () {
+                              String short = widget.item.lastComment.substring(
+                                  0,
+                                  min(maxTitleAndCommentLenght,
+                                      widget.item.lastComment.length));
+                              if (widget.item.lastComment.length >
+                                  maxTitleAndCommentLenght) short += ' ....';
+                              return TextSpan(
+                                  text: ' $short',
+                                  style: Theme.of(context).textTheme.bodyText2);
+                            }(),
+                          ]),
+                    ))
+                  ],
+                ),
+              ),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: (widget.item.lastComment != null &&
+                          widget.item.lastComment.isNotEmpty &&
+                          widget.item.lastCommenterName != null &&
+                          widget.item.lastCommenterName.isNotEmpty &&
+                          widget.item.lastCommenterProfileImage != null &&
+                          widget.item.lastCommenterProfileImage.isNotEmpty)
+                      ? Text(G.current.feedPageViewMoreComment)
+                      : Text(G.current.feedPagePostComments),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RouteName.nfCommentPage,
+                        arguments: widget.item);
+                  }),
+            )
           ],
         ),
       ),

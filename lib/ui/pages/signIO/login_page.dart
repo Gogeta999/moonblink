@@ -188,14 +188,13 @@ class LoginButton extends StatelessWidget {
                           (StorageManager.sharedPreferences
                                   .getBool(firsttuto) ??
                               true)) {
+                        tutorialOn();
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => UpdatePartnerProfilePage(),
                           ),
                         );
-                      }
-                      tutorialOn();
-                      if (gameprofile == 0 && type != 0) {
+                      } else if (gameprofile == 0 && type != 0) {
                         gameProfileSetUp();
                       }
                     } else {

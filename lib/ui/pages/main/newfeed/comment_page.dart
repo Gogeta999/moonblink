@@ -293,7 +293,13 @@ class _NfCommentItemState extends State<NfCommentItem> {
                   child: RichText(
                 text: TextSpan(
                     text: item.username,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        // fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
                     children: <TextSpan>[
                       TextSpan(
                           text: '  ${item.message}',
@@ -391,7 +397,12 @@ class _NfCommentItemState extends State<NfCommentItem> {
                   child: RichText(
                 text: TextSpan(
                     text: item.username,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
                     children: <TextSpan>[
                       TextSpan(
                           text: '  ${item.message}',
@@ -450,16 +461,16 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     ],
                   );
                 else if (widget.bloc.post.userId == widget.bloc.myId)
-                  Row(
+                  return Row(
                     children: [
                       SizedBox(width: 10),
                       InkResponse(
                         onTap: () {
                           widget.bloc.onTapDelete(context, item.commentId);
                         },
-                        child: Text(G.current.commentPageDeleteAll,
+                        child: Text(G.current.commentPageDelete,
                             style: TextStyle(
-                                color: Colors.purple[600], fontSize: 14.0)),
+                                color: Colors.red[600], fontSize: 14.0)),
                       ),
                     ],
                   );
