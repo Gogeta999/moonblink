@@ -229,6 +229,12 @@ class NFCommentBloc {
     }
   }
 
+  bool canDeleteComments() => myId == post.userId;
+
+  void onTapDeleteAllComments() {
+    if (canDeleteComments()) {}
+  }
+
   void resetCommentController(BuildContext context) {
     replyingSubject.add(null);
     editingSubject.add(null);

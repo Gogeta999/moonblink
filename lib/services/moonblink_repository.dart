@@ -708,10 +708,19 @@ class MoonBlinkRepository {
         .toList();
   }
 
-  static Future dropPost(int postId) async {
+  static Future deletePost(int postId) async {
     final myId = StorageManager.sharedPreferences.getInt(mUserId);
-    final response =
-        await DioUtils().delete("moonblink/api/v1/user/$myId/post/$postId");
+    final response = await DioUtils().delete(
+        "moonblink/api/v1/user/$myId/post/$postId",
+        queryParameters: {'delete_post': 1, 'delete_comment': 0});
+    return response;
+  }
+
+  static Future deleteCommentsOfPost(int postId) async {
+    final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    final response = await DioUtils().delete(
+        "moonblink/api/v1/user/$myId/post/$postId",
+        queryParameters: {'delete_post': 0, 'delete_comment': 1});
     return response;
   }
 

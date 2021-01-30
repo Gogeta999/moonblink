@@ -36,11 +36,43 @@ class _CommentPageState extends State<CommentPage> {
     super.dispose();
   }
 
+  // Widget appBar() {
+  //   return AppBar(
+  //     backgroundColor: Colors.black,
+  //     title: Text(G.current.commentPageTitle),
+  //     actions: [
+  //       CupertinoButton(child: Text('Delete All Comments'), onPressed: () {})
+  //     ],
+  //     bottom: PreferredSize(
+  //       child: Container(
+  //         decoration: BoxDecoration(
+  //           color: Theme.of(context).accentColor,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Theme.of(context).accentColor,
+  //               // spreadRadius: 1,
+  //               blurRadius: 4,
+  //               offset: Offset(0, 0), // changes position of shadow
+  //             ),
+  //           ],
+  //         ),
+  //         height: 10,
+  //       ),
+  //       preferredSize: Size.fromHeight(5),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppbarWidget(title: Text(G.current.commentPageTitle)),
+        // appBar: _bloc.canDeleteComments()
+        //     ? appBar()
+        //     : AppbarWidget(title: Text(G.current.commentPageTitle)),
+        appBar: AppbarWidget(
+          title: Text(G.current.commentPageTitle),
+        ),
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: RefreshIndicator(
@@ -331,45 +363,88 @@ class _NfCommentItemState extends State<NfCommentItem> {
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
                 ),
-              if (item.userId == widget.bloc.myId)
-                Row(
-                  children: [
-                    SizedBox(width: 10),
-                    InkResponse(
-                      onTap: () {
-                        widget.bloc
-                            .onTapEdit(context, item.commentId, item.message);
-                      },
-                      child: Text(G.current.commentPageEdit,
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 14.0)),
-                    ),
-                    SizedBox(width: 10),
-                    InkResponse(
-                      onTap: () {
-                        widget.bloc.onTapDelete(context, item.commentId);
-                      },
-                      child: Text(G.current.commentPageDelete,
-                          style: TextStyle(
-                              color: Colors.red[600], fontSize: 14.0)),
-                    ),
-                  ],
-                ),
-              if (widget.bloc.post.userId == widget.bloc.myId)
-                Row(
-                  children: [
-                    SizedBox(width: 10),
-                    InkResponse(
-                      onTap: () {
-                        widget.bloc.onTapDelete(context, item.commentId);
-                      },
-                      child: Text(G.current.commentPageDeleteAll,
-                          style: TextStyle(
-                              color: Colors.purple[600], fontSize: 14.0)),
-                    ),
-                  ],
-                )
+              () {
+                if (item.userId == widget.bloc.myId)
+                  return Row(
+                    children: [
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc
+                              .onTapEdit(context, item.commentId, item.message);
+                        },
+                        child: Text(G.current.commentPageEdit,
+                            style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                                fontSize: 14.0)),
+                      ),
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc.onTapDelete(context, item.commentId);
+                        },
+                        child: Text(G.current.commentPageDelete,
+                            style: TextStyle(
+                                color: Colors.red[600], fontSize: 14.0)),
+                      ),
+                    ],
+                  );
+                else if (widget.bloc.post.userId == widget.bloc.myId)
+                  return Row(
+                    children: [
+                      SizedBox(width: 10),
+                      InkResponse(
+                        onTap: () {
+                          widget.bloc.onTapDelete(context, item.commentId);
+                        },
+                        child: Text(G.current.commentPageDeleteAll,
+                            style: TextStyle(
+                                color: Colors.purple[600], fontSize: 14.0)),
+                      ),
+                    ],
+                  );
+                else
+                  return Container();
+              }()
+              // if (item.userId == widget.bloc.myId)
+              //   Row(
+              //     children: [
+              //       SizedBox(width: 10),
+              //       InkResponse(
+              //         onTap: () {
+              //           widget.bloc
+              //               .onTapEdit(context, item.commentId, item.message);
+              //         },
+              //         child: Text(G.current.commentPageEdit,
+              //             style: TextStyle(
+              //                 color: Theme.of(context).accentColor,
+              //                 fontSize: 14.0)),
+              //       ),
+              //       SizedBox(width: 10),
+              //       InkResponse(
+              //         onTap: () {
+              //           widget.bloc.onTapDelete(context, item.commentId);
+              //         },
+              //         child: Text(G.current.commentPageDelete,
+              //             style: TextStyle(
+              //                 color: Colors.red[600], fontSize: 14.0)),
+              //       ),
+              //     ],
+              //   ),
+              // if (widget.bloc.post.userId == widget.bloc.myId)
+              //   Row(
+              //     children: [
+              //       SizedBox(width: 10),
+              //       InkResponse(
+              //         onTap: () {
+              //           widget.bloc.onTapDelete(context, item.commentId);
+              //         },
+              //         child: Text(G.current.commentPageDeleteAll,
+              //             style: TextStyle(
+              //                 color: Colors.purple[600], fontSize: 14.0)),
+              //       ),
+              //     ],
+              //   )
             ],
           ),
         ],
