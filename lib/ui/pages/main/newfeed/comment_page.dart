@@ -36,11 +36,43 @@ class _CommentPageState extends State<CommentPage> {
     super.dispose();
   }
 
+  // Widget appBar() {
+  //   return AppBar(
+  //     backgroundColor: Colors.black,
+  //     title: Text(G.current.commentPageTitle),
+  //     actions: [
+  //       CupertinoButton(child: Text('Delete All Comments'), onPressed: () {})
+  //     ],
+  //     bottom: PreferredSize(
+  //       child: Container(
+  //         decoration: BoxDecoration(
+  //           color: Theme.of(context).accentColor,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Theme.of(context).accentColor,
+  //               // spreadRadius: 1,
+  //               blurRadius: 4,
+  //               offset: Offset(0, 0), // changes position of shadow
+  //             ),
+  //           ],
+  //         ),
+  //         height: 10,
+  //       ),
+  //       preferredSize: Size.fromHeight(5),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppbarWidget(title: Text(G.current.commentPageTitle)),
+        // appBar: _bloc.canDeleteComments()
+        //     ? appBar()
+        //     : AppbarWidget(title: Text(G.current.commentPageTitle)),
+        appBar: AppbarWidget(
+          title: Text(G.current.commentPageTitle),
+        ),
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: RefreshIndicator(
@@ -450,7 +482,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                     ],
                   );
                 else if (widget.bloc.post.userId == widget.bloc.myId)
-                  Row(
+                  return Row(
                     children: [
                       SizedBox(width: 10),
                       InkResponse(

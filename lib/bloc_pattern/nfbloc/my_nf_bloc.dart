@@ -127,7 +127,7 @@ class MyNFBloc {
               CupertinoButton(
                   child: Text("Delete"),
                   onPressed: () {
-                    MoonBlinkRepository.dropPost(postId).then((_) {
+                    MoonBlinkRepository.deletePost(postId).then((_) {
                       showToast("Successfully deleted");
                       MoonGoDB().deleteNFPost(postId);
                       this.myNfPostsSubject.first.then((value) {
