@@ -198,72 +198,151 @@ class _CommentPageState extends State<CommentPage> {
                         return Container();
                       },
                     ),
-                    StreamBuilder<int>(
-                        initialData: null,
-                        stream: _bloc.editingSubject,
-                        builder: (context, editingSnapshot) {
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
-                                  child: CupertinoTextField(
-                                    placeholder:
-                                        G.current.commentPageInputHolderText,
-                                    controller: _bloc.commentController,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 4),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                        border: Border.all(
-                                            color:
-                                                Theme.of(context).accentColor),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    keyboardType: TextInputType.text,
-                                    prefix: editingSnapshot.data != null
-                                        ? Padding(
+                    StreamBuilder<String>(
+                      initialData: null,
+                      stream: _bloc.commentSuspendTimeSubject,
+                      builder: (context, suspendSnapshot) => StreamBuilder<int>(
+                          initialData: null,
+                          stream: _bloc.editingSubject,
+                          builder: (context, editingSnapshot) {
+                            if (editingSnapshot.data != null) {
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      child: CupertinoTextField(
+                                        placeholder: G
+                                            .current.commentPageInputHolderText,
+                                        controller: _bloc.commentController,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 4),
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .accentColor),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        keyboardType: TextInputType.text,
+                                        prefix: Padding(
                                             padding: EdgeInsets.only(
                                                 bottom: 20, left: 5),
                                             child: Text(
-                                                G.current.commentPageEditing))
-                                        : null,
-                                    prefixMode: OverlayVisibilityMode.always,
-                                    maxLines: 2,
-                                    textInputAction: TextInputAction.done,
-                                    clearButtonMode:
-                                        OverlayVisibilityMode.editing,
+                                                G.current.commentPageEditing)),
+                                        prefixMode:
+                                            OverlayVisibilityMode.always,
+                                        maxLines: 2,
+                                        textInputAction: TextInputAction.done,
+                                        clearButtonMode:
+                                            OverlayVisibilityMode.editing,
+                                      ),
+                                    ),
+                                  ),
+                                  StreamBuilder<bool>(
+                                      initialData: false,
+                                      stream: _bloc.postButtonSubject,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data) {
+                                          return CupertinoButton(
+                                            padding: EdgeInsets.only(right: 5),
+                                            child: CupertinoActivityIndicator(),
+                                            onPressed: () {},
+                                          );
+                                        }
+                                        return CupertinoButton(
+                                          padding: EdgeInsets.only(right: 5),
+                                          child: Text(
+                                              editingSnapshot.data != null
+                                                  ? G.current.commentPageEdit
+                                                  : G.current.commentPagePost),
+                                          onPressed: () {
+                                            _bloc.postComment(context);
+                                          },
+                                        );
+                                      })
+                                ],
+                              );
+                            }
+                            if (suspendSnapshot.data != null &&
+                                suspendSnapshot.data.isNotEmpty) {
+                              return Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context).accentColor),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 12),
+                                    child: Text(
+                                        'You have to wait ${suspendSnapshot.data} to comment or reply'),
                                   ),
                                 ),
-                              ),
-                              StreamBuilder<bool>(
-                                  initialData: false,
-                                  stream: _bloc.postButtonSubject,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data) {
+                              );
+                            }
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: CupertinoTextField(
+                                      placeholder:
+                                          G.current.commentPageInputHolderText,
+                                      controller: _bloc.commentController,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 4),
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .accentColor),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      keyboardType: TextInputType.text,
+                                      maxLines: 2,
+                                      textInputAction: TextInputAction.done,
+                                      clearButtonMode:
+                                          OverlayVisibilityMode.editing,
+                                    ),
+                                  ),
+                                ),
+                                StreamBuilder<bool>(
+                                    initialData: false,
+                                    stream: _bloc.postButtonSubject,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.data) {
+                                        return CupertinoButton(
+                                          padding: EdgeInsets.only(right: 5),
+                                          child: CupertinoActivityIndicator(),
+                                          onPressed: () {},
+                                        );
+                                      }
                                       return CupertinoButton(
                                         padding: EdgeInsets.only(right: 5),
-                                        child: CupertinoActivityIndicator(),
-                                        onPressed: () {},
+                                        child: Text(editingSnapshot.data != null
+                                            ? G.current.commentPageEdit
+                                            : G.current.commentPagePost),
+                                        onPressed: () {
+                                          _bloc.postComment(context);
+                                        },
                                       );
-                                    }
-                                    return CupertinoButton(
-                                      padding: EdgeInsets.only(right: 5),
-                                      child: Text(editingSnapshot.data != null
-                                          ? G.current.commentPageEdit
-                                          : G.current.commentPagePost),
-                                      onPressed: () {
-                                        _bloc.postComment(context);
-                                      },
-                                    );
-                                  })
-                            ],
-                          );
-                        }),
+                                    })
+                              ],
+                            );
+                          }),
+                    ),
                   ],
                 )
               ],
@@ -357,49 +436,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
                 ),
-              () {
-                if (item.userId == widget.bloc.myId)
-                  return Row(
-                    children: [
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc
-                              .onTapEdit(context, item.commentId, item.message);
-                        },
-                        child: Text(G.current.commentPageEdit,
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 14.0)),
-                      ),
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc.onTapDelete(context, item.commentId);
-                        },
-                        child: Text(G.current.commentPageDelete,
-                            style: TextStyle(
-                                color: Colors.red[600], fontSize: 14.0)),
-                      ),
-                    ],
-                  );
-                else if (widget.bloc.post.userId == widget.bloc.myId)
-                  return Row(
-                    children: [
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc.onTapDelete(context, item.commentId);
-                        },
-                        child: Text(G.current.commentPageDeleteAll,
-                            style: TextStyle(
-                                color: Colors.purple[600], fontSize: 14.0)),
-                      ),
-                    ],
-                  );
-                else
-                  return Container();
-              }()
+              _buildDeletAndEditWidget(item)
               // if (item.userId == widget.bloc.myId)
               //   Row(
               //     children: [
@@ -498,49 +535,7 @@ class _NfCommentItemState extends State<NfCommentItem> {
                           color: Theme.of(context).accentColor,
                           fontSize: 14.0)),
                 ),
-              () {
-                if (item.userId == widget.bloc.myId)
-                  return Row(
-                    children: [
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc
-                              .onTapEdit(context, item.commentId, item.message);
-                        },
-                        child: Text(G.current.commentPageEdit,
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 14.0)),
-                      ),
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc.onTapDelete(context, item.commentId);
-                        },
-                        child: Text(G.current.commentPageDelete,
-                            style: TextStyle(
-                                color: Colors.red[600], fontSize: 14.0)),
-                      ),
-                    ],
-                  );
-                else if (widget.bloc.post.userId == widget.bloc.myId)
-                  return Row(
-                    children: [
-                      SizedBox(width: 10),
-                      InkResponse(
-                        onTap: () {
-                          widget.bloc.onTapDelete(context, item.commentId);
-                        },
-                        child: Text(G.current.commentPageDeleteAll,
-                            style: TextStyle(
-                                color: Colors.purple[600], fontSize: 14.0)),
-                      ),
-                    ],
-                  );
-                else
-                  return Container();
-              }()
+              _buildDeletAndEditWidget(item)
             ],
           ),
         ],
@@ -548,6 +543,46 @@ class _NfCommentItemState extends State<NfCommentItem> {
     } else {
       return Text("Wrong Object Error");
     }
+  }
+
+  Widget _buildDeletAndEditWidget(dynamic item) {
+    if (item.userId == widget.bloc.myId)
+      return Row(
+        children: [
+          SizedBox(width: 10),
+          InkResponse(
+            onTap: () {
+              widget.bloc.onTapEdit(context, item.commentId, item.message);
+            },
+            child: Text(G.current.commentPageEdit,
+                style: TextStyle(
+                    color: Theme.of(context).accentColor, fontSize: 14.0)),
+          ),
+          SizedBox(width: 10),
+          InkResponse(
+            onTap: () {
+              widget.bloc.onTapDelete(context, item.commentId);
+            },
+            child: Text(G.current.commentPageDelete,
+                style: TextStyle(color: Colors.red[600], fontSize: 14.0)),
+          ),
+        ],
+      );
+    else if (widget.bloc.post.userId == widget.bloc.myId)
+      return Row(
+        children: [
+          SizedBox(width: 10),
+          InkResponse(
+            onTap: () {
+              widget.bloc.onTapDelete(context, item.commentId);
+            },
+            child: Text(G.current.commentPageDeleteAll,
+                style: TextStyle(color: Colors.purple[600], fontSize: 14.0)),
+          ),
+        ],
+      );
+    else
+      return Container();
   }
 
   @override

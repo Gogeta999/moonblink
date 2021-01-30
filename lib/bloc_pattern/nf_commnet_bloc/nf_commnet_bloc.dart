@@ -17,6 +17,17 @@ class NFCommentBloc {
   NFCommentBloc(this.post) {
     this.scrollController = ScrollController()
       ..addListener(() => this.onScroll());
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final before =
+        (StorageManager.sharedPreferences.getInt(startTimeKey) ?? 0) ~/ 1000;
+    final leftTime =
+        StorageManager.sharedPreferences.getInt(remainTimeKey) ?? 0;
+    if (leftTime > now - before) {
+      _totalTime = leftTime - (now - before);
+      _startCounting();
+    } else {
+      commentSuspendTimeSubject.add(null);
+    }
   }
 
   final NFPost post;
@@ -33,6 +44,18 @@ class NFCommentBloc {
   final replyingSubject = BehaviorSubject<Map<String, dynamic>>.seeded(null);
   final editingSubject = BehaviorSubject<int>.seeded(null);
 
+  final commentSuspendTimeSubject = BehaviorSubject<String>.seeded(null)
+    ..listen((value) {
+      print('Debug Time: $value');
+    });
+
+  Timer _timer;
+  int _totalTime = -1;
+  //Staring time
+  String get startTimeKey => 'start_time' + kPartnerId + '_${post.id}';
+  //Remaining time
+  String get remainTimeKey => 'remain_time' + kPartnerId + '_${post.id}';
+
   final limit = 10;
   int nextPage = 1;
   bool hasReachedMax = false;
@@ -40,10 +63,37 @@ class NFCommentBloc {
 
   void dispose() {
     _debounce?.cancel();
+    scrollController.dispose();
+    commentController.dispose();
     nfCommentsSubject.close();
     postButtonSubject.close();
     replyingSubject.close();
     editingSubject.close();
+    _timer?.cancel();
+    commentSuspendTimeSubject.close();
+    if (_totalTime > 0) {
+      StorageManager.sharedPreferences
+          .setInt(startTimeKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(remainTimeKey, _totalTime);
+    } else {
+      StorageManager.sharedPreferences
+          .setInt(startTimeKey, DateTime.now().millisecondsSinceEpoch);
+      StorageManager.sharedPreferences.setInt(remainTimeKey, -1);
+    }
+  }
+
+  void _startCounting() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _totalTime--;
+      int minutes = _totalTime ~/ 60;
+      String seconds = (_totalTime % 60).toString().padLeft(2, '0');
+      if (_totalTime < 0) {
+        _totalTime = -1;
+        _timer.cancel();
+        commentSuspendTimeSubject.add(null);
+      } else
+        commentSuspendTimeSubject.add('$minutes : $seconds');
+    });
   }
 
   void onScroll() {
@@ -130,7 +180,7 @@ class NFCommentBloc {
 
   void postComment(BuildContext context) async {
     final message = commentController.text.trim();
-    //if (message == null || message.isEmpty) return;
+    if (message == null || message.isEmpty) return;
     final commentId = await editingSubject.first;
     if (commentId != null) {
       postButtonSubject.add(true);
@@ -181,6 +231,11 @@ class NFCommentBloc {
       final replyingMap = await replyingSubject.first;
       if (replyingMap != null)
         parentCommentId = replyingMap['parent_comment_id'];
+      if (commentSuspendTimeSubject.value != null) {
+        showToast(
+            'You have to wait ${commentSuspendTimeSubject.value} to comment or reply');
+        return;
+      }
       postButtonSubject.add(true);
       MoonBlinkRepository.postComment(post.id, message, parentCommentId).then(
           (_) async {
@@ -218,6 +273,9 @@ class NFCommentBloc {
             }
           }
         }
+        _totalTime = 300;
+        commentSuspendTimeSubject.add('5 : 00');
+        _startCounting();
         nfCommentsSubject.add(null);
         nfCommentsSubject.add(comments);
         resetCommentController(context);
@@ -229,11 +287,11 @@ class NFCommentBloc {
     }
   }
 
-  bool canDeleteComments() => myId == post.userId;
+  // bool canDeleteComments() => myId == post.userId;
 
-  void onTapDeleteAllComments() {
-    if (canDeleteComments()) {}
-  }
+  // void onTapDeleteAllComments() {
+  //   if (canDeleteComments()) {}
+  // }
 
   void resetCommentController(BuildContext context) {
     replyingSubject.add(null);
