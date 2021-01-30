@@ -523,7 +523,13 @@ class _NFPostItemState extends State<NFPostItem> {
                         child: RichText(
                       text: TextSpan(
                           text: widget.item.lastCommenterName,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.black
+                                  : Colors.white),
                           children: <TextSpan>[
                             () {
                               String short = widget.item.lastComment.substring(

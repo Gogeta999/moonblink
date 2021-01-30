@@ -404,7 +404,13 @@ class _NfCommentItemState extends State<NfCommentItem> {
                   child: RichText(
                 text: TextSpan(
                     text: item.username,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        // fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
                     children: <TextSpan>[
                       TextSpan(
                           text: '  ${item.message}',
@@ -503,7 +509,12 @@ class _NfCommentItemState extends State<NfCommentItem> {
                   child: RichText(
                 text: TextSpan(
                     text: item.username,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
                     children: <TextSpan>[
                       TextSpan(
                           text: '  ${item.message}',

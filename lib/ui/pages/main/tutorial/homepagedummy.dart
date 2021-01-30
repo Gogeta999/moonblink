@@ -89,7 +89,7 @@ class _HomePageDummyState extends State<HomePageDummy> {
           confirmButtonColor: Theme.of(context).accentColor,
           confirmContent: G.of(context).confirm,
           confirmCallback: () {
-            // StorageManager.sharedPreferences.setBool(firsttuto, false);
+            StorageManager.sharedPreferences.setBool(firsttuto, false);
             Navigator.pop(context);
           },
           simpleContent: (G.of(context).userrule2),

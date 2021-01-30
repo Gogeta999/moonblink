@@ -224,7 +224,7 @@ class _MBCaptchaState extends State<MBCaptcha> {
                 alignment: Alignment.center,
                 children: [
                   _annoyLine(),
-                  _annoyLine(),
+                  // _annoyLine(),
                   // _annoyLine(),
                   // _annoyLine(),
                   Container(
