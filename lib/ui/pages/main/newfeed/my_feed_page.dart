@@ -100,6 +100,13 @@ class _MyNewFeedPageState extends State<MyNewFeedPage> {
                     ));
                   }
                   final item = snapshot.data[index];
+                  item.media.forEach((element) {
+                    UrlType urlType = _bloc.getUrlType(element);
+                    if (urlType == UrlType.REMOTE_IMAGE) {
+                      precacheImage(
+                          CachedNetworkImageProvider(element), context);
+                    }
+                  });
                   return MyNFPostItem(item: item, index: index, bloc: _bloc);
                 },
               );
@@ -171,8 +178,6 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                                 backgroundImage: provider,
                               );
                             },
-                            placeholder: (_, __) =>
-                                CupertinoActivityIndicator(),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),
@@ -346,7 +351,6 @@ class _MyNFPostItemState extends State<MyNFPostItem> {
                         backgroundImage: provider,
                       );
                     },
-                    placeholder: (_, __) => CupertinoActivityIndicator(),
                     errorWidget: (context, url, error) {
                       return Icon(Icons.error);
                     },
@@ -412,91 +416,10 @@ class PostMediaItem extends StatefulWidget {
 
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
-  final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
-  //int maxHeight = 200;
   final _maxHeightSubject = BehaviorSubject.seeded(300.0);
 
   @override
   void initState() {
-    this._pageChildrenSubject.add(widget.item.media
-        .asMap()
-        .map((index, url) {
-          UrlType urlType = widget.nfBloc.getUrlType(url);
-          if (urlType == UrlType.REMOTE_IMAGE)
-            return MapEntry(
-              index,
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.9,
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          fullscreenDialog: true,
-                          builder: (_) => FullScreenImageView(imageUrl: url)));
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: url,
-                    imageBuilder: (context, imageProvider) {
-                      final imageListener = ImageStreamListener((info, _) {
-                        final _fittedSize = applyBoxFit(
-                            BoxFit.contain,
-                            Size(info.image.width.toDouble(),
-                                info.image.height.toDouble()),
-                            MediaQuery.of(context).size);
-                        this
-                            ._maxHeightSubject
-                            .add(_fittedSize.destination.height);
-                        // this._maxHeightSubject.first.then((value) {
-                        //   this._maxHeightSubject.add(
-                        //       //min(maxHeight, max(info.image.height, value)));
-                        //       //max(_fittedSize.destination.height, value));
-                        //       _fittedSize.destination.height);
-                        // });
-                      });
-                      imageProvider
-                          .resolve(ImageConfiguration())
-                          .addListener(imageListener);
-                      return Image(image: imageProvider, fit: BoxFit.fill);
-                    },
-                    progressIndicatorBuilder: (context, url, progress) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: progress.progress,
-                          valueColor: AlwaysStoppedAnimation(
-                              Theme.of(context).accentColor),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-              ),
-            );
-          if (urlType == UrlType.REMOTE_VIDEO)
-            return MapEntry(
-              index,
-              Player(
-                url: url,
-                id: widget.item.id,
-                index: widget.index,
-                maxHeightCallBack: (double height) {
-                  this._maxHeightSubject.add(
-                      min(height, MediaQuery.of(context).size.height * 0.7));
-                  // this._maxHeightSubject.first.then((value) {
-                  //   this._maxHeightSubject.add(max(height, value));
-                  //   // .add(max(maxHeight, max(height, value)));
-                  // });
-                },
-              ),
-            );
-          return MapEntry(index, Text('Not Supported Format'));
-        })
-        .values
-        .toList());
     super.initState();
   }
 
@@ -509,7 +432,6 @@ class _PostMediaItemState extends State<PostMediaItem> {
   @override
   void dispose() {
     _maxHeightSubject.close();
-    _pageChildrenSubject.close();
     _currentPageSubject.close();
     super.dispose();
   }
@@ -518,29 +440,89 @@ class _PostMediaItemState extends State<PostMediaItem> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        StreamBuilder<List<Widget>>(
-          initialData: [],
-          stream: this._pageChildrenSubject,
-          builder: (context, childrenSnapshot) {
-            return StreamBuilder<double>(
-                initialData: 300.0,
-                stream: this._maxHeightSubject,
-                builder: (context, maxHeightSnapshot) {
-                  return AnimatedContainer(
-                    width: double.infinity,
-                    height: maxHeightSnapshot.data,
-                    duration: Duration(milliseconds: 300),
-                    child: PageView(
-                      physics: ClampingScrollPhysics(),
-                      onPageChanged: (value) {
-                        _currentPageSubject.add(value + 1);
-                      },
-                      children: childrenSnapshot.data,
-                    ),
-                  );
-                });
-          },
-        ),
+        StreamBuilder<double>(
+            initialData: 300.0,
+            stream: this._maxHeightSubject,
+            builder: (context, maxHeightSnapshot) {
+              return AnimatedContainer(
+                width: double.infinity,
+                height: maxHeightSnapshot.data,
+                duration: Duration(milliseconds: 300),
+                child: PageView(
+                  physics: ClampingScrollPhysics(),
+                  onPageChanged: (value) {
+                    _currentPageSubject.add(value + 1);
+                  },
+                  children: widget.item.media.map((url) {
+                    UrlType urlType = widget.nfBloc.getUrlType(url);
+                    if (urlType == UrlType.REMOTE_IMAGE) {
+                      return CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.9,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (_) =>
+                                      FullScreenImageView(imageUrl: url)));
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl: url,
+                            imageBuilder: (context, imageProvider) {
+                              final imageListener =
+                                  ImageStreamListener((info, _) {
+                                final _fittedSize = applyBoxFit(
+                                    BoxFit.contain,
+                                    Size(info.image.width.toDouble(),
+                                        info.image.height.toDouble()),
+                                    MediaQuery.of(context).size);
+                                this
+                                    ._maxHeightSubject
+                                    .add(_fittedSize.destination.height);
+                              });
+                              imageProvider
+                                  .resolve(ImageConfiguration())
+                                  .addListener(imageListener);
+                              return Image(
+                                  image: imageProvider, fit: BoxFit.fill);
+                            },
+                            fadeOutDuration: Duration.zero,
+                            fadeInDuration: Duration.zero,
+                            placeholderFadeInDuration: Duration.zero,
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: progress.progress,
+                                  valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).accentColor),
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
+                      );
+                    }
+                    if (urlType == UrlType.REMOTE_VIDEO)
+                      return Player(
+                        url: url,
+                        id: widget.item.id,
+                        index: widget.index,
+                        maxHeightCallBack: (double height) {
+                          this._maxHeightSubject.add(min(height,
+                              MediaQuery.of(context).size.height * 0.7));
+                        },
+                      );
+                    return Text('Not Supported Format');
+                  }).toList(),
+                ),
+              );
+            }),
         StreamBuilder<int>(
             initialData: 0,
             stream: this._currentPageSubject,

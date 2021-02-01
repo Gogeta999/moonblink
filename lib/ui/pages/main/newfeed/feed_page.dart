@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
@@ -33,6 +34,7 @@ class NewFeedPage extends StatefulWidget {
 class _NewFeedPageState extends State<NewFeedPage>
     with AutomaticKeepAliveClientMixin {
   NFBloc _bloc;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -110,6 +112,13 @@ class _NewFeedPageState extends State<NewFeedPage>
                     ));
                   }
                   final item = snapshot.data[index];
+                  item.media.forEach((element) {
+                    UrlType urlType = _bloc.getUrlType(element);
+                    if (urlType == UrlType.REMOTE_IMAGE) {
+                      precacheImage(
+                          CachedNetworkImageProvider(element), context);
+                    }
+                  });
                   return NFPostItem(item: item, index: index, bloc: _bloc);
                 },
               );
@@ -118,69 +127,6 @@ class _NewFeedPageState extends State<NewFeedPage>
         ),
       ),
     );
-    // return Scaffold(
-    //   backgroundColor: Theme.of(context).brightness == Brightness.light
-    //       ? Colors.grey[200]
-    //       : null,
-    //   appBar: AppbarWidget(
-    //     leadingText: G.current.follow,
-    //     leadingCallback: () {
-    //       Navigator.of(context)
-    //           .push(MaterialPageRoute(builder: (_) => ContactsPage()));
-    //     },
-    //   ),
-    //   body: SafeArea(
-    //     child: SmartRefresher(
-    //       controller: _bloc.refreshController,
-    //       enablePullDown: true,
-    //       scrollController: _bloc.scrollController,
-    //       onRefresh: () {
-    //         _bloc.refreshData();
-    //       },
-    //       header: WaterDropHeader(),
-    //       child: StreamBuilder<List<NFPost>>(
-    //         initialData: null,
-    //         stream: _bloc.nfPostsSubject,
-    //         builder: (context, snapshot) {
-    //           if (snapshot.hasError)
-    //             return ViewStateErrorWidget(
-    //               error: ViewStateError(
-    //                   snapshot.error == "No Internet Connection"
-    //                       ? ViewStateErrorType.networkTimeOutError
-    //                       : ViewStateErrorType.defaultError,
-    //                   errorMessage: snapshot.error.toString()),
-    //               onPressed: () {
-    //                 _bloc.refreshData();
-    //               },
-    //             );
-    //           if (snapshot.data == null) {
-    //             return Center(child: CupertinoActivityIndicator());
-    //           }
-    //           if (snapshot.data.isEmpty)
-    //             return Center(child: Text('No Posts Available'));
-    //           return ListView.builder(
-    //             shrinkWrap: true,
-    //             physics: NeverScrollableScrollPhysics(),
-    //             itemCount: _bloc.hasReachedMax
-    //                 ? snapshot.data.length
-    //                 : snapshot.data.length + 1,
-    //             itemBuilder: (context, index) {
-    //               if (index >= snapshot.data.length) {
-    //                 return Center(
-    //                     child: Padding(
-    //                   padding: const EdgeInsets.only(bottom: 12.0),
-    //                   child: CupertinoActivityIndicator(),
-    //                 ));
-    //               }
-    //               final item = snapshot.data[index];
-    //               return NFPostItem(item: item, index: index, bloc: _bloc);
-    //             },
-    //           );
-    //         },
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
@@ -248,8 +194,6 @@ class _NFPostItemState extends State<NFPostItem> {
                                   backgroundImage: provider,
                                 );
                               },
-                              placeholder: (_, __) =>
-                                  CupertinoActivityIndicator(),
                               errorWidget: (context, url, error) {
                                 return Icon(Icons.error);
                               }),
@@ -283,6 +227,7 @@ class _NFPostItemState extends State<NFPostItem> {
                     trimLines: 3,
                     colorClickableText: Theme.of(context).accentColor,
                     trimMode: TrimMode.Line,
+                    delimiter: "",
                     trimCollapsedText: G.of(context).readMore,
                     trimExpandedText: G.of(context).readLess,
                   )),
@@ -454,7 +399,6 @@ class _NFPostItemState extends State<NFPostItem> {
                           backgroundImage: provider,
                         );
                       },
-                      placeholder: (_, __) => CupertinoActivityIndicator(),
                       errorWidget: (context, url, error) {
                         return Icon(Icons.error);
                       },
@@ -521,104 +465,21 @@ class PostMediaItem extends StatefulWidget {
 
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
-  final _pageChildrenSubject = BehaviorSubject.seeded(<Widget>[]);
-  //int maxHeight = 200;
   final _maxHeightSubject = BehaviorSubject.seeded(300.0);
 
   @override
   void initState() {
-    this._pageChildrenSubject.add(widget.item.media
-        .asMap()
-        .map((index, url) {
-          UrlType urlType = widget.nfBloc.getUrlType(url);
-          if (urlType == UrlType.REMOTE_IMAGE)
-            return MapEntry(
-              index,
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.9,
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          fullscreenDialog: true,
-                          builder: (_) => FullScreenImageView(imageUrl: url)));
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: url,
-                    imageBuilder: (context, imageProvider) {
-                      final imageListener = ImageStreamListener((info, _) {
-                        final _fittedSize = applyBoxFit(
-                            BoxFit.contain,
-                            Size(info.image.width.toDouble(),
-                                info.image.height.toDouble()),
-                            MediaQuery.of(context).size);
-                        this
-                            ._maxHeightSubject
-                            .add(_fittedSize.destination.height);
-                        // this._maxHeightSubject.first.then((value) {
-                        //   this._maxHeightSubject.add(
-                        //       //min(maxHeight, max(info.image.height, value)));
-                        //       //max(_fittedSize.destination.height, value));
-                        //       _fittedSize.destination.height);
-                        // });
-                      });
-                      imageProvider
-                          .resolve(ImageConfiguration())
-                          .addListener(imageListener);
-                      return Image(image: imageProvider, fit: BoxFit.fill);
-                    },
-                    progressIndicatorBuilder: (context, url, progress) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: progress.progress,
-                          valueColor: AlwaysStoppedAnimation(
-                              Theme.of(context).accentColor),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-              ),
-            );
-          if (urlType == UrlType.REMOTE_VIDEO)
-            return MapEntry(
-              index,
-              Player(
-                url: url,
-                id: widget.item.id,
-                index: widget.index,
-                maxHeightCallBack: (double height) {
-                  this._maxHeightSubject.add(
-                      min(height, MediaQuery.of(context).size.height * 0.7));
-                  // this._maxHeightSubject.first.then((value) {
-                  //   this._maxHeightSubject.add(max(height, value));
-                  //   // .add(max(maxHeight, max(height, value)));
-                  // });
-                },
-              ),
-            );
-          return MapEntry(index, Text('Not Supported Format'));
-        })
-        .values
-        .toList());
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    //maxHeight = MediaQuery.of(context).size.height.toInt();
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
     _maxHeightSubject.close();
-    _pageChildrenSubject.close();
     _currentPageSubject.close();
     super.dispose();
   }
@@ -627,29 +488,112 @@ class _PostMediaItemState extends State<PostMediaItem> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        StreamBuilder<List<Widget>>(
-          initialData: [],
-          stream: this._pageChildrenSubject,
-          builder: (context, childrenSnapshot) {
-            return StreamBuilder<double>(
-                initialData: 300.0,
-                stream: this._maxHeightSubject,
-                builder: (context, maxHeightSnapshot) {
-                  return AnimatedContainer(
-                    width: double.infinity,
-                    height: maxHeightSnapshot.data,
-                    duration: Duration(milliseconds: 300),
-                    child: PageView(
-                      physics: ClampingScrollPhysics(),
-                      onPageChanged: (value) {
-                        _currentPageSubject.add(value + 1);
-                      },
-                      children: childrenSnapshot.data,
-                    ),
-                  );
-                });
-          },
-        ),
+        StreamBuilder<double>(
+            initialData: 300.0,
+            stream: this._maxHeightSubject,
+            builder: (context, maxHeightSnapshot) {
+              return AnimatedContainer(
+                width: double.infinity,
+                height: maxHeightSnapshot.data,
+                duration: Duration(milliseconds: 300),
+                child: PageView(
+                  physics: ClampingScrollPhysics(),
+                  onPageChanged: (value) {
+                    _currentPageSubject.add(value + 1);
+                  },
+                  children: widget.item.media.map((url) {
+                    UrlType urlType = widget.nfBloc.getUrlType(url);
+                    if (urlType == UrlType.REMOTE_IMAGE) {
+                      return CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.9,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (_) =>
+                                      FullScreenImageView(imageUrl: url)));
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl: url,
+                            imageBuilder: (context, imageProvider) {
+                              final imageListener =
+                                  ImageStreamListener((info, _) {
+                                final _fittedSize = applyBoxFit(
+                                    BoxFit.contain,
+                                    Size(info.image.width.toDouble(),
+                                        info.image.height.toDouble()),
+                                    MediaQuery.of(context).size);
+                                this
+                                    ._maxHeightSubject
+                                    .add(_fittedSize.destination.height);
+                              });
+                              imageProvider
+                                  .resolve(ImageConfiguration())
+                                  .addListener(imageListener);
+                              return Image(
+                                  image: imageProvider, fit: BoxFit.fill);
+                            },
+                            fadeOutDuration: Duration.zero,
+                            fadeInDuration: Duration.zero,
+                            placeholderFadeInDuration: Duration.zero,
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: progress.progress,
+                                  valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).accentColor),
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
+                      );
+                    }
+                    if (urlType == UrlType.REMOTE_VIDEO)
+                      return Player(
+                        url: url,
+                        id: widget.item.id,
+                        index: widget.index,
+                        maxHeightCallBack: (double height) {
+                          this._maxHeightSubject.add(min(height,
+                              MediaQuery.of(context).size.height * 0.7));
+                        },
+                      );
+                    return Text('Not Supported Format');
+                  }).toList(),
+                ),
+              );
+            }),
+        // StreamBuilder<List<Widget>>(
+        //   initialData: [],
+        //   stream: this._pageChildrenSubject,
+        //   builder: (context, childrenSnapshot) {
+        //     return StreamBuilder<double>(
+        //         initialData: 300.0,
+        //         stream: this._maxHeightSubject,
+        //         builder: (context, maxHeightSnapshot) {
+        //           return AnimatedContainer(
+        //             width: double.infinity,
+        //             height: maxHeightSnapshot.data,
+        //             duration: Duration(milliseconds: 300),
+        //             child: PageView(
+        //               physics: ClampingScrollPhysics(),
+        //               onPageChanged: (value) {
+        //                 _currentPageSubject.add(value + 1);
+        //               },
+        //               children: childrenSnapshot.data,
+        //             ),
+        //           );
+        //         });
+        //   },
+        // ),
         StreamBuilder<int>(
             initialData: 0,
             stream: this._currentPageSubject,
