@@ -149,25 +149,25 @@ class LoginButton extends StatelessWidget {
     var model = Provider.of<LoginModel>(context);
     var theme = Theme.of(context);
     return LoginButtonWidget(
-        color: theme.accentColor,
-        // brightness == Brightness.dark
-        //     ? theme.accentColor
-        //     : Colors.white,
-        child: model.isBusy
-            ? ButtonProgressIndicator()
-            : Text(
-                G.of(context).toSignIn,
-                style: Theme.of(context)
-                    .accentTextTheme
-                    .headline6
-                    .copyWith(wordSpacing: 6),
-              ),
-        onPressed: model.isBusy
-            ? null
-            : () {
-                // if (captchaController != globalCaptchaValue) {
-                // showToast(G.current.captchaWrongToast);
-                // } else {
+      color: theme.accentColor,
+      // brightness == Brightness.dark
+      //     ? theme.accentColor
+      //     : Colors.white,
+      child: model.isBusy
+          ? ButtonProgressIndicator()
+          : Text(
+              G.of(context).toSignIn,
+              style: Theme.of(context)
+                  .accentTextTheme
+                  .headline6
+                  .copyWith(wordSpacing: 6),
+            ),
+      onPressed: model.isBusy
+          ? null
+          : () {
+              if (captchaController != globalCaptchaValue) {
+                showToast(G.current.captchaWrongToast);
+              } else {
                 var formState = Form.of(context);
                 if (formState.validate()) {
                   model
@@ -203,7 +203,7 @@ class LoginButton extends StatelessWidget {
                   });
                 }
               }
-        // },
-        );
+            },
+    );
   }
 }
