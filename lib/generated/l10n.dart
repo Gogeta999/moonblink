@@ -1045,6 +1045,16 @@ class G {
     );
   }
 
+  /// `1 coin is equal to 10 Kyats`
+  String get coinprice {
+    return Intl.message(
+      '1 coin is equal to 10 Kyats',
+      name: 'coinprice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Duration`
   String get duration {
     return Intl.message(

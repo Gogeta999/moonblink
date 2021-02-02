@@ -272,6 +272,23 @@ class _NewtopuppageState extends State<Newtopuppage> {
                 availablePlatformItem(),
                 //Text('Upload your transfer Photo & Description'),
                 //Dropdown to choose product
+                Card(
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15.0),
+                          bottomRight: Radius.circular(15.0)),
+                    ),
+                    child: Text(
+                      G.current.coinprice,
+                      textAlign: TextAlign.start,
+                      // style: TextStyle(color: textColor),
+                    ),
+                  ),
+                ),
                 DropdownButtonHideUnderline(
                   child: DropdownButton<Product>(
                     dropdownColor:

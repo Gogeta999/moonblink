@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "choose" : MessageLookupByLibrary.simpleMessage("ရွေးချယ်ပါ"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("သင်ကစားသောဂိမ်းကိုရွေးချယ်ပါ"),
     "coin" : MessageLookupByLibrary.simpleMessage("ကျွန်တော့် ပိုက်ဆံ"),
+    "coinprice" : MessageLookupByLibrary.simpleMessage("၁ coin သည် ၁၀ ကျပ်နှင့်ညီသည်"),
     "commentPageDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "commentPageDeleteAll" : MessageLookupByLibrary.simpleMessage("Delete All"),
     "commentPageEdit" : MessageLookupByLibrary.simpleMessage("Edit"),
