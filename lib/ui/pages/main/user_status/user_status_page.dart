@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter_holo_date_picker/date_time_formatter.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:moonblink/api/moonblink_dio.dart';
 import 'package:moonblink/base_widget/appbar/appbarlogo.dart';
 import 'package:moonblink/base_widget/customDialog_widget.dart';
+import 'package:moonblink/base_widget/vip_renew.dart';
 import 'package:moonblink/base_widget/vip_renew_dialog.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
@@ -55,18 +58,12 @@ class _UserStatusPageState extends State<UserStatusPage> {
     if (isDev)
       print('token: ${StorageManager.sharedPreferences.getString(token)}');
     if (StorageManager.sharedPreferences.getString(token) != null)
-      init().whenComplete(() {
-        int vipLevel = int.tryParse(this.profile.accVipLevel);
-        if (vipLevel != null) {
-          if (vipLevel == 0 && this.profile.vipRenew == 1) {
-            showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return VipRenewDialog();
-                });
-          }
-        }
-      });
+      init().whenComplete(
+        () {
+          // int vipLevel = int.tryParse(this.profile.accVipLevel);
+          showviprenew(context, this.profile.vipRenew);
+        },
+      );
     super.initState();
   }
 

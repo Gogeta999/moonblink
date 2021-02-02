@@ -19,6 +19,9 @@ const int EXPIRED = 4;
 const int UNAVAILABLE = 5;
 const int CANCEL = 6;
 
+//datetime
+const String renewDialog = "RenewDialog";
+
 ///Boosting Status
 const int BOOST_UNKNOWN = -1;
 const int BOOST_PENDING = 0;

@@ -9,6 +9,7 @@ import 'package:moonblink/base_widget/appbar/appbar.dart';
 import 'package:moonblink/base_widget/custom_bottom_sheet.dart';
 import 'package:moonblink/base_widget/nfpost_player.dart';
 import 'package:moonblink/base_widget/videotrimmer/trimmer_view.dart';
+import 'package:moonblink/base_widget/vip_renew.dart';
 import 'package:moonblink/base_widget/vip_renew_dialog.dart';
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/storage_manager.dart';
@@ -64,10 +65,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   void initState() {
     MoonBlinkRepository.getUserVip().then((value) {
       _vipDataSubject.add(value);
-      if (value.vip == 0 && value.vipRenew == 1) {
-        showCupertinoDialog(
-            context: context, builder: (context) => VipRenewDialog());
-      }
+      showviprenew(context, value.vipRenew);
     }, onError: (e) {
       print(e.toString());
     });
