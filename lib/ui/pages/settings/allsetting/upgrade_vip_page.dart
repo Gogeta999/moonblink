@@ -658,6 +658,8 @@ upgradeVIP(BuildContext context, int _selectedPlan, int price, int halfnew,
     showToast(G.current.boostNoEnoughCoins);
     return;
   }
+  print(halfnew);
+  print("++++++++++++++++++++++++++++++++");
   MoonBlinkRepository.upgradeVipLevel(_selectedPlan, halfnew)
       .then((value) async {
     try {
