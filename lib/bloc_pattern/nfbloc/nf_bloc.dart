@@ -30,7 +30,7 @@ class NFBloc {
 
   final nfPostsSubject = BehaviorSubject<List<NFPost>>.seeded(null);
 
-  final limit = 20;
+  final limit = kFeedListLimit;
   int nextPage = 1;
   bool hasReachedMax = false;
   bool isFetching = false;

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moonblink/base_widget/appbar/appbar.dart';
@@ -97,7 +96,7 @@ class _NewFeedPageState extends State<NewFeedPage>
                 return Center(child: Text(G.current.feedPageNoPostAvailable));
               return ListView.builder(
                 //shrinkWrap: true,
-                cacheExtent: MediaQuery.of(context).size.height * 7,
+                cacheExtent: MediaQuery.of(context).size.height * 3,
                 controller: _bloc.scrollController,
                 physics: ClampingScrollPhysics(),
                 itemCount: _bloc.hasReachedMax
@@ -113,10 +112,10 @@ class _NewFeedPageState extends State<NewFeedPage>
                   }
                   final item = snapshot.data[index];
                   item.media.forEach((element) {
-                    UrlType urlType = _bloc.getUrlType(element);
+                    UrlType urlType = _bloc.getUrlType(element.url);
                     if (urlType == UrlType.REMOTE_IMAGE) {
                       precacheImage(
-                          CachedNetworkImageProvider(element), context);
+                          CachedNetworkImageProvider(element.url), context);
                     }
                   });
                   return NFPostItem(item: item, index: index, bloc: _bloc);
@@ -465,7 +464,7 @@ class PostMediaItem extends StatefulWidget {
 
 class _PostMediaItemState extends State<PostMediaItem> {
   final _currentPageSubject = BehaviorSubject.seeded(1);
-  final _maxHeightSubject = BehaviorSubject.seeded(300.0);
+  final _maxHeightSubject = BehaviorSubject<double>();
 
   @override
   void initState() {
@@ -489,7 +488,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
     return Stack(
       children: [
         StreamBuilder<double>(
-            initialData: 300.0,
+            initialData: widget.item.media.first.height,
             stream: this._maxHeightSubject,
             builder: (context, maxHeightSnapshot) {
               return AnimatedContainer(
@@ -501,8 +500,8 @@ class _PostMediaItemState extends State<PostMediaItem> {
                   onPageChanged: (value) {
                     _currentPageSubject.add(value + 1);
                   },
-                  children: widget.item.media.map((url) {
-                    UrlType urlType = widget.nfBloc.getUrlType(url);
+                  children: widget.item.media.map((element) {
+                    UrlType urlType = widget.nfBloc.getUrlType(element.url);
                     if (urlType == UrlType.REMOTE_IMAGE) {
                       return CupertinoButton(
                         padding: EdgeInsets.zero,
@@ -512,14 +511,14 @@ class _PostMediaItemState extends State<PostMediaItem> {
                               context,
                               CupertinoPageRoute(
                                   fullscreenDialog: true,
-                                  builder: (_) =>
-                                      FullScreenImageView(imageUrl: url)));
+                                  builder: (_) => FullScreenImageView(
+                                      imageUrl: element.url)));
                         },
                         child: Container(
                           width: double.infinity,
                           height: double.infinity,
                           child: CachedNetworkImage(
-                            imageUrl: url,
+                            imageUrl: element.url,
                             imageBuilder: (context, imageProvider) {
                               final imageListener =
                                   ImageStreamListener((info, _) {
@@ -528,9 +527,11 @@ class _PostMediaItemState extends State<PostMediaItem> {
                                     Size(info.image.width.toDouble(),
                                         info.image.height.toDouble()),
                                     MediaQuery.of(context).size);
-                                this
-                                    ._maxHeightSubject
-                                    .add(_fittedSize.destination.height);
+                                if (_fittedSize.destination.height != 300.0) {
+                                  element.height =
+                                      _fittedSize.destination.height;
+                                  this._maxHeightSubject.add(element.height);
+                                }
                               });
                               imageProvider
                                   .resolve(ImageConfiguration())
@@ -558,7 +559,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     }
                     if (urlType == UrlType.REMOTE_VIDEO)
                       return Player(
-                        url: url,
+                        url: element.url,
                         id: widget.item.id,
                         index: widget.index,
                         maxHeightCallBack: (double height) {

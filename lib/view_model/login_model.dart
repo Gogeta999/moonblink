@@ -155,6 +155,9 @@ class LoginModel extends ViewStateModel {
             .setInt(mgameprofile, userModel.user.gameprofilecount);
         DioUtils().initWithAuthorization();
         PushNotificationsManager().reInit();
+        final context =
+            locator<NavigationService>().navigatorKey.currentContext;
+        BlocProvider.of<ChatListBloc>(context).resetPaginate();
         setIdle();
         return true;
       } else {
@@ -180,6 +183,7 @@ class LoginModel extends ViewStateModel {
       BlocProvider.of<UserNewNotificationBloc>(context)
           .add(UserNewNotificationCleared());
       BlocProvider.of<ChatListBloc>(context).chatsSubject.add([]);
+      BlocProvider.of<ChatListBloc>(context).resetPaginate();
       _facebookLogin.isLoggedIn
           .then((value) async => value ? await _facebookLogin.logOut() : null);
       _googleSignIn

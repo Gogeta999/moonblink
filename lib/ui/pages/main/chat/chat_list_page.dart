@@ -89,8 +89,8 @@ class _NewChatListPageState extends State<NewChatListPage> {
                   arguments: chat.userId)
               .whenComplete(() {
             ///Quick fix for chat not updating instantly
-            _chatListBloc.nextPage--;
-            _chatListBloc.fetchChats();
+            // _chatListBloc.nextPage--;
+            // _chatListBloc.fetchChats();
           });
         });
   }
@@ -104,8 +104,7 @@ class _NewChatListPageState extends State<NewChatListPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _chatListBloc.nextPage = 1;
-
+            _chatListBloc.resetPaginate();
             _chatListBloc.fetchChats();
             await _storyModel.fetchStory();
           },

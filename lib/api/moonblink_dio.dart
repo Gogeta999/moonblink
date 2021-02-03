@@ -30,7 +30,7 @@ parseJson(String text) {
 }
 
 ///swith to true to print log
-const bool isDev = false;
+const bool isDev = true;
 
 class DioUtils {
   static final String baseUrl = Api.BASE; //base url

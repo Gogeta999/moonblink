@@ -4,7 +4,7 @@ class NFPost extends Equatable {
   final int id;
   final int userId;
   final String body;
-  final List<String> media;
+  final List<Media> media;
   final int status;
   final String createdAt;
   final String updatedAt;
@@ -21,7 +21,7 @@ class NFPost extends Equatable {
       : id = json['id'],
         userId = json['user_id'],
         body = json['body'],
-        media = json['media'].map<String>((e) => e.toString()).toList(),
+        media = json['media'].map<Media>((e) => Media(e.toString())).toList(),
         status = json['status'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
@@ -30,9 +30,14 @@ class NFPost extends Equatable {
         profile = json['user']['profile_image'],
         isReacted = json['is_reacted'],
         bios = json['user']['bios'],
-        lastComment = json['last_comment'] == null ? "" : json['last_comment']['message'],
-        lastCommenterName = json['last_comment'] == null ? "" : json['last_comment']['user']['name'],
-        lastCommenterProfileImage = json['last_comment'] == null ? "" : json['last_comment']['user']['profile_image'];
+        lastComment =
+            json['last_comment'] == null ? "" : json['last_comment']['message'],
+        lastCommenterName = json['last_comment'] == null
+            ? ""
+            : json['last_comment']['user']['name'],
+        lastCommenterProfileImage = json['last_comment'] == null
+            ? ""
+            : json['last_comment']['user']['profile_image'];
 
   ///for sqflite
   Map<String, dynamic> toMap() => {
@@ -52,24 +57,31 @@ class NFPost extends Equatable {
         'last_commenter_name': lastCommenterName,
         'last_commenter_profile_image': lastCommenterProfileImage
       };
-  
+
   NFPost.fromMap(Map<String, dynamic> map)
-    : id = map['id'],
-      userId = map['user_id'],
-      body = map['body'],
-      media = map['media'].split(', '),
-      status = map['status'],
-      createdAt = map['created_at'],
-      updatedAt = map['updated_at'],
-      reactionCount = map['reaction_count'],
-      name = map['user_name'],
-      profile = map['profile_image'],
-      isReacted = map['is_reacted'],
-      bios = map['bios'],
-      lastComment = map['last_comment'],
-      lastCommenterName = map['last_commenter_name'],
-      lastCommenterProfileImage = map['last_commenter_profile_image'];
+      : id = map['id'],
+        userId = map['user_id'],
+        body = map['body'],
+        media = map['media'].split(', '),
+        status = map['status'],
+        createdAt = map['created_at'],
+        updatedAt = map['updated_at'],
+        reactionCount = map['reaction_count'],
+        name = map['user_name'],
+        profile = map['profile_image'],
+        isReacted = map['is_reacted'],
+        bios = map['bios'],
+        lastComment = map['last_comment'],
+        lastCommenterName = map['last_commenter_name'],
+        lastCommenterProfileImage = map['last_commenter_profile_image'];
 
   @override
   List<Object> get props => [id];
+}
+
+class Media {
+  final String url;
+  double height = 300.0;
+
+  Media(this.url);
 }

@@ -24,8 +24,6 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   bool isFetching = false;
 
   final chatsSubject = BehaviorSubject.seeded(<NewChat>[]);
-
-  ///For debugging value
   // ..listen((value) {
   //   print('Debug: Length -> ${value.length}');
   //   value.forEach((element) {
@@ -48,10 +46,14 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
         if (hasReachedMax) return;
         isFetching = true;
         fetchChats();
-
-        ///this.fetchMoreData(); Send Socket Upadte event
       });
     }
+  }
+
+  void resetPaginate() {
+    nextPage = 1;
+    hasReachedMax = false;
+    isFetching = false;
   }
 
   void fetchChats() {

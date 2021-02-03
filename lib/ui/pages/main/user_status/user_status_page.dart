@@ -59,6 +59,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
         int vipLevel = int.tryParse(this.profile.accVipLevel);
         if (vipLevel != null) {
           if (vipLevel == 0 && this.profile.vipRenew == 1) {
+            print('Debug: ${DateTime.now().add(Duration(days: 1))}');
             showCupertinoDialog(
                 context: context,
                 builder: (context) {
