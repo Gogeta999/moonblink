@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "choose" : MessageLookupByLibrary.simpleMessage("选择"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("选择您准备游玩的游戏"),
     "coin" : MessageLookupByLibrary.simpleMessage("我的金币"),
+    "coinprice" : MessageLookupByLibrary.simpleMessage(""),
     "commentPageDelete" : MessageLookupByLibrary.simpleMessage("删除"),
     "commentPageDeleteAll" : MessageLookupByLibrary.simpleMessage("删除全部"),
     "commentPageEdit" : MessageLookupByLibrary.simpleMessage("修改"),

@@ -248,7 +248,7 @@ class _NewProductListPageState extends State<NewProductListPage> {
                         ),
                       );
                     },
-                    description: G.current.paymentTopUpKpayMethod,
+                    description: G.current.paymentTopUpWavepayMethod,
                   ),
                   SizedBox(
                     height: 20,

@@ -564,7 +564,7 @@ class MoonBlinkRepository {
     var userid = StorageManager.sharedPreferences.getInt(mUserId);
     var response = await DioUtils().postwithData(
         Api.VerifyAsPartner + '$userid/vip',
-        data: FormData.fromMap({'vip': vipPlan, 'renew': 1}));
+        data: FormData.fromMap({'vip': vipPlan, 'renew': rewnew}));
     return response;
   }
 

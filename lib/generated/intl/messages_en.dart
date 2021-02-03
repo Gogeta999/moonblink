@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "choose" : MessageLookupByLibrary.simpleMessage("Choose"),
     "choosegame" : MessageLookupByLibrary.simpleMessage("Choose Game You Play"),
     "coin" : MessageLookupByLibrary.simpleMessage("My Coin"),
+    "coinprice" : MessageLookupByLibrary.simpleMessage("1 coin is equal to 10 Kyats"),
     "commentPageDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "commentPageDeleteAll" : MessageLookupByLibrary.simpleMessage("Delete All"),
     "commentPageEdit" : MessageLookupByLibrary.simpleMessage("Edit"),
