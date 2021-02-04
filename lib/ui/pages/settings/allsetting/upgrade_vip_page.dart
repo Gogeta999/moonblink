@@ -184,7 +184,9 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                         children: [
                           Center(
                             child: Text(
-                              "Note: Your VIP Level ${uservip.vip} will expire at " +
+                              G.current.upgradeVipExipiredAtNote1 +
+                                  " ${uservip.vip} " +
+                                  G.current.upgradeVipExipiredAtNote2 +
                                   timeAgo.format(
                                       DateTime.parse(uservip.expiredat),
                                       allowFromNow: true),

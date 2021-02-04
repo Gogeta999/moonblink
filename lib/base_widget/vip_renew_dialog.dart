@@ -17,9 +17,8 @@ class _VipRenewDialogState extends State<VipRenewDialog> {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'You can get Half-Price Continue Chance',
-      simpleContent:
-          "You can upgrade your vip or continue with only half-price now",
+      title: G.current.halfPriceDialogTitle,
+      simpleContent: G.current.halfPriceDialogContent,
       confirmCallback: () {
         Navigator.pushNamed(
           context,

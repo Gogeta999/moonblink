@@ -1645,6 +1645,26 @@ class G {
     );
   }
 
+  /// `You get Half-Price Continue Chance`
+  String get halfPriceDialogTitle {
+    return Intl.message(
+      'You get Half-Price Continue Chance',
+      name: 'halfPriceDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can upgrade your vip or continue with only half-price now`
+  String get halfPriceDialogContent {
+    return Intl.message(
+      'You can upgrade your vip or continue with only half-price now',
+      name: 'halfPriceDialogContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `History`
   String get history {
     return Intl.message(
@@ -4170,6 +4190,26 @@ class G {
     return Intl.message(
       'Note: You already achieved VIP: ',
       name: 'upgradeVipCurrentLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note: Your VIP Level `
+  String get upgradeVipExipiredAtNote1 {
+    return Intl.message(
+      'Note: Your VIP Level ',
+      name: 'upgradeVipExipiredAtNote1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `will expire at `
+  String get upgradeVipExipiredAtNote2 {
+    return Intl.message(
+      'will expire at ',
+      name: 'upgradeVipExipiredAtNote2',
       desc: '',
       args: [],
     );
