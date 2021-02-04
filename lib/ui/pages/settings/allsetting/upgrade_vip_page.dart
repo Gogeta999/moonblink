@@ -234,19 +234,39 @@ class _UpgradeVIPState extends State<UpgradeVIP> {
                       children: [
                         Text(G.current.youHave + '${_wallet.value} Coins now',
                             style: Theme.of(context).textTheme.subtitle1),
-                        if (uservip.vip < currentpage + 1)
-                          ShadedContainer(
-                            ontap: () {
-                              confirmDialog(
-                                  context,
-                                  (currentpage + 1),
-                                  prices[currentpage].updatecost,
-                                  uservip.vipRenew,
-                                  prices[currentpage].promotion,
-                                  _wallet);
-                            },
-                            child: Text(G.current.buyNow),
-                          ),
+                        () {
+                          if (uservip.vipRenew == 1) {
+                            return ShadedContainer(
+                              ontap: () {
+                                confirmDialog(
+                                    context,
+                                    (currentpage + 1),
+                                    prices[currentpage].updatecost,
+                                    uservip.vipRenew,
+                                    prices[currentpage].promotion,
+                                    _wallet);
+                              },
+                              child: Text(G.current.buyNow),
+                            );
+                          } else {
+                            if (uservip.vip < currentpage + 1) {
+                              return ShadedContainer(
+                                ontap: () {
+                                  confirmDialog(
+                                      context,
+                                      (currentpage + 1),
+                                      prices[currentpage].updatecost,
+                                      uservip.vipRenew,
+                                      prices[currentpage].promotion,
+                                      _wallet);
+                                },
+                                child: Text(G.current.buyNow),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          }
+                        }(),
                       ],
                     ),
         ),
