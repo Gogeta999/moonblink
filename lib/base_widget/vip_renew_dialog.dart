@@ -25,6 +25,8 @@ class _VipRenewDialogState extends State<VipRenewDialog> {
           RouteName.upgradeVip,
         );
       },
+      cancelColor: Theme.of(context).accentColor,
+      confirmButtonColor: Theme.of(context).accentColor,
       confirmContent: G.current.confirm,
       cancelContent: G.current.cancel,
       dismissCallback: () {
