@@ -399,6 +399,75 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
 
+                ///Warriors
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              catagories.first.then((value) async {
+                                if (value != kWarriorPartner) {
+                                  catagories.add(kWarriorPartner);
+                                  final cata = await catagories.first;
+                                  final gen = await gender.first;
+                                  _homeBloc.fetchData(type: cata, gender: gen);
+                                }
+                              });
+                              // if (catagories != 2) {
+                              //   catagories = 2;
+                              //   _homeBloc.fetchData(
+                              //       type: catagories, gender: gender);
+                              // } else {
+                              //   print("Already");
+                              // }
+                            },
+                            child: StreamBuilder<int>(
+                                stream: catagories,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          snapshot.data == kStreamer
+                                              ? BoxShadow(
+                                                  color: Colors.black,
+                                                  // spreadRadius: 1,
+                                                  blurRadius: 4,
+                                                  offset: Offset(-3,
+                                                      3), // changes position of shadow
+                                                )
+                                              : BoxShadow(),
+                                        ],
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topRight,
+                                          end: Alignment.bottomLeft,
+                                          colors: MoreGradientColors.jShine,
+                                        )),
+                                    child: Icon(
+                                      FontAwesomeIcons.chessKnight,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        //TODO: Translate
+                        Expanded(flex: 1, child: Text('Warriors')),
+                      ],
+                    ),
+                  ),
+                ),
+
                 ///UnverifiedPartner
                 Expanded(
                   flex: 1,

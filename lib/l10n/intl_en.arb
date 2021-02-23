@@ -411,6 +411,7 @@
     "userStatusDayMode": "Day Mode",
     "userStatusTheme": "Theme",
     "userStatusSettings": "Settings",
+    "userStatusVerifiedAsWarriorPartner": "Verified As Warrior",
     "userStatusCheckAppUpdate": "Check App Update",
     "upgradeVipAppBarTitle": "Upgrade VIP",
     "upgradeVipAlreadyOwnToast": "You already achieved this VIP",

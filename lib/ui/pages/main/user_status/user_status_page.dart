@@ -57,6 +57,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
     // PushNotificationsManager().showgameprofilenoti();
     if (isDev)
       print('token: ${StorageManager.sharedPreferences.getString(token)}');
+    // init();
     if (StorageManager.sharedPreferences.getString(token) != null)
       init().whenComplete(
         () {
@@ -95,7 +96,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
   Future<void> init() async {
     OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
-      this.profile = user;
+      profile = user;
     });
   }
 
@@ -227,9 +228,9 @@ class _UserStatusPageState extends State<UserStatusPage> {
         controller: refreshController,
         header: WaterDropHeader(),
         onRefresh: () async {
-          setState(() {
-            profile = null;
-          });
+          // setState(() {
+          //   profile = null;
+          // });
           await init();
           refreshController.refreshCompleted();
         },
@@ -432,7 +433,6 @@ class _UserStatusPageState extends State<UserStatusPage> {
                         // trailing: Icon(Icons.chevron_right),
                         onTap: status != 1
                             ? () {
-                                //TODO dialog
                                 offlineAlert();
                               }
                             : () {
@@ -464,6 +464,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
                       onTap: () =>
                           Navigator.of(context).pushNamed(RouteName.notiPage)),
                 ),
+                blankSpace(),
 
                 ///Game Profile
                 if (usertype != 0)
@@ -510,8 +511,8 @@ class _UserStatusPageState extends State<UserStatusPage> {
 
                 ///OwnProfile
                 Card(
-                  margin: EdgeInsets.only(bottom: 15),
-                  elevation: 4,
+                  margin: EdgeInsets.zero,
+                  elevation: 1,
                   shadowColor: Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
                       : Colors.grey,
@@ -529,32 +530,31 @@ class _UserStatusPageState extends State<UserStatusPage> {
                           .pushNamed(RouteName.partnerOwnProfile)),
                 ),
                 // blankSpace(),
-                //TODO: Still need some to add
-                ///Manage Own Posts
-                // if (usertype != 0)
-                //   Card(
-                //     margin: EdgeInsets.only(bottom: 15),
-                //     elevation: 4,
-                //     shadowColor: Theme.of(context).brightness == Brightness.dark
-                //         ? Colors.black
-                //         : Colors.grey,
-                //     child: ListTile(
-                //         leading: SvgPicture.asset(
-                //           managePost,
-                //           // color: Colors.orangeAccent,
-                //           height: 32,
-                //           width: 32,
-                //           fit: BoxFit.contain,
-                //         ),
-                //         title: Text(G.current.userStatusManagePosts,
-                //             style: Theme.of(context).textTheme.bodyText1),
-                //         onTap: () => Navigator.of(context)
-                //             .pushNamed(RouteName.managePostsPage)),
-                //   ),
+                // /Manage Own Posts
+                if (usertype != 0)
+                  Card(
+                    margin: EdgeInsets.zero,
+                    elevation: 1,
+                    shadowColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.grey,
+                    child: ListTile(
+                        leading: SvgPicture.asset(
+                          managePost,
+                          // color: Colors.orangeAccent,
+                          height: 32,
+                          width: 32,
+                          fit: BoxFit.contain,
+                        ),
+                        title: Text(G.current.userStatusManagePosts,
+                            style: Theme.of(context).textTheme.bodyText1),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(RouteName.managePostsPage)),
+                  ),
 
                 ///Wallet
                 Card(
-                  margin: EdgeInsets.zero,
+                  margin: EdgeInsets.only(top: 15),
                   child: ListTile(
                       leading: SvgPicture.asset(
                         wallet,
@@ -687,32 +687,56 @@ class _UserStatusPageState extends State<UserStatusPage> {
                       onTap: () =>
                           Navigator.of(context).pushNamed(RouteName.setting)),
                 ),
-                Card(
-                  margin: EdgeInsets.only(bottom: 10, top: 0),
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                    leading: SvgPicture.asset(
-                      upgradeVIP,
-                      // color: Colors.black,
-                      height: 30,
-                      width: 30,
-                      fit: BoxFit.contain,
+
+                if (profile.type != 6 && profile.verified != 0)
+                  Card(
+                    margin: EdgeInsets.only(bottom: 10, top: 0),
+                    elevation: 4,
+                    shadowColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.grey,
+                    child: ListTile(
+                      leading: SvgPicture.asset(
+                        upgradeVIP,
+                        // color: Colors.black,
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
+                      ),
+                      title: usertype == 0
+                          ? Text(G.of(context).settingsSignAsPartner,
+                              style: Theme.of(context).textTheme.bodyText1)
+                          : Text(G.current.upgradeVipAppBarTitle,
+                              style: Theme.of(context).textTheme.bodyText1),
+                      onTap: usertype == 0
+                          ? () => Navigator.of(context)
+                              .pushNamed(RouteName.type5otp)
+                          : () => Navigator.of(context)
+                              .pushNamed(RouteName.upgradeVip),
                     ),
-                    title: usertype == 0
-                        ? Text(G.of(context).settingsSignAsPartner,
-                            style: Theme.of(context).textTheme.bodyText1)
-                        : Text(G.current.upgradeVipAppBarTitle,
-                            style: Theme.of(context).textTheme.bodyText1),
-                    onTap: usertype == 0
-                        ? () =>
-                            Navigator.of(context).pushNamed(RouteName.type5otp)
-                        : () => Navigator.of(context)
-                            .pushNamed(RouteName.upgradeVip),
                   ),
-                ),
+                //Verified For Type 6 Partner
+                if (profile.type == 6 && profile.verified == 0)
+                  Card(
+                    margin: EdgeInsets.only(bottom: 10, top: 0),
+                    elevation: 4,
+                    shadowColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.grey,
+                    child: ListTile(
+                      leading: SvgPicture.asset(
+                        upgradeVIP,
+                        // color: Colors.black,
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
+                      ),
+                      title: Text(G.current.userStatusVerifiedAsWarriorPartner,
+                          style: Theme.of(context).textTheme.bodyText1),
+                      onTap: () =>
+                          Navigator.of(context).pushNamed(RouteName.otp),
+                    ),
+                  ),
                 blankSpace(),
 
                 ///Logout
