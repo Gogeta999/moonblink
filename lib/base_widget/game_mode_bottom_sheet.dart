@@ -139,6 +139,21 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
           textAlign: TextAlign.center,
         );
         break;
+      case 6:
+        return Text.rich(
+          TextSpan(
+            text: G.current.chargeForUnverified,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            // children: [
+            //   TextSpan(
+            //       text: 'Learn more',
+            //       recognizer: _learnMore,
+            //       style: TextStyle(color: Theme.of(context).accentColor)),
+            // ]
+          ),
+          textAlign: TextAlign.center,
+        );
+        break;
     }
   }
 
