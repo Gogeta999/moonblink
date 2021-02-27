@@ -955,10 +955,10 @@ class G {
     );
   }
 
-  /// `*We will charge 20% of the price*`
+  /// `*We will charge 40% of the price*`
   String get chargeForNormalPartner {
     return Intl.message(
-      '*We will charge 20% of the price*',
+      '*We will charge 40% of the price*',
       name: 'chargeForNormalPartner',
       desc: '',
       args: [],
@@ -990,6 +990,26 @@ class G {
     return Intl.message(
       '*We will charge 5% of the price*',
       name: 'chargeForUnverified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*We will charge 20% of the price*`
+  String get chargeForWarrior {
+    return Intl.message(
+      '*We will charge 20% of the price*',
+      name: 'chargeForWarrior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*Your owner will charge 20% of the price*`
+  String get chargeFromAgency {
+    return Intl.message(
+      '*Your owner will charge 20% of the price*',
+      name: 'chargeFromAgency',
       desc: '',
       args: [],
     );

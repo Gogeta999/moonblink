@@ -165,45 +165,45 @@ class LoginButton extends StatelessWidget {
       onPressed: model.isBusy
           ? null
           : () {
-              // if (captchaController != globalCaptchaValue) {
-              //   showToast(G.current.captchaWrongToast);
-              // } else {
-              var formState = Form.of(context);
-              if (formState.validate()) {
-                model
-                    .login(
-                        mailController.text, passwordController.text, 'email')
-                    .then((value) {
-                  if (value) {
-                    int gameprofile =
-                        StorageManager.sharedPreferences.getInt(mgameprofile);
-                    int type =
-                        StorageManager.sharedPreferences.getInt(mUserType);
+              if (captchaController != globalCaptchaValue) {
+                showToast(G.current.captchaWrongToast);
+              } else {
+                var formState = Form.of(context);
+                if (formState.validate()) {
+                  model
+                      .login(
+                          mailController.text, passwordController.text, 'email')
+                      .then((value) {
+                    if (value) {
+                      int gameprofile =
+                          StorageManager.sharedPreferences.getInt(mgameprofile);
+                      int type =
+                          StorageManager.sharedPreferences.getInt(mUserType);
 
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouteName.main, (route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.main, (route) => false);
 
-                    ///important to change here
-                    if (type == 5 &&
-                        (StorageManager.sharedPreferences.getBool(firsttuto) ??
-                            true)) {
-                      tutorialOn();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UpdatePartnerProfilePage(),
-                        ),
-                      );
-                    } else if (gameprofile == 0 && type != 0) {
-                      gameProfileSetUp();
+                      ///important to change here
+                      if (type == 5 &&
+                          (StorageManager.sharedPreferences
+                                  .getBool(firsttuto) ??
+                              true)) {
+                        tutorialOn();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => UpdatePartnerProfilePage(),
+                          ),
+                        );
+                      } else if (gameprofile == 0 && type != 0) {
+                        gameProfileSetUp();
+                      }
+                    } else {
+                      model.showErrorMessage(context);
                     }
-                  } else {
-                    model.showErrorMessage(context);
-                  }
-                });
+                  });
+                }
               }
-            }
-      // }
-      ,
+            },
     );
   }
 }
