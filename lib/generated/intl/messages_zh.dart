@@ -117,8 +117,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "chargeForPro": MessageLookupByLibrary.simpleMessage("*我们将收取价格的20%*"),
         "chargeForUnverified":
             MessageLookupByLibrary.simpleMessage("*我们将收取价格的80%*"),
-        "chargeForVerified":
-            MessageLookupByLibrary.simpleMessage("*我们将收取价格的60%*"),
         "chatavailable": MessageLookupByLibrary.simpleMessage("你有空吗?"),
         "chatbook": MessageLookupByLibrary.simpleMessage("如何下单？"),
         "chatbuycoin": MessageLookupByLibrary.simpleMessage("我想和你游玩但金币要从哪里充值?"),
@@ -578,6 +576,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "userStatusNotification": MessageLookupByLibrary.simpleMessage("通知"),
         "userStatusSettings": MessageLookupByLibrary.simpleMessage("设置"),
         "userStatusTheme": MessageLookupByLibrary.simpleMessage("主题"),
+        "userStatusVerifiedAsWarriorPartner":
+            MessageLookupByLibrary.simpleMessage("注册为Warrior用户"),
         "userStatusWallet": MessageLookupByLibrary.simpleMessage("钱包"),
         "userrule1": MessageLookupByLibrary.simpleMessage("用户守则"),
         "userrule2": MessageLookupByLibrary.simpleMessage(

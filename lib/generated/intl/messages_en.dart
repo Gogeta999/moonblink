@@ -141,8 +141,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "*We will charge 20% of the price*"),
         "chargeForUnverified": MessageLookupByLibrary.simpleMessage(
             "*We will charge 80% of the price*"),
-        "chargeForVerified": MessageLookupByLibrary.simpleMessage(
-            "*We will charge 60% of the price*"),
         "chatavailable":
             MessageLookupByLibrary.simpleMessage("Are you available?"),
         "chatbook": MessageLookupByLibrary.simpleMessage("How to Book"),
@@ -702,6 +700,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notifications"),
         "userStatusSettings": MessageLookupByLibrary.simpleMessage("Settings"),
         "userStatusTheme": MessageLookupByLibrary.simpleMessage("Theme"),
+        "userStatusVerifiedAsWarriorPartner":
+            MessageLookupByLibrary.simpleMessage("Verified As Warrior"),
         "userStatusWallet": MessageLookupByLibrary.simpleMessage("Wallet"),
         "userrule1": MessageLookupByLibrary.simpleMessage("User rules"),
         "userrule2": MessageLookupByLibrary.simpleMessage(

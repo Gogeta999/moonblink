@@ -57,6 +57,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
     // PushNotificationsManager().showgameprofilenoti();
     if (isDev)
       print('token: ${StorageManager.sharedPreferences.getString(token)}');
+    // init();
     if (StorageManager.sharedPreferences.getString(token) != null)
       init().whenComplete(
         () {
@@ -95,7 +96,7 @@ class _UserStatusPageState extends State<UserStatusPage> {
   Future<void> init() async {
     OwnProfile user = await MoonBlinkRepository.fetchOwnProfile();
     setState(() {
-      this.profile = user;
+      profile = user;
     });
   }
 
@@ -227,507 +228,550 @@ class _UserStatusPageState extends State<UserStatusPage> {
         controller: refreshController,
         header: WaterDropHeader(),
         onRefresh: () async {
-          setState(() {
-            profile = null;
-          });
+          // setState(() {
+          //   profile = null;
+          // });
           await init();
           refreshController.refreshCompleted();
         },
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate.fixed([
-                ///Profile update and customer service
-                ProviderWidget<UserModel>(
-                  model: UserModel(),
-                  builder: (context, model, child) {
-                    return Card(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      elevation: 4,
-                      shadowColor:
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Colors.black
-                              : Colors.grey,
-                      child: ListTile(
-                        leading: InkResponse(
-                          onTap: () => Navigator.of(context)
-                              .pushNamed(RouteName.partnerOwnProfile),
-                          child: Hero(
-                            tag: 'loginLogo',
-                            child: model.hasUser
-                                ? CachedNetworkImage(
-                                    imageUrl: userProfile,
-                                    imageBuilder: (context, item) {
-                                      return CircleAvatar(
-                                        radius: 28,
-                                        backgroundImage: item,
-                                      );
-                                    },
-                                    placeholder: (_, __) =>
-                                        CupertinoActivityIndicator(),
-                                    errorWidget: (_, __, ___) =>
-                                        Icon(Icons.error),
-                                  )
-                                : CircleAvatar(
-                                    radius: 28,
-                                    backgroundColor: Colors.black,
-                                    child: CircleAvatar(
-                                      radius: 70,
-                                      backgroundImage: AssetImage(
-                                        ImageHelper.wrapAssetsImage(
-                                            'MoonBlinkProfile.jpg'),
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        title: Padding(
-                          padding: const EdgeInsets.only(bottom: 20, top: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Row(
-                              //   children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: Text(
-                                        name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  if (usertype != 0)
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    UserLevelPage()));
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: Text(
-                                          "Vip LV ${profile != null ? profile.accVipLevel : "."}",
-                                          style: TextStyle(fontSize: 13),
+        child: profile == null
+            ? Center(
+                child: CupertinoActivityIndicator(),
+              )
+            : CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildListDelegate.fixed([
+                      ///Profile update and customer service
+                      ProviderWidget<UserModel>(
+                        model: UserModel(),
+                        builder: (context, model, child) {
+                          return Card(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                            elevation: 4,
+                            shadowColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.black
+                                    : Colors.grey,
+                            child: ListTile(
+                              leading: InkResponse(
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed(RouteName.partnerOwnProfile),
+                                child: Hero(
+                                  tag: 'loginLogo',
+                                  child: model.hasUser
+                                      ? CachedNetworkImage(
+                                          imageUrl: userProfile,
+                                          imageBuilder: (context, item) {
+                                            return CircleAvatar(
+                                              radius: 28,
+                                              backgroundImage: item,
+                                            );
+                                          },
+                                          placeholder: (_, __) =>
+                                              CupertinoActivityIndicator(),
+                                          errorWidget: (_, __, ___) =>
+                                              Icon(Icons.error),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors.black,
+                                          child: CircleAvatar(
+                                            radius: 70,
+                                            backgroundImage: AssetImage(
+                                              ImageHelper.wrapAssetsImage(
+                                                  'MoonBlinkProfile.jpg'),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                ],
+                                ),
                               ),
-                              SizedBox(height: 5),
-                              InkResponse(
-                                onTap: () {
-                                  String id = encrypt(userid);
-                                  FlutterClipboard.copy(id).then((value) {
-                                    showToast(G.of(context).toastcopy);
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.only(bottom: 20, top: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.content_copy,
-                                      size: 18,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
+                                    // Row(
+                                    //   children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Text(
+                                              name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        if (usertype != 0)
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UserLevelPage()));
+                                            },
+                                            child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Text(
+                                                "Vip LV ${profile != null ? profile.accVipLevel : "."}",
+                                                style: TextStyle(fontSize: 13),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
-                                    Text(G.of(context).copyID),
+                                    SizedBox(height: 5),
+                                    InkResponse(
+                                      onTap: () {
+                                        String id = encrypt(userid);
+                                        FlutterClipboard.copy(id).then((value) {
+                                          showToast(G.of(context).toastcopy);
+                                        });
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.content_copy,
+                                            size: 18,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          Text(G.of(context).copyID),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                              )
-                            ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      //Level Indicator
+                      // if (usertype != 0 &&
+                      //     profile != null &&
+                      //     profile.levelpercent != null &&
+                      //     profile.leftorder != null &&
+                      //     profile.ordercount != null &&
+                      //     profile.level != null)
+                      //   Card(
+                      //     margin: EdgeInsets.only(bottom: 15),
+                      //     elevation: 4,
+                      //     shadowColor: Theme.of(context).brightness == Brightness.dark
+                      //         ? Colors.black
+                      //         : Colors.grey,
+                      //     child: InkWell(
+                      //       onTap: () {
+                      //         leveldialog(profile);
+                      //       },
+                      //       child: Container(
+                      //         padding: EdgeInsets.symmetric(vertical: 10),
+                      //         child: Column(
+                      //           crossAxisAlignment: CrossAxisAlignment.center,
+                      //           children: [
+                      //             Text(
+                      //               "Level ${profile != null ? profile.level : "."}",
+                      //               style: Theme.of(context).textTheme.headline6,
+                      //             ),
+                      //             Padding(
+                      //               padding: EdgeInsets.symmetric(
+                      //                 vertical: 15.0,
+                      //                 horizontal: 20,
+                      //               ),
+                      //               child: new LinearPercentIndicator(
+                      //                 // width: MediaQuery.of(context).size.width - 40,
+                      //                 animation: true,
+                      //                 animationDuration: 1000,
+                      //                 lineHeight: 12.0,
+                      //                 leading: Text("Exp"),
+                      //                 percent: profile != null
+                      //                     ? double.parse(profile.levelpercent)
+                      //                     : 0,
+                      //                 linearStrokeCap: LinearStrokeCap.roundAll,
+                      //                 progressColor: Theme.of(context).accentColor,
+                      //               ),
+                      //             ),
+                      //             Text(
+                      //               "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
+                      //               style: Theme.of(context).textTheme.bodyText1,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+
+                      // Divider(
+                      //   height: 30,
+                      // ),
+
+                      /// Online/ Offline
+                      if (usertype != 0)
+                        Card(
+                          margin: EdgeInsets.zero,
+                          child: ListTile(
+                              leading: SvgPicture.asset(
+                                status != 1 ? online : offline,
+                                // color: Colors.cyan,
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              title: Text(
+                                  status != 1
+                                      ? G.of(context).online
+                                      : G.of(context).offline,
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              // trailing: Icon(Icons.chevron_right),
+                              onTap: status != 1
+                                  ? () {
+                                      offlineAlert();
+                                    }
+                                  : () {
+                                      setState(() {
+                                        StorageManager.sharedPreferences
+                                            .setInt(mstatus, 0);
+                                        // status = 0;
+                                      });
+                                      if (isDev) print(status);
+                                      if (isDev)
+                                        print("----------------------------");
+                                      MoonBlinkRepository.changestatus(0);
+                                      showToast(G.of(context).toastonline);
+                                    }),
+                        ),
+                      Card(
+                        margin: EdgeInsets.zero,
+                        // elevation: 4,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              notiIcon,
+                              // color: Colors.blueGrey,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.current.userStatusNotification,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => Navigator.of(context)
+                                .pushNamed(RouteName.notiPage)),
+                      ),
+                      blankSpace(),
+
+                      ///Game Profile
+                      if (usertype != 0)
+                        Card(
+                          margin: EdgeInsets.zero,
+                          // elevation: 4,
+                          child: ListTile(
+                              leading: SvgPicture.asset(
+                                gameProfile,
+                                // color: Colors.blueGrey,
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              title: Text(G.of(context).profilegame,
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.chooseUserPlayGames)),
+                        ),
+
+                      ///Boosting Profile
+                      if (usertype == kPro)
+                        Card(
+                          margin: EdgeInsets.zero,
+                          // elevation: 4,
+                          child: ListTile(
+                              leading: SvgPicture.asset(
+                                boostProfile, //change icon later
+                                // color: Colors.blueGrey,
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              trailing: (StorageManager.sharedPreferences
+                                          .getBool(kNewToBoosting) ??
+                                      true)
+                                  ? Icon(Icons.star_border_outlined)
+                                  : null,
+                              title: Text(G.current.userStatusBoostProfile,
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.boostingGameListPage)),
+                        ),
+
+                      ///OwnProfile
+                      Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 1,
+                        shadowColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.black
+                                : Colors.grey,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              profileEdit,
+                              // color: Colors.orangeAccent,
+                              height: 32,
+                              width: 32,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.of(context).profileown,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => Navigator.of(context)
+                                .pushNamed(RouteName.partnerOwnProfile)),
+                      ),
+                      // blankSpace(),
+                      // /Manage Own Posts
+                      if (usertype != 0)
+                        Card(
+                          margin: EdgeInsets.zero,
+                          elevation: 1,
+                          shadowColor:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.black
+                                  : Colors.grey,
+                          child: ListTile(
+                              leading: SvgPicture.asset(
+                                managePost,
+                                // color: Colors.orangeAccent,
+                                height: 32,
+                                width: 32,
+                                fit: BoxFit.contain,
+                              ),
+                              title: Text(G.current.userStatusManagePosts,
+                                  style: Theme.of(context).textTheme.bodyText1),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(RouteName.managePostsPage)),
+                        ),
+
+                      ///Wallet
+                      Card(
+                        margin: EdgeInsets.only(top: 15),
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              wallet,
+                              // color: Colors.greenAccent,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Row(
+                              children: [
+                                Text(G.of(context).userStatusWallet,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1),
+                                SizedBox(width: 20),
+                                Icon(
+                                  FontAwesomeIcons.coins,
+                                  color: Colors.amber[500],
+                                  size: 20,
+                                ),
+                                SizedBox(width: 5.0),
+                                profile != null
+                                    ? Text(
+                                        '${profile.wallet.value} ${profile.wallet.value > 1 ? 'coins' : 'coin'}',
+                                        style: TextStyle(fontSize: 16))
+                                    : CupertinoActivityIndicator()
+                              ],
+                            ),
+                            onTap: hasUser == null
+                                ? () {
+                                    showToast(G.of(context).loginFirst);
+                                  }
+                                : () {
+                                    Navigator.of(context)
+                                        .pushNamed(RouteName.wallet);
+                                  }),
+                      ),
+                      Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 4,
+                        shadowColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.black
+                                : Colors.grey,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              paymentHistory,
+                              // color: Colors.greenAccent,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.current.paymentHistory,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => Navigator.of(context)
+                                .pushNamed(RouteName.paymentHistoryPage)),
+                      ),
+
+                      /// Switch dark mode
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              Theme.of(context).brightness == Brightness.light
+                                  ? dayMood
+                                  : nightMood,
+                              width: 30,
+                              height: 30,
+                              // color: Colors.purpleAccent,
+                            ),
+                            title: Text(
+                                Theme.of(context).brightness == Brightness.light
+                                    ? G.of(context).userStatusDayMode
+                                    : G.of(context).userStatusDarkMode,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => _switchDarkMode(context)),
+                      ),
+
+                      //blankSpace(),
+
+                      ///Theme
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              theme,
+                              // color: Colors.pinkAccent,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.of(context).userStatusTheme,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => _showPaletteDialog(context)),
+                      ),
+
+                      ///check app update
+                      Card(
+                        margin: EdgeInsets.only(bottom: 15),
+                        elevation: 4,
+                        shadowColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.black
+                                : Colors.grey,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              checkUpdate,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.of(context).userStatusCheckAppUpdate,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => openStore()),
+                      ),
+                      // blankSpace(),
+
+                      ///Settings
+                      Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 4,
+                        shadowColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.black
+                                : Colors.grey,
+                        child: ListTile(
+                            leading: SvgPicture.asset(
+                              setting,
+                              // color: Colors.black,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(G.of(context).userStatusSettings,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () => Navigator.of(context)
+                                .pushNamed(RouteName.setting)),
+                      ),
+
+                      if (profile.type != 6 || profile.verified != 0)
+                        Card(
+                          margin: EdgeInsets.only(bottom: 10, top: 0),
+                          elevation: 4,
+                          shadowColor:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.black
+                                  : Colors.grey,
+                          child: ListTile(
+                            leading: SvgPicture.asset(
+                              upgradeVIP,
+                              // color: Colors.black,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: usertype == 0
+                                ? Text(G.of(context).settingsSignAsPartner,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1)
+                                : Text(G.current.upgradeVipAppBarTitle,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1),
+                            onTap: usertype == 0
+                                ? () => Navigator.of(context)
+                                    .pushNamed(RouteName.type5otp)
+                                : () => Navigator.of(context)
+                                    .pushNamed(RouteName.upgradeVip),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-
-                //Level Indicator
-                // if (usertype != 0 &&
-                //     profile != null &&
-                //     profile.levelpercent != null &&
-                //     profile.leftorder != null &&
-                //     profile.ordercount != null &&
-                //     profile.level != null)
-                //   Card(
-                //     margin: EdgeInsets.only(bottom: 15),
-                //     elevation: 4,
-                //     shadowColor: Theme.of(context).brightness == Brightness.dark
-                //         ? Colors.black
-                //         : Colors.grey,
-                //     child: InkWell(
-                //       onTap: () {
-                //         leveldialog(profile);
-                //       },
-                //       child: Container(
-                //         padding: EdgeInsets.symmetric(vertical: 10),
-                //         child: Column(
-                //           crossAxisAlignment: CrossAxisAlignment.center,
-                //           children: [
-                //             Text(
-                //               "Level ${profile != null ? profile.level : "."}",
-                //               style: Theme.of(context).textTheme.headline6,
-                //             ),
-                //             Padding(
-                //               padding: EdgeInsets.symmetric(
-                //                 vertical: 15.0,
-                //                 horizontal: 20,
-                //               ),
-                //               child: new LinearPercentIndicator(
-                //                 // width: MediaQuery.of(context).size.width - 40,
-                //                 animation: true,
-                //                 animationDuration: 1000,
-                //                 lineHeight: 12.0,
-                //                 leading: Text("Exp"),
-                //                 percent: profile != null
-                //                     ? double.parse(profile.levelpercent)
-                //                     : 0,
-                //                 linearStrokeCap: LinearStrokeCap.roundAll,
-                //                 progressColor: Theme.of(context).accentColor,
-                //               ),
-                //             ),
-                //             Text(
-                //               "${profile != null ? (int.parse(profile.ordercount) - int.parse(profile.leftorder)).toString() : "."} / ${profile != null ? profile.ordercount : "."} ",
-                //               style: Theme.of(context).textTheme.bodyText1,
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-
-                // Divider(
-                //   height: 30,
-                // ),
-
-                /// Online/ Offline
-                if (usertype != 0)
-                  Card(
-                    margin: EdgeInsets.zero,
-                    child: ListTile(
-                        leading: SvgPicture.asset(
-                          status != 1 ? online : offline,
-                          // color: Colors.cyan,
-                          height: 30,
-                          width: 30,
-                          fit: BoxFit.contain,
-                        ),
-                        title: Text(
-                            status != 1
-                                ? G.of(context).online
-                                : G.of(context).offline,
-                            style: Theme.of(context).textTheme.bodyText1),
-                        // trailing: Icon(Icons.chevron_right),
-                        onTap: status != 1
-                            ? () {
-                                //TODO dialog
-                                offlineAlert();
-                              }
-                            : () {
-                                setState(() {
-                                  StorageManager.sharedPreferences
-                                      .setInt(mstatus, 0);
-                                  // status = 0;
-                                });
-                                if (isDev) print(status);
-                                if (isDev)
-                                  print("----------------------------");
-                                MoonBlinkRepository.changestatus(0);
-                                showToast(G.of(context).toastonline);
-                              }),
-                  ),
-                Card(
-                  margin: EdgeInsets.zero,
-                  // elevation: 4,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        notiIcon,
-                        // color: Colors.blueGrey,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.current.userStatusNotification,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () =>
-                          Navigator.of(context).pushNamed(RouteName.notiPage)),
-                ),
-
-                ///Game Profile
-                if (usertype != 0)
-                  Card(
-                    margin: EdgeInsets.zero,
-                    // elevation: 4,
-                    child: ListTile(
-                        leading: SvgPicture.asset(
-                          gameProfile,
-                          // color: Colors.blueGrey,
-                          height: 30,
-                          width: 30,
-                          fit: BoxFit.contain,
-                        ),
-                        title: Text(G.of(context).profilegame,
-                            style: Theme.of(context).textTheme.bodyText1),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(RouteName.chooseUserPlayGames)),
-                  ),
-
-                ///Boosting Profile
-                if (usertype == kPro)
-                  Card(
-                    margin: EdgeInsets.zero,
-                    // elevation: 4,
-                    child: ListTile(
-                        leading: SvgPicture.asset(
-                          boostProfile, //change icon later
-                          // color: Colors.blueGrey,
-                          height: 30,
-                          width: 30,
-                          fit: BoxFit.contain,
-                        ),
-                        trailing: (StorageManager.sharedPreferences
-                                    .getBool(kNewToBoosting) ??
-                                true)
-                            ? Icon(Icons.star_border_outlined)
-                            : null,
-                        title: Text(G.current.userStatusBoostProfile,
-                            style: Theme.of(context).textTheme.bodyText1),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(RouteName.boostingGameListPage)),
-                  ),
-
-                ///OwnProfile
-                Card(
-                  margin: EdgeInsets.only(bottom: 15),
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        profileEdit,
-                        // color: Colors.orangeAccent,
-                        height: 32,
-                        width: 32,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.of(context).profileown,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(RouteName.partnerOwnProfile)),
-                ),
-                // blankSpace(),
-                //TODO: Still need some to add
-                ///Manage Own Posts
-                // if (usertype != 0)
-                //   Card(
-                //     margin: EdgeInsets.only(bottom: 15),
-                //     elevation: 4,
-                //     shadowColor: Theme.of(context).brightness == Brightness.dark
-                //         ? Colors.black
-                //         : Colors.grey,
-                //     child: ListTile(
-                //         leading: SvgPicture.asset(
-                //           managePost,
-                //           // color: Colors.orangeAccent,
-                //           height: 32,
-                //           width: 32,
-                //           fit: BoxFit.contain,
-                //         ),
-                //         title: Text(G.current.userStatusManagePosts,
-                //             style: Theme.of(context).textTheme.bodyText1),
-                //         onTap: () => Navigator.of(context)
-                //             .pushNamed(RouteName.managePostsPage)),
-                //   ),
-
-                ///Wallet
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        wallet,
-                        // color: Colors.greenAccent,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Row(
-                        children: [
-                          Text(G.of(context).userStatusWallet,
-                              style: Theme.of(context).textTheme.bodyText1),
-                          SizedBox(width: 20),
-                          Icon(
-                            FontAwesomeIcons.coins,
-                            color: Colors.amber[500],
-                            size: 20,
+                      //Verified For Type 6 Partner
+                      if (profile.type == 6 && profile.verified == 0)
+                        Card(
+                          margin: EdgeInsets.only(bottom: 10, top: 0),
+                          elevation: 4,
+                          shadowColor:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.black
+                                  : Colors.grey,
+                          child: ListTile(
+                            leading: SvgPicture.asset(
+                              upgradeVIP,
+                              // color: Colors.black,
+                              height: 30,
+                              width: 30,
+                              fit: BoxFit.contain,
+                            ),
+                            title: Text(
+                                G.current.userStatusVerifiedAsWarriorPartner,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            onTap: () =>
+                                Navigator.of(context).pushNamed(RouteName.otp),
                           ),
-                          SizedBox(width: 5.0),
-                          profile != null
-                              ? Text(
-                                  '${profile.wallet.value} ${profile.wallet.value > 1 ? 'coins' : 'coin'}',
-                                  style: TextStyle(fontSize: 16))
-                              : CupertinoActivityIndicator()
-                        ],
-                      ),
-                      onTap: hasUser == null
-                          ? () {
-                              showToast(G.of(context).loginFirst);
-                            }
-                          : () {
-                              Navigator.of(context).pushNamed(RouteName.wallet);
-                            }),
-                ),
-                Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        paymentHistory,
-                        // color: Colors.greenAccent,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.current.paymentHistory,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(RouteName.paymentHistoryPage)),
-                ),
+                        ),
+                      blankSpace(),
 
-                /// Switch dark mode
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        Theme.of(context).brightness == Brightness.light
-                            ? dayMood
-                            : nightMood,
-                        width: 30,
-                        height: 30,
-                        // color: Colors.purpleAccent,
-                      ),
-                      title: Text(
-                          Theme.of(context).brightness == Brightness.light
-                              ? G.of(context).userStatusDayMode
-                              : G.of(context).userStatusDarkMode,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => _switchDarkMode(context)),
-                ),
-
-                //blankSpace(),
-
-                ///Theme
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        theme,
-                        // color: Colors.pinkAccent,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.of(context).userStatusTheme,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => _showPaletteDialog(context)),
-                ),
-
-                ///check app update
-                Card(
-                  margin: EdgeInsets.only(bottom: 15),
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        checkUpdate,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.of(context).userStatusCheckAppUpdate,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () => openStore()),
-                ),
-                // blankSpace(),
-
-                ///Settings
-                Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                      leading: SvgPicture.asset(
-                        setting,
-                        // color: Colors.black,
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(G.of(context).userStatusSettings,
-                          style: Theme.of(context).textTheme.bodyText1),
-                      onTap: () =>
-                          Navigator.of(context).pushNamed(RouteName.setting)),
-                ),
-                Card(
-                  margin: EdgeInsets.only(bottom: 10, top: 0),
-                  elevation: 4,
-                  shadowColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.grey,
-                  child: ListTile(
-                    leading: SvgPicture.asset(
-                      upgradeVIP,
-                      // color: Colors.black,
+                      ///Logout
+                      if (StorageManager.sharedPreferences.getString(token) !=
+                          null)
+                        Logout(),
+                    ]),
+                  ),
+                  // UserListWidget(profile != null ? profile : null),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
                       height: 30,
-                      width: 30,
-                      fit: BoxFit.contain,
                     ),
-                    title: usertype == 0
-                        ? Text(G.of(context).settingsSignAsPartner,
-                            style: Theme.of(context).textTheme.bodyText1)
-                        : Text(G.current.upgradeVipAppBarTitle,
-                            style: Theme.of(context).textTheme.bodyText1),
-                    onTap: usertype == 0
-                        ? () =>
-                            Navigator.of(context).pushNamed(RouteName.type5otp)
-                        : () => Navigator.of(context)
-                            .pushNamed(RouteName.upgradeVip),
-                  ),
-                ),
-                blankSpace(),
-
-                ///Logout
-                if (StorageManager.sharedPreferences.getString(token) != null)
-                  Logout(),
-              ]),
-            ),
-            // UserListWidget(profile != null ? profile : null),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 30,
+                  )
+                ],
               ),
-            )
-          ],
-        ),
       ),
     );
   }

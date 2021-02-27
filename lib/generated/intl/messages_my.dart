@@ -142,8 +142,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "*ကျနော်တို့သည်စျေးနှုန်း၏ 20% ကောက်လိမ့်မည်*"),
         "chargeForUnverified": MessageLookupByLibrary.simpleMessage(
             "*ကျနော်တို့သည်စျေးနှုန်း၏ 80% ကောက်လိမ့်မည်*"),
-        "chargeForVerified": MessageLookupByLibrary.simpleMessage(
-            "*ကျနော်တို့သည်စျေးနှုန်း၏ 60% ကောက်လိမ့်မည်*"),
         "chatavailable": MessageLookupByLibrary.simpleMessage(
             "ကျွန်တော်နင့် ဂိမ်းတူတူဆော့ရန် အားပါသလား။"),
         "chatbook": MessageLookupByLibrary.simpleMessage("Booking လုပ်နည်း"),
@@ -700,6 +698,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notifications"),
         "userStatusSettings": MessageLookupByLibrary.simpleMessage("ဆက်တင်"),
         "userStatusTheme": MessageLookupByLibrary.simpleMessage("ပုံစံ"),
+        "userStatusVerifiedAsWarriorPartner":
+            MessageLookupByLibrary.simpleMessage("Warriorအဖြစ်မှတ်ပုံတင်ရန်"),
         "userStatusWallet": MessageLookupByLibrary.simpleMessage("ပိုက်ဆံအိတ်"),
         "userrule1":
             MessageLookupByLibrary.simpleMessage("အသုံးပြုသူစည်းမျဉ်းများ"),

@@ -4155,6 +4155,16 @@ class G {
     );
   }
 
+  /// `Verified As Warrior`
+  String get userStatusVerifiedAsWarriorPartner {
+    return Intl.message(
+      'Verified As Warrior',
+      name: 'userStatusVerifiedAsWarriorPartner',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Check App Update`
   String get userStatusCheckAppUpdate {
     return Intl.message(
