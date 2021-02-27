@@ -44,7 +44,7 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
         TextStyle(color: Theme.of(context).accentColor);
   }
 
-  _buildCharge() {
+  Widget _buildCharge() {
     int type = StorageManager.sharedPreferences.getInt(mUserType);
     final TapGestureRecognizer _learnMore = TapGestureRecognizer();
     _learnMore.onTap = () {
@@ -63,83 +63,119 @@ class _GameModeBottomSheet extends State<GameModeBottomSheet> {
           });
     };
 
-    switch (type) {
-      case 1:
-        return Text.rich(
-          TextSpan(
-            text: G.current.chargeForNormalPartner,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            // children: [
-            //   TextSpan(
-            //       text: 'Learn more',
-            //       recognizer: _learnMore,
-            //       style: TextStyle(color: Theme.of(context).accentColor)),
-            // ]
-          ),
-          textAlign: TextAlign.center,
-        );
-        break;
-      case 2:
-        return Text.rich(
-          TextSpan(
-            text: G.current.chargeForCeleNStreamer,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            // children: [
-            //   TextSpan(
-            //       text: 'Learn more',
-            //       recognizer: _learnMore,
-            //       style: TextStyle(color: Theme.of(context).accentColor)),
-            // ]
-          ),
-          textAlign: TextAlign.center,
-        );
-        break;
-      case 3:
-        return Text.rich(
-          TextSpan(
-            text: G.current.chargeForCeleNStreamer,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            // children: [
-            //   TextSpan(
-            //       text: 'Learn more',
-            //       recognizer: _learnMore,
-            //       style: TextStyle(color: Theme.of(context).accentColor)),
-            // ]
-          ),
-          textAlign: TextAlign.center,
-        );
-        break;
-      case 4:
-        return Text.rich(
-          TextSpan(
-            text: G.current.chargeForPro,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            // children: [
-            //   TextSpan(
-            //       text: 'Learn more',
-            //       recognizer: _learnMore,
-            //       style: TextStyle(color: Theme.of(context).accentColor)),
-            // ]
-          ),
-          textAlign: TextAlign.center,
-        );
-        break;
-      case 5:
-        return Text.rich(
-          TextSpan(
-            text: G.current.chargeForUnverified,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            // children: [
-            //   TextSpan(
-            //       text: 'Learn more',
-            //       recognizer: _learnMore,
-            //       style: TextStyle(color: Theme.of(context).accentColor)),
-            // ]
-          ),
-          textAlign: TextAlign.center,
-        );
-        break;
+    if (type == kUnverifiedPartner) {
+      return Text.rich(
+        TextSpan(
+          text: G.current.chargeForUnverified,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Text.rich(
+        TextSpan(
+          text: G.current.chargeForNormalPartner,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        textAlign: TextAlign.center,
+      );
     }
+
+    // switch (type) {
+    //   case 1:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForNormalPartner,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   case 2:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForCeleNStreamer,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   case 3:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForCeleNStreamer,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   case 4:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForPro,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   case 5:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForUnverified,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   case 6:
+    //     return Text.rich(
+    //       TextSpan(
+    //         text: G.current.chargeForUnverified,
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //         // children: [
+    //         //   TextSpan(
+    //         //       text: 'Learn more',
+    //         //       recognizer: _learnMore,
+    //         //       style: TextStyle(color: Theme.of(context).accentColor)),
+    //         // ]
+    //       ),
+    //       textAlign: TextAlign.center,
+    //     );
+    //     break;
+    //   default:
+    //     return Text('------');
+    //     break;
+    // }
   }
 
   @override

@@ -9,7 +9,11 @@ import 'package:moonblink/bloc_pattern/user_notification/new/user_new_notificati
 import 'package:moonblink/generated/l10n.dart';
 import 'package:moonblink/global/resources_manager.dart';
 import 'package:moonblink/global/router_manager.dart';
+import 'package:moonblink/global/storage_manager.dart';
 import 'package:moonblink/models/notification_models/user_new_notification.dart';
+import 'package:moonblink/services/moonblink_repository.dart';
+import 'package:moonblink/utils/constants.dart';
+import 'package:moonblink/view_model/login_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
@@ -312,6 +316,11 @@ class NotificationListTile extends StatelessWidget {
   }
 
   _onTapListTile(BuildContext context, UserNewNotificationData data) async {
+    // final myId = StorageManager.sharedPreferences.getInt(mUserId);
+    // await MoonBlinkRepository.bookingAcceptOrDecline(
+    //         myId, data.data.id, ACCEPTED)
+    //     .then((value) => showToast('Accepted $value'),
+    //         onError: (e) => showToast('Error: $e'));
     BlocProvider.of<UserNewNotificationBloc>(context)
         .add(UserNewNotificationChangeToRead(data.id));
   }
